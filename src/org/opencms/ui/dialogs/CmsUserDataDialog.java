@@ -29,10 +29,8 @@ package org.opencms.ui.dialogs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -42,93 +40,27 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
-import org.opencms.ui.util.CmsNullToEmptyConverter;
+import org.opencms.ui.components.CmsUserDataFormLayout;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsAccountInfo;
-import org.opencms.workplace.CmsAccountInfo.Field;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.data.validator.AbstractStringValidator;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * Dialog to edit the user data.<p>
  */
 public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
-
-    /**
-     * Validator employing the configured OpenCms validation handler.<p>
-     */
-    private static class FieldValidator extends AbstractStringValidator {
-
-        /** The serial version id. */
-        private static final long serialVersionUID = 4432834072807177046L;
-
-        /** The field to validate. */
-        private Field m_field;
-
-        /**
-         * Constructor.<p>
-         *
-         * @param field the field to validate
-         */
-        public FieldValidator(Field field) {
-            super(null);
-            m_field = field;
-        }
-
-        /**
-         * @see com.vaadin.data.validator.AbstractValidator#isValidValue(java.lang.Object)
-         */
-        @SuppressWarnings("incomplete-switch")
-        @Override
-        protected boolean isValidValue(String value) {
-
-            boolean result = true;
-
-            try {
-                switch (m_field) {
-                    case email:
-                        OpenCms.getValidationHandler().checkEmail(value);
-                        break;
-                    case firstname:
-                        OpenCms.getValidationHandler().checkFirstname(value);
-                        break;
-                    case lastname:
-                        OpenCms.getValidationHandler().checkLastname(value);
-                        break;
-                    case zipcode:
-                        OpenCms.getValidationHandler().checkZipCode(value);
-                        break;
-
-                }
-            } catch (CmsIllegalArgumentException e) {
-                result = false;
-                setErrorMessage(e.getLocalizedMessage(UI.getCurrent().getLocale()));
-            }
-
-            return result;
-        }
-    }
 
     /** The embedded dialog id. */
     public static final String DIALOG_ID = "edituserdata";
@@ -139,26 +71,20 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserDataDialog.class);
 
-    /** The field binder. */
-    private FieldGroup m_binder;
-
     /** The Cancel button. */
     private Button m_cancelButton;
 
     /** The dialog context. */
-    private I_CmsDialogContext m_context;
+    I_CmsDialogContext m_context;
 
     /** The form layout. */
-    private FormLayout m_form;
-
-    /** The property item. */
-    private PropertysetItem m_infos;
+    private CmsUserDataFormLayout m_form;
 
     /** The OK  button. */
     private Button m_okButton;
 
     /** The edited user. */
-    private CmsUser m_user;
+    CmsUser m_user;
 
     /** Displays the user icon and name. */
     private Label m_userInfo;
@@ -188,7 +114,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 + "\" style=\"vertical-align:middle; margin: -4px 10px 0 0;\" />"
                 + m_user.getName());
 
-        initFields();
+        m_form.initFields(m_user);
 
         m_cancelButton.addClickListener(new ClickListener() {
 
@@ -287,27 +213,21 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             // Special user info attributes may have been set since the time the dialog was instantiated,
             // and we don't want to overwrite them, so we read the user again.
             m_user = m_context.getCms().readUser(m_user.getId());
-            if (isValid()) {
-                m_binder.commit();
-                PropertyUtilsBean propUtils = new PropertyUtilsBean();
-                for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-                    if (info.isEditable()) {
-                        if (info.isAdditionalInfo()) {
-                            m_user.setAdditionalInfo(info.getAddInfoKey(), m_infos.getItemProperty(info).getValue());
-                        } else {
-                            propUtils.setProperty(
-                                m_user,
-                                info.getField().name(),
-                                m_infos.getItemProperty(info).getValue());
-                        }
+            m_form.submit(m_user, m_context.getCms(), new Runnable() {
+
+                public void run() {
+
+                    try {
+                        m_context.getCms().writeUser(m_user);
+                        m_context.finish(Collections.<CmsUUID> emptyList());
+                        m_context.updateUserInfo();
+                    } catch (CmsException e) {
+                        //
                     }
                 }
-                m_context.getCms().writeUser(m_user);
-                m_context.finish(Collections.<CmsUUID> emptyList());
-                m_context.updateUserInfo();
-            }
-        } catch (Exception e) {
-            m_context.error(e);
+            });
+        } catch (CmsException e) {
+            LOG.error("Unable to read user", e);
         }
     }
 
@@ -326,83 +246,5 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
         } catch (CmsException e) {
             LOG.error("Error updating user info.", e);
         }
-    }
-
-    /**
-     * Builds the text field for the given property.<p>
-     *
-     * @param label the field label
-     * @param info the property name
-     *
-     * @return the field
-     */
-    private TextField buildField(String label, CmsAccountInfo info) {
-
-        TextField field = (TextField)m_binder.buildAndBind(label, info);
-        field.setConverter(new CmsNullToEmptyConverter());
-        field.setWidth("100%");
-        field.setEnabled(info.isEditable());
-        if (info.isEditable()) {
-            field.addValidator(new FieldValidator(info.getField()));
-        }
-        field.setImmediate(true);
-        return field;
-    }
-
-    /**
-     * Returns the field label.<p>
-     *
-     * @param info the info
-     *
-     * @return the label
-     */
-    private String getLabel(CmsAccountInfo info) {
-
-        if (info.isAdditionalInfo()) {
-            String label = CmsVaadinUtils.getMessageText("GUI_USER_DATA_" + info.getAddInfoKey().toUpperCase() + "_0");
-            if (CmsMessages.isUnknownKey(label)) {
-                return info.getAddInfoKey();
-            } else {
-                return label;
-            }
-        } else {
-            return CmsVaadinUtils.getMessageText("GUI_USER_DATA_" + info.getField().name().toUpperCase() + "_0");
-        }
-    }
-
-    /**
-     * Initializes the form fields.<p>
-     */
-    private void initFields() {
-
-        m_infos = new PropertysetItem();
-        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-            String value = info.getValue(m_user);
-            if (value == null) {
-                value = "";
-            }
-            m_infos.addItemProperty(info, new ObjectProperty<String>(value));
-        }
-
-        m_binder = new FieldGroup(m_infos);
-        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-            m_form.addComponent(buildField(getLabel(info), info));
-        }
-    }
-
-    /**
-     * Returns whether the form fields are valid.<p>
-     *
-     * @return <code>true</code> if the form fields are valid
-     */
-    private boolean isValid() {
-
-        boolean valid = true;
-        for (Component comp : m_form) {
-            if (comp instanceof TextField) {
-                valid = valid && ((TextField)comp).isValid();
-            }
-        }
-        return valid;
     }
 }
