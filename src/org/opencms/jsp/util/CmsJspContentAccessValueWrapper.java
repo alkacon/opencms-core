@@ -319,6 +319,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /** Date series information generated from the wrapped data. */
     private CmsJspDateSeriesBean m_dateSeries;
 
+    /** Date information as instance date bean. */
+    private CmsJspInstanceDateBean m_instanceDate;
+
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
      *
@@ -906,6 +909,20 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             m_dateSeries = new CmsJspDateSeriesBean(this, m_cms.getRequestContext().getLocale());
         }
         return m_dateSeries;
+    }
+
+    /**
+     * Converts a date to an instance date bean.
+     * @return the instance date bean.
+     */
+    public CmsJspInstanceDateBean getToInstanceDate() {
+
+        if (m_instanceDate == null) {
+            m_instanceDate = new CmsJspInstanceDateBean(
+                getToDate(),
+                new CmsJspDateSeriesBean(this, m_cms.getRequestContext().getLocale()));
+        }
+        return m_instanceDate;
     }
 
     /**
