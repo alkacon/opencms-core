@@ -54,6 +54,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     /** Button to add a new row to an empty list. */
     private Button m_addButton;
 
+    /** The row caption. */
+    private String m_rowCaption;
+
     /**
      * Creates a new instance.<p>
      *
@@ -107,6 +110,16 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         updateAddButton();
         updateButtonBars();
 
+    }
+
+    /**
+     * Returns the row caption.<p>
+     *
+     * @return the row caption
+     */
+    public String getRowCaption() {
+
+        return m_rowCaption;
     }
 
     /**
@@ -175,6 +188,16 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
+     * Sets the row caption.<p>
+     *
+     * @param rowCaption the row caption to set
+     */
+    public void setRowCaption(String rowCaption) {
+
+        m_rowCaption = rowCaption;
+    }
+
+    /**
      * Creates a row wrapping a form widget.<p>
      *
      * @param component the widget to wrap
@@ -189,7 +212,11 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
             Layout.MarginHandler marginHandler = (Layout.MarginHandler)component;
             marginHandler.setMargin(false);
         }
-        return new CmsEditableGroupRow(this, component);
+        CmsEditableGroupRow row = new CmsEditableGroupRow(this, component);
+        if (m_rowCaption != null) {
+            row.setCaption(m_rowCaption);
+        }
+        return row;
     }
 
     /**
