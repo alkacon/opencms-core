@@ -33,9 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -47,15 +45,13 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.util.CmsNewResourceBuilder;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsVfsUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.collect.Lists;
 
 /**
  * The configuration for a single resource type.<p>
@@ -326,52 +322,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         checkOffline(cms);
         checkInitialized();
         String folderPath = getFolderPath(cms, pageFolderRootPath);
-        createFolder(cms, folderPath);
+        CmsVfsUtil.createFolder(cms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         builder.setSiteRoot("");
         builder.setPatternPath(destination);
         builder.setType(getTypeName());
         builder.setLocale(cms.getRequestContext().getLocale());
-    }
-
-    /**
-     * Creates a folder and its parent folders if they don't exist.<p>
-     *
-     * @param cms the CMS context to use
-     * @param rootPath the folder root path
-     *
-     * @throws CmsException if something goes wrong
-     */
-    @SuppressWarnings("deprecation")
-    public void createFolder(CmsObject cms, String rootPath) throws CmsException {
-
-        CmsObject rootCms = OpenCms.initCmsObject(cms);
-        rootCms.getRequestContext().setSiteRoot("");
-        List<String> parents = new ArrayList<String>();
-        String currentPath = rootPath;
-        while (currentPath != null) {
-            if (rootCms.existsResource(currentPath)) {
-                break;
-            }
-            parents.add(currentPath);
-            currentPath = CmsResource.getParentFolder(currentPath);
-        }
-        parents = Lists.reverse(parents);
-        for (String parent : parents) {
-            try {
-                rootCms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
-                try {
-                    rootCms.unlockResource(parent);
-                } catch (CmsException e) {
-                    // may happen if parent folder is locked also
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
-                    }
-                }
-            } catch (CmsVfsResourceAlreadyExistsException e) {
-                // nop
-            }
-        }
     }
 
     /**
@@ -392,7 +348,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         checkInitialized();
         CmsObject rootCms = rootCms(userCms);
         String folderPath = getFolderPath(userCms, pageFolderRootPath);
-        createFolder(userCms, folderPath);
+        CmsVfsUtil.createFolder(userCms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(rootCms, destination, 5);
         // set the content locale
