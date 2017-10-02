@@ -1209,6 +1209,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_ADD_EXPORT_POINT_0 = "GUI_MODULES_ADD_EXPORT_POINT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ADD_PARAMETER_0 = "GUI_MODULES_ADD_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ADD_RESOURCE_0 = "GUI_MODULES_ADD_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */

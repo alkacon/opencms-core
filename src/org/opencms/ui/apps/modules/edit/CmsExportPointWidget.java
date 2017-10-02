@@ -66,7 +66,6 @@ public class CmsExportPointWidget extends FormLayout {
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
             m_target.addItem(target);
         }
-
         m_target.setValue(target);
     }
 

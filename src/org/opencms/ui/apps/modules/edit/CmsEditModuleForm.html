@@ -50,23 +50,22 @@
 						</v-vertical-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_PARAMETERS_0)">
-						<v-vertical-layout margin spacing>
-							<v-button _id="m_addParameter" style-name="o-button-site">Add module parameter</v-button>
-							<v-form-layout _id="m_parameters" margin spacing style-name="o-formlayout-workplace-main">
-							</v-form-layout>
+						<v-vertical-layout margin>
+						<v-panel caption="%(key.GUI_MODULES_TAB_PARAMETERS_0)">
+							<v-vertical-layout margin spacing>
+								<v-form-layout _id="m_parameters" margin spacing style-name="o-formlayout-workplace-main">
+								</v-form-layout>
+							</v-vertical-layout>
+						</v-panel>
 						</v-vertical-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_EXPORT_POINTS_0)">
 						<v-vertical-layout _id="m_exportPoints" margin spacing style-name="o-formlayout-workplace-main">
-							<v-button _id="m_addExportPoint" style-name="o-button-site">%(key.GUI_MODULES_ADD_EXPORT_POINT_0)</v-button>
 						</v-vertical-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_DEPENDENCIES_0)">
-						<v-vertical-layout margin spacing>
-							<v-button _id="m_addDependency" style-name="o-button-site">%(key.GUI_MODULES_ADD_DEPENDENCY_0)</v-button>
-							<v-form-layout _id="m_dependencies" margin>								
-							</v-form-layout>
-						</v-vertical-layout>
+						<v-form-layout _id="m_dependencies" margin spacing style-name="o-formlayout-workplace-main">								
+						</v-form-layout>
 					</tab>
 				</v-tab-sheet>
 			</v-vertical-layout>

@@ -83,6 +83,7 @@ public class CmsModuleDependencyWidget extends FormLayout {
                 return id;
             }
         });
+        setWidth("100%");
     }
 
     /**

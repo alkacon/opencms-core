@@ -139,15 +139,6 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** Text box for the action class. */
     private TextField m_actionClass;
 
-    /** The button to add a new dependency. */
-    private Button m_addDependency;
-
-    /** Button to add a new export point. */
-    private Button m_addExportPoint;
-
-    /** The button to add a new module parameter. */
-    private Button m_addParameter;
-
     /** The text box for the author email address. */
     private TextField m_authorEmail;
 
@@ -232,6 +223,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** Parent layout for module parameter widgets. */
     private FormLayout m_parameters;
 
+    /** Group for editing lists of parameters. */
+    private CmsEditableGroup m_parameterGroup;
+
     /** Check box for the 'reduced metadata' export mode. */
     private CheckBox m_reducedMetadata;
 
@@ -249,6 +243,12 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
     /** The group for the module resource fields. */
     private CmsEditableGroup m_moduleResourcesGroup;
+
+    /** Group for editing list of export points. */
+    private CmsEditableGroup m_exportPointGroup;
+
+    /** Group for editing lists of dependencies. */
+    private CmsEditableGroup m_dependencyGroup;
 
     /**
      * Creates a new instance.<p>
@@ -376,8 +376,36 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_excludedResources,
             moduleResourceFieldFactory,
             addResourceButtonText);
+        m_parameterGroup = new CmsEditableGroup(m_parameters, new Supplier<Component>() {
+
+            public Component get() {
+
+                TextField result = new TextField();
+                return result;
+            }
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_ADD_PARAMETER_0));
+        m_exportPointGroup = new CmsEditableGroup(m_exportPoints, new Supplier<Component>() {
+
+            public Component get() {
+
+                return new CmsExportPointWidget("", "");
+            }
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_ADD_EXPORT_POINT_0));
+
+        m_dependencyGroup = new CmsEditableGroup(m_dependencies, new Supplier<Component>() {
+
+            public Component get() {
+
+                CmsModuleDependencyWidget component = CmsModuleDependencyWidget.create(null);
+                return component;
+            }
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_ADD_DEPENDENCY_0));
+
         m_moduleResourcesGroup.init();
         m_excludedResourcesGroup.init();
+        m_parameterGroup.init();
+        m_exportPointGroup.init();
+        m_dependencyGroup.init();
 
         Map<String, String> params = module.getParameters();
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -397,35 +425,6 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         for (String excludedResource : module.getExcludeResources()) {
             addExcludedResource(excludedResource);
         }
-
-        m_addParameter.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addParameter("");
-            }
-
-        });
-        m_addDependency.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addDependencyRow(null);
-            }
-        });
-        m_addExportPoint.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addExportPointRow("", "");
-            }
-        });
 
         m_cancel.addClickListener(new ClickListener() {
 
@@ -508,11 +507,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     public void addDependencyRow(CmsModuleDependency dep) {
 
         CmsModuleDependencyWidget w = CmsModuleDependencyWidget.create(dep);
-        CmsRemovableFormRow<CmsModuleDependencyWidget> row = new CmsRemovableFormRow<CmsModuleDependencyWidget>(w, "");
-        row.addStyleName(COMPLEX_ROW);
-        w.setWidth("100%");
-        m_dependencies.addComponent(row);
-
+        m_dependencyGroup.addRow(w);
     }
 
     /**
@@ -524,11 +519,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     public void addExportPointRow(String src, String target) {
 
         CmsExportPointWidget exportPointWidget = new CmsExportPointWidget(src, target);
-        CmsRemovableFormRow<CmsExportPointWidget> row = new CmsRemovableFormRow<CmsExportPointWidget>(
-            exportPointWidget,
-            "");
-        row.addStyleName(COMPLEX_ROW);
-        m_exportPoints.addComponent(row);
+        m_exportPointGroup.addRow(exportPointWidget);
+        //        row.addStyleName(COMPLEX_ROW);
+        //        m_exportPoints.addComponent(row);
     }
 
     /**
@@ -540,7 +533,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_fieldGroup.commit();
             // validate 'dynamic' tabs here
             TreeMap<String, String> params = Maps.newTreeMap();
-            for (TextField paramField : getFormRowChildren(m_parameters, TextField.class)) {
+            m_parameterGroup.getRows();
+            for (CmsEditableGroupRow row : m_parameterGroup.getRows()) {
+                TextField paramField = (TextField)(row.getComponent());
                 String paramStr = paramField.getValue();
                 int eqPos = paramStr.indexOf("=");
                 if (eqPos >= 0) {
@@ -554,7 +549,8 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_module.setParameters(params);
 
             List<CmsExportPoint> exportPoints = Lists.newArrayList();
-            for (CmsExportPointWidget widget : getFormRowChildren(m_exportPoints, CmsExportPointWidget.class)) {
+            for (CmsEditableGroupRow row : m_exportPointGroup.getRows()) {
+                CmsExportPointWidget widget = (CmsExportPointWidget)(row.getComponent());
                 String source = widget.getUri().trim();
                 String target = widget.getDestination().trim();
                 if (CmsStringUtil.isEmpty(source) || CmsStringUtil.isEmpty(target)) {
@@ -685,10 +681,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         if (parameter != null) {
             textField.setValue(parameter);
         }
-        CmsRemovableFormRow<TextField> row = new CmsRemovableFormRow<TextField>(textField, "");
-        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_LABEL_PARAMETER_0));
-        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_PARAMETER_DESC_0));
-        m_parameters.addComponent(row);
+        m_parameterGroup.addRow(textField);
     }
 
     /**
