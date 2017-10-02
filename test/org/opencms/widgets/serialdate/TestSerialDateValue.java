@@ -126,6 +126,28 @@ public class TestSerialDateValue extends OpenCmsTestCase {
     }
 
     /**
+     * Test for the yearly pattern, specified by week of month and weekday.
+     */
+    @Test
+    public void testDateOnlyInitialization() {
+
+        String patternDefinition = "1491202800000";
+        CmsSerialDateValue wrapper = new CmsSerialDateValue(patternDefinition);
+        // general
+        assertTrue(wrapper.isValid());
+        assertEquals(1491202800000L, wrapper.getStart().getTime());
+        assertEquals(null, wrapper.getEnd());
+        assertEquals(false, wrapper.isWholeDay());
+        // end
+        assertEquals(EndType.SINGLE, wrapper.getEndType());
+        // pattern
+        assertEquals(PatternType.NONE, wrapper.getPatternType());
+        // re-wrap
+        CmsSerialDateValue rewrap = new CmsSerialDateValue(wrapper.toString());
+        assertEquals(wrapper, rewrap);
+    }
+
+    /**
      * Test for the individual pattern.
      */
     @Test

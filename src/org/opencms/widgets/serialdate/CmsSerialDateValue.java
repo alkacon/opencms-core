@@ -33,6 +33,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.util.CmsJspElFunctions;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 
@@ -78,9 +79,14 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
                 setDerivedEndType();
                 setCurrentTillEnd(readOptionalBoolean(json, JsonKey.CURRENT_TILL_END));
                 setParentSeriesId(readOptionalUUID(json, JsonKey.PARENT_SERIES));
-            } catch (@SuppressWarnings("unused") JSONException e) {
-                m_parsingFailed = true;
+            } catch (JSONException e) {
                 setDefaultValue();
+                Date d = CmsJspElFunctions.convertDate(value);
+                if (d.getTime() == 0) {
+                    m_parsingFailed = true;
+                } else {
+                    setStart(d);
+                }
             }
         } else {
             setDefaultValue();
@@ -403,7 +409,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
             try {
                 CmsUUID uuid = CmsUUID.valueOf(id);
                 return uuid;
-            } catch (@SuppressWarnings("unused") NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 LOG.debug("Reading optional UUID failed. Could not convert \"" + id + "\" to a valid UUID.");
             }
         }
