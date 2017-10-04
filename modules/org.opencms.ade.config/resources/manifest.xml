@@ -397,6 +397,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<entry key="GUI_ACTION_SWITCH_SITE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsSiteDialogAction" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage"/>
+						<entry key="GUI_EXPLORER_CONTEXT_SHOW_PAGE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsShowPage" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage"/>
 						<entry key="SHOWLOCALE" name="showlocale" rule="containerpage"/>
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage"/>
