@@ -137,6 +137,16 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     }
 
     /**
+     * Gets the icon.<p>
+     *
+     * @return the icon
+     */
+    public Label getIcon() {
+
+        return m_icon;
+    }
+
+    /**
      * Returns the label for the form row.<p>
      *
      * @return the label for the form row
@@ -169,7 +179,6 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
             m_icon.addStyleName(I_CmsButton.CIRCLE_INFO);
             m_icon.setTitle(info);
         }
-
     }
 
     /**

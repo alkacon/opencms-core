@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsDialogContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -72,13 +73,69 @@ import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * The element settings dialog.<p>
  */
 public class CmsElementSettingsDialog extends CmsFormDialog {
+
+    /**
+     * A panel which adds icons with tooltips containing the field description to the rows.<p>
+     */
+    public static class FieldPanel extends CmsFieldsetFormFieldPanel {
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param info the list info bean for an element
+         * @param legend the legend for the fieldset
+         */
+        public FieldPanel(CmsListInfoBean info, String legend) {
+            super(info, legend);
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel#createRow(org.opencms.gwt.client.ui.input.I_CmsFormField)
+         */
+        @Override
+        protected CmsFormRow createRow(I_CmsFormField field) {
+
+            CmsFormRow row = super.createRow(field);
+            final String description = field.getDescription();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
+                final Label icon = row.getIcon();
+                icon.addStyleName(I_CmsButton.ICON_FONT);
+                icon.addStyleName(I_CmsButton.INFO_SMALL);
+                icon.getElement().getStyle().setFontSize(20, Unit.PX);
+                icon.addDomHandler(new MouseOverHandler() {
+
+                    public void onMouseOver(MouseOverEvent event) {
+
+                        CmsSettingTooltip.showTooltip(icon, description);
+                    }
+                }, MouseOverEvent.getType());
+
+                icon.addDomHandler(new MouseOutHandler() {
+
+                    public void onMouseOut(MouseOutEvent event) {
+
+                        CmsSettingTooltip.closeTooltip();
+                    }
+
+                }, MouseOutEvent.getType());
+
+            }
+            return row;
+        }
+
+    }
 
     /** The model group options. */
     protected enum GroupOption {
@@ -189,7 +246,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isDeveloper
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {
-            CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(
+            CmsFieldsetFormFieldPanel fieldSetPanel = new FieldPanel(
                 infoBean,
                 Messages.get().key(Messages.GUI_SETTINGS_LEGEND_0));
             formFieldPanel = fieldSetPanel;
