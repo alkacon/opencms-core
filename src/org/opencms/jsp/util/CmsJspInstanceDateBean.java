@@ -103,7 +103,8 @@ public class CmsJspInstanceDateBean {
                         }
                     } else if ((null != m_dateFormat) && (null != m_timeFormat)) {
                         m_dateTimeFormat = new SimpleDateFormat(
-                            m_dateFormat.toPattern() + " " + m_timeFormat.toPattern());
+                            m_dateFormat.toPattern() + " " + m_timeFormat.toPattern(),
+                            locale);
                     }
                 }
             }
