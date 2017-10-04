@@ -76,9 +76,6 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
         /** Edit option: Edit the whole series. */
         private static final String OPTION_SERIES = "series";
 
-        /** The key of the parameter/setting the instance date of the instance that should be edited is read from. */
-        private static final String PARAM_INSTANCEDATE = "instancedate";
-
         /** The definition of the date series from the content. */
         private CmsSerialDateValue m_value;
 
@@ -441,6 +438,9 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
         }
 
     }
+
+    /** The key of the parameter/setting the instance date of the instance that should be edited is read from. */
+    public static final String PARAM_INSTANCEDATE = "instancedate";
 
     /**
      * @see org.opencms.workplace.editors.directedit.I_CmsEditHandler#getDeleteOptions(org.opencms.file.CmsObject, org.opencms.xml.containerpage.CmsContainerElementBean, org.opencms.util.CmsUUID, java.util.Map)

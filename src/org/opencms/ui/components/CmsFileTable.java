@@ -147,7 +147,7 @@ public class CmsFileTable extends CmsResourceTable {
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
 
             Field<?> result = null;
-            if (itemId.equals(getEditItemId()) && isEditProperty((CmsResourceTableProperty)propertyId)) {
+            if (itemId.equals(getEditItemId().toString()) && isEditProperty((CmsResourceTableProperty)propertyId)) {
                 result = super.createField(container, itemId, propertyId, uiContext);
                 result.addStyleName(OpenCmsTheme.INLINE_TEXTFIELD);
                 result.addValidator(m_editHandler);
@@ -387,11 +387,13 @@ public class CmsFileTable extends CmsResourceTable {
             public void valueChange(ValueChangeEvent event) {
 
                 @SuppressWarnings("unchecked")
-                Set<CmsUUID> selectedIds = (Set<CmsUUID>)event.getProperty().getValue();
+                Set<String> selectedIds = (Set<String>)event.getProperty().getValue();
                 List<CmsResource> selectedResources = new ArrayList<CmsResource>();
-                for (CmsUUID id : selectedIds) {
+                for (String id : selectedIds) {
                     try {
-                        CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
+                        CmsResource resource = A_CmsUI.getCmsObject().readResource(
+                            getUUIDFromItemID(id),
+                            CmsResourceFilter.ALL);
                         selectedResources.add(resource);
                     } catch (CmsException e) {
                         LOG.error(e.getLocalizedMessage(), e);
@@ -544,8 +546,8 @@ public class CmsFileTable extends CmsResourceTable {
                     new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT, search, true, false),
                     new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_TITLE, search, true, false)));
         }
-        if ((m_fileTable.getValue() != null) & !((Set<CmsUUID>)m_fileTable.getValue()).isEmpty()) {
-            m_fileTable.setCurrentPageFirstItemId(((Set<CmsUUID>)m_fileTable.getValue()).iterator().next());
+        if ((m_fileTable.getValue() != null) & !((Set<?>)m_fileTable.getValue()).isEmpty()) {
+            m_fileTable.setCurrentPageFirstItemId(((Set<?>)m_fileTable.getValue()).iterator().next());
         }
     }
 
@@ -565,9 +567,9 @@ public class CmsFileTable extends CmsResourceTable {
      * @return the set of selected structure ids
      */
     @SuppressWarnings("unchecked")
-    public Set<CmsUUID> getSelectedIds() {
+    public Collection<CmsUUID> getSelectedIds() {
 
-        return (Set<CmsUUID>)m_fileTable.getValue();
+        return itemIdsToUUIDs((Collection<String>)m_fileTable.getValue());
     }
 
     /**
@@ -607,9 +609,9 @@ public class CmsFileTable extends CmsResourceTable {
      *
      * @param itemId the selected item id
      */
-    public void handleSelection(CmsUUID itemId) {
+    public void handleSelection(String itemId) {
 
-        Set<CmsUUID> selection = getSelectedIds();
+        Collection<?> selection = (Collection<?>)m_fileTable.getValue();
         if (selection == null) {
             m_fileTable.select(itemId);
         } else if (!selection.contains(itemId)) {
@@ -740,7 +742,8 @@ public class CmsFileTable extends CmsResourceTable {
 
         m_editItemId = itemId;
         m_editProperty = propertyId;
-        m_originalEditValue = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
+        m_originalEditValue = (String)m_container.getItem(m_editItemId.toString()).getItemProperty(
+            m_editProperty).getValue();
         m_editHandler = editHandler;
 
         // storing current drag mode and setting it to none to avoid text selection issues in IE11
@@ -756,7 +759,8 @@ public class CmsFileTable extends CmsResourceTable {
     public void stopEdit() {
 
         if (m_editHandler != null) {
-            String value = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
+            String value = (String)m_container.getItem(m_editItemId.toString()).getItemProperty(
+                m_editProperty).getValue();
             if (!value.equals(m_originalEditValue)) {
                 m_editHandler.validate(value);
                 m_editHandler.save(value);
@@ -882,15 +886,17 @@ public class CmsFileTable extends CmsResourceTable {
             stopEdit();
 
         } else if (!event.isCtrlKey() && !event.isShiftKey()) {
-            CmsUUID itemId = (CmsUUID)event.getItemId();
-            boolean openedFolder = false;
             // don't interfere with multi-selection using control key
+            String itemId = (String)event.getItemId();
+            CmsUUID structureId = getUUIDFromItemID(itemId);
+            boolean openedFolder = false;
             if (event.getButton().equals(MouseButton.RIGHT)) {
                 handleSelection(itemId);
                 openContextMenu(event);
             } else {
                 if ((event.getPropertyId() == null)
                     || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                    handleSelection(itemId);
                     openContextMenu(event);
                 } else {
                     if (m_actionColumnProperty.equals(event.getPropertyId())) {
@@ -898,13 +904,13 @@ public class CmsFileTable extends CmsResourceTable {
                             CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                         if ((isFolder != null) && isFolder.booleanValue()) {
                             if (m_folderSelectHandler != null) {
-                                m_folderSelectHandler.onFolderSelect(itemId);
+                                m_folderSelectHandler.onFolderSelect(structureId);
                             }
                             openedFolder = true;
                         } else {
                             try {
                                 CmsObject cms = A_CmsUI.getCmsObject();
-                                CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
+                                CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                                 m_currentResources = Collections.singletonList(res);
                                 I_CmsDialogContext context = m_contextProvider.getDialogContext();
                                 I_CmsDefaultAction action = OpenCms.getWorkplaceAppManager().getDefaultAction(
@@ -923,7 +929,7 @@ public class CmsFileTable extends CmsResourceTable {
                     } else {
                         I_CmsDialogContext context = m_contextProvider.getDialogContext();
                         if ((m_currentResources.size() == 1)
-                            && m_currentResources.get(0).getStructureId().equals(itemId)
+                            && m_currentResources.get(0).getStructureId().equals(structureId)
                             && (context instanceof I_CmsEditPropertyContext)
                             && ((I_CmsEditPropertyContext)context).isPropertyEditable(event.getPropertyId())) {
 
@@ -934,7 +940,7 @@ public class CmsFileTable extends CmsResourceTable {
             }
             // update the item on click to show any available changes
             if (!openedFolder) {
-                update(Collections.singletonList(itemId), false);
+                update(Collections.singletonList(structureId), false);
             }
         }
     }

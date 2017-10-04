@@ -29,11 +29,14 @@ package org.opencms.ui.apps.lists;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
@@ -66,6 +69,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchException;
+import org.opencms.search.CmsSearchResource;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
@@ -77,6 +82,7 @@ import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.actions.A_CmsWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
+import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
@@ -85,7 +91,9 @@ import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.lists.CmsOptionDialog.I_OptionHandler;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
@@ -100,8 +108,11 @@ import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.editors.directedit.CmsDateSeriesEditHandler;
+import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -111,6 +122,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -168,11 +180,24 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         /** Search parameters by configuration node name. */
         private Map<String, String> m_parameterFields;
 
+        /** The additional content parameters. */
+        private Map<String, String> m_additionalParameters;
+
         /**
          * Constructor.<p>
          */
         public ListConfigurationBean() {
             m_parameterFields = new HashMap<String, String>();
+        }
+
+        /**
+         * Returns the additional content parameters.<p>
+         *
+         * @return the additional content parameters
+         */
+        public Map<String, String> getAdditionalParameters() {
+
+            return m_additionalParameters;
         }
 
         /**
@@ -260,6 +285,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
+         * Sets the additional content parameters.<p>
+         *
+         * @param additionalParameters the additional content parameters to set
+         */
+        public void setAdditionalParameters(Map<String, String> additionalParameters) {
+
+            m_additionalParameters = additionalParameters;
+        }
+
+        /**
          * Sets the blacklist.<p>
          *
          * @param blacklist the blacklist
@@ -338,6 +373,15 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         /** The sort option. */
         private SortOption m_sortOption;
 
+        /** The current items only flag. */
+        boolean m_currentOnly;
+
+        /** The category facet conjunction flag. */
+        boolean m_categoryConjunction;
+
+        /** The collapse item series flag. */
+        boolean m_collapseItemSeries;
+
         /**
          * Constructor.<p>
          *
@@ -345,8 +389,11 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
          * @param folders the selected folders
          * @param categories the selected categories
          * @param filterQuery the filter query
+         * @param currentOnly the current items only flag
          * @param sortOption the sort option
          * @param showExpired the show expired flag
+         * @param categoryConjunction the category facet conjunction flag
+         * @param collapseItemSeries  the collapse item series flag
          * @param contentLocale the content locale
          */
         public SearchConfigParser(
@@ -354,8 +401,11 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             List<String> folders,
             List<String> categories,
             String filterQuery,
+            boolean currentOnly,
             String sortOption,
             boolean showExpired,
+            boolean categoryConjunction,
+            boolean collapseItemSeries,
             Locale contentLocale) {
             m_selectedTypes = types;
             m_selectedFolders = folders;
@@ -363,22 +413,30 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             setSortOption(sortOption);
             m_contentLocale = contentLocale;
             m_filterQuery = filterQuery;
+            m_currentOnly = currentOnly;
+            m_showExpired = showExpired;
+            m_categoryConjunction = categoryConjunction;
+            m_collapseItemSeries = collapseItemSeries;
         }
 
         /**
          * Constructor.<p>
          *
          * @param configBean the configuration data bean
+         * @param collapseItemSeries  the collapse item series flag
          * @param locale the search content locale
          */
-        public SearchConfigParser(ListConfigurationBean configBean, Locale locale) {
+        public SearchConfigParser(ListConfigurationBean configBean, boolean collapseItemSeries, Locale locale) {
             this(
                 configBean.getTypes(),
                 configBean.getFolders(),
                 configBean.getCategories(),
                 configBean.getParameterValue(N_FILTER_QUERY),
+                Boolean.parseBoolean(configBean.getParameterValue(N_CURRENT_ONLY)),
                 configBean.getParameterValue(N_SORT_ORDER),
                 Boolean.parseBoolean(configBean.getParameterValue(N_SHOW_EXPIRED)),
+                Boolean.parseBoolean(configBean.getParameterValue(N_CATEGORY_CONJUNCTION)),
+                collapseItemSeries,
                 locale);
         }
 
@@ -518,7 +576,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     "Category",
                     SortOrder.index,
                     null,
-                    Boolean.FALSE,
+                    Boolean.valueOf(m_categoryConjunction),
                     null,
                     Boolean.TRUE));
             result.put(
@@ -629,7 +687,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             if (null != sortOption) {
                 try {
                     m_sortOption = SortOption.valueOf(sortOption);
-                } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     m_sortOption = null;
                     LOG.warn(
                         "Setting illegal default sort option "
@@ -677,14 +735,18 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
          */
         String getFilterQuery() {
 
+            String result = "";
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_filterQuery)) {
                 if (!m_filterQuery.startsWith("&")) {
-                    return "&" + m_filterQuery;
+                    result += "&" + m_filterQuery;
                 } else {
-                    return m_filterQuery;
+                    result += m_filterQuery;
                 }
             }
-            return "";
+            if (m_currentOnly) {
+                result += "&fq=instancedatecurrenttill_" + m_contentLocale.toString() + "_dt:[NOW/DAY TO *]";
+            }
+            return result;
         }
 
         /**
@@ -745,6 +807,210 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
     }
 
+    /**
+     * Extended dialog context.<p>
+     */
+    protected static class DialogContext extends CmsFileTableDialogContext {
+
+        /** The selected table items. */
+        private List<Item> m_selectedItems;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param appId the app id
+         * @param contextType the context type
+         * @param fileTable the file table instance
+         * @param resources the list of selected resources
+         */
+        public DialogContext(
+            String appId,
+            ContextType contextType,
+            CmsFileTable fileTable,
+            List<CmsResource> resources) {
+            super(appId, contextType, fileTable, resources);
+
+        }
+
+        /**
+         * Returns the selected table items.<p>
+         *
+         * @return the selected table items
+         */
+        public List<Item> getSelectedItems() {
+
+            return m_selectedItems;
+        }
+
+        /**
+         * Sets the table items.<p>
+         *
+         * @param items the table items
+         */
+        public void setSelectedItems(List<Item> items) {
+
+            m_selectedItems = items;
+        }
+    }
+
+    /**
+     * Overrides the standard delete action to enable use of edit handlers.<p>
+     */
+    class DeleteAction extends CmsDeleteDialogAction {
+
+        /**
+         * @see org.opencms.ui.actions.CmsDeleteDialogAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+         */
+        @Override
+        public void executeAction(final I_CmsDialogContext context) {
+
+            final CmsResource resource = context.getResources().get(0);
+            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource);
+            if ((resourceType instanceof CmsResourceTypeXmlContent)
+                && (((CmsResourceTypeXmlContent)resourceType).getEditHandler(context.getCms()) != null)) {
+                final I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)resourceType).getEditHandler(
+                    context.getCms());
+                final CmsContainerElementBean elementBean = getElementForEditHandler((DialogContext)context);
+                CmsDialogOptions options = handler.getDeleteOptions(
+                    context.getCms(),
+                    elementBean,
+                    null,
+                    Collections.<String, String[]> emptyMap());
+                if (options == null) {
+                    super.executeAction(context);
+                } else if (options.getOptions().size() == 1) {
+                    deleteForOption(resource, elementBean, options.getOptions().get(0).getValue(), handler, context);
+                } else {
+                    Window window = CmsBasicDialog.prepareWindow();
+                    window.setCaption(options.getTitle());
+                    CmsOptionDialog dialog = new CmsOptionDialog(resource, options, new I_OptionHandler() {
+
+                        public void handleOption(String option) {
+
+                            deleteForOption(resource, elementBean, option, handler, context);
+                        }
+                    }, null, window);
+                    window.setContent(dialog);
+                    CmsAppWorkplaceUi.get().addWindow(window);
+                    dialog.initActionHandler(window);
+
+                }
+            } else {
+                super.executeAction(context);
+            }
+        }
+
+        /**
+         * Deletes with the given option.<p>
+         *
+         * @param resource the resource to delete
+         * @param elementBean the element bean
+         * @param deleteOption the delete option
+         * @param editHandler edit handler
+         * @param context the dialog context
+         */
+        void deleteForOption(
+            CmsResource resource,
+            CmsContainerElementBean elementBean,
+            String deleteOption,
+            I_CmsEditHandler editHandler,
+            I_CmsDialogContext context) {
+
+            try {
+                editHandler.handleDelete(context.getCms(), elementBean, deleteOption, null, null);
+            } catch (CmsException e) {
+                CmsErrorDialog.showErrorDialog(e);
+            }
+        }
+    }
+
+    /**
+     * Overrides the standard delete action to enable use of edit handlers.<p>
+     */
+    class EditAction extends CmsEditDialogAction {
+
+        /**
+         * @see org.opencms.ui.actions.CmsEditDialogAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+         */
+        @Override
+        public void executeAction(final I_CmsDialogContext context) {
+
+            final CmsResource resource = context.getResources().get(0);
+            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource);
+            if ((resourceType instanceof CmsResourceTypeXmlContent)
+                && (((CmsResourceTypeXmlContent)resourceType).getEditHandler(context.getCms()) != null)) {
+                final I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)resourceType).getEditHandler(
+                    context.getCms());
+                final CmsContainerElementBean elementBean = getElementForEditHandler((DialogContext)context);
+                CmsDialogOptions options = handler.getEditOptions(
+                    context.getCms(),
+                    elementBean,
+                    null,
+                    Collections.<String, String[]> emptyMap(),
+                    true);
+                if (options == null) {
+                    super.executeAction(context);
+                } else if (options.getOptions().size() == 1) {
+                    editForOption(resource, elementBean, options.getOptions().get(0).getValue(), handler, context);
+                } else {
+                    Window window = CmsBasicDialog.prepareWindow();
+                    window.setCaption(options.getTitle());
+                    CmsOptionDialog dialog = new CmsOptionDialog(resource, options, new I_OptionHandler() {
+
+                        public void handleOption(String option) {
+
+                            editForOption(resource, elementBean, option, handler, context);
+                        }
+                    }, null, window);
+                    window.setContent(dialog);
+                    CmsAppWorkplaceUi.get().addWindow(window);
+                    dialog.initActionHandler(window);
+
+                }
+            } else {
+                super.executeAction(context);
+            }
+        }
+
+        /**
+         * Calls the editor with the given option.<p>
+         *
+         * @param resource the resource to delete
+         * @param elementBean the element bean
+         * @param editOption the edit option
+         * @param editHandler edit handler
+         * @param context the dialog context
+         */
+        void editForOption(
+            CmsResource resource,
+            CmsContainerElementBean elementBean,
+            String editOption,
+            I_CmsEditHandler editHandler,
+            I_CmsDialogContext context) {
+
+            try {
+                CmsUUID id = editHandler.prepareForEdit(
+                    context.getCms(),
+                    elementBean,
+                    editOption,
+                    null,
+                    Collections.<String, String[]> emptyMap());
+                if (resource.getStructureId().equals(id)) {
+                    super.executeAction(context);
+                } else if (id != null) {
+                    CmsFileTableDialogContext changedContext = new CmsFileTableDialogContext(
+                        CmsProjectManagerConfiguration.APP_ID,
+                        ContextType.fileTable,
+                        m_resultTable,
+                        Collections.singletonList(context.getCms().readResource(id)));
+                    super.executeAction(changedContext);
+                }
+            } catch (CmsException e) {
+                CmsErrorDialog.showErrorDialog(e);
+            }
+        }
+    }
+
     /** SOLR field name. */
     public static final String FIELD_CATEGORIES = "category_exact";
 
@@ -761,19 +1027,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public static final String N_BLACKLIST = "Blacklist";
 
     /** List configuration node name and field key. */
+    public static final String N_PARAMETER = "Parameter";
+
+    /** List configuration node name and field key. */
+    public static final String N_KEY = "Key";
+
+    /** List configuration node name and field key. */
+    public static final String N_VALUE = "Value";
+
+    /** List configuration node name and field key. */
     public static final String N_CATEGORY = "Category";
-
-    /** List configuration node name and field key. */
-    public static final String N_CATEGORY_FILTERS = "CategoryFilters";
-
-    /** List configuration node name and field key. */
-    public static final String N_CATEGORY_FULL_PATH = "CategoryFullPath";
-
-    /** List configuration node name and field key. */
-    public static final String N_CATEGORY_ONLY_LEAFS = "CategoryOnlyLeafs";
-
-    /** List configuration node name and field key. */
-    public static final String N_DISPLAY_OPTIONS = "DisplayOptions";
 
     /** List configuration node name and field key. */
     public static final String N_DISPLAY_TYPE = "TypesToCollect";
@@ -782,16 +1045,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public static final String N_FILTER_QUERY = "FilterQuery";
 
     /** List configuration node name and field key. */
-    public static final String N_PREOPEN_ARCHIVE = "PreopenArchive";
-
-    /** List configuration node name and field key. */
-    public static final String N_PREOPEN_CATEGORIES = "PreopenCategories";
-
-    /** List configuration node name and field key. */
     public static final String N_SEARCH_FOLDER = "SearchFolder";
-
-    /** List configuration node name and field key. */
-    public static final String N_SHOW_DATE = "ShowDate";
 
     /** List configuration node name and field key. */
     public static final String N_SHOW_EXPIRED = "ShowExpired";
@@ -813,14 +1067,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         N_CATEGORY,
         N_FILTER_QUERY,
         N_SORT_ORDER,
-        N_SHOW_DATE,
         N_SHOW_EXPIRED,
-        N_DISPLAY_OPTIONS,
-        N_CATEGORY_FILTERS,
-        N_CATEGORY_FULL_PATH,
-        N_CATEGORY_ONLY_LEAFS,
-        N_PREOPEN_CATEGORIES,
-        N_PREOPEN_ARCHIVE};
+        N_CATEGORY_CONJUNCTION,
+        N_CURRENT_ONLY};
 
     /** The view content list path name. */
     public static final String PATH_NAME_VIEW = "view";
@@ -837,6 +1086,26 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         true,
         1,
         40);
+
+    /** The blacklisted table column property id. */
+    protected static final CmsResourceTableProperty INFO_PROPERTY = new CmsResourceTableProperty(
+        "INFO_PROPERTY",
+        String.class,
+        null,
+        Messages.GUI_LISTMANAGER_COLUMN_INFO_0,
+        true,
+        1,
+        40);
+
+    /** The blacklisted table column property id. */
+    protected static final CmsResourceTableProperty INSTANCEDATE_PROPERTY = new CmsResourceTableProperty(
+        "INSTANCEDATE_PROPERTY",
+        Date.class,
+        null,
+        Messages.GUI_LISTMANAGER_COLUMN_INSTANCEDATE_0,
+        true,
+        1,
+        80);
 
     /** The available sort options. */
     protected static final String[][] SORT_OPTIONS = new String[][] {
@@ -922,13 +1191,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     private ComboBox m_resultSorter;
 
     /** The result table. */
-    private CmsFileTable m_resultTable;
+    CmsResultTable m_resultTable;
 
     /** The table filter input. */
     private TextField m_tableFilter;
 
     /** The text search input. */
     private TextField m_textSearch;
+
+    /** The collapse item series flag. */
+    private boolean m_collapseItemSeries;
 
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
@@ -947,6 +1219,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
                 resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TITLE).setValue(title);
             }
+        }
+        if ((resource instanceof CmsSearchResource)
+            && (resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY) != null)) {
+            resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY).setValue(
+                ((CmsSearchResource)resource).getField(CmsSearchField.FIELD_SERIESDATES_TYPE));
+        }
+        if ((resource instanceof CmsSearchResource)
+            && (resourceItem.getItemProperty(CmsListManager.INSTANCEDATE_PROPERTY) != null)) {
+            Date date = ((CmsSearchResource)resource).getDateField(m_resultTable.getDateFieldKey());
+            resourceItem.getItemProperty(CmsListManager.INSTANCEDATE_PROPERTY).setValue(date);
         }
     }
 
@@ -976,11 +1258,14 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public I_CmsDialogContext getDialogContext() {
 
         CmsFileTable table = isOverView() ? m_overviewTable : m_resultTable;
-        CmsFileTableDialogContext context = new CmsFileTableDialogContext(
+        DialogContext context = new DialogContext(
             CmsProjectManagerConfiguration.APP_ID,
             ContextType.fileTable,
             table,
             table.getSelectedResources());
+        if (!isOverView()) {
+            context.setSelectedItems(m_resultTable.getSelectedItems());
+        }
         context.setEditableProperties(CmsFileExplorer.INLINE_EDIT_PROPERTIES);
         return context;
     }
@@ -1055,7 +1340,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         LinkedHashMap<CmsResourceTableProperty, Integer> tableColumns = new LinkedHashMap<CmsResourceTableProperty, Integer>();
         tableColumns.putAll(CmsFileTable.DEFAULT_TABLE_PROPERTIES);
         tableColumns.put(BLACKLISTED_PROPERTY, Integer.valueOf(0));
-        m_resultTable = new CmsFileTable(null, tableColumns);
+        tableColumns.put(INFO_PROPERTY, Integer.valueOf(0));
+        tableColumns.put(INSTANCEDATE_PROPERTY, Integer.valueOf(0));
+        m_resultTable = new CmsResultTable(null, tableColumns);
         m_resultTable.applyWorkplaceAppSettings();
         CmsResourceContextMenuBuilder menuBuilderOverView = new CmsResourceContextMenuBuilder();
         menuBuilderOverView.addMenuItemProvider(OpenCms.getWorkplaceAppManager().getMenuItemProvider());
@@ -1081,83 +1368,87 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             @Override
             public List<I_CmsContextMenuItem> getMenuItems() {
 
-                return Arrays.<I_CmsContextMenuItem> asList(new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+                return Arrays.<I_CmsContextMenuItem> asList(
+                    new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
 
-                    @Override
-                    public void executeAction(I_CmsDialogContext context) {
+                        @Override
+                        public void executeAction(I_CmsDialogContext context) {
 
-                        CmsUUID structureId = context.getResources().get(0).getStructureId();
-                        m_currentConfig.getBlacklist().add(structureId);
-                        saveContent(m_currentConfig, false, false);
-                        context.finish(Collections.singletonList(structureId));
-                    }
-
-                    @Override
-                    public String getId() {
-
-                        return "hideresource";
-                    }
-
-                    @Override
-                    public String getTitle() {
-
-                        return getWorkplaceMessage(Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0);
-                    }
-
-                    @Override
-                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-                        if ((m_currentConfig != null)
-                            && (resources != null)
-                            && (resources.size() == 1)
-                            && !m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
-                            return CmsEditDialogAction.VISIBILITY.getVisibility(
-                                cms,
-                                Collections.singletonList(m_currentResource));
-                        } else {
-                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            CmsUUID structureId = context.getResources().get(0).getStructureId();
+                            m_currentConfig.getBlacklist().add(structureId);
+                            saveContent(m_currentConfig, false, false);
+                            context.finish(Collections.singletonList(structureId));
                         }
-                    }
 
-                }, null, 10, 0), new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+                        @Override
+                        public String getId() {
 
-                    @Override
-                    public void executeAction(I_CmsDialogContext context) {
-
-                        CmsUUID structureId = context.getResources().get(0).getStructureId();
-                        m_currentConfig.getBlacklist().remove(structureId);
-                        saveContent(m_currentConfig, false, false);
-                        context.finish(Collections.singletonList(structureId));
-                    }
-
-                    @Override
-                    public String getId() {
-
-                        return "showresource";
-                    }
-
-                    @Override
-                    public String getTitle() {
-
-                        return getWorkplaceMessage(Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0);
-                    }
-
-                    @Override
-                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-                        if ((m_currentConfig != null)
-                            && (resources != null)
-                            && (resources.size() == 1)
-                            && m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
-                            return CmsEditDialogAction.VISIBILITY.getVisibility(
-                                cms,
-                                Collections.singletonList(m_currentResource));
-                        } else {
-                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            return "hideresource";
                         }
-                    }
 
-                }, null, 10, 0));
+                        @Override
+                        public String getTitle() {
+
+                            return getWorkplaceMessage(Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0);
+                        }
+
+                        @Override
+                        public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                            if ((m_currentConfig != null)
+                                && (resources != null)
+                                && (resources.size() == 1)
+                                && !m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
+                                return CmsEditDialogAction.VISIBILITY.getVisibility(
+                                    cms,
+                                    Collections.singletonList(m_currentResource));
+                            } else {
+                                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            }
+                        }
+
+                    }, null, 10, 0),
+                    new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+
+                        @Override
+                        public void executeAction(I_CmsDialogContext context) {
+
+                            CmsUUID structureId = context.getResources().get(0).getStructureId();
+                            m_currentConfig.getBlacklist().remove(structureId);
+                            saveContent(m_currentConfig, false, false);
+                            context.finish(Collections.singletonList(structureId));
+                        }
+
+                        @Override
+                        public String getId() {
+
+                            return "showresource";
+                        }
+
+                        @Override
+                        public String getTitle() {
+
+                            return getWorkplaceMessage(Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0);
+                        }
+
+                        @Override
+                        public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                            if ((m_currentConfig != null)
+                                && (resources != null)
+                                && (resources.size() == 1)
+                                && m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
+                                return CmsEditDialogAction.VISIBILITY.getVisibility(
+                                    cms,
+                                    Collections.singletonList(m_currentResource));
+                            } else {
+                                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            }
+                        }
+
+                    }, null, 10, 0),
+                    new CmsContextMenuActionItem(new EditAction(), null, 10, 1000),
+                    new CmsContextMenuActionItem(new DeleteAction(), null, 10, 1000));
             }
         });
         m_resultTable.setMenuBuilder(menuBuilder);
@@ -1299,6 +1590,17 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     result.setParameterValue(field, val);
                 }
             }
+            LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
+            for (I_CmsXmlContentValue parameter : content.getValues(N_PARAMETER, locale)) {
+                I_CmsXmlContentValue keyVal = content.getValue(parameter.getPath() + "/" + N_KEY, locale);
+                I_CmsXmlContentValue valueVal = content.getValue(parameter.getPath() + "/" + N_VALUE, locale);
+                if ((keyVal != null)
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(keyVal.getStringValue(cms))
+                    && (valueVal != null)) {
+                    parameters.put(keyVal.getStringValue(cms), valueVal.getStringValue(cms));
+                }
+            }
+            result.setAdditionalParameters(parameters);
             List<String> displayTypes = new ArrayList<String>();
             List<I_CmsXmlContentValue> typeValues = content.getValues(N_DISPLAY_TYPE, locale);
             if (!typeValues.isEmpty()) {
@@ -1431,6 +1733,24 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     contentVal.setIdValue(cms, hiddenId);
                     count++;
                 }
+                if (configBean.getAdditionalParameters() != null) {
+                    count = 0;
+                    for (Entry<String, String> paramEntry : configBean.getAdditionalParameters().entrySet()) {
+                        I_CmsXmlContentValue paramValue = content.addValue(cms, N_PARAMETER, locale, count);
+
+                        I_CmsXmlContentValue keyVal = content.getValue(paramValue.getPath() + "/" + N_KEY, locale);
+                        if (keyVal == null) {
+                            keyVal = content.addValue(cms, paramValue.getPath() + "/" + N_KEY, locale, 0);
+                        }
+                        keyVal.setStringValue(cms, paramEntry.getKey());
+                        I_CmsXmlContentValue valueVal = content.getValue(paramValue.getPath() + "/" + N_VALUE, locale);
+                        if (valueVal == null) {
+                            valueVal = content.addValue(cms, paramValue.getPath() + "/" + N_VALUE, locale, 0);
+                        }
+                        valueVal.setStringValue(cms, paramEntry.getValue());
+                        count++;
+                    }
+                }
                 configFile.setContents(content.marshal());
                 cms.writeFile(configFile);
                 if (m_lockAction.getChange().equals(LockChange.locked)) {
@@ -1442,7 +1762,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             m_currentConfig = configBean;
             if (updateResult) {
                 Locale contentLocale = getContentLocale(configBean);
-                search(new SearchConfigParser(configBean, contentLocale), m_currentResource);
+                search(new SearchConfigParser(configBean, m_collapseItemSeries, contentLocale), m_currentResource);
             }
         }
 
@@ -1546,7 +1866,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     m_currentResource,
                     CmsPropertyDefinition.PROPERTY_TITLE,
                     false).getValue();
-            } catch (@SuppressWarnings("unused") Exception e) {
+            } catch (Exception e) {
                 // ignore
             }
             if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
@@ -1571,7 +1891,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 CmsUUID id = new CmsUUID(A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX));
                 CmsResource res = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 m_currentConfig = parseListConfiguration(res);
-                search(new SearchConfigParser(m_currentConfig, getContentLocale(m_currentConfig)), res);
+                search(
+                    new SearchConfigParser(m_currentConfig, m_collapseItemSeries, getContentLocale(m_currentConfig)),
+                    res);
                 showOverview = false;
 
             } catch (Exception e) {
@@ -1609,6 +1931,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         if (!m_resetting) {
             m_currentConfigParser.setContentLocale(contentLocale);
         }
+        m_resultTable.setContentLocale(contentLocale);
         search(null, null, null);
     }
 
@@ -1685,26 +2008,8 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             CmsAppWorkplaceUi.get().showApp(OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"), editState);
 
         } catch (CmsLoaderException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CmsErrorDialog.showErrorDialog(e);
         }
-        //
-        //        if (m_dialogWindow != null) {
-        //            m_dialogWindow.close();
-        //        }
-        //        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        //        CmsListConfigurationForm formDialog = new CmsListConfigurationForm(this);
-        //        if (resource != null) {
-        //            formDialog.initFormValues(resource);
-        //        }
-        //        m_currentResource = resource;
-        //        m_dialogWindow.setContent(formDialog);
-        //        m_dialogWindow.setCaption(
-        //            resource != null
-        //            ? CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0)
-        //            : CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
-        //        CmsAppWorkplaceUi.get().addWindow(m_dialogWindow);
-        //        m_dialogWindow.center();
     }
 
     /**
@@ -1739,6 +2044,31 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         if (!m_resetting) {
             m_overviewTable.filterTable(filter);
         }
+    }
+
+    /**
+     * Creates an element bean of the selected table item to be used with edit handlers.<p>
+     *
+     * @param context the dialog context
+     *
+     * @return the element bean
+     */
+    CmsContainerElementBean getElementForEditHandler(DialogContext context) {
+
+        List<Item> selected = context.getSelectedItems();
+        if (selected.size() == 1) {
+            Item item = selected.get(0);
+            Date instanceDate = (Date)item.getItemProperty(INSTANCEDATE_PROPERTY).getValue();
+            CmsResource resource = context.getResources().get(0);
+            return new CmsContainerElementBean(
+                resource.getStructureId(),
+                null,
+                Collections.singletonMap(
+                    CmsDateSeriesEditHandler.PARAM_INSTANCEDATE,
+                    String.valueOf(instanceDate.getTime())),
+                false);
+        }
+        return null;
     }
 
     /**

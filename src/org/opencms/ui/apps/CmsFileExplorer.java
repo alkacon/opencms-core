@@ -200,7 +200,12 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             CmsUUID targetId = null;
             if (dragEvent.getTargetDetails() instanceof AbstractSelectTargetDetails) {
                 AbstractSelectTargetDetails target = (AbstractSelectTargetDetails)dragEvent.getTargetDetails();
-                targetId = (CmsUUID)target.getItemIdOver();
+                Object itemOverId = target.getItemIdOver();
+                if (itemOverId instanceof CmsUUID) {
+                    targetId = (CmsUUID)itemOverId;
+                } else if (itemOverId instanceof String) {
+                    targetId = m_fileTable.getUUIDFromItemID((String)itemOverId);
+                }
             }
             try {
                 CmsObject cms = A_CmsUI.getCmsObject();
@@ -260,7 +265,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 resources = m_fileTable.getSelectedResources();
             } else {
                 CmsObject cms = A_CmsUI.getCmsObject();
-                CmsUUID sourceId = (CmsUUID)dragEvent.getTransferable().getData("itemId");
+                CmsUUID sourceId = m_fileTable.getUUIDFromItemID((String)dragEvent.getTransferable().getData("itemId"));
                 CmsResource source = cms.readResource(sourceId);
                 resources = Collections.singletonList(source);
             }

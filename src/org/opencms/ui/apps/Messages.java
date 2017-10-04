@@ -810,6 +810,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_COLUMN_BLACKLISTED_0 = "GUI_LISTMANAGER_COLUMN_BLACKLISTED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_COLUMN_INFO_0 = "GUI_LISTMANAGER_COLUMN_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_COLUMN_INSTANCEDATE_0 = "GUI_LISTMANAGER_COLUMN_INSTANCEDATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_CREATE_NEW_0 = "GUI_LISTMANAGER_CREATE_NEW_0";
 
     /** Message constant for key in the resource bundle. */

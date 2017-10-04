@@ -311,7 +311,7 @@ public class CmsResourceTable extends CustomComponent {
     protected Table m_fileTable = new Table();
 
     /** Property provider for additional columns. */
-    private List<I_ResourcePropertyProvider> m_propertyProviders;
+    protected List<I_ResourcePropertyProvider> m_propertyProviders;
 
     /**
      * Creates a new instance.<p>
@@ -609,11 +609,10 @@ public class CmsResourceTable extends CustomComponent {
      *
      * @return the structure ids of the current folder contents
      */
+    @SuppressWarnings("unchecked")
     public List<CmsUUID> getAllIds() {
 
-        @SuppressWarnings("unchecked")
-        List<CmsUUID> ids = (List<CmsUUID>)(m_fileTable.getContainerDataSource().getItemIds());
-        return Lists.newArrayList(ids);
+        return itemIdsToUUIDs((List<String>)m_fileTable.getContainerDataSource().getItemIds());
     }
 
     /**
@@ -624,6 +623,18 @@ public class CmsResourceTable extends CustomComponent {
     public int getItemCount() {
 
         return m_container.getItemCount();
+    }
+
+    /**
+     * Returns the structure id to the given string item id.<p>
+     *
+     * @param itemId the item id
+     *
+     * @return the structure id
+     */
+    public CmsUUID getUUIDFromItemID(String itemId) {
+
+        return new CmsUUID(itemId);
     }
 
     /**
@@ -712,14 +723,30 @@ public class CmsResourceTable extends CustomComponent {
      */
     protected void fillItem(CmsObject cms, CmsResource resource, Locale locale) {
 
-        Item resourceItem = m_container.getItem(resource.getStructureId());
+        Item resourceItem = m_container.getItem(resource.getStructureId().toString());
         if (resourceItem == null) {
-            resourceItem = m_container.addItem(resource.getStructureId());
+            resourceItem = m_container.addItem(resource.getStructureId().toString());
         }
         fillItemDefault(resourceItem, cms, resource, locale);
         for (I_ResourcePropertyProvider provider : m_propertyProviders) {
             provider.addItemProperties(resourceItem, cms, resource, locale);
         }
+    }
+
+    /**
+     * Transforms the given item ids into UUIDs.<p>
+     *
+     * @param itemIds the item ids
+     *
+     * @return the UUIDs
+     */
+    protected List<CmsUUID> itemIdsToUUIDs(Collection<String> itemIds) {
+
+        List<CmsUUID> ids = new ArrayList<CmsUUID>();
+        for (String itemId : itemIds) {
+            ids.add(getUUIDFromItemID(itemId));
+        }
+        return ids;
     }
 
 }
