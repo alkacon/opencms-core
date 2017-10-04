@@ -84,6 +84,7 @@ import org.opencms.ui.actions.A_CmsWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
+import org.opencms.ui.actions.CmsResourceInfoAction;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
@@ -1178,6 +1179,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** The publish button. */
     private Button m_publishButton;
 
+    /** The info button. */
+    private Button m_infoButton;
+
     /** The resetting flag. */
     private boolean m_resetting;
 
@@ -1298,6 +1302,28 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
         });
         uiContext.addToolbarButton(m_publishButton);
+
+        m_infoButton = CmsToolBar.createButton(
+            FontOpenCms.INFO,
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_RESOURCE_INFO_0));
+        m_infoButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+
+                DialogContext context = new DialogContext(
+                    CmsProjectManagerConfiguration.APP_ID,
+                    ContextType.fileTable,
+                    m_resultTable,
+                    Collections.singletonList(m_currentResource));
+                CmsResourceInfoAction action = new CmsResourceInfoAction();
+                action.executeAction(context);
+            }
+        });
+        uiContext.addToolbarButton(m_infoButton);
 
         m_createNewButton = CmsToolBar.createButton(
             FontOpenCms.WAND,
@@ -2022,6 +2048,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         boolean isOffline = !A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject();
         m_publishButton.setVisible(!enabled);
         m_publishButton.setEnabled(isOffline);
+        m_infoButton.setVisible(!enabled);
         m_tableFilter.setVisible(enabled);
         m_textSearch.setVisible(!enabled);
         m_editCurrentButton.setVisible(!enabled);
