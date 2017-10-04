@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarElementInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarListManagerButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarRemoveButton;
@@ -391,6 +392,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             controller,
             m_edit,
             m_move,
+            new CmsToolbarListManagerButton(containerpageHandler),
             m_info,
             m_properties,
             m_addToFavorites,

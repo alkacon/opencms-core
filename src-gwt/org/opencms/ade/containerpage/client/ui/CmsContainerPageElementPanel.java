@@ -519,6 +519,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Returns the element resource type name.<p>
+     * 
+     * @return the resource type name
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
      * Returns the site-path.<p>
      *
      * @return the site-path

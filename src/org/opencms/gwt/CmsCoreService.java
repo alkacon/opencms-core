@@ -1118,7 +1118,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             log(e.getLocalizedMessage(), e);
         }
-        String defaultWorkplaceLink = CmsWorkplace.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
+        String defaultWorkplaceLink = OpenCms.getSystemInfo().getWorkplaceContext();
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         UserInfo userInfo = getUserInfo();
         String aboutLink = OpenCms.getLinkManager().substituteLink(
