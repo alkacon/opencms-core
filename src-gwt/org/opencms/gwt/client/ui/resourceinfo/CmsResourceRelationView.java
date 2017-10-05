@@ -256,7 +256,7 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                         public void onClick(ClickEvent event) {
 
                             if (isContainerpage) {
-                                Window.open(currentRelationBean.getLink(), "_blank", "");
+                                Window.open(currentRelationBean.getLink(), "_self", "");
                             } else {
                                 CmsEditableData editableData = new CmsEditableData();
                                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
