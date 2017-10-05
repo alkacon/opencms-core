@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.lists;
 
+import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
@@ -98,6 +99,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsFileTableDialogContext;
+import org.opencms.ui.components.CmsResourceTable;
 import org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
@@ -1085,18 +1087,28 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         Boolean.FALSE,
         Messages.GUI_LISTMANAGER_COLUMN_BLACKLISTED_0,
         true,
-        1,
-        40);
+        0,
+        110);
 
-    /** The blacklisted table column property id. */
-    protected static final CmsResourceTableProperty INFO_PROPERTY = new CmsResourceTableProperty(
-        "INFO_PROPERTY",
+    /** The date series info label table column property id. */
+    protected static final CmsResourceTableProperty INFO_PROPERTY_LABEL = new CmsResourceTableProperty(
+        "INFO_PROPERTY_LABEL",
         String.class,
         null,
         Messages.GUI_LISTMANAGER_COLUMN_INFO_0,
         true,
+        0,
+        110);
+
+    /** The date series info table column property id. */
+    protected static final CmsResourceTableProperty INFO_PROPERTY = new CmsResourceTableProperty(
+        "INFO_PROPERTY",
+        String.class,
+        null,
+        null,
+        true,
         1,
-        40);
+        0);
 
     /** The blacklisted table column property id. */
     protected static final CmsResourceTableProperty INSTANCEDATE_PROPERTY = new CmsResourceTableProperty(
@@ -1225,9 +1237,13 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
         }
         if ((resource instanceof CmsSearchResource)
-            && (resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY) != null)) {
-            resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY).setValue(
-                ((CmsSearchResource)resource).getField(CmsSearchField.FIELD_SERIESDATES_TYPE));
+            && (resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY_LABEL) != null)) {
+            String seriesType = ((CmsSearchResource)resource).getField(CmsSearchField.FIELD_SERIESDATES_TYPE);
+            resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY_LABEL).setValue(
+                CmsVaadinUtils.getMessageText(
+                    "GUI_LISTMANAGER_SERIES_TYPE_" + (seriesType == null ? "DEFAULT" : seriesType) + "_0"));
+            resourceItem.getItemProperty(CmsListManager.INFO_PROPERTY).setValue(seriesType);
+
         }
         if ((resource instanceof CmsSearchResource)
             && (resourceItem.getItemProperty(CmsListManager.INSTANCEDATE_PROPERTY) != null)) {
@@ -1364,10 +1380,17 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_resultFacets.setWidth("100%");
         m_resultLayout.setFirstComponent(m_resultFacets);
         LinkedHashMap<CmsResourceTableProperty, Integer> tableColumns = new LinkedHashMap<CmsResourceTableProperty, Integer>();
-        tableColumns.putAll(CmsFileTable.DEFAULT_TABLE_PROPERTIES);
+        // insert columns a specific positions
+        for (Entry<CmsResourceTableProperty, Integer> columnsEntry : CmsFileTable.DEFAULT_TABLE_PROPERTIES.entrySet()) {
+            if (columnsEntry.getKey().equals(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)) {
+                tableColumns.put(INFO_PROPERTY_LABEL, Integer.valueOf(0));
+            } else if (columnsEntry.getKey().equals(CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE)) {
+                tableColumns.put(INSTANCEDATE_PROPERTY, Integer.valueOf(0));
+            }
+            tableColumns.put(columnsEntry.getKey(), columnsEntry.getValue());
+        }
         tableColumns.put(BLACKLISTED_PROPERTY, Integer.valueOf(0));
-        tableColumns.put(INFO_PROPERTY, Integer.valueOf(0));
-        tableColumns.put(INSTANCEDATE_PROPERTY, Integer.valueOf(0));
+        tableColumns.put(INFO_PROPERTY, Integer.valueOf(CmsResourceTable.INVISIBLE));
         m_resultTable = new CmsResultTable(null, tableColumns);
         m_resultTable.applyWorkplaceAppSettings();
         CmsResourceContextMenuBuilder menuBuilderOverView = new CmsResourceContextMenuBuilder();
@@ -1485,10 +1508,32 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
+                String style = "";
                 if ((m_currentConfig != null) && m_currentConfig.getBlacklist().contains(itemId)) {
-                    return OpenCmsTheme.PROJECT_OTHER;
+                    style += OpenCmsTheme.PROJECT_OTHER + " ";
                 }
-                return null;
+                if (INFO_PROPERTY_LABEL.equals(propertyId)) {
+                    Object value = source.getItem(itemId).getItemProperty(INFO_PROPERTY).getValue();
+                    if (value == null) {
+                        style += OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                    } else {
+                        I_CmsSerialDateValue.DateType type = I_CmsSerialDateValue.DateType.valueOf((String)value);
+                        switch (type) {
+                            case SERIES:
+                                style += OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT;
+                                break;
+                            case SINGLE:
+                                style += OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
+                                break;
+                            case EXTRACTED:
+                                style += OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                return style;
             }
         });
         m_resultTable.setContextProvider(this);

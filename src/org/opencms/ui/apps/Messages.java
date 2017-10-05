@@ -114,6 +114,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_CORECACHE_CLEAN_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SERIES_TYPE_SERIAL_0 = "GUI_LISTMANAGER_SERIES_TYPE_SERIAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SERIES_TYPE_SINGLE_0 = "GUI_LISTMANAGER_SERIES_TYPE_SINGLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SERIES_TYPE_EXTRACTED_0 = "GUI_LISTMANAGER_SERIES_TYPE_EXTRACTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_SERIES_TYPE_DEFAULT_0 = "GUI_LISTMANAGER_SERIES_TYPE_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEX_0 = "GUI_CACHE_FLEX_0";
 
     /** Message constant for key in the resource bundle. */
