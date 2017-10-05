@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
@@ -1065,6 +1066,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** List configuration node name and field key. */
     public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
 
+    /** List configuration node name and field key. */
+    public static final String PARAM_LOCALE = "locale";
+
     /** The parameter fields. */
     public static final String[] PARAMETER_FIELDS = new String[] {
         N_CATEGORY,
@@ -1336,7 +1340,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     m_resultTable,
                     Collections.singletonList(m_currentResource));
                 CmsResourceInfoAction action = new CmsResourceInfoAction();
-                action.executeAction(context);
+                action.openDialog(context, CmsResourceStatusTabId.tabRelationsTo.name());
             }
         });
         uiContext.addToolbarButton(m_infoButton);
@@ -1962,9 +1966,14 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 CmsUUID id = new CmsUUID(A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX));
                 CmsResource res = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 m_currentConfig = parseListConfiguration(res);
-                search(
-                    new SearchConfigParser(m_currentConfig, m_collapseItemSeries, getContentLocale(m_currentConfig)),
-                    res);
+                String localeString = A_CmsWorkplaceApp.getParamFromState(state, PARAM_LOCALE);
+                Locale locale;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(localeString)) {
+                    locale = CmsLocaleManager.getLocale(localeString);
+                } else {
+                    locale = getContentLocale(m_currentConfig);
+                }
+                search(new SearchConfigParser(m_currentConfig, m_collapseItemSeries, locale), res);
                 showOverview = false;
 
             } catch (Exception e) {
@@ -2040,14 +2049,17 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         List<CmsResource> resources = new ArrayList<CmsResource>(resultList);
         m_resultTable.fillTable(A_CmsUI.getCmsObject(), resources, true, false);
+        String state = A_CmsWorkplaceApp.addParamToState(
+            "",
+            CmsEditor.RESOURCE_ID_PREFIX,
+            m_currentResource.getStructureId().toString());
+        state = A_CmsWorkplaceApp.addParamToState(
+            state,
+            PARAM_LOCALE,
+            m_currentConfigParser.getContentLocale().toString());
+        CmsAppWorkplaceUi.get().changeCurrentAppState(state);
         if (m_isOverView) {
             enableOverviewMode(false);
-            String state = A_CmsWorkplaceApp.addParamToState(
-                "",
-                CmsEditor.RESOURCE_ID_PREFIX,
-                m_currentResource.getStructureId().toString());
-            CmsAppWorkplaceUi.get().changeCurrentAppState(state);
-
             updateBreadCrumb(getBreadCrumbForState(state));
         }
     }

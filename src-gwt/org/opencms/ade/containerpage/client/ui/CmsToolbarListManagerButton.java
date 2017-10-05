@@ -71,7 +71,10 @@ public class CmsToolbarListManagerButton extends A_CmsToolbarOptionButton {
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         String target = CmsCoreProvider.get().getDefaultWorkplaceLink();
-        target += "#!list-management/!!resourceId::" + CmsContainerpageController.getServerId(element.getId());
+        target += "#!list-management/!!resourceId::"
+            + CmsContainerpageController.getServerId(element.getId())
+            + "!!locale::"
+            + CmsContainerpageController.get().getData().getLocale();
         CmsContainerpageController.get().leaveUnsaved(target);
     }
 }
