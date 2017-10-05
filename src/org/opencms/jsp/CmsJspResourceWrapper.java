@@ -146,4 +146,14 @@ public class CmsJspResourceWrapper extends CmsResource {
             return null;
         }
     }
+
+    /**
+     * Gets the current site path to the resource.<p>
+     *
+     * @return the current site path to the resource
+     */
+    public String getSitePath() {
+
+        return m_cms.getRequestContext().getSitePath(this);
+    }
 }
