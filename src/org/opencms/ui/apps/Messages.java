@@ -60,7 +60,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EDIT_EMPTY_GROUPS_0 = "GUI_USERMANAGEMENT_EDIT_EMPTY_GROUPS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EDIT_EMPTY_ROLES_0 = "GUI_USERMANAGEMENT_EDIT_EMPTY_ROLES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EDIT_CURRENTLY_SET_ROLES_0 = "GUI_USERMANAGEMENT_EDIT_CURRENTLY_SET_ROLES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EDIT_CURRENTLY_SET_GROUPS_0 = "GUI_USERMANAGEMENT_EDIT_CURRENTLY_SET_GROUPS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
@@ -2391,7 +2403,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_SHOW_RESOURCES_0 = "GUI_USERMANAGEMENT_SHOW_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_USER_ADDRESS_0 = "GUI_USERMANAGEMENT_USER_ADDRESS_0";
+    public static final String GUI_USERMANAGEMENT_USER_DATA_0 = "GUI_USERMANAGEMENT_USER_DATA_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_0 = "GUI_USERMANAGEMENT_USER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_ADDRESSFIELD_0 = "GUI_USERMANAGEMENT_USER_ADDRESSFIELD_0";
