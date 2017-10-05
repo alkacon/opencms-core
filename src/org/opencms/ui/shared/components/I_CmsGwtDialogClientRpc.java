@@ -67,8 +67,9 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
      * Opens the resource info dialog for the resource with the given structure id.<p>
      *
      * @param structureId the structure id of a resource, as a string
+     * @param startTab the start tab id
      */
-    void openInfoDialog(String structureId);
+    void openInfoDialog(String structureId, String startTab);
 
     /**
      * Opens the lock report dialog.<p>

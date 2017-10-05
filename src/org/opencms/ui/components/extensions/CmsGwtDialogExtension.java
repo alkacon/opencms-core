@@ -180,10 +180,11 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      * Opens the resource info dialog.<p>
      *
      * @param resource the resource
+     * @param startTab the start tab id
      */
-    public void openInfoDialog(CmsResource resource) {
+    public void openInfoDialog(CmsResource resource, String startTab) {
 
-        getRpcProxy(I_CmsGwtDialogClientRpc.class).openInfoDialog(resource.getStructureId().toString());
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openInfoDialog(resource.getStructureId().toString(), startTab);
     }
 
     /**

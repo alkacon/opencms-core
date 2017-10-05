@@ -58,18 +58,7 @@ public final class CmsResourceInfoAction extends A_CmsWorkplaceAction {
      */
     public void executeAction(final I_CmsDialogContext context) {
 
-        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), new I_CmsUpdateListener<String>() {
-
-            public void onUpdate(List<String> updatedItems) {
-
-                List<CmsUUID> ids = Lists.newArrayList();
-                for (String item : updatedItems) {
-                    ids.add(new CmsUUID(item));
-                }
-                context.finish(ids);
-            }
-        });
-        extension.openInfoDialog(context.getResources().get(0));
+        openDialog(context, null);
     }
 
     /**
@@ -94,5 +83,27 @@ public final class CmsResourceInfoAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return m_visibility.getVisibility(cms, resources);
+    }
+
+    /**
+     * Opens the resource info dialog with the given start tab.<p>
+     *
+     * @param context the dialog context
+     * @param tabId the tab to open
+     */
+    public void openDialog(final I_CmsDialogContext context, String tabId) {
+
+        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), new I_CmsUpdateListener<String>() {
+
+            public void onUpdate(List<String> updatedItems) {
+
+                List<CmsUUID> ids = Lists.newArrayList();
+                for (String item : updatedItems) {
+                    ids.add(new CmsUUID(item));
+                }
+                context.finish(ids);
+            }
+        });
+        extension.openInfoDialog(context.getResources().get(0), tabId);
     }
 }

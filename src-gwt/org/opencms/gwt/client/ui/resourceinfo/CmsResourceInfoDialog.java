@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsDialogContextMenuHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -185,6 +186,25 @@ public class CmsResourceInfoDialog extends CmsPopup {
         final CmsUUID detailContentId,
         final CloseHandler<PopupPanel> closeHandler) {
 
+        load(structureId, includeTargets, detailContentId, null, closeHandler);
+    }
+
+    /**
+     * Loads the resource information for a resource and displays it in a dialog.<p>
+     *
+     * @param structureId the structure id of the resource for which the resource info should be loaded
+     * @param includeTargets true if relation targets should also be displayed
+     * @param detailContentId the structure id of the detail content if present
+     * @param startTab the start tab id
+     * @param closeHandler the close handler for the dialog (may be null if no close handler is needed)
+     */
+    public static void load(
+        final CmsUUID structureId,
+        final boolean includeTargets,
+        final CmsUUID detailContentId,
+        final String startTab,
+        final CloseHandler<PopupPanel> closeHandler) {
+
         CmsRpcAction<CmsResourceStatusBean> action = new CmsRpcAction<CmsResourceStatusBean>() {
 
             @Override
@@ -203,6 +223,9 @@ public class CmsResourceInfoDialog extends CmsPopup {
             protected void onResponse(CmsResourceStatusBean result) {
 
                 stop(false);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startTab)) {
+                    result.setStartTab(CmsResourceStatusTabId.valueOf(startTab));
+                }
                 CmsResourceInfoDialog dialog = new CmsResourceInfoDialog(result, includeTargets, detailContentId);
                 if (closeHandler != null) {
                     dialog.addCloseHandler(closeHandler);

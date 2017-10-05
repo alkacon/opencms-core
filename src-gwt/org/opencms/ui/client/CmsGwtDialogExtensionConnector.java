@@ -283,11 +283,11 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     }
 
     /**
-     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openInfoDialog(java.lang.String)
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openInfoDialog(java.lang.String, java.lang.String)
      */
-    public void openInfoDialog(String string) {
+    public void openInfoDialog(String string, String startTab) {
 
-        CmsResourceInfoDialog.load(new CmsUUID(string), true, null, new CloseHandler<PopupPanel>() {
+        CmsResourceInfoDialog.load(new CmsUUID(string), true, null, startTab, new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
 
