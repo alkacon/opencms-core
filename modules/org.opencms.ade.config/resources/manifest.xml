@@ -612,6 +612,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					info="desc.listconfig" />
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR"
+						permissions="+r+v" />
+					<accessentry principal="ROLE.LIST_EDITOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>

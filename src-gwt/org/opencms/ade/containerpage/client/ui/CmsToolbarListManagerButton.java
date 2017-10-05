@@ -61,6 +61,7 @@ public class CmsToolbarListManagerButton extends A_CmsToolbarOptionButton {
     public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
 
         return LIST_CONFIG_TYPE.equals(element.getResourceType())
+            && element.hasWritePermission()
             && !CmsContainerpageController.get().isEditingDisabled();
     }
 
