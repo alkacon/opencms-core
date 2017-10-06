@@ -31,12 +31,16 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.I_CmsContextProvider;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +48,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.converter.StringToDateConverter;
 
 /**
  * Table to display the list manager search results.<p>
@@ -70,7 +75,26 @@ public class CmsResultTable extends CmsFileTable {
      */
     public CmsResultTable(I_CmsContextProvider contextProvider, Map<CmsResourceTableProperty, Integer> tableColumns) {
         super(contextProvider, tableColumns);
+        m_fileTable.setConverter(CmsListManager.INSTANCEDATE_PROPERTY, new StringToDateConverter() {
 
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected DateFormat getFormat(Locale locale) {
+
+                return new SimpleDateFormat(CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_DATE_FORMAT_0));
+            }
+        });
+    }
+
+    /**
+     * Returns the first visible item id.<p>
+     *
+     * @return the first visible item id
+     */
+    public String getCurrentPageFirstItemId() {
+
+        return (String)m_fileTable.getCurrentPageFirstItemId();
     }
 
     /**
@@ -112,6 +136,16 @@ public class CmsResultTable extends CmsFileTable {
 
         m_contentLocale = locale;
         m_dateFieldKey = CmsSearchField.FIELD_INSTANCEDATE + "_" + m_contentLocale.toString() + "_dt";
+    }
+
+    /**
+     * Sets the first visible item id.<p>
+     *
+     * @param itemId the item id
+     */
+    public void setCurrentPageFirstItemId(String itemId) {
+
+        m_fileTable.setCurrentPageFirstItemId(itemId);
     }
 
     /**

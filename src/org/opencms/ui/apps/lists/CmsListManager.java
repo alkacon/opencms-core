@@ -125,6 +125,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -348,7 +349,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
             m_parameterFields.put(name, value);
         }
-
     }
 
     /**
@@ -814,7 +814,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /**
      * Extended dialog context.<p>
      */
-    protected static class DialogContext extends CmsFileTableDialogContext {
+    protected class DialogContext extends CmsFileTableDialogContext {
 
         /** The selected table items. */
         private List<Item> m_selectedItems;
@@ -834,6 +834,19 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             List<CmsResource> resources) {
             super(appId, contextType, fileTable, resources);
 
+        }
+
+        /**
+         * @see org.opencms.ui.components.CmsFileTableDialogContext#finish(java.util.Collection)
+         */
+        @Override
+        public void finish(Collection<CmsUUID> ids) {
+
+            if (m_selectedItems == null) {
+                super.finish(ids);
+            } else {
+                refreshResult();
+            }
         }
 
         /**
@@ -1071,6 +1084,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The parameter fields. */
     public static final String[] PARAMETER_FIELDS = new String[] {
+        N_TITLE,
         N_CATEGORY,
         N_FILTER_QUERY,
         N_SORT_ORDER,
@@ -1121,8 +1135,8 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         null,
         Messages.GUI_LISTMANAGER_COLUMN_INSTANCEDATE_0,
         true,
-        1,
-        80);
+        0,
+        145);
 
     /** The available sort options. */
     protected static final String[][] SORT_OPTIONS = new String[][] {
@@ -1290,7 +1304,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         if (!isOverView()) {
             context.setSelectedItems(m_resultTable.getSelectedItems());
         }
-        context.setEditableProperties(CmsFileExplorer.INLINE_EDIT_PROPERTIES);
         return context;
     }
 
@@ -1362,7 +1375,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         uiContext.addToolbarButton(m_createNewButton);
 
         m_editCurrentButton = CmsToolBar.createButton(
-            FontOpenCms.SETTINGS,
+            FontOpenCms.PEN,
             CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0));
         m_editCurrentButton.addClickListener(new ClickListener() {
 
@@ -2208,6 +2221,19 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         CmsAppWorkplaceUi.get().disableGlobalShortcuts();
         CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), updateListener);
         extension.openPublishDialog(getPublishResources());
+    }
+
+    /**
+     * Refreshes the search result maintaining the current scroll position.<p>
+     */
+    void refreshResult() {
+
+        String itemId = m_resultTable.getCurrentPageFirstItemId();
+        search(
+            m_resultFacets.getSelectedFieldFacets(),
+            m_resultFacets.getSelectedRangeFactes(),
+            m_textSearch.getValue());
+        m_resultTable.setCurrentPageFirstItemId(itemId);
     }
 
     /**
