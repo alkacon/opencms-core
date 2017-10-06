@@ -451,6 +451,9 @@ public interface I_CmsButton {
     String INFO_SMALL = "opencms-icon-info-20";
 
     /** Small font icon using a 20x20 grid. */
+    String HELP_SMALL = "opencms-icon-help-20";
+
+    /** Small font icon using a 20x20 grid. */
     String SETTINGS_SMALL = "opencms-icon-settings-20";
 
     /** Small font icon using a 20x20 grid. */

@@ -218,6 +218,7 @@ public enum FontOpenCms implements FontIcon {
     /** The log icon. */
     LOG(0xe637),
 
+    HELP_SMALL(0xe919),
     /** The module icon. */
     MODULE(0xe638),
 
