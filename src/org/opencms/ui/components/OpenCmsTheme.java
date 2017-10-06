@@ -72,6 +72,9 @@ public final class OpenCmsTheme {
     public static final String BUTTON_OVERLAY_CYAN = "o-button-overlay-cyan";
 
     /** CSS style name. */
+    public static final String TABLE_CONST_COLOR = "o-table-const-color";
+
+    /** CSS style name. */
     public static final String BUTTON_OVERLAY_CYAN_INVERSE = "o-button-overlay-cyan-inv";
 
     /** CSS style name. */
@@ -179,6 +182,9 @@ public final class OpenCmsTheme {
     /** The database icon CSS class. */
     public static final String ICON_DATABASE = "oc-icon-24-database";
 
+    /** The group icon CSS class. */
+    public static final String ICON_GROUP = "oc-icon-24-group";
+
     /** The job icon CSS class. */
     public static final String ICON_JOB = "oc-icon-24-scheduler";
 
@@ -197,11 +203,17 @@ public final class OpenCmsTheme {
     /** Path to the project publish theme resource. */
     public static final String ICON_PUBLISH = "oc-icon-24-publish";
 
+    /** The role icon CSS class.*/
+    public static final String ICON_ROLE = "oc-icon-24-role";
+
     /**The session icon.*/
     public static final String ICON_SESSION = "oc-icon-24-session";
 
     /** The cache icon CSS class. */
     public static final String ICON_SITE = "oc-icon-24-site";
+
+    /** The user icon CSS class.*/
+    public static final String ICON_USER = "oc-icon-24-user";
 
     /** CSS style name. */
     public static final String IMAGE_GRADIENT = "o-image-gradient";

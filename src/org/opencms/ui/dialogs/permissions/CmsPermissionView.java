@@ -443,6 +443,16 @@ public class CmsPermissionView extends CssLayout {
     }
 
     /**
+     * Gets the name of the principal.<p>
+     *
+     * @return String
+     */
+    public String getPrincipalName() {
+
+        return m_principalName;
+    }
+
+    /**
      * Hides the denied permissions column.<p>
      */
     public void hideDeniedColumn() {

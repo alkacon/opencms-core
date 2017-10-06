@@ -44,6 +44,7 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
@@ -65,14 +66,21 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The permission dialog.<p>
@@ -293,6 +301,24 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     }
 
     /**
+     * Creates an HTML input form for the current access control entry.<p>
+     *
+     * @param entry the current access control entry
+     * @param editable boolean to determine if the form is editable
+     * @param extendedView boolean to determine if the view is selectable with DHTML
+     * @param inheritRes the resource name from which the ace is inherited
+     * @return StringBuffer with HTML code of the form
+     */
+    protected CmsPermissionView buildPermissionEntryForm(
+        CmsAccessControlEntry entry,
+        boolean editable,
+        boolean extendedView,
+        String inheritRes) {
+
+        return new CmsPermissionView(entry, editable, m_resource.isFolder(), inheritRes, this);
+    }
+
+    /**
      * Returns the resource on which the specified access control entry was set.<p>
      *
      * @param entry the current access control entry
@@ -440,24 +466,6 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     }
 
     /**
-     * Creates an HTML input form for the current access control entry.<p>
-     *
-     * @param entry the current access control entry
-     * @param editable boolean to determine if the form is editable
-     * @param extendedView boolean to determine if the view is selectable with DHTML
-     * @param inheritRes the resource name from which the ace is inherited
-     * @return StringBuffer with HTML code of the form
-     */
-    private CmsPermissionView buildPermissionEntryForm(
-        CmsAccessControlEntry entry,
-        boolean editable,
-        boolean extendedView,
-        String inheritRes) {
-
-        return new CmsPermissionView(entry, editable, m_resource.isFolder(), inheritRes, this);
-    }
-
-    /**
      * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String)
      *
      * @param id the UUID of the principal of the permission set
@@ -557,35 +565,41 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
 
         m_resourcePermissions.removeAllComponents();
         String sitePath = m_cms.getSitePath(m_resource);
-        // create new ArrayLists in which inherited and non inherited entries are stored
-        ArrayList<CmsAccessControlEntry> ownEntries = new ArrayList<CmsAccessControlEntry>();
-        try {
-            Iterator<CmsAccessControlEntry> itAces = m_cms.getAccessControlEntries(sitePath, false).iterator();
-            while (itAces.hasNext()) {
-                CmsAccessControlEntry curEntry = itAces.next();
-                if (!curEntry.isInherited()) {
-                    // add the entry to the own rights list
-                    ownEntries.add(curEntry);
-                }
-            }
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }
-        }
+        final CmsPermissionViewTable table = new CmsPermissionViewTable(m_cms, sitePath, m_editable, this);
+        HorizontalLayout hl = new HorizontalLayout();
+        Label label = new Label(
+            CmsVaadinUtils.getMessageText(
+                Messages.GUI_PERMISSION_COUNT_1,
+                new Integer(table.getContainerDataSource().size())));
+        label.addStyleName("o-report");
+        hl.addComponent(label);
+        TextField tableFilter = new TextField();
+        tableFilter.setIcon(FontOpenCms.FILTER);
+        tableFilter.setInputPrompt(CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EXPLORER_FILTER_0));
+        tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        tableFilter.setWidth("200px");
+        tableFilter.addTextChangeListener(new TextChangeListener() {
 
-        Iterator<CmsAccessControlEntry> i = ownEntries.iterator();
-        boolean hasEntries = i.hasNext();
+            private static final long serialVersionUID = 1L;
 
-        if (hasEntries) {
-            // list all entries
-            while (i.hasNext()) {
-                CmsAccessControlEntry curEntry = i.next();
-                Component permissionView = buildPermissionEntryForm(curEntry, m_editable, false, null);
-                if (permissionView != null) {
-                    m_resourcePermissions.addComponent(permissionView);
-                }
+            public void textChange(TextChangeEvent event) {
+
+                table.filterTable(event.getText());
+            }
+        });
+        hl.addComponent(tableFilter);
+        hl.setWidth("100%");
+        hl.setExpandRatio(label, 1);
+        hl.setMargin(true);
+        hl.setComponentAlignment(tableFilter, com.vaadin.ui.Alignment.MIDDLE_RIGHT);
+        if (table.getContainerDataSource().size() == 0) {
+            m_resourcePermissions.addComponent(CmsVaadinUtils.getInfoLayout(Messages.GUI_PERMISSION_EMPTY_0));
+        } else {
+            m_resourcePermissions.addComponent(hl);
+            m_resourcePermissions.addComponent(table);
+            Window parentWindow = CmsVaadinUtils.getWindow(this);
+            if (parentWindow != null) {
+                parentWindow.center();
             }
         }
     }

@@ -68,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_COPY_ONTO_ITSELF_1 = "ERR_COPY_ONTO_ITSELF_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1 = "ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_MULTI_0 = "ERR_DELETE_MULTI_0";
 
     /** Message constant for key in the resource bundle. */
@@ -117,9 +120,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_ONTO_ITSELF_1 = "ERR_MOVE_ONTO_ITSELF_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1 = "ERR_COPY_TARGET_PARENT_FOLDER_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARSE_EXPIREDATE_1 = "ERR_PARSE_EXPIREDATE_1";
@@ -958,8 +958,14 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_CHANGE_1 = "GUI_PERMISSION_CHANGE_1";
 
+    /** Name of the used resource bundle. */
+    public static final String GUI_PERMISSION_COUNT_1 = "GUI_PERMISSION_COUNT_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_DENIED_0 = "GUI_PERMISSION_DENIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PERMISSION_EMPTY_0 = "GUI_PERMISSION_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_ERROR_0 = "GUI_PERMISSION_ERROR_0";
@@ -1427,13 +1433,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_SCHEDULED_0 = "GUI_PUBLISH_SCHEDULED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2 = "GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SCHEDULED_DATEEMPTY_0 = "GUI_PUBLISH_SCHEDULED_DATEEMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0 = "GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2 = "GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SCHEDULED_SETTINGS_1 = "GUI_PUBLISH_SCHEDULED_SETTINGS_1";
