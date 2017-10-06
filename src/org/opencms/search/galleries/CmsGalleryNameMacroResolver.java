@@ -34,11 +34,15 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsMultiMessages;
+import org.opencms.jsp.util.CmsJspContentAccessBean;
+import org.opencms.jsp.util.CmsObjectFunctionTransformer;
+import org.opencms.jsp.util.CmsStringTemplateRenderer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -90,6 +94,9 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     /** Pattern used to match the no_prefix macro. */
     public static final Pattern NO_PREFIX_PATTERN = Pattern.compile("%\\(" + NO_PREFIX + ":(.*?)\\)");
 
+    /** Prefix for the stringtemplate macro. */
+    public static final String PREFIX_STRINGTEMPLATE = "stringtemplate:";
+
     /** The XML content to use for the gallery name mapping. */
     private A_CmsXmlDocument m_content;
 
@@ -135,6 +142,8 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
             return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_TITLE);
         } else if (macro.equals(PAGE_NAV)) {
             return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+        } else if (macro.startsWith(PREFIX_STRINGTEMPLATE)) {
+            return resolveStringTemplate(macro.substring(PREFIX_STRINGTEMPLATE.length()));
         } else if (macro.startsWith(NO_PREFIX)) {
             return "%(" + macro + ")";
             // this is just to prevent the %(no_prefix:...) macro from being expanded to an empty string. We could call setKeepEmptyMacros(true) instead,
@@ -211,5 +220,47 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Evaluates the contents of a %(stringtemplate:...) macro by evaluating them as StringTemplate code.<p>
+     *
+     * @param stMacro the contents of the macro after the stringtemplate: prefix
+     * @return the StringTemplate evaluation result
+     */
+    private String resolveStringTemplate(String stMacro) {
+
+        String template = m_content.getContentDefinition().getContentHandler().getParameter(stMacro);
+        if (template == null) {
+            return "";
+        }
+        CmsJspContentAccessBean jspContentAccess = new CmsJspContentAccessBean(m_cms, m_contentLocale, m_content);
+        Map<String, Object> params = Maps.newHashMap();
+        params.put(
+            CmsStringTemplateRenderer.KEY_FUNCTIONS,
+            CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(m_cms)));
+
+        // We don't necessarily need the page title / navigation, so instead of passing the computed values to the template, we pass objects whose
+        // toString methods compute the values
+        params.put(PAGE_TITLE, new Object() {
+
+            @Override
+            public String toString() {
+
+                return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+            }
+        });
+
+        params.put(PAGE_NAV, new Object() {
+
+            @Override
+            public String toString() {
+
+                return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+
+            }
+        });
+        String result = CmsStringTemplateRenderer.renderTemplate(m_cms, template, jspContentAccess, params);
+        return result;
     }
 }

@@ -337,4 +337,19 @@
 		<xsd:attribute name="class" type="xsd:string" use="required" />
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
 	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoParameters">
+		<xsd:sequence>
+			<xsd:element name="param" type="OpenCmsDefaultAppinfoParam" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoParam">
+    	<xsd:simpleContent>
+      		<xsd:extension base="xsd:string">
+        		<xsd:attribute name="name" type="xsd:string" />
+      		</xsd:extension>
+    	</xsd:simpleContent>
+	</xsd:complexType>
+	
 </xsd:schema>

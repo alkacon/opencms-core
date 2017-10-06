@@ -28,6 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
@@ -205,6 +206,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "default" appinfo attribute name. */
     public static final String APPINFO_ATTR_DEFAULT = "default";
 
+    /** Constant for the "param" appinfo attribute name. */
+    public static final String APPINFO_PARAM = "param";
+
     /** Constant for the "description" appinfo attribute name. */
     public static final String APPINFO_ATTR_DESCRIPTION = "description";
 
@@ -357,6 +361,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "mappings" appinfo element name. */
     public static final String APPINFO_MAPPINGS = "mappings";
+
+    /** Constant for the "parameters" appinfo element name. */
+    public static final String APPINFO_PARAMETERS = "parameters";
 
     /** Constant for the 'messagekeyhandler' node. */
     public static final String APPINFO_MESSAGEKEYHANDLER = "messagekeyhandler";
@@ -712,6 +719,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
+    /** The parameters. */
+    private CmsParameterConfiguration m_parameters = new CmsParameterConfiguration();
+
     /**
      * Creates a new instance of the default XML content handler.<p>
      */
@@ -1050,6 +1060,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getParameter(java.lang.String)
+     */
+    public String getParameter(String name) {
+
+        return m_parameters.get(name);
+    }
+
+    /**
+     *
+     * Gets the set of parameters.<p>
+     *
+     * @return zhr drz og pstsmrzrtd d
+     */
+    public CmsParameterConfiguration getParameters() {
+
+        return m_parameters;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
@@ -1309,6 +1338,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initEditorChangeHandlers(element);
                 } else if (nodeName.equals(APPINFO_MESSAGEKEYHANDLER)) {
                     initMessageKeyHandler(element);
+                } else if (nodeName.equals(APPINFO_PARAMETERS)) {
+                    initParameters(element);
                 }
             }
         }
@@ -2438,6 +2469,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String formatterElement = handlerElement.attributeValue(APPINFO_ATTR_ELEMENT);
             addNestedFormatter(formatterElement, contentDefinition);
         }
+    }
+
+    /**
+     * Initializes the parameters from the schema.<p>
+     *
+     * @param root the parameter root element
+     */
+    protected void initParameters(Element root) {
+
+        m_parameters.clear();
+        for (Element paramElement : root.elements(APPINFO_PARAM)) {
+            String name = paramElement.attributeValue(APPINFO_ATTR_NAME);
+            String value = paramElement.getText();
+            m_parameters.put(name, value);
+        }
+
     }
 
     /**

@@ -333,6 +333,14 @@ public interface I_CmsXmlContentHandler {
     List<CmsUUID> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req);
 
     /**
+    * Gets the parameter with the given name..<p>
+    *
+    * @param param the parameter name
+    * @return the parameter value
+    */
+    String getParameter(String param);
+
+    /**
      * Returns the preview URI for the given XML content value object to be displayed in the editor.<p>
      *
      * If <code>null</code> is returned, no preview is possible for contents using this handler.<p>
