@@ -281,8 +281,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             realSitePath = resolver.resolveMacros(sitePath);
         } while (m_cms.existsResource(realSitePath));
         try {
-            int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(realSitePath).getTypeId();
-            result = m_cms.createResource(realSitePath, resTypeId, content, null);
+            I_CmsResourceType resType = OpenCms.getResourceManager().getDefaultTypeForName(realSitePath);
+            result = m_cms.createResource(realSitePath, resType, content, null);
             updateUploadResource(fieldName, result);
             return result;
         } catch (CmsException e) {
@@ -306,7 +306,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         CmsUgcSessionSecurityUtil.checkCreateContent(m_cms, m_configuration);
         try {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
-            m_editResource = m_cms.createResource(getNewContentName(), type.getTypeId());
+            m_editResource = m_cms.createResource(getNewContentName(), type);
             return m_editResource;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
@@ -424,7 +424,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
     public Map<String, String> getValues() throws CmsException {
 
         CmsFile file = m_cms.readFile(m_editResource);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+        CmsXmlContent content = unmarshalXmlContent(file);
         Locale locale = m_cms.getRequestContext().getLocale();
         if (!content.hasLocale(locale)) {
             content.addLocale(m_cms, locale);
@@ -578,7 +578,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
      */
     protected CmsXmlContent addContentValues(CmsFile file, Map<String, String> contentValues) throws CmsException {
 
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+        CmsXmlContent content = unmarshalXmlContent(file);
         Locale locale = m_cms.getRequestContext().getLocale();
 
         addContentValues(content, locale, contentValues);
@@ -716,11 +716,12 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
                     LOG.info("Deleting resource for timed out form session: " + res.getRootPath());
                     deleteResourceFromProject(cms, res);
                 }
-                LOG.info("Deleting project for timed out form session: "
-                    + getProject().getName()
-                    + " ["
-                    + getProject().getUuid()
-                    + "]");
+                LOG.info(
+                    "Deleting project for timed out form session: "
+                        + getProject().getName()
+                        + " ["
+                        + getProject().getUuid()
+                        + "]");
                 cms.deleteProject(projectId);
 
             }
@@ -816,6 +817,21 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             }
         }
         return hasOnlyNewResources;
+    }
+
+    /**
+     * Unmarshal the XML content with auto-correction.
+     * @param file the file that contains the XML
+     * @return the XML read from the file
+     * @throws CmsXmlException thrown if the XML can't be read.
+     */
+    private CmsXmlContent unmarshalXmlContent(CmsFile file) throws CmsXmlException {
+
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+        content.setAutoCorrectionEnabled(true);
+        content.correctXmlStructure(m_cms);
+
+        return content;
     }
 
     /**

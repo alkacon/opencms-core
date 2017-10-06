@@ -700,21 +700,21 @@ public class CmsConfigurationReader {
         long beginTime = System.currentTimeMillis();
         for (CmsModule module : modules) {
             String configPath = module.getConfigurationPath();
-            try {
-                CmsResource configFile = m_cms.readResource(configPath);
-                LOG.info("Found module configuration " + configPath + " for module " + module.getName());
-                CmsADEConfigDataInternal config = parseSitemapConfiguration(null, configFile);
-                configurations.add(config);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ignore
-            } catch (CmsException e) {
-                // errors while parsing configuration
-                LOG.error(e.getLocalizedMessage(), e);
-            } catch (CmsRuntimeException e) {
-                // may happen during import of org.opencms.ade.configuration module
-                LOG.warn(e.getLocalizedMessage(), e);
-            } catch (Throwable e) {
-                LOG.error(e.getLocalizedMessage(), e);
+            if (m_cms.existsResource(configPath)) {
+                try {
+                    CmsResource configFile = m_cms.readResource(configPath);
+                    LOG.info("Found module configuration " + configPath + " for module " + module.getName());
+                    CmsADEConfigDataInternal config = parseSitemapConfiguration(null, configFile);
+                    configurations.add(config);
+                } catch (CmsException e) {
+                    // errors while parsing configuration
+                    LOG.error(e.getLocalizedMessage(), e);
+                } catch (CmsRuntimeException e) {
+                    // may happen during import of org.opencms.ade.configuration module
+                    LOG.warn(e.getLocalizedMessage(), e);
+                } catch (Throwable e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
         long endTime = System.currentTimeMillis();
