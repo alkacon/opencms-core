@@ -149,6 +149,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         }
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.RESOURCE_PATH_PREFIX, contextPath);
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.PLAIN_TEXT_PREFIX, String.valueOf(plainText));
+        try {
+            backLink = URLEncoder.encode(backLink, CmsEncoder.ENCODING_UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.BACK_LINK_PREFIX, backLink);
 
         return state;
