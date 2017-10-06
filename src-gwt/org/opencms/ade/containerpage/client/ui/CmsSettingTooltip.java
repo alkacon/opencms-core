@@ -27,9 +27,10 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.gwt.client.util.CmsDomUtil;
-
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -78,6 +79,30 @@ public class CmsSettingTooltip extends Composite {
     }
 
     /**
+     * Positions the tooltip.<p>
+     *
+     *
+     * @param elem the tooltip element
+     * @param referenceElement the tooltip icon element
+     */
+    public static void position(Element elem, Element referenceElement) {
+
+        int dy = 20;
+        Style style = elem.getStyle();
+        style.setLeft(0, Unit.PX);
+        style.setTop(0, Unit.PX);
+        int myX = elem.getAbsoluteLeft();
+        int myY = elem.getAbsoluteTop();
+        int refX = referenceElement.getAbsoluteLeft();
+        int refY = referenceElement.getAbsoluteTop();
+        int refWidth = referenceElement.getOffsetWidth();
+        int newX = (refX - myX - ((2 * elem.getOffsetWidth()) / 3)) + (refWidth / 2);
+        int newY = (refY - myY) + dy;
+        style.setLeft(newX, Unit.PX);
+        style.setTop(newY, Unit.PX);
+    }
+
+    /**
      * Shows a help text for the given widget in a tooltip.<p>
      *
      * @param reference the widget next to which the tooltip should be displayed
@@ -90,7 +115,7 @@ public class CmsSettingTooltip extends Composite {
         tooltip.getLabel().setText(text);
         currentInstance = tooltip;
         RootPanel.get().add(tooltip);
-        CmsDomUtil.positionElement(tooltip.getElement(), reference.getElement(), 20, 0);
+        position(tooltip.getElement(), reference.getElement());
     }
 
     /**
