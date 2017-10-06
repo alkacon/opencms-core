@@ -226,6 +226,12 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
         return result;
     }
 
+    /**
+     * Gets an offline version of the cms object.<p>
+     *
+     * @param cms initial CmsObject
+     * @return CmsObject adjusted to offline project (cloned)
+     */
     public CmsObject getOfflineCmsObject(CmsObject cms) {
 
         CmsObject res = null;
