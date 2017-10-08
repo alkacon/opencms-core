@@ -99,23 +99,8 @@ public class CmsJspImageBean {
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsJspImageBean.class);
 
-    /** The image URL. */
-    private String m_srcUrl;
-
-    /** The image VFS path. */
-    private String m_vfsUri;
-
-    /** The CmsImageScaler that is used to create a scaled version of this image. */
-    private CmsImageScaler m_currentScaler;
-
-    /** The CmsImageScaler that describes the basic adjustments (usually cropping) that have been set on the original image. */
-    private CmsImageScaler m_baseScaler;
-
-    /** The CmsImageScaler that describes the original pixel proportions of this image. */
-    private CmsImageScaler m_originalScaler;
-
-    /** The current OpenCms user context. */
-    private CmsObject m_cms = null;
+    /** The CmsResource for this image. */
+    CmsResource m_resource = null;
 
     /** Lazy initialized map of ratio scaled versions of this image. */
     Map<String, CmsJspImageBean> m_scaleRatio = null;
@@ -126,6 +111,15 @@ public class CmsJspImageBean {
     /** Map used for creating a image source set. */
     Map<Integer, CmsJspImageBean> m_srcSet = null;
 
+    /** The CmsImageScaler that describes the basic adjustments (usually cropping) that have been set on the original image. */
+    private CmsImageScaler m_baseScaler;
+
+    /** The current OpenCms user context. */
+    private CmsObject m_cms = null;
+
+    /** The CmsImageScaler that is used to create a scaled version of this image. */
+    private CmsImageScaler m_currentScaler;
+
     /**
      * Map used to store hi-DPI variants of the image.
      * <ul>
@@ -135,8 +129,14 @@ public class CmsJspImageBean {
      */
     private Map<String, CmsJspImageBean> m_hiDpiImages = null;
 
-    /** The CmsResource for this image. */
-    CmsResource m_resource = null;
+    /** The CmsImageScaler that describes the original pixel proportions of this image. */
+    private CmsImageScaler m_originalScaler;
+
+    /** The image quality (for JPEG calculation). */
+    private int m_quality = 0;
+
+    /** The image VFS path. */
+    private String m_vfsUri;
 
     /**
      * Initializes a new image bean based on a VFS input string.<p>
@@ -208,7 +208,8 @@ public class CmsJspImageBean {
             getHeight(),
             getBaseScaler(),
             initScaler.getWidth(),
-            initScaler.getHeight());
+            initScaler.getHeight(),
+            getQuality());
 
         if ((targetScaler != null) && targetScaler.isValid()) {
             setScaler(targetScaler);
@@ -233,6 +234,7 @@ public class CmsJspImageBean {
      * @param baseScaler the base scaler that may contain crop parameters
      * @param targetWidth the target image pixel width
      * @param targetHeight the target image pixel height
+     * @param quality the compression quality factor to use for image generation
      *
      * @return the created variation scaler for this image
      */
@@ -241,7 +243,8 @@ public class CmsJspImageBean {
         int originalHeight,
         CmsImageScaler baseScaler,
         int targetWidth,
-        int targetHeight) {
+        int targetHeight,
+        int quality) {
 
         CmsImageScaler result = null;
 
@@ -305,6 +308,11 @@ public class CmsJspImageBean {
             }
         }
 
+        if ((result != null) && (quality > 0)) {
+            // apply compression quality setting
+            result.setQuality(quality);
+        }
+
         return result;
     }
 
@@ -343,7 +351,8 @@ public class CmsJspImageBean {
                 getHeight(),
                 getBaseScaler(),
                 targetWidth,
-                targetHeight);
+                targetHeight,
+                getQuality());
 
             if (targetScaler != null) {
                 result = createVariation(targetScaler);
@@ -393,7 +402,8 @@ public class CmsJspImageBean {
                     getHeight(),
                     getBaseScaler(),
                     targetWidth,
-                    targetHeight);
+                    targetHeight,
+                    getQuality());
 
                 if (targetScaler != null) {
                     result = createVariation(targetScaler);
@@ -439,7 +449,8 @@ public class CmsJspImageBean {
                 getHeight(),
                 getBaseScaler(),
                 targetWidth,
-                targetHeight);
+                targetHeight,
+                getQuality());
 
             if (targetScaler != null) {
                 result = createVariation(targetScaler);
@@ -504,6 +515,16 @@ public class CmsJspImageBean {
         result.append("\"");
 
         return result.toString();
+    }
+
+    /**
+     * Returns the compression quality factor used for image generation.<p>
+     *
+     * @return the compression quality factor used for image generation
+     */
+    public int getQuality() {
+
+        return m_quality;
     }
 
     /**
@@ -626,7 +647,12 @@ public class CmsJspImageBean {
      */
     public String getSrcUrl() {
 
-        return m_srcUrl;
+        String imageSrc = getCmsObject().getSitePath(getResource());
+        if ((getScaler() != null) && getScaler().isValid()) {
+            // now append the scaler parameters if required
+            imageSrc += getScaler().toRequestParam();
+        }
+        return OpenCms.getLinkManager().substituteLink(getCmsObject(), imageSrc);
     }
 
     /**
@@ -657,6 +683,16 @@ public class CmsJspImageBean {
     public boolean isScaled() {
 
         return !m_currentScaler.isOriginalScaler();
+    }
+
+    /**
+     * Sets the compression quality factor to use for image generation.<p>
+     *
+     * @param quality the compression quality factor to use for image generation
+     */
+    public void setQuality(int quality) {
+
+        m_quality = quality;
     }
 
     /**
@@ -704,6 +740,7 @@ public class CmsJspImageBean {
         result.setBaseScaler(getBaseScaler());
         result.setVfsUri(getVfsUri());
         result.setScaler(targetScaler);
+        result.setQuality(getQuality());
 
         return result;
     }
@@ -806,21 +843,5 @@ public class CmsJspImageBean {
     protected void setScaler(CmsImageScaler scaler) {
 
         m_currentScaler = scaler;
-        String imageSrc = getCmsObject().getSitePath(getResource());
-        if (m_currentScaler.isValid() && !m_currentScaler.isOriginalScaler()) {
-            // now append the scaler parameters if required
-            imageSrc += m_currentScaler.toRequestParam();
-        }
-        setSrcUrl(OpenCms.getLinkManager().substituteLink(getCmsObject(), imageSrc));
-    }
-
-    /**
-     * Sets the image URL.<p>
-     *
-     * @param srcUrl the image URL
-     */
-    protected void setSrcUrl(String srcUrl) {
-
-        m_srcUrl = srcUrl;
     }
 }
