@@ -7,7 +7,7 @@
 	<ui:style>
 		.additionalIcon {
     		position: absolute;
-    		right: 4px;
+    		right: 0px;
     		top:6px;
 		}
 	</ui:style>

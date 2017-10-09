@@ -87,7 +87,7 @@ public class CmsSettingTooltip extends Composite {
      */
     public static void position(Element elem, Element referenceElement) {
 
-        int dy = 20;
+        int dy = 24;
         Style style = elem.getStyle();
         style.setLeft(0, Unit.PX);
         style.setTop(0, Unit.PX);

@@ -66,7 +66,7 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     public static final int WIDGET_CONTAINER_WIDTH = 370;
 
     /** The required right margin. */
-    public static final int WIDGET_MARGIN_RIGHT = 30;
+    public static final int WIDGET_MARGIN_RIGHT = 15;
 
     /** The CSS bundle used for this widget. */
     protected static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();

@@ -112,7 +112,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
                 final Label icon = row.getIcon();
                 icon.addStyleName(I_CmsButton.ICON_FONT);
-                icon.addStyleName(I_CmsButton.INFO_SMALL);
+                icon.addStyleName(I_CmsButton.HELP_SMALL);
+                icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton());
+                icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().hoverBlack());
                 icon.getElement().getStyle().setFontSize(20, Unit.PX);
                 icon.addDomHandler(new MouseOverHandler() {
 
