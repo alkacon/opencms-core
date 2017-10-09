@@ -95,6 +95,9 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
     /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
     protected static Set<String> m_filteredActions = new HashSet<String>();
 
+    /** The detail container path pattern. */
+    private static final String DETAIL_CONTAINER_PATTERN = ".*\\/\\.detailContainers\\/.*";
+
     static {
         m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
         m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
@@ -228,7 +231,6 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
             for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
-                //   itemWidget.setWidth("490px");
                 CmsContextMenuButton button = new CmsContextMenuButton(relationBean.getStructureId(), m_menuHandler);
                 item.getListItemWidget().addButton(button);
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
@@ -236,7 +238,8 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                     relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
                 final boolean isEditable = (isXmlContent || isContainerpage)
-                    && relationBean.getPermissionInfo().hasWritePermission();
+                    && relationBean.getPermissionInfo().hasWritePermission()
+                    && !currentRelationBean.getSitePath().matches(DETAIL_CONTAINER_PATTERN);
                 if (isEditable) {
 
                     m_editButton = new CmsPushButton();
