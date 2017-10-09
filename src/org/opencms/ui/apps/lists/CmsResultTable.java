@@ -49,6 +49,7 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.converter.StringToDateConverter;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 
 /**
  * Table to display the list manager search results.<p>
@@ -146,6 +147,16 @@ public class CmsResultTable extends CmsFileTable {
     public void setCurrentPageFirstItemId(String itemId) {
 
         m_fileTable.setCurrentPageFirstItemId(itemId);
+    }
+
+    /**
+     * Set the item description generator which generates tooltips for cells and rows in the Table.<p>
+     *
+     * @param generator the generator to use
+     */
+    public void setsetItemDescriptionGenerator(ItemDescriptionGenerator generator) {
+
+        m_fileTable.setItemDescriptionGenerator(generator);
     }
 
     /**

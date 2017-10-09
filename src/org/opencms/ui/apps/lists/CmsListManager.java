@@ -146,6 +146,7 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -1406,7 +1407,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
             tableColumns.put(columnsEntry.getKey(), columnsEntry.getValue());
         }
-        tableColumns.put(BLACKLISTED_PROPERTY, Integer.valueOf(0));
+        tableColumns.put(BLACKLISTED_PROPERTY, Integer.valueOf(CmsResourceTable.INVISIBLE));
         tableColumns.put(INFO_PROPERTY, Integer.valueOf(CmsResourceTable.INVISIBLE));
         m_resultTable = new CmsResultTable(null, tableColumns);
         m_resultTable.applyWorkplaceAppSettings();
@@ -1526,31 +1527,56 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 String style = "";
-                if ((m_currentConfig != null) && m_currentConfig.getBlacklist().contains(itemId)) {
+                Item item = source.getItem(itemId);
+                Boolean blacklisted = (Boolean)item.getItemProperty(BLACKLISTED_PROPERTY).getValue();
+                if (blacklisted.booleanValue()) {
                     style += OpenCmsTheme.PROJECT_OTHER + " ";
+                } else if (CmsResourceTableProperty.PROPERTY_TITLE.equals(propertyId)
+                    && ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED) == null)
+                        || ((Boolean)item.getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue())) {
+                    style += OpenCmsTheme.IN_NAVIGATION + " ";
                 }
                 if (INFO_PROPERTY_LABEL.equals(propertyId)) {
-                    Object value = source.getItem(itemId).getItemProperty(INFO_PROPERTY).getValue();
-                    if (value == null) {
-                        style += OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                    if (blacklisted.booleanValue()) {
+                        style += OpenCmsTheme.TABLE_COLUMN_BOX_BLACK;
                     } else {
-                        I_CmsSerialDateValue.DateType type = I_CmsSerialDateValue.DateType.valueOf((String)value);
-                        switch (type) {
-                            case SERIES:
-                                style += OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT;
-                                break;
-                            case SINGLE:
-                                style += OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
-                                break;
-                            case EXTRACTED:
-                                style += OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE;
-                                break;
-                            default:
-                                break;
+                        Object value = item.getItemProperty(INFO_PROPERTY).getValue();
+                        if (value == null) {
+                            style += OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                        } else {
+                            I_CmsSerialDateValue.DateType type = I_CmsSerialDateValue.DateType.valueOf((String)value);
+                            switch (type) {
+                                case SERIES:
+                                    style += OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT;
+                                    break;
+                                case SINGLE:
+                                    style += OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                                    break;
+                                case EXTRACTED:
+                                    style += OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                 }
                 return style;
+            }
+        });
+        m_resultTable.setsetItemDescriptionGenerator(new ItemDescriptionGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                Item item = ((Table)source).getItem(itemId);
+                if (INFO_PROPERTY_LABEL.equals(propertyId)
+                    && ((Boolean)item.getItemProperty(BLACKLISTED_PROPERTY).getValue()).booleanValue()) {
+                    return CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_COLUMN_BLACKLISTED_0);
+                }
+                return null;
             }
         });
         m_resultTable.setContextProvider(this);

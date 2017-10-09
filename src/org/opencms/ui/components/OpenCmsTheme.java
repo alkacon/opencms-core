@@ -334,6 +334,9 @@ public final class OpenCmsTheme {
     public static final String TABLE_CELL_PADDING = "o-table-cell-padding";
 
     /** CSS style name. */
+    public static final String TABLE_COLUMN_BOX_BLACK = " o-box-black";
+
+    /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_BLUE_LIGHT = " o-box-blue-light";
 
     /** CSS style name. */
