@@ -35,6 +35,7 @@ import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,7 +56,7 @@ public class CmsSettingTooltip extends Composite {
 
     /** The label with the help text. */
     @UiField
-    protected Label m_label;
+    protected HTML m_label;
 
     /**
      * Creates a new instance.<p>
@@ -112,7 +113,7 @@ public class CmsSettingTooltip extends Composite {
 
         closeTooltip();
         CmsSettingTooltip tooltip = new CmsSettingTooltip();
-        tooltip.getLabel().setText(text);
+        tooltip.getLabel().setHTML(text);
         currentInstance = tooltip;
         RootPanel.get().add(tooltip);
         position(tooltip.getElement(), reference.getElement());
@@ -123,7 +124,7 @@ public class CmsSettingTooltip extends Composite {
      *
      * @return the label for the help text
      */
-    public Label getLabel() {
+    public HTML getLabel() {
 
         return m_label;
     }

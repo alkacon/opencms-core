@@ -80,6 +80,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The element settings dialog.<p>
@@ -107,7 +108,11 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         @Override
         protected CmsFormRow createRow(I_CmsFormField field) {
 
-            CmsFormRow row = super.createRow(field);
+            CmsFormRow row = createRow(
+                field.getLabel(),
+                CmsDomUtil.stripHtml(field.getDescription()),
+                (Widget)field.getWidget(),
+                field.getLayoutData().get("info"));
             final String description = field.getDescription();
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
                 final Label icon = row.getIcon();

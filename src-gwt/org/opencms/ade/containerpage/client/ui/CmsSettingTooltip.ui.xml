@@ -18,6 +18,6 @@
 		} 
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.tooltip}">
-		<g:Label addStyleNames="{style.label}" ui:field="m_label"></g:Label>
+		<g:HTML addStyleNames="{style.label}" ui:field="m_label"></g:HTML>
 	</g:FlowPanel>
 </ui:UiBinder> 
