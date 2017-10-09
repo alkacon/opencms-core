@@ -2384,7 +2384,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     private Locale getContentLocale(ListConfigurationBean bean) {
 
         if (bean.getFolders().isEmpty()) {
-            return CmsLocaleManager.getDefaultLocale();
+            return OpenCms.getLocaleManager().getDefaultLocale(A_CmsUI.getCmsObject(), "/");
         } else {
             return OpenCms.getLocaleManager().getDefaultLocale(
                 A_CmsUI.getCmsObject(),
