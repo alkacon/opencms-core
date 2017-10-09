@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.ui;
+package org.opencms.gwt.client.ui.input.form;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
