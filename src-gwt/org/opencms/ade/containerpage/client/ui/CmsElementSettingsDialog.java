@@ -36,7 +36,6 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
-import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsDialogContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -53,7 +52,6 @@ import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.CmsSettingTooltip;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -74,13 +72,8 @@ import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -109,37 +102,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         @Override
         protected CmsFormRow createRow(I_CmsFormField field) {
 
-            CmsFormRow row = createRow(
-                field.getLabel(),
-                CmsDomUtil.stripHtml(field.getDescription()),
-                (Widget)field.getWidget(),
-                field.getLayoutData().get("info"));
-            final String description = field.getDescription();
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
-                final Label icon = row.getIcon();
-                icon.addStyleName(I_CmsButton.ICON_FONT);
-                icon.addStyleName(I_CmsButton.HELP_SMALL);
-                icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton());
-                icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().hoverBlack());
-                icon.getElement().getStyle().setFontSize(20, Unit.PX);
-                icon.addDomHandler(new MouseOverHandler() {
-
-                    public void onMouseOver(MouseOverEvent event) {
-
-                        CmsSettingTooltip.showTooltip(icon, description);
-                    }
-                }, MouseOverEvent.getType());
-
-                icon.addDomHandler(new MouseOutHandler() {
-
-                    public void onMouseOut(MouseOutEvent event) {
-
-                        CmsSettingTooltip.closeTooltip();
-                    }
-
-                }, MouseOutEvent.getType());
-
-            }
+            final String htmlDesc = field.getDescription();
+            String plainDesc = CmsDomUtil.stripHtml(htmlDesc);
+            CmsFormRow row = createRow(field.getLabel(), plainDesc, (Widget)field.getWidget(), htmlDesc, true);
             return row;
         }
 
@@ -390,6 +355,14 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     public void show() {
 
         super.show();
+        truncateForm();
+    }
+
+    /**
+     * Truncates the form panel.<p>
+     */
+    public void truncateForm() {
+
         if (getWidth() > 0) {
             getForm().getWidget().truncate("settings_truncation", getWidth() - 22);
         }
@@ -469,9 +442,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
         }
         getForm().render();
-        if (getWidth() > 0) {
-            getForm().getWidget().truncate("settings_truncation", getWidth() - 12);
-        }
+        truncateForm();
     }
 
     /**

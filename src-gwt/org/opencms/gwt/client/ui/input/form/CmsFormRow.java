@@ -31,9 +31,16 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -167,17 +174,46 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     }
 
     /**
+     * Initializes the style for the info button.<p>
+     */
+    public void initInfoStyle() {
+
+        m_icon.addStyleName(I_CmsButton.ICON_FONT);
+        m_icon.addStyleName(I_CmsButton.HELP_SMALL);
+        m_icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton());
+        m_icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().hoverBlack());
+        m_icon.getElement().getStyle().setFontSize(20, Unit.PX);
+    }
+
+    /**
      * Shows the info icon and sets the information text as its title.<p>
      *
      * @param info the info
+     * @param isHtml true if info should be interpreted as HTML rather than plain text
      */
-    public void setInfo(String info) {
+    public void setInfo(final String info, final boolean isHtml) {
 
         if (info != null) {
-            m_icon.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inherited());
-            m_icon.addStyleName(I_CmsButton.ICON_FONT);
-            m_icon.addStyleName(I_CmsButton.CIRCLE_INFO);
-            m_icon.setTitle(info);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(info)) {
+                initInfoStyle();
+                final Label icon = m_icon;
+                icon.addDomHandler(new MouseOverHandler() {
+
+                    public void onMouseOver(MouseOverEvent event) {
+
+                        CmsFieldTooltip.showTooltip(icon, info, isHtml);
+                    }
+                }, MouseOverEvent.getType());
+
+                icon.addDomHandler(new MouseOutHandler() {
+
+                    public void onMouseOut(MouseOutEvent event) {
+
+                        CmsFieldTooltip.closeTooltip();
+                    }
+
+                }, MouseOutEvent.getType());
+            }
         }
     }
 
@@ -186,7 +222,9 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
+        CmsDebugLog.consoleLog("cw = " + clientWidth);
         if (clientWidth > (WIDGET_CONTAINER_WIDTH + OPENER_WIDTH + LABEL_WIDTH + WIDGET_MARGIN_RIGHT)) {
+            CmsDebugLog.consoleLog("true");
             int availableWidth = clientWidth - OPENER_WIDTH - WIDGET_MARGIN_RIGHT;
             int widgetContainerWidth = (int)Math.round(
                 1.00 * availableWidth * ((1.00 + WIDGET_CONTAINER_WIDTH) / (WIDGET_CONTAINER_WIDTH + LABEL_WIDTH)));

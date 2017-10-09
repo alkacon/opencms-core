@@ -43,16 +43,16 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Tooltip widget for element setting help texts.<p>
  */
-public class CmsSettingTooltip extends Composite {
+public class CmsFieldTooltip extends Composite {
 
     /** The ui binder interface for this widget. */
-    protected interface I_UiBinder extends UiBinder<Widget, CmsSettingTooltip> {
+    protected interface I_UiBinder extends UiBinder<Widget, CmsFieldTooltip> {
         //UIBinder interface
 
     }
 
     /** The currently displayed tooltip. */
-    private static CmsSettingTooltip currentInstance;
+    private static CmsFieldTooltip currentInstance;
 
     /** The label with the help text. */
     @UiField
@@ -61,7 +61,7 @@ public class CmsSettingTooltip extends Composite {
     /**
      * Creates a new instance.<p>
      */
-    public CmsSettingTooltip() {
+    public CmsFieldTooltip() {
         I_UiBinder uiBinder = GWT.create(I_UiBinder.class);
         initWidget(uiBinder.createAndBindUi(this));
         // force synchronous injection of styles
@@ -108,12 +108,17 @@ public class CmsSettingTooltip extends Composite {
      *
      * @param reference the widget next to which the tooltip should be displayed
      * @param text the help text
+     * @param isHtml true if the text should be interpreted as HTML rather than plain text
      */
-    public static void showTooltip(Label reference, String text) {
+    public static void showTooltip(Label reference, String text, boolean isHtml) {
 
         closeTooltip();
-        CmsSettingTooltip tooltip = new CmsSettingTooltip();
-        tooltip.getLabel().setHTML(text);
+        CmsFieldTooltip tooltip = new CmsFieldTooltip();
+        if (isHtml) {
+            tooltip.getLabel().setHTML(text);
+        } else {
+            tooltip.getLabel().setText(text);
+        }
         currentInstance = tooltip;
         RootPanel.get().add(tooltip);
         position(tooltip.getElement(), reference.getElement());

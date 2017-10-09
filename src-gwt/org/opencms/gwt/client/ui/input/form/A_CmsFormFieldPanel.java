@@ -109,7 +109,8 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
             field.getLabel(),
             field.getDescription(),
             (Widget)field.getWidget(),
-            field.getLayoutData().get("info"));
+            field.getLayoutData().get("info"),
+            Boolean.parseBoolean(field.getLayoutData().get("htmlinfo")));
 
     }
 
@@ -124,7 +125,7 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
      */
     protected CmsFormRow createRow(String labelText, String description, Widget widget) {
 
-        return createRow(labelText, description, widget, null);
+        return createRow(labelText, description, widget, null, false);
     }
 
     /**
@@ -134,16 +135,22 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
      * @param description the description of the form field
      * @param widget the widget for the form field
      * @param infoText the text to display on the info icon (may be null)
+     * @param infoIsHtml true if the info text should be interpreted as HTML rather than plain text
      *
      * @return the newly added form row
      */
-    protected CmsFormRow createRow(String labelText, String description, Widget widget, String infoText) {
+    protected CmsFormRow createRow(
+        String labelText,
+        String description,
+        Widget widget,
+        final String infoText,
+        final boolean infoIsHtml) {
 
         CmsFormRow row = new CmsFormRow();
         Label label = row.getLabel();
         label.setText(labelText);
         label.setTitle(CmsStringUtil.isNotEmptyOrWhitespaceOnly(description) ? description : labelText);
-        row.setInfo(infoText);
+        row.setInfo(infoText, infoIsHtml);
         row.getWidgetContainer().add(widget);
 
         if (m_truncationWidth > 0) {

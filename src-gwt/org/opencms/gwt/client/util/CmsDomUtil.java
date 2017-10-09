@@ -988,11 +988,11 @@ public final class CmsDomUtil {
                 // replace an existing wmode parameter
                 if (html.match(/wmode\s*=\s*('|")[a-zA-Z]+('|")/i))
                     new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i,
-                                             "wmode='transparent'");
+                            "wmode='transparent'");
                 // add a new wmode parameter
                 else
                     new_embed = html.replace(/<embed\s/i,
-                                             "<embed wmode='transparent' ");
+                            "<embed wmode='transparent' ");
                 // replace the old embed object with the fixed version
                 embed.insertAdjacentHTML('beforeBegin', new_embed);
                 embed.parentNode.removeChild(embed);
@@ -1018,13 +1018,13 @@ public final class CmsDomUtil {
                         .match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
                     new_object = html
                             .replace(
-                                     /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
-                                     "<param name='wmode' value='transparent' />");
+                                    /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
+                                    "<param name='wmode' value='transparent' />");
                 // add a new wmode parameter
                 else
                     new_object = html
                             .replace(/<\/object\>/i,
-                                     "<param name='wmode' value='transparent' />\n</object>");
+                                    "<param name='wmode' value='transparent' />\n</object>");
                 // loop through each of the param tags
                 var children = object.childNodes;
                 for (j = 0; j < children.length; j++) {
@@ -1034,11 +1034,11 @@ public final class CmsDomUtil {
                             if (theName != null && theName.match(/flashvars/i)) {
                                 new_object = new_object
                                         .replace(
-                                                 /<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i,
-                                                 "<param name='flashvars' value='"
-                                                         + children[j]
-                                                                 .getAttribute('value')
-                                                         + "' />");
+                                                /<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i,
+                                                "<param name='flashvars' value='"
+                                                        + children[j]
+                                                                .getAttribute('value')
+                                                        + "' />");
                             }
                         }
                     } catch (err) {
@@ -1420,8 +1420,7 @@ public final class CmsDomUtil {
         var body = doc.body;
         var html = doc.documentElement;
         var height = Math.max(body.scrollHeight, body.offsetHeight,
-                              html.clientHeight, html.scrollHeight,
-                              html.offsetHeight);
+                html.clientHeight, html.scrollHeight, html.offsetHeight);
         return height;
     }-*/;
 
@@ -2054,6 +2053,9 @@ public final class CmsDomUtil {
      */
     public static String stripHtml(String html) {
 
+        if (html == null) {
+            return null;
+        }
         Element el = DOM.createDiv();
         el.setInnerHTML(html);
         return el.getInnerText();

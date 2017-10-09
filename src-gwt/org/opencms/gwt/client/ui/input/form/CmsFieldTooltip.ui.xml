@@ -11,10 +11,14 @@
 			width: 400px;
 			border-radius: 4px;
 			padding: 8px;
-			border: 1px solid {constants.css.borderColor};
+			border: 1px solid #474747;
 		} 
-		.label {
-			color: {constants.css.textColor}; 
+
+		.tooltip .label {
+			font-family: "OpenSans", sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #474747;
 		} 
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.tooltip}">

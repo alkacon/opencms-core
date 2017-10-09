@@ -186,7 +186,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         m_form.render();
         if ((dialog != null) && (dialog.getWidth() > 12)) {
 
-            getForm().getWidget().truncate("property_editing", dialog.getWidth() - 12);
+            getForm().getWidget().truncate("property_editing", dialog.getWidth() - 22);
         }
     }
 
