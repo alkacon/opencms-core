@@ -32,7 +32,6 @@ import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -222,9 +221,7 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        CmsDebugLog.consoleLog("cw = " + clientWidth);
         if (clientWidth > (WIDGET_CONTAINER_WIDTH + OPENER_WIDTH + LABEL_WIDTH + WIDGET_MARGIN_RIGHT)) {
-            CmsDebugLog.consoleLog("true");
             int availableWidth = clientWidth - OPENER_WIDTH - WIDGET_MARGIN_RIGHT;
             int widgetContainerWidth = (int)Math.round(
                 1.00 * availableWidth * ((1.00 + WIDGET_CONTAINER_WIDTH) / (WIDGET_CONTAINER_WIDTH + LABEL_WIDTH)));
