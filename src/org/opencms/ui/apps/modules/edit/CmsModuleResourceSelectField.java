@@ -53,6 +53,7 @@ import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.ErrorMessage.ErrorLevel;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.Component;
 
 /**
  * A widget for selecting a module resource.<p>
@@ -81,7 +82,6 @@ public class CmsModuleResourceSelectField extends CmsPathSelectField {
             }
 
         });
-
     }
 
     /**
@@ -154,7 +154,8 @@ public class CmsModuleResourceSelectField extends CmsPathSelectField {
      */
     private void updateValidation() {
 
-        m_textField.setComponentError(null);
+        boolean changed = false;
+        changed |= CmsVaadinUtils.updateComponentError(m_textField, null);
         String path = getValue();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             if (!m_cms.existsResource(path, CmsResourceFilter.IGNORE_EXPIRATION)) {
@@ -162,8 +163,11 @@ public class CmsModuleResourceSelectField extends CmsPathSelectField {
                     CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_MODULE_RESOURCE_NOT_FOUND_0),
                     ContentMode.TEXT,
                     ErrorLevel.WARNING);
-                m_textField.setComponentError(error);
+                changed |= CmsVaadinUtils.updateComponentError(m_textField, error);
             }
+        }
+        if (changed) {
+            fireEvent(new Component.ErrorEvent(null, this));
         }
     }
 

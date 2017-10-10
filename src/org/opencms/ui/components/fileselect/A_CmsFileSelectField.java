@@ -38,6 +38,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroup;
 import org.opencms.ui.components.fileselect.CmsResourceSelectDialog.Options;
 
 import org.apache.commons.logging.Log;
@@ -57,7 +58,7 @@ import com.vaadin.ui.Window;
  *
  * @param <T> the value type
  */
-public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
+public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements I_CmsEditableGroup.I_HasError {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsFileSelectField.class);
@@ -98,6 +99,14 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
     public void disableSiteSwitch() {
 
         m_diableSiteSwitch = true;
+    }
+
+    /**
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup.I_HasError#hasEditableGroupError()
+     */
+    public boolean hasEditableGroupError() {
+
+        return m_textField.getComponentError() != null;
     }
 
     /**

@@ -406,6 +406,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         m_parameterGroup.init();
         m_exportPointGroup.init();
         m_dependencyGroup.init();
+        String resourceListError = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_RESOURCE_LIST_ERROR_0);
+        m_moduleResourcesGroup.setErrorMessage(resourceListError);
+        m_excludedResourcesGroup.setErrorMessage(resourceListError);
 
         Map<String, String> params = module.getParameters();
         for (Map.Entry<String, String> entry : params.entrySet()) {

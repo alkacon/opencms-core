@@ -75,10 +75,12 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Version;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -950,6 +952,24 @@ public final class CmsVaadinUtils {
     public static OptionGroupBuilder startOptionGroup() {
 
         return new OptionGroupBuilder();
+    }
+
+    /**
+     * Updates the component error of a component, but only if it differs from the currently set
+     * error.<p>
+     *
+     * @param component the component
+     * @param error the error
+     *
+     * @return true if the error was changed
+     */
+    public static boolean updateComponentError(AbstractComponent component, ErrorMessage error) {
+
+        if (component.getComponentError() != error) {
+            component.setComponentError(error);
+            return true;
+        }
+        return false;
     }
 
     /**

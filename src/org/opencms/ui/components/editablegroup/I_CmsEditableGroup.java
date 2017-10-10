@@ -37,6 +37,19 @@ import com.vaadin.ui.Component;
 public interface I_CmsEditableGroup {
 
     /**
+     * Interface used to signal to an editable group whether a custom widget has an error.<p>
+     */
+    public interface I_HasError {
+
+        /**
+         * Returns true if the widget has an error.<p>
+         *
+         * @return true if the widget has an error
+         */
+        boolean hasEditableGroupError();
+    }
+
+    /**
      * Adds a new row.<p>
      *
      * @param component the component to wrap in a row

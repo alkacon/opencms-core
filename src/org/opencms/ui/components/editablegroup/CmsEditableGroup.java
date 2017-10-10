@@ -31,11 +31,16 @@ import java.util.List;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.ErrorEvent;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Component.Listener;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 
 /**
@@ -54,8 +59,17 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     /** Button to add a new row to an empty list. */
     private Button m_addButton;
 
+    /** The error label. */
+    private Label m_errorLabel = new Label();
+
     /** The row caption. */
     private String m_rowCaption;
+
+    /** The error listener. */
+    private Listener m_errorListener;
+
+    /** The error message. */
+    private String m_errorMessage;
 
     /**
      * Creates a new instance.<p>
@@ -82,6 +96,21 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
                 addRow(m_factory.get());
             }
         });
+        m_errorListener = new Listener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void componentEvent(Event event) {
+
+                if (event instanceof ErrorEvent) {
+                    updateGroupValidation();
+                }
+            }
+        };
+        m_errorLabel.setValue(m_errorMessage);
+        m_errorLabel.addStyleName("o-editablegroup-errorlabel");
+        setErrorVisible(false);
     }
 
     /**
@@ -94,6 +123,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         m_container.addComponent(row);
         updateAddButton();
         updateButtonBars();
+        updateGroupValidation();
     }
 
     /**
@@ -109,7 +139,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         }
         updateAddButton();
         updateButtonBars();
-
+        updateGroupValidation();
     }
 
     /**
@@ -143,6 +173,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
 
         m_container.removeAllComponents();
         m_container.addComponent(m_addButton);
+        m_container.addComponent(m_errorLabel);
     }
 
     /**
@@ -185,6 +216,18 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         }
         updateAddButton();
         updateButtonBars();
+        updateGroupValidation();
+    }
+
+    /**
+     * Sets the error message.<p>
+     *
+     * @param errorMessage the error message
+     */
+    public void setErrorMessage(String errorMessage) {
+
+        m_errorMessage = errorMessage;
+        m_errorLabel.setValue(errorMessage != null ? errorMessage : "");
     }
 
     /**
@@ -212,11 +255,36 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
             Layout.MarginHandler marginHandler = (Layout.MarginHandler)component;
             marginHandler.setMargin(false);
         }
+        if (component instanceof AbstractComponent) {
+            component.addListener(m_errorListener);
+        }
         CmsEditableGroupRow row = new CmsEditableGroupRow(this, component);
         if (m_rowCaption != null) {
             row.setCaption(m_rowCaption);
         }
         return row;
+    }
+
+    /**
+     * Checks if the given group component has an error.<p>
+     *
+     * @param component the component to check
+     * @return true if the component has an error
+     */
+    protected boolean hasError(Component component) {
+
+        if (component instanceof AbstractComponent) {
+            if (((AbstractComponent)component).getComponentError() != null) {
+                return true;
+            }
+        }
+        if (component instanceof I_CmsEditableGroup.I_HasError) {
+            if (((I_CmsEditableGroup.I_HasError)component).hasEditableGroupError()) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     /**
@@ -227,6 +295,16 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     private Component getAddButton() {
 
         return m_addButton;
+    }
+
+    /**
+     * Shows or hides the error label.<p>
+     *
+     * @param hasError true if we have an error
+     */
+    private void setErrorVisible(boolean hasError) {
+
+        m_errorLabel.setVisible(hasError && (m_errorMessage != null));
     }
 
     /**
@@ -257,4 +335,18 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         }
     }
 
+    /**
+     * Updates the visibility of the error label based on errors in the group components.<p>
+     */
+    private void updateGroupValidation() {
+
+        boolean hasError = false;
+        for (CmsEditableGroupRow row : getRows()) {
+            if (hasError(row.getComponent())) {
+                hasError = true;
+                break;
+            }
+        }
+        setErrorVisible(hasError);
+    }
 }

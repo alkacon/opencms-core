@@ -1198,5 +1198,9 @@
 		}
 	}
 	
-	@include fileselect; 
+	@include fileselect;
+	
+	.o-editablegroup-errorlabel {
+		color: #ed473b;
+	} 
 }
