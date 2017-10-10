@@ -91,6 +91,9 @@ import com.google.common.collect.Sets;
  */
 public class CmsDefaultResourceStatusProvider {
 
+    /** The detail container path pattern. */
+    private static final String DETAIL_CONTAINER_PATTERN = ".*\\/\\.detailContainers\\/.*";
+
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultResourceStatusProvider.class);
 
@@ -332,7 +335,7 @@ public class CmsDefaultResourceStatusProvider {
                 continue;
             }
         }
-        sortOtherSiteRelations(cms, result);
+        sortRelations(cms, result);
         if (includeTargets) {
             result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
             if ((detailContentId != null) && (realLocale != null)) {
@@ -395,7 +398,7 @@ public class CmsDefaultResourceStatusProvider {
      * @param cms the current CMS context
      * @param resStatus the bean in which to sort the relation beans
      */
-    public void sortOtherSiteRelations(CmsObject cms, CmsResourceStatusBean resStatus) {
+    public void sortRelations(CmsObject cms, CmsResourceStatusBean resStatus) {
 
         final List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
             cms,
@@ -433,6 +436,22 @@ public class CmsDefaultResourceStatusProvider {
                 m_rankCache.put(r.getSiteRoot(), new Integer(result));
                 return result;
             }
+        });
+        // sort relation sources by path, make sure all resources within .detailContainer folders show last
+        Collections.sort(resStatus.getRelationSources(), new Comparator<CmsResourceStatusRelationBean>() {
+
+            public int compare(CmsResourceStatusRelationBean arg0, CmsResourceStatusRelationBean arg1) {
+
+                if (arg0.getSitePath().matches(DETAIL_CONTAINER_PATTERN)) {
+                    if (!arg1.getSitePath().matches(DETAIL_CONTAINER_PATTERN)) {
+                        return 1;
+                    }
+                } else if (arg1.getSitePath().matches(DETAIL_CONTAINER_PATTERN)) {
+                    return -1;
+                }
+                return arg0.getSitePath().compareTo(arg1.getSitePath());
+            }
+
         });
     }
 
