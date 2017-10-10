@@ -42,9 +42,30 @@
 	            background: none;
 	        }
 	    }
+	    & > input.v-textfield-error {
+	        &, &:focus { 
+	        	& ~ .v-button.o-button-icon { 
+	        		&, &:focus, &::after, &:focus::after { 
+	    				border-color: #ed473b !important; 
+	    			}
+	    			
+	    			&::after, &:hover::after {
+	    				background-color: rgba(255, 215, 215, 0.1) !important;
+	    			}
+	    		}
+	    		
+	    		& + .o-fileselect-spacer {
+	    			background-color: #fffbfb !important; 
+	    			& > *::after, & > *::before { 
+	    				background-color: #ed473b;
+	    			} 
+	    		}
+	    	} 
+	    }
+	    
 	    & > input:focus ~ .v-button.o-button-icon {
 	        border-color: #144382;
-	        border-right-color: rgb(20,67,130);
+	        border-right-color: #144382;
 	        box-shadow: 0 0 0 2px #89a0c0;
 	    }
 	    .o-fileselect-spacer {
