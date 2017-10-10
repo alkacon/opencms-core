@@ -395,9 +395,9 @@ public class CmsPermissionView extends CssLayout {
         } else {
             m_inheritedFrom.setVisible(false);
         }
-
+        setDetailButtonVisible(false);
         if (isOverwriteAll) {
-            setDetailButtonVisible(false);
+
             if (m_editable) {
                 addComponent(m_deleteButton, 2);
                 m_deleteButton.addStyleName("o-permissions_delete");
@@ -424,9 +424,10 @@ public class CmsPermissionView extends CssLayout {
 
             m_permissions.setPageLength(5);
             m_permissions.setSortEnabled(false);
+            toggleDetails();
+            setDetailButtonVisible(false);
             if (m_editable) {
-                toggleDetails();
-                setDetailButtonVisible(false);
+
                 m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_ALLOWED, PROPERTY_DENIED);
                 m_permissions.setTableFieldFactory(FIELD_FACTORY);
                 m_permissions.setEditable(m_editable);

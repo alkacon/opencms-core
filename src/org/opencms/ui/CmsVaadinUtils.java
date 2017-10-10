@@ -253,6 +253,19 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Centers the parent window of given component.<p>
+     *
+     * @param component Component as child of window
+     */
+    public static void centerWindow(Component component) {
+
+        Window window = getWindow(component);
+        if (window != null) {
+            window.center();
+        }
+    }
+
+    /**
      * Creates a click listener which calls a Runnable when activated.<p>
      *
      * @param action the Runnable to execute on a click
@@ -303,21 +316,28 @@ public final class CmsVaadinUtils {
      *
      * @param cms CmsObject
      * @param caption property
+     * @param propIcon
      * @param blackList blacklist
+     * @param cmsCssIcon
      * @return indexed container
      */
     public static IndexedContainer getAvailableGroupsContainerWithout(
         CmsObject cms,
         String caption,
-        List<CmsGroup> blackList) {
+        String propIcon,
+        List<CmsGroup> blackList,
+        CmsCssIcon cmsCssIcon) {
 
         if (blackList == null) {
             blackList = new ArrayList<CmsGroup>();
         }
         IndexedContainer res = new IndexedContainer();
         res.addContainerProperty(caption, String.class, "");
+        if (propIcon != null) {
+            res.addContainerProperty(propIcon, CmsCssIcon.class, cmsCssIcon);
+        }
         try {
-            for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, "/", true)) {
+            for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, "/", false)) {
                 if (!blackList.contains(group)) {
                     Item item = res.addItem(group);
                     item.getItemProperty(caption).setValue(group.getSimpleName());
@@ -961,7 +981,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

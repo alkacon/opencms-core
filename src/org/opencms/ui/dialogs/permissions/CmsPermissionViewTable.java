@@ -28,13 +28,12 @@
 package org.opencms.ui.dialogs.permissions;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -90,7 +89,12 @@ public class CmsPermissionViewTable extends Table {
      * @param editable boolean
      * @param dialog calling dialog
      */
-    public CmsPermissionViewTable(CmsObject cms, String path, boolean editable, CmsPermissionDialog dialog) {
+    public CmsPermissionViewTable(
+        CmsObject cms,
+        List<CmsAccessControlEntry> entries,
+        boolean editable,
+        boolean showRes,
+        CmsPermissionDialog dialog) {
 
         m_editable = editable;
         m_dialog = dialog;
@@ -111,22 +115,7 @@ public class CmsPermissionViewTable extends Table {
 
         });
 
-        // create new ArrayLists in which inherited and non inherited entries are stored
-        ArrayList<CmsAccessControlEntry> ownEntries = new ArrayList<CmsAccessControlEntry>();
-        try {
-            Iterator<CmsAccessControlEntry> itAces = cms.getAccessControlEntries(path, false).iterator();
-            while (itAces.hasNext()) {
-                CmsAccessControlEntry curEntry = itAces.next();
-                if (!curEntry.isInherited()) {
-                    // add the entry to the own rights list
-                    ownEntries.add(curEntry);
-                }
-            }
-        } catch (CmsException e) {
-            // can usually be ignored
-        }
-
-        Iterator<CmsAccessControlEntry> i = ownEntries.iterator();
+        Iterator<CmsAccessControlEntry> i = entries.iterator();
         boolean hasEntries = i.hasNext();
 
         if (hasEntries) {
@@ -134,7 +123,11 @@ public class CmsPermissionViewTable extends Table {
             while (i.hasNext()) {
                 CmsAccessControlEntry curEntry = i.next();
 
-                CmsPermissionView view = m_dialog.buildPermissionEntryForm(curEntry, m_editable, false, null);
+                CmsPermissionView view = m_dialog.buildPermissionEntryForm(
+                    curEntry,
+                    m_editable,
+                    false,
+                    showRes ? curEntry.getResource() : null);
                 Item item = m_container.addItem(view);
                 item.getItemProperty(PROP_VIEW).setValue(view);
                 item.getItemProperty(PROP_NAME).setValue(view.getPrincipalName());

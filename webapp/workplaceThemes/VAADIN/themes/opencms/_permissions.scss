@@ -10,14 +10,19 @@
 		}
 		
 		&.o-permission-no-details .o-permission-text-content {
-			margin-left: 16px;
+			margin-left: 5px;
 		}
 		
 		.o-permission-text {
 			width: 100%;
 			overflow-x: auto;
+			overflow-y:hidden;
 			white-space: nowrap; 
 		} 
+	
+		.o-permissions-info{
+			padding-left:5px;	
+		}
 		
 	
 		.v-button.v-button-borderless:focus:after{

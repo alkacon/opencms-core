@@ -38,7 +38,6 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
@@ -72,14 +71,12 @@ import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -138,6 +135,8 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
 
     /** The resource. */
     private CmsResource m_resource;
+
+    private Map<CmsUUID, String> m_parents;
 
     /** The resource permissions panel. */
     private VerticalLayout m_resourcePermissions;
@@ -284,7 +283,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
      */
     public void onViewChange() {
 
-        // do nothing
+        CmsVaadinUtils.centerWindow(m_main);
     }
 
     /**
@@ -313,9 +312,14 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         CmsAccessControlEntry entry,
         boolean editable,
         boolean extendedView,
-        String inheritRes) {
+        CmsUUID inheritRes) {
 
-        return new CmsPermissionView(entry, editable, m_resource.isFolder(), inheritRes, this);
+        return new CmsPermissionView(
+            entry,
+            editable,
+            m_resource.isFolder(),
+            inheritRes == null ? null : m_parents.get(inheritRes),
+            this);
     }
 
     /**
@@ -354,7 +358,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     void displayInheritedPermissions() {
 
         // store all parent folder ids together with path in a map
-        Map<CmsUUID, String> parents = new HashMap<CmsUUID, String>();
+        m_parents = new HashMap<CmsUUID, String>();
         String sitePath = m_cms.getSitePath(m_resource);
         String path = CmsResource.getParentFolder(sitePath);
         List<CmsResource> parentResources = new ArrayList<CmsResource>();
@@ -371,7 +375,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         while (k.hasNext()) {
             // add the current folder to the map
             CmsResource curRes = k.next();
-            parents.put(curRes.getResourceId(), curRes.getRootPath());
+            m_parents.put(curRes.getResourceId(), curRes.getRootPath());
         }
 
         ArrayList<CmsAccessControlEntry> inheritedEntries = new ArrayList<CmsAccessControlEntry>();
@@ -380,7 +384,6 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
             while (itAces.hasNext()) {
                 CmsAccessControlEntry curEntry = itAces.next();
                 inheritedEntries.add(curEntry);
-
             }
         } catch (CmsException e) {
             // can usually be ignored
@@ -388,8 +391,9 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
                 LOG.info(e.getLocalizedMessage());
             }
         }
+        addEntryTableToLayout(inheritedEntries, m_inheritedPermissions, false, true);
 
-        buildInheritedList(inheritedEntries, parents);
+        //        buildInheritedList(inheritedEntries, parents);
     }
 
     /**
@@ -412,58 +416,100 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         m_userPermissions.addComponent(view);
     }
 
-    /**
-     * Builds a StringBuffer with HTML code to show a list of all inherited access control entries.<p>
-     *
-     * @param entries ArrayList with all entries to show for the long view
-     * @param parents Map of parent resources needed to get the connected resources for the detailed view
-     */
-    private void buildInheritedList(ArrayList<CmsAccessControlEntry> entries, Map<CmsUUID, String> parents) {
+    private void addEntryTableToLayout(
+        List<CmsAccessControlEntry> entries,
+        VerticalLayout layout,
+        boolean editable,
+        boolean inheritedRes) {
 
-        String view = "long";
+        final CmsPermissionViewTable table = new CmsPermissionViewTable(m_cms, entries, editable, inheritedRes, this);
+        HorizontalLayout hl = new HorizontalLayout();
+        Label label = new Label(
+            CmsVaadinUtils.getMessageText(
+                Messages.GUI_PERMISSION_COUNT_1,
+                new Integer(table.getContainerDataSource().size())));
+        label.addStyleName("o-report");
+        hl.addComponent(label);
+        TextField tableFilter = new TextField();
+        tableFilter.setIcon(FontOpenCms.FILTER);
+        tableFilter.setInputPrompt(CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EXPLORER_FILTER_0));
+        tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        tableFilter.setWidth("200px");
+        tableFilter.addTextChangeListener(new TextChangeListener() {
 
-        // display the long view
-        if ("long".equals(view)) {
-            Iterator<CmsAccessControlEntry> i = entries.iterator();
-            while (i.hasNext()) {
-                CmsAccessControlEntry curEntry = i.next();
-                // build the list with enabled extended view and resource name
-                Component permissionView = buildPermissionEntryForm(
-                    curEntry,
-                    false,
-                    true,
-                    getConnectedResource(curEntry, parents));
-                if (permissionView != null) {
-                    m_inheritedPermissions.addComponent(permissionView);
-                }
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                table.filterTable(event.getText());
             }
+        });
+        hl.addComponent(tableFilter);
+        hl.setWidth("100%");
+        hl.setExpandRatio(label, 1);
+        hl.setMargin(true);
+        hl.setComponentAlignment(tableFilter, com.vaadin.ui.Alignment.MIDDLE_RIGHT);
+        if (table.getContainerDataSource().size() == 0) {
+            layout.addComponent(CmsVaadinUtils.getInfoLayout(Messages.GUI_PERMISSION_EMPTY_0));
         } else {
-            // show the short view, use an ACL to build the list
-            try {
-                // get the inherited ACL of the parent folder
-                CmsAccessControlList acList = m_cms.getAccessControlList(
-                    CmsResource.getParentFolder(m_cms.getSitePath(m_resource)),
-                    false);
-                Iterator<CmsUUID> i = acList.getPrincipals().iterator();
-                while (i.hasNext()) {
-                    CmsUUID principalId = i.next();
-                    if (!principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
-                        CmsPermissionSet permissions = acList.getPermissions(principalId);
-                        // build the list with enabled extended view only
-                        Component permissionView = buildPermissionEntryForm(principalId, permissions, false, true);
-                        if (permissionView != null) {
-                            m_inheritedPermissions.addComponent(permissionView);
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-            }
+            layout.addComponent(hl);
+            layout.addComponent(table);
+            CmsVaadinUtils.centerWindow(this);
         }
     }
+
+    //    /**
+    //     * Builds a StringBuffer with HTML code to show a list of all inherited access control entries.<p>
+    //     *
+    //     * @param entries ArrayList with all entries to show for the long view
+    //     * @param parents Map of parent resources needed to get the connected resources for the detailed view
+    //     */
+    //    private void buildInheritedList(ArrayList<CmsAccessControlEntry> entries, Map<CmsUUID, String> parents) {
+    //
+    //        String view = "long";
+    //
+    //        // display the long view
+    //        if ("long".equals(view)) {
+    //            Iterator<CmsAccessControlEntry> i = entries.iterator();
+    //            while (i.hasNext()) {
+    //                CmsAccessControlEntry curEntry = i.next();
+    //                // build the list with enabled extended view and resource name
+    //                Component permissionView = buildPermissionEntryForm(
+    //                    curEntry,
+    //                    false,
+    //                    true,
+    //                    getConnectedResource(curEntry, parents));
+    //                if (permissionView != null) {
+    //                    m_inheritedPermissions.addComponent(permissionView);
+    //                }
+    //            }
+    //        } else {
+    //            // show the short view, use an ACL to build the list
+    //            try {
+    //                // get the inherited ACL of the parent folder
+    //                CmsAccessControlList acList = m_cms.getAccessControlList(
+    //                    CmsResource.getParentFolder(m_cms.getSitePath(m_resource)),
+    //                    false);
+    //                Iterator<CmsUUID> i = acList.getPrincipals().iterator();
+    //                while (i.hasNext()) {
+    //                    CmsUUID principalId = i.next();
+    //                    if (!principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+    //                        CmsPermissionSet permissions = acList.getPermissions(principalId);
+    //                        // build the list with enabled extended view only
+    //                        Component permissionView = buildPermissionEntryForm(principalId, permissions, false, true);
+    //                        if (permissionView != null) {
+    //                            m_inheritedPermissions.addComponent(permissionView);
+    //                        }
+    //                    }
+    //                }
+    //            } catch (CmsException e) {
+    //                // can usually be ignored
+    //                if (LOG.isInfoEnabled()) {
+    //                    LOG.info(e.getLocalizedMessage());
+    //                }
+    //            }
+    //        }
+    //    }
 
     /**
      * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String)
@@ -565,42 +611,22 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
 
         m_resourcePermissions.removeAllComponents();
         String sitePath = m_cms.getSitePath(m_resource);
-        final CmsPermissionViewTable table = new CmsPermissionViewTable(m_cms, sitePath, m_editable, this);
-        HorizontalLayout hl = new HorizontalLayout();
-        Label label = new Label(
-            CmsVaadinUtils.getMessageText(
-                Messages.GUI_PERMISSION_COUNT_1,
-                new Integer(table.getContainerDataSource().size())));
-        label.addStyleName("o-report");
-        hl.addComponent(label);
-        TextField tableFilter = new TextField();
-        tableFilter.setIcon(FontOpenCms.FILTER);
-        tableFilter.setInputPrompt(CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EXPLORER_FILTER_0));
-        tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-        tableFilter.setWidth("200px");
-        tableFilter.addTextChangeListener(new TextChangeListener() {
 
-            private static final long serialVersionUID = 1L;
-
-            public void textChange(TextChangeEvent event) {
-
-                table.filterTable(event.getText());
+        // create new ArrayLists in which inherited and non inherited entries are stored
+        ArrayList<CmsAccessControlEntry> ownEntries = new ArrayList<CmsAccessControlEntry>();
+        try {
+            Iterator<CmsAccessControlEntry> itAces = m_cms.getAccessControlEntries(sitePath, false).iterator();
+            while (itAces.hasNext()) {
+                CmsAccessControlEntry curEntry = itAces.next();
+                if (!curEntry.isInherited()) {
+                    // add the entry to the own rights list
+                    ownEntries.add(curEntry);
+                }
             }
-        });
-        hl.addComponent(tableFilter);
-        hl.setWidth("100%");
-        hl.setExpandRatio(label, 1);
-        hl.setMargin(true);
-        hl.setComponentAlignment(tableFilter, com.vaadin.ui.Alignment.MIDDLE_RIGHT);
-        if (table.getContainerDataSource().size() == 0) {
-            m_resourcePermissions.addComponent(CmsVaadinUtils.getInfoLayout(Messages.GUI_PERMISSION_EMPTY_0));
-        } else {
-            m_resourcePermissions.addComponent(hl);
-            m_resourcePermissions.addComponent(table);
-            Window parentWindow = CmsVaadinUtils.getWindow(this);
-            if (parentWindow != null) {
-                parentWindow.center();
-            }
+        } catch (CmsException e) {
+            // can usually be ignored
         }
+
+        addEntryTableToLayout(ownEntries, m_resourcePermissions, true, false);
     }
 }
