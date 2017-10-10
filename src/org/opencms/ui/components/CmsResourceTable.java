@@ -709,7 +709,7 @@ public class CmsResourceTable extends CustomComponent {
      *
      * @param o object to be selected.
      */
-    public void setValue(Object o) {
+    public void setValue(Set<String> o) {
 
         m_fileTable.setValue(o);
     }

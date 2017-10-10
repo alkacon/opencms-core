@@ -1027,13 +1027,13 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 String saveState = m_currentState;
                 changeSite(siteRoot, path);
                 if (!getSelectionFromState(saveState).isEmpty()) {
-                    m_fileTable.setValue(Collections.singleton(new CmsUUID(getSelectionFromState(saveState))));
+                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
                 }
             } else {
                 String saveState = m_currentState;
                 openPath(path, true);
                 if (!getSelectionFromState(saveState).isEmpty()) {
-                    m_fileTable.setValue(Collections.singleton(new CmsUUID(getSelectionFromState(saveState))));
+                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
                 }
             }
         }
