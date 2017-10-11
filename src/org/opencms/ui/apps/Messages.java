@@ -46,10 +46,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2 = "ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
@@ -154,6 +157,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0";
     /** Message constant for key in the resource bundle. */
@@ -268,7 +272,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_EXPORT_ASFILES_0 = "GUI_DATABASEAPP_EXPORT_ASFILES_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_ASFILES_HELP_0 = "GUI_DATABASEAPP_EXPORT_ASFILES_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0 = "GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0";
 
@@ -979,6 +982,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_TITLE_0 = "GUI_LISTMANAGER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTMANAGER_TOGGLE_SERIES_BUTTON_0 = "GUI_LISTMANAGER_TOGGLE_SERIES_BUTTON_0";
 
     /** Name of the used resource bundle. */
     public static final String GUI_LISTMANAGER_TYPE_0 = "GUI_LISTMANAGER_TYPE_0";

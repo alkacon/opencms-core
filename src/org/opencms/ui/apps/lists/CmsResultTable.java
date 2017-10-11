@@ -160,6 +160,15 @@ public class CmsResultTable extends CmsFileTable {
     }
 
     /**
+     * @see org.opencms.ui.components.CmsFileTable#update(java.util.Collection, boolean)
+     */
+    @Override
+    public void update(Collection<CmsUUID> ids, boolean remove) {
+
+        // not supported, requires a complete refresh of the search result
+    }
+
+    /**
      * @see org.opencms.ui.components.CmsResourceTable#fillItem(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
      */
     @Override

@@ -171,6 +171,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
      */
     public static class ListConfigurationBean {
 
+        /** The additional content parameters. */
+        private Map<String, String> m_additionalParameters;
+
         /** The resource blacklist. */
         private List<CmsUUID> m_blacklist;
 
@@ -185,9 +188,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         /** Search parameters by configuration node name. */
         private Map<String, String> m_parameterFields;
-
-        /** The additional content parameters. */
-        private Map<String, String> m_additionalParameters;
 
         /**
          * Constructor.<p>
@@ -357,6 +357,15 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
      */
     public static class SearchConfigParser implements I_CmsSearchConfigurationParser {
 
+        /** The category facet conjunction flag. */
+        boolean m_categoryConjunction;
+
+        /** The collapse item series flag. */
+        boolean m_collapseItemSeries;
+
+        /** The current items only flag. */
+        boolean m_currentOnly;
+
         /** The content locale. */
         private Locale m_contentLocale;
 
@@ -377,15 +386,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         /** The sort option. */
         private SortOption m_sortOption;
-
-        /** The current items only flag. */
-        boolean m_currentOnly;
-
-        /** The category facet conjunction flag. */
-        boolean m_categoryConjunction;
-
-        /** The collapse item series flag. */
-        boolean m_collapseItemSeries;
 
         /**
          * Constructor.<p>
@@ -1045,22 +1045,25 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public static final String N_BLACKLIST = "Blacklist";
 
     /** List configuration node name and field key. */
-    public static final String N_PARAMETER = "Parameter";
-
-    /** List configuration node name and field key. */
-    public static final String N_KEY = "Key";
-
-    /** List configuration node name and field key. */
-    public static final String N_VALUE = "Value";
-
-    /** List configuration node name and field key. */
     public static final String N_CATEGORY = "Category";
+
+    /** List configuration node name and field key. */
+    public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
+
+    /** List configuration node name and field key. */
+    public static final String N_CURRENT_ONLY = "CurrentOnly";
 
     /** List configuration node name and field key. */
     public static final String N_DISPLAY_TYPE = "TypesToCollect";
 
     /** List configuration node name and field key. */
     public static final String N_FILTER_QUERY = "FilterQuery";
+
+    /** List configuration node name and field key. */
+    public static final String N_KEY = "Key";
+
+    /** List configuration node name and field key. */
+    public static final String N_PARAMETER = "Parameter";
 
     /** List configuration node name and field key. */
     public static final String N_SEARCH_FOLDER = "SearchFolder";
@@ -1075,10 +1078,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public static final String N_TITLE = "Title";
 
     /** List configuration node name and field key. */
-    public static final String N_CURRENT_ONLY = "CurrentOnly";
-
-    /** List configuration node name and field key. */
-    public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
+    public static final String N_VALUE = "Value";
 
     /** List configuration node name and field key. */
     public static final String PARAM_LOCALE = "locale";
@@ -1109,16 +1109,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         0,
         110);
 
-    /** The date series info label table column property id. */
-    protected static final CmsResourceTableProperty INFO_PROPERTY_LABEL = new CmsResourceTableProperty(
-        "INFO_PROPERTY_LABEL",
-        String.class,
-        null,
-        Messages.GUI_LISTMANAGER_COLUMN_INFO_0,
-        true,
-        0,
-        110);
-
     /** The date series info table column property id. */
     protected static final CmsResourceTableProperty INFO_PROPERTY = new CmsResourceTableProperty(
         "INFO_PROPERTY",
@@ -1128,6 +1118,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         true,
         1,
         0);
+
+    /** The date series info label table column property id. */
+    protected static final CmsResourceTableProperty INFO_PROPERTY_LABEL = new CmsResourceTableProperty(
+        "INFO_PROPERTY_LABEL",
+        String.class,
+        null,
+        Messages.GUI_LISTMANAGER_COLUMN_INFO_0,
+        true,
+        0,
+        110);
 
     /** The blacklisted table column property id. */
     protected static final CmsResourceTableProperty INSTANCEDATE_PROPERTY = new CmsResourceTableProperty(
@@ -1156,6 +1156,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             Messages.GUI_LISTMANAGER_SORT_ORDER_ASC_0,
             Messages.GUI_LISTMANAGER_SORT_ORDER_DESC_0}};
 
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
+
     /** The month name abbreviations. */
     static final String[] MONTHS = new String[] {
         "JAN",
@@ -1171,9 +1174,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         "NOV",
         "DEC"};
 
-    /** The logger for this class. */
-    static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
-
     /** The serial version id. */
     private static final long serialVersionUID = -25954374225590319L;
 
@@ -1182,6 +1182,12 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The current list configuration resource. */
     CmsResource m_currentResource;
+
+    /** The result table. */
+    CmsResultTable m_resultTable;
+
+    /** The collapse item series flag. */
+    private boolean m_collapseItemSeries;
 
     /** The create new button. */
     private Button m_createNewButton;
@@ -1194,6 +1200,18 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The edit current configuration button. */
     private Button m_editCurrentButton;
+
+    /** Indicates multiple instances of a series are present in the current search result. */
+    private boolean m_hasSeriesInstances;
+
+    /** Indicates series types are present in the current search result. */
+    private boolean m_hasSeriesType;
+
+    /** Flag indicating individual instances of a date series should be hidden. */
+    private boolean m_hideSeriesInstances;
+
+    /** The info button. */
+    private Button m_infoButton;
 
     /** Indicates if the overview list is shown. */
     private boolean m_isOverView;
@@ -1210,9 +1228,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** The publish button. */
     private Button m_publishButton;
 
-    /** The info button. */
-    private Button m_infoButton;
-
     /** The resetting flag. */
     private boolean m_resetting;
 
@@ -1225,17 +1240,14 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** The sort select. */
     private ComboBox m_resultSorter;
 
-    /** The result table. */
-    CmsResultTable m_resultTable;
-
     /** The table filter input. */
     private TextField m_tableFilter;
 
     /** The text search input. */
     private TextField m_textSearch;
 
-    /** The collapse item series flag. */
-    private boolean m_collapseItemSeries;
+    /** The toggle date series display. */
+    private Button m_toggleSeriesButton;
 
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
@@ -1337,6 +1349,22 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         });
         uiContext.addToolbarButton(m_publishButton);
 
+        m_editCurrentButton = CmsToolBar.createButton(
+            FontOpenCms.PEN,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0));
+        m_editCurrentButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+
+                editListConfiguration(m_currentResource);
+            }
+        });
+        uiContext.addToolbarButton(m_editCurrentButton);
+
         m_infoButton = CmsToolBar.createButton(
             FontOpenCms.INFO,
             CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_RESOURCE_INFO_0));
@@ -1359,6 +1387,22 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         });
         uiContext.addToolbarButton(m_infoButton);
 
+        m_toggleSeriesButton = CmsToolBar.createButton(
+            FontOpenCms.LIST,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TOGGLE_SERIES_BUTTON_0));
+        m_toggleSeriesButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+
+                toggleDateSeries();
+            }
+        });
+        uiContext.addToolbarButton(m_toggleSeriesButton);
+
         m_createNewButton = CmsToolBar.createButton(
             FontOpenCms.WAND,
             CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
@@ -1374,22 +1418,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             }
         });
         uiContext.addToolbarButton(m_createNewButton);
-
-        m_editCurrentButton = CmsToolBar.createButton(
-            FontOpenCms.PEN,
-            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_EDIT_CONFIG_0));
-        m_editCurrentButton.addClickListener(new ClickListener() {
-
-            /** Serial version id. */
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-
-                editListConfiguration(m_currentResource);
-            }
-        });
-        uiContext.addToolbarButton(m_editCurrentButton);
 
         m_rootLayout.setMainHeightFull(true);
         m_resultLayout = new HorizontalSplitPanel();
@@ -2086,7 +2114,20 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
      */
     void displayResult(CmsSolrResultList resultList) {
 
-        List<CmsResource> resources = new ArrayList<CmsResource>(resultList);
+        List<CmsResource> resources;
+        evalSeries(resultList);
+        if (m_hideSeriesInstances) {
+            Set<CmsUUID> instanceIds = new HashSet<CmsUUID>();
+            resources = new ArrayList<CmsResource>();
+            for (CmsSearchResource res : resultList) {
+                if (!instanceIds.contains(res.getStructureId())) {
+                    instanceIds.add(res.getStructureId());
+                    resources.add(res);
+                }
+            }
+        } else {
+            resources = new ArrayList<CmsResource>(resultList);
+        }
         m_resultTable.fillTable(A_CmsUI.getCmsObject(), resources, true, false);
         String state = A_CmsWorkplaceApp.addParamToState(
             "",
@@ -2151,10 +2192,41 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_editCurrentButton.setEnabled(isOffline);
         m_createNewButton.setVisible(enabled);
         m_createNewButton.setEnabled(isOffline);
+        m_toggleSeriesButton.setVisible(m_hasSeriesType && !enabled);
         m_resultSorter.setVisible(!enabled);
         m_localeSelect.setVisible(!enabled);
         m_isOverView = enabled;
         m_rootLayout.setMainContent(enabled ? m_overviewTable : m_resultLayout);
+    }
+
+    /**
+     * Evaluates if date series types are present and if more than one instance of a series is in the search result.<p>
+     *
+     * @param resultList the search result list
+     */
+    void evalSeries(CmsSolrResultList resultList) {
+
+        m_hasSeriesType = false;
+        m_hasSeriesInstances = false;
+        Set<CmsUUID> instanceIds = new HashSet<CmsUUID>();
+        for (CmsSearchResource res : resultList) {
+            String seriesType = res.getField(CmsSearchField.FIELD_SERIESDATES_TYPE);
+            m_hasSeriesType = m_hasSeriesType || CmsStringUtil.isNotEmptyOrWhitespaceOnly(seriesType);
+            if (m_hasSeriesType && I_CmsSerialDateValue.DateType.SERIES.name().equals(seriesType)) {
+                if (instanceIds.contains(res.getStructureId())) {
+                    m_hasSeriesInstances = true;
+                    break;
+                } else {
+                    instanceIds.add(res.getStructureId());
+                }
+            }
+        }
+        if (!m_hasSeriesInstances) {
+            setsDateSeriesHiddenFlag(false);
+        }
+        m_toggleSeriesButton.setEnabled(m_hasSeriesInstances);
+        m_toggleSeriesButton.setVisible(m_hasSeriesType);
+
     }
 
     /**
@@ -2275,6 +2347,21 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     }
 
     /**
+     * Sets the date series hidden flag.<p>
+     *
+     * @param hide the date series hidden flag
+     */
+    void setsDateSeriesHiddenFlag(boolean hide) {
+
+        m_hideSeriesInstances = hide;
+        if (m_hideSeriesInstances) {
+            m_toggleSeriesButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
+        } else {
+            m_toggleSeriesButton.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
+        }
+    }
+
+    /**
      * Sorts the search result.<p>
      */
     void sortResult() {
@@ -2285,6 +2372,15 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 m_resultFacets.getSelectedRangeFactes(),
                 m_textSearch.getValue());
         }
+    }
+
+    /**
+     * Toggles the date series filter.<p>
+     */
+    void toggleDateSeries() {
+
+        setsDateSeriesHiddenFlag(!m_hideSeriesInstances);
+        refreshResult();
     }
 
     /**
