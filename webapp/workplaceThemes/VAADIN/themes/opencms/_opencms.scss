@@ -1202,5 +1202,19 @@
 	
 	.o-editablegroup-errorlabel {
 		color: #ed473b;
-	} 
+	}
+	
+	.o-font-load-panel { 
+		position: absolute; 
+		left: -9999px; 
+		top: -9999px;
+		
+		*:nth-child(1)::after {
+			content: "A";
+			color: white; 
+			font-family: "Open Sans", sans-serif; 
+			font-weight: 800; 
+		}
+			
+	}  
 }
