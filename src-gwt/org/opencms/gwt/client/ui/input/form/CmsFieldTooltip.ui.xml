@@ -9,16 +9,17 @@
 			position: absolute;
 			width: 400px;
 			border-radius: 4px;
-			padding: 8px;
-			
+			padding-top: 7px;
+			padding-bottom: 3px;
+			padding-left: 5px;
+			padding-right: 5px; 
 			background-color: #FFFFCC;
-			/* padding: 7px 19px 3px 5px; */
 			box-shadow: 2px 2px 2px #666666;
 		} 
 
 		.tooltip .label {
 			font-family: "OpenSans", sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 400;
             color: #474747;
 		}
