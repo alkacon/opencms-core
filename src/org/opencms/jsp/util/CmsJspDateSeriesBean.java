@@ -89,7 +89,7 @@ public class CmsJspDateSeriesBean {
                 return new CmsJspInstanceDateBean((Date)d.clone(), CmsJspDateSeriesBean.this);
             } else {
                 if (!m_dates.isEmpty()) {
-                    return new CmsJspInstanceDateBean((Date)m_dates.first().clone(), CmsJspDateSeriesBean.this);
+                    return getFirst();
                 }
             }
             return null;
@@ -99,33 +99,40 @@ public class CmsJspDateSeriesBean {
     /** Logger for the class. */
     private static final Log LOG = CmsLog.getLog(CmsJspDateSeriesBean.class);
 
-    /** Lazy map from start dates (provided as Long, long value as string or date) to informations on the single event. */
-    private Map<Object, CmsJspInstanceDateBean> m_singleEvents;
-
-    /** The dates of the series. */
-    SortedSet<Date> m_dates;
-
     /** The duration of a single event. */
     private Long m_duration;
 
-    /** The series definition. */
-    private I_CmsSerialDateValue m_seriesDefinition;
-
-    /** The content value containing the series definition. */
-    private CmsJspContentAccessValueWrapper m_value;
-
-    /** The parent series. */
-    private CmsJspDateSeriesBean m_parentSeries;
+    /** The first event of the series. */
+    private CmsJspInstanceDateBean m_firstEvent;
 
     /** Flag, indicating if the single events last over night. */
     private Boolean m_isMultiDay;
 
+    /** The last event of the series. */
+    private CmsJspInstanceDateBean m_lastEvent;
+
     /** The locale to use for displaying dates. */
     private Locale m_locale;
 
+    /** The parent series. */
+    private CmsJspDateSeriesBean m_parentSeries;
+
+    /** The series definition. */
+    private I_CmsSerialDateValue m_seriesDefinition;
+
+    /** Lazy map from start dates (provided as Long, long value as string or date) to informations on the single event. */
+    private Map<Object, CmsJspInstanceDateBean> m_singleEvents;
+
+    /** The content value containing the series definition. */
+    private CmsJspContentAccessValueWrapper m_value;
+
+    /** The dates of the series. */
+    SortedSet<Date> m_dates;
+
     /**
-     * Constructor for the date series bean.
-     * @param value the content value wrapper for the element that stores the series definition.
+     * Constructor for a date series bean.<p>
+     *
+     * @param value the content value wrapper for the element that stores the series definition
      * @param locale the locale in which dates should be rendered. This can differ from the content locale, if e.g.
      *          on a German page a content that is only present in English is rendered.
      */
@@ -136,9 +143,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Constructor for the date series bean for testing purposes where no OpenCms object is required.
+     * Constructor for the date series bean for testing purposes where no OpenCms object is required.<p>
      *
-     * NOTE: The parent series cannot be determined if this constructor is used.
+     * NOTE: The parent series cannot be determined if this constructor is used.<p>
      *
      * @param seriesDefinition the series definition.
      * @param locale the locale in which dates should be rendered. This can differ from the content locale, if e.g.
@@ -150,8 +157,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns the list of start dates for all instances of the series.
-     * @return the list of start dates for all instances of the series.
+     * Returns the list of start dates for all instances of the series.<p>
+     *
+     * @return the list of start dates for all instances of the series
      */
     public List<Date> getDates() {
 
@@ -159,8 +167,24 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns the duration of a single instance in milliseconds.
-     * @return the duration of a single instance in milliseconds.
+     * Returns the first event of this series.<p>
+     *
+     * In case this is just a single event and not a series, this is identical to the date of the event.<p>
+     *
+     * @return the first event of this series
+     */
+    public CmsJspInstanceDateBean getFirst() {
+
+        if ((m_firstEvent == null) && (m_dates != null) && (!m_dates.isEmpty())) {
+            m_firstEvent = new CmsJspInstanceDateBean((Date)m_dates.first().clone(), CmsJspDateSeriesBean.this);
+        }
+        return m_firstEvent;
+    }
+
+    /**
+     * Returns the duration of a single instance in milliseconds.<p>
+     *
+     * @return the duration of a single instance in milliseconds
      */
     public Long getInstanceDuration() {
 
@@ -185,8 +209,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns a flag, indicating if the series is extracted from another series.
-     * @return a flag, indicating if the series is extracted from another series.
+     * Returns a flag, indicating if the series is extracted from another series.<p>
+     *
+     * @return a flag, indicating if the series is extracted from another series
      */
     public boolean getIsExtractedDate() {
 
@@ -194,8 +219,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns a flag, indicating if the series is defined via a pattern, i.e., not just as via single date.
-     * @return a flag, indicating if the series is defined via a pattern, i.e., not just as via single date.
+     * Returns a flag, indicating if the series is defined via a pattern, i.e., not just as via single date.<p>
+     *
+     * @return a flag, indicating if the series is defined via a pattern, i.e., not just as via single date
      */
     public boolean getIsSeries() {
 
@@ -203,8 +229,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns a flag, indicating if the series is defined by only a single date and not extracted from another series.
-     * @return a flag, indicating if the series is defined by only a single date and not extracted from another series.
+     * Returns a flag, indicating if the series is defined by only a single date and not extracted from another series.<p>
+     *
+     * @return a flag, indicating if the series is defined by only a single date and not extracted from another series
      */
     public boolean getIsSingleDate() {
 
@@ -212,8 +239,24 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns the locale to use for rendering dates.
-     * @return the locale to use for rendering dates.
+     * Returns the last event of this series.<p>
+     *
+     * In case this is just a single event and not a series, this is identical to the date of the event.<p>
+     *
+     * @return the last event of this series
+     */
+    public CmsJspInstanceDateBean getLast() {
+
+        if ((m_lastEvent == null) && (m_dates != null) && (!m_dates.isEmpty())) {
+            m_lastEvent = new CmsJspInstanceDateBean((Date)m_dates.last().clone(), CmsJspDateSeriesBean.this);
+        }
+        return m_lastEvent;
+    }
+
+    /**
+     * Returns the locale to use for rendering dates.<p>
+     *
+     * @return the locale to use for rendering dates
      */
     public Locale getLocale() {
 
@@ -221,8 +264,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns the parent series, if it is present, otherwise <code>null</code>.
-     * @return the parent series, if it is present, otherwise <code>null</code>.
+     * Returns the parent series, if it is present, otherwise <code>null</code>.<p>
+     *
+     * @return the parent series, if it is present, otherwise <code>null</code>
      */
     public CmsJspDateSeriesBean getParentSeries() {
 
@@ -242,8 +286,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns the gallery title of the series content.
-     * @return the gallery title of the series content.
+     * Returns the gallery title of the series content.<p>
+     *
+     * @return the gallery title of the series content
      */
     public String getTitle() {
 
@@ -262,8 +307,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns a flag, indicating if the single events last over night.
-     * @return <code>true</code> if the event ends on another day than it starts, <code>false</code> if it ends on the same day.
+     * Returns a flag, indicating if the single events last over night.<p>
+     *
+     * @return <code>true</code> if the event ends on another day than it starts, <code>false</code> if it ends on the same day
      */
     public boolean isMultiDay() {
 
@@ -292,8 +338,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Returns a flag, indicating if the events in the series last whole days.
-     * @return a flag, indicating if the events in the series last whole days.
+     * Returns a flag, indicating if the events in the series last whole days.<p>
+     *
+     * @return a flag, indicating if the events in the series last whole days
      */
     public boolean isWholeDay() {
 
@@ -301,8 +348,9 @@ public class CmsJspDateSeriesBean {
     }
 
     /**
-     * Initialization based on the series definition.
-     * @param seriesDefinition the series definition.
+     * Initialization based on the series definition.<p>
+     *
+     * @param seriesDefinition the series definition
      */
     private void initFromSeriesDefinition(String seriesDefinition) {
 
