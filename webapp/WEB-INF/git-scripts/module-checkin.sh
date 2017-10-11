@@ -98,7 +98,7 @@ resetGitConfig(){
 	fi
 	if [[ $adjustedUserEmail == 1 ]]; then
 		if [[ -z $oldUserEmail ]]; then
-			git config --unset user.email 
+			git config --unset user.email
 			echo "     * Reset local git user.email from \"$userEmail\" to <unset>."
 		else
 			git config --replace-all user.email "$oldUserEmail"
@@ -147,10 +147,10 @@ while [ "$1" != "" ]; do
     case $1 in
         -m | --modules )       	shift
                                 modulesToExport=$1
-								echo " * Read modules to export: \"$modulesToExport\"." 
+								echo " * Read modules to export: \"$modulesToExport\"."
                                 ;;
         --checkout )			checkout=1
-								;;                                
+								;;
         --push )                push=1
 								echo " * Read push option."
                                 ;;
@@ -174,7 +174,7 @@ while [ "$1" != "" ]; do
                                 ;;
         --no-commit )           commit=0
 								echo " * Read no-commit option."
-                                ;;                                
+                                ;;
         --no-exclude-libs )		excludeLibs=0;
         						echo " * Read no-exclude-libs option."
         						;;
@@ -246,7 +246,13 @@ source $configfile
 echo " * Read file \"$configfile\":"
 cat $configfile | awk '$0="   * "$0'
 
-
+echo
+echo "Values read from configuration:"
+echo
+echo "* Default modules : ${DEFAULT_MODULES_TO_EXPORT}"
+echo "* Repository home : ${REPOSITORY_HOME}"
+echo "* Module path     : ${MODULE_PATH}"
+echo "* Module export to: ${MODULE_EXPORT_FOLDER}"
 
 echo
 echo "Setting parameters ..."
@@ -273,7 +279,7 @@ echo " * Set modules to export: \"$modulesToExport\"."
 if [[ -n "$checkout" ]]; then
 	cd $REPOSITORY_HOME
 	echo "Fetching from remote..."
-	git fetch || echo "Failed to fetch from remote."  
+	git fetch || echo "Failed to fetch from remote."
 	origin="$(git remote)"
 	branch="$(git symbolic-ref --short -q HEAD)"
 	echo "Checkout action..."
@@ -368,7 +374,7 @@ if [[ -z "$copyAndUnzip" ]]; then
 		echo " * Copy & unzip of module zips not specified. Using mode 1, i.e., do copy and unzip."
 	else
 		copyAndUnzip=$COPY_AND_UNZIP
-	fi	
+	fi
 fi
 echo " * Set copy-and-unzip: $copyAndUnzip."
 
@@ -379,7 +385,7 @@ if [[ -z "$push" ]]; then
 		echo " * Git push mode not specified. Using mode 0, i.e. do not push."
 	else
 		push=$GIT_PUSH
-	fi	
+	fi
 fi
 echo " * Set auto-push: $push."
 
@@ -390,7 +396,7 @@ if [[ -z "$pullbefore" ]]; then
 		echo " * Git pull-before mode not specified. Using mode 0, i.e. do not pull."
 	else
 		pullbefore=$GIT_PULL_BEFORE
-	fi	
+	fi
 fi
 echo " * Set pull-before: $pullbefore."
 
@@ -401,7 +407,7 @@ if [[ -z "$pullafter" ]]; then
 		echo " * Git pull-after mode not specified. Using mode 0, i.e. do not pull."
 	else
 		pullafter=$GIT_PULL_AFTER
-	fi	
+	fi
 fi
 echo " * Set pull-after: $pullafter."
 
@@ -412,7 +418,7 @@ if [[ -z "$commit" ]]; then
 		echo " * Git commit mode not specified. Using mode 0, i.e. do not commit."
 	else
 		commit=$GIT_COMMIT
-	fi	
+	fi
 fi
 echo " * Set auto-commit: $commit."
 
@@ -484,7 +490,7 @@ fi
 # reset to ORIG_HEAD
 if [[ $resetRemoteHead == 1 ]]; then
 	echo
-	cd $REPOSITORY_HOME	
+	cd $REPOSITORY_HOME
 	origin="$(git remote)"
 	branch="$(git symbolic-ref --short -q HEAD)"
 	echo "Performing \"git reset --hard $origin/$branch\" ..."
@@ -574,9 +580,9 @@ if [ $copyAndUnzip == 1 ]; then
 				fi
 			else
 				echo "   * ERROR: Something went wrong the current directory \($(pwd)\) is not a\
-				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})." 
+				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})."
 				exit 4
-			fi			
+			fi
 			echo "   * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
 			#copy the new module .zip
 			cp "${moduleExportFolder}/${fileName}" ./
@@ -662,7 +668,7 @@ fi
 echo
 
 
-echo 
+echo
 echo "Pushing changes ..."
 # pushing changes
 if [[ $push == 1 ]]; then
