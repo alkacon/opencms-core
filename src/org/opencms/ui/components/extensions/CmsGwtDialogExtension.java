@@ -139,7 +139,11 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
                 // ignore
             }
         }
-        CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+        A_CmsUI ui = A_CmsUI.get();
+        if (ui instanceof CmsAppWorkplaceUi) {
+            ((CmsAppWorkplaceUi)ui).enableGlobalShortcuts();
+        }
+
         if (m_updateListener != null) {
             m_updateListener.onUpdate(changedStructureIds);
         }
