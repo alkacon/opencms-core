@@ -7,6 +7,8 @@
 	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate"
 	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
 	<ui:style>
+	 
+	 @eval buttonColor org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().textColorDisabledButton();
 	
 	.outerContainer { 
 		position: relative;
@@ -45,7 +47,7 @@
 	}
 	
 	.outerContainer > .innerContainer.innerContainer > *:first-child:hover {
-		color: #888 !important; 
+		color: buttonColor !important; 
 	}
 
 	</ui:style>

@@ -34,7 +34,7 @@
 /** The text color for buttons that have a light background. */
 @def textColorLightButton #474747;
 /** The text color for buttons that are disabled. */
-@def textColorDisabledButton #888888;
+@def textColorDisabledButton #999;
 /** The disabled text color. Use it for any inactive or disabled texts e.g. input components. */
 @def textColorDisabled #999999;
 /** The new text color. Use it only for displaying texts of new resources. */
