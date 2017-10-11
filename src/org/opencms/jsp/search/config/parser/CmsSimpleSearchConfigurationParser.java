@@ -37,6 +37,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet.SortOrder;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
+import org.opencms.main.CmsException;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.ui.apps.lists.CmsListManager;
@@ -369,7 +371,15 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categories)) {
             result = "&fq=category_exact:(";
             for (String path : categories.split(",")) {
-                result += path + " ";
+                try {
+                    path = CmsCategoryService.getInstance().getCategory(
+                        m_cms,
+                        m_cms.getRequestContext().addSiteRoot(path)).getPath();
+
+                    result += "\"" + path + "\" ";
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
             result = result.substring(0, result.length() - 1);
             result += ")";

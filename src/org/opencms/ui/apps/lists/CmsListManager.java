@@ -69,6 +69,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
@@ -713,9 +714,18 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
             String result = "";
             if (!m_selectedCategories.isEmpty()) {
+                CmsObject cms = A_CmsUI.getCmsObject();
                 result = "&fq=category_exact:(";
                 for (String path : m_selectedCategories) {
-                    result += path + " ";
+                    try {
+                        path = CmsCategoryService.getInstance().getCategory(
+                            cms,
+                            cms.getRequestContext().addSiteRoot(path)).getPath();
+
+                        result += "\"" + path + "\" ";
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
                 result = result.substring(0, result.length() - 1);
                 result += ")";
@@ -2479,12 +2489,13 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
      */
     private Locale getContentLocale(ListConfigurationBean bean) {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         if (bean.getFolders().isEmpty()) {
-            return OpenCms.getLocaleManager().getDefaultLocale(A_CmsUI.getCmsObject(), "/");
+            return OpenCms.getLocaleManager().getDefaultLocale(cms, "/");
         } else {
             return OpenCms.getLocaleManager().getDefaultLocale(
-                A_CmsUI.getCmsObject(),
-                m_currentConfig.getFolders().get(0));
+                cms,
+                cms.getRequestContext().removeSiteRoot(m_currentConfig.getFolders().get(0)));
         }
     }
 
