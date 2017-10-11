@@ -438,6 +438,9 @@ public interface I_CmsButton {
     /** Font icon using a 32x32 grid. */
     String TRIANGLE_DOWN = "opencms-icon-triangle-down";
 
+    /** Font icon using a 32x32 grid. */
+    String ICON_CIRCLE_HELP = "opencms-icon-circle-help";
+
     /** Small font icon using a 20x20 grid. */
     String EDIT_POINT_SMALL = "opencms-icon-edit-point-20";
 
@@ -500,4 +503,5 @@ public interface I_CmsButton {
 
     /** Small font icon using a 20x20 grid. */
     String CHECK_SMALL = "opencms-icon-check-20";
+
 }

@@ -364,7 +364,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     public void truncateForm() {
 
         if (getWidth() > 0) {
-            getForm().getWidget().truncate("settings_truncation", getWidth() - 22);
+            getForm().getWidget().truncate("settings_truncation", getWidth() - 20);
         }
     }
 

@@ -353,3 +353,9 @@ div.resizeButton{
 .cmsFontIconButton.hoverBlack:hover {
 	color: value("constants.css.textColor") !important 
 }
+
+div.cmsFontIconButton.helpIcon { 
+	font-size: 16px !important; 
+	margin-top: 2px; 
+	width: 17px !important;
+}

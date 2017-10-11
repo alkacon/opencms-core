@@ -7,11 +7,13 @@
 		.tooltip {
 			z-index: 200000;
 			position: absolute;
-			background-color: white;
 			width: 400px;
 			border-radius: 4px;
 			padding: 8px;
-			border: 1px solid #474747;
+			
+			background-color: #FFFFCC;
+			/* padding: 7px 19px 3px 5px; */
+			box-shadow: 2px 2px 2px #666666;
 		} 
 
 		.tooltip .label {
@@ -19,9 +21,20 @@
             font-size: 13px;
             font-weight: 400;
             color: #474747;
-		} 
+		}
+		
+		.tooltip .arrow {
+			height: 10px;
+			width: 10px;
+			position: absolute;
+			left: literal("calc(2 * 100% / 3 - 3px)");
+			top: -5px;
+			transform: rotate(45deg);
+			background: #FFFFCC;
+		}
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.tooltip}">
+		<g:Label addStyleNames="{style.arrow}" />
 		<g:HTML addStyleNames="{style.label}" ui:field="m_label"></g:HTML>
 	</g:FlowPanel>
 </ui:UiBinder> 

@@ -88,7 +88,7 @@ public class CmsFieldTooltip extends Composite {
      */
     public static void position(Element elem, Element referenceElement) {
 
-        int dy = 24;
+        int dy = 25;
         Style style = elem.getStyle();
         style.setLeft(0, Unit.PX);
         style.setTop(0, Unit.PX);

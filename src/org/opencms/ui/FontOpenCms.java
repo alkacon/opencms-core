@@ -98,6 +98,9 @@ public enum FontOpenCms implements FontIcon {
     /** The circle plus icon. */
     CIRCLE_PLUS(0xe626),
 
+    /** The circle help icon. */
+    CIRCLE_HELP(0xe900),
+
     /** The clipboard icon. */
     CLIPBOARD(0xe60f),
 
@@ -218,7 +221,9 @@ public enum FontOpenCms implements FontIcon {
     /** The log icon. */
     LOG(0xe637),
 
+    /** The help icon. */
     HELP_SMALL(0xe919),
+
     /** The module icon. */
     MODULE(0xe638),
 

@@ -86,6 +86,9 @@ public enum FontOpenCms {
     /** The circle plus icon. */
     CIRCLE_PLUS(0xe626),
 
+    /** The circle help icon. */
+    CIRCLE_HELP(0xe900),
+
     /** The clipboard icon. */
     CLIPBOARD(0xe60f),
 

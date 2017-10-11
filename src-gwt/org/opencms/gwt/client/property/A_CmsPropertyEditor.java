@@ -184,9 +184,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         buildFields();
         m_form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
         m_form.render();
-        if ((dialog != null) && (dialog.getWidth() > 12)) {
-
-            getForm().getWidget().truncate("property_editing", dialog.getWidth() - 22);
+        if ((dialog != null) && (dialog.getWidth() > 20)) {
+            getForm().getWidget().truncate("property_editing", dialog.getWidth() - 20);
         }
     }
 

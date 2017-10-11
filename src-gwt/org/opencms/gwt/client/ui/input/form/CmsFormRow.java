@@ -178,10 +178,10 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     public void initInfoStyle() {
 
         m_icon.addStyleName(I_CmsButton.ICON_FONT);
-        m_icon.addStyleName(I_CmsButton.HELP_SMALL);
+        m_icon.addStyleName(I_CmsButton.ICON_CIRCLE_HELP);
         m_icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton());
         m_icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().hoverBlack());
-        m_icon.getElement().getStyle().setFontSize(20, Unit.PX);
+        m_icon.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().helpIcon());
     }
 
     /**
