@@ -340,7 +340,7 @@
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoParameters">
 		<xsd:sequence>
-			<xsd:element name="param" type="OpenCmsDefaultAppinfoParam" />
+			<xsd:element name="param" type="OpenCmsDefaultAppinfoParam" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
