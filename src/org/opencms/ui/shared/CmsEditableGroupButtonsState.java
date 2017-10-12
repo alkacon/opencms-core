@@ -43,11 +43,24 @@ public class CmsEditableGroupButtonsState extends AbstractComponentState {
     /** True if this is the button bar of the last row. */
     protected boolean m_isLast;
 
+    /** True if hide option should be disabled.*/
+    protected boolean m_hideAddOption;
+
     /**
      * Default constructor.<p>
      */
     public CmsEditableGroupButtonsState() {
         // do nothing
+    }
+
+    /**
+     * Return is add option hidden?
+     *
+     * @return m_hideAddOtion
+     */
+    public boolean isAddOptionHidden() {
+
+        return m_hideAddOption;
     }
 
     /**
@@ -68,6 +81,16 @@ public class CmsEditableGroupButtonsState extends AbstractComponentState {
     public boolean isLast() {
 
         return m_isLast;
+    }
+
+    /**
+     * Set m_hideAddOption.<p>
+     *
+     * @param hidden true if add should be hidden
+     */
+    public void setAddOptionHidden(boolean hidden) {
+
+        m_hideAddOption = hidden;
     }
 
     /**
