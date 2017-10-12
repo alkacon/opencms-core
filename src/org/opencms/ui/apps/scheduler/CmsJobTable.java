@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.scheduler;
 
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -613,7 +614,7 @@ public class CmsJobTable extends Table {
         // schedule the edited job
         OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), jobInfo);
         // update the XML configuration
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
 
         reloadJobs();
     }

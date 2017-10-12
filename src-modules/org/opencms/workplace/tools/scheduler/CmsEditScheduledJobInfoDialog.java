@@ -27,7 +27,7 @@
 
 package org.opencms.workplace.tools.scheduler;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
@@ -127,7 +127,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             // schedule the edited job
             OpenCms.getScheduleManager().scheduleJob(getCms(), m_jobInfo);
             // update the XML configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
             // refresh the list
             Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
@@ -244,11 +244,12 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
         addWidget(
             new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsComboWidget(getComboClasses())));
-        addWidget(new CmsWidgetDialogParameter(
-            m_jobInfo,
-            "cronExpression",
-            PAGES[0],
-            new CmsComboWidget(getComboCronExpressions())));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_jobInfo,
+                "cronExpression",
+                PAGES[0],
+                new CmsComboWidget(getComboCronExpressions())));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
         addWidget(
@@ -320,61 +321,72 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
                 false,
                 null,
                 key(Messages.GUI_EDITOR_CRONCLASS_INTERNALVALIDATION_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsPublishJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_PUBLISH_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsStaticExportJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_STATICEXPORT_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsExternalLinksValidator.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsMemoryMonitor.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchManager.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_SEARCHINDEX_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsContentNotificationJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_CONTENTNOTIFICATION_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsCreateImageSizeJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_IMAGESIZE_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsImageCacheCleanupJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsHistoryClearJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_CLEARHISTORY_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsDeleteExpiredResourcesJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsUnsubscribeDeletedResourcesJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_UNSUBSCRIBEDELETED_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsPublishJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_PUBLISH_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsStaticExportJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_STATICEXPORT_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsExternalLinksValidator.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsMemoryMonitor.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsSearchManager.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_SEARCHINDEX_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsContentNotificationJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_CONTENTNOTIFICATION_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsCreateImageSizeJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_IMAGESIZE_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsImageCacheCleanupJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsHistoryClearJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_CLEARHISTORY_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsDeleteExpiredResourcesJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsUnsubscribeDeletedResourcesJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_UNSUBSCRIBEDELETED_0)));
         return result;
     }
 
@@ -400,11 +412,12 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         result.add(
             new CmsSelectWidgetOption("0 15 18 20 * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0)));
         // 0 45 15 ? * 1 2007-2009 (every Sunday from the year 2007 to 2009 at 3:45 pm)
-        result.add(new CmsSelectWidgetOption(
-            "0 45 15 ? * 1 2007-2009",
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                "0 45 15 ? * 1 2007-2009",
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0)));
         return result;
     }
 

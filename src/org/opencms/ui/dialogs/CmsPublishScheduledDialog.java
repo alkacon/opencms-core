@@ -27,7 +27,7 @@
 
 package org.opencms.ui.dialogs;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -288,7 +288,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 // add the job to the scheduled job list
                 OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
                 // update the XML configuration
-                OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
                 m_context.finish(changeIds);
             } catch (CmsException ex) {
                 LOG.error("Error performing publish scheduled dialog operation.", ex);

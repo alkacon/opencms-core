@@ -27,7 +27,6 @@
 			<mailhost name="alternative.smtp.server" port="25" />
 			<mailhost name="another.alternative.smtp.server" port="25" />
 		</mail>
-		<scheduler />
 		<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
 			<resourceinithandler

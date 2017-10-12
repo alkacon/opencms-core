@@ -27,7 +27,7 @@
 
 package org.opencms.ui.apps.scheduler;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -313,7 +313,7 @@ public class CmsJobEditView extends CmsBasicDialog {
                 try {
                     if (trySaveToBean()) {
                         OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), m_job);
-                        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                        OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
                         m_manager.closeDialogWindow(true);
                     }
 

@@ -27,7 +27,7 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -386,7 +386,7 @@ public class CmsPublishScheduled extends CmsDialog {
         // add the job to the scheduled job list
         OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
         // update the XML configuration
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
         return true;
     }
 }

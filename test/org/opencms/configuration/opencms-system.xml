@@ -21,44 +21,6 @@
 			<mailhost name="alternative.smtp.server" port="25" order="20" protocol="smtp"/>
 			<mailhost name="another.alternative.smtp.server" port="25" order="30" protocol="smtp"/>
 		</mail>
-		<scheduler>
-			<job>
-				<name>Test job name</name>
-				<class>org.opencms.scheduler.TestScheduledJob</class>
-				<reuseinstance>false</reuseinstance>
-				<active>true</active>
-				<cronexpression><![CDATA[0/2 * * * * ?]]></cronexpression>
-				<context>
-					<user>Admin</user>
-					<project>Offline</project>
-					<siteroot>/sites/default</siteroot>
-					<requesteduri>/index.html</requesteduri>
-					<locale>en</locale>
-					<encoding>UTF-8</encoding>
-					<remoteaddr>127.0.0.1</remoteaddr>
-				</context>
-				<parameters>
-					<param name="param1">value1</param>
-					<param name="param2">value2</param>
-				</parameters>
-			</job>		
-			<job>
-				<name>Another job name</name>
-				<class>org.opencms.scheduler.TestScheduledJob</class>
-				<reuseinstance>true</reuseinstance>
-				<active>false</active>
-				<cronexpression><![CDATA[0/10 * * * * ?]]></cronexpression>
-				<context>
-					<user>Admin</user>
-					<project>Offline</project>
-					<siteroot>/sites/default</siteroot>
-					<requesteduri>/index.html</requesteduri>
-					<locale>en</locale>
-					<encoding>UTF-8</encoding>
-					<remoteaddr>127.0.0.1</remoteaddr>
-				</context>
-			</job>			
-		</scheduler>
 		<events>
 			<eventmanager class="org.opencms.main.CmsTestEventManager"/>
 		</events>	

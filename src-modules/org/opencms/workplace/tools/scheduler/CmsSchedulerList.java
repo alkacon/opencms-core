@@ -27,7 +27,7 @@
 
 package org.opencms.workplace.tools.scheduler;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -630,7 +630,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     protected void writeConfiguration(boolean refresh) {
 
         // update the XML configuration
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
         if (refresh) {
             refreshList();
         }

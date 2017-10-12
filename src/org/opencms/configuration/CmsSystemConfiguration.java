@@ -37,7 +37,6 @@ import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
-import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsDefaultSessionStorageProvider;
 import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
@@ -50,8 +49,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.rmi.CmsRemoteShellConstants;
-import org.opencms.scheduler.CmsScheduleManager;
-import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsDefaultCredentialsResolver;
 import org.opencms.security.CmsDefaultValidationHandler;
@@ -164,9 +161,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-system.xml";
 
-    /** The node name for the job "active" value. */
-    public static final String N_ACTIVE = "active";
-
     /** The ade node name. */
     public static final String N_ADE = "ade";
 
@@ -191,9 +185,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the cache-offline node. */
     public static final String N_CACHE_OFFLINE = "cache-offline";
 
-    /** The node name for a job class. */
-    public static final String N_CLASS = "class";
-
     /** The node name which indicates if apache should be configurable in sitemanager. */
     public static final String N_WEBSERVERSCRIPTING = "webserver-scripting";
 
@@ -205,12 +196,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The duration after which responsible resource owners will be notified about out-dated content. */
     public static final String N_CONTENT_NOTIFICATION = "content-notification";
-
-    /** The node name for the job context. */
-    public static final String N_CONTEXT = "context";
-
-    /** The node name for the job cron expression. */
-    public static final String N_CRONEXPRESSION = "cronexpression";
 
     /** The node name for the defaultcontentencoding node. */
     public static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
@@ -248,9 +233,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the login security option enabled flag. */
     public static final String N_ENABLESCURITY = "enableSecurity";
 
-    /** The node name for the context encoding. */
-    public static final String N_ENCODING = "encoding";
-
     /** The node name for the request handler classes. */
     public static final String N_EVENTMANAGER = "eventmanager";
 
@@ -286,9 +268,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the internationalization node. */
     public static final String N_I18N = "internationalization";
-
-    /** The node name for a job. */
-    public static final String N_JOB = "job";
 
     /** The name of the class to generate cache keys. */
     public static final String N_KEYGENERATOR = "keygenerator";
@@ -353,7 +332,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The duration after which responsibles will be notified about out-dated content. */
     public static final String N_NOTIFICATION_TIME = "notification-time";
 
-    /** The node name for the job parameters. */
+    /** The node name for the parameters. */
     public static final String N_PARAMETERS = "parameters";
 
     /** Node name for the password change interval. */
@@ -370,9 +349,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the prevent-response-flush node. */
     public static final String N_PREVENTRESPONSEFLUSH = "prevent-response-flush";
-
-    /** The node name for the context project name. */
-    public static final String N_PROJECT = "project";
 
     /** The node name for the publish list remove mode. */
     public static final String N_PUBLISH_LIST_REMOVE_MODE = "publish-list-remove-mode";
@@ -391,12 +367,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the release-tags-after-end node. */
     public static final String N_RELEASETAGSAFTEREND = "release-tags-after-end";
-
-    /** The node name for the context remote addr. */
-    public static final String N_REMOTEADDR = "remoteaddr";
-
-    /** The node name for the context requested uri. */
-    public static final String N_REQUESTEDURI = "requesteduri";
 
     /** The node name for the request-error-page-attribute node. */
     public static final String N_REQUESTERRORPAGEATTRIBUTE = "request-error-page-attribute";
@@ -419,9 +389,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** the result cache node. */
     public static final String N_RESULTCACHE = "resultcache";
 
-    /** The node name for the job "reuseinstance" value. */
-    public static final String N_REUSEINSTANCE = "reuseinstance";
-
     /** The node name for the runtime info. */
     public static final String N_RUNTIMECLASSES = "runtimeclasses";
 
@@ -433,9 +400,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the sax-impl-system-properties node. */
     public static final String N_SAX_IMPL_SYSTEM_PROPERTIES = "sax-impl-system-properties";
-
-    /** The node name for the scheduler. */
-    public static final String N_SCHEDULER = "scheduler";
 
     /** The node name for the secure site. */
     public static final String N_SECURE = "secure";
@@ -454,9 +418,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The sitemap-cache node name. */
     public static final String N_SITEMAP_CACHE = "sitemap-cache";
-
-    /** The node name for the context site root. */
-    public static final String N_SITEROOT = "siteroot";
 
     /** The node name for the sites node. */
     public static final String N_SITES = "sites";
@@ -539,9 +500,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the user-guest node. */
     public static final String N_USER_GUEST = "user-guest";
 
-    /** The node name for the context user name. */
-    public static final String N_USERNAME = "user";
-
     /** The node name for the validation handler. */
     public static final String N_VALIDATIONHANDLER = "validationhandler";
 
@@ -598,9 +556,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_cmsMemoryMonitorConfiguration;
-
-    /** The list of jobs for the scheduler. */
-    private List<CmsScheduledJobInfo> m_configuredJobs;
 
     /** The credentials resolver instance. */
     private I_CmsCredentialsResolver m_credentialsResolver;
@@ -676,9 +631,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      *  to improve the unmarshalling performance. */
     private boolean m_saxImplProperties;
 
-    /** The configured schedule manager. */
-    private CmsScheduleManager m_scheduleManager;
-
     /** The configured session storage provider class name. */
     private String m_sessionStorageProvider;
 
@@ -743,25 +695,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Adds a new job description for the scheduler.<p>
-     *
-     * @param jobInfo the job description to add
-     */
-    public void addJobFromConfiguration(CmsScheduledJobInfo jobInfo) {
-
-        m_configuredJobs.add(jobInfo);
-
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(
-                Messages.get().getBundle().key(
-                    Messages.INIT_SCHEDULER_CONFIG_JOB_3,
-                    jobInfo.getJobName(),
-                    jobInfo.getClassName(),
-                    jobInfo.getContextInfo().getUserName()));
-        }
-    }
-
-    /**
      * Adds a new instance of a request handler class.<p>
      *
      * @param clazz the class name of the request handler to instantiate and add
@@ -811,14 +744,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1, clazz));
             }
         }
-    }
-
-    /**
-     * Generates the schedule manager.<p>
-     */
-    public void addScheduleManager() {
-
-        m_scheduleManager = new CmsScheduleManager(m_configuredJobs);
     }
 
     /**
@@ -874,56 +799,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 5, A_USER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 6, A_PASSWORD);
 
-        // add scheduler creation rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SCHEDULER, "addScheduleManager");
-
-        // add scheduler job creation rule
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, CmsScheduledJobInfo.class);
-        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_NAME, "jobName");
-        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CLASS, "className");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CRONEXPRESSION,
-            "cronExpression");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_REUSEINSTANCE,
-            "reuseInstance");
-        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_ACTIVE, "active");
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, "addJobFromConfiguration");
-
-        // add job context creation rule
-        digester.addObjectCreate(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT,
-            CmsContextInfo.class);
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_USERNAME,
-            "userName");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_PROJECT,
-            "projectName");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_SITEROOT,
-            "siteRoot");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REQUESTEDURI,
-            "requestedUri");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_LOCALE,
-            "localeName");
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_ENCODING);
-        digester.addBeanPropertySetter(
-            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REMOTEADDR,
-            "remoteAddr");
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, "setContextInfo");
-
-        // add generic parameter rules (used for jobs, password handler)
-        digester.addCallMethod(
-            "*/" + I_CmsXmlConfiguration.N_PARAM,
-            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
-            2);
-        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
-
         // add event classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, "addEventManager", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, 0, A_CLASS);
@@ -952,6 +827,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             "inputEncoding");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_DIGESTTYPE, "digestType");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
+
+        // add generic parameter rules for password handler
+        digester.addCallMethod(
+            "*/" + I_CmsXmlConfiguration.N_PARAM,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
 
         // add validation handler creation rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler", 1);
@@ -1279,14 +1162,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      */
     public Element generateXml(Element parent) {
 
-        // generate vfs node and subnodes
+        // generate system node and sub notes
         Element systemElement = parent.addElement(N_SYSTEM);
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // initialized OpenCms instance is available, use latest values
             m_localeManager = OpenCms.getLocaleManager();
             m_mailSettings = OpenCms.getSystemInfo().getMailSettings();
-            m_configuredJobs = OpenCms.getScheduleManager().getJobs();
             m_historyEnabled = OpenCms.getSystemInfo().isHistoryEnabled();
             m_historyVersions = OpenCms.getSystemInfo().getHistoryVersions();
             m_historyVersionsAfterDeletion = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
@@ -1338,30 +1220,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
 
         // scheduler node
-        Element schedulerElement = systemElement.addElement(N_SCHEDULER);
-        Iterator<CmsScheduledJobInfo> jobs = m_configuredJobs.iterator();
-        while (jobs.hasNext()) {
-            CmsScheduledJobInfo jobInfo = jobs.next();
-            Element jobElement = schedulerElement.addElement(N_JOB);
-            jobElement.addElement(N_NAME).addText(jobInfo.getJobName());
-            jobElement.addElement(N_CLASS).addText(jobInfo.getClassName());
-            jobElement.addElement(N_REUSEINSTANCE).addText(String.valueOf(jobInfo.isReuseInstance()));
-            jobElement.addElement(N_ACTIVE).addText(String.valueOf(jobInfo.isActive()));
-            jobElement.addElement(N_CRONEXPRESSION).addCDATA(jobInfo.getCronExpression());
-            Element contextElement = jobElement.addElement(N_CONTEXT);
-            contextElement.addElement(N_USERNAME).setText(jobInfo.getContextInfo().getUserName());
-            contextElement.addElement(N_PROJECT).setText(jobInfo.getContextInfo().getProjectName());
-            contextElement.addElement(N_SITEROOT).setText(jobInfo.getContextInfo().getSiteRoot());
-            contextElement.addElement(N_REQUESTEDURI).setText(jobInfo.getContextInfo().getRequestedUri());
-            contextElement.addElement(N_LOCALE).setText(jobInfo.getContextInfo().getLocaleName());
-            contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
-            contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
-            CmsParameterConfiguration jobParameters = jobInfo.getConfiguration();
-            if ((jobParameters != null) && (jobParameters.size() > 0)) {
-                Element parameterElement = jobElement.addElement(N_PARAMETERS);
-                jobParameters.appendToXml(parameterElement);
-            }
-        }
 
         // <events> node
         Element eventsElement = systemElement.addElement(N_EVENTS);
@@ -2163,16 +2021,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Returns the configured schedule manager.<p>
-     *
-     * @return the configured schedule manager
-     */
-    public CmsScheduleManager getScheduleManager() {
-
-        return m_scheduleManager;
-    }
-
-    /**
      * Returns an instance of the configured session storage provider.<p>
      *
      * @return an instance of the configured session storage provider
@@ -2898,7 +2746,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
         m_resourceInitHandlers = new ArrayList<I_CmsResourceInit>();
         m_requestHandlers = new ArrayList<I_CmsRequestHandler>();
-        m_configuredJobs = new ArrayList<CmsScheduledJobInfo>();
         m_runtimeProperties = new HashMap<String, String>();
         m_eventManager = new CmsEventManager();
         if (CmsLog.INIT.isInfoEnabled()) {

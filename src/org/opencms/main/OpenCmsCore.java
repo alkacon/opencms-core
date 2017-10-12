@@ -33,6 +33,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
@@ -1379,8 +1380,6 @@ public final class OpenCmsCore {
         // set content notification settings
         getSystemInfo().setNotificationTime(systemConfiguration.getNotificationTime());
         getSystemInfo().setNotificationProject(systemConfiguration.getNotificationProject());
-        // set the scheduler manager
-        m_scheduleManager = systemConfiguration.getScheduleManager();
         m_executor = new ScheduledThreadPoolExecutor(2);
         // set resource init classes
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
@@ -1402,6 +1401,11 @@ public final class OpenCmsCore {
 
         // get the site manager from the configuration
         m_siteManager = systemConfiguration.getSiteManager();
+
+        CmsSchedulerConfiguration schedulerConfiguration = (CmsSchedulerConfiguration)m_configurationManager.getConfiguration(
+            CmsSchedulerConfiguration.class);
+        // set the scheduler manager
+        m_scheduleManager = schedulerConfiguration.getScheduleManager();
 
         // get the VFS / resource configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(
