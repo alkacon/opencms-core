@@ -91,4 +91,11 @@ public interface I_CmsEditableGroup {
      */
     void remove(CmsEditableGroupRow row);
 
+    /**
+     * Sets the visibility of the add button.<p>
+     *
+     * @param visible true-> add button is visible
+     */
+    void setAddButtonVisible(boolean visible);
+
 }

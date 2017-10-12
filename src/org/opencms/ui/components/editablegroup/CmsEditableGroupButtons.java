@@ -101,13 +101,15 @@ public class CmsEditableGroupButtons extends AbstractComponent implements I_CmsE
      *
      * @param first true if this is the button bar of the first row
      * @param last true if this is the button bar of the last row
+     * @param hideAdd true -> hide add option
      */
-    public void setFirstLast(boolean first, boolean last) {
+    public void setFirstLast(boolean first, boolean last, boolean hideAdd) {
 
         CmsEditableGroupButtonsState state = (CmsEditableGroupButtonsState)getState(false);
         if ((state.isFirst() != first) || (state.isLast() != last)) {
             state.setFirst(first);
             state.setLast(last);
+            state.setAddOptionHidden(hideAdd);
             markAsDirty();
         }
     }

@@ -88,6 +88,7 @@ public class CmsEditableGroupButtonsConnector extends AbstractComponentConnector
         super.onStateChanged(stateChangeEvent);
         getWidget().setFirst(getState().isFirst());
         getWidget().setLast(getState().isLast());
+        getWidget().setHideAdd(getState().isAddOptionHidden());
 
     }
 

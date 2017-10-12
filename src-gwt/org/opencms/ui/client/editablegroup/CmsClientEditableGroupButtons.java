@@ -120,6 +120,16 @@ public class CmsClientEditableGroupButtons extends Composite {
     }
 
     /**
+     * Hides the add button.<p>
+     *
+     * @param hideAdd true-> hide the add button
+     */
+    public void setHideAdd(boolean hideAdd) {
+
+        m_addButton.setVisible(!hideAdd);
+    }
+
+    /**
      * Sets the 'last' status of the button bar.<p>
      *
      * @param last true if this is the button bar of the last row of a multivalue field

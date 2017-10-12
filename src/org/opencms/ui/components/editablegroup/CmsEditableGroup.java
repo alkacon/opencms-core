@@ -71,6 +71,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     /** The error message. */
     private String m_errorMessage;
 
+    /**Should the add option be hidden?*/
+    private boolean m_hideAdd;
+
     /**
      * Creates a new instance.<p>
      *
@@ -82,6 +85,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         AbstractOrderedLayout container,
         Supplier<Component> componentFactory,
         String addButtonCaption) {
+        m_hideAdd = false;
         m_container = container;
         m_factory = componentFactory;
         m_addButton = new Button(addButtonCaption);
@@ -220,6 +224,15 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#setAddButtonVisible(boolean)
+     */
+    public void setAddButtonVisible(boolean visible) {
+
+        m_hideAdd = !visible;
+
+    }
+
+    /**
      * Sets the error message.<p>
      *
      * @param errorMessage the error message
@@ -330,7 +343,8 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         for (CmsEditableGroupRow row : rows) {
             boolean first = i == 0;
             boolean last = i == (rows.size() - 1);
-            row.getButtonBar().setFirstLast(first, last);
+            row.getButtonBar().setFirstLast(first, last, m_hideAdd);
+            //            row.getButtonBar()
             i += 1;
         }
     }
