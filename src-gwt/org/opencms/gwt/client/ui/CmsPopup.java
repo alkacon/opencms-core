@@ -63,6 +63,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -1026,6 +1027,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         boolean fixed = Position.FIXED.getCssName().equals(getElement().getStyle().getPosition());
         boolean wasAlreadyShowing = isShowing();
+        maybeInstallTooltipEventPreview();
         super.show();
         if (fixed) {
             // keep position fixed as it may have been set to absolute
@@ -1331,14 +1333,17 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     protected void onPreviewNativeEvent(NativePreviewEvent event) {
 
+        NativeEvent nativeEvent = event.getNativeEvent();
+        int eventType = event.getTypeInt();
+
         // We need to preventDefault() on mouseDown events (outside of the
         // DialogBox content) to keep text from being selected when it
         // is dragged.
-        NativeEvent nativeEvent = event.getNativeEvent();
 
-        if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && isCaptionEvent(nativeEvent)) {
+        if (!event.isCanceled() && (eventType == Event.ONMOUSEDOWN) && isCaptionEvent(nativeEvent)) {
             nativeEvent.preventDefault();
         }
+
         super.onPreviewNativeEvent(event);
     }
 
@@ -1391,5 +1396,17 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             return m_caption.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
         }
         return false;
+    }
+
+    private void maybeInstallTooltipEventPreview() {
+
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+                //                EventTarget target = event.getEvent
+                //
+                //                event.consume();
+            }
+        });
     }
 }

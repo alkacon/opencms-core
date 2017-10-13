@@ -32,10 +32,13 @@ import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsFieldTooltip.Data;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -82,7 +85,7 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /** The label used for displaying the information icon. */
     @UiField
-    protected Label m_icon;
+    protected Panel m_icon;
 
     /** The label for the form row. */
     @UiField
@@ -147,7 +150,7 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
      *
      * @return the icon
      */
-    public Label getIcon() {
+    public Panel getIcon() {
 
         return m_icon;
     }
@@ -195,12 +198,13 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
         if (info != null) {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(info)) {
                 initInfoStyle();
-                final Label icon = m_icon;
+                final Data tooltipData = new CmsFieldTooltip.Data(m_icon, info, isHtml);
+                final Panel icon = m_icon;
                 icon.addDomHandler(new MouseOverHandler() {
 
                     public void onMouseOver(MouseOverEvent event) {
 
-                        CmsFieldTooltip.showTooltip(icon, info, isHtml);
+                        CmsFieldTooltip.getHandler().buttonHover(tooltipData);
                     }
                 }, MouseOverEvent.getType());
 
@@ -208,10 +212,19 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
                     public void onMouseOut(MouseOutEvent event) {
 
-                        CmsFieldTooltip.closeTooltip();
+                        CmsFieldTooltip.getHandler().buttonOut(tooltipData);
                     }
 
                 }, MouseOutEvent.getType());
+
+                icon.addDomHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+
+                        CmsFieldTooltip.getHandler().buttonClick(tooltipData);
+
+                    }
+                }, ClickEvent.getType());
             }
         }
     }
