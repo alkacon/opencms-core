@@ -20,12 +20,10 @@
 		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/workplace/locales/ru/messages/" destination="WEB-INF/classes/"/>
-			<exportpoint uri="/system/workplace/locales/ru/lib/" destination="WEB-INF/lib/"/>
 			<exportpoint uri="/system/workplace/locales/ru/modules/" destination="WEB-INF/classes/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/locales/ru/messages/"/>
-			<resource uri="/system/workplace/locales/ru/lib/"/>
 			<resource uri="/system/workplace/locales/ru/modules/"/>
 		</resources>
 		<excluderesources/>
@@ -51,28 +49,6 @@
 			<destination>system/workplace/locales/ru</destination>
 			<type>folder</type>
 			<properties/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/lib</destination>
-			<type>folder</type>
-			<uuidstructure>6d96e234-728f-11e1-81ec-6192c87e77fb</uuidstructure>
-			<datecreated>Tue, 20 Mar 2012 13:20:14 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/lib/ru.itdt.web.servlet.filter.jar</source>
-			<destination>system/workplace/locales/ru/lib/ru.itdt.web.servlet.filter.jar</destination>
-			<type>binary</type>
-			<uuidstructure>a1ed02b4-797e-11e1-82c1-6192c87e77fb</uuidstructure>
-			<uuidresource>a1ed02b5-797e-11e1-82c1-6192c87e77fb</uuidresource>
-			<datecreated>Thu, 29 Mar 2012 09:07:38 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/ru/messages</destination>
