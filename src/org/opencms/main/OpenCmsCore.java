@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
@@ -1400,7 +1401,9 @@ public final class OpenCmsCore {
         m_defaultUsers = systemConfiguration.getCmsDefaultUsers();
 
         // get the site manager from the configuration
-        m_siteManager = systemConfiguration.getSiteManager();
+        CmsSitesConfiguration sitesConfiguration = (CmsSitesConfiguration)m_configurationManager.getConfiguration(
+            CmsSitesConfiguration.class);
+        m_siteManager = sitesConfiguration.getSiteManager();
 
         CmsSchedulerConfiguration schedulerConfiguration = (CmsSchedulerConfiguration)m_configurationManager.getConfiguration(
             CmsSchedulerConfiguration.class);

@@ -28,7 +28,7 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.ade.configuration.CmsADEManager;
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -233,8 +233,8 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
 
             OpenCms.getSiteManager().updateSite(m_cms, m_oldSite, m_site);
 
-            // write the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            // write the sites configuration
+            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
             try {
                 m_cms.unlockResource(siteRootResource);
             } catch (CmsLockException e) {

@@ -28,7 +28,7 @@
 package org.opencms.site;
 
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -266,7 +266,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsSitesConfiguration.class);
     }
 
     /**
@@ -1224,7 +1224,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsSitesConfiguration.class);
     }
 
     /**

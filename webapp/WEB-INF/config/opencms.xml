@@ -5,6 +5,7 @@
 	<configuration>
 		<config class="org.opencms.configuration.CmsSystemConfiguration" />
 		<config class="org.opencms.configuration.CmsSchedulerConfiguration" />
+		<config class="org.opencms.configuration.CmsSitesConfiguration" />
 		<config class="org.opencms.configuration.CmsVfsConfiguration" />
 		<config class="org.opencms.configuration.CmsWorkplaceConfiguration" />
 		<config class="org.opencms.configuration.CmsImportExportConfiguration" />

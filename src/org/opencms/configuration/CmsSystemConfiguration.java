@@ -57,9 +57,6 @@ import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManagerImpl;
-import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workflow.I_CmsWorkflowManager;
@@ -68,7 +65,6 @@ import org.opencms.xml.containerpage.CmsADECacheSettings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -96,25 +92,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         standard
     }
 
-    public static final String N_WEBSERVERSCRIPTING_CONFIGTEMPLATE = "configtemplate";
-
-    public static final String N_WEBSERVERSCRIPTING_FILENAMEPREFIX = "filenameprefix";
-    public static final String N_WEBSERVERSCRIPTING_LOGGINGDIR = "loggingdir";
-    public static final String N_WEBSERVERSCRIPTING_SECURETEMPLATE = "securetemplate";
-    public static final String N_WEBSERVERSCRIPTING_TARGETPATH = "targetpath";
-    public static final String N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT = "webserverscript";
-
     /** The attribute name for the deleted node. */
     public static final String A_DELETED = "deleted";
-
-    /** The "error" attribute. */
-    public static final String A_ERROR = "error";
-
-    /** The "errorPage" attribute. */
-    public static final String A_ERROR_PAGE = "errorPage";
-
-    /** The "exclusive" attribute. */
-    public static final String A_EXCLUSIVE = "exclusive";
 
     /** The attribute name for the localization mode. */
     public static final String A_LOCALIZATION_MODE = "localizationMode";
@@ -125,32 +104,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "offline" attribute. */
     public static final String A_OFFLINE = "offline";
 
-    /** The attribute name for the alias offset. */
-    public static final String A_OFFSET = "offset";
-
     /** The "online" attribute. */
     public static final String A_ONLINE = "online";
 
     /** The "poolname" attribute. */
     public static final String A_POOLNAME = "poolname";
 
-    /** The "position" attribute. */
-    public static final String A_POSITION = "position";
-
     /** The "security" attribute. */
     public static final String A_SECURITY = "security";
-
-    /** The "server" attribute. */
-    public static final String A_SERVER = "server";
-
-    /** The "title" attribute. */
-    public static final String A_TITLE = "title";
-
-    /** The "usePermanentRedirects" attribute. */
-    public static final String A_USE_PERMANENT_REDIRECTS = "usePermanentRedirects";
-
-    /** The "webserver" attribute. */
-    public static final String A_WEBSERVER = "webserver";
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
@@ -167,9 +128,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The ade-cache node name. */
     public static final String N_ADE_CACHE = "ade-cache";
 
-    /** The node name for the alias node. */
-    public static final String N_ALIAS = "alias";
-
     /** The node name for the authorization handler. */
     public static final String N_AUTHORIZATIONHANDLER = "authorizationhandler";
 
@@ -185,9 +143,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the cache-offline node. */
     public static final String N_CACHE_OFFLINE = "cache-offline";
 
-    /** The node name which indicates if apache should be configurable in sitemanager. */
-    public static final String N_WEBSERVERSCRIPTING = "webserver-scripting";
-
     /** The configuration node name. */
     public static final String N_CONFIGURATION = "configuration";
 
@@ -199,9 +154,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the defaultcontentencoding node. */
     public static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
-
-    /** The node name for the default-uri node. */
-    public static final String N_DEFAULT_URI = "default-uri";
 
     /** The node name for the defaultusers expression. */
     public static final String N_DEFAULTUSERS = "defaultusers";
@@ -401,26 +353,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the sax-impl-system-properties node. */
     public static final String N_SAX_IMPL_SYSTEM_PROPERTIES = "sax-impl-system-properties";
 
-    /** The node name for the secure site. */
-    public static final String N_SECURE = "secure";
-
     /** The node name for the servlet container settings. */
     public static final String N_SERVLETCONTAINERSETTINGS = "servletcontainer-settings";
 
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
 
-    /** Shared folder node name. */
-    public static final String N_SHARED_FOLDER = "shared-folder";
-
     /** The sitemap node name. */
     public static final String N_SITEMAP = "sitemap";
 
     /** The sitemap-cache node name. */
     public static final String N_SITEMAP_CACHE = "sitemap-cache";
-
-    /** The node name for the sites node. */
-    public static final String N_SITES = "sites";
 
     /** The size of the memory monitor's cache for ACLS. */
     public static final String N_SIZE_ACLS = "size-accesscontrollists";
@@ -511,9 +454,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the workflow configuration. */
     public static final String N_WORKFLOW = "workflow";
-
-    /** The node name for the workplace-server node. */
-    public static final String N_WORKPLACE_SERVER = "workplace-server";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
@@ -633,9 +573,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured session storage provider class name. */
     private String m_sessionStorageProvider;
-
-    /** The configured site manager. */
-    private CmsSiteManagerImpl m_siteManager;
 
     /** The subscription manager. */
     private CmsSubscriptionManager m_subscriptionManager;
@@ -858,52 +795,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMESTART);
         digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMEEND);
         digester.addSetNext("*/" + N_LOGINMESSAGE, "setLoginMessage");
-
-        // add site configuration rule
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManagerImpl.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "addWorkplaceServer", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
-
-        String configApachePath = "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WEBSERVERSCRIPTING;
-        digester.addCallMethod(configApachePath, "setWebServerScripting", 6);
-        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT, 0);
-        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_TARGETPATH, 1);
-        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_CONFIGTEMPLATE, 2);
-        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_SECURETEMPLATE, 3);
-        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_FILENAMEPREFIX, 4);
-        digester.addCallParam(configApachePath + "/" + N_WEBSERVERSCRIPTING_LOGGINGDIR, 5);
-
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
-
-        // add site configuration rule
-        String siteXpath = "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE;
-
-        digester.addCallMethod(siteXpath, "addSite", 10);
-        digester.addCallParam(siteXpath, 0, A_SERVER);
-        digester.addCallParam(siteXpath, 1, A_URI);
-        digester.addCallParam(siteXpath, 2, A_TITLE);
-        digester.addCallParam(siteXpath, 3, A_POSITION);
-        digester.addCallParam(siteXpath, 4, A_ERROR_PAGE);
-        digester.addCallParam(siteXpath, 5, A_WEBSERVER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_SERVER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_EXCLUSIVE);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
-        digester.addCallParam(
-            "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE,
-            9,
-            A_USE_PERMANENT_REDIRECTS);
-        digester.addCallMethod(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "addParamToConfigSite", 2);
-        digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
-        digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
-        // add an alias to the currently configured site
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS,
-            "addAliasToConfigSite",
-            2);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_OFFSET);
-
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SHARED_FOLDER, "setSharedFolder", 0);
 
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SAX_IMPL_SYSTEM_PROPERTIES,
@@ -1174,7 +1065,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             m_historyVersionsAfterDeletion = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
             // m_resourceInitHandlers instance must be the one from configuration
             // m_requestHandlers instance must be the one from configuration
-            m_siteManager = OpenCms.getSiteManager();
             m_loginManager = OpenCms.getLoginManager();
             m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
         }
@@ -1303,78 +1193,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             if (m_loginMessage.getTimeEnd() != CmsLoginMessage.DEFAULT_TIME_END) {
                 messageElement.addElement(N_TIMEEND).addText(String.valueOf(m_loginMessage.getTimeEnd()));
-            }
-        }
-
-        // create <sites> node
-        Element sitesElement = systemElement.addElement(N_SITES);
-        for (String server : m_siteManager.getWorkplaceServers()) {
-            sitesElement.addElement(N_WORKPLACE_SERVER).addText(server);
-        }
-        sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
-        String sharedFolder = m_siteManager.getSharedFolder();
-        if (sharedFolder != null) {
-            sitesElement.addElement(N_SHARED_FOLDER).addText(sharedFolder);
-        }
-        if (m_siteManager.isConfigurableWebServer()) {
-            Element configServer = sitesElement.addElement(N_WEBSERVERSCRIPTING);
-            Map<String, String> configServerMap = m_siteManager.getWebServerConfig();
-            configServer.addElement(N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT).addText(
-                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT));
-            configServer.addElement(N_WEBSERVERSCRIPTING_TARGETPATH).addText(
-                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH));
-            configServer.addElement(N_WEBSERVERSCRIPTING_CONFIGTEMPLATE).addText(
-                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE));
-            configServer.addElement(N_WEBSERVERSCRIPTING_SECURETEMPLATE).addText(
-                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
-            configServer.addElement(N_WEBSERVERSCRIPTING_FILENAMEPREFIX).addText(
-                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX));
-            configServer.addElement(N_WEBSERVERSCRIPTING_LOGGINGDIR).addText(
-                configServerMap.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR));
-        }
-        Iterator<CmsSite> siteIterator = new HashSet<CmsSite>(m_siteManager.getSites().values()).iterator();
-        while (siteIterator.hasNext()) {
-            CmsSite site = siteIterator.next();
-            // create <site server="" uri=""/> subnode(s)
-            Element siteElement = sitesElement.addElement(N_SITE);
-
-            siteElement.addAttribute(A_SERVER, site.getSiteMatcher().toString());
-            siteElement.addAttribute(A_URI, site.getSiteRoot().concat("/"));
-            siteElement.addAttribute(A_TITLE, site.getTitle());
-            siteElement.addAttribute(A_POSITION, Float.toString(site.getPosition()));
-            siteElement.addAttribute(A_ERROR_PAGE, site.getErrorPage());
-            siteElement.addAttribute(A_WEBSERVER, String.valueOf(site.isWebserver()));
-
-            // create <secure server=""/> subnode
-            if (site.hasSecureServer()) {
-                Element secureElem = siteElement.addElement(N_SECURE);
-                secureElem.addAttribute(A_SERVER, site.getSecureUrl());
-
-                secureElem.addAttribute(A_EXCLUSIVE, String.valueOf(site.isExclusiveUrl()));
-                secureElem.addAttribute(A_ERROR, String.valueOf(site.isExclusiveError()));
-                if (site.usesPermanentRedirects()) {
-                    secureElem.addAttribute(A_USE_PERMANENT_REDIRECTS, Boolean.TRUE.toString());
-                }
-            }
-
-            if ((site.getParameters() != null) && !site.getParameters().isEmpty()) {
-                Element parametersElem = siteElement.addElement(N_PARAMETERS);
-                for (Map.Entry<String, String> entry : site.getParameters().entrySet()) {
-                    Element paramElem = parametersElem.addElement(N_PARAM);
-                    paramElem.addAttribute(A_NAME, entry.getKey());
-                    paramElem.addText(entry.getValue());
-                }
-            }
-
-            // create <alias server=""/> subnode(s)
-            Iterator<CmsSiteMatcher> aliasIterator = site.getAliases().iterator();
-            while (aliasIterator.hasNext()) {
-                CmsSiteMatcher matcher = aliasIterator.next();
-                Element aliasElement = siteElement.addElement(N_ALIAS);
-                aliasElement.addAttribute(A_SERVER, matcher.getUrl());
-                if (matcher.getTimeOffset() != 0) {
-                    aliasElement.addAttribute(A_OFFSET, "" + matcher.getTimeOffset());
-                }
             }
         }
 
@@ -2061,16 +1879,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Returns the site manager.<p>
-     *
-     * @return the site manager
-     */
-    public CmsSiteManagerImpl getSiteManager() {
-
-        return m_siteManager;
-    }
-
-    /**
      * Returns the configured subscription manager.<p>
      *
      * @return the configured subscription manager
@@ -2636,19 +2444,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         m_shellServerOptions = new CmsRemoteShellConfiguration(Boolean.parseBoolean(enabled), port);
 
-    }
-
-    /**
-     * Sets the site manager.<p>
-     *
-     * @param siteManager the site manager to set
-     */
-    public void setSiteManager(CmsSiteManagerImpl siteManager) {
-
-        m_siteManager = siteManager;
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
-        }
     }
 
     /**

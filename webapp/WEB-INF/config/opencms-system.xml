@@ -45,17 +45,6 @@
 			<param name="scrypt.settings">16384,8,1</param>
 		</passwordhandler>
 		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
-		<sites>
-			<workplace-server>http://localhost:8080</workplace-server>
-			<default-uri>/sites/default/</default-uri>
-			<shared-folder>/shared/</shared-folder>
-			<site server="http://localhost:8080" uri="/sites/default/">
-				<parameters>
-					<param name="locale.main">en</param>
-					<param name="locale.secondary">de</param>
-				</parameters>
-			</site>
-		</sites>
 		<sax-impl-system-properties>false</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

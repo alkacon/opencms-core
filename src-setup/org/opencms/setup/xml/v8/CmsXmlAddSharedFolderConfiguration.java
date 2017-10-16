@@ -28,7 +28,7 @@
 package org.opencms.setup.xml.v8;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 
@@ -61,7 +61,7 @@ public class CmsXmlAddSharedFolderConfiguration extends A_CmsSetupXmlUpdate {
      */
     public String getXmlFilename() {
 
-        return CmsSystemConfiguration.DEFAULT_XML_FILE_NAME;
+        return CmsSitesConfiguration.DEFAULT_XML_FILE_NAME;
     }
 
     /**
@@ -86,8 +86,7 @@ public class CmsXmlAddSharedFolderConfiguration extends A_CmsSetupXmlUpdate {
 
         StringBuffer xp = new StringBuffer(256);
         xp.append("/").append(CmsConfigurationManager.N_ROOT);
-        xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-        xp.append("/").append(CmsSystemConfiguration.N_SITES);
+        xp.append("/").append(CmsSitesConfiguration.N_SITES);
         return xp.toString();
     }
 
@@ -100,9 +99,8 @@ public class CmsXmlAddSharedFolderConfiguration extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             StringBuffer xp = new StringBuffer(256);
             xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-            xp.append("/").append(CmsSystemConfiguration.N_SITES);
-            xp.append("/").append(CmsSystemConfiguration.N_SHARED_FOLDER);
+            xp.append("/").append(CmsSitesConfiguration.N_SITES);
+            xp.append("/").append(CmsSitesConfiguration.N_SHARED_FOLDER);
             m_xpaths = new ArrayList<String>();
             m_xpaths.add(xp.toString());
         }

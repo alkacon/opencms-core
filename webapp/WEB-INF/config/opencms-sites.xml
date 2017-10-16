@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-sites.dtd">
+
+<opencms>
+	<sites>
+		<workplace-server>http://localhost:8080</workplace-server>
+		<default-uri>/sites/default/</default-uri>
+		<shared-folder>/shared/</shared-folder>
+		<site server="http://localhost:8080" uri="/sites/default/">
+			<parameters>
+				<param name="locale.main">en</param>
+				<param name="locale.secondary">de</param>
+			</parameters>
+		</site>
+	</sites>
+</opencms>

@@ -34,6 +34,7 @@ import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsPersistenceUnitConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
@@ -1692,29 +1693,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 // /opencms/system/sites/workplace-server
                 StringBuffer xp = new StringBuffer(256);
                 xp.append("/").append(CmsConfigurationManager.N_ROOT);
-                xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-                xp.append("/").append(CmsSystemConfiguration.N_SITES);
-                xp.append("/").append(CmsSystemConfiguration.N_WORKPLACE_SERVER);
+                xp.append("/").append(CmsSitesConfiguration.N_SITES);
+                xp.append("/").append(CmsSitesConfiguration.N_WORKPLACE_SERVER);
 
-                getXmlHelper().setValue(
-                    CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                    xp.toString(),
-                    getWorkplaceSite());
+                getXmlHelper().setValue(CmsSitesConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
 
                 // /opencms/system/sites/site[@uri='/sites/default/']/@server
                 xp = new StringBuffer(256);
                 xp.append("/").append(CmsConfigurationManager.N_ROOT);
-                xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-                xp.append("/").append(CmsSystemConfiguration.N_SITES);
+                xp.append("/").append(CmsSitesConfiguration.N_SITES);
                 xp.append("/").append(I_CmsXmlConfiguration.N_SITE);
                 xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
                 xp.append("='").append(CmsResource.VFS_FOLDER_SITES);
-                xp.append("/default/']/@").append(CmsSystemConfiguration.A_SERVER);
+                xp.append("/default/']/@").append(CmsSitesConfiguration.A_SERVER);
 
-                getXmlHelper().setValue(
-                    CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                    xp.toString(),
-                    getWorkplaceSite());
+                getXmlHelper().setValue(CmsSitesConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
 
                 if (m_driverType == DRIVER_TYPE_JPA) {
                     // /opencms/system/runtimeclasses/runtimeinfo

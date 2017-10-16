@@ -32,7 +32,7 @@
 package org.opencms.workplace.tools.sites;
 
 import org.opencms.ade.configuration.CmsADEManager;
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -266,8 +266,8 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     Collections.singletonList(newSite.getUrl()),
                     OpenCms.getSiteManager().getSharedFolder());
             }
-            // write the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            // write the site configuration
+            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
             // refresh the list of sites
             Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {

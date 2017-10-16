@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.tools.sites;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
@@ -237,7 +237,7 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
             try {
                 // update the XML configuration
                 OpenCms.getSiteManager().updateSite(getCms(), site, site);
-                OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                OpenCms.writeConfiguration(CmsSitesConfiguration.class);
             } catch (CmsException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SITES_WEBSERVER_1, site), e);
@@ -406,6 +406,19 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
 
             /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            @Override
+            public CmsMessageContainer getHelpText() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_HELP_0);
+                }
+            }
+
+            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
             @Override
@@ -416,15 +429,6 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
                 } else {
                     return ICON_DELETE_INACTIVE;
                 }
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
-             */
-            @Override
-            public boolean isEnabled() {
-
-                return !OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId());
             }
 
             /**
@@ -441,16 +445,12 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
             }
 
             /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
             @Override
-            public CmsMessageContainer getHelpText() {
+            public boolean isEnabled() {
 
-                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
-                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0);
-                } else {
-                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_HELP_0);
-                }
+                return !OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId());
             }
         };
         removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
