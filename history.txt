@@ -25,6 +25,7 @@ OpenCms 10.5.3 - October 18, 2017
 * Fixed problem with network share module export not handling non-folder module resources correctly.
 * Fixing issue where changing model group root element could lead to invalid formatter settings.
 * Fixed bug in TinyMCE integration code which prevented opening the gallery dialog when editing XMLPages with Chrome.
+* Fixing performance issue when editing relations using Postgres.
 
 
 OpenCms 10.5.2 - July 12, 2017
