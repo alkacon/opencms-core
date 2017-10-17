@@ -162,6 +162,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         // initialize macro resolver to use on model file values
         CmsMacroResolver macroResolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+        macroResolver.setKeepEmptyMacros(true);
 
         // content defition must be set here since it's used during document creation
         m_contentDefinition = model.getContentDefinition();
