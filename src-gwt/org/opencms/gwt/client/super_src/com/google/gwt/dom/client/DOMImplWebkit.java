@@ -15,8 +15,6 @@
  */
 package com.google.gwt.dom.client;
 
-/** Fixing positioning issue due to API changes in Chrome. See https://github.com/gwtproject/gwt/commit/88a028f6b74ecc529a4b878301448d057d2c6e89 */
-
 /**
  * WebKit based implementation of {@link com.google.gwt.dom.client.DOMImplStandardBase}.
  */

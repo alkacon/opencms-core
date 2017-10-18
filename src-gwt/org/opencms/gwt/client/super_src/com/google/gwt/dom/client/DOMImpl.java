@@ -21,8 +21,6 @@ import com.google.gwt.core.client.JsArray;
 abstract class DOMImpl {
 
   static final DOMImpl impl = GWT.create(DOMImpl.class);
-  
-  /** Fixing positioning issue due to API changes in Chrome. See https://github.com/gwtproject/gwt/commit/88a028f6b74ecc529a4b878301448d057d2c6e89 */
 
   /**
    * Fast helper method to convert small doubles to 32-bit int.
@@ -90,6 +88,14 @@ abstract class DOMImpl {
     ScriptElement elem = (ScriptElement) createElement(doc, "script");
     elem.setText(source);
     return elem;
+  }
+
+  public SelectElement createSelectElement(Document doc, boolean multiple) {
+    SelectElement select = (SelectElement) createElement(doc, "select");
+    if (multiple) {
+      select.setMultiple(true);
+    }
+    return select;
   }
 
   public native void cssClearOpacity(Style style) /*-{
@@ -303,6 +309,14 @@ abstract class DOMImpl {
     return elem.hasAttribute(name);
 }-*/;
 
+  public native String imgGetSrc(Element img) /*-{
+    return img.src;
+}-*/;
+
+  public native void imgSetSrc(Element img, String src) /*-{
+    img.src = src;
+}-*/;
+
   public abstract boolean isOrHasChild(Node parent, Node child);
 
   public native void scrollIntoView(Element elem) /*-{
@@ -424,6 +438,17 @@ abstract class DOMImpl {
   public native EventTarget touchGetTarget(Touch touch) /*-{
     return touch.target;
 }-*/;
+  
+  private Element ensureDocumentScrollingElement(Document document) {
+          // In some case (e.g SVG document and old Webkit browsers), getDocumentScrollingElement can
+          // return null. In this case, default to documentElement.
+          Element scrollingElement = getDocumentScrollingElement(document);
+          return scrollingElement != null ? scrollingElement : document.getDocumentElement();
+        }
+      
+        Element getDocumentScrollingElement(Document doc)  {
+          return doc.getViewportElement();
+        }
 
   private native double getSubPixelAbsoluteLeft(Element elem) /*-{
     var left = 0;
@@ -498,15 +523,4 @@ abstract class DOMImpl {
   private native double eventGetSubPixelClientY(NativeEvent evt) /*-{
     return evt.clientY || 0;
 }-*/;
-  
-  private Element ensureDocumentScrollingElement(Document document) {
-          // In some case (e.g SVG document and old Webkit browsers), getDocumentScrollingElement can
-          // return null. In this case, default to documentElement.
-          Element scrollingElement = getDocumentScrollingElement(document);
-          return scrollingElement != null ? scrollingElement : document.getDocumentElement();
-        }
-      
-        Element getDocumentScrollingElement(Document doc)  {
-          return doc.getViewportElement();
-        }
 }

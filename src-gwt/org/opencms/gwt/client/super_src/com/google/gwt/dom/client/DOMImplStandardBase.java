@@ -17,8 +17,6 @@ package com.google.gwt.dom.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-/** Fixing positioning issue due to API changes in Chrome. See https://github.com/gwtproject/gwt/commit/88a028f6b74ecc529a4b878301448d057d2c6e89 */
-
 /**
  * StandardBase implementation of {@link com.google.gwt.user.client.impl.DOMImpl}.
  */
@@ -64,7 +62,8 @@ class DOMImplStandardBase extends DOMImplStandard {
             // In RTL mode, offsetLeft is relative to the left edge of the
             // scrollable area when scrolled all the way to the right, so we need
             // to add back that difference.
-            if (doc.defaultView.getComputedStyle(curr, '').getPropertyValue('direction') == 'rtl') {
+            if (doc.defaultView.getComputedStyle(curr, '')
+                    .getPropertyValue('direction') == 'rtl') {
                 left += (curr.scrollWidth - curr.clientWidth);
             }
 
@@ -84,12 +83,14 @@ class DOMImplStandardBase extends DOMImplStandard {
         // the borders of the parent manually.
         var parent = elem.offsetParent;
         if (parent && $wnd.devicePixelRatio) {
-            left += parseInt(doc.defaultView.getComputedStyle(parent, '').getPropertyValue('border-left-width'));
+            left += parseInt(doc.defaultView.getComputedStyle(parent, '')
+                    .getPropertyValue('border-left-width'));
         }
 
         // Safari bug: a top-level absolutely positioned element includes the
         // body's offset position already.
-        if (parent && (parent.tagName == 'BODY') && (elem.style.position == 'absolute')) {
+        if (parent && (parent.tagName == 'BODY')
+                && (elem.style.position == 'absolute')) {
             break;
         }
 
@@ -128,12 +129,14 @@ class DOMImplStandardBase extends DOMImplStandard {
         // borders of the parent manually.
         var parent = elem.offsetParent;
         if (parent && $wnd.devicePixelRatio) {
-            top += parseInt(doc.defaultView.getComputedStyle(parent, '').getPropertyValue('border-top-width'));
+            top += parseInt(doc.defaultView.getComputedStyle(parent, '')
+                    .getPropertyValue('border-top-width'));
         }
 
         // Safari bug: a top-level absolutely positioned element includes the
         // body's offset position already.
-        if (parent && (parent.tagName == 'BODY') && (elem.style.position == 'absolute')) {
+        if (parent && (parent.tagName == 'BODY')
+                && (elem.style.position == 'absolute')) {
             break;
         }
 
@@ -210,7 +213,7 @@ class DOMImplStandardBase extends DOMImplStandard {
   public int getAbsoluteLeft(Element elem) {
     ClientRect rect = getBoundingClientRect(elem);
     double left = rect != null ? rect.getSubPixelLeft()
-    + getScrollLeft(elem.getOwnerDocument())
+        + getScrollLeft(elem.getOwnerDocument())
         : getAbsoluteLeftUsingOffsets(elem);
     return toInt32(left);
   }
@@ -219,7 +222,7 @@ class DOMImplStandardBase extends DOMImplStandard {
   public int getAbsoluteTop(Element elem) {
     ClientRect rect = getBoundingClientRect(elem);
     double top = rect != null ? rect.getSubPixelTop()
-    + getScrollTop(elem.getOwnerDocument())
+        + getScrollTop(elem.getOwnerDocument())
         : getAbsoluteTopUsingOffsets(elem);
     return toInt32(top);
   }

@@ -15,8 +15,6 @@
  */
 package com.google.gwt.dom.client;
 
-/** Fixing positioning issue due to API changes in Chrome. See https://github.com/gwtproject/gwt/commit/88a028f6b74ecc529a4b878301448d057d2c6e89 */
-
 /**
  * Base implementation of {@link com.google.gwt.user.client.impl.DOMImpl} shared
  * by those browsers that come a bit closer to supporting a common standard (ie,
@@ -59,8 +57,9 @@ abstract class DOMImplStandard extends DOMImpl {
     }
 
     var evt = doc.createEvent('MouseEvents');
-    evt.initMouseEvent(type, canBubble, cancelable, null, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey,
-            shiftKey, metaKey, button, relatedTarget);
+    evt.initMouseEvent(type, canBubble, cancelable, null, detail, screenX,
+                       screenY, clientX, clientY, ctrlKey, altKey, shiftKey,
+                       metaKey, button, relatedTarget);
 
     return evt;
 }-*/;
