@@ -44,6 +44,11 @@
 		.tooltip .label > p:last-child {
 			margin-bottom: 0px;
 		}
+		
+		@external indent; 
+		.tooltip .label .indent {
+			margin-left: 20px;
+		}
 	
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.tooltip}">
