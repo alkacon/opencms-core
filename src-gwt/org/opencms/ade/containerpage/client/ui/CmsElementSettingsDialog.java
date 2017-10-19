@@ -103,8 +103,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         protected CmsFormRow createRow(I_CmsFormField field) {
 
             final String htmlDesc = field.getDescription();
-            String plainDesc = CmsDomUtil.stripHtml(htmlDesc);
-            CmsFormRow row = createRow(field.getLabel(), plainDesc, (Widget)field.getWidget(), htmlDesc, true);
+            CmsFormRow row = createRow(
+                field.getLabel(),
+                A_CmsFormFieldPanel.NO_DESCRIPTION,
+                (Widget)field.getWidget(),
+                htmlDesc,
+                true);
             return row;
         }
 

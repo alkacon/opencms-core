@@ -47,6 +47,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTruncable {
 
+    public static final String NO_DESCRIPTION = "!nodescription";
+
     /** Stored truncation text metrics key. */
     protected String m_truncationMetricsKey;
 
@@ -149,7 +151,9 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
         CmsFormRow row = new CmsFormRow();
         Label label = row.getLabel();
         label.setText(labelText);
-        label.setTitle(CmsStringUtil.isNotEmptyOrWhitespaceOnly(description) ? description : labelText);
+        if (description != NO_DESCRIPTION) {
+            label.setTitle(CmsStringUtil.isNotEmptyOrWhitespaceOnly(description) ? description : labelText);
+        }
         row.setInfo(infoText, infoIsHtml);
         row.getWidgetContainer().add(widget);
 
