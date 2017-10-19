@@ -45,6 +45,8 @@
 			margin-bottom: 0px;
 		}
 		
+		/** Insert special CSS for tooltips here. */ 
+		
 		@external indent; 
 		.tooltip .label .indent {
 			margin-left: 20px;
