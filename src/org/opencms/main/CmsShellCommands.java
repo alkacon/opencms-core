@@ -170,7 +170,8 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Change the user settings concerned with the place where a user is taken on login
+     * Change the user settings concerned with the place where a user is taken on login.<p>
+     *
      * @param username the name of the user for which the data should be changed
      * @param startProject the start project
      * @param startSite the start site
@@ -273,6 +274,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the created folder
      * @throws Exception if somthing goes wrong
      */
+    @SuppressWarnings("deprecation")
     public CmsResource createFolder(String targetFolder, String folderName) throws Exception {
 
         if (m_cms.existsResource(targetFolder + folderName)) {
@@ -405,7 +407,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1417,6 +1419,50 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void unlockCurrentProject() throws Exception {
 
         m_cms.unlockProject(m_cms.getRequestContext().getCurrentProject().getUuid());
+    }
+
+    /**
+     * Updates a module with another revision in case their module versions differ.<p>
+     *
+     * @param importFile the name of the import file
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void updateModule(String importFile) throws Exception {
+
+        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importFile);
+        String moduleName = module.getName();
+        if (OpenCms.getModuleManager().getModule(moduleName) != null) {
+            String moduleVersion = module.getVersionStr();
+            String oldVersion = OpenCms.getModuleManager().getModule(moduleName).getVersionStr();
+            if (((oldVersion != null) && !oldVersion.equals(moduleVersion))
+                || !((oldVersion == null) && (moduleVersion == null))) {
+                // the import version does not equal the present module version, replace the module
+                OpenCms.getModuleManager().deleteModule(
+                    m_cms,
+                    moduleName,
+                    true,
+                    new CmsShellReport(m_cms.getRequestContext().getLocale()));
+                importModule(importFile);
+            }
+        } else {
+            importModule(importFile);
+        }
+    }
+
+    /**
+     * Updates a module with another revision in case their module versions differ.<p>
+     *
+     * @param importFile the name of the import file
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void updateModuleFromDefault(String importFile) throws Exception {
+
+        String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
+        updateModule(fileName);
     }
 
     /**
