@@ -79,9 +79,6 @@ public class CmsResultFacets extends VerticalLayout {
     /** The list manager instance. */
     private CmsListManager m_manager;
 
-    /** The selected categories. */
-    private List<String> m_selectedCategories;
-
     /** The selected field facets. */
     private Map<String, List<String>> m_selectedFieldFacets;
 
@@ -101,10 +98,10 @@ public class CmsResultFacets extends VerticalLayout {
      */
     public CmsResultFacets(CmsListManager manager) {
         m_manager = manager;
-        m_selectedCategories = new ArrayList<String>();
         m_selectedFieldFacets = new HashMap<String, List<String>>();
         m_selectedRangeFacets = new HashMap<String, List<String>>();
         m_selectedFolders = new ArrayList<String>();
+        m_useFullPathCategories = true;
         addStyleName("v-scrollable");
         setMargin(true);
         setSpacing(true);
@@ -245,9 +242,9 @@ public class CmsResultFacets extends VerticalLayout {
 
                 String currentPath = "";
                 boolean isFirst = true;
-                for (String part : m_selectedCategories) {
+                for (String part : categoryPath.split("/")) {
                     currentPath += part + "/";
-                    CmsCategory cat = CmsCategoryService.getInstance().localizeCategory(
+                    CmsCategory cat = catService.localizeCategory(
                         cms,
                         catService.readCategory(cms, currentPath, "/"),
                         locale);
