@@ -179,6 +179,12 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
     @UiField
     protected HasText m_userLastModified;
 
+    /**
+     * Contains the additional information lines.<p>
+     */
+    @UiField
+    protected FlowPanel m_additionalParams;
+
     /** The context menu handler. */
     private CmsContextMenuHandler m_menuHandler;
 
@@ -262,13 +268,13 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
         } else {
             m_locales.setText("");
         }
-        m_infoPanel.clear();
+        m_additionalParams.clear();
         if (status.getAdditionalAttributes() != null) {
             for (Entry<String, String> entry : status.getAdditionalAttributes().entrySet()) {
                 CmsResourceInfoLine line = new CmsResourceInfoLine();
                 line.setLabel(entry.getKey());
                 line.setText(entry.getValue());
-                m_infoPanel.add(line);
+                m_additionalParams.add(line);
             }
         }
 

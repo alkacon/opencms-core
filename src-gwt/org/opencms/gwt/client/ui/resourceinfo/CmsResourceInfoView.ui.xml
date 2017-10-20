@@ -48,6 +48,8 @@
 				<local:CmsResourceInfoLine ui:field="m_dateReleased" label="{m.messageLabelDateReleased}" />
 				<local:CmsResourceInfoLine ui:field="m_dateExpired" label="{m.messageLabelDateExpired}" />
 				<local:CmsResourceInfoLine useHtml="true" ui:field="m_locales" label="{m.messageLabelLocales}" />
+				<g:FlowPanel ui:field="m_additionalParams"> 
+				</g:FlowPanel>
 			</g:FlowPanel>
 		</cms:CmsScrollPanel>
 		</cms:CmsFieldSet>
