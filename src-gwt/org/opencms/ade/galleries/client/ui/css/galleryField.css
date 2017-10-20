@@ -65,6 +65,9 @@ div.fieldBox > div.uploadButton > input{
 	margin:3px 0px 0px 0px;
 	min-height: 40px;
 }
+.resourceInfo:empty{
+	display:none;
+}
 
 .hasImage .fieldBox{
 	margin-left: 170px;
