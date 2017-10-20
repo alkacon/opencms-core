@@ -30,7 +30,6 @@ package org.opencms.configuration;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
-import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
@@ -52,7 +51,6 @@ import org.opencms.rmi.CmsRemoteShellConstants;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsDefaultCredentialsResolver;
 import org.opencms.security.CmsDefaultValidationHandler;
-import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
@@ -179,9 +177,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the email-sender node. */
     public static final String N_EMAIL_SENDER = "email-sender";
 
-    /** The node name for the login message enabled flag. */
-    public static final String N_ENABLED = "enabled";
-
     /** The node name for the login security option enabled flag. */
     public static final String N_ENABLESCURITY = "enableSecurity";
 
@@ -239,14 +234,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the log-interval node. */
     public static final String N_LOG_INTERVAL = "log-interval";
 
-    /** The node name for the login message login forbidden flag. */
-    public static final String N_LOGINFORBIDDEN = "loginForbidden";
-
     /** The node name for the login manager. */
     public static final String N_LOGINMANAGER = "loginmanager";
-
-    /** The node name for the login message. */
-    public static final String N_LOGINMESSAGE = "loginmessage";
 
     /** The node name for the mail configuration. */
     public static final String N_MAIL = "mail";
@@ -274,9 +263,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the memorymonitor node. */
     public static final String N_MEMORYMONITOR = "memorymonitor";
-
-    /** The node name for the login message text. */
-    public static final String N_MESSAGE = "message";
 
     /** The duration after which responsibles will be notified about out-dated content. */
     public static final String N_NOTIFICATION_PROJECT = "notification-project";
@@ -416,12 +402,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The main system configuration node name. */
     public static final String N_SYSTEM = "system";
 
-    /** The node name for the login message end time. */
-    public static final String N_TIMEEND = "timeEnd";
-
-    /** The node name for the login message start time. */
-    public static final String N_TIMESTART = "timeStart";
-
     /** The node name for the time zone configuration. */
     public static final String N_TIMEZONE = "timezone";
 
@@ -526,9 +506,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured login manager. */
     private CmsLoginManager m_loginManager;
-
-    /** The configured login message. */
-    private CmsLoginMessage m_loginMessage;
 
     /** The mail settings. */
     private CmsMailSettings m_mailSettings;
@@ -786,15 +763,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAX_INACTIVE_TIME, 4);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_PASSWORD_CHANGE_INTERVAL, 5);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_USER_DATA_CHECK_INTERVAL, 6);
-
-        // add login message creation rules
-        digester.addObjectCreate("*/" + N_LOGINMESSAGE, CmsLoginMessage.class);
-        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_ENABLED);
-        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_MESSAGE);
-        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_LOGINFORBIDDEN);
-        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMESTART);
-        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMEEND);
-        digester.addSetNext("*/" + N_LOGINMESSAGE, "setLoginMessage");
 
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SAX_IMPL_SYSTEM_PROPERTIES,
@@ -1066,7 +1034,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             // m_resourceInitHandlers instance must be the one from configuration
             // m_requestHandlers instance must be the one from configuration
             m_loginManager = OpenCms.getLoginManager();
-            m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
         }
 
         // i18n nodes
@@ -1179,20 +1146,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (m_loginManager.getUserDataCheckIntervalStr() != null) {
                 managerElement.addElement(N_USER_DATA_CHECK_INTERVAL).addText(
                     m_loginManager.getUserDataCheckIntervalStr());
-            }
-        }
-
-        // login message
-        if (m_loginMessage != null) {
-            Element messageElement = systemElement.addElement(N_LOGINMESSAGE);
-            messageElement.addElement(N_ENABLED).addText(String.valueOf(m_loginMessage.isEnabled()));
-            messageElement.addElement(N_MESSAGE).addCDATA(m_loginMessage.getMessage());
-            messageElement.addElement(N_LOGINFORBIDDEN).addText(String.valueOf(m_loginMessage.isLoginForbidden()));
-            if (m_loginMessage.getTimeStart() != CmsLoginMessage.DEFAULT_TIME_START) {
-                messageElement.addElement(N_TIMESTART).addText(String.valueOf(m_loginMessage.getTimeStart()));
-            }
-            if (m_loginMessage.getTimeEnd() != CmsLoginMessage.DEFAULT_TIME_END) {
-                messageElement.addElement(N_TIMEEND).addText(String.valueOf(m_loginMessage.getTimeEnd()));
             }
         }
 
@@ -1690,14 +1643,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 null,
                 null,
                 null);
-        }
-        if (m_loginMessage != null) {
-            // null OpenCms object is ok during configuration
-            try {
-                m_loginManager.setLoginMessage(null, m_loginMessage);
-            } catch (CmsRoleViolationException e) {
-                // this should never happen
-            }
         }
         return m_loginManager;
     }
@@ -2224,24 +2169,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     new Integer(disableMinutes),
                     new Integer(maxBadAttempts),
                     new Boolean(enableSecurity)));
-        }
-    }
-
-    /**
-     * Adds the login message from the configuration.<p>
-     *
-     * @param message the login message to add
-     */
-    public void setLoginMessage(CmsLoginMessage message) {
-
-        m_loginMessage = message;
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(
-                Messages.get().getBundle().key(
-                    Messages.INIT_LOGINMESSAGE_3,
-                    Boolean.valueOf(message.isEnabled()),
-                    Boolean.valueOf(message.isLoginForbidden()),
-                    message.getMessage()));
         }
     }
 

@@ -1,0 +1,22 @@
+<!--
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (variables)>
+
+<!--
+# Contains frequently changing configuration options, that may be changed through workplace tools.
+-->
+<!ELEMENT variables (loginmessage?)>
+
+<!--
+# Login message:
+# This is a message which is displayed to each user upon login.
+# Also, the login can be forbidden for all non-Admin users.
+-->
+<!ELEMENT loginmessage (enabled, message, loginForbidden, timeStart?, timeEnd?)>
+
+<!ELEMENT enabled (#PCDATA)>
+<!ELEMENT message (#PCDATA)>
+<!ELEMENT loginForbidden (#PCDATA)>
+<!ELEMENT timeStart (#PCDATA)>
+<!ELEMENT timeEnd (#PCDATA)>

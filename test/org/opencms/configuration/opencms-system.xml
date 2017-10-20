@@ -43,11 +43,6 @@
 			<maxBadAttempts>3</maxBadAttempts>
 			<enableSecurity>false</enableSecurity>
 		</loginmanager>	
-		<loginmessage>
-			<enabled>false</enabled>
-			<message><![CDATA[This is just a test login message]]></message>
-			<loginForbidden>false</loginForbidden>
-		</loginmessage>
 		<sax-impl-system-properties>true</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

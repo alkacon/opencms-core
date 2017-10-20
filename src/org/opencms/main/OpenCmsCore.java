@@ -37,6 +37,7 @@ import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.db.CmsAliasManager;
@@ -1410,6 +1411,9 @@ public final class OpenCmsCore {
         // set the scheduler manager
         m_scheduleManager = schedulerConfiguration.getScheduleManager();
 
+        CmsVariablesConfiguration variablesConfiguration = (CmsVariablesConfiguration)m_configurationManager.getConfiguration(
+            CmsVariablesConfiguration.class);
+
         // get the VFS / resource configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(
             CmsVfsConfiguration.class);
@@ -1492,6 +1496,12 @@ public final class OpenCmsCore {
 
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
+        // set the login message
+        try {
+            m_loginManager.setLoginMessage(null, variablesConfiguration.getLoginMessage());
+        } catch (CmsRoleViolationException e1) {
+            CmsLog.INIT.error(e1.getLocalizedMessage(), e1);
+        }
 
         // initialize the publish engine
         m_publishEngine = new CmsPublishEngine(systemConfiguration.getRuntimeInfoFactory());
