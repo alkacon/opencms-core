@@ -388,7 +388,7 @@ div.helpBubble{
 	top: 100%;
 	left: 2px;
 	display: none;
-	padding: 7px 19px 3px 5px;
+	padding: 7px 19px 5px 5px;
 	border-radius:value("constants.css.borderRadius");
 	z-index: 10;
 	box-shadow: 2px 2px 2px #666666;
@@ -480,6 +480,17 @@ div.helpBubble{
 
 .hasError > .helpBubble > .helpBubbleArrow{
 	background-color: #ffcccc;
+}
+
+.helpBubble p {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 5px; 
+}
+		
+.helpBubble p:last-child {
+	margin-bottom: 0px;
 }
 
 .entity .attributeValue > div, .dragHelper.attributeValue > div{
