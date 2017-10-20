@@ -27,7 +27,7 @@
 
 package org.opencms.workplace.tools.workplace;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -95,7 +95,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
             // set the edited message
             OpenCms.getLoginManager().setLoginMessage(getCms(), m_loginMessage);
             // update the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
             // clear the message object
             setDialogObject(null);
         } catch (Throwable t) {

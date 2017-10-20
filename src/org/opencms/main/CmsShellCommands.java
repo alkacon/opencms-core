@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
@@ -215,7 +216,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void clearLoginMessage() throws CmsRoleViolationException {
 
         OpenCms.getLoginManager().setLoginMessage(m_cms, null);
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
     }
 
     /**
@@ -404,7 +405,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1317,7 +1318,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         CmsLoginMessage message = new CmsLoginMessage(0, 0, messageText, loginDisabled);
         OpenCms.getLoginManager().setLoginMessage(m_cms, message);
-        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+        OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
     }
 
     /**

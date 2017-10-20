@@ -27,7 +27,7 @@
 
 package org.opencms.ui.apps.sessions;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -243,7 +243,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
         try {
             OpenCms.getLoginManager().setLoginMessage(A_CmsUI.getCmsObject(), loginMessage);
             // update the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
             m_ok.setEnabled(false);
         } catch (CmsRoleViolationException e) {
             LOG.error("Unable to save Login Message", e);
