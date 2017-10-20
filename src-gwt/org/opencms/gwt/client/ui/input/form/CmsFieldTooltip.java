@@ -76,7 +76,7 @@ public class CmsFieldTooltip extends Composite {
         public void buttonClick(Data data) {
 
             if (m_tooltip != null) {
-                m_tooltip.makePersisten();
+                m_tooltip.makePersistent();
             }
         }
 
@@ -372,7 +372,7 @@ public class CmsFieldTooltip extends Composite {
      * Makes the tooltip persistent, i.e. it can no longer be closed by leaving the button with the mouse cursor,
      * but needs to be closed by clicking somewhere else.<p>
      */
-    public void makePersisten() {
+    public void makePersistent() {
 
         m_persistent = true;
     }
