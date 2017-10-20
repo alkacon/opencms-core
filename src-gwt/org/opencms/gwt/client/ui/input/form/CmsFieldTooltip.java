@@ -139,39 +139,50 @@ public class CmsFieldTooltip extends Composite {
         }
 
         /**
+         * Gets the target element for a native event, or null if there is no target element.<p>
+         *
+         * @param nativeEvent the native event
+         * @return the target element, or null if there is no target element
+         */
+        public Element getTargetElement(NativeEvent nativeEvent) {
+
+            EventTarget target = nativeEvent.getEventTarget();
+            Element targetElement = null;
+            if (Element.is(target)) {
+                targetElement = Element.as(target);
+            }
+            return targetElement;
+        }
+
+        /**
          * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
          */
         public void onPreviewNativeEvent(NativePreviewEvent event) {
 
             int eventType = event.getTypeInt();
             NativeEvent nativeEvent = event.getNativeEvent();
-            if (eventType == Event.ONMOUSEWHEEL) {
-                // Scrolling would shift the tooltips relative to the page
-                CmsFieldTooltip.getHandler().closeTooltip();
-            }
-            EventTarget target = nativeEvent.getEventTarget();
-            Element targetElement = null;
-            if (Element.is(target)) {
-                targetElement = Element.as(target);
-            }
+            switch (eventType) {
+                case Event.ONMOUSEWHEEL:
+                    closeTooltip();
+                    break;
+                case Event.ONMOUSEDOWN:
+                    if (tooltipContains(getTargetElement(nativeEvent))) {
+                        event.consume();
+                        return;
+                    } else {
+                        closeTooltip();
+                    }
+                    break;
+                case Event.ONCLICK:
+                    if (tooltipContains(getTargetElement(nativeEvent))) {
+                        event.consume();
+                        return;
+                    }
+                    break;
+                default: // do nothing
+                    break;
 
-            // Allow click and mousedown events on the tooltip and the tooltip icon,
-            // close tooltip for mousedown events anywhere else
-            if (eventType == Event.ONMOUSEDOWN) {
-                if (CmsFieldTooltip.getHandler().tooltipContains(targetElement)) {
-                    event.consume();
-                    return;
-                } else {
-                    CmsFieldTooltip.getHandler().closeTooltip();
-                }
             }
-            if (eventType == Event.ONCLICK) {
-                if (CmsFieldTooltip.getHandler().tooltipContains(targetElement)) {
-                    event.consume();
-                    return;
-                }
-            }
-
         }
 
         /**
