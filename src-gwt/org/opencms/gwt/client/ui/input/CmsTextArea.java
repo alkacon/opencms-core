@@ -108,9 +108,6 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
     /** The 'ghost value' to display when no value is set. */
     private String m_ghostValue;
 
-    /** The previous value. */
-    private String m_previousValue;
-
     /** The real, logical value which might be different from the value displayed in the internal textarea. */
     private String m_realValue = "";
 
@@ -610,6 +607,7 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
 
         if (CmsStringUtil.isEmpty(m_realValue)) {
             if (CmsStringUtil.isEmpty(m_ghostValue)) {
+                updateTextArea(m_realValue);
                 return;
             }
             if (!m_focus) {

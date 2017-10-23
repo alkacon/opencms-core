@@ -620,7 +620,6 @@ public class CmsAttributeHandler extends CmsRootHandler {
                     m_widgetService.getAttributeHelp(m_attributeName));
             }
             CmsRenderer.setAttributeChoice(m_widgetService, valueView, getAttributeType());
-            Widget parentWidget = null;
             m_attributeValueViews.remove(valueView);
             m_attributeValueViews.add(index, valueView);
 
@@ -845,6 +844,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
      * Removes the reference attribute value view.<p>
      *
      * @param reference the reference view
+     * @param force <code>true</code> if the widget should be removed even if it is the last one
      */
     public void removeAttributeValue(CmsAttributeValueView reference, boolean force) {
 
@@ -910,8 +910,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
      * the parent widget.<p>
      *
      * @param valueIndex the value index
-     * @param force true if the widget should be removed even if it is the last one
-     * @return
+     * @param force <code>true</code> if the widget should be removed even if it is the last one
+     *
+     * @return the parent widget
      */
     public Panel removeAttributeValueAndReturnPrevParent(int valueIndex, boolean force) {
 
