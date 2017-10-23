@@ -72,9 +72,6 @@ public final class OpenCmsTheme {
     public static final String BUTTON_OVERLAY_CYAN = "o-button-overlay-cyan";
 
     /** CSS style name. */
-    public static final String TABLE_CONST_COLOR = "o-table-const-color";
-
-    /** CSS style name. */
     public static final String BUTTON_OVERLAY_CYAN_INVERSE = "o-button-overlay-cyan-inv";
 
     /** CSS style name. */
@@ -182,6 +179,12 @@ public final class OpenCmsTheme {
     /** The database icon CSS class. */
     public static final String ICON_DATABASE = "oc-icon-24-database";
 
+    /** CSS style name.*/
+    public static final String ICON_EXLPORER_BIG = "oc-icon-32-explorer";
+
+    /** CSS style name.*/
+    public static final String ICON_EXLPORER = "oc-icon-24-folder";
+
     /** The group icon CSS class. */
     public static final String ICON_GROUP = "oc-icon-24-group";
 
@@ -212,8 +215,20 @@ public final class OpenCmsTheme {
     /** The cache icon CSS class. */
     public static final String ICON_SITE = "oc-icon-24-site";
 
+    /**Icon for OUs. */
+    public static final String ICON_OU = "oc-icon-24-orgunit";
+
+    /**Icon for OUs for web user. */
+    public static final String ICON_OU_WEB = "oc-icon-24-webuser";
+
     /** The user icon CSS class.*/
     public static final String ICON_USER = "oc-icon-24-user";
+
+    /** The icon for all principal option (currently used in principal select).*/
+    public static final String ICON_PRINCIPAL_ALL = "oc-icon-24-principal-all";
+
+    /** The icon for overwriting principal (currently used in principal select).*/
+    public static final String ICON_PRINCIPAL_OVERWRITE = "oc-icon-24-principal-overwrite";
 
     /** CSS style name. */
     public static final String IMAGE_GRADIENT = "o-image-gradient";
@@ -247,14 +262,14 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String LOCK_SHARED = "o-lock-shared";
+
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
-
     /** CSS style name. */
     public static final String MAIN = "o-main";
+
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
-
     /** CSS style name. */
     public static final String NO_TRANSLATION_ICON = "o-notranslation";
 
@@ -330,6 +345,9 @@ public final class OpenCmsTheme {
     /** CSS style name. */
     public static final String STATE_NEW = "o-state-new";
 
+    /** CSS style name.*/
+    public static final String TABLE_CELL_DISABLED = "o-table-cell-disabled";
+
     /** CSS style name. */
     public static final String TABLE_CELL_PADDING = "o-table-cell-padding";
 
@@ -365,6 +383,9 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_RED = " o-box-red";
+
+    /** CSS style name. */
+    public static final String TABLE_CONST_COLOR = "o-table-const-color";
 
     /** CSS style name. */
     public static final String TOOLABER_APP_INDICATOR = "o-toolbar-app-indicator";

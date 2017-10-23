@@ -31,6 +31,8 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
+import java.util.Locale;
+
 /**
  * Describes an OpenCms historical principal entry.<p>
  *
@@ -111,6 +113,14 @@ public class CmsHistoryPrincipal extends CmsPrincipal implements Cloneable {
     public long getDateDeleted() {
 
         return m_dateDeleted;
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsPrincipal#getDescription(java.util.Locale)
+     */
+    public String getDescription(Locale locale) {
+
+        return "";
     }
 
     /**
