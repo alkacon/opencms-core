@@ -54,7 +54,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_GROUP_DELETE_0 = "GUI_USERMANAGEMENT_GROUP_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_GROUP_0 = "GUI_USERMANAGEMENT_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
@@ -160,52 +166,76 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0 = "GUI_CACHE_FLEXCACHE_LABEL_STATS_VARIATIONS_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_KEY_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_KEY_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_PROJECT_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_PROJECT_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_RESOURCE_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_RESOURCE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_FLEXCACHE_LIST_COLS_VARCOUNT_0 = "GUI_CACHE_FLEXCACHE_LIST_COLS_VARCOUNT_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_0 = "GUI_CACHE_IMAGE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_CLEAR_TIME_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0 = "GUI_CACHE_IMAGE_CLEAR_TIME_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_INTRODUCTION_0 = "GUI_CACHE_IMAGE_INTRODUCTION_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGE_NO_RESULTS_0 = "GUI_CACHE_IMAGE_NO_RESULTS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_CONF_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_GROUP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0 = "GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_VARIATIONS_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_VARIATIONS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_0 = "GUI_CACHE_JAVA_HEAP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_FREE_0 = "GUI_CACHE_JAVA_HEAP_FREE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_FREE_HELP_0 = "GUI_CACHE_JAVA_HEAP_FREE_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_MAX_0 = "GUI_CACHE_JAVA_HEAP_MAX_0";
     /** Message constant for key in the resource bundle. */
@@ -274,76 +304,52 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_EXPORT_ASFILES_HELP_0 = "GUI_DATABASEAPP_EXPORT_ASFILES_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0 = "GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_CONTENT_AGE_HELP_0 = "GUI_DATABASEAPP_EXPORT_CONTENT_AGE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_FILE_BLOCK_0 = "GUI_DATABASEAPP_EXPORT_FILE_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_FILE_NAME_0 = "GUI_DATABASEAPP_EXPORT_FILE_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_FILE_NAME_EMPTY_0 = "GUI_DATABASEAPP_EXPORT_FILE_NAME_EMPTY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_FILE_NAME_HELP_0 = "GUI_DATABASEAPP_EXPORT_FILE_NAME_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_0 = "GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_HELP_0 = "GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_0 = "GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_HELP_0 = "GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INPROJECT_0 = "GUI_DATABASEAPP_EXPORT_INPROJECT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INPROJECT_HELP_0 = "GUI_DATABASEAPP_EXPORT_INPROJECT_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INVALID_RESOURCE_EMPTY_0 = "GUI_DATABASEAPP_EXPORT_INVALID_RESOURCE_EMPTY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INVALID_RESOURCE_NOTFOUND_0 = "GUI_DATABASEAPP_EXPORT_INVALID_RESOURCE_NOTFOUND_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_INVALID_TARGET_0 = "GUI_DATABASEAPP_EXPORT_INVALID_TARGET_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_KEEPPERMISSIONS_0 = "GUI_DATABASEAPP_EXPORT_KEEPPERMISSIONS_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_KEEPPERMISSIONS_HELP_0 = "GUI_DATABASEAPP_EXPORT_KEEPPERMISSIONS_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_PATH_0 = "GUI_DATABASEAPP_EXPORT_PATH_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_PATH_HELP_0 = "GUI_DATABASEAPP_EXPORT_PATH_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_PROJECTDATA_0 = "GUI_DATABASEAPP_EXPORT_PROJECTDATA_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_PROJECTDATA_HELP_0 = "GUI_DATABASEAPP_EXPORT_PROJECTDATA_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RECURSIVE_0 = "GUI_DATABASEAPP_EXPORT_RECURSIVE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RECURSIVE_HELP_0 = "GUI_DATABASEAPP_EXPORT_RECURSIVE_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCEDATA_0 = "GUI_DATABASEAPP_EXPORT_RESOURCEDATA_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCEDATA_HELP_0 = "GUI_DATABASEAPP_EXPORT_RESOURCEDATA_HELP_0";
 
@@ -2349,6 +2355,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_ADD_GROUP_0 = "GUI_USERMANAGEMENT_ADD_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ADD_OU_0 = "GUI_USERMANAGEMENT_ADD_OU_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_ADD_USER_0 = "GUI_USERMANAGEMENT_ADD_USER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2421,13 +2430,85 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_GROUP_OU_HELP_0 = "GUI_USERMANAGEMENT_GROUP_OU_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_GROUPS_0 = "GUI_USERMANAGEMENT_GROUPS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_NO_RESOURCES_WITH_PERMISSIONS_0 = "GUI_USERMANAGEMENT_NO_RESOURCES_WITH_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OPEN_0 = "GUI_USERMANAGEMENT_OPEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_ADD_RESOURCE_0 = "GUI_USERMANAGEMENT_OU_ADD_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_DESCRIPTION_0 = "GUI_USERMANAGEMENT_OU_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_DESCRIPTION_HELP_0 = "GUI_USERMANAGEMENT_OU_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_EDIT_0 = "GUI_USERMANAGEMENT_OU_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_EDIT_PANEL1_0 = "GUI_USERMANAGEMENT_OU_EDIT_PANEL1_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_EDIT_PANEL2_0 = "GUI_USERMANAGEMENT_OU_EDIT_PANEL2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_EDIT_WINDOW_CAPTION_0 = "GUI_USERMANAGEMENT_OU_EDIT_WINDOW_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_HIDE_LOGIN_0 = "GUI_USERMANAGEMENT_OU_HIDE_LOGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_HIDE_LOGIN_HELP_0 = "GUI_USERMANAGEMENT_OU_HIDE_LOGIN_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_NAME_0 = "GUI_USERMANAGEMENT_OU_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_NAME_HELP_0 = "GUI_USERMANAGEMENT_OU_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_NEW_0 = "GUI_USERMANAGEMENT_OU_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_NEW_WINDOW_CAPTION_0 = "GUI_USERMANAGEMENT_OU_NEW_WINDOW_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_PARENT_OU_0 = "GUI_USERMANAGEMENT_OU_PARENT_OU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_PARENT_OU_HELP_0 = "GUI_USERMANAGEMENT_OU_PARENT_OU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_WEBUSER_0 = "GUI_USERMANAGEMENT_OU_WEBUSER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_WEBUSER_HELP_0 = "GUI_USERMANAGEMENT_OU_WEBUSER_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_SHOW_RESOURCES_0 = "GUI_USERMANAGEMENT_SHOW_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_TOOL_NAME_0 = "GUI_USERMANAGEMENT_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_TOOL_NAME_HELP_0 = "GUI_USERMANAGEMENT_TOOL_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_0 = "GUI_USERMANAGEMENT_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_EDITABLE_0 = "GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_EDITABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_NOT_EDITABLE_0 = "GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_NOT_EDITABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_WINDOW_CAPTION_1 = "GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_WINDOW_CAPTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_ADDRESSFIELD_0 = "GUI_USERMANAGEMENT_USER_ADDRESSFIELD_0";
@@ -2826,7 +2907,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SOURCESEARCH_START_SEARCHING_REPLACING_0 = "RPT_SOURCESEARCH_START_SEARCHING_REPLACING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_USER_1 = "GUI_USERMANAGEMENT_DELETE_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_GROUP_1 = "GUI_USERMANAGEMENT_DELETE_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0 = "GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_UNLOCK_FILE_0 = "RPT_SOURCESEARCH_UNLOCK_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_DELETE_0 = "GUI_USERMANAGEMENT_USER_DELETE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.apps.messages";

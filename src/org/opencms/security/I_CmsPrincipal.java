@@ -30,6 +30,7 @@ package org.opencms.security;
 import org.opencms.util.CmsUUID;
 
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Representation of an identity in the cms (currently user or group),
@@ -91,6 +92,14 @@ public interface I_CmsPrincipal extends Principal {
      * @return the description of this principal
      */
     String getDescription();
+
+    /**
+     * Returns the description of this principal.<p>
+     * @param locale locale of the description
+     *
+     * @return the description of this principal
+     */
+    String getDescription(Locale locale);
 
     /**
      * Returns the flags of this principal.<p>

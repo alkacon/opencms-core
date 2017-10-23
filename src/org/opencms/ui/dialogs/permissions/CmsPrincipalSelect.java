@@ -33,6 +33,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Collection;
@@ -114,6 +115,11 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
 
     /** Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown. */
     private boolean m_realOnly;
+
+    /**Show window with vaadin dialog component.*/
+    private boolean m_vaadin;
+
+    private String m_ou;
 
     /**
      * Constructor.<p>
@@ -394,6 +400,16 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
+     * Set the ou.
+     *
+     * @param ou to choose principals for
+     */
+    public void setOU(String ou) {
+
+        m_ou = ou;
+    }
+
+    /**
      * Sets the principal type and clears the name.<p>
      *
      * @param type the principal type
@@ -472,6 +488,16 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     public void setTabIndex(int tabIndex) {
 
         m_principalName.setTabIndex(tabIndex);
+    }
+
+    /**
+     * Use the new vaadin dialog?
+     *
+     * @param vaadin boolean, true-> vaadin dialog
+     */
+    public void setUseVaadin(boolean vaadin) {
+
+        m_vaadin = vaadin;
     }
 
     /**
@@ -565,29 +591,37 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
      */
     void openPrincipalSelect() {
 
-        String parameters = "?type="
-            + m_widgetType.name()
-            + "&realonly="
-            + m_realOnly
-            + "&flags=null&action=listindependentaction&useparent=true&listaction=";
-        if ((m_widgetType.equals(WidgetType.principalwidget)
-            && I_CmsPrincipal.PRINCIPAL_GROUP.equals(m_principalTypeSelect.getValue()))
-            || m_widgetType.equals(WidgetType.groupwidget)) {
-            parameters += "iag";
+        CmsBasicDialog dialog;
+
+        if (!m_vaadin) {
+            m_window = CmsBasicDialog.prepareWindow();
+            String parameters = "?type="
+                + m_widgetType.name()
+                + "&realonly="
+                + m_realOnly
+                + "&flags=null&action=listindependentaction&useparent=true&listaction=";
+            if ((m_widgetType.equals(WidgetType.principalwidget)
+                && I_CmsPrincipal.PRINCIPAL_GROUP.equals(m_principalTypeSelect.getValue()))
+                || m_widgetType.equals(WidgetType.groupwidget)) {
+                parameters += "iag";
+            } else {
+                parameters += "iau";
+            }
+            BrowserFrame selectFrame = new BrowserFrame(
+                "Select principal",
+                new ExternalResource(
+                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        A_CmsUI.getCmsObject(),
+                        "/system/workplace/commons/principal_selection.jsp") + parameters));
+            selectFrame.setWidth("100%");
+            selectFrame.setHeight("500px");
+            dialog = new CmsBasicDialog();
+            dialog.setContent(selectFrame);
         } else {
-            parameters += "iau";
+            m_window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+            dialog = new CmsPrincipalSelectDialog(this, m_ou, m_window, m_widgetType, m_realOnly);
         }
-        BrowserFrame selectFrame = new BrowserFrame(
-            "Select principal",
-            new ExternalResource(
-                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                    A_CmsUI.getCmsObject(),
-                    "/system/workplace/commons/principal_selection.jsp") + parameters));
-        selectFrame.setWidth("100%");
-        selectFrame.setHeight("500px");
-        CmsBasicDialog dialog = new CmsBasicDialog();
-        dialog.setContent(selectFrame);
-        m_window = CmsBasicDialog.prepareWindow();
+
         m_window.setCaption(
             CmsVaadinUtils.getMessageText(
                 org.opencms.workplace.commons.Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));
