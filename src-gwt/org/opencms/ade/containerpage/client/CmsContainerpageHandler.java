@@ -965,7 +965,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      *
      * @param element the element for which to show the information
      */
-    public void showElementInfo(CmsContainerPageElementPanel element) {
+    public void showElementInfo(final CmsContainerPageElementPanel element) {
 
         CmsUUID structureId;
         if (element.isModelGroup() && !element.getModelGroupId().isNullUUID()) {
@@ -973,7 +973,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             structureId = element.getStructureId();
         }
-        CmsResourceInfoDialog.load(structureId, true, null, null);
+        CmsResourceInfoDialog.load(structureId, true, null, new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                reloadElements(element.getId());
+            }
+        });
     }
 
     /**
