@@ -418,8 +418,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0;
             }
 
-            if (flag(haseditor)
-                && !OpenCms.getWorkplaceManager().getWorkplaceEditorManager().isEditorAvailableForResource(resource)) {
+            if (flag(haseditor) && (OpenCms.getWorkplaceAppManager().getEditorForResource(resource, false) == null)) {
                 return VISIBILITY_INVISIBLE;
             }
 
