@@ -58,6 +58,18 @@ public interface I_CmsFormatterBean {
     Set<String> getCssHeadIncludes();
 
     /**
+     * Gets the formatter description.<p>
+     *
+     * If a locale is passed in, macros in the configured description will be resolved with a macro resolver set to that locale.
+     * If null is passed in as a locale, the raw configured description will be returned.
+     *
+     * @param locale the locale (may be null)
+     *
+     * @return the formatter description
+     */
+    String getDescription(Locale locale);
+
+    /**
      * Returns the id of this formatter.<p>
      *
      * This method may return null because the id is not always defined for formatters, e.g. for those formatters declared in a schema.<p>

@@ -35,6 +35,11 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsFieldTooltip.Data;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -82,6 +87,14 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /** The ui binder instance for this form row. */
     private static I_CmsFormRowUiBinder uiBinder = GWT.create(I_CmsFormRowUiBinder.class);
+
+    /** List of style names for the help icon. */
+    public static List<String> ICON_STYLES = Arrays.asList(
+        I_CmsButton.ICON_FONT,
+        I_CmsButton.ICON_CIRCLE_HELP,
+        I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(),
+        I_CmsLayoutBundle.INSTANCE.buttonCss().hoverBlack(),
+        I_CmsLayoutBundle.INSTANCE.buttonCss().helpIcon());
 
     /** The label used for displaying the information icon. */
     @UiField
@@ -146,6 +159,44 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     }
 
     /**
+     * Installs the DOM event handlers for displaying tooltips on a help icon.<p>
+     *
+     * The supplier passed in should not create a new tooltip data instance each time,
+     * but cache the different possible tooltip data instances.
+     *
+     * @param icon the help icon
+     * @param dataSupplier provides the tooltip data at the time the DOM events occur
+     */
+    public static void installTooltipEventHandlers(final Panel icon, final Supplier<Data> dataSupplier) {
+
+        icon.addDomHandler(new MouseOverHandler() {
+
+            public void onMouseOver(MouseOverEvent event) {
+
+                CmsFieldTooltip.getHandler().buttonHover(dataSupplier.get());
+            }
+        }, MouseOverEvent.getType());
+
+        icon.addDomHandler(new MouseOutHandler() {
+
+            public void onMouseOut(MouseOutEvent event) {
+
+                CmsFieldTooltip.getHandler().buttonOut(dataSupplier.get());
+            }
+
+        }, MouseOutEvent.getType());
+
+        icon.addDomHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                CmsFieldTooltip.getHandler().buttonClick(dataSupplier.get());
+
+            }
+        }, ClickEvent.getType());
+    }
+
+    /**
      * Gets the icon.<p>
      *
      * @return the icon
@@ -200,31 +251,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
                 initInfoStyle();
                 final Data tooltipData = new CmsFieldTooltip.Data(m_icon, info, isHtml);
                 final Panel icon = m_icon;
-                icon.addDomHandler(new MouseOverHandler() {
-
-                    public void onMouseOver(MouseOverEvent event) {
-
-                        CmsFieldTooltip.getHandler().buttonHover(tooltipData);
-                    }
-                }, MouseOverEvent.getType());
-
-                icon.addDomHandler(new MouseOutHandler() {
-
-                    public void onMouseOut(MouseOutEvent event) {
-
-                        CmsFieldTooltip.getHandler().buttonOut(tooltipData);
-                    }
-
-                }, MouseOutEvent.getType());
-
-                icon.addDomHandler(new ClickHandler() {
-
-                    public void onClick(ClickEvent event) {
-
-                        CmsFieldTooltip.getHandler().buttonClick(tooltipData);
-
-                    }
-                }, ClickEvent.getType());
+                final Supplier<Data> dataSupplier = Suppliers.ofInstance(tooltipData);
+                installTooltipEventHandlers(icon, dataSupplier);
             }
         }
     }

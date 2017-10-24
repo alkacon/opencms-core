@@ -139,6 +139,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicates if the content should be searchable in the online index when this formatter is used. */
     private boolean m_search;
 
+    /** The description text for the formatter. */
+    private String m_description;
+
     /** The settings. */
     private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
@@ -161,6 +164,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param javascriptHeadIncludes the JavaScript headincludes
      * @param inlineJavascript the in-line JavaScript
      * @param niceName the configuration display name
+     * @param description the description text for the formatter
      * @param resourceTypeNames the resource type names
      * @param rank the configuration rank
      * @param id the configuration id
@@ -188,6 +192,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         List<String> javascriptHeadIncludes,
         String inlineJavascript,
         String niceName,
+        String description,
         Collection<String> resourceTypeNames,
         int rank,
         String id,
@@ -210,6 +215,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isPreviewFormatter = preview;
         m_search = searchContent;
         m_location = location;
+        m_description = description;
 
         m_id = id;
         m_niceName = niceName;
@@ -265,6 +271,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             "",
             Collections.<String> emptyList(),
             "",
+            null,
             rootPath,
             Collections.<String> emptySet(),
             1000,
@@ -358,6 +365,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             "",
             Collections.<String> emptyList(),
             "",
+            null,
             jspRootPath,
             Collections.<String> emptySet(),
             DEFAULT_SCHEMA_RANK,
@@ -416,6 +424,19 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public Set<String> getCssHeadIncludes() {
 
         return Collections.unmodifiableSet(m_cssHeadIncludes);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getDescription(Locale)
+     */
+    public String getDescription(Locale locale) {
+
+        if (locale == null) {
+            return m_description;
+        }
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
+        return resolver.resolveMacros(m_description);
     }
 
     /**

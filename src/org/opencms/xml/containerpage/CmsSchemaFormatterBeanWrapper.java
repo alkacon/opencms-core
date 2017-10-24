@@ -108,6 +108,14 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getDescription(Locale)
+     */
+    public String getDescription(Locale locale) {
+
+        return m_wrappedFormatter.getDescription(locale);
+    }
+
+    /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getId()
      */
     public String getId() {

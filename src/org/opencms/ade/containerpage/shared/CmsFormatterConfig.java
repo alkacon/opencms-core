@@ -67,6 +67,9 @@ public class CmsFormatterConfig implements IsSerializable {
     /** The setting for this container element. */
     private Map<String, CmsXmlContentProperty> m_settingConfig;
 
+    /** The description. */
+    private String m_description;
+
     /**
      * Constructor.<p>
      *
@@ -105,6 +108,16 @@ public class CmsFormatterConfig implements IsSerializable {
     public Set<String> getCssResources() {
 
         return m_cssResources;
+    }
+
+    /**
+     * Gets the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**
@@ -185,6 +198,16 @@ public class CmsFormatterConfig implements IsSerializable {
     public void setCssResources(Set<String> cssResources) {
 
         m_cssResources = cssResources;
+    }
+
+    /**
+     * Sets the description.<p>
+     *
+     * @param description the description
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
     }
 
     /**

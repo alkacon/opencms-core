@@ -603,6 +603,8 @@ public class CmsElementUtil {
                         config.setCssResources(cssResources);
                         config.setInlineCss(formatter.getInlineCss());
                         config.setLabel(label);
+                        config.setDescription(
+                            formatter.getDescription(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)));
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                             m_cms,
                             formatter,

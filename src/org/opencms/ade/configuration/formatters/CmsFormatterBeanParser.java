@@ -203,6 +203,9 @@ public class CmsFormatterBeanParser {
     public static final String N_STRICT_CONTAINERS = "StrictContainers";
 
     /** Content value node name. */
+    public static final String N_DESCRIPTION = "Description";
+
+    /** Content value node name. */
     public static final String N_TYPE = "Type";
 
     /** Content value node name. */
@@ -335,6 +338,8 @@ public class CmsFormatterBeanParser {
         String isStrictContainersStr = getString(root, N_STRICT_CONTAINERS, "false");
         boolean isStrictContainers = Boolean.parseBoolean(isStrictContainersStr);
 
+        String description = getString(root, N_DESCRIPTION, null);
+
         String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
         m_autoEnabled = Boolean.parseBoolean(autoEnabled);
 
@@ -376,6 +381,7 @@ public class CmsFormatterBeanParser {
                     m_extractContent,
                     location,
                     m_niceName,
+                    description,
                     m_resourceType,
                     rank,
                     id,
@@ -402,6 +408,7 @@ public class CmsFormatterBeanParser {
                     m_extractContent,
                     location,
                     m_niceName,
+                    description,
                     m_resourceType,
                     rank,
                     id,
@@ -449,6 +456,7 @@ public class CmsFormatterBeanParser {
                 m_jsPaths,
                 m_inlineJs.toString(),
                 m_niceName,
+                description,
                 m_resourceType,
                 m_rank,
                 id,

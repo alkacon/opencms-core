@@ -47,6 +47,8 @@ import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
+import org.opencms.gwt.client.ui.input.form.CmsFieldTooltip;
+import org.opencms.gwt.client.ui.input.form.CmsFieldTooltip.Data;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -70,10 +72,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -188,6 +193,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The element setting values. */
     private Map<String, String> m_settings;
 
+    /** Id of currently selected formatter. */
+    private String m_formatter;
+
     /**
      * Constructor.<p>
      *
@@ -234,13 +242,18 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 formatterFieldset.setLegend(Messages.get().key(Messages.GUI_FORMATTERS_LEGEND_0));
                 formatterFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
-                m_formatterSelect = new CmsSelectBox();
-                for (CmsFormatterConfig formatter : m_elementBean.getFormatters().get(m_containerId).values()) {
+                CmsElementSettingsFormatterWidget formatterWidget = new CmsElementSettingsFormatterWidget();
+                m_formatterSelect = formatterWidget.getFormatterSelect();
+                final Map<String, CmsFormatterConfig> formattersForContainer = m_elementBean.getFormatters().get(
+                    m_containerId);
+                for (CmsFormatterConfig formatter : formattersForContainer.values()) {
                     formatters.put(formatter.getId(), formatter.getLabel());
                     m_formatterSelect.setTitle(formatter.getId(), formatter.getJspRootPath());
                 }
                 m_formatterSelect.setItems(formatters);
-                m_formatterSelect.selectValue(m_elementBean.getFormatterConfig(m_containerId).getId());
+                String currentFormatterValue = m_elementBean.getFormatterConfig(m_containerId).getId();
+                m_formatter = currentFormatterValue;
+                m_formatterSelect.selectValue(currentFormatterValue);
                 m_formatterSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
                     public void onValueChange(ValueChangeEvent<String> event) {
@@ -248,7 +261,31 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                         onFormatterChange(event.getValue());
                     }
                 });
-                formatterFieldset.add(m_formatterSelect);
+
+                // set up formatter help tooltip
+                final FlowPanel help = formatterWidget.getHelp();
+                for (String style : CmsFormRow.ICON_STYLES) {
+                    help.addStyleName(style);
+                }
+                final Map<String, CmsFieldTooltip.Data> tooltips = Maps.newHashMap();
+                for (Map.Entry<String, CmsFormatterConfig> entry : formattersForContainer.entrySet()) {
+                    CmsFormatterConfig formatterConfig = entry.getValue();
+                    String description = formatterConfig.getDescription();
+                    if (description == null) {
+                        description = formatterConfig.getLabel();
+                    }
+                    tooltips.put(entry.getKey(), new Data(help, description, true));
+                }
+                Supplier<CmsFieldTooltip.Data> tooltipProvider = new Supplier<CmsFieldTooltip.Data>() {
+
+                    @SuppressWarnings("synthetic-access")
+                    public Data get() {
+
+                        return tooltips.get(m_formatter);
+                    }
+                };
+                CmsFormRow.installTooltipEventHandlers(help, tooltipProvider);
+                formatterFieldset.add(formatterWidget);
             }
             if (isDeveloper || m_controller.getData().isModelPage() || isEditableModelGroup) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
@@ -389,6 +426,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
      */
     void onFormatterChange(String formatterId) {
 
+        m_formatter = formatterId;
         CmsFormatterConfig config = m_elementBean.getFormatters().get(m_containerId).get(formatterId);
         renderSettingsForm(config.getSettingConfig(), config.getNestedFormatterPrefixes());
     }

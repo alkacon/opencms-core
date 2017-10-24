@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsJsUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -51,6 +52,72 @@ import com.google.gwt.user.client.ui.Widget;
  * Tooltip widget for element setting help texts.<p>
  */
 public class CmsFieldTooltip extends Composite {
+
+    /**
+     * Data needed to create a tooltip.<p>
+     */
+    public static class Data {
+
+        /** The tooltip content. */
+        private String m_info;
+
+        /** True if the content is HTML, false if it is plain text. */
+        private boolean m_isHtml;
+
+        /** The icon for which the tooltip should be shown. */
+        private Panel m_reference;
+
+        /**
+         * Creates a new instance.<p>
+         * @param reference the icon for which the tooltip should be shown
+         * @param info the tooltip content
+         * @param isHtml true if the content is HTML
+         */
+        public Data(Panel reference, String info, boolean isHtml) {
+            m_info = info;
+            m_isHtml = isHtml;
+            m_reference = reference;
+        }
+
+        /**
+         * Gets the tooltip content.<p>
+         *
+         * @return the tooltip content
+         */
+        public String getInfo() {
+
+            return m_info;
+        }
+
+        /**
+         * Gets the icon for which the tooltip is intended.<p>
+         *
+         * @return the icon for which to display a tooltip
+         */
+        public Panel getReference() {
+
+            return m_reference;
+        }
+
+        /**
+         * Returns true if the tooltip content is HTML.<p>
+         *
+         * @return true if the tooltip content is HTML
+         */
+        public boolean isHtml() {
+
+            return m_isHtml;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return m_info;
+        }
+    }
 
     /**
      * Event handler for managing tooltip visibility.<p>
@@ -87,6 +154,7 @@ public class CmsFieldTooltip extends Composite {
          */
         public void buttonHover(Data data) {
 
+            CmsDebugLog.consoleLog("over " + data);
             if (data != getData()) {
                 closeTooltip();
                 CmsFieldTooltip tooltip = new CmsFieldTooltip(data);
@@ -108,6 +176,7 @@ public class CmsFieldTooltip extends Composite {
          */
         public void buttonOut(Data data) {
 
+            CmsDebugLog.consoleLog("out " + data);
             closeTooltip(false);
         }
 
@@ -218,63 +287,6 @@ public class CmsFieldTooltip extends Composite {
     protected interface I_UiBinder extends UiBinder<Widget, CmsFieldTooltip> {
         //UIBinder interface
 
-    }
-
-    /**
-     * Data needed to create a tooltip.<p>
-     */
-    static class Data {
-
-        /** The tooltip content. */
-        private String m_info;
-
-        /** True if the content is HTML, false if it is plain text. */
-        private boolean m_isHtml;
-
-        /** The icon for which the tooltip should be shown. */
-        private Panel m_reference;
-
-        /**
-         * Creates a new instance.<p>
-         * @param reference the icon for which the tooltip should be shown
-         * @param info the tooltip content
-         * @param isHtml true if the content is HTML
-         */
-        public Data(Panel reference, String info, boolean isHtml) {
-            m_info = info;
-            m_isHtml = isHtml;
-            m_reference = reference;
-        }
-
-        /**
-         * Gets the tooltip content.<p>
-         *
-         * @return the tooltip content
-         */
-        public String getInfo() {
-
-            return m_info;
-        }
-
-        /**
-         * Gets the icon for which the tooltip is intended.<p>
-         *
-         * @return the icon for which to display a tooltip
-         */
-        public Panel getReference() {
-
-            return m_reference;
-        }
-
-        /**
-         * Returns true if the tooltip content is HTML.<p>
-         *
-         * @return true if the tooltip content is HTML
-         */
-        public boolean isHtml() {
-
-            return m_isHtml;
-        }
     }
 
     /** The handler instance. */

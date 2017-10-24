@@ -64,6 +64,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
      * @param niceName the configuration display name
+     * @param description the help text for the formatter
      * @param resourceTypeNames the resource type names
      * @param rank the configuration rank
      * @param id the configuration id
@@ -86,6 +87,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
         boolean searchContent,
         String location,
         String niceName,
+        String description,
         Collection<String> resourceTypeNames,
         int rank,
         String id,
@@ -112,6 +114,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             Collections.<String> emptyList(),
             "",
             niceName,
+            description,
             resourceTypeNames,
             rank,
             id,
