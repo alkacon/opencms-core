@@ -85,6 +85,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /** The default locale, this is the first configured locale. */
     private static Locale m_defaultLocale = Locale.ENGLISH;
 
+    /**
+     * Required for setting the default locale on the first possible time.<p>
+     */
+    static {
+        setDefaultLocale();
+    }
+
     /** The set of available locale names. */
     private List<Locale> m_availableLocales;
 
@@ -138,13 +145,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_defaultLocale = defaultLocale;
         m_defaultLocales.add(defaultLocale);
         m_availableLocales.add(defaultLocale);
-    }
-
-    /**
-     * Required for setting the default locale on the first possible time.<p>
-     */
-    static {
-        setDefaultLocale();
     }
 
     /**
@@ -1055,6 +1055,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public void initialize(CmsObject cms) {
 
+        if (!m_availableLocales.contains(Locale.ENGLISH)) {
+            throw new RuntimeException("The locale 'en' must be configured in opencms-system.xml.");
+        }
         // init the locale handler
         m_localeHandler.initHandler(cms);
         // set default locale
