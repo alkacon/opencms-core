@@ -33,6 +33,7 @@ import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -136,6 +137,16 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     public int getOrder() {
 
         return 1;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    @Override
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.ELEMENT_AUTHOR;
+
     }
 
     /**

@@ -114,22 +114,8 @@ public class CmsRfsFileViewer implements Cloneable {
         // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
         m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
         m_enabled = true;
-        m_windowSize = 200;
+        m_windowSize = 1000;
 
-    }
-
-    /**
-     * Internal helper that throws a <code>{@link CmsRuntimeException}</code> if the
-     * configuration of this instance has been frozen ({@link #setFrozen(boolean)}).<p>
-     *
-     * @throws CmsRuntimeException if the configuration of this instance has been frozen
-     *                             ({@link #setFrozen(boolean)})
-     */
-    private void checkFrozen() throws CmsRuntimeException {
-
-        if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_FILE_VIEW_SETTINGS_FROZEN_0));
-        }
     }
 
     /**
@@ -216,6 +202,16 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
+     * Returns the path denoting the root folder for all accessible files.<p>
+     *
+     * @return the path denoting the root folder for all accessible files
+     */
+    public String getRootPath() {
+
+        return m_rootPath;
+    }
+
+    /**
      * Returns the start position of the current display.<p>
      *
      * This is a count of "windows" that
@@ -227,16 +223,6 @@ public class CmsRfsFileViewer implements Cloneable {
     public int getWindowPos() {
 
         return m_windowPos;
-    }
-
-    /**
-     * Returns the path denoting the root folder for all accessible files.<p>
-     *
-     * @return the path denoting the root folder for all accessible files
-     */
-    public String getRootPath() {
-
-        return m_rootPath;
     }
 
     /**
@@ -344,53 +330,6 @@ public class CmsRfsFileViewer implements Cloneable {
         } else {
             return Messages.get().getBundle().key(Messages.GUI_FILE_VIEW_NO_PREVIEW_0);
         }
-    }
-
-    /**
-     * Internally sets the member <code>m_windowPos</code> to the last available
-     * window of <code>m_windowSize</code> windows to let further calls to
-     * <code>{@link #readFilePortion()}</code> display the end of the file. <p>
-     *
-     * This method is triggered when a new file is chosen
-     * (<code>{@link #setFilePath(String)}</code>) because the amount of lines changes.
-     * This method is also triggered when a different window size is chosen
-     * (<code>{@link #setWindowSize(int)}</code>) because the amount of lines to display change.
-     *
-     * @return the amount of lines in the file to view
-     */
-    private int scrollToFileEnd() {
-
-        int lines = 0;
-        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-            // no scrolling if system not yet fully initialized
-        } else {
-            LineNumberReader reader = null;
-            // shift the window position to the end of the file: this is expensive but OK for ocs logfiles as they
-            // are ltd. to 2 MB
-            try {
-                reader = new LineNumberReader(
-                    new BufferedReader(new InputStreamReader(new FileInputStream(m_filePath))));
-                while (reader.readLine() != null) {
-                    lines++;
-                }
-                reader.close();
-                // if 11.75 windows are available, we don't want to end on window nr. 10
-                int availWindows = (int)Math.ceil((double)lines / (double)m_windowSize);
-                // we start with window 0
-                m_windowPos = availWindows - 1;
-            } catch (IOException ioex) {
-                LOG.error("Unable to scroll file " + m_filePath + " to end. Ensure that it exists. ");
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (Throwable f) {
-                        LOG.info("Unable to close reader of file " + m_filePath, f);
-                    }
-                }
-            }
-        }
-        return lines;
     }
 
     /**
@@ -664,5 +603,66 @@ public class CmsRfsFileViewer implements Cloneable {
 
         checkFrozen();
         m_windowSize = windowSize;
+    }
+
+    /**
+     * Internal helper that throws a <code>{@link CmsRuntimeException}</code> if the
+     * configuration of this instance has been frozen ({@link #setFrozen(boolean)}).<p>
+     *
+     * @throws CmsRuntimeException if the configuration of this instance has been frozen
+     *                             ({@link #setFrozen(boolean)})
+     */
+    private void checkFrozen() throws CmsRuntimeException {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_FILE_VIEW_SETTINGS_FROZEN_0));
+        }
+    }
+
+    /**
+     * Internally sets the member <code>m_windowPos</code> to the last available
+     * window of <code>m_windowSize</code> windows to let further calls to
+     * <code>{@link #readFilePortion()}</code> display the end of the file. <p>
+     *
+     * This method is triggered when a new file is chosen
+     * (<code>{@link #setFilePath(String)}</code>) because the amount of lines changes.
+     * This method is also triggered when a different window size is chosen
+     * (<code>{@link #setWindowSize(int)}</code>) because the amount of lines to display change.
+     *
+     * @return the amount of lines in the file to view
+     */
+    private int scrollToFileEnd() {
+
+        int lines = 0;
+        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+            // no scrolling if system not yet fully initialized
+        } else {
+            LineNumberReader reader = null;
+            // shift the window position to the end of the file: this is expensive but OK for ocs logfiles as they
+            // are ltd. to 2 MB
+            try {
+                reader = new LineNumberReader(
+                    new BufferedReader(new InputStreamReader(new FileInputStream(m_filePath))));
+                while (reader.readLine() != null) {
+                    lines++;
+                }
+                reader.close();
+                // if 11.75 windows are available, we don't want to end on window nr. 10
+                int availWindows = (int)Math.ceil((double)lines / (double)m_windowSize);
+                // we start with window 0
+                m_windowPos = availWindows - 1;
+            } catch (IOException ioex) {
+                LOG.error("Unable to scroll file " + m_filePath + " to end. Ensure that it exists. ");
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (Throwable f) {
+                        LOG.info("Unable to close reader of file " + m_filePath, f);
+                    }
+                }
+            }
+        }
+        return lines;
     }
 }

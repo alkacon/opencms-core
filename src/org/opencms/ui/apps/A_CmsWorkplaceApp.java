@@ -370,6 +370,16 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     protected abstract List<NavEntry> getSubNavEntries(String state);
 
     /**
+     * Method to set bread crumb entries.<p>
+     *
+     * @param entries to be set
+     */
+    protected void setBreadCrumbEntries(LinkedHashMap<String, String> entries) {
+
+        m_breadCrumb.setEntries(entries);
+    }
+
+    /**
      * Updates the bread crumb navigation.<p>
      *
      * @param breadCrumbEntries the bread crumb entries

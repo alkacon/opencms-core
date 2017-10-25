@@ -104,6 +104,11 @@
   	}
   
   }
+ 
+ .v-tree-node .v-tree-node-caption [class*="oc-icon-24-"]{
+ 	width:24px;
+ 	vertical-align:middle;
+ 	}
   
   div.v-tree-node-selected.v-tree-node-caption:hover span.o-tree-caption:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span.o-tree-caption:before{
   	background: lighten($v-selection-color,10%);
@@ -187,7 +192,7 @@
   	width: 100%;
   	height: auto;
   }
-  
+    
   .v-table .v-table-row-odd{
     background-color: $o-medium-background-color;
   }
@@ -264,6 +269,14 @@
 
 		
 }
+
+  .o-no-padding div.v-table-cell-wrapper{
+  		padding:0px !important;
+  	}
+
+	.v-table .o-table-cell-disabled{
+		opacity:0.7;
+	}
 
 	.v-table .o-table-const-color{
 		

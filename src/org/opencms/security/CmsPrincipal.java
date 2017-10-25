@@ -243,6 +243,35 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     }
 
     /**
+     * Utility function to read a principal by its id from the OpenCms database using the
+     * provided OpenCms user context.<p>
+     *
+     * @param cms the OpenCms user context to use when reading the principal
+     * @param name the name of the principal to read
+     *
+     * @return the principal read from the OpenCms database
+     *
+     * @throws CmsException in case the principal could not be read
+     */
+    public static I_CmsPrincipal readPrincipal(CmsObject cms, String name) throws CmsException {
+
+        try {
+            // first try to read the principal as a user
+            return cms.readUser(name);
+        } catch (CmsException exc) {
+            // assume user does not exist
+        }
+        try {
+            // now try to read the principal as a group
+            return cms.readGroup(name);
+        } catch (CmsException exc) {
+            //  assume group does not exist
+        }
+        // invalid principal name was given
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
+    }
+
+    /**
      * Utility function to read a principal of the given type from the OpenCms database using the
      * provided OpenCms user context.<p>
      *

@@ -328,6 +328,7 @@ public final class CmsVaadinUtils {
      */
     public static IndexedContainer getAvailableGroupsContainerWithout(
         CmsObject cms,
+        String ouFqn,
         String caption,
         String propIcon,
         String idOu,
@@ -344,7 +345,7 @@ public final class CmsVaadinUtils {
             res.addContainerProperty(propIcon, CmsCssIcon.class, cmsCssIcon);
         }
         try {
-            for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, "/", true)) {
+            for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, ouFqn, true)) {
                 if (!blackList.contains(group)) {
                     Item item = res.addItem(group);
                     item.getItemProperty(caption).setValue(group.getSimpleName());
@@ -1050,7 +1051,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

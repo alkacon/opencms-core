@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -323,7 +324,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
      */
     public static String getDirectEditPath(CmsObject cms, CmsUserSettings userSettings, boolean forceDirectEdit) {
 
-        if (forceDirectEdit || userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
+        if (forceDirectEdit
+            || (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)
+                | userSettings.getStartView().equals(CmsPageEditorConfiguration.APP_ID))) {
 
             try {
                 CmsObject cloneCms = OpenCms.initCmsObject(cms);
@@ -450,10 +453,14 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         CmsUserSettings settings = new CmsUserSettings(cms);
         String targetView = getDirectEditPath(cms, settings, false);
         if (targetView == null) {
-            if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getStartView())) {
-                targetView = "#" + CmsFileExplorerConfiguration.APP_ID;
-            } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getStartView())) {
-                targetView = "#" + CmsAppHierarchyConfiguration.APP_ID;
+            if (settings.getStartView().startsWith("/")) {
+                if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getStartView())) {
+                    targetView = "#" + CmsFileExplorerConfiguration.APP_ID;
+                } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getStartView())) {
+                    targetView = "#" + CmsAppHierarchyConfiguration.APP_ID;
+                }
+            } else {
+                targetView = "#" + settings.getStartView();
             }
         }
         return targetView;

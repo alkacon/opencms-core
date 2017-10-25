@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.I_CmsToolHandler;
@@ -128,6 +129,14 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
     public int getPriority() {
 
         return I_CmsWorkplaceAppConfiguration.DEFAULT_PRIORIY;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.WORKPLACE_USER;
     }
 
     /**

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<v-vertical-layout :center margin spacing>
+				<v-panel caption="%(key.GUI_USERMANAGEMENT_OU_EDIT_PANEL1_0)">
+						<v-form-layout _id="m_layout" margin spacing style-name="o-formlayout-workplace-main">
+							<v-text-field _id="m_name" caption="%(key.GUI_USERMANAGEMENT_OU_NAME_0)" description="%(key.GUI_USERMANAGEMENT_OU_NAME_HELP_0)" width="100%"/>
+							<v-text-area _id="m_description" caption="%(key.GUI_USERMANAGEMENT_OU_DESCRIPTION_0)" description="%(key.GUI_USERMANAGEMENT_OU_DESCRIPTION_HELP_0)" width="100%"></v-text-area>
+							<v-label _id="m_parentOu" caption="%(key.GUI_USERMANAGEMENT_OU_PARENT_OU_0)" description="%(key.GUI_USERMANAGEMENT_OU_PARENT_OU_HELP_0)" width="100%"></v-label>
+							<v-check-box _id="m_hideLogin" caption="%(key.GUI_USERMANAGEMENT_OU_HIDE_LOGIN_0)" description="%(key.GUI_USERMANAGEMENT_OU_HIDE_LOGIN_HELP_0)" width="100%"/>
+							<v-check-box _id="m_webuser" caption="%(key.GUI_USERMANAGEMENT_OU_WEBUSER_0)" description="%(key.GUI_USERMANAGEMENT_OU_WEBUSER_HELP_0)" width="100%"/>
+						</v-form-layout>
+				</v-panel>
+				<v-panel caption="%(key.GUI_USERMANAGEMENT_OU_EDIT_PANEL2_0)">
+						<v-form-layout _id="m_resLayout" margin spacing style-name="o-formlayout-workplace-main">
+						</v-form-layout>
+				</v-panel>
+				
+				</v-vertical-layout>
+			</content>
+			<buttons>	
+				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

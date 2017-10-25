@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+  	<meta name="package-mapping" content="k:org.opencms.ui.login" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<v-vertical-layout :center margin spacing>
+					<v-tab-sheet _id="m_tab">
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_0)">
+							<v-vertical-layout margin spacing>
+							<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
+								<v-text-field _id="m_loginname" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_0)" description="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_HELP_0)" />
+								<v-text-area _id="m_description" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_DESCRIPTION_0)" description="%(key.GUI_USERMANAGEMENT_USER_DESCRIPTION_HELP_0)"></v-text-area>
+								<p-cms-principal-select _id="m_group" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_GROUP_0)" description="%(key.GUI_USERMANAGEMENT_USER_GROUP_HELP_0)"/>	
+								<v-label _id="m_ou" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_OU_0)" description="%(key.GUI_USERMANAGEMENT_USER_OU_HELP_0)" />
+						
+							</v-form-layout>
+						</tab>
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_DATA_0)">	
+							<o-cms-user-data-form-layout margin _id="m_userdata"/>
+						</tab>
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_AUTHENTIFICATION_0)">
+						<v-vertical-layout _id="m_authHolder">
+							<v-form-layout _id="m_tabSimple4" margin spacing style-name="o-formlayout-workplace-main">
+								<v-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_USER_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_USER_ENABLED_HELP_0)" />
+								<v-check-box _id="m_selfmanagement" caption="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_0)" description="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_HELP_0)" />
+							</v-form-layout>
+							<k-cms-password-form _id="m_pw">
+							</k-cms-password-form>
+							</v-vertical-layout>
+						</tab>
+
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_SETTINGS_0)">
+							<v-form-layout _id="m_tabSimple3" margin spacing style-name="o-formlayout-workplace-main">
+								<v-combo-box _id="m_language" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_0)" description="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_HELP_0)"/>
+								<v-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_SITE_0)" description="%(key.GUI_USERMANAGEMENT_USER_SITE_HELP_0)"/>
+								<v-combo-box _id="m_project" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_PROJECT_0)" description="%(key.GUI_USERMANAGEMENT_USER_PROJECT_HELP_0)"/>
+								<f-cms-path-select-field _id="m_startfolder" width="100%"  caption="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_HELP_0)"/>
+								<v-combo-box _id="m_startview" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_HELP_0)"/>
+							</v-form-layout>
+						</tab>
+					</v-tab-sheet>
+				</v-vertical-layout>
+			</content>
+			<buttons>	
+				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

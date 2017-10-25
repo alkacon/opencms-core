@@ -2211,7 +2211,7 @@ public class CmsUserSettings {
     /**
      * Sets the start project of the user.<p>
      *
-     * @param project the start project id of the user
+     * @param project the start project name of the user
      */
     public void setStartProject(String project) {
 
@@ -2497,7 +2497,8 @@ public class CmsUserSettings {
      */
     public boolean startWithNewWorkplace() {
 
-        return (CmsWorkplace.VIEW_WORKPLACE.equals(getStartView()) || CmsWorkplace.VIEW_ADMIN.equals(getStartView()))
+        return (!getStartView().startsWith("/")
+            | (CmsWorkplace.VIEW_WORKPLACE.equals(getStartView()) || CmsWorkplace.VIEW_ADMIN.equals(getStartView())))
             && usesNewWorkplace();
     }
 

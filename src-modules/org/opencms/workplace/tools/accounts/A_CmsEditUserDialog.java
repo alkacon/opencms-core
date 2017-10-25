@@ -707,18 +707,20 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 }
                 addWidget(
                     new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsSelectWidget(getProjects())));
-                addWidget(new CmsWidgetDialogParameter(
-                    this,
-                    "startFolder",
-                    PAGES[0],
-                    new CmsVfsFileWidget(true, null, false)));
+                addWidget(
+                    new CmsWidgetDialogParameter(
+                        this,
+                        "startFolder",
+                        PAGES[0],
+                        new CmsVfsFileWidget(true, null, false)));
                 addWidget(new CmsWidgetDialogParameter(this, "startView", PAGES[0], new CmsSelectWidget(getViews())));
                 if (isNewUser()) {
-                    addWidget(new CmsWidgetDialogParameter(
-                        this,
-                        "group",
-                        PAGES[0],
-                        new CmsGroupWidget(null, null, getParamOufqn())));
+                    addWidget(
+                        new CmsWidgetDialogParameter(
+                            this,
+                            "group",
+                            PAGES[0],
+                            new CmsGroupWidget(null, null, getParamOufqn())));
                     addWidget(new CmsWidgetDialogParameter(this, "role", PAGES[0], new CmsSelectWidget(getRoles())));
                 }
             }

@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 
 import java.util.Locale;
 
@@ -103,6 +104,8 @@ public interface I_CmsWorkplaceAppConfiguration extends I_CmsHasOrder {
      * @return the priority
      */
     int getPriority();
+
+    CmsRole getRequiredRole();
 
     /**
      * Returns the visibility status of the app for the given user context.<p>

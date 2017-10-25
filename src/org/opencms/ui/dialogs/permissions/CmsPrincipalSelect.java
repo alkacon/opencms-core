@@ -27,7 +27,6 @@
 
 package org.opencms.ui.dialogs.permissions;
 
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
@@ -44,9 +43,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -593,34 +590,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
 
         CmsBasicDialog dialog;
 
-        if (!m_vaadin) {
-            m_window = CmsBasicDialog.prepareWindow();
-            String parameters = "?type="
-                + m_widgetType.name()
-                + "&realonly="
-                + m_realOnly
-                + "&flags=null&action=listindependentaction&useparent=true&listaction=";
-            if ((m_widgetType.equals(WidgetType.principalwidget)
-                && I_CmsPrincipal.PRINCIPAL_GROUP.equals(m_principalTypeSelect.getValue()))
-                || m_widgetType.equals(WidgetType.groupwidget)) {
-                parameters += "iag";
-            } else {
-                parameters += "iau";
-            }
-            BrowserFrame selectFrame = new BrowserFrame(
-                "Select principal",
-                new ExternalResource(
-                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                        A_CmsUI.getCmsObject(),
-                        "/system/workplace/commons/principal_selection.jsp") + parameters));
-            selectFrame.setWidth("100%");
-            selectFrame.setHeight("500px");
-            dialog = new CmsBasicDialog();
-            dialog.setContent(selectFrame);
-        } else {
-            m_window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-            dialog = new CmsPrincipalSelectDialog(this, m_ou, m_window, m_widgetType, m_realOnly);
-        }
+        m_window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+        dialog = new CmsPrincipalSelectDialog(this, m_ou, m_window, m_widgetType, m_realOnly);
 
         m_window.setCaption(
             CmsVaadinUtils.getMessageText(

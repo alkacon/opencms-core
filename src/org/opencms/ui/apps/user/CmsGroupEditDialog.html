@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<v-vertical-layout :center margin spacing>
+						<v-form-layout _id="m_layout" margin spacing style-name="o-formlayout-workplace-main">
+							<v-text-field _id="m_name" caption="%(key.GUI_USERMANAGEMENT_GROUP_NAME_0)" description="%(key.GUI_USERMANAGEMENT_GROUP_NAME_HELP_0)" width="100%"/>
+							<v-text-area _id="m_description" caption="%(key.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0)" description="%(key.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_HELP_0)" width="100%"></v-text-area>
+							<v-label _id="m_ou" caption="%(key.GUI_USERMANAGEMENT_GROUP_OU_0)" description="%(key.GUI_USERMANAGEMENT_GROUP_OU_HELP_0)" width="100%"></v-label>
+							<v-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_GROUP_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_GROUP_ENABLED_HELP_0)" />
+							
+						</v-form-layout>
+				</v-vertical-layout>
+			</content>
+			<buttons>	
+				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

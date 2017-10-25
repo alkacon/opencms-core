@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 
 import java.util.Locale;
 
@@ -88,6 +89,12 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
     public int getPriority() {
 
         return I_CmsWorkplaceAppConfiguration.DEFAULT_PRIORIY;
+    }
+
+    public CmsRole getRequiredRole() {
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

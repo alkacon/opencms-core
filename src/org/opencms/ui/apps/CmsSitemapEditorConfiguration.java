@@ -151,6 +151,16 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     }
 
     /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    @Override
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.EDITOR;
+
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
     @Override

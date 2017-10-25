@@ -28,6 +28,7 @@
 package org.opencms.ui.login;
 
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -78,8 +79,18 @@ public class CmsPasswordForm extends VerticalLayout {
     /** Second password field. */
     private PasswordField m_passwordField2;
 
+    /**Label for the head message.*/
+    private Label m_headMessage;
+
     /** Label to display the security hint. */
     private Label m_securityHint;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsPasswordForm() {
+        this(A_CmsUI.get().getLocale());
+    }
 
     /**
      * Constructor.<p>
@@ -155,7 +166,7 @@ public class CmsPasswordForm extends VerticalLayout {
     }
 
     /**
-     * Hides the old password field
+     * Hides the old password field.
      */
     public void hideOldPassword() {
 
@@ -211,6 +222,16 @@ public class CmsPasswordForm extends VerticalLayout {
 
         m_passwordField2.setComponentError(error);
         m_password2Style.setStyle(style);
+    }
+
+    /**
+     * Sets the visibility of the head message.<p>
+     *
+     * @param visible true -> head is visible, false not
+     */
+    public void setHeaderVisible(boolean visible) {
+
+        m_headMessage.setVisible(false);
     }
 
     /**

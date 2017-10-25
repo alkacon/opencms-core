@@ -54,13 +54,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_GROUP_DELETE_0 = "GUI_USERMANAGEMENT_GROUP_DELETE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_GROUP_0 = "GUI_USERMANAGEMENT_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
@@ -238,22 +232,31 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_MAX_0 = "GUI_CACHE_JAVA_HEAP_MAX_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_MAX_HELP_0 = "GUI_CACHE_JAVA_HEAP_MAX_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_TOTAL_0 = "GUI_CACHE_JAVA_HEAP_TOTAL_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_TOTAL_HELP_0 = "GUI_CACHE_JAVA_HEAP_TOTAL_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_USED_0 = "GUI_CACHE_JAVA_HEAP_USED_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_USED_HELP_0 = "GUI_CACHE_JAVA_HEAP_USED_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_CONF_0 = "GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_CONF_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_GROUP_0 = "GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_GROUP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_HELP_0 = "GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0 = "GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0";
     /** Message constant for key in the resource bundle. */
@@ -352,31 +355,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCEDATA_0 = "GUI_DATABASEAPP_EXPORT_RESOURCEDATA_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCEDATA_HELP_0 = "GUI_DATABASEAPP_EXPORT_RESOURCEDATA_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCES_0 = "GUI_DATABASEAPP_EXPORT_RESOURCES_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCES_BLOCK_0 = "GUI_DATABASEAPP_EXPORT_RESOURCES_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_RESOURCES_HELP_0 = "GUI_DATABASEAPP_EXPORT_RESOURCES_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_SETTINGS_BLOCK_0 = "GUI_DATABASEAPP_EXPORT_SETTINGS_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_START_0 = "GUI_DATABASEAPP_EXPORT_START_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_TYPES_BLOCK_0 = "GUI_DATABASEAPP_EXPORT_TYPES_BLOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_HELP_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0";
 
@@ -2361,6 +2355,27 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_ADD_USER_0 = "GUI_USERMANAGEMENT_ADD_USER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_COUNT_0 = "GUI_USERMANAGEMENT_COUNT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_DEPENDENCIES_0 = "GUI_USERMANAGEMENT_DELETE_DEPENDENCIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_GROUP_1 = "GUI_USERMANAGEMENT_DELETE_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0 = "GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_OU_CONFIRM_1 = "GUI_USERMANAGEMENT_DELETE_OU_CONFIRM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1 = "GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_DELETE_USER_1 = "GUI_USERMANAGEMENT_DELETE_USER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_EDIT_ADD_GROUP_0 = "GUI_USERMANAGEMENT_EDIT_ADD_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2406,6 +2421,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_EDIT_USERROLES_1 = "GUI_USERMANAGEMENT_EDIT_USERROLES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_GROUP_0 = "GUI_USERMANAGEMENT_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_GROUP_DELETE_0 = "GUI_USERMANAGEMENT_GROUP_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0 = "GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2440,6 +2461,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_OU_ADD_RESOURCE_0 = "GUI_USERMANAGEMENT_OU_ADD_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_DELETE_0 = "GUI_USERMANAGEMENT_OU_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_OU_DESCRIPTION_0 = "GUI_USERMANAGEMENT_OU_DESCRIPTION_0";
@@ -2482,6 +2506,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_OU_PARENT_OU_HELP_0 = "GUI_USERMANAGEMENT_OU_PARENT_OU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_RESOURCE_NOT_VALID_0 = "GUI_USERMANAGEMENT_OU_RESOURCE_NOT_VALID_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_OU_WEBUSER_0 = "GUI_USERMANAGEMENT_OU_WEBUSER_0";
@@ -2535,6 +2562,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_USER_DATA_0 = "GUI_USERMANAGEMENT_USER_DATA_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_DELETE_0 = "GUI_USERMANAGEMENT_USER_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_DESCRIPTION_0 = "GUI_USERMANAGEMENT_USER_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2578,6 +2608,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_LANGUAGE_HELP_0 = "GUI_USERMANAGEMENT_USER_LANGUAGE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_LAST_LOGIN_0 = "GUI_USERMANAGEMENT_USER_LAST_LOGIN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_LNAME_0 = "GUI_USERMANAGEMENT_USER_LNAME_0";
@@ -2907,19 +2940,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SOURCESEARCH_START_SEARCHING_REPLACING_0 = "RPT_SOURCESEARCH_START_SEARCHING_REPLACING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_DELETE_USER_1 = "GUI_USERMANAGEMENT_DELETE_USER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_DELETE_GROUP_1 = "GUI_USERMANAGEMENT_DELETE_GROUP_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0 = "GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_UNLOCK_FILE_0 = "RPT_SOURCESEARCH_UNLOCK_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_USER_DELETE_0 = "GUI_USERMANAGEMENT_USER_DELETE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.apps.messages";

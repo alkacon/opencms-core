@@ -87,6 +87,14 @@ public abstract class A_CmsWorkplaceAppConfiguration implements I_CmsWorkplaceAp
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.WORKPLACE_USER;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

@@ -25,26 +25,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui.apps.user;
 
-import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
+import org.opencms.ui.apps.I_CmsWorkplaceApp;
+import org.opencms.ui.apps.Messages;
 
 import java.util.Locale;
 
 import com.vaadin.server.Resource;
 
 /**
- * The file explorer app configuration.<p>
+ * Configuration for Account Management app.<p>
  */
-public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsOUAppConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "explorer";
+    public static final String APP_ID = "ou";
 
     /** The app icon resource (size 32x32). */
-    public static final CmsCssIcon ICON = new CmsCssIcon(OpenCmsTheme.ICON_EXLPORER_BIG);
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-24-group");
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -52,7 +55,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getAppCategory() {
 
-        return CmsWorkplaceAppManager.MAIN_CATEGORY_ID;
+        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
     }
 
     /**
@@ -60,7 +63,16 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsFileExplorer();
+        return new CmsOUApp();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    @Override
+    public String getButtonStyle() {
+
+        return "";
     }
 
     /**
@@ -69,7 +81,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_HELP_0);
+        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOOL_NAME_HELP_0);
     }
 
     /**
@@ -89,29 +101,21 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
      */
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_TITLE_0);
+        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOOL_NAME_0);
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getOrder()
      */
     @Override
     public int getOrder() {
 
-        return 3;
+        return 6;
     }
 
-    /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
-     */
-    @Override
-    public CmsRole getRequiredRole() {
-
-        return CmsRole.WORKPLACE_USER;
-    }
 }

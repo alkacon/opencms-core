@@ -174,6 +174,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             m_typeCombo = new ComboBox();
             Label space = new Label();
             m_otherOUs = new CheckBox();
+            m_otherOUs.setValue(new Boolean(true));
             hl.addComponent(m_typeCombo);
             hl.addComponent(m_otherOUs);
             hl.addComponent(space);

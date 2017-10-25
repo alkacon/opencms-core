@@ -126,6 +126,8 @@ public class CmsUserDataFormLayout extends FormLayout {
     /** The field binder. */
     private FieldGroup m_binder;
 
+    private boolean m_isAllEditable;
+
     /**
      * empty constructor.<p>
      */
@@ -140,19 +142,44 @@ public class CmsUserDataFormLayout extends FormLayout {
      */
     public void initFields(CmsUser user) {
 
+        initFields(user, false);
+    }
+
+    public void initFields(CmsUser user, boolean allEditable) {
+
+        m_isAllEditable = allEditable;
         m_infos = new PropertysetItem();
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-            String value = info.getValue(user);
-            if (value == null) {
-                value = "";
+            String value = "";
+            if (user != null) {
+                value = info.getValue(user);
+                if (value == null) {
+                    value = "";
+                }
             }
             m_infos.addItemProperty(info, new ObjectProperty<String>(value));
         }
 
         m_binder = new FieldGroup(m_infos);
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-            addComponent(buildField(getLabel(info), info));
+            addComponent(buildField(getLabel(info), info, allEditable));
         }
+    }
+
+    /**
+     * Returns whether the form fields are valid.<p>
+     *
+     * @return <code>true</code> if the form fields are valid
+     */
+    public boolean isValid() {
+
+        boolean valid = true;
+        for (Component comp : this) {
+            if (comp instanceof TextField) {
+                valid = valid && ((TextField)comp).isValid();
+            }
+        }
+        return valid;
     }
 
     /**
@@ -169,7 +196,7 @@ public class CmsUserDataFormLayout extends FormLayout {
                 m_binder.commit();
                 PropertyUtilsBean propUtils = new PropertyUtilsBean();
                 for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-                    if (info.isEditable()) {
+                    if (info.isEditable() | m_isAllEditable) {
                         if (info.isAdditionalInfo()) {
                             user.setAdditionalInfo(info.getAddInfoKey(), m_infos.getItemProperty(info).getValue());
                         } else {
@@ -197,13 +224,13 @@ public class CmsUserDataFormLayout extends FormLayout {
      *
      * @return the field
      */
-    private TextField buildField(String label, CmsAccountInfo info) {
+    private TextField buildField(String label, CmsAccountInfo info, boolean allEdit) {
 
         TextField field = (TextField)m_binder.buildAndBind(label, info);
         field.setConverter(new CmsNullToEmptyConverter());
         field.setWidth("100%");
-        field.setEnabled(info.isEditable());
-        if (info.isEditable()) {
+        field.setEnabled(info.isEditable() | allEdit);
+        if (info.isEditable() | allEdit) {
             field.addValidator(new FieldValidator(info.getField()));
         }
         field.setImmediate(true);
@@ -231,19 +258,4 @@ public class CmsUserDataFormLayout extends FormLayout {
         }
     }
 
-    /**
-     * Returns whether the form fields are valid.<p>
-     *
-     * @return <code>true</code> if the form fields are valid
-     */
-    private boolean isValid() {
-
-        boolean valid = true;
-        for (Component comp : this) {
-            if (comp instanceof TextField) {
-                valid = valid && ((TextField)comp).isValid();
-            }
-        }
-        return valid;
-    }
 }

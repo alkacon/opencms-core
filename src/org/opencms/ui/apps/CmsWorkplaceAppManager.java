@@ -74,6 +74,7 @@ import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
 import org.opencms.ui.apps.searchindex.CmsSearchindexAppConfiguration;
 import org.opencms.ui.apps.sessions.CmsBroadCastConfigurtion;
 import org.opencms.ui.apps.sitemanager.CmsSiteManagerConfiguration;
+import org.opencms.ui.apps.user.CmsOUAppConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -411,6 +412,20 @@ public class CmsWorkplaceAppManager {
     }
 
     /**
+     * Gets all configured quick launch apps, independent of the current user.<p>
+     *
+     * @return the quick launch apps
+     */
+    public List<I_CmsWorkplaceAppConfiguration> getDefaultQuickLaunchConfigurations() {
+
+        if (m_standardQuickLaunchApps == null) {
+
+            m_standardQuickLaunchApps = Collections.unmodifiableList(getAppConfigurations(STANDARD_APPS));
+        }
+        return m_standardQuickLaunchApps;
+    }
+
+    /**
      * Returns the editor for the given resource.<p>
      *
      * @param resource the resource to edit
@@ -600,20 +615,6 @@ public class CmsWorkplaceAppManager {
     }
 
     /**
-     * Gets all configured quick launch apps, independent of the current user.<p>
-     *
-     * @return the quick launch apps
-     */
-    protected List<I_CmsWorkplaceAppConfiguration> getDefaultQuickLaunchConfigurations() {
-
-        if (m_standardQuickLaunchApps == null) {
-
-            m_standardQuickLaunchApps = Collections.unmodifiableList(getAppConfigurations(STANDARD_APPS));
-        }
-        return m_standardQuickLaunchApps;
-    }
-
-    /**
      * Returns the quick launch apps set for the current user.<p>
      *
      * @param cms the cms context
@@ -784,7 +785,8 @@ public class CmsWorkplaceAppManager {
                 new CmsPublishQueueConfiguration(),
                 new CmsGitAppConfiguration(),
                 new CmsBroadCastConfigurtion(),
-                new CmsModuleAppConfiguration()));
+                new CmsModuleAppConfiguration(),
+                new CmsOUAppConfiguration()));
 
         return result;
     }

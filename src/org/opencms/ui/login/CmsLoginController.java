@@ -301,10 +301,14 @@ public class CmsLoginController {
         }
 
         if (workplace2 && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)) {
-            if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
-                fragment = CmsFileExplorerConfiguration.APP_ID;
-            } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getUserSettings().getStartView())) {
-                fragment = CmsAppHierarchyConfiguration.APP_ID;
+            if (settings.getUserSettings().getStartView().startsWith("/")) {
+                if (CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
+                    fragment = CmsFileExplorerConfiguration.APP_ID;
+                } else if (CmsWorkplace.VIEW_ADMIN.equals(settings.getUserSettings().getStartView())) {
+                    fragment = CmsAppHierarchyConfiguration.APP_ID;
+                }
+            } else {
+                fragment = settings.getUserSettings().getStartView();
             }
         }
 

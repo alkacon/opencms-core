@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -227,7 +228,8 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     public static String getDirectEditPath(CmsObject cms, CmsUserSettings userSettings) {
 
-        if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
+        if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)
+            | userSettings.getStartView().equals(CmsPageEditorConfiguration.APP_ID)) {
 
             try {
                 CmsObject cloneCms = OpenCms.initCmsObject(cms);
