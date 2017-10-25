@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Optional;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
@@ -87,12 +88,15 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
             CmsXmlContentProperty settingDef = entry.getValue();
             I_CmsFormWidgetMultiFactory factory = new I_CmsFormWidgetMultiFactory() {
 
-                public I_CmsFormWidget createFormWidget(String widgetKey, Map<String, String> widgetParams) {
+                public I_CmsFormWidget createFormWidget(
+                    String widgetKey,
+                    Map<String, String> widgetParams,
+                    Optional<String> defaultValue) {
 
                     if (CmsSelectBox.WIDGET_TYPE.equals(widgetKey)) {
                         widgetKey = CmsSelectBox.WIDGET_TYPE_NOTNULL;
                     }
-                    return CmsWidgetFactoryRegistry.instance().createFormWidget(widgetKey, widgetParams);
+                    return CmsWidgetFactoryRegistry.instance().createFormWidget(widgetKey, widgetParams, defaultValue);
                 }
             };
             I_CmsFormField field = CmsBasicFormField.createField(

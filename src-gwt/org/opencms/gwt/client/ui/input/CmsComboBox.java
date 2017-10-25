@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -159,11 +160,11 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
-                return new CmsComboBox(widgetParams, true);
+                return new CmsComboBox(widgetParams, false);
             }
         });
     }
@@ -416,16 +417,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
-     * Updates the select cell.<p>
-     *
-     * @param cell the select cell
-     */
-    protected void updateCell(CmsLabelSelectCell cell) {
-        // do nothing
-
-    }
-
-    /**
      * Updates the select cells.<p>
      */
     public void updateCells() {
@@ -522,6 +513,16 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
         super.onLoad();
         updateStyle();
+    }
+
+    /**
+     * Updates the select cell.<p>
+     *
+     * @param cell the select cell
+     */
+    protected void updateCell(CmsLabelSelectCell cell) {
+        // do nothing
+
     }
 
     /**

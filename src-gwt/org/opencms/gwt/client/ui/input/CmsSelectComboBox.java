@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -90,7 +91,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
      */
     public CmsSelectComboBox(Map<String, String> options, boolean forProperties) {
         m_options = options;
-        m_selectBox = forProperties ? new CmsPropertySelectBox(options) : new CmsSelectBox(options, true);
+        m_selectBox = forProperties ? new CmsPropertySelectBox(options) : new CmsSelectBox(options, false);
         m_comboBox = forProperties ? new CmsPropertyComboBox(m_options) : new CmsComboBox(m_options);
         m_panel.add(m_selectBox);
         CmsPushButton comboButton = new CmsPushButton();
@@ -117,9 +118,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsSelectComboBox(widgetParams, false);
             }
@@ -127,9 +128,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE_PROP, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsSelectComboBox(widgetParams, true);
             }

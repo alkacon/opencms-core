@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -261,10 +262,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
             @Override
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 String config = widgetParams.get("configuration");
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(config)) {

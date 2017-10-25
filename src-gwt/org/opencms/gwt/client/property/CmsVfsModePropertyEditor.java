@@ -56,6 +56,7 @@ import java.util.Map;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gwt.core.client.Scheduler;
@@ -89,6 +90,13 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
+
+    static {
+        tabs = HashBiMap.create();
+        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
+        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
+        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
+    }
 
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
@@ -126,13 +134,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
     }
 
-    static {
-        tabs = HashBiMap.create();
-        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
-        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
-        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
-    }
-
     /**
      * Disables resizing.<p>
      *
@@ -157,12 +158,15 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
-     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#createFormWidget(java.lang.String, java.util.Map)
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#createFormWidget(java.lang.String, java.util.Map, com.google.common.base.Optional)
      */
     @Override
-    public I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams) {
+    public I_CmsFormWidget createFormWidget(
+        String key,
+        Map<String, String> widgetParams,
+        Optional<String> defaultValue) {
 
-        I_CmsFormWidget widget = super.createFormWidget(key, widgetParams);
+        I_CmsFormWidget widget = super.createFormWidget(key, widgetParams, defaultValue);
         if (m_isReadOnly) {
             widget.setEnabled(false);
         }

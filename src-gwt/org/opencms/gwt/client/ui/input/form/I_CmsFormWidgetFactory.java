@@ -31,6 +31,8 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 
 import java.util.Map;
 
+import com.google.common.base.Optional;
+
 /**
  * This is an interface for classes which can create a single widget type if given
  * a map of string parameters.<p>
@@ -44,9 +46,10 @@ public interface I_CmsFormWidgetFactory {
      * Creates a new widget based on a map of parameters.<p>
      *
      * @param widgetParams the configuration parameters for the widget
+     * @param defaultValue an optional default value
      *
      * @return the newly created widget
      */
-    I_CmsFormWidget createWidget(Map<String, String> widgetParams);
+    I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue);
 
 }

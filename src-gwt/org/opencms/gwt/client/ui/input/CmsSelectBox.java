@@ -38,6 +38,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.user.client.ui.FocusPanel;
 
 /**
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
  * @since 8.0.0
  *
  */
-public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I_CmsHasInit, I_CmsHasGhostValue {
+public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I_CmsHasInit, I_CmsHasGhostValue {
 
     /** The key for the text which should be displayed in the opener if no option is available. */
     public static final String NO_SELECTION_OPENER_TEXT = "%NO_SELECTION_OPENER_TEXT%";
@@ -101,7 +102,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I
      */
     public CmsSelectBox(Map<String, String> items) {
 
-        super();
+        this();
         setItems(items);
     }
 
@@ -113,7 +114,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I
      */
     public CmsSelectBox(Map<String, String> items, boolean addNullOption) {
 
-        super();
+        this();
         if (items.containsKey(NO_SELECTION_TEXT)) {
             m_noSelectionText = items.get(NO_SELECTION_TEXT);
             m_noSelectionOpenerText = items.get(NO_SELECTION_OPENER_TEXT);
@@ -142,9 +143,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsSelectBox(widgetParams, true);
             }
@@ -153,9 +154,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE_NOTNULL, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsSelectBox(widgetParams, false);
             }

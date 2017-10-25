@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -169,7 +170,10 @@ public class CmsBasicFormField implements I_CmsFormField {
         Map<String, String> widgetConfig = CmsStringUtil.splitAsMap(widgetConfigStr, "|", ":");
         widgetConfig.putAll(additionalParams);
         String widgetType = propertyConfig.getWidget();
-        I_CmsFormWidget widget = factory.createFormWidget(widgetType, widgetConfig);
+        I_CmsFormWidget widget = factory.createFormWidget(
+            widgetType,
+            widgetConfig,
+            Optional.fromNullable(propertyConfig.getDefault()));
         CmsBasicFormField field = new CmsBasicFormField(
             fieldId,
             description,

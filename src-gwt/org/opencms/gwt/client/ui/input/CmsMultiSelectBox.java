@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.dom.client.Style.Unit;
 
 /**
@@ -50,7 +51,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * @since 8.5.0
  *
  */
-public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell>implements I_CmsHasInit, I_CmsHasGhostValue {
+public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implements I_CmsHasInit, I_CmsHasGhostValue {
 
     /** The key for the text which should be displayed in the opener if no option is available. */
     public static final String NO_SELECTION_OPENER_TEXT = "%NO_SELECTION_OPENER_TEXT%";
@@ -130,9 +131,9 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell>impleme
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 Map<String, CmsPair<String, Boolean>> entries = new HashMap<String, CmsPair<String, Boolean>>();
                 String label = "Select";
@@ -154,7 +155,8 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell>impleme
 
     /**
      * Adds a new selection cell.<p>
-     * @param cell
+     *
+     * @param cell the new selection cell
      */
     @Override
     public void addOption(CmsMultiSelectCell cell) {

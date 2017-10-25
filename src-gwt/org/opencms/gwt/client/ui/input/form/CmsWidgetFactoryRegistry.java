@@ -33,6 +33,8 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Optional;
+
 /**
  * This singleton class is used for registering all widget factories.<p>
  *
@@ -76,7 +78,10 @@ public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFacto
      *
      * @return the newly created widget
      */
-    public I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams) {
+    public I_CmsFormWidget createFormWidget(
+        String key,
+        Map<String, String> widgetParams,
+        Optional<String> defaultValue) {
 
         if (key == null) {
             key = "";
@@ -86,7 +91,7 @@ public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFacto
             // if the given widget type is not found, fall back to text box widget
             factory = m_widgetFactories.get(CmsTextBox.WIDGET_TYPE);
         }
-        return factory.createWidget(widgetParams);
+        return factory.createWidget(widgetParams, defaultValue);
 
     }
 

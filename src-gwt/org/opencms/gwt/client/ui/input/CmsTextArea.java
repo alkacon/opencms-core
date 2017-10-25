@@ -41,6 +41,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Map;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -194,7 +195,7 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
             /**
              * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsTextArea();
             }

@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -193,9 +194,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
              */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsGroupSelection(null);
             }
@@ -408,15 +409,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * @param title the title of the popup
      * */
     native void openNative(String url, String title) /*-{
-		$wnd
-				.open(
-						url,
-						title,
-						'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
-		var self = this;
-		$wnd.setGroupFormValue = function(value) {
-			self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
-		};
+        $wnd
+                .open(
+                        url,
+                        title,
+                        'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
+        var self = this;
+        $wnd.setGroupFormValue = function(value) {
+            self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
+        };
     }-*/;
 
     /**

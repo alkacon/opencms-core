@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 
 /**
@@ -118,9 +119,12 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory#createFormWidget(java.lang.String, java.util.Map)
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory#createFormWidget(java.lang.String, java.util.Map, com.google.common.base.Optional)
      */
-    public I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams) {
+    public I_CmsFormWidget createFormWidget(
+        String key,
+        Map<String, String> widgetParams,
+        Optional<String> defaultValue) {
 
         I_CmsFormWidget result = null;
 
@@ -139,7 +143,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
             result = box;
 
         } else {
-            result = CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams);
+            result = CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams, defaultValue);
             checkWidgetRequirements(key, result);
         }
         return result;

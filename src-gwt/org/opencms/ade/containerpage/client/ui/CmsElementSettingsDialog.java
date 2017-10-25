@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
@@ -54,7 +55,10 @@ import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -66,6 +70,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,6 +78,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Style;
@@ -85,7 +91,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The element settings dialog.<p>
  */
-public class CmsElementSettingsDialog extends CmsFormDialog {
+public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsFormWidgetMultiFactory {
 
     /**
      * A panel which adds icons with tooltips containing the field description to the rows.<p>
@@ -392,6 +398,23 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory#createFormWidget(java.lang.String, java.util.Map, com.google.common.base.Optional)
+     */
+    public I_CmsFormWidget createFormWidget(
+        String key,
+        Map<String, String> widgetParams,
+        Optional<String> defaultValue) {
+
+        if (CmsSelectBox.WIDGET_TYPE.equals(key)) {
+            if ((defaultValue != null) && defaultValue.isPresent() && widgetParams.containsKey(defaultValue.get())) {
+                key = CmsSelectBox.WIDGET_TYPE_NOTNULL;
+            }
+        }
+
+        return CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams, defaultValue);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#show()
      */
     @Override
@@ -460,7 +483,17 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 formFieldPanel.addGroupFieldSet(entry.getKey(), fieldSet);
             }
         }
-        Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(settingsConfig.values());
+        // using LinkedHashMap to preserve the order
+        Map<String, I_CmsFormField> formFields = new LinkedHashMap<String, I_CmsFormField>();
+        for (CmsXmlContentProperty propConfig : settingsConfig.values()) {
+            CmsBasicFormField currentField = CmsBasicFormField.createField(
+                propConfig,
+                propConfig.getName(),
+                this,
+                Collections.<String, String> emptyMap(),
+                false);
+            formFields.put(propConfig.getName(), currentField);
+        }
         for (I_CmsFormField field : formFields.values()) {
 
             String fieldId = field.getId();
