@@ -32,7 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.util.CmsUUID;
@@ -48,6 +47,9 @@ import com.google.common.collect.Lists;
  * Action "Steal lock".<p>
  */
 public class CmsStealLockAction extends A_CmsWorkplaceAction {
+
+    /** The action id. */
+    public static final String ACTION_ID = "steallock";
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStealLockAction.class);
@@ -76,15 +78,7 @@ public class CmsStealLockAction extends A_CmsWorkplaceAction {
      */
     public String getId() {
 
-        return "steallock";
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return CmsVaadinUtils.getMessageText("GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0");
+        return ACTION_ID;
     }
 
     /**
@@ -93,6 +87,15 @@ public class CmsStealLockAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return CmsStandardVisibilityCheck.STEAL_LOCK.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return "GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0";
     }
 
 }

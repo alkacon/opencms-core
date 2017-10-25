@@ -40,6 +40,7 @@ import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.Multimap;
 import com.vaadin.ui.UI;
@@ -101,9 +102,10 @@ public class CmsUserInfoDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitle(java.util.Locale)
      */
-    public String getTitle() {
+    @Override
+    public String getTitle(Locale locale) {
 
         return "";
     }
@@ -127,6 +129,15 @@ public class CmsUserInfoDialogAction extends A_CmsWorkplaceAction {
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return "";
     }
 
     /**

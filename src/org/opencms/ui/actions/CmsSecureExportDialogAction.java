@@ -29,7 +29,6 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -61,12 +60,12 @@ public class CmsSecureExportDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitle()
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitleKey()
      */
     @Override
-    public String getDialogTitle() {
+    public String getDialogTitleKey() {
 
-        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DIALOGTITLE_SECUREEXPORT_0);
+        return org.opencms.ui.Messages.GUI_DIALOGTITLE_SECUREEXPORT_0;
     }
 
     /**
@@ -78,18 +77,19 @@ public class CmsSecureExportDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_SECURE_0);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_EXPLORER_CONTEXT_SECURE_0;
     }
 }

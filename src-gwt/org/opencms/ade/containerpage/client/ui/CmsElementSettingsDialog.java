@@ -57,6 +57,7 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -361,7 +362,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         if (CmsUUID.isValidUUID(id) && !(new CmsUUID(id).isNullUUID())) {
             CmsContextMenuButton menuButton = new CmsContextMenuButton(
                 new CmsUUID(id),
-                new CmsDialogContextMenuHandler());
+                new CmsDialogContextMenuHandler(),
+                AdeContext.resourceinfo);
             menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             formFieldPanel.getInfoWidget().addButton(menuButton);
         }

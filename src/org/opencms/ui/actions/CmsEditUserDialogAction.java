@@ -58,12 +58,12 @@ public class CmsEditUserDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitle()
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitleKey()
      */
     @Override
-    public String getDialogTitle() {
+    public String getDialogTitleKey() {
 
-        return getWorkplaceMessage(org.opencms.ui.components.Messages.GUI_USER_EDIT_0);
+        return org.opencms.ui.components.Messages.GUI_USER_EDIT_0;
     }
 
     /**
@@ -75,14 +75,6 @@ public class CmsEditUserDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return getWorkplaceMessage(org.opencms.ui.components.Messages.GUI_USER_EDIT_0);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
@@ -90,5 +82,14 @@ public class CmsEditUserDialogAction extends A_CmsWorkplaceAction {
         return cms.getRequestContext().getCurrentUser().isManaged()
         ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
         : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.ui.components.Messages.GUI_USER_EDIT_0;
     }
 }

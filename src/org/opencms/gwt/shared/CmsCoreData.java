@@ -44,13 +44,22 @@ public class CmsCoreData implements IsSerializable {
     public enum AdeContext {
 
         /** Context for container page. */
-        containerpage,
+        pageeditor,
 
         /** Context for classic direct edit provider. */
         editprovider,
 
+        /** Context for publish dialog. */
+        publish,
+
+        /** Context for resource info dialog. */
+        resourceinfo,
+
+        /** Context for gallery dialog. */
+        gallery,
+
         /** Context for sitemap. */
-        sitemap
+        sitemapeditor
     }
 
     /** The available client modules. */

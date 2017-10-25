@@ -49,6 +49,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
@@ -178,7 +179,10 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                 CmsDomUtil.resizeAncestor(getParent());
             }
         });
-        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), m_menuHandler);
+        CmsContextMenuButton menuButton = new CmsContextMenuButton(
+            status.getStructureId(),
+            m_menuHandler,
+            AdeContext.resourceinfo);
         menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         infoWidget.addButton(menuButton);
         m_panel.add(infoBoxPanel);
@@ -231,7 +235,10 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
             for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
-                CmsContextMenuButton button = new CmsContextMenuButton(relationBean.getStructureId(), m_menuHandler);
+                CmsContextMenuButton button = new CmsContextMenuButton(
+                    relationBean.getStructureId(),
+                    m_menuHandler,
+                    AdeContext.resourceinfo);
                 item.getListItemWidget().addButton(button);
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
                 final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(

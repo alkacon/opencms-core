@@ -29,13 +29,15 @@ package org.opencms.ui.dialogs.embedded;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Action for the data view dialog.<p>
@@ -47,7 +49,7 @@ public class CmsDataViewAction implements I_CmsWorkplaceAction {
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        context.start(getTitle(), new CmsDataViewDialog(context), DialogWidth.max);
+        context.start(getTitle(A_CmsUI.get().getLocale()), new CmsDataViewDialog(context), DialogWidth.max);
     }
 
     /**
@@ -59,11 +61,11 @@ public class CmsDataViewAction implements I_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle(java.util.Locale)
      */
-    public String getTitle() {
+    public String getTitle(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DATAVIEW_HEADER_0);
+        return OpenCms.getWorkplaceManager().getMessages(locale).key(org.opencms.ui.Messages.GUI_DATAVIEW_HEADER_0);
     }
 
     /**

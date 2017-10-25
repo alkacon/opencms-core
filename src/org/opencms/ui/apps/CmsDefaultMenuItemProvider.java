@@ -44,34 +44,50 @@ import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.actions.CmsEditPageAction;
 import org.opencms.ui.actions.CmsEditPointerAction;
 import org.opencms.ui.actions.CmsEditPropertyAction;
+import org.opencms.ui.actions.CmsEditSmallElementsAction;
 import org.opencms.ui.actions.CmsFormEditDialogAction;
 import org.opencms.ui.actions.CmsGalleryDialogAction;
 import org.opencms.ui.actions.CmsHistoryDialogAction;
 import org.opencms.ui.actions.CmsLinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
+import org.opencms.ui.actions.CmsLogoutAction;
 import org.opencms.ui.actions.CmsMoveDialogAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
+import org.opencms.ui.actions.CmsPreviewAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.CmsPublishQueueDialogAction;
 import org.opencms.ui.actions.CmsPublishScheduledDialogAction;
+import org.opencms.ui.actions.CmsRenameAction;
 import org.opencms.ui.actions.CmsReplaceDialogAction;
 import org.opencms.ui.actions.CmsResourceInfoAction;
 import org.opencms.ui.actions.CmsRestoreDeletedAction;
 import org.opencms.ui.actions.CmsSecureExportDialogAction;
+import org.opencms.ui.actions.CmsSelectElementViewAction;
+import org.opencms.ui.actions.CmsSeoAction;
+import org.opencms.ui.actions.CmsShowLocaleAction;
+import org.opencms.ui.actions.CmsSiteDialogAction;
+import org.opencms.ui.actions.CmsSitemapAliasAction;
+import org.opencms.ui.actions.CmsSitemapEditConfigAction;
+import org.opencms.ui.actions.CmsSitemapOpenParentAction;
+import org.opencms.ui.actions.CmsSitemapRefreshAction;
 import org.opencms.ui.actions.CmsStealLockAction;
+import org.opencms.ui.actions.CmsTemplateContextsAction;
 import org.opencms.ui.actions.CmsTouchDialogAction;
 import org.opencms.ui.actions.CmsUndeleteDialogAction;
 import org.opencms.ui.actions.CmsUndoDialogAction;
 import org.opencms.ui.actions.CmsUnlinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsUnlockAction;
+import org.opencms.ui.actions.CmsViewOnlineAction;
+import org.opencms.ui.actions.CmsWorkplaceAction;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -87,28 +103,25 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
-    /**
-     * Creates a new instance.<p>
-     */
-    public CmsDefaultMenuItemProvider() {
-        // default constructor, do nothing
-    }
+    /** The menu items. */
+    private static final List<I_CmsContextMenuItem> MENU_ITEMS;
 
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
-     */
-    public List<I_CmsContextMenuItem> getMenuItems() {
-
+    static {
         CmsSubmenu advanced = new CmsSubmenu(ADVANCED_MENU_ID, null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2400, 0);
-
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order
-        return Arrays.<I_CmsContextMenuItem> asList(
+        List<I_CmsContextMenuItem> items = Arrays.<I_CmsContextMenuItem> asList(
+            new CmsContextMenuActionItem(new CmsSiteDialogAction(), null, 10, 0),
             new CmsContextMenuActionItem(new CmsEditPageAction(), null, 10, 0),
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsEditPointerAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsGalleryDialogAction(), null, 50, 0),
+            new CmsContextMenuActionItem(new CmsViewOnlineAction(), null, 75, 0),
+            new CmsContextMenuActionItem(new CmsPreviewAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsDisplayAction(), null, 75, 0),
+            new CmsContextMenuActionItem(new CmsSitemapOpenParentAction(), null, 75, 0),
+            new CmsContextMenuActionItem(new CmsSitemapRefreshAction(), null, 100, 0),
+
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsStealLockAction(), null, 100, 0),
@@ -125,9 +138,14 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 null,
                 1100,
                 0),
+            new CmsContextMenuActionItem(new CmsRenameAction(), null, 1100, 0),
             new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 1700, 0),
             new CmsContextMenuActionItem(new CmsReplaceDialogAction(), null, 1800, 0),
             new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1900, 0),
+            new CmsContextMenuActionItem(new CmsShowLocaleAction(), null, 1925, 0),
+            new CmsContextMenuActionItem(new CmsSelectElementViewAction(), null, 1950, 0),
+            new CmsContextMenuActionItem(new CmsTemplateContextsAction(), null, 1975, 0),
+            new CmsContextMenuActionItem(new CmsEditSmallElementsAction(), null, 2000, 0),
             new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 2100, 0),
             new CmsContextMenuActionItem(new CmsResourceInfoAction(), null, 2200, 0),
             new CmsContextMenuActionItem(new CmsCategoriesDialogAction(), null, 2300, 0),
@@ -144,15 +162,35 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
 
             new CmsContextMenuActionItem(new CmsLinkLocaleVariantAction(), advanced.getId(), 1100, 0),
             new CmsContextMenuActionItem(new CmsUnlinkLocaleVariantAction(), advanced.getId(), 1150, 0),
+            new CmsContextMenuActionItem(new CmsSeoAction(), advanced.getId(), 1200, 0),
+            new CmsContextMenuActionItem(new CmsWorkplaceAction(), advanced.getId(), 1300, 0),
+            new CmsContextMenuActionItem(new CmsSitemapAliasAction(), advanced.getId(), 1500, 0),
+            new CmsContextMenuActionItem(new CmsSitemapEditConfigAction(), advanced.getId(), 1600, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),
 
             // toolbar menu entries
-            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 100, 0),
-            new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 500, 0),
-            new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 700, 0),
-            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0));
+            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 3100, 0),
+            new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 3500, 0),
+            new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 3700, 0),
+            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 3900, 0),
+            new CmsContextMenuActionItem(new CmsLogoutAction(), null, 4100, 0));
+        MENU_ITEMS = Collections.unmodifiableList(items);
     }
 
+    /**
+     * Creates a new instance.<p>
+     */
+    public CmsDefaultMenuItemProvider() {
+        // default constructor, do nothing
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
+     */
+    public List<I_CmsContextMenuItem> getMenuItems() {
+
+        return MENU_ITEMS;
+    }
 }

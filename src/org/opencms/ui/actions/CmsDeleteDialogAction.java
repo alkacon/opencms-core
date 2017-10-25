@@ -29,8 +29,8 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
@@ -38,11 +38,12 @@ import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The delete dialog action.<p>
  */
-public class CmsDeleteDialogAction extends A_CmsWorkplaceAction {
+public class CmsDeleteDialogAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "delete";
@@ -61,12 +62,11 @@ public class CmsDeleteDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
      */
-    @Override
-    public String getDialogTitle() {
+    public String getCommandClassName() {
 
-        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DIALOGTITLE_DELETE_0);
+        return "org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource";
     }
 
     /**
@@ -78,11 +78,19 @@ public class CmsDeleteDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_DELETE_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -91,5 +99,43 @@ public class CmsDeleteDialogAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return (ContextType.sitemapToolbar.equals(context.getContextType())
+            || ContextType.containerpageToolbar.equals(context.getContextType()))
+            ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
+            : super.getVisibility(context);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitleKey()
+     */
+    @Override
+    protected String getDialogTitleKey() {
+
+        return org.opencms.ui.Messages.GUI_DIALOGTITLE_DELETE_0;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_EXPLORER_CONTEXT_DELETE_0;
     }
 }

@@ -1492,9 +1492,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                         }
 
                         @Override
-                        public String getTitle() {
+                        public String getTitleKey() {
 
-                            return getWorkplaceMessage(Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0);
+                            return Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0;
                         }
 
                         @Override
@@ -1531,9 +1531,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                         }
 
                         @Override
-                        public String getTitle() {
+                        public String getTitleKey() {
 
-                            return getWorkplaceMessage(Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0);
+                            return Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0;
                         }
 
                         @Override

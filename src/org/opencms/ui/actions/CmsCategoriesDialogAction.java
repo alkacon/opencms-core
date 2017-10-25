@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
@@ -41,13 +42,14 @@ import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
 /**
  * The categories dialog action.<p>
  */
-public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction {
+public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "categories";
@@ -80,6 +82,14 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsCategories";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -88,11 +98,19 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_CATEGORIES_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -101,5 +119,33 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return ContextType.sitemapToolbar.equals(context.getContextType())
+        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
+        : super.getVisibility(context);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_EXPLORER_CONTEXT_CATEGORIES_0;
     }
 }

@@ -42,13 +42,13 @@ public interface I_CmsMenuItemRule {
     String ATTR_CONTEXT_INFO = "__contextInfo";
 
     /** A constant that signals that we are in the container page context. */
-    String CONTEXT_CONTAINERPAGE = AdeContext.containerpage.toString();
+    String CONTEXT_CONTAINERPAGE = AdeContext.pageeditor.toString();
 
     /** A constant that signals that we are in the edit provider context. */
     String CONTEXT_EDITPROVIDER = AdeContext.editprovider.toString();
 
     /** A constant that signals that we are in the sitemap context. */
-    String CONTEXT_SITEMAP = AdeContext.sitemap.toString();
+    String CONTEXT_SITEMAP = AdeContext.sitemapeditor.toString();
 
     /**
      * Returns the visibility for the menu item.<p>

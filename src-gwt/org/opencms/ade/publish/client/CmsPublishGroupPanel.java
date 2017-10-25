@@ -54,6 +54,7 @@ import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -394,7 +395,10 @@ public class CmsPublishGroupPanel extends Composite {
             fillButtonSlot(itemWidget, SLOT_EDIT, editButton, DEFAULT_SLOT_MAPPING);
         }
         if (resourceBean.getPermissionInfo().hasViewPermission()) {
-            CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
+            CmsContextMenuButton button = new CmsContextMenuButton(
+                resourceBean.getId(),
+                m_contextMenuHandler,
+                AdeContext.publish);
             fillButtonSlot(itemWidget, SLOT_MENU, button, DEFAULT_SLOT_MAPPING);
         }
         resourceBean.getId();

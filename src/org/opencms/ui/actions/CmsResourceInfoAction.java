@@ -30,8 +30,8 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
@@ -41,13 +41,17 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
 /**
  * Action for showing locked resources by opening the GWT lock report.<p>
  */
-public final class CmsResourceInfoAction extends A_CmsWorkplaceAction {
+public final class CmsResourceInfoAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
+
+    /** The action id. */
+    public static final String ACTION_ID = "resourceinfo";
 
     /** The visibility check for this action. */
     private I_CmsHasMenuItemVisibility m_visibility = new CmsMenuItemVisibilitySingleOnly(
@@ -62,19 +66,35 @@ public final class CmsResourceInfoAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
 
-        return "resourceinfo";
+        return ACTION_ID;
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_RESOURCE_INFO_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -83,6 +103,25 @@ public final class CmsResourceInfoAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return m_visibility.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return ContextType.sitemapToolbar.equals(context.getContextType())
+        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
+        : super.getVisibility(context);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
     }
 
     /**
@@ -105,5 +144,14 @@ public final class CmsResourceInfoAction extends A_CmsWorkplaceAction {
             }
         });
         extension.openInfoDialog(context.getResources().get(0), tabId);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.ui.Messages.GUI_RESOURCE_INFO_0;
     }
 }

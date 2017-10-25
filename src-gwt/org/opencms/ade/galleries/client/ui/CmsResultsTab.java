@@ -51,6 +51,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -554,7 +555,8 @@ public class CmsResultsTab extends A_CmsListTab {
             listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
         }
         CmsUUID structureId = new CmsUUID(resultItem.getClientId());
-        listItem.getListItemWidget().addButton(new CmsContextMenuButton(structureId, m_contextMenuHandler));
+        listItem.getListItemWidget().addButton(
+            new CmsContextMenuButton(structureId, m_contextMenuHandler, AdeContext.gallery));
         listItem.getListItemWidget().addOpenHandler(new OpenHandler<CmsListItemWidget>() {
 
             public void onOpen(OpenEvent<CmsListItemWidget> event) {

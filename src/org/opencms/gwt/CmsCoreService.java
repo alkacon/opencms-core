@@ -29,13 +29,12 @@ package org.opencms.gwt;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -51,7 +50,6 @@ import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsBroadcast;
@@ -64,43 +62,45 @@ import org.opencms.module.CmsModule;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.security.CmsPasswordInfo;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.actions.I_CmsADEAction;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
-import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.explorer.CmsExplorerContextMenu;
-import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.workplace.explorer.menu.A_CmsMenuItemRule;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
-import org.opencms.workplace.explorer.menu.CmsMenuRule;
-import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
 /**
  * Provides general core services.<p>
@@ -220,50 +220,192 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @return the context menu entries
      */
     public static List<CmsContextMenuEntryBean> getContextMenuEntries(
-        CmsObject cms,
+        final CmsObject cms,
         CmsUUID structureId,
-        AdeContext context) {
+        final AdeContext context) {
 
-        List<CmsContextMenuEntryBean> result = Collections.<CmsContextMenuEntryBean> emptyList();
+        Map<String, CmsContextMenuEntryBean> entries = new LinkedHashMap<String, CmsContextMenuEntryBean>();
         try {
-            if (context != null) {
-                cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
-            }
-            CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
-            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ALL));
-            CmsResource resource = resUtil[0].getResource();
-            if (hasViewPermissions(cms, resource)) {
-                String fallbackType = resource.isFolder()
-                ? CmsResourceTypeFolder.getStaticTypeName()
-                : CmsResourceTypePlain.getStaticTypeName();
-                String[] lookupTypes = {resUtil[0].getResourceTypeName(), fallbackType};
+            CmsResource resource = cms.readResource(structureId);
+            final List<CmsResource> resources = Collections.singletonList(resource);
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            // context to check item visibility
+            I_CmsDialogContext dcontext = new I_CmsDialogContext() {
 
-                for (String currentType : lookupTypes) {
-                    // the explorer type settings
-                    CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                        currentType);
-                    // only if the user has access to this resource type
-                    if ((settings != null)) {
-                        // get the context menu configuration for the given selection mode
-                        CmsExplorerContextMenu contextMenu = settings.getContextMenu();
-                        // transform the context menu into beans
-                        List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
-                            cms,
-                            contextMenu.getAllEntries(),
-                            resUtil);
-                        // filter the result
-                        result = filterEntries(allEntries);
-                        if (!result.isEmpty()) {
+                public void error(Throwable error) {
+                    // not supported
+                }
+
+                public void finish(CmsProject project, String siteRoot) {
+                    // not supported
+                }
+
+                public void finish(Collection<CmsUUID> result) {
+                    // not supported
+                }
+
+                public void focus(CmsUUID id) {
+                    // not supported
+                }
+
+                public List<CmsUUID> getAllStructureIdsInView() {
+
+                    return null;
+                }
+
+                public String getAppId() {
+
+                    return context.name();
+                }
+
+                public CmsObject getCms() {
+
+                    return cms;
+                }
+
+                public ContextType getContextType() {
+
+                    ContextType type;
+                    switch (context) {
+                        case pageeditor:
+                        case editprovider:
+                            type = ContextType.containerpageToolbar;
                             break;
+                        case sitemapeditor:
+                            type = ContextType.sitemapToolbar;
+                            break;
+                        default:
+                            type = ContextType.fileTable;
+                    }
+                    return type;
+                }
+
+                public List<CmsResource> getResources() {
+
+                    return resources;
+                }
+
+                public void navigateTo(String appId) {
+                    // not supported
+                }
+
+                public void onViewChange() {
+                    // not supported
+                }
+
+                public void reload() {
+                    // not supported
+                }
+
+                public void setWindow(Window window) {
+                    // not supported
+                }
+
+                public void start(String title, Component dialog) {
+                    // not supported
+                }
+
+                public void start(String title, Component dialog, DialogWidth width) {
+                    // not supported
+                }
+
+                public void updateUserInfo() {
+                    // not supported
+                }
+            };
+            Map<String, List<CmsContextMenuEntryBean>> submenus = new HashMap<String, List<CmsContextMenuEntryBean>>();
+            List<I_CmsContextMenuItem> items = new ArrayList<I_CmsContextMenuItem>(
+                OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems());
+            Collections.sort(items, new Comparator<I_CmsContextMenuItem>() {
+
+                public int compare(I_CmsContextMenuItem arg0, I_CmsContextMenuItem arg1) {
+
+                    return Float.compare(arg0.getOrder(), arg1.getOrder());
+                }
+            });
+
+            for (I_CmsContextMenuItem item : items) {
+
+                if (!item.isLeafItem()) {
+                    CmsMenuItemVisibilityMode visibility = item.getVisibility(dcontext);
+                    if (!visibility.isInVisible()) {
+                        entries.put(
+                            item.getId(),
+                            new CmsContextMenuEntryBean(
+                                visibility.isActive(),
+                                true,
+                                null,
+                                item.getTitle(locale),
+                                null,
+                                CmsStringUtil.isEmptyOrWhitespaceOnly(visibility.getMessageKey())
+                                ? null
+                                : OpenCms.getWorkplaceManager().getMessages(locale).getString(
+                                    visibility.getMessageKey()),
+                                false,
+                                new ArrayList<CmsContextMenuEntryBean>()));
+                    }
+                } else if ((item instanceof I_CmsADEAction) && ((I_CmsADEAction)item).isAdeSupported()) {
+                    CmsMenuItemVisibilityMode visibility = item.getVisibility(dcontext);
+                    if (!visibility.isInVisible()) {
+                        String jspPath = ((I_CmsADEAction)item).getJspPath();
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(jspPath)) {
+                            jspPath = OpenCms.getLinkManager().substituteLink(cms, jspPath);
+                        }
+                        CmsContextMenuEntryBean itemBean = new CmsContextMenuEntryBean(
+                            visibility.isActive(),
+                            true,
+                            jspPath,
+                            item.getTitle(locale),
+                            ((I_CmsADEAction)item).getCommandClassName(),
+                            CmsStringUtil.isEmptyOrWhitespaceOnly(visibility.getMessageKey())
+                            ? null
+                            : OpenCms.getWorkplaceManager().getMessages(locale).getString(visibility.getMessageKey()),
+                            false,
+                            null);
+                        Map<String, String> params = ((I_CmsADEAction)item).getParams();
+                        if (params != null) {
+                            params = new HashMap<String, String>(params);
+                            for (Entry<String, String> param : params.entrySet()) {
+                                String value = CmsVfsService.prepareFileNameForEditor(cms, resource, param.getValue());
+                                param.setValue(value);
+                            }
+                            itemBean.setParams(params);
+                        }
+                        entries.put(item.getId(), itemBean);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.getParentId())) {
+                            List<CmsContextMenuEntryBean> submenu;
+                            if (submenus.containsKey(item.getParentId())) {
+                                submenu = submenus.get(item.getParentId());
+                            } else {
+                                submenu = new ArrayList<CmsContextMenuEntryBean>();
+                                submenus.put(item.getParentId(), submenu);
+                            }
+                            submenu.add(itemBean);
                         }
                     }
                 }
             }
+            List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
+            for (I_CmsContextMenuItem item : items) {
+                if (entries.containsKey(item.getId())) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.getParentId())) {
+                        if (entries.containsKey(item.getParentId())) {
+                            CmsContextMenuEntryBean parent = entries.get(item.getParentId());
+                            if (parent.getSubMenu() != null) {
+                                parent.getSubMenu().add(entries.get(item.getId()));
+                            }
+                        }
+                    } else {
+                        result.add(entries.get(item.getId()));
+                    }
+                }
+            }
+            return result;
         } catch (CmsException e) {
             // ignore, the user probably has not enough permissions to read the resource
             LOG.debug(e.getLocalizedMessage(), e);
         }
-        return result;
+        return Collections.emptyList();
     }
 
     /**
@@ -475,62 +617,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Filters the collection of menu entry beans.<p>
-     *
-     * <ul>
-     * <li>removes unnecessary separators</li>
-     * <li>filters sub menus also</li>
-     * <li>adds visible entries to the result</li>
-     * </ul>
-     *
-     * @see org.opencms.gwt.shared.CmsContextMenuEntryBean
-     *
-     * @param allEntries the entries to filter
-     *
-     * @return the filtered list of menu entries
-     */
-    private static List<CmsContextMenuEntryBean> filterEntries(List<CmsContextMenuEntryBean> allEntries) {
-
-        // the resulting list
-        List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
-        CmsContextMenuEntryBean lastBean = null;
-
-        // iterate over the list of collected menu entries to do the filtering
-        for (CmsContextMenuEntryBean entry : allEntries) {
-            if (entry.isVisible()) {
-                // only if the entry is enabled
-                if (entry.isSeparator()) {
-                    if (!result.isEmpty()) {
-                        // the entry is a separator and it isn't the first entry in the menu
-                        if ((lastBean != null) && !lastBean.isSeparator()) {
-                            // and there are no two separators behind each other
-                            // add the separator
-                            result.add(entry);
-                        }
-                    }
-                } else if ((entry.getSubMenu() != null) && !entry.getSubMenu().isEmpty()) {
-                    // the entry has a sub menu, so filter the entries of the sub menu
-                    entry.setSubMenu(filterEntries(entry.getSubMenu()));
-                    // add the entry with sub menu
-                    result.add(entry);
-                } else {
-                    // it's a common entry, so add it
-                    result.add(entry);
-                }
-                // store the last entry to check the separator
-                lastBean = entry;
-            }
-        }
-        // after the filtering is finished, remove the last separator if it is existent
-        if (result.size() > 1) {
-            if (result.get(result.size() - 1).isSeparator()) {
-                result.remove(result.size() - 1);
-            }
-        }
-        return result;
-    }
-
-    /**
      * FInds a category in the given tree.<p>
      *
      * @param tree the the tree to search in
@@ -565,182 +651,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return null;
-    }
-
-    /**
-     * Collects the matching rules of all sub items of a parent context menu entry.<p>
-     *
-     * @param cms the cms context
-     * @param item the context menu item to check the sub items for
-     * @param itemRules the collected rules for the sub items
-     * @param resourceUtil the resources to be checked against the rules
-     */
-    private static void getSubItemRules(
-        CmsObject cms,
-        CmsExplorerContextMenuItem item,
-        List<I_CmsMenuItemRule> itemRules,
-        CmsResourceUtil[] resourceUtil) {
-
-        for (CmsExplorerContextMenuItem subItem : item.getSubItems()) {
-
-            if (subItem.isParentItem()) {
-                // this is a parent item, recurse into sub items
-                getSubItemRules(cms, subItem, itemRules, resourceUtil);
-            } else if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(subItem.getType())) {
-                // this is a standard entry, get the matching rule to add to the list
-                String subItemRuleName = subItem.getRule();
-                CmsMenuRule subItemRule = OpenCms.getWorkplaceManager().getMenuRule(subItemRuleName);
-                if (subItemRule != null) {
-                    I_CmsMenuItemRule rule = subItemRule.getMatchingRule(cms, resourceUtil);
-                    if (rule != null) {
-                        itemRules.add(rule);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks if the current user has view permissions on the given resource.<p>
-     *
-     * @param cms the current cms context
-     * @param resource the resource to check
-     *
-     * @return <code>true</code> if the current user has view permissions on the given resource
-     */
-    private static boolean hasViewPermissions(CmsObject cms, CmsResource resource) {
-
-        try {
-            return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
-            return false;
-        }
-    }
-
-    /**
-     * Returns a list of menu entry beans.<p>
-     *
-     * Takes the given List of explorer context menu items and converts them to context menu entry beans.<p>
-     *
-     * @see org.opencms.gwt.shared.CmsContextMenuEntryBean
-     * @see org.opencms.workplace.explorer.CmsExplorerContextMenuItem
-     *
-     * @param cms the cms context
-     * @param items the menu items
-     * @param resUtil a resource utility array
-     *
-     * @return a list of menu entries
-     */
-    private static List<CmsContextMenuEntryBean> transformToMenuEntries(
-        CmsObject cms,
-        List<CmsExplorerContextMenuItem> items,
-        CmsResourceUtil[] resUtil) {
-
-        // the resulting list
-        List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
-
-        // get the workplace manager
-        CmsWorkplaceManager wpManager = OpenCms.getWorkplaceManager();
-
-        // get the workplace message bundle
-        CmsMessages messages = wpManager.getMessages(wpManager.getWorkplaceLocale(cms));
-
-        for (CmsExplorerContextMenuItem item : items) {
-
-            CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
-
-            if (!CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) {
-                // this item is no separator (common entry or sub menu entry)
-
-                // set the label to the bean
-                if (item.getKey() != null) {
-                    bean.setLabel(messages.key(item.getKey()));
-                }
-
-                // get the mode and set the bean
-                CmsMenuItemVisibilityMode mode = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-                String itemRuleName = item.getRule();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemRuleName)) {
-                    CmsMenuRule rule = wpManager.getMenuRule(itemRuleName);
-                    if (rule != null) {
-                        // get the first matching rule to apply for visibility
-                        I_CmsMenuItemRule itemRule = rule.getMatchingRule(cms, resUtil);
-                        if (itemRule != null) {
-                            if (item.isParentItem()) {
-                                // get the rules for the sub items
-                                List<I_CmsMenuItemRule> itemRules = new ArrayList<I_CmsMenuItemRule>(
-                                    item.getSubItems().size());
-                                getSubItemRules(cms, item, itemRules, resUtil);
-                                I_CmsMenuItemRule[] itemRulesArray = new I_CmsMenuItemRule[itemRules.size()];
-                                // determine the visibility for the parent item
-
-                                mode = itemRule.getVisibility(cms, resUtil, itemRules.toArray(itemRulesArray));
-                            } else {
-                                if (itemRule instanceof A_CmsMenuItemRule) {
-                                    mode = ((A_CmsMenuItemRule)itemRule).getVisibility(cms, resUtil, item);
-                                } else {
-                                    mode = itemRule.getVisibility(cms, resUtil);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // set the visibility to the bean
-                bean.setVisible(!mode.isInVisible());
-
-                // set the activate info to the bean
-                if (item.isParentItem()) {
-                    // parent entries that have visible sub entries are always active
-                    bean.setActive(true);
-                } else {
-                    // common entries can be activated or de-activated
-                    bean.setActive(mode.isActive());
-                    if (CmsStringUtil.isNotEmpty(mode.getMessageKey())) {
-                        bean.setReason(messages.key(CmsEncoder.escapeXml(mode.getMessageKey())));
-                    }
-                }
-
-                // get the JSP-URI and set it to the bean
-                String jspPath = item.getUri();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(jspPath)) {
-                    if (item.getUri().startsWith("/")) {
-                        jspPath = OpenCms.getLinkManager().substituteLink(cms, item.getUri());
-                    } else {
-                        jspPath = OpenCms.getLinkManager().substituteLink(
-                            cms,
-                            CmsWorkplace.PATH_WORKPLACE + item.getUri());
-                    }
-                }
-                bean.setJspPath(jspPath);
-
-                String params = item.getParams();
-
-                if (params != null) {
-                    params = CmsVfsService.prepareFileNameForEditor(cms, resUtil[0].getResource(), params);
-                    bean.setParams(CmsStringUtil.splitAsMap(params, "|", "="));
-
-                }
-
-                // get the name of the item and set it to the bean
-                bean.setName(item.getName());
-            }
-
-            if (item.isParentItem()) {
-                // this item has a sub menu
-                bean.setSubMenu(transformToMenuEntries(cms, item.getSubItems(), resUtil));
-            }
-
-            if (CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) {
-                // this item is a separator
-                bean.setVisible(true);
-                bean.setSeparator(true);
-            }
-
-            result.add(bean);
-        }
-        return result;
     }
 
     /**

@@ -30,7 +30,6 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
@@ -40,13 +39,14 @@ import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
 /**
  * Action for editing external links resources.<p>
  */
-public class CmsEditPointerAction extends A_CmsWorkplaceAction {
+public class CmsEditPointerAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "editpointer";
@@ -75,6 +75,14 @@ public class CmsEditPointerAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEditExternalLink";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -83,11 +91,19 @@ public class CmsEditPointerAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_EDIT_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -96,6 +112,23 @@ public class CmsEditPointerAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_EDIT_0;
     }
 
 }

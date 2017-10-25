@@ -37,11 +37,12 @@ import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The undelete dialog action.<p>
  */
-public class CmsUndeleteDialogAction extends A_CmsWorkplaceAction {
+public class CmsUndeleteDialogAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "undelete";
@@ -58,6 +59,14 @@ public class CmsUndeleteDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsUndelete";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -66,11 +75,19 @@ public class CmsUndeleteDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_UNDELETE_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -79,5 +96,22 @@ public class CmsUndeleteDialogAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_EXPLORER_CONTEXT_UNDELETE_0;
     }
 }

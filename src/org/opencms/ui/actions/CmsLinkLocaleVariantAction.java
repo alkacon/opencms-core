@@ -119,14 +119,6 @@ public class CmsLinkLocaleVariantAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return CmsVaadinUtils.getMessageText(Messages.GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
@@ -138,6 +130,15 @@ public class CmsLinkLocaleVariantAction extends A_CmsWorkplaceAction {
             }
         }
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_LOCALECOMPARE_LINK_LOCALE_VARIANT_0;
     }
 
 }

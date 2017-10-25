@@ -355,15 +355,16 @@ public class CmsUserInfo extends VerticalLayout {
                 });
         }
         final CmsPreferencesDialogAction preferencesAction = new CmsPreferencesDialogAction();
-        m_menu.addMenuEntry(preferencesAction.getTitle(), null).addClickListener(new ClickListener() {
+        m_menu.addMenuEntry(preferencesAction.getTitle(A_CmsUI.get().getLocale()), null).addClickListener(
+            new ClickListener() {
 
-            private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-            public void buttonClick(ClickEvent event) {
+                public void buttonClick(ClickEvent event) {
 
-                preferencesAction.executeAction(m_context);
-            }
-        });
+                    preferencesAction.executeAction(m_context);
+                }
+            });
         if (!m_user.isManaged()) {
             m_menu.addMenuEntry(CmsVaadinUtils.getMessageText(Messages.GUI_USER_EDIT_0), null).addClickListener(
                 new Button.ClickListener() {

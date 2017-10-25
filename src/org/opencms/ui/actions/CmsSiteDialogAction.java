@@ -27,16 +27,20 @@
 
 package org.opencms.ui.actions;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.Messages;
 import org.opencms.ui.dialogs.CmsSiteSelectDialog;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The switch site dialog action.<p>
  */
-public class CmsSiteDialogAction extends A_CmsToolbarAction {
+public class CmsSiteDialogAction extends A_CmsToolbarAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "setsite";
@@ -50,6 +54,14 @@ public class CmsSiteDialogAction extends A_CmsToolbarAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -58,11 +70,21 @@ public class CmsSiteDialogAction extends A_CmsToolbarAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(Messages.GUI_ACTION_SWITCH_SITE_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(CmsGwtConstants.ACTION_PARAM_DIALOG_ID, this.getClass().getName());
+        return params;
     }
 
     /**
@@ -75,5 +97,22 @@ public class CmsSiteDialogAction extends A_CmsToolbarAction {
             || ContextType.sitemapToolbar.equals(context.getContextType())
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_ACTION_SWITCH_SITE_0;
     }
 }

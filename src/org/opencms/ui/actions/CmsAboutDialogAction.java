@@ -34,11 +34,12 @@ import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.workplace.explorer.Messages;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The about dialog action.<p>
  */
-public class CmsAboutDialogAction extends A_CmsToolbarAction {
+public class CmsAboutDialogAction extends A_CmsToolbarAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "about";
@@ -65,6 +66,14 @@ public class CmsAboutDialogAction extends A_CmsToolbarAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsAbout";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -73,10 +82,35 @@ public class CmsAboutDialogAction extends A_CmsToolbarAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_ABOUT_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_EXPLORER_CONTEXT_ABOUT_0;
     }
 }

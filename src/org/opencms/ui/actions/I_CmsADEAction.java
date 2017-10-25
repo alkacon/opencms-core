@@ -27,40 +27,38 @@
 
 package org.opencms.ui.actions;
 
-import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.Messages;
-import org.opencms.ui.dialogs.CmsProjectSelectDialog;
+import java.util.Map;
 
 /**
- * The set project dialog action.<p>
+ * Interface for actions used within the ADE context.<p>
  */
-public class CmsProjectDialogAction extends A_CmsToolbarAction {
-
-    /** The action id. */
-    public static final String ACTION_ID = "setproject";
+public interface I_CmsADEAction {
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     * Returns the client side command to execute.<p>
+     *
+     * @return the client side command
      */
-    public void executeAction(I_CmsDialogContext context) {
-
-        openDialog(new CmsProjectSelectDialog(context), context);
-    }
+    String getCommandClassName();
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
+     * Returns the optional dialog JSP.<p>
+     *
+     * @return the dialog JSP
      */
-    public String getId() {
-
-        return ACTION_ID;
-    }
+    String getJspPath();
 
     /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     * Returns the optional command parameters.<p>
+     *
+     * @return the command parameters
      */
-    @Override
-    protected String getTitleKey() {
+    Map<String, String> getParams();
 
-        return Messages.GUI_ACTION_SWITCH_PROJECT_AND_SITE_0;
-    }
+    /**
+     * Returns whether the ADE context is supported.<p>
+     *
+     * @return <code>true</code> in case the ADE context is supported
+     */
+    boolean isAdeSupported();
 }

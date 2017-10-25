@@ -78,15 +78,6 @@ public class CmsCopyDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitle()
-     */
-    @Override
-    public String getDialogTitle() {
-
-        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPY_0);
-    }
-
-    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -95,18 +86,19 @@ public class CmsCopyDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPY_0);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.ui.Messages.GUI_DIALOGTITLE_COPY_0;
     }
 }

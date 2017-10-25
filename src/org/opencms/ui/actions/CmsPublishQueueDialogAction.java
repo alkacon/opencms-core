@@ -27,13 +27,17 @@
 
 package org.opencms.ui.actions;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The publish queue dialog action.<p>
  */
-public class CmsPublishQueueDialogAction extends A_CmsToolbarAction {
+public class CmsPublishQueueDialogAction extends A_CmsToolbarAction implements I_CmsADEAction {
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -41,6 +45,14 @@ public class CmsPublishQueueDialogAction extends A_CmsToolbarAction {
     public void executeAction(I_CmsDialogContext context) {
 
         context.navigateTo(CmsPublishQueueConfiguration.APP_ID);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction";
     }
 
     /**
@@ -52,10 +64,37 @@ public class CmsPublishQueueDialogAction extends A_CmsToolbarAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(CmsGwtConstants.ACTION_PARAM_DIALOG_ID, this.getClass().getName());
+        return params;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.ui.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0;
     }
 }

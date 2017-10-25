@@ -36,11 +36,12 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * A workplace action context menu item.<p>
  */
-public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
+public class CmsContextMenuActionItem implements I_CmsContextMenuItem, I_CmsADEAction {
 
     /** The workplace action. */
     private I_CmsWorkplaceAction m_action;
@@ -79,11 +80,33 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        if (isAdeSupported()) {
+            return ((I_CmsADEAction)m_action).getCommandClassName();
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getId()
      */
     public String getId() {
 
         return m_action.getId();
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
+     */
+    public String getJspPath() {
+
+        if (isAdeSupported()) {
+            return ((I_CmsADEAction)m_action).getJspPath();
+        }
+        return null;
     }
 
     /**
@@ -93,6 +116,17 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
 
         return m_order;
 
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        if (isAdeSupported()) {
+            return ((I_CmsADEAction)m_action).getParams();
+        }
+        return null;
     }
 
     /**
@@ -116,7 +150,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
      */
     public String getTitle(Locale locale) {
 
-        return m_action.getTitle();
+        return m_action.getTitle(locale);
     }
 
     /**
@@ -146,11 +180,18 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return (m_action instanceof I_CmsADEAction) && ((I_CmsADEAction)m_action).isAdeSupported();
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#isLeafItem()
      */
     public boolean isLeafItem() {
 
         return true;
     }
-
 }

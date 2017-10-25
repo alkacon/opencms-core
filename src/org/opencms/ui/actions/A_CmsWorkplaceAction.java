@@ -32,22 +32,22 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsLockedResourcesList;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
-import com.vaadin.ui.UI;
 
 /**
  * Abstract workplace actions class providing helper methods.<p>
@@ -64,8 +64,15 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
      */
     public String getDialogTitle() {
 
-        return getTitle();
+        return OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()).key(getDialogTitleKey());
+    }
 
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle(java.util.Locale)
+     */
+    public String getTitle(Locale locale) {
+
+        return OpenCms.getWorkplaceManager().getMessages(locale).key(getTitleKey());
     }
 
     /**
@@ -85,17 +92,21 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     }
 
     /**
-     * Returns the workplace message to the given key using the current users workplace locale.<p>
+     * Returns the workplace message bundle key of the action dialog title.<p>
      *
-     * @param key the key
-     *
-     * @return the message
+     * @return the dialog title message bundle key
      */
-    protected String getWorkplaceMessage(String key) {
+    protected String getDialogTitleKey() {
 
-        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(UI.getCurrent().getLocale());
-        return messages.key(key);
+        return getTitleKey();
     }
+
+    /**
+     * Returns the workplace message bundle key of the action title.<p>
+     *
+     * @return the title message bundle key
+     */
+    protected abstract String getTitleKey();
 
     /**
      * Returns if there are any blocking locks within the context resources.<p>

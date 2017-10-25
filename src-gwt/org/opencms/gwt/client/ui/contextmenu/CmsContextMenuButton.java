@@ -80,8 +80,12 @@ public class CmsContextMenuButton extends CmsMenuButton {
      *
      * @param structureId the resource structure id
      * @param handler the context menu handler
+     * @param context the ADE context
      */
-    public CmsContextMenuButton(final CmsUUID structureId, final CmsContextMenuHandler handler) {
+    public CmsContextMenuButton(
+        final CmsUUID structureId,
+        final CmsContextMenuHandler handler,
+        final AdeContext context) {
 
         super(null, I_CmsButton.CONTEXT_MENU_SMALL);
         m_button.setSize(I_CmsButton.Size.medium);
@@ -121,7 +125,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
                 if (!isOpen()) {
                     openMenu();
                     getParent().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-                    handler.loadContextMenu(structureId, AdeContext.containerpage, CmsContextMenuButton.this);
+                    handler.loadContextMenu(structureId, context, CmsContextMenuButton.this);
                 } else {
                     hideMenu();
                 }

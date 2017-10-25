@@ -30,8 +30,8 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -39,11 +39,12 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Action for showing locked resources by opening the GWT lock report.<p>
  */
-public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
+public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The name of the classic workplace window. */
     public static final String WORKPLACE_WINDOW_NAME = "workplaceClassic";
@@ -67,6 +68,14 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsShowClassicWorkplace";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -75,11 +84,19 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    public String getTitle() {
+    public String getJspPath() {
 
-        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -90,5 +107,35 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
         boolean visible = ((resources == null) || resources.isEmpty())
             && cms.existsResource(CmsWorkplace.JSP_WORKPLACE_URI);
         return visible ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        boolean visible = (context.getContextType().equals(ContextType.containerpageToolbar)
+            || context.getContextType().equals(ContextType.sitemapToolbar)
+            || (context.getResources() == null)
+            || context.getResources().isEmpty()) && context.getCms().existsResource(CmsWorkplace.JSP_WORKPLACE_URI);
+        return visible ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.ui.Messages.GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0;
     }
 }

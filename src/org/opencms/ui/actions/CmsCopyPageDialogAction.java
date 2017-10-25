@@ -29,7 +29,6 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
@@ -56,8 +55,7 @@ public class CmsCopyPageDialogAction extends A_CmsWorkplaceAction {
     public void executeAction(I_CmsDialogContext context) {
 
         CmsCopyPageDialog dialog = new CmsCopyPageDialog(context);
-        context.start(CmsVaadinUtils.getMessageText(Messages.GUI_COPY_PAGE_0), dialog);
-
+        openDialog(dialog, context);
     }
 
     /**
@@ -69,19 +67,20 @@ public class CmsCopyPageDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return CmsVaadinUtils.getMessageText(Messages.GUI_COPY_PAGE_0);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_COPY_PAGE_0;
     }
 
 }

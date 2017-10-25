@@ -73,10 +73,11 @@ public class CmsPreferencesDialogAction extends A_CmsToolbarAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
      */
-    public String getTitle() {
+    @Override
+    protected String getTitleKey() {
 
-        return getWorkplaceMessage(Messages.GUI_BUTTON_PREFERENCES_0);
+        return Messages.GUI_BUTTON_PREFERENCES_0;
     }
 }

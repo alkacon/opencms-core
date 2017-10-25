@@ -83,14 +83,6 @@ public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return getWorkplaceMessage(Messages.GUI_ACTION_OPEN_FORM_EDITOR_0);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
@@ -100,5 +92,14 @@ public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_ACTION_OPEN_FORM_EDITOR_0;
     }
 }

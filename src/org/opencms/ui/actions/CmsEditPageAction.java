@@ -34,15 +34,24 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The edit page action. Available for container pages.<p>
  */
-public class CmsEditPageAction extends CmsDisplayAction {
+public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEAction {
 
     /** The action id. */
     @SuppressWarnings("hiding")
     public static final String ACTION_ID = "editpage";
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsShowPage";
+    }
 
     /**
      * @see org.opencms.ui.actions.I_CmsDefaultAction#getDefaultActionRank(org.opencms.ui.I_CmsDialogContext)
@@ -63,12 +72,19 @@ public class CmsEditPageAction extends CmsDisplayAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
      */
-    @Override
-    public String getTitle() {
+    public String getJspPath() {
 
-        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_ACTION_OPEN_PAGE_0);
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
     }
 
     /**
@@ -82,5 +98,22 @@ public class CmsEditPageAction extends CmsDisplayAction {
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return org.opencms.ui.Messages.GUI_ACTION_OPEN_PAGE_0;
     }
 }

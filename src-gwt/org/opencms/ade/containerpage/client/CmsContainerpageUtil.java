@@ -47,6 +47,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -443,7 +444,7 @@ public class CmsContainerpageUtil {
 
                     Window.Location.reload();
                 }
-            });
+            }, AdeContext.gallery);
             listItem.getListItemWidget().addButtonToFront(button);
         }
         listItem.initMoveHandle(m_controller.getDndHandler(), true);

@@ -66,7 +66,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
     private HandlerRegistration m_menuCloseHandler;
 
     /** Context used for loading the context menu entries. */
-    private AdeContext m_menuContext = AdeContext.containerpage;
+    private AdeContext m_menuContext = AdeContext.pageeditor;
 
     /** The main content widget. */
     private FlexTable m_menuPanel;

@@ -36,6 +36,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.Messages;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -74,7 +75,7 @@ public class CmsUnlinkLocaleVariantAction extends A_CmsWorkplaceAction {
                 try {
                     CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
                     CmsUnlinkDialog unlinkDialog = new CmsUnlinkDialog(context, target);
-                    context.start(getTitle(), unlinkDialog);
+                    openDialog(unlinkDialog, context);
                     break;
                 } catch (CmsException e) {
                     LOG.info("No target found for: " + relation, e);
@@ -95,11 +96,12 @@ public class CmsUnlinkLocaleVariantAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
      */
-    public String getTitle() {
+    @Override
+    public String getTitleKey() {
 
-        return "Unlink locale";
+        return Messages.GUI_LOCALECOMPARE_UNLINK_LOCALE_VARIANT_0;
     }
 
     /**

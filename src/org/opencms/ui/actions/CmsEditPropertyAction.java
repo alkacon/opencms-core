@@ -87,14 +87,6 @@ public class CmsEditPropertyAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return getWorkplaceMessage(m_titleKey);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
@@ -114,5 +106,14 @@ public class CmsEditPropertyAction extends A_CmsWorkplaceAction {
         } else {
             return getVisibility(context.getCms(), context.getResources());
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return m_titleKey;
     }
 }

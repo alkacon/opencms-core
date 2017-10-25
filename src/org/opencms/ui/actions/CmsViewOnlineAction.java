@@ -29,47 +29,36 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.ui.A_CmsUI;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-
-import com.google.common.collect.Lists;
+import java.util.Map;
 
 /**
- * Action "Unlock resource".<p>
+ * Action to logout.<p>
+ * Used within the ADE context only.<p>
  */
-public class CmsUnlockAction extends A_CmsWorkplaceAction {
+public class CmsViewOnlineAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "unlock";
-
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUnlockAction.class);
+    public static final String ACTION_ID = "viewonline";
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        List<CmsUUID> changedIds = Lists.newArrayList();
-        for (CmsResource res : context.getResources()) {
-            try {
-                cms.unlockResource(res);
-                changedIds.add(res.getStructureId());
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-            context.finish(changedIds);
-        }
+        // not supported
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return ACTION_ID;
     }
 
     /**
@@ -81,11 +70,45 @@ public class CmsUnlockAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
+     */
+    public String getJspPath() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        return CmsStandardVisibilityCheck.UNLOCK.getVisibility(cms, resources);
+        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        boolean visible = AdeContext.pageeditor.name().equals(context.getAppId());
+        return visible ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
     }
 
     /**
@@ -94,7 +117,6 @@ public class CmsUnlockAction extends A_CmsWorkplaceAction {
     @Override
     protected String getTitleKey() {
 
-        return "GUI_EXPLORER_CONTEXT_UNLOCK_0";
+        return "VIEWONLINE";
     }
-
 }

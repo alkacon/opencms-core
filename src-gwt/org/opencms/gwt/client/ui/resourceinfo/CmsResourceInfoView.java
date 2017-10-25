@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 
 import java.util.List;
@@ -225,7 +226,10 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
                 CmsDomUtil.resizeAncestor(getParent());
             }
         });
-        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), m_menuHandler);
+        CmsContextMenuButton menuButton = new CmsContextMenuButton(
+            status.getStructureId(),
+            m_menuHandler,
+            AdeContext.resourceinfo);
         menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         infoBox.addButton(menuButton);
         m_infoBoxContainer.add(infoBox);
