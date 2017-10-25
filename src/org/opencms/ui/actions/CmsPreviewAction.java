@@ -118,6 +118,6 @@ public class CmsPreviewAction extends A_CmsWorkplaceAction implements I_CmsADEAc
     @Override
     protected String getTitleKey() {
 
-        return Messages.GUI_EXPLORER_CONTEXT_RENAME_0;
+        return Messages.GUI_EXPLORER_CONTEXT_PREVIEW_0;
     }
 }
