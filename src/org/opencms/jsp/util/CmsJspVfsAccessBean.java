@@ -27,10 +27,12 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -43,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -349,7 +352,7 @@ public final class CmsJspVfsAccessBean {
     /** Properties loaded locale specific from the OpenCms VFS with search. */
     private Map<String, Map<String, Map<String, String>>> m_propertiesSearchLocale;
 
-    /** Available locales as determined by the {@link org.opencms.i18n.CmsLocaleManager} */
+    /** Available locales as determined by the {@link org.opencms.i18n.CmsLocaleManager}. */
     private Map<String, List<Locale>> m_availableLocales;
 
     /** Resources loaded from the OpenCms VFS. */
@@ -962,5 +965,60 @@ public final class CmsJspVfsAccessBean {
     public Map<String, CmsJspContentAccessBean> getXml() {
 
         return getReadXml();
+    }
+
+    /**
+     * Reads the resources in the given folder.<p>
+     *
+     * @param resourcePath the site path to the folder
+     *
+     * @return the resources
+     *
+     * @throws CmsException in case reading the resources fails
+     */
+    public List<CmsResource> readFilesInFolder(String resourcePath) throws CmsException {
+
+        return m_cms.getFilesInFolder(resourcePath);
+    }
+
+    /**
+     * Reads the resources in the given folder using the provided filter.<p>
+     *
+     * @param resourcePath the site path to the folder
+     * @param filterString a comma separated list of resource type names
+     *
+     * @return the resources
+     *
+     * @throws CmsException in case reading the resources fails
+     */
+    public List<CmsResource> readFilesInFolder(String resourcePath, String filterString) throws CmsException {
+
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filterString)) {
+            String[] types = filterString.split(",");
+            for (String type : types) {
+                if (OpenCms.getResourceManager().hasResourceType(type)) {
+                    filter.addRequireType(OpenCms.getResourceManager().getResourceType(type));
+                }
+            }
+        }
+        return m_cms.getFilesInFolder(resourcePath, filter);
+    }
+
+    /**
+     * Reads the sub site folder resource.<p>
+     *
+     * @param path the current site path
+     *
+     * @return the folder resource
+     *
+     * @throws CmsException in case reading the resource fails
+     */
+    public CmsResource readSubsiteFor(String path) throws CmsException {
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            m_cms,
+            m_cms.getRequestContext().addSiteRoot(path));
+        return m_cms.readResource(m_cms.getRequestContext().removeSiteRoot(config.getBasePath()));
     }
 }
