@@ -801,20 +801,22 @@ public class CmsWorkplaceAppManager {
     private Collection<I_CmsWorkplaceAppConfiguration> loadLegacyApps() {
 
         List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>();
+        // avoid accessing the workplace manager during test case
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_2_INITIALIZING) {
+            List<CmsTool> tools = OpenCms.getWorkplaceManager().getToolManager().getToolHandlers();
+            for (CmsTool tool : tools) {
 
-        List<CmsTool> tools = OpenCms.getWorkplaceManager().getToolManager().getToolHandlers();
-        for (CmsTool tool : tools) {
+                I_CmsToolHandler handler = tool.getHandler();
+                String path = handler.getPath();
 
-            I_CmsToolHandler handler = tool.getHandler();
-            String path = handler.getPath();
-
-            // only collecting first path level tools
-            if ((path.length() > 1) && (path.indexOf(CmsToolManager.TOOLPATH_SEPARATOR, 1) < 0)) {
-                if (!LEGACY_BLACKLIST.contains(path)) {
-                    configs.add(new CmsLegacyAppConfiguration(handler));
+                // only collecting first path level tools
+                if ((path.length() > 1) && (path.indexOf(CmsToolManager.TOOLPATH_SEPARATOR, 1) < 0)) {
+                    if (!LEGACY_BLACKLIST.contains(path)) {
+                        configs.add(new CmsLegacyAppConfiguration(handler));
+                    }
                 }
-            }
 
+            }
         }
         return configs;
     }

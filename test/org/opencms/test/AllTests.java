@@ -115,6 +115,7 @@ public final class AllTests {
         suite.addTest(org.opencms.site.AllTests.suite());
         suite.addTest(org.opencms.staticexport.AllTests.suite());
         suite.addTest(org.opencms.synchronize.AllTests.suite());
+        suite.addTest(org.opencms.ui.apps.AllTests.suite());
         suite.addTest(org.opencms.util.AllTests.suite());
         suite.addTest(org.opencms.widgets.AllTests.suite());
         suite.addTest(org.opencms.workplace.AllTests.suite());

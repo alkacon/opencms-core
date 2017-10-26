@@ -36,12 +36,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Tests the content service for generating serializable XML content entities and type definitions and persisting those entities.<p>
+ * Tests the configuration loading.<p>
  */
 public class TestCmsAppManager extends OpenCmsTestCase {
-
-    /** The schema id. */
-    private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -67,32 +64,18 @@ public class TestCmsAppManager extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsAppManager("testCollectAppConfigurations"));
 
-        //        TestSetup wrapper = new TestSetup(suite) {
-        //
-        //            @Override
-        //            protected void setUp() {
-        //
-        //                setupOpenCms("simpletest", "/");
-        //            }
-        //
-        //            @Override
-        //            protected void tearDown() {
-        //
-        //                removeOpenCms();
-        //            }
-        //        };
-
         return suite;
     }
 
     /**
-     * Tests the collect plugin configurations.<p>
+     * Tests the collect app configurations.<p>
      *
      * @throws Exception if something fails
      */
     public void testCollectAppConfigurations() throws Exception {
 
         CmsWorkplaceAppManager manager = new CmsWorkplaceAppManager();
+        manager.loadApps();
         Collection<I_CmsWorkplaceAppConfiguration> configs = manager.getWorkplaceApps();
 
         assertTrue("Should find apps", !configs.isEmpty());
