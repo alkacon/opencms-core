@@ -46,6 +46,7 @@ import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -111,7 +112,7 @@ public class CmsDeletePrincipalDialog extends CmsBasicDialog {
         init(cms, window);
         try {
             m_principal = CmsPrincipal.readPrincipal(cms, principalUUID);
-
+            displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_principal)));
             if (m_principal instanceof CmsUser) {
                 m_label.setValue(
                     CmsVaadinUtils.getMessageText(

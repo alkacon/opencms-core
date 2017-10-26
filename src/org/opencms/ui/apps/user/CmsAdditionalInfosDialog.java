@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -111,6 +112,7 @@ public class CmsAdditionalInfosDialog extends CmsBasicDialog {
         m_cms = cms;
         try {
             m_user = cms.readUser(userID);
+            displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
         } catch (CmsException e) {
             //
         }

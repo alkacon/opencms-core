@@ -62,6 +62,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -270,13 +271,14 @@ public class CmsUserEditDialog extends CmsBasicDialog {
      * @param window to be closed
      */
     public CmsUserEditDialog(CmsObject cms, CmsUUID userId, final Window window) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         setPasswordFields();
         try {
             m_cms = OpenCms.initCmsObject(cms);
             m_startfolder.disableSiteSwitch();
             m_user = m_cms.readUser(userId);
-
+            displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
             m_group.setVisible(false);
             m_loginname.setValue(m_user.getSimpleName());
             m_loginname.setEnabled(false);

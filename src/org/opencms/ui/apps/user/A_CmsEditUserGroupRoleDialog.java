@@ -37,6 +37,7 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -90,6 +91,7 @@ public abstract class A_CmsEditUserGroupRoleDialog extends CmsBasicDialog {
 
         try {
             m_principal = m_cms.readUser(userId);
+            displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_principal)));
             window.setCaption(CmsVaadinUtils.getMessageText(getWindowCaptionMessageKey(), m_principal.getSimpleName()));
         } catch (CmsException e) {
             LOG.error("Can't read user", e);

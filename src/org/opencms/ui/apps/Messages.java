@@ -81,9 +81,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGFILE_WRONG_CONFIG_0 = "GUI_LOGFILE_WRONG_CONFIG_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -265,10 +262,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_REINI_TOOL_CONF_0 = "GUI_CACHE_REINI_TOOL_CONF_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_REINI_TOOL_NAME_0 = "GUI_CACHE_REINI_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_REINI_TOOL_NAME_HELP_0 = "GUI_CACHE_REINI_TOOL_NAME_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_STATISTICS_TOOL_HELP_0 = "GUI_CACHE_STATISTICS_TOOL_HELP_0";
     /** Message constant for key in the resource bundle. */
@@ -379,13 +379,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0 = "GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_FILES_1 = "GUI_DATABASEAPP_IMPORT_FILES_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_IMPORTFILE_0 = "GUI_DATABASEAPP_IMPORT_IMPORTFILE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_IMPORTFILE_HELP_0 = "GUI_DATABASEAPP_IMPORT_IMPORTFILE_HELP_0";
 
@@ -1104,6 +1101,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_WINDOWSIZE_HELP_0 = "GUI_LOGFILE_WINDOWSIZE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_WRONG_CONFIG_0 = "GUI_LOGFILE_WRONG_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MENU_TITLE_0 = "GUI_MENU_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1228,6 +1228,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_SWITCH_USER_0 = "GUI_MESSAGES_SWITCH_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_SWITCH_USER_CONFIRM_0 = "GUI_MESSAGES_SWITCH_USER_CONFIRM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_USER_COUNT_0 = "GUI_MESSAGES_USER_COUNT_0";
@@ -2536,6 +2539,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_EDITABLE_0 = "GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_EDITABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_MENU_0 = "GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_MENU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_NOT_EDITABLE_0 = "GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_NOT_EDITABLE_0";

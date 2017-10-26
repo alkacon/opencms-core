@@ -74,7 +74,7 @@ import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
 import org.opencms.ui.apps.searchindex.CmsSearchindexAppConfiguration;
 import org.opencms.ui.apps.sessions.CmsBroadCastConfigurtion;
 import org.opencms.ui.apps.sitemanager.CmsSiteManagerConfiguration;
-import org.opencms.ui.apps.user.CmsOUAppConfiguration;
+import org.opencms.ui.apps.user.CmsAccountsAppConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -212,7 +212,7 @@ public class CmsWorkplaceAppManager {
 
     /** The default quick launch apps, these can be overridden by the user. */
     private static final String[] DEFAULT_USER_APPS = new String[] {
-        CmsOUAppConfiguration.APP_ID,
+        CmsAccountsAppConfiguration.APP_ID,
         CmsModuleAppConfiguration.APP_ID};
 
     /** The available editors. */
@@ -788,7 +788,7 @@ public class CmsWorkplaceAppManager {
                 new CmsGitAppConfiguration(),
                 new CmsBroadCastConfigurtion(),
                 new CmsModuleAppConfiguration(),
-                new CmsOUAppConfiguration()));
+                new CmsAccountsAppConfiguration()));
 
         return result;
     }

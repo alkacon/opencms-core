@@ -31,13 +31,17 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.sessions.CmsKillSessionDialog;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsDateUtil;
@@ -49,6 +53,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -96,7 +101,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public String getTitle(Locale locale) {
 
-            return "Additionalinfos";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ADDITIONAL_INFOS_MENU_0);
         }
 
         /**
@@ -253,6 +258,55 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     *Entry to kill Session.<p>
+     */
+    class EntryKillSession implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            final Window window = CmsBasicDialog.prepareWindow();
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_DESTROY_SESSION_0));
+            Set<String> sessionIds = new HashSet<String>();
+            for (CmsSessionInfo info : OpenCms.getSessionManager().getSessionInfos(
+                new CmsUUID(context.iterator().next()))) {
+                sessionIds.add(info.getSessionId().getStringValue());
+            }
+            CmsKillSessionDialog dialog = new CmsKillSessionDialog(sessionIds, new Runnable() {
+
+                public void run() {
+
+                    window.close();
+                }
+            });
+            window.setContent(dialog);
+            A_CmsUI.get().addWindow(window);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_DESTROY_SESSION_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            if (!OpenCms.getSessionManager().getSessionInfos(new CmsUUID(context.iterator().next())).isEmpty()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
+    }
+
+    /**
      * Menu entry for show resources of user.<p>
      */
     class EntryShowResources implements I_CmsSimpleContextMenuEntry<Set<String>> {
@@ -283,6 +337,77 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        }
+
+    }
+
+    /**
+     *Entry to switch user.<p>
+     */
+    class EntrySwitchUser implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            final Window window = CmsBasicDialog.prepareWindow();
+            final CmsUUID userID = new CmsUUID(context.iterator().next());
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SWITCH_USER_0));
+            CmsConfirmationDialog dialog = new CmsConfirmationDialog(
+                CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SWITCH_USER_CONFIRM_0),
+                new Runnable() {
+
+                    public void run() {
+
+                        try {
+                            String path = OpenCms.getSessionManager().switchUser(
+                                A_CmsUI.getCmsObject(),
+                                CmsVaadinUtils.getRequest(),
+                                m_cms.readUser(userID));
+                            if (path == null) {
+                                path = CmsVaadinUtils.getWorkplaceLink() + "?_lrid=" + (new Date()).getTime();
+                            }
+                            A_CmsUI.get().getPage().setLocation(path);
+                            window.close();
+                        } catch (CmsException e) {
+                            //
+                        }
+                    }
+                },
+                new Runnable() {
+
+                    public void run() {
+
+                        window.close();
+                    }
+                });
+            window.setContent(dialog);
+            A_CmsUI.get().addWindow(window);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SWITCH_USER_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            try {
+                CmsUser user = m_cms.readUser(new CmsUUID(context.iterator().next()));
+                if (OpenCms.getRoleManager().hasRole(m_cms, user.getName(), CmsRole.WORKPLACE_USER)) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                }
+            } catch (CmsException e) {
+                //
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
 
     }
@@ -435,7 +560,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             m_menuEntries.add(new EntryEditGroup());
             m_menuEntries.add(new EntryShowResources());
             m_menuEntries.add(new EntryAddInfos());
+            m_menuEntries.add(new EntrySwitchUser());
             m_menuEntries.add(new EntryDelete());
+            m_menuEntries.add(new EntryKillSession());
         }
         return m_menuEntries;
     }

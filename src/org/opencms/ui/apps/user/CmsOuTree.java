@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -58,10 +59,10 @@ public class CmsOuTree extends Tree {
     /**Type of element.*/
     protected enum CmsOuTreeType {
 
-        /**OU. */
-        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_OU_0)),
         /**Group. */
         GROUP(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0)),
+        /**OU. */
+        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_OU_0)),
         /**User.*/
         USER(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
 
@@ -88,8 +89,11 @@ public class CmsOuTree extends Tree {
         }
     }
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = -3532367333216144806L;
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsOuTree.class);
+
+    /**Root OU.*/
+    private static CmsOrganizationalUnit m_rootSystemOU;
 
     /**name property. */
     private static final String PROP_NAME = "name";
@@ -97,20 +101,20 @@ public class CmsOuTree extends Tree {
     /**type property. */
     private static final String PROP_TYPE = "type";
 
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsOuTree.class);
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = -3532367333216144806L;
 
-    /**Container. */
-    private HierarchicalContainer m_treeContainer;
+    /**Calling app. */
+    private CmsAccountsApp m_app;
 
     /**CmsObject. */
     private CmsObject m_cms;
 
-    /**Calling app. */
-    private CmsOUApp m_app;
-
     /**Root ou. */
     private CmsOrganizationalUnit m_rootOu;
+
+    /**Container. */
+    private HierarchicalContainer m_treeContainer;
 
     /**
      * constructor.<p>
@@ -119,8 +123,13 @@ public class CmsOuTree extends Tree {
      * @param app app instance
      * @param baseOU baseOu
      */
-    public CmsOuTree(CmsObject cms, CmsOUApp app, String baseOU) {
+    public CmsOuTree(CmsObject cms, CmsAccountsApp app, String baseOU) {
         m_cms = cms;
+        try {
+            m_rootSystemOU = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, "");
+        } catch (CmsException e1) {
+            //
+        }
         m_app = app;
         addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         addStyleName(OpenCmsTheme.SIMPLE_DRAG);
@@ -323,7 +332,10 @@ public class CmsOuTree extends Tree {
             } else {
                 icon = new CmsCssIcon(OpenCmsTheme.ICON_OU);
             }
-            return icon.getHtml() + "<span class=\"o-tree-caption\">" + ou.getName() + "</span>";
+            return icon.getHtml()
+                + "<span class=\"o-tree-caption\">"
+                + (ou.equals(m_rootSystemOU) ? ou.getDisplayName(A_CmsUI.get().getLocale()) : ou.getName())
+                + "</span>";
 
         }
 

@@ -363,7 +363,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
     CmsContextMenu m_menu;
 
     /**Calling app. */
-    protected CmsOUApp m_app;
+    protected CmsAccountsApp m_app;
 
     /**Parent ou. */
     protected String m_parentOu;
@@ -377,7 +377,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
      * @param ou ou
      * @param app calling app
      */
-    public CmsOUTable(String ou, CmsOUApp app) {
+    public CmsOUTable(String ou, CmsAccountsApp app) {
         m_app = app;
         init(ou);
     }

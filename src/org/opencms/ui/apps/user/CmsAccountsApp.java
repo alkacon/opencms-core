@@ -28,11 +28,15 @@
 package org.opencms.ui.apps.user;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -42,7 +46,9 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsInfoButton;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -59,6 +65,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
@@ -77,7 +84,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * App for the OU Management.<p>
  */
-public class CmsOUApp extends A_CmsWorkplaceApp {
+public class CmsAccountsApp extends A_CmsWorkplaceApp {
 
     /**
      * Bean for the state of the app.<p>
@@ -205,7 +212,7 @@ public class CmsOUApp extends A_CmsWorkplaceApp {
     }
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsOUApp.class);
+    private static final Log LOG = CmsLog.getLog(CmsAccountsApp.class);
 
     /** The folder tree. */
     private CmsOuTree m_ouTree;
@@ -246,7 +253,7 @@ public class CmsOUApp extends A_CmsWorkplaceApp {
     /**
      * constructor.<p>
      */
-    public CmsOUApp() {
+    public CmsAccountsApp() {
         super();
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
@@ -263,6 +270,28 @@ public class CmsOUApp extends A_CmsWorkplaceApp {
         m_ouTree = new CmsOuTree(m_cms, this, m_baseOU);
         m_splitScreen.setFirstComponent(m_ouTree);
 
+    }
+
+    /**
+     * Creates info panel for principals.<p>
+     *
+     * @param principal to get info panel for
+     * @return CmsResourceInfo
+     */
+    public static CmsResourceInfo getPrincipalInfo(I_CmsPrincipal principal) {
+
+        if (principal instanceof CmsUser) {
+            CmsUser user = (CmsUser)principal;
+            CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
+            return new CmsResourceInfo(
+                user.getName(),
+                user.getEmail(),
+                new ExternalResource(helper.getTinyIconPath(A_CmsUI.getCmsObject(), user)));
+        }
+        return new CmsResourceInfo(
+            principal.getName(),
+            principal.getDescription(A_CmsUI.get().getLocale()),
+            new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
     }
 
     /**
@@ -338,7 +367,7 @@ public class CmsOUApp extends A_CmsWorkplaceApp {
             }
             CmsStateBean beanCr = new CmsStateBean(m_baseOU, CmsOuTreeType.OU, null);
             crumbs.put(
-                CmsOUAppConfiguration.APP_ID + "/" + beanCr.getState(),
+                CmsAccountsAppConfiguration.APP_ID + "/" + beanCr.getState(),
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_baseOU).getDisplayName(
                     A_CmsUI.get().getLocale()));
             String base = "";
@@ -348,11 +377,11 @@ public class CmsOUApp extends A_CmsWorkplaceApp {
                     if ((oP + base).length() > m_baseOU.length()) {
                         if (oP.equals(ouPath[ouPath.length - 1])) {
                             CmsStateBean beanCrumb = new CmsStateBean(base + oP, CmsOuTreeType.OU, null);
-                            pathOfLastElement = CmsOUAppConfiguration.APP_ID + "/" + beanCrumb.getState();
+                            pathOfLastElement = CmsAccountsAppConfiguration.APP_ID + "/" + beanCrumb.getState();
                             crumbs.put("", oP);
                         } else {
                             CmsStateBean beanCrumb = new CmsStateBean(base + oP, CmsOuTreeType.OU, null);
-                            crumbs.put(CmsOUAppConfiguration.APP_ID + "/" + beanCrumb.getState(), oP);
+                            crumbs.put(CmsAccountsAppConfiguration.APP_ID + "/" + beanCrumb.getState(), oP);
                         }
                     }
                     base += oP + "/";
@@ -369,7 +398,7 @@ public class CmsOUApp extends A_CmsWorkplaceApp {
                     } else {
                         CmsStateBean beanCrumb = new CmsStateBean(bean.getPath(), bean.getType(), null);
                         crumbs.put(
-                            CmsOUAppConfiguration.APP_ID + "/" + beanCrumb.getState(),
+                            CmsAccountsAppConfiguration.APP_ID + "/" + beanCrumb.getState(),
                             beanCrumb.getType().getName());
                         crumbs.put("", m_cms.readGroup(bean.getGroupID()).getSimpleName());
                     }

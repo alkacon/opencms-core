@@ -36,6 +36,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
+
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -98,6 +100,7 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
         try {
             if (groupId != null) {
                 m_group = m_cms.readGroup(groupId);
+                displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_group)));
                 m_ou.setValue(m_group.getOuFqn());
                 m_name.setValue(m_group.getSimpleName());
                 m_name.setEnabled(false);

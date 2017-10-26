@@ -37,6 +37,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
+
 import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.Button;
@@ -99,6 +101,7 @@ public class CmsShowResourcesDialog extends CmsBasicDialog {
                 m_type = DialogType.Error;
             }
         }
+        displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_principal)));
         CmsShowResourceTable table = new CmsShowResourceTable(m_cms, m_principal.getId(), m_type);
         if (table.hasNoEntries()) {
             m_layout.addComponent(

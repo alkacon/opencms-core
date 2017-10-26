@@ -304,7 +304,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
     CmsContextMenu m_menu;
 
     /**Calling app. */
-    protected CmsOUApp m_app;
+    protected CmsAccountsApp m_app;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
@@ -315,7 +315,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
      * @param ou ou name
      * @param app calling app.
      */
-    public CmsGroupTable(String ou, CmsOUApp app) {
+    public CmsGroupTable(String ou, CmsAccountsApp app) {
         m_app = app;
         init(ou);
         setVisibleColumns(TableProperty.Name, TableProperty.Description);

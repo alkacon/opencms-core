@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
@@ -41,7 +42,7 @@ import com.vaadin.server.Resource;
 /**
  * Configuration for Account Management app.<p>
  */
-public class CmsOUAppConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsAccountsAppConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
     public static final String APP_ID = "ou";
@@ -63,7 +64,7 @@ public class CmsOUAppConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsOUApp();
+        return new CmsAccountsApp();
     }
 
     /**
@@ -116,6 +117,15 @@ public class CmsOUAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     public int getOrder() {
 
         return 6;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    @Override
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.ACCOUNT_MANAGER;
     }
 
 }
