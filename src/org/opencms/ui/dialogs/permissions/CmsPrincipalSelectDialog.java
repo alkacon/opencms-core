@@ -56,7 +56,6 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.FontIcon;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -132,13 +131,15 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * @param window window to be closed after finishing
      * @param widgetType type of principal to be shown
      * @param realOnly true, only show real principals
+     * @param defaultView
      */
     public CmsPrincipalSelectDialog(
         CmsPrincipalSelect cmsPrincipalSelect,
         String ou,
         final Window window,
         WidgetType widgetType,
-        boolean realOnly) {
+        boolean realOnly,
+        WidgetType defaultView) {
         m_ou = ou;
         m_type = widgetType;
         m_realOnly = realOnly;
@@ -146,10 +147,17 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             m_cms = A_CmsUI.getCmsObject();
             m_selectField = cmsPrincipalSelect;
             IndexedContainer data;
-            data = getContainerForType(m_type, m_realOnly, false);
+            data = getContainerForType(defaultView, m_realOnly, false);
             m_table = new CmsPrincipalTable(this, data, ID_ICON, ID_CAPTION, ID_DESC, ID_OU);
-            m_table.setColumnHeader(ID_CAPTION, "Group");
-            m_table.setColumnHeader(ID_DESC, "Beschreibung");
+            m_table.setColumnHeader(
+                ID_CAPTION,
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0));
+            m_table.setColumnHeader(
+                ID_DESC,
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0));
+            m_table.setColumnHeader(
+                ID_OU,
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0));
 
             m_tableFilter = new TextField();
             m_tableFilter.setIcon(FontOpenCms.FILTER);
@@ -221,7 +229,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             }
 
         });
-        initTypeCombo();
+        initTypeCombo(defaultView);
     }
 
     /**
@@ -337,7 +345,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 user.setDescription(
                     CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_ALLOTHERS_0));
                 users.add(0, user);
-                icon.add(FontAwesome.EXCLAMATION_CIRCLE);
+                icon.add(new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_ALL));
                 if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.VFS_MANAGER)) {
                     user = new CmsUser(
                         CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
@@ -354,7 +362,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                         CmsVaadinUtils.getMessageText(
                             org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
                     users.add(0, user);
-                    icon.add(0, FontAwesome.GLOBE);
+                    icon.add(0, new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
                 }
             }
             res = CmsVaadinUtils.getPrincipalContainer(
@@ -374,7 +382,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     /**
      * Init ComboBox for choosing type of principal.<p>
      */
-    private void initTypeCombo() {
+    private void initTypeCombo(WidgetType defaultType) {
 
         IndexedContainer container = new IndexedContainer();
 
@@ -387,7 +395,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         item.getItemProperty("caption").setValue("User");
 
         m_typeCombo.setContainerDataSource(container);
-        m_typeCombo.select(m_type.equals(WidgetType.principalwidget) ? WidgetType.groupwidget : m_type);
+        m_typeCombo.select(defaultType);
         m_typeCombo.setEnabled(m_type.equals(WidgetType.principalwidget) | (m_type == null));
         m_typeCombo.setItemCaptionPropertyId("caption");
         m_typeCombo.setNullSelectionAllowed(false);

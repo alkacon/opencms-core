@@ -591,7 +591,12 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         CmsBasicDialog dialog;
 
         m_window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-        dialog = new CmsPrincipalSelectDialog(this, m_ou, m_window, m_widgetType, m_realOnly);
+        WidgetType defaultType = WidgetType.groupwidget;
+        if (m_principalTypeSelect.getValue().equals(I_CmsPrincipal.PRINCIPAL_USER)) {
+            defaultType = WidgetType.userwidget;
+        }
+
+        dialog = new CmsPrincipalSelectDialog(this, m_ou, m_window, m_widgetType, m_realOnly, defaultType);
 
         m_window.setCaption(
             CmsVaadinUtils.getMessageText(
