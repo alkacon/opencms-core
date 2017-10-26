@@ -27,12 +27,9 @@
 
 package org.opencms.ui.apps.scheduler;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
-import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
@@ -124,13 +121,11 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
      */
     @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
+    public CmsRole getRequiredRole() {
 
-        boolean visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
-        return new CmsAppVisibilityStatus(visible, visible, "");
+        return CmsRole.WORKPLACE_MANAGER;
     }
-
 }

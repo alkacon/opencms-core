@@ -101,6 +101,15 @@ public class CmsPublishQueueConfiguration extends A_CmsWorkplaceAppConfiguration
     }
 
     /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    @Override
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.EDITOR;
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
     @Override

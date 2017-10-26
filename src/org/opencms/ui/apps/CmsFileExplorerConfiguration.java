@@ -27,7 +27,6 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.components.OpenCmsTheme;
 
@@ -104,14 +103,5 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     public int getOrder() {
 
         return 3;
-    }
-
-    /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
-     */
-    @Override
-    public CmsRole getRequiredRole() {
-
-        return CmsRole.WORKPLACE_USER;
     }
 }

@@ -100,12 +100,21 @@ public class CmsModuleAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     }
 
     /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    @Override
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.DATABASE_MANAGER;
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.DATABASE_MANAGER)) {
+        if (!OpenCms.getRoleManager().hasRole(cms, getRequiredRole())) {
             return CmsAppVisibilityStatus.INVISIBLE;
         }
 

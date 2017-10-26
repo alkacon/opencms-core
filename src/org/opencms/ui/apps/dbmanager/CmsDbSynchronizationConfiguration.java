@@ -27,12 +27,9 @@
 
 package org.opencms.ui.apps.dbmanager;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
-import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -119,14 +116,11 @@ public class CmsDbSynchronizationConfiguration extends A_CmsWorkplaceAppConfigur
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
      */
     @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
+    public CmsRole getRequiredRole() {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.DATABASE_MANAGER)
-        ? CmsAppVisibilityStatus.ACTIVE
-        : CmsAppVisibilityStatus.INVISIBLE;
-        return status;
+        return CmsRole.DATABASE_MANAGER;
     }
 }

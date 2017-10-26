@@ -27,12 +27,9 @@
 
 package org.opencms.ui.apps.sitemanager;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
-import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
@@ -114,14 +111,11 @@ public class CmsSiteManagerConfiguration extends A_CmsWorkplaceAppConfiguration 
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
      */
     @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
+    public CmsRole getRequiredRole() {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)
-        ? CmsAppVisibilityStatus.ACTIVE
-        : CmsAppVisibilityStatus.INVISIBLE;
-        return status;
+        return CmsRole.ROOT_ADMIN;
     }
 }

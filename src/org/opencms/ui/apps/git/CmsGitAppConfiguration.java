@@ -27,14 +27,11 @@
 
 package org.opencms.ui.apps.git;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
-import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 
@@ -134,13 +131,11 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
      */
     @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
+    public CmsRole getRequiredRole() {
 
-        boolean isDeveloper = OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
-        return new CmsAppVisibilityStatus(isDeveloper, isDeveloper, "");
+        return CmsRole.VFS_MANAGER;
     }
-
 }

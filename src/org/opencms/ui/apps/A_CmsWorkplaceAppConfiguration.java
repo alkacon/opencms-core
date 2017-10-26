@@ -100,7 +100,7 @@ public abstract class A_CmsWorkplaceAppConfiguration implements I_CmsWorkplaceAp
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         CmsAppVisibilityStatus visibility;
-        if (hasWorkplaceUserRole(cms)) {
+        if (OpenCms.getRoleManager().hasRole(cms, getRequiredRole())) {
             visibility = new CmsAppVisibilityStatus(true, true, "");
         } else {
             visibility = new CmsAppVisibilityStatus(
@@ -111,17 +111,4 @@ public abstract class A_CmsWorkplaceAppConfiguration implements I_CmsWorkplaceAp
         }
         return visibility;
     }
-
-    /**
-     * Checks whether the current user has the workplace user role.<p>
-     *
-     * @param cms the cms context
-     *
-     * @return <code>true</code> if the current user has the workplace user role
-     */
-    protected boolean hasWorkplaceUserRole(CmsObject cms) {
-
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER);
-    }
-
 }

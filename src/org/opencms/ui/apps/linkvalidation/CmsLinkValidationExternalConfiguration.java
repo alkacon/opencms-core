@@ -27,12 +27,8 @@
 
 package org.opencms.ui.apps.linkvalidation;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
-import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -116,17 +112,5 @@ public class CmsLinkValidationExternalConfiguration extends A_CmsWorkplaceAppCon
     public int getOrder() {
 
         return 1;
-    }
-
-    /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
-     */
-    @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
-
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER)
-        ? CmsAppVisibilityStatus.ACTIVE
-        : CmsAppVisibilityStatus.INVISIBLE;
-        return status;
     }
 }

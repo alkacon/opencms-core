@@ -27,12 +27,9 @@
 
 package org.opencms.ui.apps.cacheadmin;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
-import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.cacheadmin.CmsCacheViewApp.Mode;
@@ -120,14 +117,11 @@ public class CmsCacheViewFlexConfiguration extends A_CmsWorkplaceAppConfiguratio
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
      */
     @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
+    public CmsRole getRequiredRole() {
 
-        CmsAppVisibilityStatus status = OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)
-        ? CmsAppVisibilityStatus.ACTIVE
-        : CmsAppVisibilityStatus.INVISIBLE;
-        return status;
+        return CmsRole.WORKPLACE_MANAGER;
     }
 }

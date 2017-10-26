@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 
 import java.util.Locale;
 
@@ -82,6 +83,15 @@ public class CmsEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
     public String getName(Locale locale) {
 
         return Messages.get().getBundle(locale).key(Messages.GUI_EDITOR_TITLE_0);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getRequiredRole()
+     */
+    @Override
+    public CmsRole getRequiredRole() {
+
+        return CmsRole.ELEMENT_AUTHOR;
     }
 
     /**
