@@ -104,12 +104,7 @@
   	}
   
   }
- 
- .v-tree-node .v-tree-node-caption [class*="oc-icon-24-"]{
- 	width:24px;
- 	vertical-align:middle;
- 	}
-  
+   
   div.v-tree-node-selected.v-tree-node-caption:hover span.o-tree-caption:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span.o-tree-caption:before{
   	background: lighten($v-selection-color,10%);
   }

@@ -332,7 +332,9 @@ public class CmsOuTree extends Tree {
             } else {
                 icon = new CmsCssIcon(OpenCmsTheme.ICON_OU);
             }
-            return icon.getHtml()
+            return "<span class=\"o-resource-icon\">"
+                + icon.getHtml()
+                + "</span>"
                 + "<span class=\"o-tree-caption\">"
                 + (ou.equals(m_rootSystemOU) ? ou.getDisplayName(A_CmsUI.get().getLocale()) : ou.getName())
                 + "</span>";
@@ -346,7 +348,9 @@ public class CmsOuTree extends Tree {
                 return icon.getHtml() + "<span class=\"o-tree-caption\">" + ((CmsGroup)item).getName() + "</span>";
             }
             //parent item for the groups
-            return icon.getHtml()
+            return "<span class=\"o-resource-icon\">"
+                + icon.getHtml()
+                + "</span>"
                 + "<span class=\"o-tree-caption\">"
                 + CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0)
                 + "</span>";
@@ -354,7 +358,9 @@ public class CmsOuTree extends Tree {
 
         if (type.equals(CmsOuTreeType.USER)) {
             CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_USER);
-            return icon.getHtml()
+            return "<span class=\"o-resource-icon\">"
+                + icon.getHtml()
+                + "</span>"
                 + "<span class=\"o-tree-caption\">"
                 + CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0)
                 + "</span>";
