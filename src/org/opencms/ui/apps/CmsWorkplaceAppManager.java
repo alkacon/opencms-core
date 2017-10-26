@@ -211,7 +211,9 @@ public class CmsWorkplaceAppManager {
     protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
 
     /** The default quick launch apps, these can be overridden by the user. */
-    private static final String[] DEFAULT_USER_APPS = new String[] {"/accounts", "modules"};
+    private static final String[] DEFAULT_USER_APPS = new String[] {
+        CmsOUAppConfiguration.APP_ID,
+        CmsModuleAppConfiguration.APP_ID};
 
     /** The available editors. */
     private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {
