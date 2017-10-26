@@ -29,6 +29,7 @@ package org.opencms.ui.apps.logfile;
 
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsRfsException;
 import org.opencms.util.CmsRfsFileViewer;
 
@@ -91,74 +92,77 @@ public class CmsLogFileView extends VerticalLayout {
      * @param app which uses this view
      */
     protected CmsLogFileView(final CmsLogFileApp app) {
-        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        if (CmsLogFileApp.LOG_FOLDER.isEmpty()) {
+            addComponent(CmsVaadinUtils.getInfoLayout(Messages.GUI_LOGFILE_WRONG_CONFIG_0));
+        } else {
+            CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
-        List<Logger> allLogger = CmsLogFileApp.getLoggers();
-        List<FileAppender> allAppender = new ArrayList<FileAppender>();
+            List<Logger> allLogger = CmsLogFileApp.getLoggers();
+            List<FileAppender> allAppender = new ArrayList<FileAppender>();
 
-        allLogger.add(0, LogManager.getRootLogger());
+            allLogger.add(0, LogManager.getRootLogger());
 
-        for (Logger logger : allLogger) {
+            for (Logger logger : allLogger) {
 
-            @SuppressWarnings("unchecked")
-            List<Appender> appenders = Collections.list(logger.getAllAppenders());
-            for (Appender appen : appenders) {
-                if (appen instanceof FileAppender) {
-                    if (!allAppender.contains(appen)) {
-                        allAppender.add((FileAppender)appen);
+                @SuppressWarnings("unchecked")
+                List<Appender> appenders = Collections.list(logger.getAllAppenders());
+                for (Appender appen : appenders) {
+                    if (appen instanceof FileAppender) {
+                        if (!allAppender.contains(appen)) {
+                            allAppender.add((FileAppender)appen);
+                        }
                     }
                 }
             }
-        }
 
-        for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
-            if (!file.getAbsolutePath().endsWith(".zip")) {
-                m_logfile.addItem(file.getAbsolutePath());
+            for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
+                if (!file.getAbsolutePath().endsWith(".zip")) {
+                    m_logfile.addItem(file.getAbsolutePath());
+                }
             }
-        }
 
-        m_logfile.setFilteringMode(FilteringMode.CONTAINS);
+            m_logfile.setFilteringMode(FilteringMode.CONTAINS);
 
-        m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
+            m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
 
-        m_logView.setWindowSize(WINDOW_SIZE);
+            m_logView.setWindowSize(WINDOW_SIZE);
 
-        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE) == null) {
-            CmsVaadinUtils.getRequest().getSession().setAttribute(
-                ATTR_FILE_VIEW_SIZE,
-                String.valueOf(m_logView.getWindowSize()));
-        }
-
-        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_CHARSET) == null) {
-            Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
-            CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_CHARSET, defaultCs);
-        }
-
-        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH) != null) {
-            m_logfile.select(CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH));
-        } else {
-            selectLogFile(allAppender, m_logView.getFilePath());
-        }
-
-        m_logfile.setNullSelectionAllowed(false);
-        m_logfile.setNewItemsAllowed(false);
-
-        m_logfile.addValueChangeListener(new ValueChangeListener() {
-
-            private static final long serialVersionUID = 1899253995224124911L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_PATH, getCurrentFile());
-                updateView();
+            if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE) == null) {
+                CmsVaadinUtils.getRequest().getSession().setAttribute(
+                    ATTR_FILE_VIEW_SIZE,
+                    String.valueOf(m_logView.getWindowSize()));
             }
-        });
 
-        updateView();
-        m_fileContent.setHeight("700px");
-        m_fileContent.addStyleName("v-scrollable");
-        m_fileContent.addStyleName("o-report");
+            if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_CHARSET) == null) {
+                Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+                CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_CHARSET, defaultCs);
+            }
 
+            if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH) != null) {
+                m_logfile.select(CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH));
+            } else {
+                selectLogFile(allAppender, m_logView.getFilePath());
+            }
+
+            m_logfile.setNullSelectionAllowed(false);
+            m_logfile.setNewItemsAllowed(false);
+
+            m_logfile.addValueChangeListener(new ValueChangeListener() {
+
+                private static final long serialVersionUID = 1899253995224124911L;
+
+                public void valueChange(ValueChangeEvent event) {
+
+                    CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_PATH, getCurrentFile());
+                    updateView();
+                }
+            });
+
+            updateView();
+            m_fileContent.setHeight("700px");
+            m_fileContent.addStyleName("v-scrollable");
+            m_fileContent.addStyleName("o-report");
+        }
     }
 
     /**
@@ -175,6 +179,10 @@ public class CmsLogFileView extends VerticalLayout {
      * Updates the log file view after changes.<p>
      */
     protected void updateView() {
+
+        if (CmsLogFileApp.LOG_FOLDER.isEmpty()) {
+            return;
+        }
 
         try {
             m_logView.setFilePath((String)m_logfile.getValue());

@@ -66,7 +66,9 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
     /**Log folder path.*/
-    protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsPath().substring(
+    protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsPath() == null
+    ? ""
+    : OpenCms.getSystemInfo().getLogFileRfsPath().substring(
         0,
         OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf("/") + 1);
 

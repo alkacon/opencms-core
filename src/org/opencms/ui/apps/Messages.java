@@ -81,6 +81,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_WRONG_CONFIG_0 = "GUI_LOGFILE_WRONG_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0 = "GUI_CACHE_CLEAN_FLEX_CLEAR_OFFLINE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -259,6 +262,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0 = "GUI_CACHE_JSP_REPOSITORY_ADMIN_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_REINI_TOOL_CONF_0 = "GUI_CACHE_REINI_TOOL_CONF_0";
     /** Message constant for key in the resource bundle. */
@@ -373,7 +377,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0 = "GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0";
 
@@ -1147,6 +1150,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_CONFIRM_DESTROY_SESSION_0 = "GUI_MESSAGES_CONFIRM_DESTROY_SESSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_CONFIRM_DESTROY_SESSION_SINGLE_0 = "GUI_MESSAGES_CONFIRM_DESTROY_SESSION_SINGLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_DESTROY_SESSION_0 = "GUI_MESSAGES_DESTROY_SESSION_0";
