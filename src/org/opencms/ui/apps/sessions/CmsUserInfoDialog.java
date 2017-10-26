@@ -104,16 +104,14 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
                         session);
 
                     if (path == null) {
-                        A_CmsUI.get().getPage().setLocation(
-                            CmsVaadinUtils.getWorkplaceLink()
-                                + "#!"
-                                + CmsFileExplorerConfiguration.APP_ID
-                                + "/"
-                                + session.getProject().getStringValue()
-                                + "!!"
-                                + session.getSiteRoot()
-                                + "!!!!");
-                        A_CmsUI.get().getPage().reload();
+                        path = CmsVaadinUtils.getWorkplaceLink()
+                            + "#!"
+                            + CmsFileExplorerConfiguration.APP_ID
+                            + "/"
+                            + session.getProject().getStringValue()
+                            + "!!"
+                            + session.getSiteRoot()
+                            + "!!!!";
                     }
                     A_CmsUI.get().getPage().setLocation(path);
                 } catch (CmsException e) {

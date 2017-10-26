@@ -33,11 +33,11 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsResourceInfo;
@@ -57,7 +57,6 @@ import org.apache.commons.logging.Log;
 import com.vaadin.data.Validator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -111,18 +110,12 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
      */
     protected static List<CmsResourceInfo> getUserInfos(Set<String> ids) {
 
-        CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
-
         List<CmsResourceInfo> ret = new ArrayList<CmsResourceInfo>();
         try {
             for (String id : ids) {
                 CmsUser user = A_CmsUI.getCmsObject().readUser(
                     OpenCms.getSessionManager().getSessionInfo(new CmsUUID(id)).getUserId());
-                ret.add(
-                    new CmsResourceInfo(
-                        user.getName(),
-                        user.getEmail(),
-                        new ExternalResource(helper.getTinyIconPath(A_CmsUI.getCmsObject(), user))));
+                ret.add(CmsAccountsApp.getPrincipalInfo(user));
             }
         } catch (CmsException e) {
             LOG.error("Unable to read user", e);

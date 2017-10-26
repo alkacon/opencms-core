@@ -33,6 +33,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
 
@@ -63,6 +64,9 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
     /**warning icon.*/
     private Label m_icon;
 
+    /**vaadin component. */
+    private Label m_label;
+
     /**ok button.*/
     private Button m_okButton;
 
@@ -79,6 +83,10 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
 
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontOpenCms.WARNING.getHtml());
+
+        if (sessionIds.size() == 1) {
+            m_label.setValue(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_CONFIRM_DESTROY_SESSION_SINGLE_0));
+        }
 
         m_okButton.addClickListener(new ClickListener() {
 
