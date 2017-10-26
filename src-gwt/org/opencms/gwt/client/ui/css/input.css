@@ -277,6 +277,10 @@ div.error, .error {
     z-index: value("constants.css.zIndexInline");
 }
 
+.formRow:last-child div.error, .formRow:last-child .error { 
+   position: relative;
+}
+
 .selectBoxRoot.selectBoxDisabled .selectBoxSelected{
 	background-color: value("constants.css.backgroundColorStateDisabled");
 	color: value("constants.css.textColorDisabled");
