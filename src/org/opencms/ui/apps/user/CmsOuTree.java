@@ -60,11 +60,11 @@ public class CmsOuTree extends Tree {
     protected enum CmsOuTreeType {
 
         /**Group. */
-        GROUP(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0)),
+        GROUP(Messages.GUI_USERMANAGEMENT_GROUPS_0),
         /**OU. */
-        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_OU_0)),
+        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0),
         /**User.*/
-        USER(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
+        USER(Messages.GUI_USERMANAGEMENT_USER_0);
 
         /**Name of entry. */
         private String m_name;
@@ -85,7 +85,7 @@ public class CmsOuTree extends Tree {
          */
         public String getName() {
 
-            return m_name;
+            return CmsVaadinUtils.getMessageText(m_name);
         }
     }
 
@@ -345,7 +345,11 @@ public class CmsOuTree extends Tree {
             CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_GROUP);
             if (item instanceof CmsGroup) {
                 //Real group shown under groups
-                return icon.getHtml() + "<span class=\"o-tree-caption\">" + ((CmsGroup)item).getName() + "</span>";
+                return "<span class=\"o-resource-icon\">"
+                    + icon.getHtml()
+                    + "</span><span class=\"o-tree-caption\">"
+                    + ((CmsGroup)item).getName()
+                    + "</span>";
             }
             //parent item for the groups
             return "<span class=\"o-resource-icon\">"
