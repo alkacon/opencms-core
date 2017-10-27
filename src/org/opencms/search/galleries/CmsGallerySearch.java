@@ -74,7 +74,7 @@ public class CmsGallerySearch {
 
         CmsGallerySearch gallerySearch = new CmsGallerySearch();
         gallerySearch.init(cms);
-        gallerySearch.setIndex(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
+        gallerySearch.setIndexForProject(cms);
         return gallerySearch.searchById(structureId, locale);
     }
 
@@ -94,7 +94,7 @@ public class CmsGallerySearch {
 
         CmsGallerySearch gallerySearch = new CmsGallerySearch();
         gallerySearch.init(cms);
-        gallerySearch.setIndex(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
+        gallerySearch.setIndexForProject(cms);
         return gallerySearch.searchByPath(rootPath, locale);
     }
 
@@ -224,5 +224,20 @@ public class CmsGallerySearch {
 
         m_index = index;
 
+    }
+
+    /**
+     * Sets the index name according to the current project.<p>
+     *
+     * @param cms the cms context
+     *
+     * @throws CmsException in case setting the index fails
+     */
+    public void setIndexForProject(CmsObject cms) throws CmsException {
+
+        setIndex(
+            cms.getRequestContext().getCurrentProject().isOnlineProject()
+            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
     }
 }

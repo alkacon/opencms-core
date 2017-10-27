@@ -86,7 +86,6 @@ import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
-import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.staticexport.CmsLinkManager;
@@ -2126,7 +2125,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsObject searchCms = getSearchCms(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(searchCms);
-        searchBean.setIndex(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
+        searchBean.setIndexForProject(searchCms);
         CmsGallerySearchResultList searchResults = null;
         CmsGallerySearchResultList totalResults = new CmsGallerySearchResultList();
         CmsGallerySearchResult foundItem = null;
