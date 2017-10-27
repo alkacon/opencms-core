@@ -1926,10 +1926,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param containerpageRootPath the container page root path
      *
      * @return the container page bean
+     * @throws CmsException in case generating the page data fails
      */
     private CmsContainerPageBean generateContainerPageForContainers(
         Collection<CmsContainer> containers,
-        String containerpageRootPath) {
+        String containerpageRootPath)
+    throws CmsException {
 
         List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
         for (CmsContainer container : containers) {
@@ -1959,12 +1961,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             return element;
         }
         if (id.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
-            id = getServerIdString(id);
-            element = getSessionCache().getCacheContainerElement(id);
-            if (element != null) {
-                return element;
-            }
+            throw new CmsException(Messages.get().container(Messages.ERR_MISSING_CACHED_ELEMENT_0));
         }
+
         // this is necessary if the element has not been cached yet
         CmsResource resource = getCmsObject().readResource(convertToServerId(id), CmsResourceFilter.IGNORE_EXPIRATION);
         CmsADEConfigData configData = getConfigData(pageRootPath);
@@ -2024,13 +2023,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param containerpageRootPath the container page root path
      *
      * @return a container bean
+     *
+     * @throws CmsException in case generating the container data fails
      */
-    private CmsContainerBean getContainerBeanToSave(CmsContainer container, String containerpageRootPath) {
+    private CmsContainerBean getContainerBeanToSave(CmsContainer container, String containerpageRootPath)
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElement elementData : container.getElements()) {
-            try {
+            if (!elementData.isNew()) {
                 CmsContainerElementBean newElementBean = getContainerElementBeanToSave(
                     cms,
                     containerpageRootPath,
@@ -2039,8 +2041,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 if (newElementBean != null) {
                     elements.add(newElementBean);
                 }
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         CmsContainerBean result = new CmsContainerBean(
@@ -2565,6 +2565,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             elementBean,
             containers,
             allowNested);
+        data.setClientId(elementBean.editorHash());
         getSessionCache().setCacheContainerElement(resourceTypeName, elementBean);
         getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
         return data;

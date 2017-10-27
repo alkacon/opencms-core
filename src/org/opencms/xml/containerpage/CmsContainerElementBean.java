@@ -302,6 +302,7 @@ public class CmsContainerElementBean implements Cloneable {
             }
             content = xmlContent.marshal();
         }
+        @SuppressWarnings("deprecation")
         CmsFile file = new CmsFile(
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
@@ -359,7 +360,16 @@ public class CmsContainerElementBean implements Cloneable {
         Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
         newSettings.put(CmsFormatterConfig.getSettingsKeyForContainer(containerName), formatterId);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
-        m_editorHash = m_elementId.toString() + getSettingsHash();
+        if (m_inMemoryOnly) {
+            String editorHash = m_editorHash;
+            if (editorHash.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+                editorHash = editorHash.substring(0, editorHash.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
+            }
+            editorHash += getSettingsHash();
+            m_editorHash = editorHash;
+        } else {
+            m_editorHash = m_elementId.toString() + getSettingsHash();
+        }
     }
 
     /**
@@ -632,6 +642,7 @@ public class CmsContainerElementBean implements Cloneable {
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public boolean isInheritedContainer(CmsObject cms) throws CmsException {
 
         if (m_resource == null) {
