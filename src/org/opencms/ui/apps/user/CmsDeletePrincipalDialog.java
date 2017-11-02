@@ -138,7 +138,6 @@ public class CmsDeletePrincipalDialog extends CmsBasicDialog {
             m_principalSelectLayout.setVisible(table.size() > 0);
             if (m_dependencyPanel.isVisible()) {
                 m_dependencyPanel.setContent(table);
-                m_principalSelect.setUseVaadin(true);
                 m_principalSelect.setCaption(
                     m_principal instanceof CmsGroup
                     ? CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_0)

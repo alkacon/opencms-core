@@ -318,7 +318,6 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         m_ou.setValue(ou);
         m_group.setWidgetType(WidgetType.groupwidget);
-        m_group.setUseVaadin(true);
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
         m_enabled.setValue(Boolean.TRUE);
