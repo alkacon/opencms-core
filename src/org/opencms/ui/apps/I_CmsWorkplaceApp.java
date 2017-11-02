@@ -38,12 +38,12 @@ public interface I_CmsWorkplaceApp {
      *
      * @param context the UI context
      */
-    public void initUI(I_CmsAppUIContext context);
+    void initUI(I_CmsAppUIContext context);
 
     /**
      * Called on navigation events.<p>
      *
      * @param state the app state to show
      */
-    public void onStateChange(String state);
+    void onStateChange(String state);
 }

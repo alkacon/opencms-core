@@ -242,12 +242,6 @@ implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler, 
         enter(newState);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-
-        return false;
-    }
-
     /**
      * @see com.vaadin.event.Action.Handler#getActions(java.lang.Object, java.lang.Object)
      */
@@ -376,6 +370,9 @@ implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler, 
         m_requiresRestore = restored;
     }
 
+    /**
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
 

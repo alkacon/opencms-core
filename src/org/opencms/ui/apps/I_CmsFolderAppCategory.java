@@ -33,6 +33,9 @@ import java.util.Locale;
 
 import com.vaadin.server.Resource;
 
+/**
+ * Displays a sub menu in the app launch pad.
+ */
 public interface I_CmsFolderAppCategory extends I_CmsAppCategory {
 
     /**

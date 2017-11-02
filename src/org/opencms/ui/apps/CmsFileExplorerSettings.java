@@ -48,11 +48,11 @@ import com.google.common.collect.Lists;
  */
 public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
 
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileExplorerSettings.class);
-
     /** JSON key. */
     private static final String COLLAPSED_COLUMNS_KEY = "collapsed_collumns";
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFileExplorerSettings.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
@@ -117,8 +117,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
             }
             json.put(COLLAPSED_COLUMNS_KEY, new JSONArray(collapsed));
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         return json.toString();
@@ -195,7 +194,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
     }
 
     /**
-     * Sets the sort column
+     * Sets the sort column.<p>
      *
      * @param sortColumnId the sort column
      */
@@ -203,5 +202,4 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
 
         m_sortColumnId = sortColumnId;
     }
-
 }

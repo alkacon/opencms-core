@@ -105,6 +105,11 @@ public interface I_CmsWorkplaceAppConfiguration extends I_CmsHasOrder {
      */
     int getPriority();
 
+    /**
+     * Returns the user role required for this app.<p>
+     *
+     * @return the required user role
+     */
     CmsRole getRequiredRole();
 
     /**
