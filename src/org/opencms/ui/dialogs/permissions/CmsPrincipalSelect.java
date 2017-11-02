@@ -113,9 +113,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /** Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown. */
     private boolean m_realOnly;
 
-    /**Show window with vaadin dialog component.*/
-    private boolean m_vaadin;
-
+    /**Ou. */
     private String m_ou;
 
     /**
@@ -485,16 +483,6 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     public void setTabIndex(int tabIndex) {
 
         m_principalName.setTabIndex(tabIndex);
-    }
-
-    /**
-     * Use the new vaadin dialog?
-     *
-     * @param vaadin boolean, true-> vaadin dialog
-     */
-    public void setUseVaadin(boolean vaadin) {
-
-        m_vaadin = vaadin;
     }
 
     /**

@@ -416,6 +416,14 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         m_userPermissions.addComponent(view);
     }
 
+    /**
+     * Adds list of entries to layout.<p>
+     *
+     * @param entries the ace list
+     * @param layout layout
+     * @param editable boolean
+     * @param inheritedRes boolean
+     */
     private void addEntryTableToLayout(
         List<CmsAccessControlEntry> entries,
         VerticalLayout layout,
@@ -457,59 +465,6 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
             CmsVaadinUtils.centerWindow(this);
         }
     }
-
-    //    /**
-    //     * Builds a StringBuffer with HTML code to show a list of all inherited access control entries.<p>
-    //     *
-    //     * @param entries ArrayList with all entries to show for the long view
-    //     * @param parents Map of parent resources needed to get the connected resources for the detailed view
-    //     */
-    //    private void buildInheritedList(ArrayList<CmsAccessControlEntry> entries, Map<CmsUUID, String> parents) {
-    //
-    //        String view = "long";
-    //
-    //        // display the long view
-    //        if ("long".equals(view)) {
-    //            Iterator<CmsAccessControlEntry> i = entries.iterator();
-    //            while (i.hasNext()) {
-    //                CmsAccessControlEntry curEntry = i.next();
-    //                // build the list with enabled extended view and resource name
-    //                Component permissionView = buildPermissionEntryForm(
-    //                    curEntry,
-    //                    false,
-    //                    true,
-    //                    getConnectedResource(curEntry, parents));
-    //                if (permissionView != null) {
-    //                    m_inheritedPermissions.addComponent(permissionView);
-    //                }
-    //            }
-    //        } else {
-    //            // show the short view, use an ACL to build the list
-    //            try {
-    //                // get the inherited ACL of the parent folder
-    //                CmsAccessControlList acList = m_cms.getAccessControlList(
-    //                    CmsResource.getParentFolder(m_cms.getSitePath(m_resource)),
-    //                    false);
-    //                Iterator<CmsUUID> i = acList.getPrincipals().iterator();
-    //                while (i.hasNext()) {
-    //                    CmsUUID principalId = i.next();
-    //                    if (!principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
-    //                        CmsPermissionSet permissions = acList.getPermissions(principalId);
-    //                        // build the list with enabled extended view only
-    //                        Component permissionView = buildPermissionEntryForm(principalId, permissions, false, true);
-    //                        if (permissionView != null) {
-    //                            m_inheritedPermissions.addComponent(permissionView);
-    //                        }
-    //                    }
-    //                }
-    //            } catch (CmsException e) {
-    //                // can usually be ignored
-    //                if (LOG.isInfoEnabled()) {
-    //                    LOG.info(e.getLocalizedMessage());
-    //                }
-    //            }
-    //        }
-    //    }
 
     /**
      * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String)

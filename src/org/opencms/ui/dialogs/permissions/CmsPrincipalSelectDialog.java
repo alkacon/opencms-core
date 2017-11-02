@@ -131,7 +131,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * @param window window to be closed after finishing
      * @param widgetType type of principal to be shown
      * @param realOnly true, only show real principals
-     * @param defaultView
+     * @param defaultView default mode to open
      */
     public CmsPrincipalSelectDialog(
         CmsPrincipalSelect cmsPrincipalSelect,
@@ -155,9 +155,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             m_table.setColumnHeader(
                 ID_DESC,
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0));
-            m_table.setColumnHeader(
-                ID_OU,
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0));
+            m_table.setColumnHeader(ID_OU, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0));
 
             m_tableFilter = new TextField();
             m_tableFilter.setIcon(FontOpenCms.FILTER);
@@ -381,6 +379,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
     /**
      * Init ComboBox for choosing type of principal.<p>
+     * @param defaultType Default mode to open
      */
     private void initTypeCombo(WidgetType defaultType) {
 

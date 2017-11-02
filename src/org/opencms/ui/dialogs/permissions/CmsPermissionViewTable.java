@@ -85,8 +85,9 @@ public class CmsPermissionViewTable extends Table {
      * public constructor.<p>
      *
      * @param cms CmsObject
-     * @param path path
+     * @param entries to be shown
      * @param editable boolean
+     * @param showRes with resources?
      * @param dialog calling dialog
      */
     public CmsPermissionViewTable(

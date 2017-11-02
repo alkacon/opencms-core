@@ -48,8 +48,10 @@ public class CmsPrincipalTable extends Table {
     /**Caption property. */
     private static String PROP_CAPTION;
 
+    /**Icon property. */
     private static String PROP_ICON;
 
+    /**Ou property. */
     private static String PROP_OU;
 
     /**Description property. */
@@ -66,6 +68,7 @@ public class CmsPrincipalTable extends Table {
      * @param iconProp icon property
      * @param captionProp caption property
      * @param descProp description property
+     * @param ouProp Ou
      */
     public CmsPrincipalTable(
         final CmsPrincipalSelectDialog dialog,
@@ -101,6 +104,11 @@ public class CmsPrincipalTable extends Table {
         });
     }
 
+    /**
+     * Updates container.<p>
+     *
+     * @param data to be updated
+     */
     public void updateContainer(IndexedContainer data) {
 
         m_container.removeAllItems();
