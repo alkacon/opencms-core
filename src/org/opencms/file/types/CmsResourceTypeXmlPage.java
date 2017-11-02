@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -63,6 +64,12 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
+
+    /** The default XML page body. */
+    private static final String DEFAULT_BODY = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        + "\n"
+        + "<pages xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.opencms.org/dtd/6.0/xmlpage.xsd\">\n"
+        + "</pages>";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
@@ -139,15 +146,15 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         if (content == null) {
             try {
-                CmsResource defaultBody = cms.readResource(
-                    "/system/modules/org.opencms.workplace/default_bodies/default",
-                    CmsResourceFilter.IGNORE_EXPIRATION);
-                CmsFile defaultBodyFile = cms.readFile(defaultBody);
-                content = defaultBodyFile.getContents();
+                String encoding = CmsLocaleManager.getResourceEncoding(
+                    cms,
+                    cms.readResource(CmsResource.getParentFolder(resourcename)));
+                content = DEFAULT_BODY.getBytes(encoding);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

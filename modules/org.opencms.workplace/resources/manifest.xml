@@ -362,48 +362,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 			</accesscontrol>
 		</file>
 		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace</destination>
-			<type>folder</type>
-			<uuidstructure>552326d5-46a8-11dd-8d13-af64097d1d4c</uuidstructure>
-			<datecreated>Mon, 30 Jun 2008 13:27:48 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace/default_bodies</destination>
-			<type>folder</type>
-			<uuidstructure>5eba7187-46a8-11dd-8d13-af64097d1d4c</uuidstructure>
-			<datecreated>Mon, 30 Jun 2008 13:28:04 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace/default_bodies/default</source>
-			<destination>system/modules/org.opencms.workplace/default_bodies/default</destination>
-			<type>plain</type>
-			<uuidstructure>6e1c4779-46a8-11dd-8d13-af64097d1d4c</uuidstructure>
-			<uuidresource>6e1c477a-46a8-11dd-8d13-af64097d1d4c</uuidresource>
-			<datecreated>Mon, 30 Jun 2008 13:28:30 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Default body]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/shared</destination>
 			<type>folder</type>
 			<properties/>
