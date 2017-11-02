@@ -29,7 +29,6 @@ package org.opencms.ui.apps.user;
 
 import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
@@ -45,7 +44,7 @@ import com.vaadin.server.Resource;
 public class CmsAccountsAppConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
-    public static final String APP_ID = "ou";
+    public static final String APP_ID = "accounts";
 
     /** The app icon resource (size 32x32). */
     public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-24-group");
@@ -82,7 +81,7 @@ public class CmsAccountsAppConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getHelpText(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOOL_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_USERMANAGEMENT_TOOL_NAME_HELP_0);
     }
 
     /**
@@ -107,7 +106,7 @@ public class CmsAccountsAppConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getName(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_USERMANAGEMENT_TOOL_NAME_0);
     }
 
     /**
