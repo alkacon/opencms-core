@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<infoproject>Offline</infoproject>
+		<export_version>10</export_version>
+	</info>
+	<module>
+		<name>org.opencms.configuration</name>
+		<nicename><![CDATA[OpenCms configuration module]]></nicename>
+		<group>OpenCms Editors</group>
+		<class/>
+		<export-mode name="reduced"/>
+		<description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>
+<p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
+		<version>11.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.base" version="11.0.0" />
+		</dependencies>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/shared/linkexcludes"/>
+			<resource uri="/system/shared/page.dtd"/>
+			<resource uri="/system/shared/decoration/"/>
+			<resource uri="/system/shared/showversion"/>
+			<resource uri="/system/shared/templatecontexts.json"/>
+			<resource uri="/system/shared/notification/notification"/>
+			<resource uri="/system/shared/notification/publish-notification"/>
+			<resource uri="/system/shared/notification/workflow-notification"/>
+			<resource uri="/system/shared/notification/password-change-notification"/>
+			<resource uri="/system/shared/wysiwyg/"/>
+		</resources>
+		<excluderesources/>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/shared</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<source>system/shared/linkexcludes</source>
+			<destination>system/shared/linkexcludes</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>d8bb01d2-cc2a-11dd-8fb7-53ec2a4a9072</uuidstructure>
+			<uuidresource>d8bb01d3-cc2a-11dd-8fb7-53ec2a4a9072</uuidresource>
+			<datecreated>Wed, 17 Dec 2008 11:07:08 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link excludes for internal link check]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/shared/decoration</destination>
+			<type>folder</type>
+			<uuidstructure>82692dc9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datecreated>Tue, 08 Nov 2005 14:03:22 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HTML Decoration]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/decoration/configuration.xml</source>
+			<destination>system/shared/decoration/configuration.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>826b9ed0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>53ad62b3-506d-11da-9c96-11c9c0330e35</uuidresource>
+			<datecreated>Tue, 08 Nov 2005 15:35:44 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Decoration]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/decoration/decoration.xsd</source>
+			<destination>system/shared/decoration/decoration.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>826e0fd4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>3ae54f06-506b-11da-9c96-11c9c0330e35</uuidresource>
+			<datecreated>Tue, 08 Nov 2005 15:20:44 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for decoration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/decoration/decorationconfiguration.xsd</source>
+			<destination>system/shared/decoration/decorationconfiguration.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>827059c7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>44ef7fcb-506b-11da-9c96-11c9c0330e35</uuidresource>
+			<datecreated>Tue, 08 Nov 2005 15:21:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for decoration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/page.dtd</source>
+			<destination>system/shared/page.dtd</destination>
+			<type>plain</type>
+			<uuidstructure>82588bde-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>12b2baac-2013-11d8-8648-e9bd5c4e5b38</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/showversion</source>
+			<destination>system/shared/showversion</destination>
+			<type>plain</type>
+			<uuidstructure>82561adb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>58c48863-1af7-11da-8179-11c9c0330e35</uuidresource>
+			<datecreated>Thu, 01 Sep 2005 14:47:40 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+				<file>
+			<source>system/shared/templatecontexts.json</source>
+			<destination>system/shared/templatecontexts.json</destination>
+			<type>plain</type>
+			<uuidstructure>c9c10d58-25b4-11e3-9fd8-000c29d28104</uuidstructure>
+			<uuidresource>c9c10d59-25b4-11e3-9fd8-000c29d28104</uuidresource>
+			<datecreated>Wed, 25 Sep 2013 07:33:36 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template device contexts]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/shared/notification</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<source>system/shared/notification/notification</source>
+			<destination>system/shared/notification/notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>826201d1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>5d60819c-1bbf-11da-ab78-9151fb616b67</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Content Notification]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/notification/password-change-notification</source>
+			<destination>system/shared/notification/password-change-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>5de25558-fc94-4a09-9801-e2b708dc7bb7</uuidstructure>
+			<uuidresource>4e25781e-580b-4bce-bcda-da89aa41629b</uuidresource>
+			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Change password for OpenCms user: %(user)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/shared/notification/publish-notification</source>
+			<destination>system/shared/notification/publish-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>f7e857b3-4ef3-11db-92dc-338829be47e0</uuidstructure>
+			<uuidresource>f7e857b4-4ef3-11db-92dc-338829be47e0</uuidresource>
+			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Publish Notification]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/shared/notification/workflow-notification</source>
+			<destination>system/shared/notification/workflow-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>74563c65-4a30-45b1-a729-69157d6a2208</uuidstructure>
+			<uuidresource>c39d20c8-62ac-4a9e-b9f4-490477b2d467</uuidresource>
+			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Workflow: %(release.project)]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/shared/wysiwyg</destination>
+			<type>folder</type>
+			<uuidstructure>897adf7d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor display options]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/wysiwyg/options_all</source>
+			<destination>system/shared/wysiwyg/options_all</destination>
+			<type>plain</type>
+			<uuidstructure>897d296f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>f8154f42-f667-11d8-ab4d-5f9047d04fcf</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[20]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common options enabled]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/wysiwyg/options_extended</source>
+			<destination>system/shared/wysiwyg/options_extended</destination>
+			<type>plain</type>
+			<uuidstructure>897f9a73-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>95d3584f-f75b-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Most options enabled]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>516</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+	</files>
+</export>

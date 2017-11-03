@@ -163,7 +163,7 @@ public class CmsADEManager {
     public static final String ELEMENT_VIEW_TYPE = "elementview";
 
     /** The aADE configuration module name. */
-    public static final String MODULE_NAME_ADE_CONFIG = "org.opencms.ade.config";
+    public static final String MODULE_NAME_ADE_CONFIG = "org.opencms.base";
 
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
@@ -977,7 +977,7 @@ public class CmsADEManager {
      */
     public synchronized void initialize() {
 
-        // no need to try initialization in case the 'org.opencms.ade.config' is not present and the contained resource types missing
+        // no need to try initialization in case the 'org.opencms.base' is not present and the contained resource types missing
         if ((m_initStatus == Status.notInitialized) && OpenCms.getModuleManager().hasModule(MODULE_NAME_ADE_CONFIG)) {
             try {
                 CmsLog.INIT.info(". Initializing the ADE configuration, this may take a while...");

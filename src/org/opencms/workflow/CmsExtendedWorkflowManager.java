@@ -110,7 +110,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         CmsObject userCms,
         CmsWorkflowAction action,
         CmsPublishOptions options,
-        List<CmsResource> resources) throws CmsException {
+        List<CmsResource> resources)
+    throws CmsException {
 
         if (LOG.isInfoEnabled()) {
             LOG.info(
@@ -539,9 +540,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      */
     protected String getNotificationResource() {
 
-        String result = getParameter(
-            PARAM_NOTIFICATION_CONTENT,
-            "/system/workplace/admin/notification/workflow-notification");
+        String result = getParameter(PARAM_NOTIFICATION_CONTENT, "/system/shared/notification/workflow-notification");
         return result;
     }
 

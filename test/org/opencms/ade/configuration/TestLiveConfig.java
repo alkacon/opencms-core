@@ -334,7 +334,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     public void testModuleConfig1() throws Exception {
 
         CmsObject cms = rootCms();
-        String filename = "/system/modules/org.opencms.ade.config/.config";
+        String filename = "/system/modules/org.opencms.base/.config";
         try {
             String data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
                 + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\r\n"
@@ -528,7 +528,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     public void testSitemapFolderTypesOverrideModuleFolderTypes() throws Exception {
 
         CmsObject cms = rootCms();
-        String filename = "/system/modules/org.opencms.ade.config/.config";
+        String filename = "/system/modules/org.opencms.base/.config";
         try {
             String data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
                 + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\r\n"

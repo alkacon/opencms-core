@@ -387,7 +387,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         try {
             update(res.getStructureId(), res.getRootPath(), res.getType(), res.getState());
         } catch (CmsRuntimeException e) {
-            // may happen during import of org.opencms.ade.configuration module
+            // may happen during import of org.opencms.base module
             LOG.warn(e.getLocalizedMessage(), e);
         }
     }
@@ -402,7 +402,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         try {
             update(res.getStructureId(), res.getRootPath(), res.getTypeId(), res.getState());
         } catch (CmsRuntimeException e) {
-            // may happen during import of org.opencms.ade.configuration module
+            // may happen during import of org.opencms.base module
             LOG.warn(e.getLocalizedMessage(), e);
         }
     }

@@ -43,8 +43,6 @@ writeProperty '/system/workplace/admin/linkvalidation/external/' 'admintoolhandl
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/modules/org.opencms.workplace.tools.link/"/>
-			<resource uri="/system/shared/linkexcludes"/>
 			<resource uri="/system/workplace/admin/linkvalidation/internallinks-list.jsp"/>
 			<resource uri="/system/workplace/admin/linkvalidation/internallinks.jsp"/>
 			<resource uri="/system/workplace/admin/linkvalidation/external/validateexternallinks.jsp"/>
@@ -65,74 +63,6 @@ writeProperty '/system/workplace/admin/linkvalidation/external/' 'admintoolhandl
 			<destination>system</destination>
 			<type>folder</type>
 			<properties/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.link</destination>
-			<type>folder</type>
-			<uuidstructure>da39a628-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.link/schemas</destination>
-			<type>folder</type>
-			<uuidstructure>9663eff5-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
-			<datecreated>Wed, 17 Dec 2008 10:58:08 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.link/schemas/links.xsd</source>
-			<destination>system/modules/org.opencms.workplace.tools.link/schemas/links.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>ab09bc07-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
-			<uuidresource>ab09bc08-cc29-11dd-8fb7-53ec2a4a9072</uuidresource>
-			<datecreated>Wed, 17 Dec 2008 10:58:42 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XSD for link definitions]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/shared</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/shared/linkexcludes</source>
-			<destination>system/shared/linkexcludes</destination>
-			<type>xmlcontent</type>
-			<uuidstructure>d8bb01d2-cc2a-11dd-8fb7-53ec2a4a9072</uuidstructure>
-			<uuidresource>d8bb01d3-cc2a-11dd-8fb7-53ec2a4a9072</uuidresource>
-			<datecreated>Wed, 17 Dec 2008 11:07:08 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Link excludes for internal link check]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>

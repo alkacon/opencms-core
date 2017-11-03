@@ -6,34 +6,54 @@
 		<export_version>10</export_version>
 	</info>
 	<module>
-		<name>org.opencms.ade.config</name>
+		<name>org.opencms.base</name>
 		<nicename><![CDATA[OpenCms ADE Configuration]]></nicename>
 		<group>OpenCms ADE</group>
 		<class/>
 		<import-script><![CDATA[
 # sets access control entries  and properties on folders not exclusively belonging to this module
+chacc '/system/' 'ROLE' 'WORKPLACE_USER' '+I+R'
+chacc '/system/modules/' 'ROLE' 'WORKPLACE_USER' '+I+R+V'
+writeProperty '/system/shared/' 'export' 'false'
+writeProperty '/system/workplace/' 'content-encoding' 'UTF-8'
+writeProperty '/system/workplace/' 'export' 'false'
+writeProperty '/system/workplace/' 'login-form' '/system/login/index.html'
+chacc '/system/workplace/' 'GROUP' 'ALL_OTHERS' '+I+O'
+chacc '/system/workplace/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
+writeProperty '/system/shared/notification/' 'Title' 'Content Notification'
+writeProperty '/system/workplace/commons/' 'cache' 'false'
+# create folders for categories, galleries and views
+createFolder '/system/' 'categories'
+createFolder '/system/' 'galleries'
+createFolder '/system/galleries/' 'download'
+writeProperty '/system/galleries/download/' 'exportname' 'download'
+createFolder '/system/galleries/' 'externallinks'
+writeProperty '/system/galleries/externallinks/' 'export' 'false'
+createFolder '/system/galleries/' 'pics'
+writeProperty '/system/galleries/pics/' 'exportname' 'pics'
 chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[Configuration for OpenCms websites.<br>
 <i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i>]]></description>
-		<version>10.5.2</version>
+		<version>11.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies>
-			<dependency name="org.opencms.gwt" version="10.0.0"/>
-			<dependency name="org.opencms.workplace" version="10.0.0"/>
-		</dependencies>
+		<dependencies />
 		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/" destination="WEB-INF/classes/"/>
+			<exportpoint uri="/system/modules/org.opencms.base/classes/" destination="WEB-INF/classes/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/modules/org.opencms.ade.config/"/>
+			<resource uri="/system/login/"/>
+			<resource uri="/system/lost-found/"/>
+			<resource uri="/system/modules/org.opencms.base/"/>
 			<resource uri="/system/userimages/temp/"/>
-			<resource uri="/system/shared/templatecontexts.json"/>
+			<resource uri="/system/workplace/commons/about.jsp"/>
+			<resource uri="/system/workplace/commons/editor-backlink.html"/>
+			<resource uri="/system/workplace/commons/resourceIcon.css"/>
 			<resource uri="/system/workplace/commons/gallery.jsp"/>
 			<resource uri="/system/workplace/commons/open_ade_gallery.jsp"/>
 			<resource uri="/system/workplace/commons/postupload_basicproperties.jsp"/>
@@ -49,6 +69,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<resource uri="/system/workplace/commons/upload.jsp"/>
 			<resource uri="/system/workplace/commons/uploadAction.jsp"/>
 			<resource uri="/system/workplace/resources/commons/notemplate.png"/>
+			<resource uri="/system/workplace/resources/filetypes/resourceNotFoundBig.png"/>
+			<resource uri="/system/workplace/resources/filetypes/resourceNotFoundSmall.png"/>
 		</resources>
 		<excluderesources/>
 		<parameters/>
@@ -110,7 +132,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<type class="org.opencms.file.types.CmsResourceTypeFolderSubSitemap" name="subsitemap" id="23"/>
 			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="content_folder" id="24">
 				<copy-resources>
-					<copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/.config" type="new"/>
+					<copy-resource source="/system/modules/org.opencms.base/copyresources/sitemap.config" target="${resource.folder.path}/.config" type="new"/>
 				</copy-resources>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="sitemap_config" id="14">
@@ -633,12 +655,227 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<properties/>
 		</file>
 		<file>
+			<destination>system/login</destination>
+			<type>folder</type>
+			<uuidstructure>8247eafb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/index.html</source>
+			<destination>system/login/index.html</destination>
+			<type>jsp</type>
+			<uuidstructure>824a34ef-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>68a38133-f052-11d8-ba65-db38cc8f19d8</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms login page]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement</destination>
+			<type>folder</type>
+			<uuidstructure>cc60d8c4-ee69-11df-9711-c9a60a7588dd</uuidstructure>
+			<datecreated>Fri, 12 Nov 2010 14:33:21 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/login/useragreement/_conf/detail-ua.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/login/useragreement/_conf</destination>
+			<type>folder</type>
+			<uuidstructure>88b00c4c-f184-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<datecreated>Tue, 16 Nov 2010 13:22:17 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/useragreement/_conf/detail-ua.jsp</source>
+			<destination>system/login/useragreement/_conf/detail-ua.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ba6fe525-f0bb-11df-b989-c9a60a7588dd</uuidstructure>
+			<uuidresource>ba6fe526-f0bb-11df-b989-c9a60a7588dd</uuidresource>
+			<datecreated>Mon, 15 Nov 2010 13:24:52 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Detail JSP for user agreement dialog]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/useragreement/_conf/useragreement.xsd</source>
+			<destination>system/login/useragreement/_conf/useragreement.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f74fe7b6-ee69-11df-9711-c9a60a7588dd</uuidstructure>
+			<uuidresource>f74fe7b7-ee69-11df-9711-c9a60a7588dd</uuidresource>
+			<datecreated>Fri, 12 Nov 2010 14:34:33 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for a user agreement configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement/de</destination>
+			<type>folder</type>
+			<uuidstructure>b057df7f-f184-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<datecreated>Tue, 16 Nov 2010 13:23:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/useragreement/de/configuration.html</source>
+			<destination>system/login/useragreement/de/configuration.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>6aba466b-f0ba-11df-b989-c9a60a7588dd</uuidstructure>
+			<uuidresource>ed13adb2-ee6d-11df-9711-c9a60a7588dd</uuidresource>
+			<datecreated>Fri, 12 Nov 2010 15:02:54 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms User Agreement]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement/en</destination>
+			<type>folder</type>
+			<uuidstructure>c0ab6872-f184-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<datecreated>Tue, 16 Nov 2010 13:23:51 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement/en/configuration.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>4514329a-f185-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<uuidresource>ed13adb2-ee6d-11df-9711-c9a60a7588dd</uuidresource>
+			<datecreated>Fri, 12 Nov 2010 15:02:54 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms User Agreement]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/lost-found</destination>
+			<type>folder</type>
+			<uuidstructure>be275b3a-2bd4-11e6-bb84-3992c1e72ece</uuidstructure>
+			<datecreated>Mon, 06 Jun 2016 10:52:20 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_MANAGER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
 			<properties/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config</destination>
+			<destination>system/modules/org.opencms.base</destination>
 			<type>folder</type>
 			<uuidstructure>599661f3-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -648,8 +885,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/.config</source>
-			<destination>system/modules/org.opencms.ade.config/.config</destination>
+			<source>system/modules/org.opencms.base/.config</source>
+			<destination>system/modules/org.opencms.base/.config</destination>
 			<type>module_config</type>
 			<uuidstructure>2baf86ab-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
 			<uuidresource>2baf86ac-62be-11e5-a6b9-35cf27d9ef56</uuidresource>
@@ -669,7 +906,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes</destination>
+			<destination>system/modules/org.opencms.base/classes</destination>
 			<type>folder</type>
 			<uuidstructure>59a974c5-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -679,7 +916,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org</destination>
+			<destination>system/modules/org.opencms.base/classes/org</destination>
 			<type>folder</type>
 			<uuidstructure>59abbeb7-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -689,7 +926,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms</destination>
 			<type>folder</type>
 			<uuidstructure>59ae2fb9-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -699,7 +936,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade</destination>
 			<type>folder</type>
 			<uuidstructure>59b0a0bb-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -709,7 +946,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config</destination>
 			<type>folder</type>
 			<uuidstructure>59b2eaad-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -719,8 +956,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</source>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</destination>
+			<source>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace.properties</source>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace.properties</destination>
 			<type>plain</type>
 			<uuidstructure>d789bd73-70d8-11e0-8f1f-91706a02fba1</uuidstructure>
 			<uuidresource>d789bd74-70d8-11e0-8f1f-91706a02fba1</uuidresource>
@@ -736,7 +973,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources</destination>
+			<destination>system/modules/org.opencms.base/copyresources</destination>
 			<type>folder</type>
 			<uuidstructure>9d49825f-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:52:39 GMT</datecreated>
@@ -746,8 +983,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/copyresources/sitemap.config</source>
-			<destination>system/modules/org.opencms.ade.config/copyresources/sitemap.config</destination>
+			<source>system/modules/org.opencms.base/copyresources/sitemap.config</source>
+			<destination>system/modules/org.opencms.base/copyresources/sitemap.config</destination>
 			<type>sitemap_config</type>
 			<uuidstructure>c9949dfa-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<uuidresource>c9949dfb-70d5-11e0-9709-91706a02fba1</uuidresource>
@@ -775,8 +1012,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/copyresources/sub-level-redirect.html</source>
-			<destination>system/modules/org.opencms.ade.config/copyresources/sub-level-redirect.html</destination>
+			<source>system/modules/org.opencms.base/copyresources/sub-level-redirect.html</source>
+			<destination>system/modules/org.opencms.base/copyresources/sub-level-redirect.html</destination>
 			<type>htmlredirect</type>
 			<uuidstructure>bba62bd0-7f0c-11e1-a2a6-b38ba2bad1b2</uuidstructure>
 			<uuidresource>bba62bd1-7f0c-11e1-a2a6-b38ba2bad1b2</uuidresource>
@@ -796,7 +1033,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources/models</destination>
+			<destination>system/modules/org.opencms.base/copyresources/models</destination>
 			<type>folder</type>
 			<uuidstructure>c913fc31-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:53:52 GMT</datecreated>
@@ -811,7 +1048,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources/models/pages</destination>
+			<destination>system/modules/org.opencms.base/copyresources/models/pages</destination>
 			<type>folder</type>
 			<uuidstructure>c91fe314-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:53:52 GMT</datecreated>
@@ -826,7 +1063,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/elementviews</destination>
+			<destination>system/modules/org.opencms.base/elementviews</destination>
 			<type>folder</type>
 			<uuidstructure>69ccd65e-e116-11e5-8d6e-0242ac11002b</uuidstructure>
 			<datecreated>Thu, 03 Mar 2016 08:03:28 GMT</datecreated>
@@ -836,8 +1073,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/elementviews/system-elements</source>
-			<destination>system/modules/org.opencms.ade.config/elementviews/system-elements</destination>
+			<source>system/modules/org.opencms.base/elementviews/system-elements</source>
+			<destination>system/modules/org.opencms.base/elementviews/system-elements</destination>
 			<type>elementview</type>
 			<uuidstructure>cf0f2604-e114-11e5-8d6e-0242ac11002b</uuidstructure>
 			<uuidresource>cf0f2605-e114-11e5-8d6e-0242ac11002b</uuidresource>
@@ -890,7 +1127,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</accesscontrol>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/formatters</destination>
+			<destination>system/modules/org.opencms.base/formatters</destination>
 			<type>folder</type>
 			<uuidstructure>2bb6d9af-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
 			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
@@ -900,8 +1137,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/formatters/function.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/formatters/function.jsp</destination>
+			<source>system/modules/org.opencms.base/formatters/function.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/function.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>087ba7c9-e7fc-4336-acb8-d3416a4eb1fd</uuidstructure>
 			<uuidresource>087ba7c9-e7fc-4336-acb8-d3416a4eb1fe</uuidresource>
@@ -917,8 +1154,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/formatters/group-container.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/formatters/group-container.jsp</destination>
+			<source>system/modules/org.opencms.base/formatters/group-container.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/group-container.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>e7029fa2-761e-11e0-bd7f-9ffeadaf4d46</uuidstructure>
 			<uuidresource>e7029fa3-761e-11e0-bd7f-9ffeadaf4d46</uuidresource>
@@ -938,7 +1175,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/pages</destination>
+			<destination>system/modules/org.opencms.base/pages</destination>
 			<type>folder</type>
 			<uuidstructure>e9bf555e-7734-11e0-89e5-d14bc4448678</uuidstructure>
 			<datecreated>Thu, 05 May 2011 16:29:56 GMT</datecreated>
@@ -948,8 +1185,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/pages/render-macro.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/pages/render-macro.jsp</destination>
+			<source>system/modules/org.opencms.base/pages/render-macro.jsp</source>
+			<destination>system/modules/org.opencms.base/pages/render-macro.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>7fdf3f5f-d164-11e5-b5bd-cf61f8636af1</uuidstructure>
 			<uuidresource>7fdf3f60-d164-11e5-b5bd-cf61f8636af1</uuidresource>
@@ -965,8 +1202,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/pages/render-seo-file.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/pages/render-seo-file.jsp</destination>
+			<source>system/modules/org.opencms.base/pages/render-seo-file.jsp</source>
+			<destination>system/modules/org.opencms.base/pages/render-seo-file.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>4a982d98-b3ec-4709-a5c3-2c57a9c670c5</uuidstructure>
 			<uuidresource>71b01b3d-207f-46b3-b7c0-d551782070ca</uuidresource>
@@ -990,8 +1227,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/pages/render-string-template.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/pages/render-string-template.jsp</destination>
+			<source>system/modules/org.opencms.base/pages/render-string-template.jsp</source>
+			<destination>system/modules/org.opencms.base/pages/render-string-template.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>aeab959f-6afd-11e7-b91c-a5f4ea347311</uuidstructure>
 			<uuidresource>aeab95a0-6afd-11e7-b91c-a5f4ea347311</uuidresource>
@@ -1007,8 +1244,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/pages/updateModelGroups.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/pages/updateModelGroups.jsp</destination>
+			<source>system/modules/org.opencms.base/pages/updateModelGroups.jsp</source>
+			<destination>system/modules/org.opencms.base/pages/updateModelGroups.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>43feadd4-ab31-11e6-8ea0-a123275265e0</uuidstructure>
 			<uuidresource>43feadd5-ab31-11e6-8ea0-a123275265e0</uuidresource>
@@ -1054,21 +1291,57 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<properties/>
 		</file>
 		<file>
-			<source>system/shared/templatecontexts.json</source>
-			<destination>system/shared/templatecontexts.json</destination>
+			<destination>system/modules/org.opencms.base/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>9663eff5-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
+			<datecreated>Wed, 17 Dec 2008 10:58:08 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/schemas/links.xsd</source>
+			<destination>system/modules/org.opencms.base/schemas/links.xsd</destination>
 			<type>plain</type>
-			<uuidstructure>c9c10d58-25b4-11e3-9fd8-000c29d28104</uuidstructure>
-			<uuidresource>c9c10d59-25b4-11e3-9fd8-000c29d28104</uuidresource>
-			<datecreated>Wed, 25 Sep 2013 07:33:36 GMT</datecreated>
+			<uuidstructure>ab09bc07-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
+			<uuidresource>ab09bc08-cc29-11dd-8fb7-53ec2a4a9072</uuidresource>
+			<datecreated>Wed, 17 Dec 2008 10:58:42 GMT</datecreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Template device contexts]]></value>
+					<value><![CDATA[XSD for link definitions]]></value>
 				</property>
 			</properties>
-			<relations />
-			<accesscontrol />
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/schemas/notification.xsd</source>
+			<destination>system/modules/org.opencms.base/schemas/notification.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>8266e3d5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>daf2e498-1bb6-11da-af9a-9151fb616b67</uuidresource>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema Definition for Content Notifications]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/userimages</destination>
@@ -1103,6 +1376,47 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<destination>system/workplace/commons</destination>
 			<type>folder</type>
 			<properties/>
+		</file>
+		<file>
+			<source>system/workplace/commons/about.jsp</source>
+			<destination>system/workplace/commons/about.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>1761c0f6-b2be-4d21-892f-0cfe75f67779</uuidstructure>
+			<uuidresource>9d8e5c90-9bad-4209-b71f-88a618eaef69</uuidresource>
+			<datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/editor-backlink.html</source>
+			<destination>system/workplace/commons/editor-backlink.html</destination>
+			<type>plain</type>
+			<uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
+			<uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
+			<datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/resourceIcon.css</source>
+			<destination>system/workplace/commons/resourceIcon.css</destination>
+			<type>jsp</type>
+			<uuidstructure>c69e7fdf-619d-11df-ace9-2393f34d19cc</uuidstructure>
+			<uuidresource>c69e7fe0-619d-11df-ace9-2393f34d19cc</uuidresource>
+			<datecreated>Mon, 17 May 2010 10:20:11 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/commons/direct_publish.jsp</source>
@@ -1480,6 +1794,61 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:64,h:64]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/resourceNotFoundBig.png</source>
+			<destination>system/workplace/resources/filetypes/resourceNotFoundBig.png</destination>
+			<type>image</type>
+			<uuidstructure>b36a0f4a-1779-11e2-8a36-61f65c67cbab</uuidstructure>
+			<uuidresource>b36a0f4b-1779-11e2-8a36-61f65c67cbab</uuidresource>
+			<datecreated>Tue, 16 Oct 2012 10:10:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[The big resource not found icon.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource not found icon]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/resourceNotFoundSmall.png</source>
+			<destination>system/workplace/resources/filetypes/resourceNotFoundSmall.png</destination>
+			<type>image</type>
+			<uuidstructure>b36ef14e-1779-11e2-8a36-61f65c67cbab</uuidstructure>
+			<uuidresource>b36ef14f-1779-11e2-8a36-61f65c67cbab</uuidresource>
+			<datecreated>Tue, 16 Oct 2012 10:10:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[The small resource not found icon.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource not found icon]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<relations/>

@@ -475,7 +475,7 @@
 			</accesscontrol>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config</destination>
+			<destination>system/modules/org.opencms.base</destination>
 			<type>folder</type>
 			<uuidstructure>599661f3-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -488,7 +488,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes</destination>
+			<destination>system/modules/org.opencms.base/classes</destination>
 			<type>folder</type>
 			<uuidstructure>59a974c5-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -501,7 +501,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org</destination>
+			<destination>system/modules/org.opencms.base/classes/org</destination>
 			<type>folder</type>
 			<uuidstructure>59abbeb7-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -514,7 +514,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms</destination>
 			<type>folder</type>
 			<uuidstructure>59ae2fb9-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -527,7 +527,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade</destination>
 			<type>folder</type>
 			<uuidstructure>59b0a0bb-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -540,7 +540,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config</destination>
 			<type>folder</type>
 			<uuidstructure>59b2eaad-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datelastmodified>Wed, 27 Apr 2011 13:43:36 GMT</datelastmodified>
@@ -553,8 +553,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</source>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace.properties</destination>
+			<source>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace.properties</source>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace.properties</destination>
 			<type>plain</type>
 			<uuidstructure>d789bd73-70d8-11e0-8f1f-91706a02fba1</uuidstructure>
 			<uuidresource>d789bd74-70d8-11e0-8f1f-91706a02fba1</uuidresource>
@@ -573,8 +573,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace_de.properties</source>
-			<destination>system/modules/org.opencms.ade.config/classes/org/opencms/ade/config/workplace_de.properties</destination>
+			<source>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidstructure>6ed3603d-70db-11e0-8f1f-91706a02fba1</uuidstructure>
 			<uuidresource>6ed3603e-70db-11e0-8f1f-91706a02fba1</uuidresource>
@@ -589,184 +589,6 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.ade.config/schemas</destination>
-			<type>folder</type>
-			<uuidstructure>11e58fdd-70df-11e0-b650-91706a02fba1</uuidstructure>
-			<datelastmodified>Wed, 27 Apr 2011 15:00:20 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 15:00:20 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/detailpage.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/detailpage.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>2f1fb5a7-7239-43c5-b032-e6fb5d220ce3</uuidstructure>
-			<uuidresource>2f1fb5a8-7239-43c5-b032-e6fb5d220ce3</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:07:20 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 15 Mar 2010 10:07:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/field.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/field.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>ada1a813-b5cd-11df-ba36-33b5cd6a7f43</uuidstructure>
-			<uuidresource>ada1a814-b5cd-11df-ba36-33b5cd6a7f43</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 10:41:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 01 Sep 2010 13:34:43 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/folder_choice.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/folder_choice.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>361a016e-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
-			<uuidresource>361a016f-92b3-11e0-8f0f-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 11:01:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/model_page.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/model_page.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>361ee370-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
-			<uuidresource>361ee371-92b3-11e0-8f0f-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 11:58:45 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/module_config.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/module_config.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>21fd29aa-92b5-11e0-90b9-8f51174189b7</uuidstructure>
-			<uuidresource>21fd29ab-92b5-11e0-90b9-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:00:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2011 16:25:47 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/module_field.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/module_field.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>e3348aad-9346-11e0-8f2a-8f51174189b7</uuidstructure>
-			<uuidresource>e3348aae-9346-11e0-8f2a-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:19:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2011 09:49:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/module_type.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/module_type.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>1b085d0c-92ba-11e0-90b9-8f51174189b7</uuidstructure>
-			<uuidresource>1b085d0d-92ba-11e0-90b9-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:19:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2011 17:01:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>b4d6aa2d-83df-45e6-a1a9-455033293638</uuidstructure>
-			<uuidresource>b4d6aa2e-83df-45e6-a1a9-455033293638</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 10:41:36 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 15 Mar 2010 10:07:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>36239e62-92b3-11e0-8f0f-8f51174189b7</uuidstructure>
-			<uuidresource>36239e63-92b3-11e0-8f0f-8f51174189b7</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:04:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2011 16:12:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/type.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/type.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
-			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 09:41:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/schemas/type_formatter.xsd</source>
-			<destination>system/modules/org.opencms.ade.config/schemas/type_formatter.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f999b113b</uuidstructure>
-			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f999b113b</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2011 12:16:28 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>

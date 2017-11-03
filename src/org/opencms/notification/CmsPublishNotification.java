@@ -27,13 +27,13 @@
 
 package org.opencms.notification;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.report.I_CmsReport;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Class to send a notification to an OpenCms user with a summary of warnings and
@@ -44,7 +44,7 @@ import org.opencms.report.I_CmsReport;
 public class CmsPublishNotification extends A_CmsNotification {
 
     /** The path to the xml content with the subject, header and footer of the notification e-mail.<p> */
-    public static final String NOTIFICATION_CONTENT = "/system/workplace/admin/notification/publish-notification";
+    public static final String NOTIFICATION_CONTENT = "/system/shared/notification/publish-notification";
 
     /** The report containing the errors and warnings to put into the notification. */
     private I_CmsReport m_report;

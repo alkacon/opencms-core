@@ -52,10 +52,10 @@ import javax.servlet.http.HttpServletResponse;
 public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
 
     /** The JSP rendering the macro. */
-    private static final String RENDER_MACRO_JSP = "/system/modules/org.opencms.ade.config/pages/render-macro.jsp";
+    private static final String RENDER_MACRO_JSP = "/system/modules/org.opencms.base/pages/render-macro.jsp";
 
     /** The JSP rendering the macro. */
-    private static final String RENDER_STRING_TEMPLATE_JSP = "/system/modules/org.opencms.ade.config/pages/render-string-template.jsp";
+    private static final String RENDER_STRING_TEMPLATE_JSP = "/system/modules/org.opencms.base/pages/render-string-template.jsp";
 
     /** The loader id. */
     public static final int LOADER_ID = 15;

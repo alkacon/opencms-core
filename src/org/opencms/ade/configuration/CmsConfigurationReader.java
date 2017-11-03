@@ -725,7 +725,7 @@ public class CmsConfigurationReader {
                 // errors while parsing configuration
                 LOG.error(e.getLocalizedMessage(), e);
             } catch (CmsRuntimeException e) {
-                // may happen during import of org.opencms.ade.configuration module
+                // may happen during import of org.opencms.base module
                 LOG.warn(e.getLocalizedMessage(), e);
             } catch (Throwable e) {
                 LOG.error(e.getLocalizedMessage(), e);

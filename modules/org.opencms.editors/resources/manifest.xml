@@ -27,13 +27,12 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V'
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace" version="10.0.0"/>
+			<dependency name="org.opencms.base" version="11.0.0" />
 			<dependency name="org.opencms.jquery" version="10.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/editors/acacia/"/>
-			<resource uri="/system/workplace/editors/configuration/"/>
 			<resource uri="/system/workplace/editors/dialogs/"/>
 			<resource uri="/system/workplace/editors/simple/"/>
 			<resource uri="/system/workplace/editors/simplehtml/"/>
@@ -152,72 +151,6 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V'
 			<properties/>
 			<relations/>
 			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/editors/configuration</destination>
-			<type>folder</type>
-			<uuidstructure>897adf7d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Editor display options]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/configuration/options_all</source>
-			<destination>system/workplace/editors/configuration/options_all</destination>
-			<type>plain</type>
-			<uuidstructure>897d296f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>f8154f42-f667-11d8-ab4d-5f9047d04fcf</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[20]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Common options enabled]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/configuration/options_extended</source>
-			<destination>system/workplace/editors/configuration/options_extended</destination>
-			<type>plain</type>
-			<uuidstructure>897f9a73-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>95d3584f-f75b-11d8-8ca3-5f9047d04fcf</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[10]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Most options enabled]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>516</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/editors/dialogs</destination>

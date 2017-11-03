@@ -140,7 +140,7 @@ groups and are updating your system from version 10.0.x, you will need to conver
 
 This requires the following steps:
 
-- Open the explorer, switch to the root site / "system folder" and navigate to the folder /system/modules/org.opencms.ade.config/pages.
+- Open the explorer, switch to the root site / "system folder" and navigate to the folder /system/modules/org.opencms.base/pages.
 - Execute the JSP "updateModelGroups.jsp" in this folder
 - In the form displayed by the JSP, fill out the "base path" and "base container name" fields (they are 
   described in the form itself) and hit the submit button.    

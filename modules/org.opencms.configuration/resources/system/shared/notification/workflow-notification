@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ContentNotifications xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/admin/notification/notification.xsd">
+<ContentNotifications xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.base/schemas/notification.xsd">
   <ContentNotification language="en">
     <Subject><![CDATA[OpenCms Workflow: %(release.project)]]></Subject>
     <Header name="Header0">

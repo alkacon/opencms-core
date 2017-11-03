@@ -48,7 +48,7 @@ public class CmsSeoFileLoader extends A_CmsXmlDocumentLoader {
     public static final int LOADER_ID = 14;
 
     /** The SEO file template JSP path. */
-    public static final String TEMPLATE_PATH = "/system/modules/org.opencms.ade.config/pages/render-seo-file.jsp";
+    public static final String TEMPLATE_PATH = "/system/modules/org.opencms.base/pages/render-seo-file.jsp";
 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
@@ -73,7 +73,8 @@ public class CmsSeoFileLoader extends A_CmsXmlDocumentLoader {
     protected CmsTemplateLoaderFacade getTemplateLoaderFacade(
         CmsObject cms,
         CmsResource resource,
-        HttpServletRequest req) throws CmsException {
+        HttpServletRequest req)
+    throws CmsException {
 
         CmsResource template = cms.readFile(TEMPLATE_PATH, CmsResourceFilter.IGNORE_EXPIRATION);
         return new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(template), resource, template);
