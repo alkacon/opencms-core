@@ -19,7 +19,7 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
 <p><i>&copy; 2017 by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
-		<version>10.5.2</version>
+		<version>11.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -105,33 +105,6 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<datecreated>Mon, 18 Apr 2016 13:48:28 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/ade/config</destination>
-			<type>folder</type>
-			<uuidstructure>b8c7dded-2103-4f0f-8b0c-2ddcd332ac4f</uuidstructure>
-			<datecreated>Wed, 04 May 2011 08:56:36 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/ade/config/workplace_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/ade/config/workplace_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>46437463-272e-448b-a8f4-ae7c6b16667d</uuidstructure>
-			<uuidresource>7f7e88dd-7a0e-4dc2-889a-de10ff8abe22</uuidresource>
-			<datecreated>Wed, 27 Apr 2011 14:34:18 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -392,6 +365,33 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<datecreated>Wed, 04 May 2011 10:32:37 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/base</destination>
+			<type>folder</type>
+			<uuidstructure>b8c7dded-2103-4f0f-8b0c-2ddcd332ac4f</uuidstructure>
+			<datecreated>Wed, 04 May 2011 08:56:36 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/base/workplace_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/base/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>46437463-272e-448b-a8f4-ae7c6b16667d</uuidstructure>
+			<uuidresource>7f7e88dd-7a0e-4dc2-889a-de10ff8abe22</uuidresource>
+			<datecreated>Wed, 27 Apr 2011 14:34:18 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

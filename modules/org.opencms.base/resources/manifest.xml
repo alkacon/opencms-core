@@ -936,7 +936,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.base/classes/org/opencms/ade</destination>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/base</destination>
 			<type>folder</type>
 			<uuidstructure>59b0a0bb-70d4-11e0-9709-91706a02fba1</uuidstructure>
 			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
@@ -946,18 +946,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config</destination>
-			<type>folder</type>
-			<uuidstructure>59b2eaad-70d4-11e0-9709-91706a02fba1</uuidstructure>
-			<datecreated>Wed, 27 Apr 2011 13:43:36 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace.properties</source>
-			<destination>system/modules/org.opencms.base/classes/org/opencms/ade/config/workplace.properties</destination>
+			<source>system/modules/org.opencms.base/classes/org/opencms/base/workplace.properties</source>
+			<destination>system/modules/org.opencms.base/classes/org/opencms/base/workplace.properties</destination>
 			<type>plain</type>
 			<uuidstructure>d789bd73-70d8-11e0-8f1f-91706a02fba1</uuidstructure>
 			<uuidresource>d789bd74-70d8-11e0-8f1f-91706a02fba1</uuidresource>
