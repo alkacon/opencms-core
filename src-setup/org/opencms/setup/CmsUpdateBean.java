@@ -114,6 +114,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** The obsolete modules that should be removed. */
     private static String[] OBSOLETE_MODULES = new String[] {
+        "org.opencms.ade.config",
         "org.opencms.ade.containerpage",
         "org.opencms.ade.contenteditor",
         "org.opencms.ade.editprovider",
@@ -131,6 +132,9 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.locale.ja",
         "org.opencms.locale.ru",
         "org.opencms.locale.zh",
+        "org.opencms.ugc",
+        "org.opencms.workplace",
+        "org.opencms.workplace.tools.link",
         "org.opencms.workplace.help.de",
         "org.opencms.workplace.help.en",
         "org.opencms.workplace.help",

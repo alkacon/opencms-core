@@ -1059,9 +1059,7 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         include '**/*'
     }
     from ("${project.buildDir}/libs") {
-        include 'opencms.jar'
-        include 'opencms-setup.jar'
-        include 'opencms-widgetset.jar'
+    	include '*.jar'
         into '/WEB-INF/lib'
     }
     into ('/WEB-INF/lib') { 
@@ -1069,12 +1067,12 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     }
     
     from (modulesDistsDir) { 
-    	into '/WEB-INF/packages/modules' 
+    	into '/update/modules' 
     	localeModules.split(',').each{ localeModule ->
     		exclude "$localeModule-*.zip"
     	}
-    	updater_excluded_modules.split(',').each{ localeModule ->
-    		exclude "$localeModule-*.zip"
+    	updater_excluded_modules.split(',').each{ excludedModule ->
+    		exclude "$excludedModule-*.zip"
     	}
     }
     
