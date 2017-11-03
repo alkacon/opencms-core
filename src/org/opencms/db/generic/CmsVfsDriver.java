@@ -463,7 +463,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         byte[] contents,
         int publishTag,
         boolean keepOnline,
-        boolean needToUpdateContent) throws CmsDataAccessException {
+        boolean needToUpdateContent)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -533,7 +534,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsUUID projectId,
         String name,
-        CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException {
+        CmsPropertyDefinition.CmsPropertyType type)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -704,9 +706,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 deletePropertyObjects(dbc, projectId, existingResource, propertyDeleteOption);
                 removeFile(dbc, projectId, existingResource);
 
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
+                        Collections.<String, Object> singletonMap(
+                            I_CmsEventListener.KEY_RESOURCES,
+                            modifiedResources)));
                 OpenCms.fireCmsEvent(
                     new CmsEvent(
                         I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
@@ -1554,7 +1559,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsProject onlineProject,
         CmsResource onlineResource,
-        CmsResource offlineResource) throws CmsDataAccessException {
+        CmsResource offlineResource)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1798,7 +1804,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsProject currentProject,
         CmsResource resource,
         boolean getFolders,
-        boolean getFiles) throws CmsDataAccessException {
+        boolean getFiles)
+    throws CmsDataAccessException {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
         CmsUUID projectId = currentProject.getUuid();
@@ -2225,7 +2232,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsUUID projectId,
         CmsResource resource,
-        CmsRelationFilter filter) throws CmsDataAccessException {
+        CmsRelationFilter filter)
+    throws CmsDataAccessException {
 
         Set<CmsRelation> relations = new HashSet<CmsRelation>();
 
@@ -2532,7 +2540,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID projectId,
         CmsUUID propertyDef,
         String path,
-        String value) throws CmsDataAccessException {
+        String value)
+    throws CmsDataAccessException {
 
         List<CmsResource> resources = new ArrayList<CmsResource>();
         ResultSet res = null;
@@ -2591,7 +2600,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long releasedBefore,
         long expiredAfter,
         long expiredBefore,
-        int mode) throws CmsDataAccessException {
+        int mode)
+    throws CmsDataAccessException {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
 
@@ -2699,7 +2709,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsUUID projectId,
         CmsResource resource,
-        boolean includeDeleted) throws CmsDataAccessException {
+        boolean includeDeleted)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2748,7 +2759,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public List<CmsUrlNameMappingEntry> readUrlNameMappingEntries(
         CmsDbContext dbc,
         boolean online,
-        CmsUrlNameMappingFilter filter) throws CmsDataAccessException {
+        CmsUrlNameMappingFilter filter)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         ResultSet resultSet = null;
@@ -2779,7 +2791,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsUUID projectId,
         CmsUUID resourceId,
-        CmsUUID structureId) throws CmsDataAccessException {
+        CmsUUID structureId)
+    throws CmsDataAccessException {
 
         int structureVersion = -1;
         int resourceVersion = -1;
@@ -3033,7 +3046,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsProject project,
         CmsResource resource,
         CmsUUID createdUser,
-        CmsUUID lastModifiedUser) throws CmsDataAccessException {
+        CmsUUID lastModifiedUser)
+    throws CmsDataAccessException {
 
         if (createdUser == null) {
             createdUser = resource.getUserCreated();
@@ -3193,7 +3207,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID projectId,
-        CmsResource resource) throws CmsDataAccessException {
+        CmsResource resource)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -3373,7 +3388,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsResource resource,
-        List<CmsProperty> properties) throws CmsDataAccessException {
+        List<CmsProperty> properties)
+    throws CmsDataAccessException {
 
         CmsProperty property = null;
 
@@ -3492,7 +3508,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsProject project,
         CmsResource resource,
         int changed,
-        boolean isPublishing) throws CmsDataAccessException {
+        boolean isPublishing)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -4568,7 +4585,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long releasedBefore,
         long expiredAfter,
         long expiredBefore,
-        int mode) throws CmsDataAccessException {
+        int mode)
+    throws CmsDataAccessException {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
 
@@ -4682,31 +4700,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_UPDATE_BROKEN");
                 stmt.setString(1, rootPath);
                 stmt.executeUpdate();
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
 
+            try {
+                conn = m_sqlManager.getConnection(dbc);
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_DELETE_BROKEN_LOCALE_RELATIONS");
                 stmt.setString(1, rootPath);
                 stmt.executeUpdate();
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
-            }
-
-            PreparedStatement stmt2 = null;
-            Connection conn2 = null;
-
-            try {
-                conn2 = m_sqlManager.getConnection(dbc);
-                stmt2 = m_sqlManager.getPreparedStatement(conn2, projectId, "C_RELATIONS_UPDATE_BROKEN");
-                stmt2.setString(1, rootPath);
-                stmt2.executeUpdate();
-
-                stmt2 = m_sqlManager.getPreparedStatement(
-                    conn2,
-                    projectId,
-                    "C_RELATIONS_DELETE_BROKEN_LOCALE_RELATIONS");
-                stmt2.setString(1, rootPath);
-                stmt2.executeUpdate();
-            } finally {
-                m_sqlManager.closeAll(dbc, conn2, stmt2, null);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(

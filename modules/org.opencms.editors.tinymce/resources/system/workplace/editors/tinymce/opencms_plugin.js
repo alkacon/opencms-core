@@ -66,14 +66,21 @@ function findFrame(startFrame, frameName){
     }
     for (var i=0; i<startFrame.parent.frames.length; i++){
         // there may be security restrictions prohibiting access to the frame name
-        try{
+        try {
             if (startFrame.parent.frames[i].name == frameName) {
                 return startFrame.parent.frames[i];
             }
-        }catch(err){}
+        } catch(err){}
+		try {
+            if (startFrame.parent.frames[i].frameElement.name == frameName) {
+                return startFrame.parent.frames[i];
+            }
+        } catch(err){}
+
     }
     return findFrame(startFrame.parent, frameName);
 }
+
 
 function getImageSelectionPath() {
    var selected = tinymce.activeEditor.selection.getNode();

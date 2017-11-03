@@ -15,6 +15,19 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.5.3 - October 18, 2017
+* Fixed issue #535 with UI element positioning in Chrome 61.
+* Fixed performance issue with relations in PostgreSQL DB.
+* Fixed issue with network share where files were not unlocked after deletion.
+* Fixed issue with network share module export not handling non-folder module resources correctly.
+* Fixed issue with explorer type attributes being lost when editing modules.
+* Fixed issue with publishing moved folders from a different site.
+* Fixed issue where changing a model group root element could lead to invalid formatter settings.
+* Fixed issue with TinyMCE not being able to scroll to bottom of content in fullscreen mode.
+* Fixed issue with TinyMCE not being able to open the gallery dialog when editing XML pages with Chrome.
+* Fixed issue where switching the project in the explorer to an offline project caused the page editor to open.
+
+
 OpenCms 10.5.2 - July 12, 2017
 ! Copy / move dialog now allows naming of target files and better handles deleted and unreleased resources.
 ! Added option to configure multiple URLs for the workplace server.
@@ -41,6 +54,7 @@ OpenCms 10.5.2 - July 12, 2017
 * Fixed issue #495 where a missing explorer type declaration would cause null pointers in the explorer view.
 * Fixed issue #497 where export links where cached locale independent for sites using the single tree localization mode.
 * Fixed issue #500 where parsing of the CmsShell command line would fail on special characters, PR by gallardo.
+
 
 OpenCms 10.5.1 - February 15, 2017
 ! Rewritten and improved source search app.
