@@ -981,6 +981,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
 task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     baseName 'opencms-upgrade-to'
     ext.preserveLibModules = preserveLibModules
+    ext.allExternalModuleNames = allExternalModuleNames
     
     // adds empty JAR files for all deprecated or updated libs
     Properties buildProps = new Properties()
@@ -1060,6 +1061,9 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     }
     from ("${project.buildDir}/libs") {
     	include '*.jar'
+    	allExternalModuleNames.split(',').each{ externalModule ->
+    		exclude externalModule+'.jar'
+    	}
         into '/WEB-INF/lib'
     }
     into ('/WEB-INF/lib') { 
