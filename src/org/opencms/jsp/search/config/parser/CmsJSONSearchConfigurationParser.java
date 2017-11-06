@@ -40,6 +40,7 @@ import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSorting;
+import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet;
@@ -221,6 +222,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** The whole JSON file. */
     protected JSONObject m_configObject;
 
+    /** The optional base configuration that should be changed by the JSON configuration. */
+    private I_CmsSearchConfiguration m_baseConfig;
+
     /** Constructor taking the JSON as String.
      * @param json The JSON that should be parsed as String.
      * @throws JSONException Thrown if parsing fails.
@@ -228,7 +232,18 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     public CmsJSONSearchConfigurationParser(String json)
     throws JSONException {
 
-        init(json);
+        init(json, null);
+    }
+
+    /** Constructor taking the JSON as String.
+     * @param json The JSON that should be parsed as String.
+     * @param baseConfig A base configuration that is adjusted by the JSON configuration string.
+     * @throws JSONException Thrown if parsing fails.
+     */
+    public CmsJSONSearchConfigurationParser(String json, I_CmsSearchConfiguration baseConfig)
+    throws JSONException {
+
+        init(json, baseConfig);
     }
 
     /** Helper for reading a mandatory String value list - throwing an Exception if parsing fails.
@@ -354,8 +369,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             return new CmsSearchConfigurationDidYouMean(param, collate, count);
 
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
-            return null;
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
+                }
+                return null;
+            } else {
+                return m_baseConfig.getDidYouMeanConfig();
+            }
         }
 
     }
@@ -377,7 +398,13 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_FACET_CONFIG_0), e);
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_FACET_CONFIG_0), e);
+                }
+            } else {
+                facetConfigs = m_baseConfig.getFieldFacetConfigs();
+            }
         }
         return facetConfigs;
     }
@@ -416,8 +443,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 fragmenter,
                 useFastVectorHighlighting);
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
-            return null;
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
+                }
+                return null;
+            } else {
+                return m_baseConfig.getHighlighterConfig();
+            }
         }
     }
 
@@ -462,7 +495,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             }
         } catch (JSONException e) {
             // nothing to do, configuration is optional
-            return null;
+            return null != m_baseConfig ? m_baseConfig.getQueryFacetConfig() : null;
         }
     }
 
@@ -482,7 +515,13 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_FACET_CONFIG_0), e);
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_FACET_CONFIG_0), e);
+                }
+            } else {
+                facetConfigs = m_baseConfig.getRangeFacetConfigs();
+            }
         }
         return facetConfigs;
 
@@ -523,7 +562,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             }
         } catch (JSONException e) {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_ADDITIONAL_PARAMETER_CONFIG_NOT_PARSED_0), e);
-            return new HashMap<String, String>();
+            return null != m_baseConfig
+            ? m_baseConfig.getGeneralConfig().getAdditionalParameters()
+            : new HashMap<String, String>();
         }
         return result;
     }
@@ -536,8 +577,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_CORE);
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_CORE_SPECIFIED_0), e);
-            return null;
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_CORE_SPECIFIED_0), e);
+                }
+                return null;
+            } else {
+                return m_baseConfig.getGeneralConfig().getSolrCore();
+            }
         }
     }
 
@@ -547,7 +594,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected Boolean getEscapeQueryChars() {
 
-        return parseOptionalBooleanValue(m_configObject, JSON_KEY_ESCAPE_QUERY_CHARACTERS);
+        Boolean isEscape = parseOptionalBooleanValue(m_configObject, JSON_KEY_ESCAPE_QUERY_CHARACTERS);
+        return (null == isEscape) && (m_baseConfig != null)
+        ? Boolean.valueOf(m_baseConfig.getGeneralConfig().getEscapeQueryChars())
+        : isEscape;
     }
 
     /** Returns the configured extra parameters that should be given to Solr, or the empty string if no parameters are configured.
@@ -558,8 +608,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_EXTRASOLRPARAMS);
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_EXTRA_PARAMETERS_0), e);
-            return "";
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_EXTRA_PARAMETERS_0), e);
+                }
+                return "";
+            } else {
+                return m_baseConfig.getGeneralConfig().getExtraSolrParams();
+            }
         }
     }
 
@@ -570,7 +626,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_RELOADED_PARAM);
         if (param == null) {
-            return DEFAULT_RELOADED_PARAM;
+            return null != m_baseConfig ? m_baseConfig.getGeneralConfig().getReloadedParam() : DEFAULT_RELOADED_PARAM;
         } else {
             return param;
         }
@@ -581,7 +637,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected Boolean getIgnoreExpirationDate() {
 
-        return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_EXPIRATION_DATE);
+        Boolean isIgnoreExpirationDate = parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_EXPIRATION_DATE);
+        return (null == isIgnoreExpirationDate) && (m_baseConfig != null)
+        ? Boolean.valueOf(m_baseConfig.getGeneralConfig().getIgnoreExpirationDate())
+        : isIgnoreExpirationDate;
     }
 
     /** Returns a flag indicating if the query given by the parameters should be ignored.
@@ -589,7 +648,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected Boolean getIgnoreQuery() {
 
-        return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_QUERY);
+        Boolean isIgnoreQuery = parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_QUERY);
+        return (null == isIgnoreQuery) && (m_baseConfig != null)
+        ? Boolean.valueOf(m_baseConfig.getGeneralConfig().getIgnoreQueryParam())
+        : isIgnoreQuery;
     }
 
     /** Returns a flag indicating if also unreleased resources should be found.
@@ -597,7 +659,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected Boolean getIgnoreReleaseDate() {
 
-        return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_RELEASE_DATE);
+        Boolean isIgnoreReleaseDate = parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_RELEASE_DATE);
+        return (null == isIgnoreReleaseDate) && (m_baseConfig != null)
+        ? Boolean.valueOf(m_baseConfig.getGeneralConfig().getIgnoreReleaseDate())
+        : isIgnoreReleaseDate;
     }
 
     /** Returns the configured Solr index, or <code>null</code> if no core is configured.
@@ -608,8 +673,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_INDEX);
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_SPECIFIED_0), e);
-            return null;
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_SPECIFIED_0), e);
+                }
+                return null;
+            } else {
+                return m_baseConfig.getGeneralConfig().getSolrIndex();
+            }
         }
     }
 
@@ -620,7 +691,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_LAST_QUERYPARAM);
         if (param == null) {
-            return DEFAULT_LAST_QUERY_PARAM;
+            return null != m_baseConfig
+            ? m_baseConfig.getGeneralConfig().getLastQueryParam()
+            : DEFAULT_LAST_QUERY_PARAM;
         } else {
             return param;
         }
@@ -633,7 +706,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         Integer param = parseOptionalIntValue(m_configObject, JSON_KEY_PAGENAVLENGTH);
         if (param == null) {
-            return DEFAULT_PAGENAVLENGTH;
+            return null != m_baseConfig
+            ? Integer.valueOf(m_baseConfig.getPaginationConfig().getPageNavLength())
+            : DEFAULT_PAGENAVLENGTH;
         } else {
             return param;
         }
@@ -646,7 +721,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_PAGEPARAM);
         if (param == null) {
-            return DEFAULT_PAGE_PARAM;
+            return null != m_baseConfig ? m_baseConfig.getPaginationConfig().getPageParam() : DEFAULT_PAGE_PARAM;
         } else {
             return param;
         }
@@ -660,8 +735,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE));
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0), e);
-            return DEFAULT_PAGE_SIZE;
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0), e);
+                }
+                return DEFAULT_PAGE_SIZE;
+            } else {
+                return Integer.valueOf(m_baseConfig.getPaginationConfig().getPageSize());
+            }
         }
     }
 
@@ -670,7 +751,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected String getQueryModifier() {
 
-        return parseOptionalStringValue(m_configObject, JSON_KEY_QUERY_MODIFIER);
+        String queryModifier = parseOptionalStringValue(m_configObject, JSON_KEY_QUERY_MODIFIER);
+        return (null == queryModifier) && (null != m_baseConfig)
+        ? m_baseConfig.getGeneralConfig().getQueryModifier()
+        : queryModifier;
     }
 
     /** Returns the configured request parameter for the query string, or the default parameter if no core is configured.
@@ -680,7 +764,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_QUERYPARAM);
         if (param == null) {
-            return DEFAULT_QUERY_PARAM;
+            return null != m_baseConfig ? m_baseConfig.getGeneralConfig().getQueryParam() : DEFAULT_QUERY_PARAM;
         } else {
             return param;
         }
@@ -691,7 +775,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected Boolean getSearchForEmptyQuery() {
 
-        return parseOptionalBooleanValue(m_configObject, JSON_KEY_SEARCH_FOR_EMPTY_QUERY);
+        Boolean isSearchForEmptyQuery = parseOptionalBooleanValue(m_configObject, JSON_KEY_SEARCH_FOR_EMPTY_QUERY);
+        return (isSearchForEmptyQuery == null) && (null != m_baseConfig)
+        ? Boolean.valueOf(m_baseConfig.getGeneralConfig().getSearchForEmptyQueryParam())
+        : isSearchForEmptyQuery;
     }
 
     /** Returns the list of the configured sort options, or the empty list if no sort options are configured.
@@ -709,7 +796,13 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_SORT_CONFIG_0), e);
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_SORT_CONFIG_0), e);
+                }
+            } else {
+                options = m_baseConfig.getSortConfig().getSortOptions();
+            }
         }
         return options;
     }
@@ -721,7 +814,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_SORTPARAM);
         if (param == null) {
-            return DEFAULT_SORT_PARAM;
+            return null != m_baseConfig ? m_baseConfig.getSortConfig().getSortParam() : DEFAULT_SORT_PARAM;
         } else {
             return param;
         }
@@ -729,11 +822,13 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
     /** Initialization that parses the String to a JSON object.
      * @param configString The JSON as string.
+     * @param baseConfig The optional basic search configuration to overwrite (partly) by the JSON configuration.
      * @throws JSONException thrown if parsing fails.
      */
-    protected void init(String configString) throws JSONException {
+    protected void init(String configString, I_CmsSearchConfiguration baseConfig) throws JSONException {
 
         m_configObject = new JSONObject(configString);
+        m_baseConfig = baseConfig;
     }
 
     /** Parses a single query item for the query facet.

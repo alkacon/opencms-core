@@ -313,22 +313,24 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
         m_cms = m_controller.getCmsObject();
 
         try {
-            I_CmsSearchConfiguration config;
-            if (m_configString != null) {
-                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString));
-            } else if (m_fileFormat == FileFormat.JSON) {
-                // read the JSON config file
+            I_CmsSearchConfiguration config = null;
+            if (m_configFile != null) {
                 CmsFile configFile = m_cms.readFile(m_configFile);
-                OpenCms.getLocaleManager();
-                String configString = new String(
-                    configFile.getContents(),
-                    CmsLocaleManager.getResourceEncoding(m_cms, configFile));
-                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
-            } else { // assume XML
-                CmsFile file = m_cms.readFile(m_configFile);
-                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
-                config = new CmsSearchConfiguration(
-                    new CmsXMLSearchConfigurationParser(xmlContent, m_cms.getRequestContext().getLocale()));
+                if (m_fileFormat == FileFormat.JSON) {
+                    // read the JSON config file
+                    OpenCms.getLocaleManager();
+                    String configString = new String(
+                        configFile.getContents(),
+                        CmsLocaleManager.getResourceEncoding(m_cms, configFile));
+                    config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
+                } else { // assume XML
+                    CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, configFile);
+                    config = new CmsSearchConfiguration(
+                        new CmsXMLSearchConfigurationParser(xmlContent, m_cms.getRequestContext().getLocale()));
+                }
+            }
+            if (m_configString != null) {
+                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString, config));
             }
             m_searchController = new CmsSearchController(config);
 

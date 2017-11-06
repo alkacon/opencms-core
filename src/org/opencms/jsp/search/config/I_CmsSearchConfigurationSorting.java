@@ -27,7 +27,7 @@
 
 package org.opencms.jsp.search.config;
 
-import java.util.Collection;
+import java.util.List;
 
 /** The interface a sort configuration must implement. */
 public interface I_CmsSearchConfigurationSorting {
@@ -40,7 +40,7 @@ public interface I_CmsSearchConfigurationSorting {
     /** Returns the configurations of all available sort options.
      * @return The configurations of all available sort options.
      */
-    Collection<I_CmsSearchConfigurationSortOption> getSortOptions();
+    List<I_CmsSearchConfigurationSortOption> getSortOptions();
 
     /** Returns the request parameter that should be used to send the currently chosen sort option.
      * @return The request parameter that should be used to send the currently chosen sort option.

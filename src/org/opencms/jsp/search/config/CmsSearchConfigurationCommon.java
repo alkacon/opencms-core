@@ -179,6 +179,14 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     }
 
     /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getQueryModifier()
+     */
+    public String getQueryModifier() {
+
+        return m_queryModifier;
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getQueryParam()
      */
     @Override

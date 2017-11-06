@@ -27,7 +27,7 @@
 
 package org.opencms.jsp.search.config;
 
-import java.util.Collection;
+import java.util.List;
 
 /** Configuration for sorting in general. */
 public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSorting {
@@ -35,7 +35,7 @@ public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSo
     /** The request parameter used to send the currently chosen search option. */
     private final String m_sortParam;
     /** The available sort options. */
-    private final Collection<I_CmsSearchConfigurationSortOption> m_options;
+    private final List<I_CmsSearchConfigurationSortOption> m_options;
     /** The default sort option. */
     private final I_CmsSearchConfigurationSortOption m_defaultOption;
 
@@ -46,7 +46,7 @@ public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSo
      */
     public CmsSearchConfigurationSorting(
         final String sortParam,
-        final Collection<I_CmsSearchConfigurationSortOption> options,
+        final List<I_CmsSearchConfigurationSortOption> options,
         final I_CmsSearchConfigurationSortOption defaultOption) {
 
         m_sortParam = sortParam;
@@ -66,7 +66,7 @@ public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSo
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting#getSortOptions()
      */
     @Override
-    public Collection<I_CmsSearchConfigurationSortOption> getSortOptions() {
+    public List<I_CmsSearchConfigurationSortOption> getSortOptions() {
 
         return m_options;
     }

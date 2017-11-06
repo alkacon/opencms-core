@@ -79,6 +79,11 @@ public interface I_CmsSearchConfigurationCommon {
      */
     String getModifiedQuery(String queryString);
 
+    /** Returns the modifier for queries.
+     * @return the query modifier.
+     */
+    String getQueryModifier();
+
     /** Returns the parameter name of the request parameter used to send the current query string.
      * @return The request parameter name used to send the current query string.
      */

@@ -523,6 +523,11 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                         + queryString;
                 }
 
+                public String getQueryModifier() {
+
+                    return null;
+                }
+
                 @Override
                 public String getQueryParam() {
 
