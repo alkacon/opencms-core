@@ -41,6 +41,7 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -298,21 +299,38 @@ public class CmsOuTree extends Tree {
                 m_cms,
                 item.getName(),
                 false);
-
+            List<CmsOrganizationalUnit> webOus = new ArrayList<CmsOrganizationalUnit>();
             for (CmsOrganizationalUnit ou : ous) {
-                Item containerItem;
-                containerItem = m_treeContainer.addItem(ou);
-                if (containerItem == null) {
-                    containerItem = getItem(ou);
+                if (ou.hasFlagWebuser()) {
+                    webOus.add(ou);
+                } else {
+                    addOuToTree(ou, item);
                 }
-                containerItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(ou, CmsOuTreeType.OU));
-                containerItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.OU);
-                m_treeContainer.setParent(ou, item);
             }
-
+            for (CmsOrganizationalUnit ou : webOus) {
+                addOuToTree(ou, item);
+            }
         } catch (CmsException e) {
             LOG.error("Can't read ou", e);
         }
+    }
+
+    /**
+     * Adds an ou to the tree.<p>
+     *
+     * @param ou to be added
+     * @param parent_ou parent ou
+     */
+    private void addOuToTree(CmsOrganizationalUnit ou, CmsOrganizationalUnit parent_ou) {
+
+        Item containerItem;
+        containerItem = m_treeContainer.addItem(ou);
+        if (containerItem == null) {
+            containerItem = getItem(ou);
+        }
+        containerItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(ou, CmsOuTreeType.OU));
+        containerItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.OU);
+        m_treeContainer.setParent(ou, parent_ou);
     }
 
     /**

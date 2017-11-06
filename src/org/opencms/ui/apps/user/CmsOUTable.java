@@ -435,6 +435,21 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     * Adds ou to table.<p>
+     *
+     * @param ou to be added
+     */
+    private void addOuToTable(CmsOrganizationalUnit ou) {
+
+        Item item = m_container.addItem(ou.getName());
+        item.getItemProperty(TableProperty.Name).setValue(ou.getName());
+        item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
+        if (ou.hasFlagWebuser()) {
+            item.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB));
+        }
+    }
+
+    /**
      * initializes table.<p>
      *
      * @param parentOu ou name
@@ -513,17 +528,20 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             userItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_USER));
             userItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.USER);
 
+            List<CmsOrganizationalUnit> webOus = new ArrayList<CmsOrganizationalUnit>();
             for (CmsOrganizationalUnit ou : OpenCms.getOrgUnitManager().getOrganizationalUnits(
                 m_cms,
                 parentOu,
                 false)) {
 
-                Item item = m_container.addItem(ou.getName());
-                item.getItemProperty(TableProperty.Name).setValue(ou.getName());
-                item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
                 if (ou.hasFlagWebuser()) {
-                    item.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB));
+                    webOus.add(ou);
+                } else {
+                    addOuToTable(ou);
                 }
+            }
+            for (CmsOrganizationalUnit ou : webOus) {
+                addOuToTable(ou);
             }
         } catch (CmsException e) {
             LOG.error("Unable to read ous", e);

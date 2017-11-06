@@ -32,6 +32,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
@@ -280,6 +281,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp {
      */
     public static CmsResourceInfo getPrincipalInfo(I_CmsPrincipal principal) {
 
+        if (principal == null) {
+            return null;
+        }
         if (principal instanceof CmsUser) {
             CmsUser user = (CmsUser)principal;
             CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
@@ -287,6 +291,18 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp {
                 user.getName(),
                 user.getEmail(),
                 new ExternalResource(helper.getTinyIconPath(A_CmsUI.getCmsObject(), user)));
+        }
+        if (principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
+            return new CmsResourceInfo(
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_ALLOTHERS_0),
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_ALLOTHERS_0),
+                new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_ALL));
+        }
+        if (principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+            return new CmsResourceInfo(
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_OVERWRITEALL_0),
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_OVERWRITEALL_0),
+                new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
         }
         return new CmsResourceInfo(
             principal.getName(),

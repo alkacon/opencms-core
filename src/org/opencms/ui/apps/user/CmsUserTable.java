@@ -585,7 +585,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
-     * initializes table
+     * initializes table.
      *
      * @param userList list of user
      */
@@ -616,7 +616,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             item.getItemProperty(TableProperty.Description).setValue(group.getDescription(A_CmsUI.get().getLocale()));
             item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
             item.getItemProperty(TableProperty.LastLogin).setValue(
-                CmsDateUtil.getDateTime(new Date(group.getLastlogin()), DateFormat.SHORT, A_CmsUI.get().getLocale()));
+                group.getLastlogin() == 0L
+                ? CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_NEVER_LOGGED_IN_0)
+                : CmsDateUtil.getDateTime(new Date(group.getLastlogin()), DateFormat.SHORT, A_CmsUI.get().getLocale()));
         }
 
         addItemClickListener(new ItemClickListener() {

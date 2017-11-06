@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsDefaultValidationHandler;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -217,6 +218,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                 if (isValid()) {
                     saveOU();
                     window.close();
+                    A_CmsUI.get().reload();
                 }
             }
         });
@@ -279,6 +281,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      *
      * @return true, if all data are ok.
      */
+    @SuppressWarnings("unchecked")
     protected boolean isValid() {
 
         boolean res = true;
@@ -299,6 +302,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
     /**
      * Adds validators to fields.<p>
      */
+    @SuppressWarnings("unchecked")
     protected void validate() {
 
         if (m_ou == null) {
