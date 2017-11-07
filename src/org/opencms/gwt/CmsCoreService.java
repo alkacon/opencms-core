@@ -1033,7 +1033,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         UserInfo userInfo = getUserInfo();
         String aboutLink = OpenCms.getLinkManager().substituteLink(
             getCmsObject(),
-            "/system/modules/org.opencms.gwt/about.jsp");
+            "/system/workplace/commons/about.jsp");
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
