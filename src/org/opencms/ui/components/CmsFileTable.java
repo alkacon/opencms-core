@@ -1001,7 +1001,8 @@ public class CmsFileTable extends CmsResourceTable {
     private void updateItem(CmsUUID itemId, boolean remove) {
 
         if (remove) {
-            m_container.removeItem(itemId);
+            String idStr = itemId != null ? itemId.toString() : null;
+            m_container.removeItem(idStr);
             return;
         }
 
