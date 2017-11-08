@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
@@ -303,6 +304,13 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp {
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_OVERWRITEALL_0),
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_OVERWRITEALL_0),
                 new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
+        }
+        CmsRole role = CmsRole.valueOfId(principal.getId());
+        if (role != null) {
+            return new CmsResourceInfo(
+                role.getName(A_CmsUI.get().getLocale()),
+                role.getDescription(A_CmsUI.get().getLocale()),
+                new CmsCssIcon(OpenCmsTheme.ICON_ROLE));
         }
         return new CmsResourceInfo(
             principal.getName(),

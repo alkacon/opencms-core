@@ -59,9 +59,11 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -106,11 +108,17 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     /** The serial version id. */
     private static final long serialVersionUID = 2397141190651779325L;
 
+    /**Set of permissions to save on ok-Button click. */
+    private Set<CmsPermissionBean> m_permissionToChange = new HashSet<CmsPermissionBean>();
+
     /** The permission view accordion. */
     private Accordion m_accordion;
 
     /** The close button. */
     private Button m_closeButton;
+
+    /** The ok button.*/
+    private Button m_okButton;
 
     /** The cms context. */
     private CmsObject m_cms;
@@ -136,6 +144,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     /** The resource. */
     private CmsResource m_resource;
 
+    /**Parent path map. */
     private Map<CmsUUID, String> m_parents;
 
     /** The resource permissions panel. */
@@ -191,6 +200,19 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
                 onViewChange();
             }
         });
+
+        m_okButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = -8061995491261573917L;
+
+            public void buttonClick(ClickEvent event) {
+
+                savePermissions();
+                close();
+            }
+
+        });
+
         setActionHandler(new CmsOkCancelActionHandler() {
 
             private static final long serialVersionUID = 1L;
@@ -217,13 +239,11 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
      */
     public void deletePermissionSet(String principalType, String principalName) {
 
-        try {
-            ensureLock();
-            m_cms.rmacc(m_cms.getSitePath(m_resource), principalType, principalName);
-            refreshOwnEntries();
-        } catch (CmsException e) {
-            m_context.error(e);
-        }
+        CmsPermissionBean bean = new CmsPermissionBean(principalType, principalName);
+        System.out.println("Delete: " + principalName + ", " + principalType);
+        m_permissionToChange.remove(bean);
+        m_permissionToChange.add(bean);
+        refreshOwnEntries();
     }
 
     /**
@@ -240,18 +260,21 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
             try {
                 // lock resource if autolock is enabled
                 ensureLock();
+                CmsPermissionBean bean = null;
                 if (principalName.equals(CmsVaadinUtils.getMessageText(Messages.GUI_LABEL_ALLOTHERS_0))) {
-                    m_cms.chacc(
-                        m_cms.getSitePath(m_resource),
-                        principalType,
+                    bean = new CmsPermissionBean(
+                        "Unknown",
                         CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
                         permissionString);
+                    bean.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
+
                 } else if (principalName.equals(CmsVaadinUtils.getMessageText(Messages.GUI_LABEL_OVERWRITEALL_0))) {
-                    m_cms.chacc(
-                        m_cms.getSitePath(m_resource),
-                        principalType,
+                    bean = new CmsPermissionBean(
+                        "Unknown",
                         CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME,
                         permissionString);
+                    bean.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
+
                 } else {
                     if (principalType.equalsIgnoreCase(CmsRole.PRINCIPAL_ROLE)) {
                         // if role, first check if we have to translate the role name
@@ -268,10 +291,14 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
                             }
                         }
                     }
-                    m_cms.chacc(m_cms.getSitePath(m_resource), principalType, principalName, permissionString);
+                    bean = new CmsPermissionBean(principalType, principalName, permissionString);
                 }
+                System.out.println("Set: " + bean.getPrincipalName() + ", " + bean.getPrincipalType());
+                m_permissionToChange.remove(bean);
+                m_permissionToChange.add(bean);
                 refreshOwnEntries();
                 onViewChange();
+
             } catch (CmsException e) {
                 m_context.error(e);
             }
@@ -287,16 +314,13 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     }
 
     /**
-     * @see org.opencms.ui.dialogs.permissions.CmsPermissionView.PermissionChangeHandler#setPermissions(java.lang.String, java.lang.String, int, int, int)
+     * @see org.opencms.ui.dialogs.permissions.CmsPermissionView.PermissionChangeHandler#setPermissions(org.opencms.ui.dialogs.permissions.CmsPermissionBean)
      */
-    public void setPermissions(String principalType, String principalName, int allowed, int denied, int flags) {
+    public void setPermissions(CmsPermissionBean bean) {
 
-        try {
-            ensureLock();
-            m_cms.chacc(m_cms.getSitePath(m_resource), principalType, principalName, allowed, denied, flags);
-        } catch (CmsException e) {
-            m_context.error(e);
-        }
+        m_permissionToChange.remove(bean);
+        m_permissionToChange.add(bean);
+
     }
 
     /**
@@ -417,6 +441,40 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     }
 
     /**
+     * Saves the permission.<p>
+     */
+    void savePermissions() {
+
+        try {
+            ensureLock();
+            for (CmsPermissionBean bean : m_permissionToChange) {
+                if (bean.isDeleted()) {
+                    m_cms.rmacc(m_cms.getSitePath(m_resource), bean.getPrincipalType(), bean.getPrincipalName());
+
+                } else {
+                    if (bean.getPermissionString() == null) {
+                        m_cms.chacc(
+                            m_cms.getSitePath(m_resource),
+                            bean.getPrincipalType(),
+                            bean.getPrincipalName(),
+                            bean.getAllowed(),
+                            bean.getDenied(),
+                            bean.getFlags());
+                    } else {
+                        m_cms.chacc(
+                            m_cms.getSitePath(m_resource),
+                            bean.getPrincipalType(),
+                            bean.getPrincipalName(),
+                            bean.getPermissionString());
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            m_context.error(e);
+        }
+    }
+
+    /**
      * Adds list of entries to layout.<p>
      *
      * @param entries the ace list
@@ -430,7 +488,13 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         boolean editable,
         boolean inheritedRes) {
 
-        final CmsPermissionViewTable table = new CmsPermissionViewTable(m_cms, entries, editable, inheritedRes, this);
+        final CmsPermissionViewTable table = new CmsPermissionViewTable(
+            m_cms,
+            entries,
+            editable,
+            inheritedRes,
+            m_parents,
+            this);
         HorizontalLayout hl = new HorizontalLayout();
         Label label = new Label(
             CmsVaadinUtils.getMessageText(
@@ -467,7 +531,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     }
 
     /**
-     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String)
+     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, CmsUUID)
      *
      * @param id the UUID of the principal of the permission set
      * @param curSet the current permission set
@@ -562,6 +626,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     /**
      * Refreshes the display of the resource permission display.<p>
      */
+    @SuppressWarnings("unchecked")
     private void refreshOwnEntries() {
 
         m_resourcePermissions.removeAllComponents();
@@ -571,11 +636,28 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         ArrayList<CmsAccessControlEntry> ownEntries = new ArrayList<CmsAccessControlEntry>();
         try {
             Iterator<CmsAccessControlEntry> itAces = m_cms.getAccessControlEntries(sitePath, false).iterator();
+            HashSet<CmsPermissionBean> newBeans = (HashSet<CmsPermissionBean>)((HashSet<CmsPermissionBean>)(m_permissionToChange)).clone();
             while (itAces.hasNext()) {
                 CmsAccessControlEntry curEntry = itAces.next();
                 if (!curEntry.isInherited()) {
                     // add the entry to the own rights list
-                    ownEntries.add(curEntry);
+                    CmsPermissionBean bean = CmsPermissionBean.getBeanForPrincipal(
+                        m_permissionToChange,
+                        CmsPermissionBean.getPrincipalNameFromACE(m_cms, curEntry));
+                    if (bean == null) {
+                        ownEntries.add(curEntry);
+                    } else {
+                        if (!bean.isDeleted()) {
+                            ownEntries.add(bean.toAccessControlEntry(m_cms, m_resource.getStructureId()));
+                        }
+                        //No new entry -> remove from new list
+                        newBeans.remove(bean);
+                    }
+                }
+            }
+            for (CmsPermissionBean newBean : newBeans) {
+                if (!newBean.isDeleted()) {
+                    ownEntries.add(newBean.toAccessControlEntry(m_cms, m_resource.getStructureId()));
                 }
             }
         } catch (CmsException e) {

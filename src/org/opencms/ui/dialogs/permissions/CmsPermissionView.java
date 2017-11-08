@@ -27,15 +27,11 @@
 
 package org.opencms.ui.dialogs.permissions;
 
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
@@ -50,13 +46,10 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.FontIcon;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -65,7 +58,6 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -94,34 +86,10 @@ public class CmsPermissionView extends CssLayout {
         /**
          * Sets a changed permission set.<p>
          *
-         * @param principalType the principal type
-         * @param principalName the principal name
-         * @param allowed the allowed flag
-         * @param denied the denied flag
-         * @param flags the other flags
+         * @param permissionBean bean for permission
          */
-        void setPermissions(String principalType, String principalName, int allowed, int denied, int flags);
+        void setPermissions(CmsPermissionBean permissionBean);
     }
-
-    /** The table field factory. */
-    private static final TableFieldFactory FIELD_FACTORY = new DefaultFieldFactory() {
-
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
-         */
-        @Override
-        public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-
-            Field<?> result = null;
-            if (PROPERTY_ALLOWED.equals(propertyId) || PROPERTY_DENIED.equals(propertyId)) {
-                result = super.createField(container, itemId, propertyId, uiContext);
-                result.setCaption("");
-            }
-            return result;
-        }
-    };
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPermissionView.class);
@@ -150,20 +118,41 @@ public class CmsPermissionView extends CssLayout {
     /** Constant for unknown type. */
     private static final String UNKNOWN_TYPE = "Unknown";
 
+    /** The table field factory. */
+    private final TableFieldFactory m_fieldFactory = new DefaultFieldFactory() {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+         */
+        @Override
+        public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+
+            Field<?> result = null;
+            if (PROPERTY_ALLOWED.equals(propertyId) || PROPERTY_DENIED.equals(propertyId)) {
+                result = super.createField(container, itemId, propertyId, uiContext);
+                result.addValueChangeListener(new ValueChangeListener() {
+
+                    private static final long serialVersionUID = 3923093753370151014L;
+
+                    public void valueChange(ValueChangeEvent event) {
+
+                        setPermissions();
+
+                    }
+                });
+                result.setCaption("");
+            }
+            return result;
+        }
+    };
+
     /** The button bar. */
     private VerticalLayout m_buttonBar;
 
     /** The permission change handler. */
     private PermissionChangeHandler m_changeHandler;
-
-    /** The delete button. */
-    private Button m_deleteButton;
-
-    /** The container for the details button.  */
-    private CssLayout m_detailButtonContainer;
-
-    /** The details button. */
-    private Button m_details;
 
     /** The editable flag. */
     private boolean m_editable;
@@ -173,12 +162,6 @@ public class CmsPermissionView extends CssLayout {
 
     /** The inherit check box. */
     private CheckBox m_inheritCheckbox;
-
-    /** The inherited from label. */
-    private Label m_inheritedFrom;
-
-    /** The label. */
-    private Label m_label;
 
     /** The overwrite check box. */
     private CheckBox m_overwriteCheckbox;
@@ -194,9 +177,6 @@ public class CmsPermissionView extends CssLayout {
 
     /** The responsible check box. */
     private CheckBox m_responsibleCheckbox;
-
-    /** The set button. */
-    private Button m_setButton;
 
     /**
      * Constructor.<p>
@@ -226,59 +206,35 @@ public class CmsPermissionView extends CssLayout {
             principal = null;
             LOG.debug(e.getLocalizedMessage(), e);
         }
-
         m_principalName = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
-        String ou = null;
-        String displayName;
 
         int flags = 0;
         if ((principal != null) && (principal instanceof CmsHistoryPrincipal)) {
             // there is a history principal entry, handle it
             if (principal.isGroup()) {
-                String niceName = OpenCms.getWorkplaceManager().translateGroupName(principal.getName(), false);
-                displayName = CmsVaadinUtils.getMessageText(
-                    org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2,
-                    ((CmsHistoryPrincipal)principal).getDescription(),
-                    niceName);
-                ou = CmsOrganizationalUnit.getParentFqn(m_principalName);
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
             } else {
-                displayName = ((CmsHistoryPrincipal)principal).getName();
-                ou = CmsOrganizationalUnit.getParentFqn(m_principalName);
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
             }
         } else if ((principal != null) && principal.isGroup()) {
-            String niceName = OpenCms.getWorkplaceManager().translateGroupName(principal.getName(), false);
-            displayName = CmsVaadinUtils.getMessageText(
-                org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2,
-                ((CmsGroup)principal).getDescription(A_CmsUI.get().getLocale()),
-                niceName);
-            ou = CmsOrganizationalUnit.getParentFqn(m_principalName);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
         } else if ((principal != null) && principal.isUser()) {
-            displayName = ((CmsUser)principal).getFullName();
-            ou = CmsOrganizationalUnit.getParentFqn(m_principalName);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
         } else if ((m_principalName != null)
             && m_principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
             m_principalName = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME;
-            displayName = CmsVaadinUtils.getMessageText(Messages.GUI_LABEL_ALLOTHERS_0);
             m_responsibleCheckbox.setVisible(false);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS;
         } else if ((m_principalName != null)
             && m_principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString())) {
             m_principalName = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME;
-            displayName = CmsVaadinUtils.getMessageText(Messages.GUI_LABEL_OVERWRITEALL_0);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL;
         } else {
             // check if it is the case of a role
             CmsRole role = CmsRole.valueOfId(entry.getPrincipal());
             if (role != null) {
-                displayName = role.getName(A_CmsUI.get().getLocale());
                 m_principalName = role.getRoleName();
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_ROLE;
-            } else {
-                displayName = entry.getPrincipal().toString();
             }
         }
 
@@ -318,91 +274,10 @@ public class CmsPermissionView extends CssLayout {
             m_principalName = "";
         }
 
-        FontIcon icon = null;
         boolean isOverwriteAll = false;
-        switch (flags) {
-            case CmsAccessControlEntry.ACCESS_FLAGS_USER:
-                icon = FontAwesome.USER;
-                break;
-            case CmsAccessControlEntry.ACCESS_FLAGS_GROUP:
-                icon = FontAwesome.GROUP;
-                break;
-            case CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS:
-                icon = FontAwesome.GLOBE;
-                break;
-            case CmsAccessControlEntry.ACCESS_FLAGS_ROLE:
-                icon = FontAwesome.GRADUATION_CAP;
-                break;
-            case CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL:
-                icon = FontAwesome.EXCLAMATION_CIRCLE;
-                isOverwriteAll = true;
-                break;
-            default:
-                icon = FontAwesome.QUESTION_CIRCLE;
-        }
 
-        m_label.setContentMode(ContentMode.HTML);
-        String ouName = null;
-        if (ou != null) {
-            try {
-                ouName = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou).getDisplayName(
-                    UI.getCurrent().getLocale());
-            } catch (CmsException e) {
-                LOG.debug("Error reading OU name.", e);
-            }
-        }
-        m_label.setValue(
-            icon.getHtml()
-                + " <b>"
-                + displayName
-                + "</b> "
-                + entry.getPermissions().getPermissionString()
-                + (ouName != null ? ("<br />" + ouName) : ""));
-        m_label.setWidthUndefined();
-        m_details.setIcon(FontAwesome.PLUS_SQUARE_O);
-        m_details.addClickListener(new ClickListener() {
+        if (!isOverwriteAll) {
 
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                toggleDetails();
-            }
-        });
-
-        m_setButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                setPermissions();
-            }
-        });
-
-        m_deleteButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                deletePermissionSet();
-            }
-        });
-
-        if (inheritedFrom != null) {
-            m_inheritedFrom.setValue(inheritedFrom);
-        } else {
-            m_inheritedFrom.setVisible(false);
-        }
-        setDetailButtonVisible(false);
-        if (isOverwriteAll) {
-
-            if (m_editable) {
-                addComponent(m_deleteButton, 2);
-                m_deleteButton.addStyleName("o-permissions_delete");
-            }
-        } else {
             // get all permissions of the current entry
             CmsPermissionSet permissions = entry.getPermissions();
             IndexedContainer container = getPermissionContainer(permissions);
@@ -424,12 +299,11 @@ public class CmsPermissionView extends CssLayout {
 
             m_permissions.setPageLength(5);
             m_permissions.setSortEnabled(false);
-            toggleDetails();
-            setDetailButtonVisible(false);
+            m_permissions.setVisible(true);
             if (m_editable) {
 
                 m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_ALLOWED, PROPERTY_DENIED);
-                m_permissions.setTableFieldFactory(FIELD_FACTORY);
+                m_permissions.setTableFieldFactory(m_fieldFactory);
                 m_permissions.setEditable(m_editable);
                 m_responsibleCheckbox.setValue(isResponsible(entry.getFlags()));
                 m_overwriteCheckbox.setValue(isOverWritingInherited(entry.getFlags()));
@@ -463,6 +337,16 @@ public class CmsPermissionView extends CssLayout {
         } else {
             m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_DISPLAY_ALLOWED);
         }
+    }
+
+    /**
+     * Checks if view is editable.<p>
+     *
+     * @return true if view is editable
+     */
+    public boolean isEditable() {
+
+        return m_editable;
     }
 
     /**
@@ -645,22 +529,7 @@ public class CmsPermissionView extends CssLayout {
             flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
         }
 
-        m_changeHandler.setPermissions(m_principalType, m_principalName, allowed, denied, flags);
-    }
-
-    /**
-     * Toggles the details display.<p>
-     */
-    void toggleDetails() {
-
-        if (m_permissions.isVisible()) {
-            m_permissions.setVisible(false);
-            m_details.setIcon(FontAwesome.PLUS_SQUARE_O);
-        } else {
-            m_permissions.setVisible(true);
-            m_details.setIcon(FontAwesome.MINUS_SQUARE_O);
-        }
-        m_changeHandler.onViewChange();
+        m_changeHandler.setPermissions(new CmsPermissionBean(m_principalType, m_principalName, allowed, denied, flags));
     }
 
     /**
@@ -682,19 +551,4 @@ public class CmsPermissionView extends CssLayout {
         return new Label(content, ContentMode.HTML);
     }
 
-    /**
-     * Shows / hides the details button.<p>
-     *
-     * @param visible true if the details button should be shown
-     */
-    private void setDetailButtonVisible(boolean visible) {
-
-        m_detailButtonContainer.setVisible(visible);
-        if (visible) {
-            removeStyleName("o-permission-no-details");
-        } else {
-            addStyleName("o-permission-no-details");
-        }
-
-    }
 }

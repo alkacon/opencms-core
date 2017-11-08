@@ -27,19 +27,36 @@
 
 package org.opencms.ui.dialogs.permissions;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPrincipal;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.user.CmsAccountsApp;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.commons.Messages;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Table for the ACE Entries.<p>
@@ -88,6 +105,7 @@ public class CmsPermissionViewTable extends Table {
      * @param entries to be shown
      * @param editable boolean
      * @param showRes with resources?
+     * @param parents parents
      * @param dialog calling dialog
      */
     public CmsPermissionViewTable(
@@ -95,15 +113,17 @@ public class CmsPermissionViewTable extends Table {
         List<CmsAccessControlEntry> entries,
         boolean editable,
         boolean showRes,
+        Map<CmsUUID, String> parents,
         CmsPermissionDialog dialog) {
 
         m_editable = editable;
         m_dialog = dialog;
         setHeight("450px");
+        setWidth("100%");
         setPageLength(4);
         setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
         m_container = new IndexedContainer();
-        m_container.addContainerProperty(PROP_VIEW, CmsPermissionView.class, null);
+        m_container.addContainerProperty(PROP_VIEW, VerticalLayout.class, null);
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         setCellStyleGenerator(new CellStyleGenerator() {
 
@@ -130,7 +150,8 @@ public class CmsPermissionViewTable extends Table {
                     false,
                     showRes ? curEntry.getResource() : null);
                 Item item = m_container.addItem(view);
-                item.getItemProperty(PROP_VIEW).setValue(view);
+                item.getItemProperty(PROP_VIEW).setValue(
+                    getLayoutFromEntry(cms, curEntry, view, showRes ? parents.get(curEntry.getResource()) : null));
                 item.getItemProperty(PROP_NAME).setValue(view.getPrincipalName());
             }
         }
@@ -150,5 +171,62 @@ public class CmsPermissionViewTable extends Table {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
             m_container.addContainerFilter(new Or(new SimpleStringFilter(PROP_NAME, search, true, false)));
         }
+    }
+
+    /**
+     * Makes item for table.<p>
+     *
+     * @param cms CmsObject
+     * @param entry ACE
+     * @param view permission table
+     * @param resPath parentResource (or null)
+     * @return VerticalLayout
+     */
+    private VerticalLayout getLayoutFromEntry(
+        CmsObject cms,
+        CmsAccessControlEntry entry,
+        final CmsPermissionView view,
+        String resPath) {
+
+        VerticalLayout res = new VerticalLayout();
+        res.setSpacing(false);
+        I_CmsPrincipal principal = null;
+        try {
+            principal = CmsPrincipal.readPrincipalIncludingHistory(cms, entry.getPrincipal());
+
+        } catch (CmsException e) {
+            principal = new CmsGroup(entry.getPrincipal(), null, "", "", 0);
+
+        }
+        if (principal != null) {
+            CmsResourceInfo info = CmsAccountsApp.getPrincipalInfo(principal);
+            if (view.isEditable()) {
+                CssLayout cssl = new CssLayout();
+                Button removeButton = new Button(FontAwesome.REMOVE);
+                removeButton.addStyleName("borderless o-toolbar-button o-resourceinfo-toolbar o-toolbar-icon-visible");
+                removeButton.addClickListener(new ClickListener() {
+
+                    private static final long serialVersionUID = -6112693137800596485L;
+
+                    public void buttonClick(ClickEvent event) {
+
+                        view.deletePermissionSet();
+
+                    }
+
+                });
+                cssl.addComponent(removeButton);
+                info.setButtonWidget(cssl);
+            }
+            res.addComponent(info);
+            if (resPath != null) {
+                Label resLabel = new Label(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_INHERITED_FROM_1, resPath));
+                resLabel.addStyleName("o-report");
+                res.addComponent(resLabel);
+            }
+        }
+        res.addComponent(view);
+        return res;
     }
 }
