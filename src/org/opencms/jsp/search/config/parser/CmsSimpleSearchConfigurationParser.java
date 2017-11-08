@@ -463,23 +463,25 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     String getCategoryFilter() {
 
-        String categories = "";
         String result = "";
         if (!m_config.getCategories().isEmpty()) {
-            result = "&fq=category_exact:(";
+            List<String> categoryVals = Lists.newArrayList();
             for (String path : m_config.getCategories()) {
                 try {
                     path = CmsCategoryService.getInstance().getCategory(
                         m_cms,
                         m_cms.getRequestContext().addSiteRoot(path)).getPath();
-
-                    result += "\"" + path + "\" ";
+                    categoryVals.add("\"" + path + "\"");
                 } catch (CmsException e) {
                     LOG.warn(e.getLocalizedMessage(), e);
                 }
             }
-            result = result.substring(0, result.length() - 1);
-            result += ")";
+            if (!categoryVals.isEmpty()) {
+                String operator = " " + m_config.getCategoryMode() + " ";
+                String valueExpression = CmsStringUtil.listAsString(categoryVals, operator);
+                result = "&fq=category_exact:(" + valueExpression + ")";
+
+            }
         }
         return result;
     }

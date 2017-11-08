@@ -152,6 +152,17 @@ public class CmsListManager extends A_CmsWorkplaceApp
 implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
     /**
+     * Enum representing how selected categories should be combined in a search.<p>
+     */
+    public static enum CategoryMode {
+        /** Combine categories with AND. */
+        AND,
+
+        /** Combine categories with OR. */
+        OR;
+    }
+
+    /**
      * The list configuration data.<p>
      */
     public static class ListConfigurationBean {
@@ -173,6 +184,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         /** Search parameters by configuration node name. */
         private Map<String, String> m_parameterFields;
+
+        /** The category mode. */
+        private CategoryMode m_categoryMode;
 
         /**
          * Constructor.<p>
@@ -219,6 +233,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         public boolean getCategoryConjunction() {
 
             return Boolean.parseBoolean(getParameterValue(N_CATEGORY_CONJUNCTION));
+        }
+
+        /**
+         * Gets the category mode.<p>
+         *
+         * @return the category mode
+         */
+        public CategoryMode getCategoryMode() {
+
+            return m_categoryMode;
         }
 
         /**
@@ -354,6 +378,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         public void setCategories(List<String> categories) {
 
             m_categories = categories;
+        }
+
+        /**
+         * Sets the category mode.<p>
+         *
+         * @param categoryMode the category mode to set
+         */
+        public void setCategoryMode(CategoryMode categoryMode) {
+
+            m_categoryMode = categoryMode;
         }
 
         /**
@@ -630,6 +664,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** List configuration node name and field key. */
     public static final String N_CATEGORY = "Category";
 
+    /** List configuration node name for the category mode. */
+    public static final String N_CATEGORY_MODE = "CategoryMode";
+
     /** List configuration node name and field key. */
     public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
 
@@ -740,7 +777,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             Messages.GUI_LISTMANAGER_SORT_ORDER_DESC_0}};
 
     /** The logger for this class. */
-    static Log LOG = CmsLog.getLog(CmsListManager.class.getName());
+    private static final Log LOG = CmsLog.getLog(CmsListManager.class.getName());
 
     /** The month name abbreviations. */
     static final String[] MONTHS = new String[] {
@@ -860,6 +897,17 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     result.setParameterValue(field, val);
                 }
             }
+            I_CmsXmlContentValue categoryModeVal = content.getValue(N_CATEGORY_MODE, locale);
+            CategoryMode categoryMode = CategoryMode.OR;
+            if (categoryModeVal != null) {
+                try {
+                    categoryMode = CategoryMode.valueOf(categoryModeVal.getStringValue(cms));
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            result.setCategoryMode(categoryMode);
+
             LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
             for (I_CmsXmlContentValue parameter : content.getValues(N_PARAMETER, locale)) {
                 I_CmsXmlContentValue keyVal = content.getValue(parameter.getPath() + "/" + N_KEY, locale);

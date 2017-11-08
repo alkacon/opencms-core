@@ -15,6 +15,7 @@
         <xsd:element name="TypesToCollect" type="OpenCmsDisplayFormatter" minOccurs="1" maxOccurs="unbounded"/>
       	<xsd:element name="SearchFolder" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
 		<xsd:element name="Category" type="OpenCmsCategory" />
+		<xsd:element name="CategoryMode" type="OpenCmsString" />
 		<xsd:element name="SortOrder" type="OpenCmsString" />
 		<xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
 		<xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
@@ -36,9 +37,13 @@
 			<mappings>
 				<mapping element="Title" mapto="property:Title" useDefault="true" />
 			</mappings>
+			<defaults>
+				<default element="CategoryMode" value="OR" />
+			</defaults>
 			<layouts>
 				<layout element="SearchFolder" widget="VfsFileWidget" configuration="excludefiles" />
 				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
+				<layout element="CategoryMode" widget="SelectorWidget" configuration="AND:%(key.list_config.categoryModeAnd)|OR:%(key.list_config.categoryModeOr)" />
 				<layout element="SortOrder" widget="SelectorWidget"	configuration="
 					DATE_ASC:%(key.list_config.sort.dateasc)|
 					DATE_DESC:%(key.list_config.sort.datedesc)|
