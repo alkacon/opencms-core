@@ -52,10 +52,10 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
+import org.opencms.ui.apps.lists.CmsListManager;
+import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -168,9 +168,9 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
         try {
             I_CmsSearchConfiguration config = null;
             CmsResource resource = cms.readResource(m_configFile);
-            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, pageContext.getRequest());
+            ListConfigurationBean configBean = CmsListManager.parseListConfiguration(cms, resource);
             config = new CmsSearchConfiguration(
-                new CmsSimpleSearchConfigurationParser(cms, xmlContent, m_configString));
+                new CmsSimpleSearchConfigurationParser(cms, configBean, m_configString));
             m_searchController = new CmsSearchController(config);
 
             String indexName = m_searchController.getCommon().getConfig().getSolrIndex();

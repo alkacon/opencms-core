@@ -28,8 +28,6 @@
 package org.opencms.ui.apps.lists;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
-import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -41,22 +39,10 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
-import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
-import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
-import org.opencms.jsp.search.config.CmsSearchConfigurationSorting;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet.SortOrder;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
+import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
-import org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
@@ -69,7 +55,6 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
@@ -135,7 +120,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -228,6 +212,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
+         * Gets the category conjunction setting.<p>
+         *
+         * @return the category conjunction setting
+         */
+        public boolean getCategoryConjunction() {
+
+            return Boolean.parseBoolean(getParameterValue(N_CATEGORY_CONJUNCTION));
+        }
+
+        /**
          * Returns the display types.<p>
          *
          * @return the display types
@@ -235,6 +229,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         public List<String> getDisplayTypes() {
 
             return m_dislayTypes;
+        }
+
+        /**
+         * Gets the filter query.<p>
+         *
+         * @return the filter query
+         */
+        public String getFilterQuery() {
+
+            return m_parameterFields.get(N_FILTER_QUERY);
         }
 
         /**
@@ -270,6 +274,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
+         * Gets the sort order.<p>
+         *
+         * @return the sort order
+         */
+        public String getSortOrder() {
+
+            return getParameterValue(N_SORT_ORDER);
+        }
+
+        /**
          * Returns the search types.<p>
          *
          * @return the search types
@@ -289,6 +303,27 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 }
             }
             return result;
+        }
+
+        /**
+         * Returns the 'current only' setting.<p>
+         *
+         * @return the 'current only' setting
+         */
+        public boolean isCurrentOnly() {
+
+            return Boolean.parseBoolean(m_parameterFields.get(N_CURRENT_ONLY));
+        }
+
+        /**
+         * Returns the 'show expired' setting.<p>
+         *
+         * @return the 'show expired' setting
+         */
+        public boolean isShowExpired() {
+
+            return Boolean.parseBoolean(m_parameterFields.get(N_SHOW_EXPIRED));
+
         }
 
         /**
@@ -350,480 +385,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         public void setParameterValue(String name, String value) {
 
             m_parameterFields.put(name, value);
-        }
-    }
 
-    /**
-     * Reads the search configuration from the current list configuration form.<p>
-     */
-    public static class SearchConfigParser implements I_CmsSearchConfigurationParser {
-
-        /** The category facet conjunction flag. */
-        boolean m_categoryConjunction;
-
-        /** The collapse item series flag. */
-        boolean m_collapseItemSeries;
-
-        /** The current items only flag. */
-        boolean m_currentOnly;
-
-        /** The content locale. */
-        private Locale m_contentLocale;
-
-        /** The filter query. */
-        private String m_filterQuery;
-
-        /** The selected categories. */
-        private List<String> m_selectedCategories;
-
-        /** The selected folders. */
-        private List<String> m_selectedFolders;
-
-        /** The selected types. */
-        private List<String> m_selectedTypes;
-
-        /** The show expired flag. */
-        private boolean m_showExpired;
-
-        /** The sort option. */
-        private SortOption m_sortOption;
-
-        /**
-         * Constructor.<p>
-         *
-         * @param types the selected types
-         * @param folders the selected folders
-         * @param categories the selected categories
-         * @param filterQuery the filter query
-         * @param currentOnly the current items only flag
-         * @param sortOption the sort option
-         * @param showExpired the show expired flag
-         * @param categoryConjunction the category facet conjunction flag
-         * @param collapseItemSeries  the collapse item series flag
-         * @param contentLocale the content locale
-         */
-        public SearchConfigParser(
-            List<String> types,
-            List<String> folders,
-            List<String> categories,
-            String filterQuery,
-            boolean currentOnly,
-            String sortOption,
-            boolean showExpired,
-            boolean categoryConjunction,
-            boolean collapseItemSeries,
-            Locale contentLocale) {
-            m_selectedTypes = types;
-            m_selectedFolders = folders;
-            m_selectedCategories = categories;
-            setSortOption(sortOption);
-            m_contentLocale = contentLocale;
-            m_filterQuery = filterQuery;
-            m_currentOnly = currentOnly;
-            m_showExpired = showExpired;
-            m_categoryConjunction = categoryConjunction;
-            m_collapseItemSeries = collapseItemSeries;
-        }
-
-        /**
-         * Constructor.<p>
-         *
-         * @param configBean the configuration data bean
-         * @param collapseItemSeries  the collapse item series flag
-         * @param locale the search content locale
-         */
-        public SearchConfigParser(ListConfigurationBean configBean, boolean collapseItemSeries, Locale locale) {
-            this(
-                configBean.getTypes(),
-                configBean.getFolders(),
-                configBean.getCategories(),
-                configBean.getParameterValue(N_FILTER_QUERY),
-                Boolean.parseBoolean(configBean.getParameterValue(N_CURRENT_ONLY)),
-                configBean.getParameterValue(N_SORT_ORDER),
-                Boolean.parseBoolean(configBean.getParameterValue(N_SHOW_EXPIRED)),
-                Boolean.parseBoolean(configBean.getParameterValue(N_CATEGORY_CONJUNCTION)),
-                collapseItemSeries,
-                locale);
-        }
-
-        /**
-         * Returns the initial SOLR query.<p>
-         *
-         * @return the SOLR query
-         */
-        public CmsSolrQuery getInitialQuery() {
-
-            Map<String, String[]> queryParams = new HashMap<String, String[]>();
-            if (!A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject() && m_showExpired) {
-                queryParams.put("fq", new String[] {"released:[* TO *]", "expired:[* TO *]"});
-            }
-            return new CmsSolrQuery(null, queryParams);
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
-         */
-        @Override
-        public I_CmsSearchConfigurationCommon parseCommon() {
-
-            return new I_CmsSearchConfigurationCommon() {
-
-                @Override
-                public Map<String, String> getAdditionalParameters() {
-
-                    return null;
-                }
-
-                @Override
-                public boolean getEscapeQueryChars() {
-
-                    return false;
-                }
-
-                @Override
-                public String getExtraSolrParams() {
-
-                    return getFolderFilter()
-                        + getResourceTypeFilter()
-                        + getCategoryFilter()
-                        + getFilterQuery()
-                        + getLocaleFilter();
-                }
-
-                @Override
-                public boolean getIgnoreExpirationDate() {
-
-                    return true;
-                }
-
-                @Override
-                public boolean getIgnoreQueryParam() {
-
-                    return false;
-                }
-
-                @Override
-                public boolean getIgnoreReleaseDate() {
-
-                    return true;
-                }
-
-                @Override
-                public String getLastQueryParam() {
-
-                    return null;
-                }
-
-                @Override
-                public String getModifiedQuery(String queryString) {
-
-                    return "{!type=edismax qf=\"content_"
-                        + getContentLocale().toString()
-                        + " Title_prop spell\"}"
-                        + queryString;
-                }
-
-                public String getQueryModifier() {
-
-                    return null;
-                }
-
-                @Override
-                public String getQueryParam() {
-
-                    return null;
-                }
-
-                @Override
-                public String getReloadedParam() {
-
-                    return null;
-                }
-
-                @Override
-                public boolean getSearchForEmptyQueryParam() {
-
-                    return true;
-                }
-
-                @Override
-                public String getSolrCore() {
-
-                    return null;
-                }
-
-                @Override
-                public String getSolrIndex() {
-
-                    return null;
-                }
-            };
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
-         */
-        @Override
-        public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
-
-            return null;
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseFieldFacets()
-         */
-        @Override
-        public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
-
-            Map<String, I_CmsSearchConfigurationFacetField> result = new HashMap<String, I_CmsSearchConfigurationFacetField>();
-            result.put(
-                FIELD_CATEGORIES,
-                new CmsSearchConfigurationFacetField(
-                    FIELD_CATEGORIES,
-                    null,
-                    Integer.valueOf(1),
-                    Integer.valueOf(200),
-                    null,
-                    "Category",
-                    SortOrder.index,
-                    null,
-                    Boolean.valueOf(m_categoryConjunction),
-                    null,
-                    Boolean.TRUE));
-            result.put(
-                FIELD_PARENT_FOLDERS,
-                new CmsSearchConfigurationFacetField(
-                    FIELD_PARENT_FOLDERS,
-                    null,
-                    Integer.valueOf(1),
-                    Integer.valueOf(200),
-                    null,
-                    "Folders",
-                    SortOrder.index,
-                    null,
-                    Boolean.FALSE,
-                    null,
-                    Boolean.TRUE));
-            return result;
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseHighlighter()
-         */
-        @Override
-        public I_CmsSearchConfigurationHighlighting parseHighlighter() {
-
-            return null;
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parsePagination()
-         */
-        @Override
-        public I_CmsSearchConfigurationPagination parsePagination() {
-
-            return new CmsSearchConfigurationPagination(null, Integer.valueOf(10000), Integer.valueOf(1));
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseQueryFacet()
-         */
-        @Override
-        public I_CmsSearchConfigurationFacetQuery parseQueryFacet() {
-
-            return null;
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseRangeFacets()
-         */
-        @Override
-        public Map<String, I_CmsSearchConfigurationFacetRange> parseRangeFacets() {
-
-            Map<String, I_CmsSearchConfigurationFacetRange> result = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
-            I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
-                String.format(FIELD_DATE, m_contentLocale.toString()),
-                "NOW/YEAR-20YEARS",
-                "NOW/MONTH+2YEARS",
-                "+1MONTHS",
-                null,
-                Boolean.FALSE,
-                FIELD_DATE_FACET_NAME,
-                Integer.valueOf(1),
-                "Date",
-                Boolean.FALSE,
-                null,
-                Boolean.TRUE);
-
-            result.put(rangeFacet.getName(), rangeFacet);
-
-            return result;
-        }
-
-        /**
-         * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseSorting()
-         */
-        @Override
-        public I_CmsSearchConfigurationSorting parseSorting() {
-
-            List<I_CmsSearchConfigurationSortOption> result = null;
-            I_CmsSearchConfigurationSortOption defaultOption = null;
-            if (null != m_sortOption) {
-                defaultOption = m_sortOption.getOption(m_contentLocale);
-                result = Collections.<I_CmsSearchConfigurationSortOption> singletonList(defaultOption);
-            } else {
-                result = Collections.<I_CmsSearchConfigurationSortOption> emptyList();
-            }
-
-            return new CmsSearchConfigurationSorting(null, result, defaultOption);
-        }
-
-        /**
-         * Sets the search content locale.<p>
-         *
-         * @param locale the locale
-         */
-        public void setContentLocale(Locale locale) {
-
-            m_contentLocale = locale;
-        }
-
-        /**
-         * Sets the sort option.<p>
-         *
-         * @param sortOption the sort option
-         */
-        public void setSortOption(String sortOption) {
-
-            if (null != sortOption) {
-                try {
-                    m_sortOption = SortOption.valueOf(sortOption);
-                } catch (IllegalArgumentException e) {
-                    m_sortOption = null;
-                    LOG.warn(
-                        "Setting illegal default sort option "
-                            + sortOption
-                            + " failed. Using Solr's default sort option.");
-                }
-            } else {
-                m_sortOption = null;
-            }
-        }
-
-        /**
-         * Returns the category filter query part.<p>
-         *
-         * @return the category filter query part
-         */
-        String getCategoryFilter() {
-
-            String result = "";
-            if (!m_selectedCategories.isEmpty()) {
-                CmsObject cms = A_CmsUI.getCmsObject();
-                result = "&fq=category_exact:(";
-                for (String path : m_selectedCategories) {
-                    try {
-                        path = CmsCategoryService.getInstance().getCategory(
-                            cms,
-                            cms.getRequestContext().addSiteRoot(path)).getPath();
-
-                        result += "\"" + path + "\" ";
-                    } catch (CmsException e) {
-                        LOG.warn(e.getLocalizedMessage(), e);
-                    }
-                }
-                result = result.substring(0, result.length() - 1);
-                result += ")";
-            }
-            return result;
-        }
-
-        /**
-         * Returns the content locale.<p>
-         *
-         * @return the content locale
-         */
-        Locale getContentLocale() {
-
-            return m_contentLocale;
-        }
-
-        /**
-         * Returns the additional filter query part.<p>
-         *
-         * @return the additional filter query part
-         */
-        String getFilterQuery() {
-
-            String result = "";
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_filterQuery)) {
-                if (!m_filterQuery.startsWith("&")) {
-                    result += "&" + m_filterQuery;
-                } else {
-                    result += m_filterQuery;
-                }
-            }
-            if (m_currentOnly) {
-                result += "&fq=instancedatecurrenttill_" + m_contentLocale.toString() + "_dt:[NOW/DAY TO *]";
-            }
-            return result;
-        }
-
-        /**
-         * Returns the folder filter query part.<p>
-         *
-         * @return the folder filter query part
-         */
-        String getFolderFilter() {
-
-            String result = "";
-            boolean first = true;
-            for (String value : m_selectedFolders) {
-                if (!first) {
-                    result += " OR ";
-                }
-                result += "\"" + value + "\"";
-                first = false;
-            }
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-                result = "fq=parent-folders:(\"/\")";
-            } else {
-                result = "fq=parent-folders:(" + result + ")";
-            }
-            return result;
-        }
-
-        /**
-         * Returns the locale filter.<p>
-         *
-         * @return the locale filter
-         */
-        String getLocaleFilter() {
-
-            return "&fq=con_locales:" + getContentLocale().toString();
-        }
-
-        /**
-         * Returns the resource type filter query part.<p>
-         *
-         * @return the resource type filter query part
-         */
-        String getResourceTypeFilter() {
-
-            String result = "";
-            boolean first = true;
-            for (String value : m_selectedTypes) {
-                if (!first) {
-                    result += " OR ";
-                }
-                result += "\"" + value + "\"";
-                first = false;
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
-                result = "&fq=type:(" + result + ")";
-            }
-
-            return result;
         }
     }
 
@@ -1044,6 +606,12 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
     }
 
+    /** Default backend pagination. */
+    private static final I_CmsSearchConfigurationPagination PAGINATION = new CmsSearchConfigurationPagination(
+        null,
+        Integer.valueOf(10000),
+        Integer.valueOf(1));
+
     /** SOLR field name. */
     public static final String FIELD_CATEGORIES = "category_exact";
 
@@ -1157,12 +725,12 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** The available sort options. */
     protected static final String[][] SORT_OPTIONS = new String[][] {
         {
-            FIELD_DATE + " asc",
-            FIELD_DATE + " desc",
-            "disptitle_%s_s asc",
-            "disptitle_%s_s desc",
-            "newsorder_%s_i asc",
-            "newsorder_%s_i desc"},
+            SortOption.DATE_ASC.toString(),
+            SortOption.DATE_DESC.toString(),
+            SortOption.TITLE_ASC.toString(),
+            SortOption.TITLE_DESC.toString(),
+            SortOption.ORDER_ASC.toString(),
+            SortOption.ORDER_DESC.toString()},
         {
             Messages.GUI_LISTMANAGER_SORT_DATE_ASC_0,
             Messages.GUI_LISTMANAGER_SORT_DATE_DESC_0,
@@ -1201,14 +769,11 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /** The result table. */
     CmsResultTable m_resultTable;
 
-    /** The collapse item series flag. */
-    private boolean m_collapseItemSeries;
-
     /** The create new button. */
     private Button m_createNewButton;
 
     /** The current search parser. */
-    private SearchConfigParser m_currentConfigParser;
+    private CmsSimpleSearchConfigurationParser m_currentConfigParser;
 
     /** The current edit dialog window. */
     private Window m_dialogWindow;
@@ -1263,6 +828,83 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The toggle date series display. */
     private Button m_toggleSeriesButton;
+
+    /**
+     * Parses the list configuration resource.<p>
+     *
+     * @param cms the CMS context to use
+     * @param res the list configuration resource
+     *
+     * @return the configuration data bean
+     */
+    public static ListConfigurationBean parseListConfiguration(CmsObject cms, CmsResource res) {
+
+        ListConfigurationBean result = new ListConfigurationBean();
+        try {
+            CmsFile configFile = cms.readFile(res);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
+            Locale locale = CmsLocaleManager.MASTER_LOCALE;
+
+            if (!content.hasLocale(locale)) {
+                locale = content.getLocales().get(0);
+            }
+            for (String field : PARAMETER_FIELDS) {
+                String val = content.getStringValue(cms, field, locale);
+                if (N_CATEGORY.equals(field)) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
+                        result.setCategories(Arrays.asList(val.split(",")));
+                    } else {
+                        result.setCategories(Collections.<String> emptyList());
+                    }
+                } else {
+                    result.setParameterValue(field, val);
+                }
+            }
+            LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
+            for (I_CmsXmlContentValue parameter : content.getValues(N_PARAMETER, locale)) {
+                I_CmsXmlContentValue keyVal = content.getValue(parameter.getPath() + "/" + N_KEY, locale);
+                I_CmsXmlContentValue valueVal = content.getValue(parameter.getPath() + "/" + N_VALUE, locale);
+                if ((keyVal != null)
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(keyVal.getStringValue(cms))
+                    && (valueVal != null)) {
+                    parameters.put(keyVal.getStringValue(cms), valueVal.getStringValue(cms));
+                }
+            }
+            result.setAdditionalParameters(parameters);
+            List<String> displayTypes = new ArrayList<String>();
+            List<I_CmsXmlContentValue> typeValues = content.getValues(N_DISPLAY_TYPE, locale);
+            if (!typeValues.isEmpty()) {
+                for (I_CmsXmlContentValue value : typeValues) {
+                    displayTypes.add(value.getStringValue(cms));
+                }
+            }
+            result.setDisplayTypes(displayTypes);
+            List<String> folders = new ArrayList<String>();
+            List<I_CmsXmlContentValue> folderValues = content.getValues(N_SEARCH_FOLDER, locale);
+            if (!folderValues.isEmpty()) {
+                for (I_CmsXmlContentValue value : folderValues) {
+                    String val = value.getStringValue(cms);
+                    // we are using root paths
+                    folders.add(cms.getRequestContext().addSiteRoot(val));
+                }
+            }
+            result.setFolders(folders);
+            List<CmsUUID> blackList = new ArrayList<CmsUUID>();
+            List<I_CmsXmlContentValue> blacklistValues = content.getValues(N_BLACKLIST, locale);
+            if (!blacklistValues.isEmpty()) {
+                for (I_CmsXmlContentValue value : blacklistValues) {
+                    CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
+                    if (link != null) {
+                        blackList.add(link.getStructureId());
+                    }
+                }
+            }
+            result.setBlacklist(blackList);
+        } catch (CmsException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
@@ -1442,7 +1084,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_resultLayout.setFirstComponent(m_resultFacets);
         LinkedHashMap<CmsResourceTableProperty, Integer> tableColumns = new LinkedHashMap<CmsResourceTableProperty, Integer>();
         // insert columns a specific positions
-        for (Entry<CmsResourceTableProperty, Integer> columnsEntry : CmsFileTable.DEFAULT_TABLE_PROPERTIES.entrySet()) {
+        for (Map.Entry<CmsResourceTableProperty, Integer> columnsEntry : CmsFileTable.DEFAULT_TABLE_PROPERTIES.entrySet()) {
             if (columnsEntry.getKey().equals(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)) {
                 tableColumns.put(INFO_PROPERTY_LABEL, Integer.valueOf(0));
             } else if (columnsEntry.getKey().equals(CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE)) {
@@ -1486,7 +1128,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
                             CmsUUID structureId = context.getResources().get(0).getStructureId();
                             m_currentConfig.getBlacklist().add(structureId);
-                            saveContent(m_currentConfig, false, false);
+                            saveBlacklist(m_currentConfig);
                             context.finish(Collections.singletonList(structureId));
                         }
 
@@ -1525,7 +1167,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
                             CmsUUID structureId = context.getResources().get(0).getStructureId();
                             m_currentConfig.getBlacklist().remove(structureId);
-                            saveContent(m_currentConfig, false, false);
+                            saveBlacklist(m_currentConfig);
                             context.finish(Collections.singletonList(structureId));
                         }
 
@@ -1717,212 +1359,67 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     }
 
     /**
-     * Parses the list configuration resource.<p>
+     * Saves the blacklist from the bean in the current list configuration.<p>
      *
-     * @param res the list configuration resource
-     *
-     * @return the configuration data bean
+     * @param configBean the bean whose blacklist should be saved
      */
-    public ListConfigurationBean parseListConfiguration(CmsResource res) {
-
-        CmsObject cms = A_CmsUI.getCmsObject();
-        ListConfigurationBean result = new ListConfigurationBean();
-        try {
-            CmsFile configFile = cms.readFile(res);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-            Locale locale = CmsLocaleManager.MASTER_LOCALE;
-
-            if (!content.hasLocale(locale)) {
-                locale = content.getLocales().get(0);
-            }
-            for (String field : PARAMETER_FIELDS) {
-                String val = content.getStringValue(cms, field, locale);
-                if (N_CATEGORY.equals(field)) {
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
-                        result.setCategories(Arrays.asList(val.split(",")));
-                    } else {
-                        result.setCategories(Collections.<String> emptyList());
-                    }
-                } else {
-                    result.setParameterValue(field, val);
-                }
-            }
-            LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
-            for (I_CmsXmlContentValue parameter : content.getValues(N_PARAMETER, locale)) {
-                I_CmsXmlContentValue keyVal = content.getValue(parameter.getPath() + "/" + N_KEY, locale);
-                I_CmsXmlContentValue valueVal = content.getValue(parameter.getPath() + "/" + N_VALUE, locale);
-                if ((keyVal != null)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(keyVal.getStringValue(cms))
-                    && (valueVal != null)) {
-                    parameters.put(keyVal.getStringValue(cms), valueVal.getStringValue(cms));
-                }
-            }
-            result.setAdditionalParameters(parameters);
-            List<String> displayTypes = new ArrayList<String>();
-            List<I_CmsXmlContentValue> typeValues = content.getValues(N_DISPLAY_TYPE, locale);
-            if (!typeValues.isEmpty()) {
-                for (I_CmsXmlContentValue value : typeValues) {
-                    displayTypes.add(value.getStringValue(cms));
-                }
-            }
-            result.setDisplayTypes(displayTypes);
-            List<String> folders = new ArrayList<String>();
-            List<I_CmsXmlContentValue> folderValues = content.getValues(N_SEARCH_FOLDER, locale);
-            if (!folderValues.isEmpty()) {
-                for (I_CmsXmlContentValue value : folderValues) {
-                    String val = value.getStringValue(cms);
-                    // we are using root paths
-                    folders.add(cms.getRequestContext().addSiteRoot(val));
-                }
-            }
-            result.setFolders(folders);
-            List<CmsUUID> blackList = new ArrayList<CmsUUID>();
-            List<I_CmsXmlContentValue> blacklistValues = content.getValues(N_BLACKLIST, locale);
-            if (!blacklistValues.isEmpty()) {
-                for (I_CmsXmlContentValue value : blacklistValues) {
-                    CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
-                    if (link != null) {
-                        blackList.add(link.getStructureId());
-                    }
-                }
-            }
-            result.setBlacklist(blackList);
-        } catch (CmsException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    /**
-     * Saves the given list configuration data.<p>
-     *
-     * @param configBean the configuration data bean
-     * @param asNew <code>true</code> to create a new resource
-     */
-    public void saveContent(ListConfigurationBean configBean, boolean asNew) {
-
-        saveContent(configBean, asNew, true);
-    }
-
-    /**
-     * Saves the given list configuration data.<p>
-     *
-     * @param configBean the configuration data bean
-     * @param asNew <code>true</code> to create a new resource
-     * @param updateResult <code>true</code> to update the result view
-     */
-    public void saveContent(ListConfigurationBean configBean, boolean asNew, boolean updateResult) {
+    public void saveBlacklist(ListConfigurationBean configBean) {
 
         if (m_dialogWindow != null) {
             m_dialogWindow.close();
             m_dialogWindow = null;
         }
         CmsObject cms = A_CmsUI.getCmsObject();
-        if ((m_currentResource == null) || asNew) {
-            String contextPath;
-            List<String> folders = configBean.getFolders();
-            if (m_currentResource != null) {
-                contextPath = m_currentResource.getRootPath();
-                tryUnlockCurrent();
-            } else if (folders.isEmpty()) {
-                contextPath = cms.getRequestContext().getSiteRoot();
-            } else {
-                contextPath = folders.get(0);
-            }
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, contextPath);
-            CmsResourceTypeConfig typeConfig = configData.getResourceType(CmsListManager.RES_TYPE_LIST_CONFIG);
-            if (typeConfig != null) {
-                try {
-                    m_currentResource = typeConfig.createNewElement(cms, contextPath);
-                    m_lockAction = CmsLockUtil.ensureLock(cms, m_currentResource);
-                } catch (CmsException e) {
-                    CmsErrorDialog.showErrorDialog(e);
-                    return;
-                }
-            }
-        } else {
-            try {
-                m_lockAction = CmsLockUtil.ensureLock(cms, m_currentResource);
-            } catch (CmsException e) {
-                CmsErrorDialog.showErrorDialog(e);
-                return;
-            }
-        }
-        if (m_currentResource != null) {
-            try {
-                CmsFile configFile = cms.readFile(m_currentResource);
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-                // list configurations are single locale contents
-                Locale locale = CmsLocaleManager.MASTER_LOCALE;
-                content.removeLocale(locale);
-                content.addLocale(cms, locale);
-                for (Entry<String, String> fieldEntry : configBean.getParameters().entrySet()) {
-                    I_CmsXmlContentValue contentVal = content.getValue(fieldEntry.getKey(), locale);
-                    if (contentVal == null) {
-                        contentVal = content.addValue(cms, fieldEntry.getKey(), locale, 0);
-                    }
-                    contentVal.setStringValue(cms, fieldEntry.getValue());
-                }
-                int count = 0;
-                for (String type : configBean.getDisplayTypes()) {
-                    I_CmsXmlContentValue contentVal = content.getValue(N_DISPLAY_TYPE, locale, count);
-                    if (contentVal == null) {
-                        contentVal = content.addValue(cms, N_DISPLAY_TYPE, locale, count);
-                    }
-                    contentVal.setStringValue(cms, type);
-                    count++;
-                }
-                count = 0;
-                for (String folder : configBean.getFolders()) {
-                    I_CmsXmlContentValue contentVal = content.getValue(N_SEARCH_FOLDER, locale, count);
-                    if (contentVal == null) {
-                        contentVal = content.addValue(cms, N_SEARCH_FOLDER, locale, count);
-                    }
-                    contentVal.setStringValue(cms, folder);
-                    count++;
-                }
-                count = 0;
-                for (CmsUUID hiddenId : configBean.getBlacklist()) {
-                    CmsXmlVfsFileValue contentVal = (CmsXmlVfsFileValue)content.getValue(N_BLACKLIST, locale, count);
-                    if (contentVal == null) {
-                        contentVal = (CmsXmlVfsFileValue)content.addValue(cms, N_BLACKLIST, locale, count);
-                    }
-                    contentVal.setIdValue(cms, hiddenId);
-                    count++;
-                }
-                if (configBean.getAdditionalParameters() != null) {
-                    count = 0;
-                    for (Entry<String, String> paramEntry : configBean.getAdditionalParameters().entrySet()) {
-                        I_CmsXmlContentValue paramValue = content.addValue(cms, N_PARAMETER, locale, count);
 
-                        I_CmsXmlContentValue keyVal = content.getValue(paramValue.getPath() + "/" + N_KEY, locale);
-                        if (keyVal == null) {
-                            keyVal = content.addValue(cms, paramValue.getPath() + "/" + N_KEY, locale, 0);
-                        }
-                        keyVal.setStringValue(cms, paramEntry.getKey());
-                        I_CmsXmlContentValue valueVal = content.getValue(paramValue.getPath() + "/" + N_VALUE, locale);
-                        if (valueVal == null) {
-                            valueVal = content.addValue(cms, paramValue.getPath() + "/" + N_VALUE, locale, 0);
-                        }
-                        valueVal.setStringValue(cms, paramEntry.getValue());
-                        count++;
-                    }
-                }
-                configFile.setContents(content.marshal());
-                cms.writeFile(configFile);
-                if (m_lockAction.getChange().equals(LockChange.locked)) {
-                    CmsLockUtil.tryUnlock(cms, configFile);
-                }
-            } catch (CmsException e) {
-                e.printStackTrace();
-            }
-            m_currentConfig = configBean;
-            if (updateResult) {
-                Locale contentLocale = getContentLocale(configBean);
-                search(new SearchConfigParser(configBean, m_collapseItemSeries, contentLocale), m_currentResource);
-            }
+        try {
+            m_lockAction = CmsLockUtil.ensureLock(cms, m_currentResource);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+            return;
         }
 
+        try {
+            CmsFile configFile = cms.readFile(m_currentResource);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
+            // list configurations are single locale contents
+            Locale locale = CmsLocaleManager.MASTER_LOCALE;
+            int count = 0;
+            while (content.hasValue(N_BLACKLIST, locale)) {
+                content.removeValue(N_BLACKLIST, locale, 0);
+            }
+            for (CmsUUID hiddenId : configBean.getBlacklist()) {
+                CmsXmlVfsFileValue contentVal;
+                contentVal = (CmsXmlVfsFileValue)content.addValue(cms, N_BLACKLIST, locale, count);
+                contentVal.setIdValue(cms, hiddenId);
+                count++;
+            }
+            configFile.setContents(content.marshal());
+            cms.writeFile(configFile);
+            if (m_lockAction.getChange().equals(LockChange.locked)) {
+                CmsLockUtil.tryUnlock(cms, configFile);
+            }
+        } catch (CmsException e) {
+            e.printStackTrace();
+        }
+        m_currentConfig = configBean;
+    }
+
+    /**
+     * Execute a search with the given search configuration parser.<p>
+     *
+     * @param configParser the search configuration parser
+     * @param resource the current configuration resource
+     */
+    public void search(CmsSimpleSearchConfigurationParser configParser, CmsResource resource) {
+
+        m_currentResource = resource;
+        m_currentConfigParser = configParser;
+        resetContentLocale(configParser.getSearchLocale());
+        m_resetting = true;
+        m_resultSorter.setValue(m_currentConfig.getParameterValue(N_SORT_ORDER));
+        m_resetting = false;
+
+        search(null, null, null);
     }
 
     /**
@@ -1957,7 +1454,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         controller.getPagination().getState().setCurrentPage(1);
         if (fieldFacets != null) {
             Map<String, I_CmsSearchControllerFacetField> fieldFacetControllers = controller.getFieldFacets().getFieldFacetController();
-            for (Entry<String, List<String>> facetEntry : fieldFacets.entrySet()) {
+            for (Map.Entry<String, List<String>> facetEntry : fieldFacets.entrySet()) {
                 I_CmsSearchStateFacet state = fieldFacetControllers.get(facetEntry.getKey()).getState();
                 state.clearChecked();
                 for (String check : facetEntry.getValue()) {
@@ -1967,7 +1464,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
         if (rangeFacets != null) {
             Map<String, I_CmsSearchControllerFacetRange> rangeFacetControllers = controller.getRangeFacets().getRangeFacetController();
-            for (Entry<String, List<String>> facetEntry : rangeFacets.entrySet()) {
+            for (Map.Entry<String, List<String>> facetEntry : rangeFacets.entrySet()) {
                 I_CmsSearchStateFacet state = rangeFacetControllers.get(facetEntry.getKey()).getState();
                 state.clearChecked();
                 for (String check : facetEntry.getValue()) {
@@ -1983,24 +1480,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         controller.addQueryParts(query);
         executeSearch(controller, query);
-    }
-
-    /**
-     * Execute a search with the given search configuration parser.<p>
-     *
-     * @param configParser the search configuration parser
-     * @param resource the current configuration resource
-     */
-    public void search(SearchConfigParser configParser, CmsResource resource) {
-
-        m_currentResource = resource;
-        m_currentConfigParser = configParser;
-        resetContentLocale(configParser.getContentLocale());
-        m_resetting = true;
-        m_resultSorter.setValue(m_currentConfig.getParameterValue(N_SORT_ORDER));
-        m_resetting = false;
-
-        search(null, null, null);
     }
 
     /**
@@ -2047,7 +1526,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             try {
                 CmsUUID id = new CmsUUID(A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX));
                 CmsResource res = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                m_currentConfig = parseListConfiguration(res);
+                m_currentConfig = parseListConfiguration(A_CmsUI.getCmsObject(), res);
                 String localeString = A_CmsWorkplaceApp.getParamFromState(state, PARAM_LOCALE);
                 Locale locale;
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(localeString)) {
@@ -2055,7 +1534,13 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 } else {
                     locale = getContentLocale(m_currentConfig);
                 }
-                search(new SearchConfigParser(m_currentConfig, m_collapseItemSeries, locale), res);
+                //SearchConfigParser configParser = new SearchConfigParser(m_currentConfig, m_collapseItemSeries, locale);
+                CmsSimpleSearchConfigurationParser configParser = new CmsSimpleSearchConfigurationParser(
+                    cms,
+                    m_currentConfig,
+                    null);
+                setBackendSpecificOptions(configParser, locale);
+                search(configParser, res);
                 showOverview = false;
 
             } catch (Exception e) {
@@ -2091,7 +1576,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     void changeContentLocale(Locale contentLocale) {
 
         if (!m_resetting) {
-            m_currentConfigParser.setContentLocale(contentLocale);
+            m_currentConfigParser.setSearchLocale(contentLocale);
         }
         m_resultTable.setContentLocale(contentLocale);
         search(null, null, null);
@@ -2151,7 +1636,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         state = A_CmsWorkplaceApp.addParamToState(
             state,
             PARAM_LOCALE,
-            m_currentConfigParser.getContentLocale().toString());
+            m_currentConfigParser.getSearchLocale().toString());
         CmsAppWorkplaceUi.get().changeCurrentAppState(state);
         if (m_isOverView) {
             enableOverviewMode(false);
@@ -2549,5 +2034,18 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_resetting = true;
         m_textSearch.clear();
         m_resetting = false;
+    }
+
+    /**
+     * Sets options which are specific to the backend list manager on the cnofiguration parser.<p>
+     *
+     * @param configParser the configuration parser
+     * @param locale the search locale
+     */
+    private void setBackendSpecificOptions(CmsSimpleSearchConfigurationParser configParser, Locale locale) {
+
+        configParser.setSearchLocale(locale);
+        configParser.setIgnoreBlacklist(true);
+        configParser.setPagination(PAGINATION);
     }
 }

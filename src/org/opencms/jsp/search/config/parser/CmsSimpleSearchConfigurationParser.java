@@ -28,7 +28,6 @@
 package org.opencms.jsp.search.config.parser;
 
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
@@ -36,18 +35,17 @@ import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet.SortOrder;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.relations.CmsLink;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.ui.apps.lists.CmsListManager;
-import org.opencms.util.CmsFileUtil;
+import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
-import org.opencms.xml.types.CmsXmlVfsFileValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,6 +54,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import com.google.common.collect.Lists;
 
 /**
  * Search configuration parser using a list configuration file as the base configuration with additional JSON.<p>
@@ -154,27 +154,89 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
     }
 
+    private I_CmsSearchConfigurationPagination m_pagination;
+
     /** The current cms context. */
     private CmsObject m_cms;
 
-    /** The list configuration content. */
-    private CmsXmlContent m_content;
+    /** The list configuration bean. */
+    private ListConfigurationBean m_config;
+
+    /** The (mutable) search locale. */
+    private Locale m_searchLocale;
+
+    /** The (mutable) sort order. */
+    private CmsSimpleSearchConfigurationParser.SortOption m_sortOrder;
+
+    private boolean m_ignoreBlacklist;
 
     /**
      * Constructor.<p>
      *
      * @param cms the cms context
-     * @param content the list configuration content
+     * @param config the list configuration
      * @param additionalParamJSON the additional JSON configuration
      *
      * @throws JSONException in case parsing the JSON fails
      */
-    public CmsSimpleSearchConfigurationParser(CmsObject cms, CmsXmlContent content, String additionalParamJSON)
+    public CmsSimpleSearchConfigurationParser(
+        CmsObject cms,
+        CmsListManager.ListConfigurationBean config,
+        String additionalParamJSON)
     throws JSONException {
         super(CmsStringUtil.isEmptyOrWhitespaceOnly(additionalParamJSON) ? "{}" : additionalParamJSON);
         m_cms = cms;
-        m_content = content;
+        m_config = config;
+    }
 
+    /**
+     * Creates an instance for an empty JSON configuration.<p>
+     *
+     * The point of this is that we know that passing an empty configuration makes it impossible
+     * for a JSONException to thrown.
+     *
+     * @param cms the current CMS context
+     * @param config  the search configuration
+     *
+     * @return the search config parser
+     */
+    public static CmsSimpleSearchConfigurationParser createInstanceWithNoJsonConfig(
+        CmsObject cms,
+        CmsListManager.ListConfigurationBean config) {
+
+        try {
+            return new CmsSimpleSearchConfigurationParser(cms, config, null);
+
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the initial SOLR query.<p>
+     *
+     * @return the SOLR query
+     */
+    public CmsSolrQuery getInitialQuery() {
+
+        Map<String, String[]> queryParams = new HashMap<String, String[]>();
+        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject() && m_config.isShowExpired()) {
+            queryParams.put("fq", new String[] {"released:[* TO *]", "expired:[* TO *]"});
+        }
+        return new CmsSolrQuery(null, queryParams);
+    }
+
+    /**
+     * Gets the search locale.<p>
+     *
+     * @return the search locale
+     */
+    public Locale getSearchLocale() {
+
+        if (m_searchLocale != null) {
+            return m_searchLocale;
+        }
+        return m_cms.getRequestContext().getLocale();
     }
 
     /**
@@ -186,13 +248,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (m_configObject.has(JSON_KEY_FIELD_FACETS)) {
             return super.parseFieldFacets();
         } else {
-            I_CmsXmlContentValue categoryConjunctionVal = m_content.getValue(
-                CmsListManager.N_CATEGORY_CONJUNCTION,
-                CmsLocaleManager.MASTER_LOCALE);
-            return getDefaultFieldFacets(
-                ((categoryConjunctionVal != null)
-                    && Boolean.parseBoolean(categoryConjunctionVal.getStringValue(m_cms))));
+            return getDefaultFieldFacets(m_config.getCategoryConjunction());
         }
+    }
+
+    @Override
+    public I_CmsSearchConfigurationPagination parsePagination() {
+
+        if (m_pagination != null) {
+            return m_pagination;
+        }
+        return super.parsePagination();
     }
 
     /**
@@ -206,7 +272,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         } else {
             Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
-                String.format(CmsListManager.FIELD_DATE, m_cms.getRequestContext().getLocale().toString()),
+                String.format(CmsListManager.FIELD_DATE, getSearchLocale().toString()),
                 "NOW/YEAR-20YEARS",
                 "NOW/MONTH+2YEARS",
                 "+1MONTHS",
@@ -221,6 +287,46 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
             rangeFacets.put(rangeFacet.getName(), rangeFacet);
             return rangeFacets;
+        }
+    }
+
+    public void setIgnoreBlacklist(boolean ignoreBlacklist) {
+
+        m_ignoreBlacklist = ignoreBlacklist;
+    }
+
+    public void setPagination(I_CmsSearchConfigurationPagination pagination) {
+
+        m_pagination = pagination;
+    }
+
+    /**
+     * Sets the search locale.<p>
+     *
+     * @param locale the search locale
+     */
+    public void setSearchLocale(Locale locale) {
+
+        m_searchLocale = locale;
+    }
+
+    /**
+     * Sets the sort option.<p>
+     *
+     * @param sortOption the sort option
+     */
+    public void setSortOption(String sortOption) {
+
+        if (null != sortOption) {
+            try {
+                m_sortOrder = CmsSimpleSearchConfigurationParser.SortOption.valueOf(sortOption);
+            } catch (IllegalArgumentException e) {
+                m_sortOrder = null;
+                LOG.warn(
+                    "Setting illegal default sort option " + sortOption + " failed. Using Solr's default sort option.");
+            }
+        } else {
+            m_sortOrder = null;
         }
     }
 
@@ -281,9 +387,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String modifier = super.getQueryModifier();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(modifier)) {
-            modifier = "{!type=edismax qf=\"content_"
-                + m_cms.getRequestContext().getLocale().toString()
-                + " Title_prop spell\"}%(query)";
+            modifier = "{!type=edismax qf=\"content_" + getSearchLocale().toString() + " Title_prop spell\"}%(query)";
         }
         return modifier;
     }
@@ -311,13 +415,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             return super.getSortOptions();
         } else {
             List<I_CmsSearchConfigurationSortOption> options = new LinkedList<I_CmsSearchConfigurationSortOption>();
-            SortOption currentOption = SortOption.valueOf(
-                m_content.getValue(CmsListManager.N_SORT_ORDER, CmsLocaleManager.MASTER_LOCALE).getStringValue(m_cms));
-            Locale locale = m_cms.getRequestContext().getLocale();
+
+            CmsSimpleSearchConfigurationParser.SortOption currentOption = CmsSimpleSearchConfigurationParser.SortOption.valueOf(
+                m_config.getSortOrder());
+            if (m_sortOrder != null) {
+                currentOption = m_sortOrder;
+            }
+            Locale locale = getSearchLocale();
             options.add(currentOption.getOption(locale));
-            SortOption[] sortOptions = SortOption.values();
+            CmsSimpleSearchConfigurationParser.SortOption[] sortOptions = CmsSimpleSearchConfigurationParser.SortOption.values();
             for (int i = 0; i < sortOptions.length; i++) {
-                SortOption option = sortOptions[i];
+                CmsSimpleSearchConfigurationParser.SortOption option = sortOptions[i];
                 if (!Objects.equals(currentOption, option)) {
                     options.add(option.getOption(locale));
                 }
@@ -333,22 +441,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     String getBlacklistFilter() {
 
-        String result = "";
-        boolean first = true;
-        List<I_CmsXmlContentValue> balckListValues = m_content.getValues(
-            CmsListManager.N_BLACKLIST,
-            CmsLocaleManager.MASTER_LOCALE);
-        if (!balckListValues.isEmpty()) {
-            for (I_CmsXmlContentValue value : balckListValues) {
-                if (!first) {
-                    result += " OR ";
-                }
-                result += "\"" + m_cms.getRequestContext().addSiteRoot(value.getStringValue(m_cms)) + "\"";
-                first = false;
-            }
+        if (m_ignoreBlacklist) {
+            return "";
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
-            result = "&fq=-path:(" + result + ")";
+        String result = "";
+        List<CmsUUID> blacklist = m_config.getBlacklist();
+        List<String> blacklistStrings = Lists.newArrayList();
+        for (CmsUUID id : blacklist) {
+            blacklistStrings.add("\"" + id.toString() + "\"");
+        }
+        if (!blacklistStrings.isEmpty()) {
+            result = "&fq=-id:(" + CmsStringUtil.listAsString(blacklistStrings, " OR ") + ")";
         }
         return result;
     }
@@ -361,16 +464,10 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getCategoryFilter() {
 
         String categories = "";
-        I_CmsXmlContentValue categoriesVal = m_content.getValue(
-            CmsListManager.N_CATEGORY,
-            CmsLocaleManager.MASTER_LOCALE);
-        if (categoriesVal != null) {
-            categories = categoriesVal.getStringValue(m_cms);
-        }
         String result = "";
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categories)) {
+        if (!m_config.getCategories().isEmpty()) {
             result = "&fq=category_exact:(";
-            for (String path : categories.split(",")) {
+            for (String path : m_config.getCategories()) {
                 try {
                     path = CmsCategoryService.getInstance().getCategory(
                         m_cms,
@@ -394,23 +491,12 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     String getFilterQuery() {
 
-        String result = "";
-        I_CmsXmlContentValue filterVal = m_content.getValue(
-            CmsListManager.N_FILTER_QUERY,
-            CmsLocaleManager.MASTER_LOCALE);
-        if (filterVal != null) {
-            result = filterVal.getStringValue(m_cms);
-        }
+        String result = m_config.getFilterQuery();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !result.startsWith("&")) {
             result = "&" + result;
         }
-        I_CmsXmlContentValue currentOnlyVal = m_content.getValue(
-            CmsListManager.N_CURRENT_ONLY,
-            CmsLocaleManager.MASTER_LOCALE);
-        if (((currentOnlyVal != null) && Boolean.parseBoolean(currentOnlyVal.getStringValue(m_cms)))) {
-            result += "&fq=instancedatecurrenttill_"
-                + m_cms.getRequestContext().getLocale().toString()
-                + "_dt:[NOW/DAY TO *]";
+        if (m_config.isCurrentOnly()) {
+            result += "&fq=instancedatecurrenttill_" + getSearchLocale().toString() + "_dt:[NOW/DAY TO *]";
         }
         return result;
     }
@@ -423,26 +509,16 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getFolderFilter() {
 
         String result = "";
-        boolean first = true;
-        List<I_CmsXmlContentValue> folderValues = m_content.getValues(
-            CmsListManager.N_SEARCH_FOLDER,
-            CmsLocaleManager.MASTER_LOCALE);
-        if (!folderValues.isEmpty()) {
-            for (I_CmsXmlContentValue value : folderValues) {
-                if (!first) {
-                    result += " OR ";
-                }
-                CmsLink link = ((CmsXmlVfsFileValue)value).getLink(m_cms);
-                if (null != link) {
-                    result += "\"" + CmsFileUtil.normalizePath(link.getSiteRoot() + link.getSitePath()) + "\"";
-                    first = false;
-                }
+        List<String> parentFolderVals = Lists.newArrayList();
+        if (!m_config.getFolders().isEmpty()) {
+            for (String value : m_config.getFolders()) {
+                parentFolderVals.add("\"" + value + "\"");
             }
         }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+        if (parentFolderVals.isEmpty()) {
             result = "fq=parent-folders:(\"/\")";
         } else {
-            result = "fq=parent-folders:(" + result + ")";
+            result = "fq=parent-folders:(" + CmsStringUtil.listAsString(parentFolderVals, " OR ") + ")";
         }
         return result;
     }
@@ -455,25 +531,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getResourceTypeFilter() {
 
         String result = "";
-        boolean first = true;
-        List<I_CmsXmlContentValue> typeValues = m_content.getValues(
-            CmsListManager.N_DISPLAY_TYPE,
-            CmsLocaleManager.MASTER_LOCALE);
-        if (!typeValues.isEmpty()) {
-            for (I_CmsXmlContentValue value : typeValues) {
-                if (!first) {
-                    result += " OR ";
+        List<String> typeVals = Lists.newArrayList();
+        if (!m_config.getDisplayTypes().isEmpty()) {
+            for (String displayType : m_config.getDisplayTypes()) {
+                if (displayType.contains(CmsXmlDisplayFormatterValue.SEPARATOR)) {
+                    displayType = displayType.substring(0, displayType.indexOf(CmsXmlDisplayFormatterValue.SEPARATOR));
                 }
-                String type = value.getStringValue(m_cms);
-                if (type.contains(CmsXmlDisplayFormatterValue.SEPARATOR)) {
-                    type = type.substring(0, type.indexOf(CmsXmlDisplayFormatterValue.SEPARATOR));
-                }
-                result += "\"" + type + "\"";
-                first = false;
+                typeVals.add("\"" + displayType + "\"");
             }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
-            result = "&fq=type:(" + result + ")";
+        if (!typeVals.isEmpty()) {
+            result = "&fq=type:(" + CmsStringUtil.listAsString(typeVals, " OR ") + ")";
         }
         return result;
     }
@@ -524,12 +592,6 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     private Boolean getIgnoreReleaseAndExpiration() {
 
-        I_CmsXmlContentValue expiredVal = m_content.getValue(
-            CmsListManager.N_SHOW_EXPIRED,
-            CmsLocaleManager.MASTER_LOCALE);
-        if ((expiredVal != null) && Boolean.parseBoolean(expiredVal.getStringValue(m_cms))) {
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+        return Boolean.valueOf(m_config.isShowExpired());
     }
 }
