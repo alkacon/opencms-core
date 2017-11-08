@@ -502,6 +502,10 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
 
         m_widgetType = type;
         m_principalTypeSelect.setVisible(m_widgetType.equals(WidgetType.principalwidget));
+        m_principalTypeSelect.setValue(
+            m_widgetType.equals(WidgetType.groupwidget)
+            ? I_CmsPrincipal.PRINCIPAL_GROUP
+            : I_CmsPrincipal.PRINCIPAL_USER);
     }
 
     /**

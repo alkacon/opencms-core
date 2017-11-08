@@ -240,7 +240,6 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     public void deletePermissionSet(String principalType, String principalName) {
 
         CmsPermissionBean bean = new CmsPermissionBean(principalType, principalName);
-        System.out.println("Delete: " + principalName + ", " + principalType);
         m_permissionToChange.remove(bean);
         m_permissionToChange.add(bean);
         refreshOwnEntries();
@@ -293,7 +292,6 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
                     }
                     bean = new CmsPermissionBean(principalType, principalName, permissionString);
                 }
-                System.out.println("Set: " + bean.getPrincipalName() + ", " + bean.getPrincipalType());
                 m_permissionToChange.remove(bean);
                 m_permissionToChange.add(bean);
                 refreshOwnEntries();
