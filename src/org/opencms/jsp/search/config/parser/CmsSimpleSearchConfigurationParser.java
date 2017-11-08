@@ -154,6 +154,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
     }
 
+    /** Pagination which may override the default pagination. */
     private I_CmsSearchConfigurationPagination m_pagination;
 
     /** The current cms context. */
@@ -168,6 +169,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     /** The (mutable) sort order. */
     private CmsSimpleSearchConfigurationParser.SortOption m_sortOrder;
 
+    /** Flag which, if true, causes the search to ignore the blacklist. */
     private boolean m_ignoreBlacklist;
 
     /**
@@ -252,6 +254,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
     }
 
+    /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#parsePagination()
+     */
     @Override
     public I_CmsSearchConfigurationPagination parsePagination() {
 
@@ -290,11 +295,25 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
     }
 
+    /**
+     * Sets the 'ignore blacklist' flag.<p>
+     *
+     * If set, the search will ignore the blacklist from the list configuration.<p>
+     *
+     * @param ignoreBlacklist true if the blacklist should be ignored
+     */
     public void setIgnoreBlacklist(boolean ignoreBlacklist) {
 
         m_ignoreBlacklist = ignoreBlacklist;
     }
 
+    /**
+     * Sets the pagination.<p>
+     *
+     * If this is set, parsePagination will always return the set value instead of using the default way to compute the pagination
+     *
+     * @param pagination the pagination
+     */
     public void setPagination(I_CmsSearchConfigurationPagination pagination) {
 
         m_pagination = pagination;
