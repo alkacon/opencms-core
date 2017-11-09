@@ -62,7 +62,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /**
      * Handles the principal selection.<p>
      */
-    public interface PrincipalSelectHandler {
+    public interface I_PrincipalSelectHandler {
 
         /**
          * Called to select a principal.<p>
@@ -96,7 +96,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     private ComboBox m_principalTypeSelect;
 
     /** The principal select handler. */
-    private PrincipalSelectHandler m_selectHandler;
+    private I_PrincipalSelectHandler m_selectHandler;
 
     /** The open principal select dialog button. */
     private Button m_selectPrincipalButton;
@@ -480,7 +480,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
      *
      * @param selectHandler the principal select handler
      */
-    public void setSelectHandler(PrincipalSelectHandler selectHandler) {
+    public void setSelectHandler(I_PrincipalSelectHandler selectHandler) {
 
         m_selectHandler = selectHandler;
         enableSetButton(m_selectHandler != null);
@@ -559,7 +559,6 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
      * @param type the principal type
      * @param principalName the principal name
      */
-    @SuppressWarnings("incomplete-switch")
     protected void setPrincipal(int type, String principalName) {
 
         m_principalName.setValue(principalName);
@@ -570,6 +569,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
                 typeName = I_CmsPrincipal.PRINCIPAL_GROUP;
                 break;
             case 1:
+            default:
                 typeName = I_CmsPrincipal.PRINCIPAL_USER;
                 break;
         }
@@ -619,7 +619,6 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
                 org.opencms.workplace.commons.Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));
         m_window.setContent(dialog);
         A_CmsUI.get().addWindow(m_window);
-        CmsPrincipalSelectExtension.getInstance().setCurrentSelect(this);
     }
 
     /**

@@ -73,6 +73,13 @@ public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector imple
     }-*/;
 
     /**
+     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#setPrincipal(java.lang.String)
+     */
+    public native void setPrincipal(String principal)/*-{
+        $wnd.connector.setPrincipal(principal);
+    }-*/;
+
+    /**
      * @see com.vaadin.client.extensions.AbstractExtensionConnector#extend(com.vaadin.client.ServerConnector)
      */
     @Override

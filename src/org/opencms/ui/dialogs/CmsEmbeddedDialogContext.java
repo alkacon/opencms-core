@@ -252,6 +252,16 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * Sets the principal.<p>
+     *
+     * @param principalName the principal name
+     */
+    public void setPrincipal(String principalName) {
+
+        getClientRPC().setPrincipal(principalName);
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#setWindow(com.vaadin.ui.Window)
      */
     public void setWindow(Window window) {

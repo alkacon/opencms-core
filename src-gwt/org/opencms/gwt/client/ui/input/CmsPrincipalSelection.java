@@ -27,91 +27,57 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsPrincipalSelectHandler;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
+import org.opencms.gwt.shared.CmsLinkBean;
+import org.opencms.util.CmsStringUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Optional;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * Basic group selection.<p>
+ * Basic gallery widget for forms.<p>
  *
  * @since 8.0.0
  *
  */
-public class CmsGroupSelection extends Composite
+public class CmsPrincipalSelection extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
-
-    /**
-     * Event preview handler.<p>
-     *
-     * To be used while popup open.<p>
-     */
-    protected class CloseEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-                    break;
-                case Event.ONMOUSEDOWN:
-                    break;
-                case Event.ONKEYUP:
-                    openNative(buildGalleryUrl(), m_title);
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
-    }
 
     /** A counter used for giving text box widgets ids. */
     private static int idCounter;
 
+    /** The dialog id. */
+    public static final String DIALOG_ID = "principleselect";
+
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "groupselection";
-
-    /** The fade panel. */
-    protected Panel m_fadePanel = new SimplePanel();
 
     /** The old value. */
     protected String m_oldValue = "";
 
+    /** The popup frame. */
+    protected CmsFramePopup m_popup;
+
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
-
-    /** The popup title. */
-    protected String m_title = org.opencms.gwt.client.Messages.get().key(
-        org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
 
     /** The default rows set. */
     int m_defaultRows;
@@ -122,45 +88,47 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The container for the text area. */
     CmsSelectionInput m_selectionInput;
 
-    /** The internal text area widget used by this widget. */
-    TextBox m_textBox;
-
-    /** The container for the text area. */
-    FlowPanel m_textBoxContainer = new FlowPanel();
+    /** The configuration parameters. */
+    private Map<String, String> m_configuration;
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
-    /** The flag parameter. */
-    private Integer m_flags;
-
-    /** The id for the windows. */
+    /** The field id. */
     private String m_id;
 
-    /** The button to to open the selection. */
-    private CmsPushButton m_openSelection;
-
-    /** The ou parameter. */
-    private String m_ouFqn;
-
-    /** The user parameter. */
-    private String m_userName;
-
     /**
-     * Constructor.<p>
-     *
-     * @param iconImage the image of the icon shown in the
-    
+     * VsfSelection widget to open the gallery selection.<p>
+     * @param config the configuration for this widget
      */
-    public CmsGroupSelection(String iconImage) {
+    public CmsPrincipalSelection(String config) {
 
         initWidget(m_panel);
-        m_selectionInput = new CmsSelectionInput(iconImage);
-        m_id = "CmsGroupSelection_" + (idCounter++);
+        parseConfiguration(config);
+        m_selectionInput = new CmsSelectionInput(null);
+        m_id = "CmsVfsSelection_" + (idCounter++);
         m_selectionInput.m_textbox.getElement().setId(m_id);
+
         m_panel.add(m_selectionInput);
         m_panel.add(m_error);
 
+        m_selectionInput.m_textbox.addMouseUpHandler(new MouseUpHandler() {
+
+            public void onMouseUp(MouseUpEvent event) {
+
+                m_selectionInput.hideFader();
+                setTitle("");
+                if (m_popup == null) {
+                    open();
+                } else if (m_popup.isShowing()) {
+                    close();
+                } else {
+                    open();
+                }
+
+            }
+
+        });
         m_selectionInput.m_textbox.addBlurHandler(new BlurHandler() {
 
             public void onBlur(BlurEvent event) {
@@ -172,16 +140,19 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
                 m_selectionInput.showFader();
             }
         });
-
         m_selectionInput.setOpenCommand(new Command() {
 
             public void execute() {
 
-                setTitle("");
+                if (m_popup == null) {
+                    open();
+                } else if (m_popup.isShowing()) {
+                    close();
+                } else {
+                    open();
+                }
 
-                openNative(buildGalleryUrl(), m_title);
             }
-
         });
     }
 
@@ -198,7 +169,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
-                return new CmsGroupSelection(null);
+                return new CmsPrincipalSelection("type=groupwidget");
             }
         });
     }
@@ -247,13 +218,27 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
+     * Returns the selected link as a bean.<p>
+     *
+     * @return the selected link as a bean
+     */
+    public CmsLinkBean getLinkBean() {
+
+        String link = m_selectionInput.m_textbox.getValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
+            return null;
+        }
+        return new CmsLinkBean(m_selectionInput.m_textbox.getText(), true);
+    }
+
+    /**
      * Returns the text contained in the text area.<p>
      *
      * @return the text in the text area
      */
     public String getText() {
 
-        return getFormValueAsString();
+        return m_selectionInput.m_textbox.getValue();
     }
 
     /**
@@ -333,6 +318,19 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
+     * Sets the link from a bean.<p>
+     *
+     * @param link the link bean
+     */
+    public void setLinkBean(CmsLinkBean link) {
+
+        if (link == null) {
+            link = new CmsLinkBean("", true);
+        }
+        m_selectionInput.m_textbox.setValue(link.getLink());
+    }
+
+    /**
      * Sets the name of the input field.<p>
      *
      * @param name of the input field
@@ -344,28 +342,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
-     * Sets the parameters for the popup.<p>
-     *
-     * @param flags the flaq parameter
-     * @param ouFqn the ouFqn parameter
-     * @param userName the user Name parameter
-     *
-     * */
-    public void setParameter(Integer flags, String ouFqn, String userName) {
-
-        m_flags = flags;
-        m_ouFqn = ouFqn;
-        m_userName = userName;
-    }
-
-    /**
      * Sets the text in the text area.<p>
      *
      * @param text the new text
      */
     public void setText(String text) {
 
-        setFormValueAsString(text);
+        m_selectionInput.m_textbox.setValue(text);
     }
 
     /**
@@ -378,55 +361,47 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
-     * Creates the URL for the gallery dialog IFrame.<p>
-     *
-     * @return the URL for the gallery dialog IFrame
-     */
-    protected String buildGalleryUrl() {
+     * Close the popup of this widget.<p>
+     * */
+    protected void close() {
 
-        String basePath = "";
-
-        basePath = "/system/workplace/commons/group_selection.jsp?type=groupwidget&fieldid=" + m_id;
-
-        if (m_flags != null) {
-            basePath += "&flags=" + m_flags;
-
-        }
-        if (m_userName != null) {
-            basePath += "&user=" + m_userName;
-        }
-        if (m_ouFqn != null) {
-            basePath += "&oufqn=" + m_ouFqn;
-        }
-
-        return CmsCoreProvider.get().link(basePath);
+        m_popup.hideDelayed();
+        m_selectionInput.m_textbox.setFocus(true);
+        m_selectionInput.m_textbox.setCursorPos(m_selectionInput.m_textbox.getText().length());
     }
 
     /**
-     * Opens the Group selection.
-     *
-     * @param url the url of the popup
-     * @param title the title of the popup
+     * Opens the popup of this widget.<p>
      * */
-    native void openNative(String url, String title) /*-{
-        $wnd
-                .open(
-                        url,
-                        title,
-                        'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
-        var self = this;
-        $wnd.setGroupFormValue = function(value) {
-            self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
-        };
-    }-*/;
+    protected void open() {
+
+        m_oldValue = m_selectionInput.m_textbox.getValue();
+        CmsEmbeddedDialogHandler handler = new CmsEmbeddedDialogHandler();
+        handler.setPrincipleSelectHandler(new I_CmsPrincipalSelectHandler() {
+
+            public void selectPrincipal(String principle) {
+
+                setFormValueAsString(principle);
+            }
+        });
+        handler.openDialog(DIALOG_ID, null, null, m_configuration);
+    }
 
     /**
-     * Sets the widget value and fires the change event if necessary.<p>
+     * Parses the configuration string.<p>
      *
-     * @param value the value to set
+     * @param config the configuration string
      */
-    private void setValueFromNative(String value) {
+    private void parseConfiguration(String config) {
 
-        m_selectionInput.m_textbox.setValue(value, true);
+        m_configuration = new HashMap<String, String>();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
+            for (String param : config.split(",")) {
+                int index = param.indexOf("=");
+                if ((index > 0) && (param.length() > (index + 1))) {
+                    m_configuration.put(param.substring(0, index - 1), param.substring(index + 1));
+                }
+            }
+        }
     }
 }

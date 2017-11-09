@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelectDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
@@ -158,7 +160,7 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        return getConfiguration();
+        return CmsPrincipalSelectDialog.PARAM_TYPE + "=" + CmsPrincipalSelect.WidgetType.groupwidget.name();
     }
 
     /**
@@ -312,7 +314,7 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public String getWidgetName() {
 
-        return CmsGroupWidget.class.getName();
+        return CmsPrincipalWidget.class.getName();
     }
 
     /**

@@ -43,10 +43,13 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.I_PrincipalSelectHandler;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -73,6 +76,21 @@ import com.vaadin.ui.themes.ValoTheme;
  * Class for the dialog to show the principal table.<p>
  */
 public class CmsPrincipalSelectDialog extends CmsBasicDialog {
+
+    /** Parameter key OU. */
+    public static String PARAM_OU = "ou";
+
+    /** Parameter key widget type. */
+    public static String PARAM_TYPE = "type";
+
+    /** Parameter key start view type. */
+    public static String PARAM_START_TYPE = "starttype";
+
+    /** Parameter key real groups only. */
+    public static String PARAM_REAL_ONLY = "realonly";
+
+    /** The dialog id. */
+    public static final String DIALOG_ID = "principleselect";
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4650407086145654695L;
@@ -122,11 +140,14 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     /**Vaadin component.*/
     private ComboBox m_ouCombo;
 
+    /** The principal select handler. */
+    private I_PrincipalSelectHandler m_selectHandler;
+
     /**
      * public constructor.<p>
      *
      * @param cmsPrincipalSelect calling vaadin component
-     * @param ou ou
+     * @param ou the current OU
      * @param window window to be closed after finishing
      * @param widgetType type of principal to be shown
      * @param realOnly true, only show real principals
@@ -247,14 +268,91 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     }
 
     /**
+     * Opens the principal select dialog within an embedded dialog context.<p>
+     *
+     * @param dialogContext the dialog context
+     * @param params the request parameters
+     */
+    public static void openEmbeddedDialog(final CmsEmbeddedDialogContext dialogContext, Map<String, String[]> params) {
+
+        String[] param = params.get(PARAM_OU);
+        String ou;
+        if ((param != null) && (param.length >= 1)) {
+            ou = param[0];
+        } else {
+            ou = dialogContext.getCms().getRequestContext().getCurrentUser().getOuFqn();
+        }
+        boolean realOnly;
+        param = params.get(PARAM_REAL_ONLY);
+        if ((param != null) && (param.length >= 1)) {
+            realOnly = Boolean.parseBoolean(param[0]);
+        } else {
+            realOnly = true;
+        }
+        WidgetType type = WidgetType.groupwidget;
+        param = params.get(PARAM_TYPE);
+        if ((param != null) && (param.length >= 1)) {
+            try {
+                type = WidgetType.valueOf(param[0]);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        WidgetType startType = null;
+        param = params.get(PARAM_START_TYPE);
+        if ((param != null) && (param.length >= 1)) {
+            try {
+                startType = WidgetType.valueOf(param[0]);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        if (startType == null) {
+            startType = type != WidgetType.principalwidget ? type : WidgetType.groupwidget;
+        }
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+        dialogContext.setWindow(window);
+        CmsPrincipalSelectDialog dialog = new CmsPrincipalSelectDialog(null, ou, window, type, realOnly, startType);
+        dialog.setSelectHandler(new I_PrincipalSelectHandler() {
+
+            public void onPrincipalSelect(String principalType, String principalName) {
+
+                dialogContext.setPrincipal(principalName);
+            }
+        });
+        window.setCaption(
+            CmsVaadinUtils.getMessageText(
+                org.opencms.workplace.commons.Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));
+        window.setContent(dialog);
+        A_CmsUI.get().addWindow(window);
+    }
+
+    /**
      * Selects a principal and closes the dialog.<p>
      *
      * @param value the principal which was clicked
      */
     public void select(I_CmsPrincipal value) {
 
-        m_selectField.handlePrincipal(value);
+        if (m_selectField != null) {
+            m_selectField.handlePrincipal(value);
+        }
+        if (m_selectHandler != null) {
+            m_selectHandler.onPrincipalSelect(
+                value.isGroup() ? I_CmsPrincipal.PRINCIPAL_GROUP : I_CmsPrincipal.PRINCIPAL_USER,
+                value.getName());
+        }
         m_closeButton.click();
+    }
+
+    /**
+     * Sets the principal select handler.<p>
+     *
+     * @param selectHandler the principal select handler
+     */
+    public void setSelectHandler(I_PrincipalSelectHandler selectHandler) {
+
+        m_selectHandler = selectHandler;
     }
 
     /**

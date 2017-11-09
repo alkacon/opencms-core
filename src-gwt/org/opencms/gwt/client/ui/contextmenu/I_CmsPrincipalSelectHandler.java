@@ -25,46 +25,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
-
-import com.vaadin.shared.communication.ClientRpc;
+package org.opencms.gwt.client.ui.contextmenu;
 
 /**
- * Client RPC to handle embedded dialogs.<p>
+ * Principal select handler interface.<p>
  */
-public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
+public interface I_CmsPrincipalSelectHandler {
 
     /**
-     * Removes the dialog iFrame and refreshes the given resources.<p>
+     * Sets the principal value.<p>
      *
-     * @param resourceIds the resources to refresh
+     * @param principal the principal
      */
-    void finish(String resourceIds);
-
-    /**
-     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
-     *
-     * @param sitePath the site path
-     * @param serverLink the server link
-     */
-    void finishForProjectOrSiteChange(String sitePath, String serverLink);
-
-    /**
-     * Leaves the current page calling the given URI.<p>
-     *
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
-
-    /**
-     * Reloads the parent window.<p>
-     */
-    void reloadParent();
-
-    /**
-     * Sets the selected principle.<p>
-     *
-     * @param principle the principle
-     */
-    void setPrincipal(String principle);
+    void selectPrincipal(String principal);
 }

@@ -42,6 +42,7 @@ import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelectDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -117,52 +118,58 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
         String errorMessage = null;
         try {
             OpenCms.getRoleManager().checkRole(getCmsObject(), CmsRole.ELEMENT_AUTHOR);
-            try {
-                String resources = request.getParameter("resources");
-                List<CmsResource> resourceList;
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resources)) {
-                    resourceList = new ArrayList<CmsResource>();
-                    String[] resIds = resources.split(";");
-                    for (int i = 0; i < resIds.length; i++) {
-                        if (CmsUUID.isValidUUID(resIds[i])) {
-                            resourceList.add(
-                                getCmsObject().readResource(
-                                    new CmsUUID(resIds[i]),
-                                    CmsResourceFilter.IGNORE_EXPIRATION));
-                        }
-
-                    }
-                } else {
-                    resourceList = Collections.<CmsResource> emptyList();
-                }
-                String typeParam = request.getParameter("contextType");
-
-                ContextType type;
-                String appId = "";
+            if (CmsPrincipalSelectDialog.DIALOG_ID.equals(getDialogId(request))) {
+                //TODO implement a generic way to open dialogs other than workplace actions
+                m_currentContext = new CmsEmbeddedDialogContext(CmsPrincipalSelectDialog.DIALOG_ID, null, null);
+                CmsPrincipalSelectDialog.openEmbeddedDialog(m_currentContext, request.getParameterMap());
+            } else {
                 try {
-                    type = ContextType.valueOf(typeParam);
-                    if (ContextType.containerpageToolbar.equals(type)) {
-                        appId = CmsPageEditorConfiguration.APP_ID;
-                    } else if (ContextType.sitemapToolbar.equals(type)) {
-                        appId = CmsSitemapEditorConfiguration.APP_ID;
-                    }
-                } catch (Exception e) {
-                    type = ContextType.appToolbar;
-                    LOG.error("Could not parse context type parameter " + typeParam);
-                }
+                    String resources = request.getParameter("resources");
+                    List<CmsResource> resourceList;
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resources)) {
+                        resourceList = new ArrayList<CmsResource>();
+                        String[] resIds = resources.split(";");
+                        for (int i = 0; i < resIds.length; i++) {
+                            if (CmsUUID.isValidUUID(resIds[i])) {
+                                resourceList.add(
+                                    getCmsObject().readResource(
+                                        new CmsUUID(resIds[i]),
+                                        CmsResourceFilter.IGNORE_EXPIRATION));
+                            }
 
-                m_currentContext = new CmsEmbeddedDialogContext(appId, type, resourceList);
-                I_CmsWorkplaceAction action = getAction(request);
-                if (action.isActive(m_currentContext)) {
-                    action.executeAction(m_currentContext);
-                } else {
-                    errorMessage = CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0);
+                        }
+                    } else {
+                        resourceList = Collections.<CmsResource> emptyList();
+                    }
+                    String typeParam = request.getParameter("contextType");
+
+                    ContextType type;
+                    String appId = "";
+                    try {
+                        type = ContextType.valueOf(typeParam);
+                        if (ContextType.containerpageToolbar.equals(type)) {
+                            appId = CmsPageEditorConfiguration.APP_ID;
+                        } else if (ContextType.sitemapToolbar.equals(type)) {
+                            appId = CmsSitemapEditorConfiguration.APP_ID;
+                        }
+                    } catch (Exception e) {
+                        type = ContextType.appToolbar;
+                        LOG.error("Could not parse context type parameter " + typeParam);
+                    }
+
+                    m_currentContext = new CmsEmbeddedDialogContext(appId, type, resourceList);
+                    I_CmsWorkplaceAction action = getAction(request);
+                    if (action.isActive(m_currentContext)) {
+                        action.executeAction(m_currentContext);
+                    } else {
+                        errorMessage = CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0);
+                    }
+                } catch (Throwable e) {
+                    t = e;
+                    errorMessage = CmsVaadinUtils.getMessageText(
+                        org.opencms.ui.dialogs.Messages.ERR_DAILOG_INSTANTIATION_FAILED_1,
+                        request.getPathInfo());
                 }
-            } catch (Throwable e) {
-                t = e;
-                errorMessage = CmsVaadinUtils.getMessageText(
-                    org.opencms.ui.dialogs.Messages.ERR_DAILOG_INSTANTIATION_FAILED_1,
-                    request.getPathInfo());
             }
         } catch (CmsRoleViolationException ex) {
             t = ex;

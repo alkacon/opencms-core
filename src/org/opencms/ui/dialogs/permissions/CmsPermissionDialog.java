@@ -49,7 +49,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.dialogs.permissions.CmsPermissionView.PermissionChangeHandler;
-import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.PrincipalSelectHandler;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.I_PrincipalSelectHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -84,7 +84,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * The permission dialog.<p>
  */
-public class CmsPermissionDialog extends CmsBasicDialog implements PermissionChangeHandler, PrincipalSelectHandler {
+public class CmsPermissionDialog extends CmsBasicDialog implements PermissionChangeHandler, I_PrincipalSelectHandler {
 
     /** The possible types of new access control entries. */
     protected static final String[] PRINCIPAL_TYPES = {
@@ -246,7 +246,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     }
 
     /**
-     * @see org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.PrincipalSelectHandler#onPrincipalSelect(java.lang.String, java.lang.String)
+     * @see org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.I_PrincipalSelectHandler#onPrincipalSelect(java.lang.String, java.lang.String)
      */
     public void onPrincipalSelect(String principalType, String principalName) {
 
