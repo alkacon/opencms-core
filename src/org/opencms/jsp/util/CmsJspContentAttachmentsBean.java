@@ -76,6 +76,9 @@ public class CmsJspContentAttachmentsBean {
     /** Flag which indicates whether this is an empty attachments bean. */
     private boolean m_undefined;
 
+    /** The CmsObject to read the detail page and the resources on that page. */
+    private CmsObject m_cms;
+
     /**
      * Creates an 'undefined' attachments bean.<p>
      */
@@ -98,6 +101,7 @@ public class CmsJspContentAttachmentsBean {
 
         CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource);
         m_page = xmlContainerPage.getContainerPage(cms);
+        m_cms = cms;
 
     }
 
@@ -222,6 +226,7 @@ public class CmsJspContentAttachmentsBean {
         if (m_byType == null) {
             m_byType = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
+                @SuppressWarnings("synthetic-access")
                 public Object transform(Object arg0) {
 
                     String key = (String)arg0;
@@ -229,8 +234,17 @@ public class CmsJspContentAttachmentsBean {
                     for (Map.Entry<String, CmsContainerBean> entry : getPage().getContainers().entrySet()) {
                         CmsContainerBean value = entry.getValue();
                         for (CmsContainerElementBean element : value.getElements()) {
-                            if (key.equals(element.getTypeName())) {
-                                result.add(element);
+                            try {
+                                element.initResource(m_cms);
+                                if (key.equals(element.getTypeName())) {
+                                    result.add(element);
+                                }
+                            } catch (CmsException e) {
+                                LOG.error(
+                                    "Could not initialize resource with site path \""
+                                        + element.getSitePath()
+                                        + "\" to determine the container elements type.",
+                                    e);
                             }
                         }
                     }
