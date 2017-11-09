@@ -60,7 +60,6 @@ import com.vaadin.server.FontIcon;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -97,7 +96,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     CmsObject m_cms;
 
     /**Calling vaadin component.*/
-    CmsPrincipalSelect m_selectField;
+    I_CmsPrincipalSelect m_selectField;
 
     /**Vaadin component.*/
     private Button m_closeButton;
@@ -121,7 +120,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     private boolean m_realOnly;
 
     /**Vaadin component.*/
-    private CheckBox m_otherOUs;
+    private ComboBox m_ouCombo;
 
     /**
      * public constructor.<p>
@@ -134,7 +133,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * @param defaultView default mode to open
      */
     public CmsPrincipalSelectDialog(
-        CmsPrincipalSelect cmsPrincipalSelect,
+        I_CmsPrincipalSelect cmsPrincipalSelect,
         String ou,
         final Window window,
         WidgetType widgetType,
@@ -145,9 +144,15 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         m_realOnly = realOnly;
         try {
             m_cms = A_CmsUI.getCmsObject();
+
             m_selectField = cmsPrincipalSelect;
+
+            m_ouCombo = CmsVaadinUtils.getOUComboBox(m_cms, "", null);
+            m_ouCombo.select(m_ou);
+
             IndexedContainer data;
-            data = getContainerForType(defaultView, m_realOnly, false);
+
+            data = getContainerForType(defaultView, m_realOnly, (String)m_ouCombo.getValue());
             m_table = new CmsPrincipalTable(this, data, ID_ICON, ID_CAPTION, ID_DESC, ID_OU);
             m_table.setColumnHeader(
                 ID_CAPTION,
@@ -179,16 +184,22 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             hl.setWidth("100%");
             m_typeCombo = new ComboBox();
             Label space = new Label();
-            m_otherOUs = new CheckBox();
-            m_otherOUs.setValue(new Boolean(true));
+
             hl.addComponent(m_typeCombo);
-            hl.addComponent(m_otherOUs);
+            hl.addComponent(m_ouCombo);
             hl.addComponent(space);
             hl.addComponent(m_tableFilter);
             hl.setExpandRatio(space, 1);
-            hl.setComponentAlignment(m_otherOUs, com.vaadin.ui.Alignment.MIDDLE_CENTER);
+            hl.setComponentAlignment(m_ouCombo, com.vaadin.ui.Alignment.MIDDLE_CENTER);
             vl.addComponent(hl);
             vl.addComponent(m_table);
+
+            if (!OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
+                m_ouCombo.setValue(m_cms.getRequestContext().getOuFqn());
+                m_ouCombo.setEnabled(false);
+                m_typeCombo.setValue(WidgetType.groupwidget);
+                m_typeCombo.setEnabled(false);
+            }
 
             setContent(vl);
         } catch (CmsException e) {
@@ -207,7 +218,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             }
         });
-        m_otherOUs.addValueChangeListener(new ValueChangeListener() {
+        m_ouCombo.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = -5035831853626955191L;
 
@@ -225,9 +236,9 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
                 initTable((WidgetType)m_typeCombo.getValue());
                 if (WidgetType.groupwidget.equals(m_typeCombo.getValue())) {
-                    m_selectField.setPrincipalType(I_CmsPrincipal.PRINCIPAL_GROUP);
+                    m_selectField.setType(I_CmsPrincipal.PRINCIPAL_GROUP);
                 } else if (WidgetType.userwidget.equals(m_typeCombo.getValue())) {
-                    m_selectField.setPrincipalType(I_CmsPrincipal.PRINCIPAL_USER);
+                    m_selectField.setType(I_CmsPrincipal.PRINCIPAL_USER);
                 }
             }
 
@@ -242,7 +253,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      */
     public void select(I_CmsPrincipal value) {
 
-        m_selectField.setValue(value.getName());
+        m_selectField.handlePrincipal(value);
         m_closeButton.click();
     }
 
@@ -252,10 +263,9 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      */
     void initTable(WidgetType type) {
 
-        m_otherOUs.setCaption(getCheckBoxCaption(type));
         IndexedContainer data;
         try {
-            data = getContainerForType(type, m_realOnly, m_otherOUs.getValue().booleanValue());
+            data = getContainerForType(type, m_realOnly, (String)m_ouCombo.getValue());
             m_table.updateContainer(data);
             m_tableFilter.setValue("");
         } catch (CmsException e) {
@@ -264,37 +274,36 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     }
 
     /**
-     * Sets the check box caption for viewing all OU's principal or not.<p>
-     *
-     * @param type WidgetType to initialize
-     * @return Caption for check box
-     */
-    private String getCheckBoxCaption(WidgetType type) {
-
-        if (type.equals(WidgetType.groupwidget)) {
-            return CmsVaadinUtils.getMessageText(
-                org.opencms.workplace.commons.Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0);
-        }
-        return CmsVaadinUtils.getMessageText(
-            org.opencms.workplace.commons.Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0);
-    }
-
-    /**
      * Returns the container for the currently selected Principal group.<p>
      *
      * @param type to be shown
      * @param realOnly true->get only real principals
-     * @param fromOtherOUs from outher ous?
+     * @param ou ou
      * @return indexed container
      * @throws CmsException exception
      */
-    private IndexedContainer getContainerForType(WidgetType type, boolean realOnly, boolean fromOtherOUs)
-    throws CmsException {
+    private IndexedContainer getContainerForType(WidgetType type, boolean realOnly, String ou) throws CmsException {
 
         IndexedContainer res = null;
         List<FontIcon> icon = new ArrayList<FontIcon>();
+        if (!OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
+            List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(
+                m_cms,
+                m_cms.getRequestContext().getOuFqn(),
+                false);
+            return CmsVaadinUtils.getPrincipalContainer(
+                A_CmsUI.getCmsObject(),
+                groups,
+                ID_CAPTION,
+                ID_DESC,
+                ID_ICON,
+                ID_OU,
+                OpenCmsTheme.ICON_GROUP,
+                icon);
+        }
+
         if (type.equals(WidgetType.groupwidget) | type.equals(WidgetType.principalwidget)) {
-            List<CmsGroup> groups = OpenCms.getRoleManager().getManageableGroups(m_cms, m_ou, fromOtherOUs);
+            List<CmsGroup> groups = OpenCms.getRoleManager().getManageableGroups(m_cms, ou, false);
             if (!realOnly) {
                 groups.add(
                     0,
@@ -332,7 +341,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 icon);
         }
         if (type.equals(WidgetType.userwidget)) {
-            List<CmsUser> users = OpenCms.getRoleManager().getManageableUsers(m_cms, m_ou, fromOtherOUs);
+            List<CmsUser> users = OpenCms.getRoleManager().getManageableUsers(m_cms, ou, false);
             if (!realOnly) {
                 CmsUser user = new CmsUser(
                     CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
@@ -393,10 +402,10 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         container.addContainerProperty("caption", String.class, "");
 
         Item item = container.addItem(WidgetType.groupwidget);
-        item.getItemProperty("caption").setValue("Gruppe");
+        item.getItemProperty("caption").setValue(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_0));
 
         item = container.addItem(WidgetType.userwidget);
-        item.getItemProperty("caption").setValue("User");
+        item.getItemProperty("caption").setValue(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
 
         m_typeCombo.setContainerDataSource(container);
         m_typeCombo.select(defaultType);
@@ -406,4 +415,5 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         m_typeCombo.setNewItemsAllowed(false);
 
     }
+
 }

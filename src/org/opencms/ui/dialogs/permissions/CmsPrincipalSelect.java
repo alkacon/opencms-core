@@ -57,7 +57,7 @@ import com.vaadin.ui.Window;
 /**
  * The principal select widget.<p>
  */
-public class CmsPrincipalSelect extends CustomComponent implements Field<String> {
+public class CmsPrincipalSelect extends CustomComponent implements Field<String>, I_CmsPrincipalSelect {
 
     /**
      * Handles the principal selection.<p>
@@ -267,6 +267,15 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     public String getValue() {
 
         return m_principalName.getValue();
+    }
+
+    /**
+     * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#handlePrincipal(org.opencms.security.I_CmsPrincipal)
+     */
+    public void handlePrincipal(I_CmsPrincipal principal) {
+
+        setValue(principal.getName());
+
     }
 
     /**
@@ -486,6 +495,15 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
+     * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#setType(java.lang.String)
+     */
+    public void setType(String type) {
+
+        setPrincipalType(type);
+
+    }
+
+    /**
      * @see com.vaadin.data.Property#setValue(java.lang.Object)
      */
     public void setValue(String newValue) throws com.vaadin.data.Property.ReadOnlyException {
@@ -588,7 +606,13 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
             defaultType = WidgetType.userwidget;
         }
 
-        dialog = new CmsPrincipalSelectDialog(this, m_ou, m_window, m_widgetType, m_realOnly, defaultType);
+        dialog = new CmsPrincipalSelectDialog(
+            this,
+            m_ou == null ? A_CmsUI.getCmsObject().getRequestContext().getOuFqn() : m_ou,
+            m_window,
+            m_widgetType,
+            m_realOnly,
+            defaultType);
 
         m_window.setCaption(
             CmsVaadinUtils.getMessageText(

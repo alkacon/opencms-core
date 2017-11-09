@@ -41,8 +41,10 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -67,6 +69,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Function;
@@ -82,6 +85,7 @@ import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Version;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
@@ -96,6 +100,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.SingleComponentContainer;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
@@ -319,6 +324,7 @@ public final class CmsVaadinUtils {
      * Get all groups with blacklist.<p>
      *
      * @param cms CmsObject
+     * @param ouFqn ou name
      * @param caption property
      * @param propIcon property for icon
      * @param idOu organizational unit
@@ -469,8 +475,8 @@ public final class CmsVaadinUtils {
      * @param user to find groups for
      * @param caption caption property
      * @param iconProp property
+     * @param ou ou
      * @param propStatus status property
-     * @param propStatus
      * @param cmsCssIcon icon
      * @return Indexed Container
      */
@@ -564,6 +570,47 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Creates the ComboBox for OU selection.<p>
+     * @param cms CmsObject
+     * @param baseOu OU
+     * @param log Logger object
+     *
+     * @return ComboBox
+     */
+    public static ComboBox getOUComboBox(CmsObject cms, String baseOu, Log log) {
+
+        ComboBox combo = null;
+        try {
+            IndexedContainer container = new IndexedContainer();
+            container.addContainerProperty("desc", String.class, "");
+            CmsOrganizationalUnit root = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, baseOu);
+            Item itemRoot = container.addItem("");
+            itemRoot.getItemProperty("desc").setValue(root.getDisplayName(A_CmsUI.get().getLocale()));
+            for (CmsOrganizationalUnit ou : OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, baseOu, true)) {
+                Item item = container.addItem(ou.getName());
+                item.getItemProperty("desc").setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
+            }
+            combo = new ComboBox(null, container);
+            combo.setTextInputAllowed(true);
+            combo.setNullSelectionAllowed(false);
+            combo.setWidth("200px");
+            combo.setInputPrompt(
+                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
+            combo.setItemCaptionPropertyId("desc");
+
+            combo.setFilteringMode(FilteringMode.CONTAINS);
+
+            combo.select(baseOu);
+
+        } catch (CmsException e) {
+            if (log != null) {
+                log.error("Unable to read OU", e);
+            }
+        }
+        return combo;
+    }
+
+    /**
      * Gives item id from path.<p>
      *
      * @param cnt to be used
@@ -580,6 +627,19 @@ public final class CmsVaadinUtils {
         return null;
     }
 
+    /**
+     * Get container for principal
+     *
+     * @param cms cmsobject
+     * @param list of principals
+     * @param captionID caption id
+     * @param descID description id
+     * @param iconID icon id
+     * @param ouID ou id
+     * @param icon icon
+     * @param iconList iconlist
+     * @return indexedcontainer
+     */
     public static IndexedContainer getPrincipalContainer(
         CmsObject cms,
         List<? extends I_CmsPrincipal> list,
