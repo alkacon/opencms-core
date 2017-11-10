@@ -67,7 +67,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     private static final String CMS_NO_PERMUTATION_MESSAGE = "CMS_NO_PERMUTATION_MESSAGE";
 
     /** The resource icon CSS URI. */
-    private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
+    private static final String ICON_CSS_URI = "/system/workplace/commons/resourceIcon.css";
 
     /** The current core data. */
     private CmsCoreData m_coreData;
