@@ -43,6 +43,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
+import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -513,11 +514,22 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getFilterQuery() {
 
         String result = m_config.getFilterQuery();
+        if (result == null) {
+            result = "";
+        }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !result.startsWith("&")) {
             result = "&" + result;
         }
-        if (m_config.isCurrentOnly()) {
-            result += "&fq=instancedatecurrenttill_" + getSearchLocale().toString() + "_dt:[NOW/DAY TO *]";
+
+        I_CmsListDateRestriction dateRestriction = m_config.getDateRestriction();
+        if (dateRestriction != null) {
+            result += "&fq="
+                + CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
+                + "_"
+                + getSearchLocale().toString()
+                + "_dt:"
+                + dateRestriction.getRange();
+
         }
         return result;
     }

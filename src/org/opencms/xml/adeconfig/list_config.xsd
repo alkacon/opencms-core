@@ -1,6 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/date_restriction.xsd" />
     <xsd:element name="ListConfigs" type="OpenCmsListConfigs" />
     
     <xsd:complexType name="OpenCmsListConfigs">
@@ -18,8 +19,8 @@
 		<xsd:element name="CategoryMode" type="OpenCmsString" />
 		<xsd:element name="SortOrder" type="OpenCmsString" />
 		<xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
+		<xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
 		<xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
-		<xsd:element name="CurrentOnly" type="OpenCmsBoolean" minOccurs="0" />
 		<xsd:element name="CategoryConjunction" type="OpenCmsBoolean" minOccurs="0"/>
 		<xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
 		<xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="25" />

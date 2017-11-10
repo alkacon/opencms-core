@@ -81,6 +81,8 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.lists.CmsOptionDialog.I_OptionHandler;
+import org.opencms.ui.apps.lists.daterestrictions.CmsDateRestrictionParser;
+import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -105,6 +107,7 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentValueLocation;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -188,6 +191,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         /** The category mode. */
         private CategoryMode m_categoryMode;
 
+        /** The date restriction. */
+        private I_CmsListDateRestriction m_dateRestriction;
+
         /**
          * Constructor.<p>
          */
@@ -243,6 +249,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         public CategoryMode getCategoryMode() {
 
             return m_categoryMode;
+        }
+
+        /**
+         * Gets the date restriction.<p>
+         *
+         * @return the date restriction
+         */
+        public I_CmsListDateRestriction getDateRestriction() {
+
+            return m_dateRestriction;
         }
 
         /**
@@ -330,16 +346,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
-         * Returns the 'current only' setting.<p>
-         *
-         * @return the 'current only' setting
-         */
-        public boolean isCurrentOnly() {
-
-            return Boolean.parseBoolean(m_parameterFields.get(N_CURRENT_ONLY));
-        }
-
-        /**
          * Returns the 'show expired' setting.<p>
          *
          * @return the 'show expired' setting
@@ -388,6 +394,16 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         public void setCategoryMode(CategoryMode categoryMode) {
 
             m_categoryMode = categoryMode;
+        }
+
+        /**
+         * Sets the date restrictions.<p>
+         *
+         * @param restriction the date restrictions
+         */
+        public void setDateRestriction(I_CmsListDateRestriction restriction) {
+
+            m_dateRestriction = restriction;
         }
 
         /**
@@ -640,6 +656,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
     }
 
+    /** XML content node name. */
+    public static final String N_DATE_RESTRICTION = "DateRestriction";
+
     /** Default backend pagination. */
     private static final I_CmsSearchConfigurationPagination PAGINATION = new CmsSearchConfigurationPagination(
         null,
@@ -669,9 +688,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** List configuration node name and field key. */
     public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
-
-    /** List configuration node name and field key. */
-    public static final String N_CURRENT_ONLY = "CurrentOnly";
 
     /** List configuration node name and field key. */
     public static final String N_DISPLAY_TYPE = "TypesToCollect";
@@ -710,8 +726,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         N_FILTER_QUERY,
         N_SORT_ORDER,
         N_SHOW_EXPIRED,
-        N_CATEGORY_CONJUNCTION,
-        N_CURRENT_ONLY};
+        N_CATEGORY_CONJUNCTION};
 
     /** The view content list path name. */
     public static final String PATH_NAME_VIEW = "view";
@@ -897,6 +912,21 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     result.setParameterValue(field, val);
                 }
             }
+
+            I_CmsXmlContentValue restrictValue = content.getValue(N_DATE_RESTRICTION, locale);
+            if (restrictValue != null) {
+                CmsDateRestrictionParser parser = new CmsDateRestrictionParser(cms);
+                I_CmsListDateRestriction restriction = parser.parse(new CmsXmlContentValueLocation(restrictValue));
+                if (restriction == null) {
+                    LOG.warn(
+                        "Improper date restriction configuration in content "
+                            + content.getFile().getRootPath()
+                            + ", online="
+                            + cms.getRequestContext().getCurrentProject().isOnlineProject());
+                }
+                result.setDateRestriction(restriction);
+            }
+
             I_CmsXmlContentValue categoryModeVal = content.getValue(N_CATEGORY_MODE, locale);
             CategoryMode categoryMode = CategoryMode.OR;
             if (categoryModeVal != null) {
