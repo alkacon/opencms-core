@@ -324,11 +324,13 @@ public class CmsUserInfo extends VerticalLayout {
                 }
             }
         }
-        infoHtml.append(
-            Messages.get().getBundle(locale).key(
-                Messages.GUI_USER_INFO_ONLINE_SINCE_1,
-                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(m_user.getLastlogin())))).append(
-                    LINE_BREAK);
+        if (OpenCms.getSessionManager().getSessionInfos(m_user.getId()).size() > 0) {
+            infoHtml.append(
+                Messages.get().getBundle(locale).key(
+                    Messages.GUI_USER_INFO_ONLINE_SINCE_1,
+                    DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(
+                        new Date(m_user.getLastlogin())))).append(LINE_BREAK);
+        }
 
         return infoHtml.toString();
     }
