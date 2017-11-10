@@ -584,7 +584,7 @@ public final class CmsVaadinUtils {
             IndexedContainer container = new IndexedContainer();
             container.addContainerProperty("desc", String.class, "");
             CmsOrganizationalUnit root = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, baseOu);
-            Item itemRoot = container.addItem("");
+            Item itemRoot = container.addItem(root.getName());
             itemRoot.getItemProperty("desc").setValue(root.getDisplayName(A_CmsUI.get().getLocale()));
             for (CmsOrganizationalUnit ou : OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, baseOu, true)) {
                 Item item = container.addItem(ou.getName());
@@ -628,7 +628,7 @@ public final class CmsVaadinUtils {
     }
 
     /**
-     * Get container for principal
+     * Get container for principal.
      *
      * @param cms cmsobject
      * @param list of principals
@@ -1111,7 +1111,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

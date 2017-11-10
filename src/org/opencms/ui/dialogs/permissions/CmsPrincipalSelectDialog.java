@@ -168,7 +168,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             m_selectField = cmsPrincipalSelect;
 
-            m_ouCombo = CmsVaadinUtils.getOUComboBox(m_cms, "", null);
+            m_ouCombo = CmsVaadinUtils.getOUComboBox(m_cms, m_cms.getRequestContext().getOuFqn(), null);
             m_ouCombo.select(m_ou);
 
             IndexedContainer data;
