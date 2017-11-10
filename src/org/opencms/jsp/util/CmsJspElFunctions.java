@@ -247,6 +247,44 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Returns a resource created from an Object.<p>
+     *
+     * <ul>
+     * <li>If the input is already a {@link CmsResource}, it is casted to the resource and returned unchanged.
+     * <li>If the input is a String, the given OpenCms context is used to read a resource with this name from the VFS.
+     * <li>If the input is a {@link CmsUUID}, the given OpenCms context is used to read a resource with
+     * this UUID from the VFS.
+     * <li>Otherwise the input is converted to a String, and then the given OpenCms context is used to read
+     * a resource with this name from the VFS.
+     * </ul>
+     *
+     * @param cms the current OpenCms user context
+     * @param input the input to create a resource from
+     *
+     * @return a resource created from the given Object
+     *
+     * @throws CmsException in case of errors accessing the OpenCms VFS for reading the resource
+     */
+    public static CmsResource convertRawResource(CmsObject cms, Object input) throws CmsException {
+
+        CmsResource result;
+        if (input instanceof String) {
+            // input is a String
+            result = cms.readResource((String)input);
+        } else if (input instanceof CmsResource) {
+            // input is already a resource
+            result = (CmsResource)input;
+        } else if (input instanceof CmsUUID) {
+            // input is a UUID
+            result = cms.readResource((CmsUUID)input);
+        } else {
+            // input seems not really to make sense, try to use it like a String
+            result = cms.readResource(String.valueOf(input));
+        }
+        return result;
+    }
+
+    /**
      * Tries to convert the given input object into a request.<p>
      *
      * This is only possible if the input object is already a request
@@ -270,41 +308,20 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Returns a resource created from an Object.<p>
+     * Returns a resource wrapper created from the input.
      *
-     * <ul>
-     * <li>If the input is already a {@link CmsResource}, it is casted to the resource and returned unchanged.
-     * <li>If the input is a String, the given OpenCms context is used to read a resource with this name from the VFS.
-     * <li>If the input is a {@link CmsUUID}, the given OpenCms context is used to read a resource with
-     * this UUID from the VFS.
-     * <li>Otherwise the input is converted to a String, and then the given OpenCms context is used to read
-     * a resource with this name from the VFS.
-     * </ul>
+     * The wrapped result of {@link #convertRawResource(CmsObject, Object)} is returned.
      *
      * @param cms the current OpenCms user context
      * @param input the input to create a resource from
      *
-     * @return a resource created from the given Object
+     * @return a resource wrapper created from the given Object
      *
      * @throws CmsException in case of errors accessing the OpenCms VFS for reading the resource
      */
-    public static CmsResource convertResource(CmsObject cms, Object input) throws CmsException {
+    public static CmsJspResourceWrapper convertResource(CmsObject cms, Object input) throws CmsException {
 
-        CmsResource result;
-        if (input instanceof String) {
-            // input is a String
-            result = cms.readResource((String)input);
-        } else if (input instanceof CmsResource) {
-            // input is already a resource
-            result = (CmsResource)input;
-        } else if (input instanceof CmsUUID) {
-            // input is a UUID
-            result = cms.readResource((CmsUUID)input);
-        } else {
-            // input seems not really to make sense, try to use it like a String
-            result = cms.readResource(String.valueOf(input));
-        }
-        return new CmsJspResourceWrapper(cms, result);
+        return new CmsJspResourceWrapper(cms, convertRawResource(cms, input));
     }
 
     /**

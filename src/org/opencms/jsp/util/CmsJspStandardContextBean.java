@@ -82,6 +82,8 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -937,6 +939,33 @@ public final class CmsJspStandardContextBean {
     public List<Locale> getAvailableLocales() {
 
         return OpenCms.getLocaleManager().getAvailableLocales(m_cms, getRequestContext().getUri());
+    }
+
+    /**
+     * Helper for easy instantiation and initialization of custom context beans that returns
+     * an instance of the class specified via <code>className</code>, with the current context already set.
+     *
+     * @param className name of the class to instantiate. Must be a subclass of {@link A_CmsJspCustomContextBean}.
+     * @return an instance of the provided class with the current context already set.
+     */
+    public Object getBean(String className) {
+
+        try {
+            Class<?> clazz = Class.forName(className);
+            if (A_CmsJspCustomContextBean.class.isAssignableFrom(clazz)) {
+                Constructor<?> constructor = clazz.getConstructor();
+                Object instance = constructor.newInstance();
+                Method setContextMethod = clazz.getMethod("setContext", CmsJspStandardContextBean.class);
+                setContextMethod.invoke(instance, this);
+                return instance;
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            LOG.error(Messages.get().container(Messages.ERR_NO_CUSTOM_BEAN_1, className));
+        }
+        return null;
+
     }
 
     /**

@@ -235,6 +235,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_TAG_SEARCH_SEARCH_FAILED_0 = "LOG_TAG_SEARCH_SEARCH_FAILED_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_CUSTOM_BEAN_1 = "ERR_NO_CUSTOM_BEAN_1";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.messages";
 
