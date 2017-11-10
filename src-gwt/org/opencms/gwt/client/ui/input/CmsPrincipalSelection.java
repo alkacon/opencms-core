@@ -65,7 +65,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     private static int idCounter;
 
     /** The dialog id. */
-    public static final String DIALOG_ID = "principleselect";
+    public static final String DIALOG_ID = "principalselect";
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "groupselection";
@@ -379,9 +379,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         CmsEmbeddedDialogHandler handler = new CmsEmbeddedDialogHandler();
         handler.setPrincipleSelectHandler(new I_CmsPrincipalSelectHandler() {
 
-            public void selectPrincipal(String principle) {
+            public void selectPrincipal(String principal) {
 
-                setFormValueAsString(principle);
+                setFormValueAsString(principal);
             }
         });
         handler.openDialog(DIALOG_ID, null, null, m_configuration);
@@ -399,7 +399,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
             for (String param : config.split(",")) {
                 int index = param.indexOf("=");
                 if ((index > 0) && (param.length() > (index + 1))) {
-                    m_configuration.put(param.substring(0, index - 1), param.substring(index + 1));
+                    m_configuration.put(param.substring(0, index), param.substring(index + 1));
                 }
             }
         }

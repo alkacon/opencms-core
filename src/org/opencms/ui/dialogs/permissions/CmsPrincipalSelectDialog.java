@@ -90,7 +90,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     public static String PARAM_REAL_ONLY = "realonly";
 
     /** The dialog id. */
-    public static final String DIALOG_ID = "principleselect";
+    public static final String DIALOG_ID = "principalselect";
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4650407086145654695L;
@@ -256,10 +256,12 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             public void valueChange(ValueChangeEvent event) {
 
                 initTable((WidgetType)m_typeCombo.getValue());
-                if (WidgetType.groupwidget.equals(m_typeCombo.getValue())) {
-                    m_selectField.setType(I_CmsPrincipal.PRINCIPAL_GROUP);
-                } else if (WidgetType.userwidget.equals(m_typeCombo.getValue())) {
-                    m_selectField.setType(I_CmsPrincipal.PRINCIPAL_USER);
+                if (m_selectField != null) {
+                    if (WidgetType.groupwidget.equals(m_typeCombo.getValue())) {
+                        m_selectField.setType(I_CmsPrincipal.PRINCIPAL_GROUP);
+                    } else if (WidgetType.userwidget.equals(m_typeCombo.getValue())) {
+                        m_selectField.setType(I_CmsPrincipal.PRINCIPAL_USER);
+                    }
                 }
             }
 
