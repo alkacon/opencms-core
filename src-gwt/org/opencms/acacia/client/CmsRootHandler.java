@@ -29,6 +29,7 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsType;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +82,31 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
     }
 
     /**
+     * Debugging helper method to dump the hierarchy of handlers to the console.<p>
+     *
+     * @param prefix the prefix used for indentation
+     */
+    public void dump(String prefix) {
+
+        String name = null;
+        if (this.getClass() == CmsRootHandler.class) {
+            name = "ROOT";
+        } else {
+            name = getAttributeName();
+        }
+        CmsDebugLog.consoleLog(prefix + name);
+        int i = 0;
+        for (Map<String, CmsAttributeHandler> map : m_handlers) {
+            CmsDebugLog.consoleLog(prefix + i);
+            for (Map.Entry<String, CmsAttributeHandler> entry : map.entrySet()) {
+                CmsDebugLog.consoleLog(prefix + "->" + entry.getKey());
+                entry.getValue().dump(prefix + "    ");
+            }
+            i += 1;
+        }
+    }
+
+    /**
      * Ensures attribute handler maps are available up to the specified index.<p>
      * This is required during inline editing, where only a fragment of the handlers data structure is build and used.<p>
      *
@@ -110,10 +136,27 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public CmsAttributeHandler getChildHandler(String attributeName, int index) {
 
+        CmsDebugLog.consoleLog("getChildHandler " + attributeName);
+        CmsAttributeHandler result = null;
         if (m_handlers.size() > index) {
-            return m_handlers.get(index).get(attributeName);
+            result = m_handlers.get(index).get(attributeName);
+        } else {
+            return null;
         }
-        return null;
+        if (result == null) {
+            for (Map.Entry<String, CmsAttributeHandler> entry : m_handlers.get(index).entrySet()) {
+                String key = entry.getKey();
+                int opencmsPos = key.indexOf("opencms://");
+                if (opencmsPos > 0) {
+                    String reducedKey = key.substring(opencmsPos);
+                    if (reducedKey.equals(attributeName)) {
+                        result = entry.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -169,6 +212,7 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
             handler = handler.getChildHandler(attributeName, index);
             index = nextIndex;
         }
+
         return (CmsAttributeHandler)handler;
     }
 

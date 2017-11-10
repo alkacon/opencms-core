@@ -1408,6 +1408,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
             String pathElement = getAttributeName(ancestor);
             pathElements.add(pathElement + "[" + valueIndex + "]");
+            if (ancestor.isChoiceType()) {
+                pathElements.add("ATTRIBUTE_CHOICE");
+            }
             path += "/";
         }
         return pathElements.toArray(new String[pathElements.size()]);
