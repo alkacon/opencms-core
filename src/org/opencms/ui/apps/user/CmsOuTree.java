@@ -33,7 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -42,6 +42,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -61,22 +62,106 @@ public class CmsOuTree extends Tree {
     protected enum CmsOuTreeType {
 
         /**Group. */
-        GROUP(Messages.GUI_USERMANAGEMENT_GROUPS_0),
+        GROUP(Messages.GUI_USERMANAGEMENT_GROUPS_0, "g", true, new CmsCssIcon(OpenCmsTheme.ICON_GROUP), Messages.GUI_USERMANAGEMENT_NO_GROUPS_0),
         /**OU. */
-        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0),
+        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, "o", true, new CmsCssIcon(OpenCmsTheme.ICON_OU), ""),
+        /**Role. */
+        ROLE(Messages.GUI_USERMANAGEMENT_ROLES_0, "r", true, new CmsCssIcon(OpenCmsTheme.ICON_ROLE), Messages.GUI_USERMANAGEMENT_NO_USER_0),
         /**User.*/
-        USER(Messages.GUI_USERMANAGEMENT_USER_0);
+        USER(Messages.GUI_USERMANAGEMENT_USER_0, "u", false, new CmsCssIcon(OpenCmsTheme.ICON_USER), Messages.GUI_USERMANAGEMENT_NO_USER_0);
 
         /**Name of entry. */
         private String m_name;
+
+        /**ID for entry. */
+        private String m_id;
+
+        /**Is expandable?*/
+        private boolean m_isExpandable;
+
+        /**Icon for type. */
+        private CmsCssIcon m_icon;
+
+        /**Bundle key for empty message.*/
+        private String m_emptyMessageKey;
 
         /**
          * constructor.<p>
          *
          * @param name name
+         * @param id id
+         * @param isExpandable boolean
+         * @param icon icon
+         * @param empty empty string
          */
-        CmsOuTreeType(String name) {
+        CmsOuTreeType(String name, String id, boolean isExpandable, CmsCssIcon icon, String empty) {
             m_name = name;
+            m_id = id;
+            m_isExpandable = isExpandable;
+            m_icon = icon;
+            m_emptyMessageKey = empty;
+        }
+
+        /**
+         * Returns tree type from id.<p>
+         *
+         * @param id of type
+         * @return CmsOuTreeType
+         */
+        public static CmsOuTreeType fromID(String id) {
+
+            for (CmsOuTreeType ty : values()) {
+                if (ty.getID().equals(id)) {
+                    return ty;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Returns tree type from name.<p>
+         *
+         * @param name of type
+         * @return CmsOuTreeType
+         */
+        public static CmsOuTreeType fromName(String name) {
+
+            for (CmsOuTreeType ty : values()) {
+                if (ty.getName().equals(name)) {
+                    return ty;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Returns the key for the empty-message.<p>
+         *
+         * @return key as string
+         */
+        public String getEmptyMessageKey() {
+
+            return m_emptyMessageKey;
+        }
+
+        /**
+         * Get the icon.<p>
+         *
+         * @return CmsCssIcon
+         */
+        public CmsCssIcon getIcon() {
+
+            return m_icon;
+        }
+
+        /**
+         * Gets the id of the type.<p>
+         *
+         * @return id string
+         */
+        public String getID() {
+
+            return m_id;
         }
 
         /**
@@ -87,6 +172,16 @@ public class CmsOuTree extends Tree {
         public String getName() {
 
             return CmsVaadinUtils.getMessageText(m_name);
+        }
+
+        /**
+         * Checks if type is expandable.<p>
+         *
+         * @return true if expandable
+         */
+        public boolean isExpandable() {
+
+            return m_isExpandable;
         }
     }
 
@@ -189,6 +284,7 @@ public class CmsOuTree extends Tree {
             return;
         }
         try {
+            expandItem(m_rootOu);
             String[] pathP = path.split("/");
             String complPath = "";
             for (String subP : pathP) {
@@ -198,20 +294,22 @@ public class CmsOuTree extends Tree {
                 expandItem(ou);
             }
 
-            if (type.equals(CmsOuTreeType.GROUP)) {
-                String itemId = "G" + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName();
+            if (type.equals(CmsOuTreeType.GROUP) | type.equals(CmsOuTreeType.ROLE)) {
+                String itemId = type.getID()
+                    + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName();
                 expandItem(itemId);
                 if (groupID == null) {
                     setValue(itemId);
                     return;
                 }
-                setValue(m_cms.readGroup(groupID));
+                setValue(groupID);
                 return;
             }
             if (type.equals(CmsOuTreeType.USER)) {
-                setValue("U" + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName());
+                setValue(type.getID() + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName());
                 return;
             }
+
             setValue(OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path));
 
         } catch (CmsException e) {
@@ -238,12 +336,20 @@ public class CmsOuTree extends Tree {
     protected void handleItemClick(Object itemId) {
 
         CmsOuTreeType type = (CmsOuTreeType)getItem(itemId).getItemProperty(PROP_TYPE).getValue();
-        m_app.update(getOuFromItem(itemId, type), type, itemId instanceof CmsGroup ? ((CmsGroup)itemId).getId() : null);
-        if (isExpanded(itemId) | (itemId instanceof CmsPrincipal)) {
+        CmsUUID roleOrGroupID = null;
+        if (itemId instanceof CmsUUID) {
+
+            roleOrGroupID = (CmsUUID)itemId;
+
+        }
+
+        m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID);
+        if (isExpanded(itemId) | (itemId instanceof CmsUUID)) {
             return;
         }
         loadAndExpand(itemId, type);
         setValue(itemId);
+
     }
 
     /**
@@ -256,14 +362,14 @@ public class CmsOuTree extends Tree {
         try {
             List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(m_cms, ouItem.substring(1), false);
             for (CmsGroup group : groups) {
-                Item groupItem = m_treeContainer.addItem(group);
+                Item groupItem = m_treeContainer.addItem(group.getId());
                 if (groupItem == null) {
-                    groupItem = getItem(group);
+                    groupItem = getItem(group.getId());
                 }
                 groupItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(group, CmsOuTreeType.GROUP));
                 groupItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.GROUP);
-                setChildrenAllowed(group, false);
-                m_treeContainer.setParent(group, ouItem);
+                setChildrenAllowed(group.getId(), false);
+                m_treeContainer.setParent(group.getId(), ouItem);
             }
         } catch (CmsException e) {
             LOG.error("Can not read group", e);
@@ -278,21 +384,16 @@ public class CmsOuTree extends Tree {
     private void addChildForOU(CmsOrganizationalUnit item) {
 
         try {
-            String groupItemId = "G" + item.getName();
-            Item groupItem = m_treeContainer.addItem(groupItemId);
-            if (groupItem != null) {
-                groupItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(groupItemId, CmsOuTreeType.GROUP));
-                groupItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.GROUP);
-                m_treeContainer.setParent(groupItemId, item);
-            }
-
-            String userItemId = "U" + item.getName();
-            Item userItem = m_treeContainer.addItem(userItemId);
-            if (userItem != null) {
-                userItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(userItemId, CmsOuTreeType.USER));
-                userItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.USER);
-                setChildrenAllowed(userItemId, false);
-                m_treeContainer.setParent(userItemId, item);
+            List<CmsOuTreeType> types = Arrays.asList(CmsOuTreeType.GROUP, CmsOuTreeType.ROLE, CmsOuTreeType.USER);
+            for (CmsOuTreeType type : types) {
+                String itemId = type.getID() + item.getName();
+                Item newItem = m_treeContainer.addItem(itemId);
+                if (newItem != null) {
+                    newItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(itemId, type));
+                    newItem.getItemProperty(PROP_TYPE).setValue(type);
+                    m_treeContainer.setParent(itemId, item);
+                    setChildrenAllowed(itemId, type.isExpandable());
+                }
             }
 
             List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
@@ -312,6 +413,31 @@ public class CmsOuTree extends Tree {
             }
         } catch (CmsException e) {
             LOG.error("Can't read ou", e);
+        }
+    }
+
+    /**
+     * Add roles for given role parent item.
+     *
+     * @param ouItem group parent item
+     */
+    private void addChildForRole(String ouItem) {
+
+        try {
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, ouItem.substring(1), false);
+            CmsRole.applySystemRoleOrder(roles);
+            for (CmsRole role : roles) {
+                Item roleItem = m_treeContainer.addItem(role.getId());
+                if (roleItem == null) {
+                    roleItem = getItem(role.getId());
+                }
+                roleItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(role, CmsOuTreeType.ROLE));
+                roleItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.ROLE);
+                setChildrenAllowed(role.getId(), false);
+                m_treeContainer.setParent(role.getId(), ouItem);
+            }
+        } catch (CmsException e) {
+            LOG.error("Can not read group", e);
         }
     }
 
@@ -342,49 +468,32 @@ public class CmsOuTree extends Tree {
      */
     private String getIconCaptionHTML(Object item, CmsOuTreeType type) {
 
+        CmsCssIcon icon = type.getIcon();
+        String caption = type.getName();
         if (type.equals(CmsOuTreeType.OU)) {
             CmsOrganizationalUnit ou = (CmsOrganizationalUnit)item;
-            CmsCssIcon icon;
             if (ou.hasFlagWebuser()) {
                 icon = new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB);
-            } else {
-                icon = new CmsCssIcon(OpenCmsTheme.ICON_OU);
             }
-            return "<span class=\"o-resource-icon\">"
-                + icon.getHtml()
-                + "</span>"
-                + "<span class=\"o-tree-caption\">"
-                + (ou.equals(m_rootSystemOU) ? ou.getDisplayName(A_CmsUI.get().getLocale()) : ou.getName())
-                + "</span>";
-
+            caption = (ou.equals(m_rootSystemOU) ? ou.getDisplayName(A_CmsUI.get().getLocale()) : ou.getName());
         }
 
-        if (type.equals(CmsOuTreeType.GROUP)) {
-            CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_GROUP);
-            if (item instanceof CmsGroup) {
-                //Real group shown under groups
-                return "<span class=\"o-resource-icon\">"
-                    + icon.getHtml()
-                    + "</span><span class=\"o-tree-caption\">"
-                    + ((CmsGroup)item).getName()
-                    + "</span>";
-            }
-            //parent item for the groups
-            return "<span class=\"o-resource-icon\">"
-                + icon.getHtml()
-                + "</span>"
-                + "<span class=\"o-tree-caption\">"
-                + CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0)
-                + "</span>";
+        if (item instanceof CmsGroup) {
+            //Real group shown under groups
+            caption = ((CmsGroup)item).getName();
         }
 
-        if (type.equals(CmsOuTreeType.USER)) {
-            CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_USER);
+        if (item instanceof CmsRole) {
+            //Real group shown under groups
+            caption = ((CmsRole)item).getName(A_CmsUI.get().getLocale());
+        }
+
+        if (icon != null) {
             return "<span class=\"o-resource-icon\">"
                 + icon.getHtml()
                 + "</span>"
                 + "<span class=\"o-tree-caption\">"
-                + CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0)
+                + caption
                 + "</span>";
         }
         return "";
@@ -422,6 +531,9 @@ public class CmsOuTree extends Tree {
         }
         if (type.equals(CmsOuTreeType.GROUP)) {
             addChildForGroup((String)itemId);
+        }
+        if (type.equals(CmsOuTreeType.ROLE)) {
+            addChildForRole((String)itemId);
         }
         expandItem(itemId);
     }

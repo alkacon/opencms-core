@@ -57,6 +57,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_USER_0 = "GUI_USERMANAGEMENT_USER_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_CURRENT_OU_0 = "GUI_USERMANAGEMENT_CURRENT_OU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ROLES_TOGGLE_0 = "GUI_USERMANAGEMENT_ROLES_TOGGLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_REMOVE_USER_FROM_ROLE_0 = "GUI_USERMANAGEMENT_REMOVE_USER_FROM_ROLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -64,6 +73,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ADD_USER_0 = "GUI_USERMANAGEMENT_ADD_USER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
@@ -2367,7 +2379,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_ADD_OU_0 = "GUI_USERMANAGEMENT_ADD_OU_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_ADD_USER_0 = "GUI_USERMANAGEMENT_ADD_USER_0";
+    public static final String GUI_USERMANAGEMENT_ADD_USER_TO_GROUP_0 = "GUI_USERMANAGEMENT_ADD_USER_TO_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_COUNT_0 = "GUI_USERMANAGEMENT_COUNT_0";
@@ -2386,6 +2398,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1 = "GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ADD_OU_HELP_0 = "GUI_USERMANAGEMENT_ADD_OU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ADD_GROUP_HELP_0 = "GUI_USERMANAGEMENT_ADD_GROUP_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ADD_USER_HELP_0 = "GUI_USERMANAGEMENT_ADD_USER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_ADD_ELEMENT_0 = "GUI_USERMANAGEMENT_ADD_ELEMENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_DELETE_USER_1 = "GUI_USERMANAGEMENT_DELETE_USER_1";

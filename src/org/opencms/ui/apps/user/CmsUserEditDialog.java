@@ -320,6 +320,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         m_group.setWidgetType(WidgetType.groupwidget);
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
+        m_group.setOU(m_ou.getValue());
         m_enabled.setValue(Boolean.TRUE);
         init(window, null);
     }
@@ -835,7 +836,9 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         settings.setStartSite((String)m_site.getValue() + "/");
         settings.setStartProject(m_ou.getValue() + (String)m_project.getValue());
         settings.setStartFolder(m_startfolder.getValue());
-        settings.setStartView((String)m_startview.getValue());
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly((String)m_startview.getValue())) {
+            settings.setStartView((String)m_startview.getValue());
+        }
         settings.save(m_cms);
     }
 

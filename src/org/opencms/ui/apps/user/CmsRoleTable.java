@@ -27,18 +27,16 @@
 
 package org.opencms.ui.apps.user;
 
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
-import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -64,89 +62,15 @@ import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Class for the table containing groups of a ou.<p>
+ * Table for the roles.<p>
  */
-public class CmsGroupTable extends Table implements I_CmsFilterableTable {
+public class CmsRoleTable extends Table implements I_CmsFilterableTable {
 
     /**
-     * Delete context menu entry.<p>
-     */
-    class EntryDelete implements I_CmsSimpleContextMenuEntry<Set<String>> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        public void executeAction(final Set<String> context) {
-
-            Window window = CmsBasicDialog.prepareWindow();
-            CmsDeletePrincipalDialog dialog = new CmsDeletePrincipalDialog(
-                m_cms,
-                new CmsUUID(context.iterator().next()),
-                window);
-            window.setContent(dialog);
-            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DELETE_0));
-            A_CmsUI.get().addWindow(window);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DELETE_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-
-    }
-
-    /**
-     * Edit context menu entry.<p>
-     */
-    class EntryEdit implements I_CmsSimpleContextMenuEntry<Set<String>> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        public void executeAction(Set<String> context) {
-
-            Window window = CmsBasicDialog.prepareWindow();
-            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EDIT_GROUP_0));
-            window.setContent(new CmsGroupEditDialog(m_cms, new CmsUUID(context.iterator().next()), window));
-
-            A_CmsUI.get().addWindow(window);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        public String getTitle(Locale locale) {
-
-            return "Edit";
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-
-    }
-
-    /**
-     * Open entry for context menu.<p>
+     *Entry to addition info dialog.<p>
      */
     class EntryOpen implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
@@ -155,7 +79,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          */
         public void executeAction(Set<String> context) {
 
-            updateApp(context.iterator().next());
+            updateApp(CmsRole.valueOfId(new CmsUUID(context.iterator().next())));
         }
 
         /**
@@ -179,60 +103,21 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (m_app != null) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-            } else {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-            }
-        }
-
-    }
-
-    /**
-     * Show resources context menu entry.<p>
-     */
-    class EntryShowResources implements I_CmsSimpleContextMenuEntry<Set<String>> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        public void executeAction(Set<String> context) {
-
-            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_SHOW_RESOURCES_0));
-            window.setContent(new CmsShowResourcesDialog(context.iterator().next(), window));
-
-            A_CmsUI.get().addWindow(window);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_SHOW_RESOURCES_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
-
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
     }
 
-    /**Table properties.<p>*/
+    /**Table properties. */
     enum TableProperty {
-        /**Icon column.*/
-        Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-group")),
-        /**Name column. */
-        Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
-        /**Desription column. */
-        Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
-        /**OU column. */
-        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, "");
+        /**Icon. */
+        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_ROLE)),
+        /**Name. */
+        Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_NAME_0), String.class, ""),
+        /**Description. */
+        Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DESCRIPTION_0), String.class, ""),
+        /**OU. */
+        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_OU_0), String.class, "");
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -289,45 +174,52 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
     }
 
-    /**vaadin serial id. */
-    private static final long serialVersionUID = -6511159488669996003L;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 7863356514060544048L;
 
     /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsGroupTable.class);
+    private static final Log LOG = CmsLog.getLog(CmsUserTable.class);
 
     /**Indexed container. */
     private IndexedContainer m_container;
 
-    /**CmsObject. */
+    /**CmsObject.*/
     CmsObject m_cms;
 
     /** The context menu. */
     CmsContextMenu m_menu;
 
-    /**Calling app. */
-    protected CmsAccountsApp m_app;
+    /**Name of group to show user for, or null. */
+    protected String m_group;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
-    /**Vaadin component. */
-    private VerticalLayout m_emptyLayout;
+    /**Parent ou. */
+    private String m_parentOU;
+
+    /**AccountsApp instance. */
+    private CmsAccountsApp m_app;
 
     /**
      * public constructor.<p>
+     * @param app calling app
      *
-     * @param ou ou name
-     * @param app calling app.
+     * @param ou name
      */
-    public CmsGroupTable(String ou, CmsAccountsApp app) {
-        m_app = app;
-        init(ou);
-        setVisibleColumns(TableProperty.Name, TableProperty.Description);
+    public CmsRoleTable(CmsAccountsApp app, String ou) {
+        try {
+            m_app = app;
+            m_parentOU = ou;
+            m_cms = getCmsObject();
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, ou, false);
+            init(roles);
+        } catch (CmsException e) {
+            LOG.error("Unable to read user.", e);
+        }
     }
 
     /**
-     * Filters the table.<p>
-     *
      * @see org.opencms.ui.apps.user.I_CmsFilterableTable#filter(java.lang.String)
      */
     public void filter(String data) {
@@ -347,25 +239,18 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
      */
     public VerticalLayout getEmptyLayout() {
 
-        m_emptyLayout = CmsVaadinUtils.getInfoLayout(CmsOuTreeType.GROUP.getEmptyMessageKey());
-        setVisible(size() > 0);
-        m_emptyLayout.setVisible(size() == 0);
-        return m_emptyLayout;
+        VerticalLayout layout = new VerticalLayout();
+        layout.setVisible(false);
+        return layout;
     }
 
     /**
-     * Updates the app.<p>
-     *
-     * @param uuid of current group
+     * Updates app.<p>
+     * @param role to be set
      */
-    protected void updateApp(String uuid) {
+    protected void updateApp(CmsRole role) {
 
-        try {
-            CmsGroup group = m_cms.readGroup(new CmsUUID(uuid));
-            m_app.update(group.getOuFqn(), CmsOuTreeType.GROUP, group.getId());
-        } catch (CmsException e) {
-            LOG.error("unable to read group.", e);
-        }
+        m_app.update(m_parentOU, CmsOuTreeType.ROLE, role.getId());
     }
 
     /**
@@ -378,21 +263,43 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
         if (m_menuEntries == null) {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new EntryOpen());
-            m_menuEntries.add(new EntryEdit());
-            m_menuEntries.add(new EntryShowResources());
-            m_menuEntries.add(new EntryDelete());
-
+            //            m_menuEntries.add(new EntryEditRole());
+            //            m_menuEntries.add(new EntryEditGroup());
+            //            m_menuEntries.add(new EntryShowResources());
+            //            m_menuEntries.add(new EntryAddInfos());
+            //            m_menuEntries.add(new EntrySwitchUser());
+            //            m_menuEntries.add(new EntryRemoveFromGroup());
+            //            m_menuEntries.add(new EntryDelete());
+            //            m_menuEntries.add(new EntryKillSession());
         }
         return m_menuEntries;
     }
 
     /**
-     * Initializes the table.<p>
+     * Gets CmsObject.<p>
      *
-     * @param ou name
+     * @return cmsobject
      */
-    private void init(String ou) {
+    private CmsObject getCmsObject() {
 
+        CmsObject cms;
+        try {
+            cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            //m_cms.getRequestContext().setSiteRoot("");
+        } catch (CmsException e) {
+            cms = A_CmsUI.getCmsObject();
+        }
+        return cms;
+    }
+
+    /**
+     * initializes table.
+     *
+     * @param roles list of user
+     */
+    private void init(List<CmsRole> roles) {
+
+        CmsRole.applySystemRoleOrder(roles);
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
 
@@ -411,23 +318,12 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
         setVisibleColumns(TableProperty.Name, TableProperty.OU);
 
-        try {
-            m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            m_cms.getRequestContext().setSiteRoot("");
-        } catch (CmsException e) {
-            m_cms = A_CmsUI.getCmsObject();
-        }
-        try {
-            for (CmsGroup group : OpenCms.getOrgUnitManager().getGroups(m_cms, ou, false)) {
+        for (CmsRole role : roles) {
 
-                Item item = m_container.addItem(group);
-                item.getItemProperty(TableProperty.Name).setValue(group.getName());
-                item.getItemProperty(TableProperty.Description).setValue(
-                    group.getDescription(A_CmsUI.get().getLocale()));
-                item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
-            }
-        } catch (CmsException e) {
-            LOG.error("Unable to read groups", e);
+            Item item = m_container.addItem(role);
+            item.getItemProperty(TableProperty.Name).setValue(role.getName(A_CmsUI.get().getLocale()));
+            item.getItemProperty(TableProperty.Description).setValue(role.getDescription(A_CmsUI.get().getLocale()));
+            item.getItemProperty(TableProperty.OU).setValue(role.getOuFqn());
         }
 
         addItemClickListener(new ItemClickListener() {
@@ -441,13 +337,13 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
                 if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
                     m_menu.setEntries(
                         getMenuEntries(),
-                        Collections.singleton(((CmsGroup)getValue()).getId().getStringValue()));
-                    m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsGroupTable.this);
-                    return;
+                        Collections.singleton(((CmsRole)getValue()).getId().getStringValue()));
+                    m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsRoleTable.this);
+                } else if (event.getButton().equals(MouseButton.LEFT)
+                    && event.getPropertyId().equals(TableProperty.Name)) {
+                    updateApp((CmsRole)getValue());
                 }
-                if (event.getButton().equals(MouseButton.LEFT) && event.getPropertyId().equals(TableProperty.Name)) {
-                    updateApp(((CmsGroup)getValue()).getId().getStringValue());
-                }
+
             }
 
         });
@@ -464,5 +360,6 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
                 return "";
             }
         });
+        setVisibleColumns(TableProperty.Name, TableProperty.Description, TableProperty.OU);
     }
 }

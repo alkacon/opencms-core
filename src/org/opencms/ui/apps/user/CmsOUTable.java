@@ -62,6 +62,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -344,12 +345,6 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
     /**vaadin serial id. */
     private static final long serialVersionUID = -1080519790145391678L;
 
-    /**Id for group items. */
-    protected static String ID_GROUP = "g";
-
-    /**Id for user items. */
-    protected static String ID_USER = "u";
-
     /** Log instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsOUTable.class);
 
@@ -398,21 +393,26 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     * @see org.opencms.ui.apps.user.I_CmsFilterableTable#getEmptyLayout()
+     */
+    public VerticalLayout getEmptyLayout() {
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.setVisible(false);
+        return layout;
+    }
+
+    /**
      * Updates app.<p>
      *
      * @param itemId of current item
      */
     protected void updateApp(String itemId) {
 
-        if (itemId.equals(ID_GROUP)) {
-            m_app.update(m_parentOu, CmsOuTreeType.GROUP, null);
+        if (itemId.equals(CmsOuTreeType.GROUP.getID()) | itemId.equals(CmsOuTreeType.USER.getID())) {
+            m_app.update(m_parentOu, CmsOuTreeType.fromID(itemId), null);
             return;
         }
-        if (itemId.equals(ID_USER)) {
-            m_app.update(m_parentOu, CmsOuTreeType.USER, null);
-            return;
-        }
-
         m_app.update(itemId, CmsOuTreeType.OU, null);
     }
 
@@ -483,7 +483,8 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
                 String out = "";
                 try {
-                    if (!((String)itemId).equals(ID_GROUP) & !((String)itemId).equals(ID_USER)) {
+                    if (!((String)itemId).equals(CmsOuTreeType.GROUP.getID())
+                        & !((String)itemId).equals(CmsOuTreeType.USER.getID())) {
 
                         List<CmsResource> resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                             m_cms,
@@ -516,13 +517,13 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
         }
         try {
 
-            Item groupItem = m_container.addItem(ID_GROUP);
+            Item groupItem = m_container.addItem(CmsOuTreeType.GROUP.getID());
             groupItem.getItemProperty(TableProperty.Name).setValue(
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0));
             groupItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
             groupItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.GROUP);
 
-            Item userItem = m_container.addItem(ID_USER);
+            Item userItem = m_container.addItem(CmsOuTreeType.USER.getID());
             userItem.getItemProperty(TableProperty.Name).setValue(
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
             userItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_USER));
