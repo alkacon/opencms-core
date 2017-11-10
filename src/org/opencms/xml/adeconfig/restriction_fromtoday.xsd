@@ -22,12 +22,15 @@
 	 <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-			<defaults>
-			</defaults>
 			<layouts>
 				<layout element="Direction" widget="SelectorWidget" configuration="past:%(key.list_config.past)|future:%(key.list_config.future)" />
 				<layout element="Unit" widget="SelectorWidget" configuration="DAYS:%(key.list_config.days)|WEEKS:%(key.list_config.weeks)|MONTHS:%(key.list_config.months)|YEARS:%(key.list_config.years)" />
 			</layouts>
+			
+			<validationrules>
+				<rule element="Count" regex="[1-9][0-9]*" type="error" message="%(key.list_config.validation.positivedays)"/>
+			</validationrules>
+			
         </xsd:appinfo>
     </xsd:annotation>
 

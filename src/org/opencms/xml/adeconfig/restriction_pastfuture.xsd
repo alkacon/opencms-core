@@ -22,7 +22,7 @@
 			<defaults>
 			</defaults>
 			<layouts>
-								<layout element="Direction" widget="SelectorWidget" configuration="past:%(key.list_config.past)|future:%(key.list_config.future)" />
+				<layout element="Direction" widget="SelectorWidget" configuration="past:%(key.list_config.past)|future:%(key.list_config.future)" />
 			</layouts>
         </xsd:appinfo>
     </xsd:annotation>

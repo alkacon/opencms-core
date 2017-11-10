@@ -12,8 +12,8 @@
 
 	<xsd:complexType name="OpenCmsDateRestrictionRange">
 		<xsd:sequence>
-			<xsd:element name="From" type="OpenCmsString" minOccurs="0"  />
-			<xsd:element name="To" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="From" type="OpenCmsDateTime" minOccurs="0"  />
+			<xsd:element name="To" type="OpenCmsDateTime" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
