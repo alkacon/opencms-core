@@ -27,7 +27,7 @@
 
 package org.opencms.ui.apps.sitemanager;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -312,7 +312,7 @@ public class CmsGlobalForm extends CmsBasicDialog {
                 CmsEditSiteForm.FORBIDDEN_FOLDER_NAMES.set(1, (String)m_fieldSharedFolder.getValue());
             }
             // write the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
         } catch (CmsException e) {
             //
         }
