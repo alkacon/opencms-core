@@ -39,7 +39,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -622,7 +622,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      *
      * @return the locale
      */
-    public Locale getBestAvailableLocaleForXmlContent(CmsObject cms, CmsResource resource, CmsXmlContent content) {
+    public Locale getBestAvailableLocaleForXmlContent(CmsObject cms, CmsResource resource, I_CmsXmlDocument content) {
 
         Locale locale = getDefaultLocale(cms, resource);
         if (!content.hasLocale(locale)) {
