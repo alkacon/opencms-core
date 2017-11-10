@@ -52,7 +52,7 @@ import com.google.common.collect.Maps;
 public final class CmsLockUtil {
 
     /** Helper to handle the lock reports together with the files. */
-    public static final class LockedFile {
+    public static final class LockedFile implements AutoCloseable {
 
         /** The cms object used for locking, unlocking and encoding determination. */
         private CmsObject m_cms;
@@ -86,6 +86,15 @@ public final class CmsLockUtil {
         public static LockedFile lockResource(CmsObject cms, CmsResource resource) throws CmsException {
 
             return new LockedFile(cms, resource);
+        }
+
+        /**
+         * @see java.lang.AutoCloseable#close()
+         */
+        public void close() throws Exception {
+
+            tryUnlock();
+
         }
 
         /**
@@ -202,7 +211,7 @@ public final class CmsLockUtil {
     /**
      * Tries to unlock the given resource.<p>
      * Will ignore any failure.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource to unlock
      */
