@@ -73,8 +73,6 @@
 
 @mixin opencms {
 	@include valo;
-  
-  
   	
   	.o-info-dialog {
   		width:400px !important;
@@ -1216,5 +1214,10 @@
 			font-weight: 800; 
 		}
 			
-	}  
+	}
+	
+	.v-table, .v-table * {
+	    /* Turn off Chrome scroll anchoring because it doesn't work with Vaadin tables and produces weird "jumping" effects when updating a table. */ 
+		overflow-anchor: none;
+	}
 }
