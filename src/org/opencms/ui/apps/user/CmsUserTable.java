@@ -118,6 +118,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -134,10 +137,12 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         public void executeAction(final Set<String> context) {
 
             Window window = CmsBasicDialog.prepareWindow();
-            CmsDeletePrincipalDialog dialog = new CmsDeletePrincipalDialog(
-                m_cms,
-                new CmsUUID(context.iterator().next()),
-                window);
+            CmsBasicDialog dialog = null;
+            if (context.size() == 1) {
+                dialog = new CmsDeletePrincipalDialog(m_cms, new CmsUUID(context.iterator().next()), window);
+            } else {
+                dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window);
+            }
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DELETE_0));
             A_CmsUI.get().addWindow(window);
@@ -156,7 +161,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
+            return onlyVisibleForOU(context);
         }
 
     }
@@ -191,6 +196,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
         }
 
@@ -226,6 +234,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
         }
 
@@ -261,6 +272,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
         }
 
@@ -300,6 +314,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -346,6 +363,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             if (!OpenCms.getSessionManager().getSessionInfos(new CmsUUID(context.iterator().next())).isEmpty()) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
@@ -446,10 +466,21 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             if (m_group == null) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
 
+            try {
+                CmsUser user = m_cms.readUser(context.iterator().next());
+                return ((Boolean)(getItem(user).getItemProperty(TableProperty.INDIRECT).getValue())).booleanValue()
+                ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE
+                : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            } catch (CmsException e) {
+                //
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -485,6 +516,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -548,6 +582,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -708,11 +745,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                 m_fullLoaded = true;
             }
             if (m_type.equals(CmsOuTreeType.ROLE)) {
-                m_group = ou + CmsRole.valueOfId(groupID).getRoleName();
-
+                m_group = m_ou + CmsRole.valueOfId(groupID).getRoleName();
                 List<CmsUser> directs = OpenCms.getRoleManager().getUsersOfRole(
                     m_cms,
-                    CmsRole.valueOfRoleName(m_group),
+                    CmsRole.valueOfId(groupID).forOrgUnit(ou),
                     true,
                     true);
                 if (showAll) {
@@ -796,7 +832,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
-     * Visibility whcih is only active if user is in right ou.<p>
+     * Visibility which is only active if user is in right ou.<p>
      *
      * @param userId to be checked
      * @return CmsMenuItemVisibilityMode
@@ -811,6 +847,22 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             //
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+    }
+
+    /**
+     * Checks if all selected items are editable.<p>
+     *
+     * @param context items
+     * @return CmsMenuItemVisibilityMode
+     */
+    protected CmsMenuItemVisibilityMode onlyVisibleForOU(Set<String> context) {
+
+        for (String id : context) {
+            if (onlyVisibleForOU(new CmsUUID(id)).equals(CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+        }
+        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }
 
     /**
@@ -838,6 +890,25 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         dialog.addButton(cancelButton);
         window.setContent(dialog);
         A_CmsUI.get().addWindow(window);
+    }
+
+    /**
+     * Checks value of table and sets it new if needed:<p>
+     * if multiselect: new itemId is in current Value? -> no change of value<p>
+     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
+     *
+     * @param itemId if of clicked item
+     */
+    void changeValueIfNotMultiSelect(Object itemId) {
+
+        @SuppressWarnings("unchecked")
+        Set<String> value = (Set<String>)getValue();
+        if (value == null) {
+            select(itemId);
+        } else if (!value.contains(itemId)) {
+            setValue(null);
+            select(itemId);
+        }
     }
 
     /**
@@ -949,6 +1020,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
         setColumnWidth(null, 40);
         setSelectable(true);
+        setMultiSelect(true);
 
         setVisibleColumns(TableProperty.Name, TableProperty.OU);
 
@@ -960,12 +1032,15 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             public void itemClick(ItemClickEvent event) {
 
-                setValue(null);
-                select(event.getItemId());
+                changeValueIfNotMultiSelect(event.getItemId());
+
                 if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
-                    m_menu.setEntries(
-                        getMenuEntries(),
-                        Collections.singleton(((CmsUser)getValue()).getId().getStringValue()));
+                    Set<String> userIds = new HashSet<String>();
+                    for (CmsUser user : (Set<CmsUser>)getValue()) {
+                        userIds.add(user.getId().getStringValue());
+                    }
+
+                    m_menu.setEntries(getMenuEntries(), userIds);
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsUserTable.this);
                 } else if (event.getButton().equals(MouseButton.LEFT)
                     && TableProperty.Name.equals(event.getPropertyId())) {

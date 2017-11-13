@@ -409,7 +409,9 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
      */
     protected void updateApp(String itemId) {
 
-        if (itemId.equals(CmsOuTreeType.GROUP.getID()) | itemId.equals(CmsOuTreeType.USER.getID())) {
+        if (itemId.equals(CmsOuTreeType.GROUP.getID())
+            | itemId.equals(CmsOuTreeType.USER.getID())
+            | itemId.equals(CmsOuTreeType.ROLE.getID())) {
             m_app.update(m_parentOu, CmsOuTreeType.fromID(itemId), null);
             return;
         }
@@ -522,6 +524,12 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0));
             groupItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
             groupItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.GROUP);
+
+            Item roleItem = m_container.addItem(CmsOuTreeType.ROLE.getID());
+            roleItem.getItemProperty(TableProperty.Name).setValue(
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_0));
+            roleItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_ROLE));
+            roleItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.ROLE);
 
             Item userItem = m_container.addItem(CmsOuTreeType.USER.getID());
             userItem.getItemProperty(TableProperty.Name).setValue(
