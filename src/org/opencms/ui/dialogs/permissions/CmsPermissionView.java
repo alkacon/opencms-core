@@ -275,6 +275,9 @@ public class CmsPermissionView extends CssLayout {
         }
 
         boolean isOverwriteAll = false;
+        if (flags == CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL) {
+            isOverwriteAll = true;
+        }
 
         if (!isOverwriteAll) {
 

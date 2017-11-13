@@ -34,6 +34,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -49,7 +50,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -202,7 +202,7 @@ public class CmsPermissionViewTable extends Table {
             CmsResourceInfo info = CmsAccountsApp.getPrincipalInfo(principal);
             if (view.isEditable()) {
                 CssLayout cssl = new CssLayout();
-                Button removeButton = new Button(FontAwesome.REMOVE);
+                Button removeButton = new Button(FontOpenCms.TRASH_SMALL);
                 removeButton.addStyleName("borderless o-toolbar-button o-resourceinfo-toolbar o-toolbar-icon-visible");
                 removeButton.addClickListener(new ClickListener() {
 
