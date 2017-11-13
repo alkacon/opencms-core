@@ -45,6 +45,7 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -61,11 +62,11 @@ import com.google.gwt.user.client.ui.Panel;
 public class CmsPrincipalSelection extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
-    /** A counter used for giving text box widgets ids. */
-    private static int idCounter;
-
     /** The dialog id. */
     public static final String DIALOG_ID = "principalselect";
+
+    /** A counter used for giving text box widgets ids. */
+    private static int idCounter;
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "groupselection";
@@ -381,10 +382,23 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
             public void selectPrincipal(String principal) {
 
-                setFormValueAsString(principal);
+                if (!getFormValue().equals(principal)) {
+                    setFormValueAsString(principal);
+                    fireValueChange(principal);
+                }
             }
         });
         handler.openDialog(DIALOG_ID, null, null, m_configuration);
+    }
+
+    /**
+     * Fires the value change event.<p>
+     *
+     * @param value the changed value
+     */
+    void fireValueChange(String value) {
+
+        ValueChangeEvent.<String> fire(m_selectionInput.m_textbox, value);
     }
 
     /**
