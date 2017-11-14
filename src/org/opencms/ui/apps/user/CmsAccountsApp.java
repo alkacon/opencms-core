@@ -362,10 +362,31 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         }
 
         Component comp = getComponentForState(state);
-        m_infoButton.replaceData(
-            Collections.singletonMap(
+        if (m_stateBean.getType().equals(CmsOuTreeType.USER)) {
+            Map<String, String> dataMap = new LinkedHashMap<String, String>();
+            dataMap.put(
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
-                String.valueOf(((Table)m_table).size())));
+                String.valueOf(((Table)m_table).size()));
+            try {
+                int count = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(
+                    m_cms,
+                    m_stateBean.getPath(),
+                    true).size();
+                if (count > ((Table)m_table).size()) {
+                    dataMap.put(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOT_COUNT_0),
+                        String.valueOf(count));
+                }
+            } catch (CmsException e) {
+                //;
+            }
+            m_infoButton.replaceData(dataMap);
+        } else {
+            m_infoButton.replaceData(
+                Collections.singletonMap(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
+                    String.valueOf(((Table)m_table).size())));
+        }
         if (comp != null) {
             VerticalLayout layout = new VerticalLayout();
             layout.setSizeFull();
@@ -630,7 +651,10 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         } else {
             m_toggleButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
-        m_infoButton.replaceData(Collections.singletonMap("Count", String.valueOf(table.size())));
+        m_infoButton.replaceData(
+            Collections.singletonMap(
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
+                String.valueOf(table.size())));
     }
 
     /**

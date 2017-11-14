@@ -597,13 +597,13 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         /**Full system Name. */
         SystemName("", String.class, ""),
         /**Name. */
-        Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_USER_0), String.class, ""),
+        Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
         /**Description. */
-        FullName(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_NAME_0), String.class, ""),
+        FullName(Messages.GUI_USERMANAGEMENT_USER_NAME_0, String.class, ""),
         /**OU. */
-        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_OU_0), String.class, ""),
+        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
         /**Last login. */
-        LastLogin(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0), String.class, ""),
+        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, String.class, ""),
         /**IsIndirect?. */
         INDIRECT("", Boolean.class, new Boolean(false)),
         /**From Other ou?. */
@@ -648,8 +648,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         String getName() {
 
-            return m_headerMessage;
-
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_headerMessage)) {
+                return CmsVaadinUtils.getMessageText(m_headerMessage);
+            }
+            return "";
         }
 
         /**
