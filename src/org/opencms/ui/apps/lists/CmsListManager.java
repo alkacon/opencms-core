@@ -962,8 +962,10 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             if (!folderValues.isEmpty()) {
                 for (I_CmsXmlContentValue value : folderValues) {
                     CmsLink val = ((CmsXmlVfsFileValue)value).getLink(cms);
-                    // we are using root paths
-                    folders.add(val.getTarget());
+                    if (val != null) {
+                        // we are using root paths
+                        folders.add(val.getTarget());
+                    }
                 }
             }
             result.setFolders(folders);
