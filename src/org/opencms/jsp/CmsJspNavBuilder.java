@@ -376,8 +376,10 @@ public class CmsJspNavBuilder {
         for (int i = startlevel; i <= endlevel; i++) {
             String navFolder = CmsResource.getPathPart(folder, i);
             CmsJspNavElement e = getNavigationForResource(navFolder);
-            // add element to list
-            result.add(e);
+            if (e != null) {
+                // add element to list
+                result.add(e);
+            }
         }
 
         return result;
