@@ -239,6 +239,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**Base ou. */
     private String m_baseOU = "";
 
+    /**Don't handle change event flag.*/
+    boolean m_doNotChange;
+
     /**vaadin component.*/
     private Button m_newButton;
 
@@ -370,19 +373,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             layout.addComponent(m_table.getEmptyLayout());
             layout.addComponent(m_table);
             m_splitScreen.setSecondComponent(layout);
-
-            //            if (((Table)m_table).size() == 0) {
-            //                if (m_stateBean.getType().equals(CmsOuTreeType.GROUP)
-            //                    & (CmsStateBean.parseState(state, m_stateBean.getPath()).getGroupID() != null)) {
-            //                    m_splitScreen.setSecondComponent(
-            //                        CmsVaadinUtils.getInfoLayout(CmsOuTreeType.USER.getEmptyMessageKey()));
-            //                } else {
-            //                    m_splitScreen.setSecondComponent(
-            //                        CmsVaadinUtils.getInfoLayout(m_stateBean.getType().getEmptyMessageKey()));
-            //                }
-            //            } else {
-            //                m_splitScreen.setSecondComponent(comp);
-            //            }
         } else {
             m_splitScreen.setSecondComponent(new Label("Malformed path, tool not availabel for path: " + state));
         }
@@ -499,105 +489,14 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     @Override
     protected Component getComponentForState(String state) {
 
+        m_doNotChange = true;
         if (m_filter == null) {
-            m_newButton = CmsToolBar.createButton(
-                FontOpenCms.WAND,
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
-            m_newButton.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    openNewDialog();
-                }
-            });
-            m_newButton.setImmediate(true);
-            m_infoButton = new CmsInfoButton();
-            m_settingsButton = CmsToolBar.createButton(
-                FontOpenCms.SETTINGS,
-                CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
-            m_settingsButton.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    openEditDialog();
-                }
-            });
-
-            m_addElementButton = CmsToolBar.createButton(
-                FontAwesome.PLUS,
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_USER_TO_GROUP_0));
-            m_addElementButton.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1859694635385726953L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    openAddUserDialog();
-
-                }
-            });
-
-            m_toggleButton = CmsToolBar.createButton(
-                FontOpenCms.USERS,
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_TOGGLE_0));
-            m_toggleButton.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 8265075332953321274L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    toggleTable();
-
-                }
-
-            });
-
-            m_uiContext.addToolbarButton(m_newButton);
-            m_uiContext.addToolbarButton(m_settingsButton);
-
-            m_uiContext.addToolbarButton(m_addElementButton);
-            m_uiContext.addToolbarButton(m_infoButton);
-            m_uiContext.addToolbarButton(m_toggleButton);
-            m_filter = CmsVaadinUtils.getOUComboBox(m_cms, m_baseOU, LOG);
-            m_filter.setWidth("379px");
-            m_infoLayout.addComponent(m_filter, 0);
-
-            m_filterTable = new TextField();
-            m_filterTable.setIcon(FontOpenCms.FILTER);
-            m_filterTable.setInputPrompt(
-                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            m_filterTable.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            //            m_filterTable.setWidth("200px");
-            m_filterTable.addTextChangeListener(new TextChangeListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void textChange(TextChangeEvent event) {
-
-                    filterTable(event.getText());
-                }
-            });
-            m_infoLayout.addComponent(m_filterTable);
-            m_filter.addValueChangeListener(new ValueChangeListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void valueChange(ValueChangeEvent event) {
-
-                    if (m_stateBean.getType() != null) {
-                        update((String)event.getProperty().getValue(), CmsOuTreeType.OU, null);
-                    } else {
-                        //
-                    }
-                }
-            });
-
+            iniButtons();
         }
         m_stateBean = CmsStateBean.parseState(state, m_baseOU);
+
+        m_filter.setValue(m_stateBean.getPath());
+
         m_newButton.setVisible(m_stateBean.getGroupID() == null);
         m_toggleButton.setVisible(
             m_stateBean.getType().equals(CmsOuTreeType.ROLE) & (m_stateBean.getGroupID() != null));
@@ -608,6 +507,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 & (m_stateBean.getGroupID() != null));
         m_ouTree.openPath(m_stateBean.getPath(), m_stateBean.getType(), m_stateBean.getGroupID());
 
+        m_doNotChange = false;
         if (m_stateBean.getType().equals(CmsOuTreeType.OU)) {
             m_table = new CmsOUTable(m_stateBean.getPath(), this);
             return m_table;
@@ -625,7 +525,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 m_stateBean.getPath(),
                 m_stateBean.getGroupID(),
                 m_stateBean.getType(),
-                isToggled(m_toggleButton));
+                isPressed(m_toggleButton));
             return m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.ROLE)) {
@@ -637,7 +537,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 m_stateBean.getPath(),
                 m_stateBean.getGroupID(),
                 m_stateBean.getType(),
-                isToggled(m_toggleButton));
+                isPressed(m_toggleButton));
             return m_table;
         }
         return null;
@@ -724,13 +624,115 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     void toggleTable() {
 
         CmsUserTable table = (CmsUserTable)m_table;
-        table.toggle(!isToggled(m_toggleButton));
-        if (isToggled(m_toggleButton)) {
+        table.toggle(!isPressed(m_toggleButton));
+        if (isPressed(m_toggleButton)) {
             m_toggleButton.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
         } else {
             m_toggleButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
+        m_infoButton.replaceData(Collections.singletonMap("Count", String.valueOf(table.size())));
+    }
 
+    /**
+     * Initializes the toolbar buttons.<p>
+     */
+    private void iniButtons() {
+
+        m_newButton = CmsToolBar.createButton(
+            FontOpenCms.WAND,
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
+        m_newButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openNewDialog();
+            }
+        });
+        m_newButton.setImmediate(true);
+        m_infoButton = new CmsInfoButton();
+        m_settingsButton = CmsToolBar.createButton(
+            FontOpenCms.SETTINGS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
+        m_settingsButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openEditDialog();
+            }
+        });
+
+        m_addElementButton = CmsToolBar.createButton(
+            FontAwesome.PLUS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_USER_TO_GROUP_0));
+        m_addElementButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1859694635385726953L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openAddUserDialog();
+
+            }
+        });
+
+        m_toggleButton = CmsToolBar.createButton(
+            FontOpenCms.USERS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_TOGGLE_0));
+        m_toggleButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 8265075332953321274L;
+
+            public void buttonClick(ClickEvent event) {
+
+                toggleTable();
+
+            }
+
+        });
+
+        m_uiContext.addToolbarButton(m_newButton);
+        m_uiContext.addToolbarButton(m_settingsButton);
+
+        m_uiContext.addToolbarButton(m_addElementButton);
+        m_uiContext.addToolbarButton(m_infoButton);
+        m_uiContext.addToolbarButton(m_toggleButton);
+        m_filter = CmsVaadinUtils.getOUComboBox(m_cms, m_baseOU, LOG);
+        m_filter.setWidth("379px");
+        m_infoLayout.addComponent(m_filter, 0);
+
+        m_filterTable = new TextField();
+        m_filterTable.setIcon(FontOpenCms.FILTER);
+        m_filterTable.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+        m_filterTable.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        //            m_filterTable.setWidth("200px");
+        m_filterTable.addTextChangeListener(new TextChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                filterTable(event.getText());
+            }
+        });
+        m_infoLayout.addComponent(m_filterTable);
+        m_filter.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                if ((m_stateBean.getType() != null) & !m_doNotChange) {
+                    update((String)event.getProperty().getValue(), CmsOuTreeType.OU, null);
+                } else {
+                    //
+                }
+            }
+        });
     }
 
     /**
@@ -741,7 +743,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param button to be checked
      * @return true if button is checked
      */
-    private boolean isToggled(Button button) {
+    private boolean isPressed(Button button) {
 
         if (button == null) {
             return false;

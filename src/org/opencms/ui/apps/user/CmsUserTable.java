@@ -594,6 +594,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     enum TableProperty {
         /**Icon. */
         Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-user")),
+        /**Full system Name. */
+        SystemName("", String.class, ""),
         /**Name. */
         Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_USER_0), String.class, ""),
         /**Description. */
@@ -773,7 +775,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(data)) {
             m_container.addContainerFilter(
                 new Or(
-                    new SimpleStringFilter(TableProperty.Name, data, true, false),
+                    new SimpleStringFilter(TableProperty.SystemName, data, true, false),
                     new SimpleStringFilter(TableProperty.FullName, data, true, false)));
         }
 
@@ -804,6 +806,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                 setAllUser(m_user);
             }
         } catch (CmsException e) {
+            m_fullLoaded = false;
             LOG.error("Error loading user", e);
         }
         fillContainer(pressed);
@@ -948,6 +951,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         Item item = container.addItem(user);
         item.getItemProperty(TableProperty.Name).setValue(user.getSimpleName());
         item.getItemProperty(TableProperty.FullName).setValue(user.getFullName());
+        item.getItemProperty(TableProperty.SystemName).setValue(user.getName());
         try {
             item.getItemProperty(TableProperty.OU).setValue(
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, user.getOuFqn()).getDisplayName(
@@ -1044,7 +1048,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsUserTable.this);
                 } else if (event.getButton().equals(MouseButton.LEFT)
                     && TableProperty.Name.equals(event.getPropertyId())) {
-                    openInfoDialog(((CmsUser)getValue()).getId());
+                    CmsUser user = ((Set<CmsUser>)getValue()).iterator().next();
+                    openInfoDialog(user.getId());
                 }
 
             }
@@ -1101,6 +1106,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      */
     private void setAllUser(List<CmsUser> directs) throws CmsException {
 
+        m_fullLoaded = true;
         m_user = OpenCms.getRoleManager().getUsersOfRole(m_cms, CmsRole.valueOfRoleName(m_group), true, false);
         Iterator<CmsUser> it = m_user.iterator();
         while (it.hasNext()) {
@@ -1110,7 +1116,6 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             }
         }
         m_indirects.addAll(getAllowedIndirects(m_user, directs));
-        m_fullLoaded = true;
     }
 
     /**
