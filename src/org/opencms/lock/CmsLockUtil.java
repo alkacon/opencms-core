@@ -56,7 +56,9 @@ public final class CmsLockUtil {
 
         /** The cms object used for locking, unlocking and encoding determination. */
         private CmsObject m_cms;
-        /** The file that was read. */
+        /** The resource that was locked. */
+        private CmsResource m_res;
+        /** The file that was read (cached file for getFile). */
         private CmsFile m_file;
         /** The lock action record from locking the file. */
         private CmsLockActionRecord m_lockRecord;
@@ -71,7 +73,7 @@ public final class CmsLockUtil {
         private LockedFile(CmsObject cms, CmsResource resource)
         throws CmsException {
             m_lockRecord = CmsLockUtil.ensureLock(cms, resource);
-            m_file = cms.readFile(resource);
+            m_res = resource;
             m_new = false;
             m_cms = cms;
         }
@@ -106,15 +108,23 @@ public final class CmsLockUtil {
          */
         public String getEncoding() {
 
-            return CmsFileUtil.getEncoding(m_cms, m_file);
+            return CmsFileUtil.getEncoding(m_cms, m_res);
 
         }
 
-        /** Returns the file.
-         * @return the file.
+        /** Returns the file, or null if reading fails.
+         * @return the file, or null if reading fails.
          */
+        @SuppressWarnings("synthetic-access")
         public CmsFile getFile() {
 
+            if ((null == m_file) && m_res.isFile()) {
+                try {
+                    m_file = m_cms.readFile(m_res);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             return m_file;
         }
 
@@ -154,7 +164,7 @@ public final class CmsLockUtil {
 
             if (!m_lockRecord.getChange().equals(LockChange.unchanged) || m_new) {
                 try {
-                    m_cms.unlockResource(m_file);
+                    m_cms.unlockResource(m_res);
                     return true;
                 } catch (CmsException e) {
                     // this will happen in case a parent folder is still locked, can be ignored
