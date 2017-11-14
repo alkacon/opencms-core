@@ -21,7 +21,6 @@
 		<xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
 		<xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
 		<xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
-		<xsd:element name="CategoryConjunction" type="OpenCmsBoolean" minOccurs="0"/>
 		<xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
 		<xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="25" />
         </xsd:sequence>

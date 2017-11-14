@@ -251,7 +251,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (m_configObject.has(JSON_KEY_FIELD_FACETS)) {
             return super.parseFieldFacets();
         } else {
-            return getDefaultFieldFacets(m_config.getCategoryConjunction());
+            return getDefaultFieldFacets(true);
         }
     }
 

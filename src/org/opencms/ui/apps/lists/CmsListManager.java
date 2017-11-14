@@ -232,16 +232,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
 
         /**
-         * Gets the category conjunction setting.<p>
-         *
-         * @return the category conjunction setting
-         */
-        public boolean getCategoryConjunction() {
-
-            return Boolean.parseBoolean(getParameterValue(N_CATEGORY_CONJUNCTION));
-        }
-
-        /**
          * Gets the category mode.<p>
          *
          * @return the category mode
@@ -687,9 +677,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public static final String N_CATEGORY_MODE = "CategoryMode";
 
     /** List configuration node name and field key. */
-    public static final String N_CATEGORY_CONJUNCTION = "CategoryConjunction";
-
-    /** List configuration node name and field key. */
     public static final String N_DISPLAY_TYPE = "TypesToCollect";
 
     /** List configuration node name and field key. */
@@ -725,8 +712,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         N_CATEGORY,
         N_FILTER_QUERY,
         N_SORT_ORDER,
-        N_SHOW_EXPIRED,
-        N_CATEGORY_CONJUNCTION};
+        N_SHOW_EXPIRED};
 
     /** The view content list path name. */
     public static final String PATH_NAME_VIEW = "view";
