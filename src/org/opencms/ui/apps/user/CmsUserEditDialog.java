@@ -81,8 +81,11 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -230,6 +233,9 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     /**vaadin component.*/
     ComboBox m_site;
 
+    /**vaadin component. */
+    private Button m_next;
+
     /**vaadin component.*/
     private ComboBox m_project;
 
@@ -282,7 +288,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             m_group.setVisible(false);
             m_loginname.setValue(m_user.getSimpleName());
             m_loginname.setEnabled(false);
-            m_ou.setValue(m_user.getOuFqn());
+            m_ou.setValue(m_user.getOuFqn().isEmpty() ? "/" : m_user.getOuFqn());
 
             m_description.setValue(m_user.getDescription());
             m_selfmanagement.setValue(new Boolean(!m_user.isManaged()));
@@ -315,13 +321,13 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             //
         }
         setPasswordFields();
-
-        m_ou.setValue(ou);
+        m_ou.setValue(ou.isEmpty() ? "/" : ou);
         m_group.setWidgetType(WidgetType.groupwidget);
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
         m_group.setOU(m_ou.getValue());
         m_enabled.setValue(Boolean.TRUE);
+        m_startfolder.setValue("/");
         init(window, null);
     }
 
@@ -436,6 +442,17 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     }
 
     /**
+     * Sets the visibility of the buttons.<p>
+     */
+    protected void setButtonVisibility() {
+
+        Component tab = m_tab.getSelectedTab();
+        int pos = m_tab.getTabPosition(m_tab.getTab(tab));
+        m_next.setVisible(pos < 3);
+        m_ok.setVisible(pos == 3);
+    }
+
+    /**
      * Sets up the validators.<p>
      */
     protected void setupValidators() {
@@ -446,6 +463,14 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             m_site.addValidator(new StartViewValidator());
             m_startview.addValidator(new StartViewValidator());
         }
+    }
+
+    /**Switches to the next tab.*/
+    protected void switchTab() {
+
+        Component tab = m_tab.getSelectedTab();
+        int pos = m_tab.getTabPosition(m_tab.getTab(tab));
+        m_tab.setSelectedTab(pos + 1);
     }
 
     /**
@@ -768,6 +793,20 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             }
         });
 
+        m_next.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = -8584899970290349959L;
+
+            public void buttonClick(ClickEvent event) {
+
+                setupValidators();
+                if (isValid()) {
+                    switchTab();
+                }
+
+            }
+        });
+
         m_cancel.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 5803825104722705175L;
@@ -803,6 +842,19 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             }
 
         });
+
+        m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
+
+            private static final long serialVersionUID = -2579639520410382246L;
+
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+
+                setButtonVisibility();
+
+            }
+        });
+        setButtonVisibility();
+        m_tab.setHeight("350px");
     }
 
     /**

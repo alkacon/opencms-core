@@ -21,12 +21,15 @@
 								<v-label _id="m_ou" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_OU_0)" description="%(key.GUI_USERMANAGEMENT_USER_OU_HELP_0)" />
 						
 							</v-form-layout>
+							</v-vertical-layout>
 						</tab>
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_DATA_0)">	
+						<v-vertical-layout margin spacing>
 							<o-cms-user-data-form-layout margin _id="m_userdata"/>
+						</v-vertical-layout>
 						</tab>
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_AUTHENTIFICATION_0)">
-						<v-vertical-layout _id="m_authHolder">
+						<v-vertical-layout _id="m_authHolder" margin spacing>
 							<v-form-layout _id="m_tabSimple4" margin spacing style-name="o-formlayout-workplace-main">
 								<v-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_USER_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_USER_ENABLED_HELP_0)" />
 								<v-check-box _id="m_selfmanagement" caption="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_0)" description="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_HELP_0)" />
@@ -37,6 +40,7 @@
 						</tab>
 
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_SETTINGS_0)">
+						<v-vertical-layout margin spacing>
 							<v-form-layout _id="m_tabSimple3" margin spacing style-name="o-formlayout-workplace-main">
 								<v-combo-box _id="m_language" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_0)" description="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_HELP_0)"/>
 								<v-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_SITE_0)" description="%(key.GUI_USERMANAGEMENT_USER_SITE_HELP_0)"/>
@@ -44,11 +48,13 @@
 								<f-cms-path-select-field _id="m_startfolder" width="100%"  caption="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_HELP_0)"/>
 								<v-combo-box _id="m_startview" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_HELP_0)"/>
 							</v-form-layout>
+						</v-vertical-layout>
 						</tab>
 					</v-tab-sheet>
 				</v-vertical-layout>
 			</content>
 			<buttons>	
+				<v-button _id="m_next">%(key.GUI_DIALOG_BUTTON_NEXT_0)</v-button>
 				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
 				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
 			</buttons>
