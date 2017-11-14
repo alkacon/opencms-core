@@ -23,7 +23,7 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
-				<layout element="Direction" widget="SelectorWidget" configuration="past:%(key.list_config.past)|future:%(key.list_config.future)" />
+				<layout element="Direction" widget="SelectorWidget" configuration="future:%(key.list_config.future)|past:%(key.list_config.past)" />
 				<layout element="Unit" widget="SelectorWidget" configuration="DAYS:%(key.list_config.days)|WEEKS:%(key.list_config.weeks)|MONTHS:%(key.list_config.months)|YEARS:%(key.list_config.years)" />
 			</layouts>
 			
