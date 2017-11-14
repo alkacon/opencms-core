@@ -60,6 +60,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsImageScaler {
 
+    /** Maximum scaler type. */
+    public static final int MAX_SCALE_TYPE = 8;
+
     /** The name of the transparent color (for the background image). */
     public static final String COLOR_TRANSPARENT = "transparent";
 
@@ -818,6 +821,13 @@ public class CmsImageScaler {
      * <li>In this case the crop coordinates <code>x, y</code> are treated as a point in the middle of <code>width, height</code>.
      * <li>With this type, as much as possible from the source image is fitted in the target image size.</ul></dd>
      *
+     * <dt>8: High resolution thumbnail mode.
+     * <p>This is used for thumbnails which are displayed in a screen space half their width/height. The effective difference from mode
+     * 1 is that if the original image fits in that screen space, it is first scaled to twice its size so that in the end result displayed
+     * to the user, the image appears as the same size as the original displayed at its natural size. </p>
+     *
+     * <p>For images which are larger than the screen space (i.e. half the given width/height), there is no difference from mode 1.</p>
+     *
      * @return the type
      */
     public int getType() {
@@ -1198,6 +1208,20 @@ public class CmsImageScaler {
                             imageProcessed = true;
                         }
                         break;
+                    case 8:
+                        // High resolution thumbnail mode, used for thumbnails which are displayed in a screen space
+                        // half their width/height. The effective difference from mode 1 (thumbnail mode) is that if
+                        // the original image fits in that screen space, it is first scaled to twice its dimensions,
+                        // so that in the end result displayed to the user, the image appears the same size as the original
+                        // displayed at its natural size.
+                        //
+                        // If the original image is larger than the screen space, there is no difference from mode 1.
+                        if ((imageWidth <= (getWidth() / 2)) && (imageHeight <= (getHeight() / 2))) {
+                            image = scaler.resize(image, 2 * imageWidth, 2 * imageHeight, color, getPosition(), true);
+                        }
+                        image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
+                        imageProcessed = true;
+                        break;
                     default:
                         // scale to exact target size with background padding
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
@@ -1416,7 +1440,7 @@ public class CmsImageScaler {
      */
     public void setType(int type) {
 
-        if ((type < 0) || (type > 7)) {
+        if ((type < 0) || (type > MAX_SCALE_TYPE)) {
             // invalid type, use 0
             m_type = 0;
         } else {
