@@ -63,6 +63,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -749,7 +750,6 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             }
             m_project.setNewItemsAllowed(false);
             m_project.setNullSelectionAllowed(false);
-            m_project.select(CmsProject.ONLINE_PROJECT_NAME);
             if (settings != null) {
                 String projString = settings.getStartProject();
                 if (projString.contains("/")) {
@@ -757,7 +757,12 @@ public class CmsUserEditDialog extends CmsBasicDialog {
                 }
                 m_project.select(projString);
             } else {
-                m_project.select(m_project.getItemIds().iterator().next());
+                Iterator<?> it = m_project.getItemIds().iterator();
+                String p = (String)it.next();
+                while (p.equals(CmsProject.ONLINE_PROJECT_NAME) & it.hasNext()) {
+                    p = (String)it.next();
+                }
+                m_project.select(p);
             }
         } catch (CmsException e) {
             LOG.error("Unable to read projects", e);

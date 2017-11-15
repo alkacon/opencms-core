@@ -233,9 +233,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**vaadin component.*/
     private I_CmsFilterableTable m_table;
 
-    /**vaadin component. */
-    Button m_settingsButton;
-
     /**Base ou. */
     private String m_baseOU = "";
 
@@ -522,7 +519,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_toggleButton.setVisible(
             m_stateBean.getType().equals(CmsOuTreeType.ROLE) & (m_stateBean.getGroupID() != null));
         m_infoButton.setVisible(!m_stateBean.getType().equals(CmsOuTreeType.OU));
-        m_settingsButton.setVisible(m_stateBean.getType().equals(CmsOuTreeType.OU) && !m_stateBean.getPath().isEmpty());
         m_addElementButton.setVisible(
             (m_stateBean.getType().equals(CmsOuTreeType.GROUP) | m_stateBean.getType().equals(CmsOuTreeType.ROLE))
                 & (m_stateBean.getGroupID() != null));
@@ -627,19 +623,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-    * Opens a dialog to edit current OU.<p>
-    */
-    void openEditDialog() {
-
-        Window window = CmsBasicDialog.prepareWindow();
-        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_EDIT_WINDOW_CAPTION_0));
-        window.setContent(new CmsOUEditDialog(m_cms, m_stateBean.getPath(), window));
-
-        A_CmsUI.get().addWindow(window);
-
-    }
-
-    /**
      * toggles the table.<p>
      */
     void toggleTable() {
@@ -676,18 +659,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         });
         m_newButton.setImmediate(true);
         m_infoButton = new CmsInfoButton();
-        m_settingsButton = CmsToolBar.createButton(
-            FontOpenCms.SETTINGS,
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
-        m_settingsButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                openEditDialog();
-            }
-        });
 
         m_addElementButton = CmsToolBar.createButton(
             FontAwesome.PLUS,
@@ -719,7 +690,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         });
 
         m_uiContext.addToolbarButton(m_newButton);
-        m_uiContext.addToolbarButton(m_settingsButton);
 
         m_uiContext.addToolbarButton(m_addElementButton);
         m_uiContext.addToolbarButton(m_infoButton);

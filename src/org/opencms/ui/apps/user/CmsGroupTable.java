@@ -132,7 +132,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          */
         public String getTitle(Locale locale) {
 
-            return "Edit";
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EDIT_GROUP_0);
         }
 
         /**
