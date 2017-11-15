@@ -1345,7 +1345,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         setDefaultUri(clone.readResource(defaulrUri).getRootPath());
         setSharedFolder(clone.readResource(sharedFolder).getRootPath());
         m_workplaceServers = new ArrayList<String>(workplaceServers);
-        initWorkplaceMatchers();
+        initialize(cms);
         m_frozen = true;
     }
 
