@@ -114,6 +114,11 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                     CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_RESOURCE_NOT_VALID_0));
             }
 
+            if (isOutOfOu((String)value)) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_RESOURCE_OUT_OF_OU_0));
+            }
+
         }
     }
 
@@ -142,7 +147,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
     private TextArea m_description;
 
     /**vaadin component.*/
-    private Label m_parentOu;
+    Label m_parentOu;
 
     /**vaadin component.*/
     private CheckBox m_hideLogin;
@@ -166,7 +171,6 @@ public class CmsOUEditDialog extends CmsBasicDialog {
     public CmsOUEditDialog(CmsObject cms, String ou, final Window window) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_cms = cms;
-
         Supplier<Component> fieldFactory = new Supplier<Component>() {
 
             public Component get() {
@@ -174,6 +178,13 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                 CmsPathSelectField field = new CmsPathSelectField();
                 field.setUseRootPaths(true);
                 field.setCmsObject(m_cms);
+                try {
+                    field.setValue(
+                        OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(m_cms, m_parentOu.getValue()).get(
+                            0).getRootPath());
+                } catch (CmsException e) {
+                    //
+                }
                 return field;
             }
         };
@@ -257,6 +268,15 @@ public class CmsOUEditDialog extends CmsBasicDialog {
     public CmsOUEditDialog(CmsObject cms, Window window, String ou) {
         this(cms, null, window);
         m_parentOu.setValue(ou);
+        CmsPathSelectField field = new CmsPathSelectField();
+        field.setUseRootPaths(true);
+        field.setCmsObject(m_cms);
+        try {
+            field.setValue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou).get(0).getRootPath());
+        } catch (CmsException e) {
+            //
+        }
+        m_ouResources.addRow(field);
     }
 
     /**
@@ -267,11 +287,42 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      */
     protected boolean isInvalidResourceName(String resourceName) {
 
+        if (resourceName == null) {
+            return true;
+        }
         try {
+
             m_cms.readResource(resourceName);
             return false;
         } catch (CmsException e) {
             //Ok, resource not valid..
+        }
+        return true;
+    }
+
+    /**
+     * Check if resource is in parent OU.<p>
+     *
+     * @param resourceName to check
+     * @return boolean
+     */
+    protected boolean isOutOfOu(String resourceName) {
+
+        if (resourceName == null) {
+            return true;
+        }
+        try {
+            boolean notOk = true;
+            for (CmsResource res : OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                m_cms,
+                m_parentOu.getValue())) {
+                if (resourceName.startsWith(res.getRootPath())) {
+                    notOk = false;
+                }
+            }
+            return notOk;
+        } catch (CmsException e) {
+
         }
         return true;
     }
