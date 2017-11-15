@@ -593,7 +593,7 @@ public final class CmsVaadinUtils {
             combo = new ComboBox(null, container);
             combo.setTextInputAllowed(true);
             combo.setNullSelectionAllowed(false);
-            combo.setWidth("200px");
+            combo.setWidth("379px");
             combo.setInputPrompt(
                 Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
             combo.setItemCaptionPropertyId("desc");
@@ -1111,7 +1111,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
