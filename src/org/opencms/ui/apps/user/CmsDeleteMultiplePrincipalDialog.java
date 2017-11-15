@@ -27,29 +27,33 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 
 /**
@@ -72,14 +76,23 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
     /**Vaadin component. */
     Button m_cancelButton;
 
-    /**Vaadin component. */
-    FormLayout m_force;
-
-    /**Vaadin component. */
-    CheckBox m_forceCheck;
-
     /**The ids to delete. */
     private Set<String> m_ids;
+
+    /**Ids of the user to delete. */
+    private Set<CmsUUID> m_userIDs;
+
+    /**Ids of the group to delete.*/
+    private Set<CmsUUID> m_groupIDs;
+
+    /**vaadin component. */
+    private Panel m_dependencyPanel;
+
+    /**vaadin component. */
+    private CmsPrincipalSelect m_principalSelect;
+
+    /**vaadin component. */
+    private FormLayout m_principalSelectLayout;
 
     /**
      * Public constructor.<p>
@@ -91,29 +104,44 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
     public CmsDeleteMultiplePrincipalDialog(CmsObject cms, Set<String> context, Window window) {
         init(cms, window);
         m_ids = context;
+        m_groupIDs = new HashSet<CmsUUID>();
+        m_userIDs = new HashSet<CmsUUID>();
+        for (String id : m_ids) {
+            try {
+                if (CmsPrincipal.readPrincipal(cms, new CmsUUID(id)) instanceof CmsGroup) {
+                    m_groupIDs.add(new CmsUUID(id));
+                } else {
+                    m_userIDs.add(new CmsUUID(id));
+                }
+            } catch (CmsException e) {
+                //
+            }
+        }
         try {
             List<CmsResourceInfo> infos = new ArrayList<CmsResourceInfo>();
             for (String id : context) {
                 infos.add(CmsAccountsApp.getPrincipalInfo(CmsPrincipal.readPrincipal(cms, new CmsUUID(id))));
             }
             displayResourceInfoDirectly(infos);
-            boolean simple = true;
-            for (String id : context) {
-                simple = simple & (m_cms.getResourcesForPrincipal(new CmsUUID(id), null, false).size() == 0);
-            }
-            m_force.setVisible(!simple);
-            m_okButton.setEnabled(simple);
-            m_forceCheck.addValueChangeListener(new ValueChangeListener() {
+            CmsResourceInfoTable table = new CmsResourceInfoTable(m_cms, m_userIDs, m_groupIDs);
+            table.setHeight("300px");
+            table.setWidth("100%");
+            m_dependencyPanel.setVisible(table.size() > 0);
+            m_principalSelectLayout.setVisible(table.size() > 0);
+            if (m_dependencyPanel.isVisible()) {
+                m_dependencyPanel.setContent(table);
+                m_principalSelect.setRealPrincipalsOnly(true);
 
-                /**vaadin serial id. */
-                private static final long serialVersionUID = 3604602066297066360L;
-
-                public void valueChange(ValueChangeEvent event) {
-
-                    m_okButton.setEnabled(m_forceCheck.getValue().booleanValue());
-
+                if ((m_userIDs.size() == 0) | (m_groupIDs.size() == 0)) {
+                    m_principalSelect.setWidgetType(
+                        m_userIDs.size() > 0 ? WidgetType.userwidget : WidgetType.groupwidget);
+                    m_principalSelect.setPrincipalType(
+                        m_userIDs.size() > 0 ? I_CmsPrincipal.PRINCIPAL_USER : I_CmsPrincipal.PRINCIPAL_GROUP);
+                } else {
+                    m_principalSelect.setWidgetType(WidgetType.principalwidget);
                 }
-            });
+
+            }
         } catch (CmsException e) {
             //
         }
@@ -125,8 +153,17 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
     protected void deletePrincipal() {
 
         try {
-            for (String id : m_ids) {
-                m_cms.deleteUser(new CmsUUID(id));
+            String principalNameToCopyTo = m_principalSelect.getValue();
+            I_CmsPrincipal principalTarget = null;
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(principalNameToCopyTo)) {
+                principalTarget = CmsPrincipal.readPrincipal(m_cms, principalNameToCopyTo);
+            }
+
+            for (CmsUUID id : m_groupIDs) {
+                m_cms.deleteGroup(id, principalTarget != null ? principalTarget.getId() : null);
+            }
+            for (CmsUUID id : m_userIDs) {
+                m_cms.deleteUser(id, principalTarget != null ? principalTarget.getId() : null);
             }
         } catch (CmsException e) {
             //

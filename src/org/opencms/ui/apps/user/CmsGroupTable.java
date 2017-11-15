@@ -47,7 +47,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -83,10 +83,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
         public void executeAction(final Set<String> context) {
 
             Window window = CmsBasicDialog.prepareWindow();
-            CmsDeletePrincipalDialog dialog = new CmsDeletePrincipalDialog(
-                m_cms,
-                new CmsUUID(context.iterator().next()),
-                window);
+            CmsDeleteMultiplePrincipalDialog dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window);
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DELETE_0));
             A_CmsUI.get().addWindow(window);
@@ -140,6 +137,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -179,6 +179,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             if (m_app != null) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             } else {
@@ -218,6 +221,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -226,7 +232,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
     /**Table properties.<p>*/
     enum TableProperty {
         /**Icon column.*/
-        Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-group")),
+        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_GROUP)),
         /**Name column. */
         Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
         /**Desription column. */
@@ -369,6 +375,25 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     * Checks value of table and sets it new if needed:<p>
+     * if multiselect: new itemId is in current Value? -> no change of value<p>
+     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
+     *
+     * @param itemId if of clicked item
+     */
+    void changeValueIfNotMultiSelect(Object itemId) {
+
+        @SuppressWarnings("unchecked")
+        Set<String> value = (Set<String>)getValue();
+        if (value == null) {
+            select(itemId);
+        } else if (!value.contains(itemId)) {
+            setValue(null);
+            select(itemId);
+        }
+    }
+
+    /**
      * Returns the available menu entries.<p>
      *
      * @return the menu entries
@@ -408,7 +433,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
         setColumnWidth(null, 40);
         setSelectable(true);
-
+        setMultiSelect(true);
         setVisibleColumns(TableProperty.Name, TableProperty.OU);
 
         try {
@@ -434,19 +459,22 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
             private static final long serialVersionUID = 4807195510202231174L;
 
+            @SuppressWarnings("unchecked")
             public void itemClick(ItemClickEvent event) {
 
-                setValue(null);
-                select(event.getItemId());
+                changeValueIfNotMultiSelect(event.getItemId());
+
                 if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
-                    m_menu.setEntries(
-                        getMenuEntries(),
-                        Collections.singleton(((CmsGroup)getValue()).getId().getStringValue()));
+                    Set<String> groupIds = new HashSet<String>();
+                    for (CmsGroup group : (Set<CmsGroup>)getValue()) {
+                        groupIds.add(group.getId().getStringValue());
+                    }
+                    m_menu.setEntries(getMenuEntries(), groupIds);
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsGroupTable.this);
                     return;
                 }
                 if (event.getButton().equals(MouseButton.LEFT) && event.getPropertyId().equals(TableProperty.Name)) {
-                    updateApp(((CmsGroup)getValue()).getId().getStringValue());
+                    updateApp((((Set<CmsGroup>)getValue()).iterator().next()).getId().getStringValue());
                 }
             }
 

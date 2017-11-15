@@ -82,7 +82,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
         public void executeAction(final Set<String> context) {
 
             Window window = CmsBasicDialog.prepareWindow();
-            CmsDeletePrincipalDialog dialog = new CmsDeletePrincipalDialog(m_cms, context.iterator().next(), window);
+            CmsDeleteOUDialog dialog = new CmsDeleteOUDialog(m_cms, context.iterator().next(), window);
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_DELETE_0));
             A_CmsUI.get().addWindow(window);

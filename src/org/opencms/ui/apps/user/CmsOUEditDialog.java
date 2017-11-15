@@ -200,7 +200,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                 m_name.setEnabled(false);
                 m_name.setValue(m_ou.getName());
                 m_description.setValue(m_ou.getDescription());
-                m_parentOu.setValue(m_ou.getParentFqn());
+                m_parentOu.setValue(m_ou.getParentFqn().equals("") ? "/" : m_ou.getParentFqn());
                 m_hideLogin.setValue(new Boolean(m_ou.hasFlagHideLogin()));
                 m_webuser.setValue(new Boolean(m_ou.hasFlagWebuser()));
                 m_webuser.setEnabled(false);
@@ -267,7 +267,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      */
     public CmsOUEditDialog(CmsObject cms, Window window, String ou) {
         this(cms, null, window);
-        m_parentOu.setValue(ou);
+        m_parentOu.setValue(ou.equals("") ? "/" : ou);
         CmsPathSelectField field = new CmsPathSelectField();
         field.setUseRootPaths(true);
         field.setCmsObject(m_cms);
@@ -322,7 +322,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
             }
             return notOk;
         } catch (CmsException e) {
-
+            //
         }
         return true;
     }

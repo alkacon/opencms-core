@@ -138,11 +138,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow();
             CmsBasicDialog dialog = null;
-            if (context.size() == 1) {
-                dialog = new CmsDeletePrincipalDialog(m_cms, new CmsUUID(context.iterator().next()), window);
-            } else {
-                dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window);
-            }
+
+            dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window);
+
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DELETE_0));
             A_CmsUI.get().addWindow(window);
@@ -1036,6 +1034,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             private static final long serialVersionUID = 4807195510202231174L;
 
+            @SuppressWarnings("unchecked")
             public void itemClick(ItemClickEvent event) {
 
                 changeValueIfNotMultiSelect(event.getItemId());

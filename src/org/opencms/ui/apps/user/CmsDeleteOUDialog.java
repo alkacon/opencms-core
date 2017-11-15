@@ -27,26 +27,18 @@
 
 package org.opencms.ui.apps.user;
 
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.security.CmsPrincipal;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
-import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -63,13 +55,13 @@ import com.vaadin.ui.Window;
 /**
  * Dialog for delete of principals and ous.<p>
  */
-public class CmsDeletePrincipalDialog extends CmsBasicDialog {
+public class CmsDeleteOUDialog extends CmsBasicDialog {
 
     /**vaadin serial id. */
     private static final long serialVersionUID = -7191571070148172989L;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDeletePrincipalDialog.class);
+    private static final Log LOG = CmsLog.getLog(CmsDeleteOUDialog.class);
 
     /**vaadin component. */
     private Label m_label;
@@ -86,9 +78,6 @@ public class CmsDeletePrincipalDialog extends CmsBasicDialog {
     /**vaadin component. */
     private FormLayout m_principalSelectLayout;
 
-    /**The principal which should be deleted. */
-    private I_CmsPrincipal m_principal;
-
     /**CmsObject. */
     private CmsObject m_cms;
 
@@ -98,62 +87,6 @@ public class CmsDeletePrincipalDialog extends CmsBasicDialog {
     /**vaadin component. */
     private Panel m_dependencyPanel;
 
-    /**vaadin component. */
-    private CmsPrincipalSelect m_principalSelect;
-
-    /**
-     * public constructor used for user or groups.<p>
-     *
-     * @param cms CmsObject
-     * @param principalUUID id of principal
-     * @param window window showing the dialog
-     */
-    public CmsDeletePrincipalDialog(CmsObject cms, CmsUUID principalUUID, final Window window) {
-        init(cms, window);
-        try {
-            m_principal = CmsPrincipal.readPrincipal(cms, principalUUID);
-            displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_principal)));
-            if (m_principal instanceof CmsUser) {
-                m_label.setValue(
-                    CmsVaadinUtils.getMessageText(
-                        Messages.GUI_USERMANAGEMENT_DELETE_USER_1,
-                        m_principal.getSimpleName()));
-            } else {
-                m_label.setValue(
-                    CmsVaadinUtils.getMessageText(
-                        Messages.GUI_USERMANAGEMENT_DELETE_GROUP_1,
-                        m_principal.getSimpleName()));
-            }
-            List<CmsUser> user = null;
-            if (m_principal instanceof CmsGroup) {
-                user = m_cms.getUsersOfGroup(m_principal.getName());
-            }
-
-            CmsResourceInfoTable table = new CmsResourceInfoTable(
-                cms.getResourcesForPrincipal(principalUUID, null, false),
-                user);
-            table.setHeight("300px");
-            table.setWidth("100%");
-            m_dependencyPanel.setVisible(table.size() > 0);
-            m_principalSelectLayout.setVisible(table.size() > 0);
-            if (m_dependencyPanel.isVisible()) {
-                m_dependencyPanel.setContent(table);
-                m_principalSelect.setCaption(
-                    m_principal instanceof CmsGroup
-                    ? CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_0)
-                    : CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
-                m_principalSelect.setRealPrincipalsOnly(true);
-                m_principalSelect.setWidgetType(
-                    m_principal instanceof CmsUser ? WidgetType.userwidget : WidgetType.groupwidget);
-
-                m_principalSelect.setPrincipalType(
-                    m_principal instanceof CmsUser ? I_CmsPrincipal.PRINCIPAL_USER : I_CmsPrincipal.PRINCIPAL_GROUP);
-            }
-        } catch (CmsException e) {
-            LOG.error("Unable to read principal", e);
-        }
-    }
-
     /**
      * public constructor used for OUs.<p>
      *
@@ -161,7 +94,7 @@ public class CmsDeletePrincipalDialog extends CmsBasicDialog {
      * @param ouName name of ou to delete
      * @param window window showing dialog
      */
-    public CmsDeletePrincipalDialog(CmsObject cms, String ouName, Window window) {
+    public CmsDeleteOUDialog(CmsObject cms, String ouName, Window window) {
         m_ouName = ouName;
         init(cms, window);
         m_dependencyPanel.setVisible(false);
@@ -188,30 +121,11 @@ public class CmsDeletePrincipalDialog extends CmsBasicDialog {
      */
     void deletePrincipal() {
 
-        if (m_ouName != null) {
-            //Delete OU
-            try {
-                OpenCms.getOrgUnitManager().deleteOrganizationalUnit(m_cms, m_ouName);
-            } catch (CmsException e) {
-                LOG.error("Unable to delete OU");
-            }
-            return;
-        }
-
-        //Delete User or Group
+        //Delete OU
         try {
-            String principalNameToCopyTo = m_principalSelect.getValue();
-            I_CmsPrincipal principalTarget = null;
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(principalNameToCopyTo)) {
-                principalTarget = CmsPrincipal.readPrincipal(m_cms, principalNameToCopyTo);
-            }
-            if (m_principal instanceof CmsUser) {
-                m_cms.deleteUser(m_principal.getId(), principalTarget != null ? principalTarget.getId() : null);
-            } else {
-                m_cms.deleteGroup(m_principal.getId(), principalTarget != null ? principalTarget.getId() : null);
-            }
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(m_cms, m_ouName);
         } catch (CmsException e) {
-            LOG.error("Unable to delete principal", e);
+            LOG.error("Unable to delete OU");
         }
     }
 
