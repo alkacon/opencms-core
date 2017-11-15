@@ -94,16 +94,10 @@ div.imagePreview > div{
 	width: 165px;
 	background: white;
 	text-align: center;
-	display: flex;
-	-ms-flex-pack: center;
-    justify-content: center;
-    -ms-flex-direction: column;
-    flex-direction: column;
 }
 
-div.imagePreview > div > img { 
-	margin-left: auto;
-	margin-right: auto; 
+div.imagePreview img {
+	margin: auto;
 }
 
 .hasImage div.imagePreview {

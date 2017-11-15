@@ -571,28 +571,19 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             m_croppingParam = CmsCroppingParamBean.parseImagePath(getFormValueAsString());
         }
         CmsCroppingParamBean restricted;
-        int[] visibleDimensions = null;
-
-        // scale to twice the preview container's size, for high resolution displays
+        int marginTop = 0;
         if (m_croppingParam.getScaleParam().isEmpty()) {
-            imagePath += "?__scale=w:330,h:228,t:8,c:white,r:0";
+            imagePath += "?__scale=w:330,h:228,t:1,c:white,r:0";
         } else {
-            restricted = m_croppingParam.getRestrictedSizeParam(228, 330);
-            CmsCroppingParamBean visibleDimensionsBean = m_croppingParam.getRestrictedSizeParam(114, 165);
-            visibleDimensions = new int[] {
-                visibleDimensionsBean.getResultingWidth(),
-                visibleDimensionsBean.getResultingHeight()};
+            restricted = m_croppingParam.getRestrictedSizeParam(114, 165);
             imagePath += "?" + restricted.toString();
+            marginTop = (114 - restricted.getResultingHeight()) / 2;
         }
         Element image = DOM.createImg();
         image.setAttribute("src", imagePath);
-        if (visibleDimensions == null) {
-            image.getStyle().setProperty("maxWidth", "165px");
-            image.getStyle().setProperty("maxHeight", "114px");
-        } else {
-            image.getStyle().setWidth(visibleDimensions[0], Unit.PX);
-            image.getStyle().setHeight(visibleDimensions[1], Unit.PX);
-        }
+        image.getStyle().setProperty("maxWidth", "165px");
+        image.getStyle().setProperty("maxHeight", "114px");
+        image.getStyle().setMarginTop(marginTop, Unit.PX);
         m_imagePreview.setInnerHTML("");
         m_imagePreview.appendChild(image);
     }
