@@ -339,9 +339,9 @@ public class CmsEditProjectForm extends CmsBasicDialog {
                 createProject();
             } else {
                 saveProject();
-                m_table.loadProjects();
-                m_window.close();
             }
+            m_table.loadProjects();
+            m_window.close();
         }
     }
 
