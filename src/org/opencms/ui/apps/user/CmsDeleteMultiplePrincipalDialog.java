@@ -35,6 +35,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
@@ -72,6 +73,9 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
 
     /**Vaadin component. */
     CmsObject m_cms;
+
+    /**Vaadin component. */
+    private Label m_label;
 
     /**Vaadin component. */
     Button m_cancelButton;
@@ -123,6 +127,10 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
                 infos.add(CmsAccountsApp.getPrincipalInfo(CmsPrincipal.readPrincipal(cms, new CmsUUID(id))));
             }
             displayResourceInfoDirectly(infos);
+            String labelMessage = m_userIDs.isEmpty()
+            ? Messages.GUI_USERMANAGEMENT_GROUP_DELETE_MULTIPLE_0
+            : Messages.GUI_USERMANAGEMENT_USER_DELETE_MULTIPLE_0;
+            m_label.setValue(CmsVaadinUtils.getMessageText(labelMessage));
             CmsResourceInfoTable table = new CmsResourceInfoTable(m_cms, m_userIDs, m_groupIDs);
             table.setHeight("300px");
             table.setWidth("100%");

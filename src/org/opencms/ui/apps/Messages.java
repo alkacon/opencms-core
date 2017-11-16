@@ -2454,6 +2454,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_GROUP_DELETE_0 = "GUI_USERMANAGEMENT_GROUP_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_GROUP_DELETE_MULTIPLE_0 = "GUI_USERMANAGEMENT_GROUP_DELETE_MULTIPLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0 = "GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2542,6 +2545,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_OU_RESOURCE_NOT_VALID_0 = "GUI_USERMANAGEMENT_OU_RESOURCE_NOT_VALID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_OU_RESOURCE_OUT_OF_OU_0 = "GUI_USERMANAGEMENT_OU_RESOURCE_OUT_OF_OU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_OU_WEBUSER_0 = "GUI_USERMANAGEMENT_OU_WEBUSER_0";
@@ -2797,9 +2803,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_HELP_0 = "GUI_WORKPLACE_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_OU_RESOURCE_OUT_OF_OU_0 = "GUI_USERMANAGEMENT_OU_RESOURCE_OUT_OF_OU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_TITLE_0 = "GUI_WORKPLACE_TITLE_0";

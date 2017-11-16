@@ -131,16 +131,20 @@ public class CmsResourceInfoTable extends Table {
 
         for (CmsResource res : resources) {
             Item item = m_container.addItem(res);
-            item.getItemProperty(PROP_ELEMENT).setValue(new CmsResourceInfo(res));
+            if (item != null) { //Item is null if resource is dependency of multiple groups/user to delete
+                item.getItemProperty(PROP_ELEMENT).setValue(new CmsResourceInfo(res));
+            }
         }
         if (user != null) {
             for (CmsUser us : user) {
                 Item item = m_container.addItem(us);
-                item.getItemProperty(PROP_ELEMENT).setValue(
-                    new CmsResourceInfo(
-                        us.getSimpleName(),
-                        us.getDescription(),
-                        new CmsCssIcon(OpenCmsTheme.ICON_USER)));
+                if (item != null) { //Item is null if User is dependency of multiple groups to delete
+                    item.getItemProperty(PROP_ELEMENT).setValue(
+                        new CmsResourceInfo(
+                            us.getSimpleName(),
+                            us.getDescription(),
+                            new CmsCssIcon(OpenCmsTheme.ICON_USER)));
+                }
             }
         }
         setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
