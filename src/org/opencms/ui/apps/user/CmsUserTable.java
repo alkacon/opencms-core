@@ -685,6 +685,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
+    /**The app.*/
+    private CmsAccountsApp m_app;
+
     /**Type to be shown. */
     protected CmsOuTreeType m_type;
 
@@ -710,9 +713,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      * public constructor.<p>
      *
      * @param ou name
+     * @param app the app
      */
-    public CmsUserTable(String ou) {
+    public CmsUserTable(String ou, CmsAccountsApp app) {
         m_ou = ou;
+        m_app = app;
         try {
             m_cms = getCmsObject();
             m_type = CmsOuTreeType.USER;
@@ -732,9 +737,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      * @param groupID id of group
      * @param cmsOuTreeType type to be shown
      * @param showAll show all user including inherited?
+     * @param app the app
      */
-    public CmsUserTable(String ou, CmsUUID groupID, CmsOuTreeType cmsOuTreeType, boolean showAll) {
+    public CmsUserTable(String ou, CmsUUID groupID, CmsOuTreeType cmsOuTreeType, boolean showAll, CmsAccountsApp app) {
         m_ou = ou;
+        m_app = app;
 
         try {
             m_cms = getCmsObject();
@@ -843,7 +850,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     protected CmsMenuItemVisibilityMode onlyVisibleForOU(CmsUUID userId) {
 
         try {
-            if (m_cms.readUser(userId).getOuFqn().startsWith(m_cms.getRequestContext().getOuFqn())) {
+            if (m_app.getManagableOUs().contains(m_cms.readUser(userId).getOuFqn())) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
         } catch (CmsException e) {

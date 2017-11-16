@@ -30,6 +30,7 @@ package org.opencms.ui.apps.user;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -121,12 +122,14 @@ public class CmsNewElementDialog extends CmsBasicDialog {
             CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_GROUP_HELP_0),
             new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
         newGroup.setData(ID_GROUP);
-        CmsResourceInfo newOU = new CmsResourceInfo(
-            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_OU_0),
-            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_OU_HELP_0),
-            new CmsCssIcon(OpenCmsTheme.ICON_OU));
-        newOU.setData(ID_OU);
-        m_container.addComponent(newOU);
+        if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ADMINISTRATOR.forOrgUnit(ou))) {
+            CmsResourceInfo newOU = new CmsResourceInfo(
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_OU_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_OU_HELP_0),
+                new CmsCssIcon(OpenCmsTheme.ICON_OU));
+            newOU.setData(ID_OU);
+            m_container.addComponent(newOU);
+        }
         m_container.addComponent(newUser);
         m_container.addComponent(newGroup);
 

@@ -384,32 +384,37 @@ public class CmsOuTree extends Tree {
     private void addChildForOU(CmsOrganizationalUnit item) {
 
         try {
-            List<CmsOuTreeType> types = Arrays.asList(CmsOuTreeType.GROUP, CmsOuTreeType.ROLE, CmsOuTreeType.USER);
-            for (CmsOuTreeType type : types) {
-                String itemId = type.getID() + item.getName();
-                Item newItem = m_treeContainer.addItem(itemId);
-                if (newItem != null) {
-                    newItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(itemId, type));
-                    newItem.getItemProperty(PROP_TYPE).setValue(type);
-                    m_treeContainer.setParent(itemId, item);
-                    setChildrenAllowed(itemId, type.isExpandable());
+            if (m_app.getManagableOUs().contains(item.getName())) {
+                List<CmsOuTreeType> types = Arrays.asList(CmsOuTreeType.GROUP, CmsOuTreeType.ROLE, CmsOuTreeType.USER);
+                for (CmsOuTreeType type : types) {
+                    String itemId = type.getID() + item.getName();
+                    Item newItem = m_treeContainer.addItem(itemId);
+                    if (newItem != null) {
+                        newItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(itemId, type));
+                        newItem.getItemProperty(PROP_TYPE).setValue(type);
+                        m_treeContainer.setParent(itemId, item);
+                        setChildrenAllowed(itemId, type.isExpandable());
+                    }
                 }
             }
-
             List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
                 m_cms,
                 item.getName(),
                 false);
             List<CmsOrganizationalUnit> webOus = new ArrayList<CmsOrganizationalUnit>();
             for (CmsOrganizationalUnit ou : ous) {
-                if (ou.hasFlagWebuser()) {
-                    webOus.add(ou);
-                } else {
-                    addOuToTree(ou, item);
+                if (m_app.getManagableOUs().contains(ou.getName())) {
+                    if (ou.hasFlagWebuser()) {
+                        webOus.add(ou);
+                    } else {
+                        addOuToTree(ou, item);
+                    }
                 }
             }
             for (CmsOrganizationalUnit ou : webOus) {
-                addOuToTree(ou, item);
+                if (m_app.getManagableOUs().contains(ou.getName())) {
+                    addOuToTree(ou, item);
+                }
             }
         } catch (CmsException e) {
             LOG.error("Can't read ou", e);

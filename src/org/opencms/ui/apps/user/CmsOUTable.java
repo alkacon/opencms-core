@@ -443,11 +443,13 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
      */
     private void addOuToTable(CmsOrganizationalUnit ou) {
 
-        Item item = m_container.addItem(ou.getName());
-        item.getItemProperty(TableProperty.Name).setValue(ou.getName());
-        item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
-        if (ou.hasFlagWebuser()) {
-            item.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB));
+        if (m_app.getManagableOUs().contains(ou.getName())) {
+            Item item = m_container.addItem(ou.getName());
+            item.getItemProperty(TableProperty.Name).setValue(ou.getName());
+            item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
+            if (ou.hasFlagWebuser()) {
+                item.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB));
+            }
         }
     }
 
@@ -486,7 +488,8 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
                 String out = "";
                 try {
                     if (!((String)itemId).equals(CmsOuTreeType.GROUP.getID())
-                        & !((String)itemId).equals(CmsOuTreeType.USER.getID())) {
+                        & !((String)itemId).equals(CmsOuTreeType.USER.getID())
+                        & !((String)itemId).equals(CmsOuTreeType.ROLE.getID())) {
 
                         List<CmsResource> resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                             m_cms,
@@ -518,25 +521,25 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             m_cms = A_CmsUI.getCmsObject();
         }
         try {
+            if (m_app.getManagableOUs().contains(m_parentOu)) {
+                Item groupItem = m_container.addItem(CmsOuTreeType.GROUP.getID());
+                groupItem.getItemProperty(TableProperty.Name).setValue(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0));
+                groupItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
+                groupItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.GROUP);
 
-            Item groupItem = m_container.addItem(CmsOuTreeType.GROUP.getID());
-            groupItem.getItemProperty(TableProperty.Name).setValue(
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0));
-            groupItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
-            groupItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.GROUP);
+                Item roleItem = m_container.addItem(CmsOuTreeType.ROLE.getID());
+                roleItem.getItemProperty(TableProperty.Name).setValue(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_0));
+                roleItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_ROLE));
+                roleItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.ROLE);
 
-            Item roleItem = m_container.addItem(CmsOuTreeType.ROLE.getID());
-            roleItem.getItemProperty(TableProperty.Name).setValue(
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_0));
-            roleItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_ROLE));
-            roleItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.ROLE);
-
-            Item userItem = m_container.addItem(CmsOuTreeType.USER.getID());
-            userItem.getItemProperty(TableProperty.Name).setValue(
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
-            userItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_USER));
-            userItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.USER);
-
+                Item userItem = m_container.addItem(CmsOuTreeType.USER.getID());
+                userItem.getItemProperty(TableProperty.Name).setValue(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
+                userItem.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_USER));
+                userItem.getItemProperty(TableProperty.Type).setValue(CmsOuTreeType.USER);
+            }
             List<CmsOrganizationalUnit> webOus = new ArrayList<CmsOrganizationalUnit>();
             for (CmsOrganizationalUnit ou : OpenCms.getOrgUnitManager().getOrganizationalUnits(
                 m_cms,

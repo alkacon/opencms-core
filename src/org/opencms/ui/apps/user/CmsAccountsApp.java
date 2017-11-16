@@ -58,6 +58,7 @@ import org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -248,6 +249,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**Button to add an element. */
     private Button m_addElementButton;
 
+    /**List of all managable OUs for current user. */
+    private List<String> m_managableOU;
+
     /**vaadin component.*/
     private Button m_toggleButton;
 
@@ -261,10 +265,13 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         super();
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            m_baseOU = m_cms.getRequestContext().getCurrentUser().getOuFqn();
+            m_managableOU = getManagableOUs(m_cms);
+            m_baseOU = getBaseOU(m_managableOU);
             m_cms.getRequestContext().setSiteRoot("");
-        } catch (CmsException e) {
-            //
+        } catch (
+
+        CmsException e) {
+            //}
         }
         m_rootLayout.setMainHeightFull(true);
         m_splitScreen = new HorizontalSplitPanel();
@@ -274,6 +281,38 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_ouTree = new CmsOuTree(m_cms, this, m_baseOU);
         m_splitScreen.setFirstComponent(m_ouTree);
 
+    }
+
+    /**
+     * Gets List of managable OU names for the current user.<p>
+     *
+     * @param cms CmsObject
+     * @return List of String
+     */
+    public static List<String> getManagableOUs(CmsObject cms) {
+
+        List<String> ous = new ArrayList<String>();
+        try {
+            cms.getRequestContext().getCurrentUser().getOuFqn();
+            for (CmsRole role : OpenCms.getRoleManager().getRolesOfUser(
+                cms,
+                cms.getRequestContext().getCurrentUser().getName(),
+                "",
+                true,
+                false,
+                true)) {
+                if (role.getRoleName().equals(CmsRole.ACCOUNT_MANAGER.getRoleName())) {
+                    if (role.getOuFqn().equals("")) {
+                        ous.add(0, role.getOuFqn());
+                    } else {
+                        ous.add(role.getOuFqn());
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            //
+        }
+        return ous;
     }
 
     /**
@@ -318,6 +357,16 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             principal.getName(),
             principal.getDescription(A_CmsUI.get().getLocale()),
             new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
+    }
+
+    /**
+     * Gets the managable OU.<p>
+     *
+     * @return List<String>
+     */
+    public List<String> getManagableOUs() {
+
+        return m_managableOU;
     }
 
     /**
@@ -507,15 +556,16 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     @Override
     protected Component getComponentForState(String state) {
 
+        m_stateBean = CmsStateBean.parseState(state, m_baseOU);
+
         m_doNotChange = true;
         if (m_filter == null) {
             iniButtons();
         }
-        m_stateBean = CmsStateBean.parseState(state, m_baseOU);
 
         m_filter.setValue(m_stateBean.getPath());
 
-        m_newButton.setVisible(m_stateBean.getGroupID() == null);
+        m_newButton.setVisible((m_stateBean.getGroupID() == null) & m_managableOU.contains(m_stateBean.getPath()));
         m_toggleButton.setVisible(
             m_stateBean.getType().equals(CmsOuTreeType.ROLE) & (m_stateBean.getGroupID() != null));
         m_infoButton.setVisible(!m_stateBean.getType().equals(CmsOuTreeType.OU));
@@ -530,7 +580,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             return m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.USER)) {
-            m_table = new CmsUserTable(m_stateBean.getPath());
+            m_table = new CmsUserTable(m_stateBean.getPath(), this);
             return m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.GROUP)) {
@@ -542,7 +592,8 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 m_stateBean.getPath(),
                 m_stateBean.getGroupID(),
                 m_stateBean.getType(),
-                isPressed(m_toggleButton));
+                isPressed(m_toggleButton),
+                this);
             return m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.ROLE)) {
@@ -554,7 +605,8 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 m_stateBean.getPath(),
                 m_stateBean.getGroupID(),
                 m_stateBean.getType(),
-                isPressed(m_toggleButton));
+                isPressed(m_toggleButton),
+                this);
             return m_table;
         }
         return null;
@@ -638,6 +690,31 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             Collections.singletonMap(
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
                 String.valueOf(table.size())));
+    }
+
+    /**
+     * Get base ou for given manageable ous.<p>
+     *
+     * @param ous ous
+     * @return Base ou (may be outside of given ou)
+     */
+    private String getBaseOU(List<String> ous) {
+
+        if (ous.contains("")) {
+            return "";
+        }
+        String base = ous.get(0);
+        for (String ou : ous) {
+            while (!ou.startsWith(base)) {
+                base = base.substring(0, base.length() - 1);
+                if (base.lastIndexOf("/") > -1) {
+                    base = base.substring(0, base.lastIndexOf("/"));
+                } else {
+                    return "";
+                }
+            }
+        }
+        return base;
     }
 
     /**
