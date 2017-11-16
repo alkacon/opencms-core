@@ -61,6 +61,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -231,6 +232,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**vaadin component.*/
     private ComboBox m_filter;
 
+    /**Maps ou names to boolean if they are parents of managable ou. */
+    private Map<String, Boolean> m_isParentOfOU = new HashMap<String, Boolean>();
+
     /**vaadin component.*/
     private I_CmsFilterableTable m_table;
 
@@ -395,6 +399,27 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             }
         }
         A_CmsUI.get().reload();
+    }
+
+    /**
+     * Checks if given ou is parent of a managable ou.<p>
+     *
+     * @param name to check
+     * @return boolean
+     */
+    public boolean isParentOfManagableOU(String name) {
+
+        if (m_isParentOfOU.containsKey(name)) {
+            return m_isParentOfOU.get(name).booleanValue();
+        }
+        for (String ou : m_managableOU) {
+            if (ou.startsWith(name)) {
+                m_isParentOfOU.put(name, new Boolean(true));
+                return true;
+            }
+        }
+        m_isParentOfOU.put(name, new Boolean(false));
+        return false;
     }
 
     /**

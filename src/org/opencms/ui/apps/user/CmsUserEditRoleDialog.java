@@ -227,6 +227,7 @@ public class CmsUserEditRoleDialog extends A_CmsEditUserGroupRoleDialog {
                 false,
                 false,
                 false);
+            CmsRole.applySystemRoleOrder(userRoles);
             List<CmsRole> directRoles = OpenCms.getRoleManager().getRolesOfUser(
                 m_cms,
                 m_principal.getName(),
@@ -234,14 +235,14 @@ public class CmsUserEditRoleDialog extends A_CmsEditUserGroupRoleDialog {
                 true,
                 true,
                 true);
+            //            CmsRole.applySystemRoleOrder(directRoles);
             for (CmsRole directRole : directRoles) {
                 if (!userRoles.contains(directRole)) {
                     //Role is from other OU directly set to user.
                     userRoles.add(directRole);
                 }
             }
-            CmsRole.applySystemRoleOrder(directRoles);
-            CmsRole.applySystemRoleOrder(userRoles);
+
             IndexedContainer container = new IndexedContainer();
             container.addContainerProperty(propName, String.class, "");
             container.addContainerProperty(propIcon, CmsCssIcon.class, new CmsCssIcon(OpenCmsTheme.ICON_ROLE));

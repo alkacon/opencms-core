@@ -403,7 +403,7 @@ public class CmsOuTree extends Tree {
                 false);
             List<CmsOrganizationalUnit> webOus = new ArrayList<CmsOrganizationalUnit>();
             for (CmsOrganizationalUnit ou : ous) {
-                if (m_app.getManagableOUs().contains(ou.getName())) {
+                if (m_app.isParentOfManagableOU(ou.getName())) {
                     if (ou.hasFlagWebuser()) {
                         webOus.add(ou);
                     } else {
@@ -412,7 +412,7 @@ public class CmsOuTree extends Tree {
                 }
             }
             for (CmsOrganizationalUnit ou : webOus) {
-                if (m_app.getManagableOUs().contains(ou.getName())) {
+                if (m_app.isParentOfManagableOU(ou.getName())) {
                     addOuToTree(ou, item);
                 }
             }

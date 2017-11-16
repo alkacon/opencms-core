@@ -754,7 +754,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                 m_fullLoaded = true;
             }
             if (m_type.equals(CmsOuTreeType.ROLE)) {
-                m_group = m_ou + CmsRole.valueOfId(groupID).getRoleName();
+                m_group = CmsRole.valueOfId(groupID).forOrgUnit(ou).getFqn();
                 List<CmsUser> directs = OpenCms.getRoleManager().getUsersOfRole(
                     m_cms,
                     CmsRole.valueOfId(groupID).forOrgUnit(ou),
@@ -1115,7 +1115,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     private void setAllUser(List<CmsUser> directs) throws CmsException {
 
         m_fullLoaded = true;
-        m_user = OpenCms.getRoleManager().getUsersOfRole(m_cms, CmsRole.valueOfRoleName(m_group), true, false);
+        m_user = OpenCms.getRoleManager().getUsersOfRole(
+            m_cms,
+            CmsRole.valueOfRoleName(m_group).forOrgUnit(m_ou),
+            true,
+            false);
         Iterator<CmsUser> it = m_user.iterator();
         while (it.hasNext()) {
             CmsUser u = it.next();

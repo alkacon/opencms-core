@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -101,11 +102,10 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (getItem(context.iterator().next()).getItemProperty(TableProperty.Type).getValue().equals(
-                CmsOuTreeType.OU)) {
+            if (isAdmin()) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
 
     }
@@ -140,11 +140,10 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (getItem(context.iterator().next()).getItemProperty(TableProperty.Type).getValue().equals(
-                CmsOuTreeType.OU)) {
+            if (isAdmin()) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
 
     }
@@ -403,6 +402,16 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     * Checks if user has role to edit ou.<p>
+     *
+     * @return true if admin
+     */
+    protected boolean isAdmin() {
+
+        return OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ADMINISTRATOR.forOrgUnit(m_parentOu));
+    }
+
+    /**
      * Updates app.<p>
      *
      * @param itemId of current item
@@ -443,7 +452,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
      */
     private void addOuToTable(CmsOrganizationalUnit ou) {
 
-        if (m_app.getManagableOUs().contains(ou.getName())) {
+        if (m_app.isParentOfManagableOU(ou.getName())) {
             Item item = m_container.addItem(ou.getName());
             item.getItemProperty(TableProperty.Name).setValue(ou.getName());
             item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
