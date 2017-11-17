@@ -795,7 +795,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      */
     public VerticalLayout getEmptyLayout() {
 
-        m_emptyLayout = CmsVaadinUtils.getInfoLayout(m_type.getEmptyMessageKey());
+        m_emptyLayout = CmsVaadinUtils.getInfoLayout(CmsOuTreeType.USER.getEmptyMessageKey());
         setVisible(size() > 0);
         m_emptyLayout.setVisible(size() == 0);
         return m_emptyLayout;
@@ -850,7 +850,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     protected CmsMenuItemVisibilityMode onlyVisibleForOU(CmsUUID userId) {
 
         try {
-            if (m_app.getManagableOUs().contains(m_cms.readUser(userId).getOuFqn())) {
+            if (m_app.isOUManagable(m_cms.readUser(userId).getOuFqn())) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
         } catch (CmsException e) {

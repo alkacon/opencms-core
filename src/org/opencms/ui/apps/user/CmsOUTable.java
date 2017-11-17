@@ -530,7 +530,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             m_cms = A_CmsUI.getCmsObject();
         }
         try {
-            if (m_app.getManagableOUs().contains(m_parentOu)) {
+            if (m_app.isOUManagable(m_parentOu)) {
                 Item groupItem = m_container.addItem(CmsOuTreeType.GROUP.getID());
                 groupItem.getItemProperty(TableProperty.Name).setValue(
                     CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_0));

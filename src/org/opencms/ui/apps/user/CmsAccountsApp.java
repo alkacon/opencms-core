@@ -58,10 +58,8 @@ import org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,9 +230,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**vaadin component.*/
     private ComboBox m_filter;
 
-    /**Maps ou names to boolean if they are parents of managable ou. */
-    private Map<String, Boolean> m_isParentOfOU = new HashMap<String, Boolean>();
-
     /**vaadin component.*/
     private I_CmsFilterableTable m_table;
 
@@ -253,14 +248,14 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**Button to add an element. */
     private Button m_addElementButton;
 
-    /**List of all managable OUs for current user. */
-    private List<String> m_managableOU;
-
     /**vaadin component.*/
     private Button m_toggleButton;
 
     /**State bean. */
     CmsStateBean m_stateBean;
+
+    /**Class to handle visible and managable ous. */
+    private CmsOUHandler m_ouHandler;
 
     /**
      * constructor.<p>
@@ -269,9 +264,10 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         super();
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            m_managableOU = getManagableOUs(m_cms);
-            m_baseOU = getBaseOU(m_managableOU);
             m_cms.getRequestContext().setSiteRoot("");
+            m_ouHandler = new CmsOUHandler(m_cms);
+            m_baseOU = m_ouHandler.getBaseOU();
+
         } catch (
 
         CmsException e) {
@@ -285,38 +281,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_ouTree = new CmsOuTree(m_cms, this, m_baseOU);
         m_splitScreen.setFirstComponent(m_ouTree);
 
-    }
-
-    /**
-     * Gets List of managable OU names for the current user.<p>
-     *
-     * @param cms CmsObject
-     * @return List of String
-     */
-    public static List<String> getManagableOUs(CmsObject cms) {
-
-        List<String> ous = new ArrayList<String>();
-        try {
-            cms.getRequestContext().getCurrentUser().getOuFqn();
-            for (CmsRole role : OpenCms.getRoleManager().getRolesOfUser(
-                cms,
-                cms.getRequestContext().getCurrentUser().getName(),
-                "",
-                true,
-                false,
-                true)) {
-                if (role.getRoleName().equals(CmsRole.ACCOUNT_MANAGER.getRoleName())) {
-                    if (role.getOuFqn().equals("")) {
-                        ous.add(0, role.getOuFqn());
-                    } else {
-                        ous.add(role.getOuFqn());
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            //
-        }
-        return ous;
     }
 
     /**
@@ -364,16 +328,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-     * Gets the managable OU.<p>
-     *
-     * @return List<String>
-     */
-    public List<String> getManagableOUs() {
-
-        return m_managableOU;
-    }
-
-    /**
      * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#handlePrincipal(org.opencms.security.I_CmsPrincipal)
      */
     public void handlePrincipal(I_CmsPrincipal principal) {
@@ -391,14 +345,24 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             try {
                 OpenCms.getRoleManager().addUserToRole(
                     m_cms,
-                    CmsRole.valueOfRoleName(
-                        m_stateBean.getPath() + CmsRole.valueOfId(m_stateBean.getGroupID()).getRoleName()),
+                    CmsRole.valueOfId(m_stateBean.getGroupID()).forOrgUnit(m_stateBean.getPath()),
                     principal.getName());
             } catch (CmsException e) {
                 return;
             }
         }
         A_CmsUI.get().reload();
+    }
+
+    /**
+     * Checks if the given OU is manageable.<p>
+     *
+     * @param ou to check
+     * @return true if user is allowed to manage ou
+     */
+    public boolean isOUManagable(String ou) {
+
+        return m_ouHandler.isOUManagable(ou);
     }
 
     /**
@@ -409,17 +373,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      */
     public boolean isParentOfManagableOU(String name) {
 
-        if (m_isParentOfOU.containsKey(name)) {
-            return m_isParentOfOU.get(name).booleanValue();
-        }
-        for (String ou : m_managableOU) {
-            if (ou.startsWith(name)) {
-                m_isParentOfOU.put(name, new Boolean(true));
-                return true;
-            }
-        }
-        m_isParentOfOU.put(name, new Boolean(false));
-        return false;
+        return m_ouHandler.isParentOfManagableOU(name);
     }
 
     /**
@@ -583,14 +537,15 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
         m_stateBean = CmsStateBean.parseState(state, m_baseOU);
 
-        m_doNotChange = true;
         if (m_filter == null) {
             iniButtons();
         }
 
+        m_doNotChange = true;
+
         m_filter.setValue(m_stateBean.getPath());
 
-        m_newButton.setVisible((m_stateBean.getGroupID() == null) & m_managableOU.contains(m_stateBean.getPath()));
+        m_newButton.setVisible((m_stateBean.getGroupID() == null) & isOUManagable(m_stateBean.getPath()));
         m_toggleButton.setVisible(
             m_stateBean.getType().equals(CmsOuTreeType.ROLE) & (m_stateBean.getGroupID() != null));
         m_infoButton.setVisible(!m_stateBean.getType().equals(CmsOuTreeType.OU));
@@ -718,31 +673,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-     * Get base ou for given manageable ous.<p>
-     *
-     * @param ous ous
-     * @return Base ou (may be outside of given ou)
-     */
-    private String getBaseOU(List<String> ous) {
-
-        if (ous.contains("")) {
-            return "";
-        }
-        String base = ous.get(0);
-        for (String ou : ous) {
-            while (!ou.startsWith(base)) {
-                base = base.substring(0, base.length() - 1);
-                if (base.lastIndexOf("/") > -1) {
-                    base = base.substring(0, base.lastIndexOf("/"));
-                } else {
-                    return "";
-                }
-            }
-        }
-        return base;
-    }
-
-    /**
      * Initializes the toolbar buttons.<p>
      */
     private void iniButtons() {
@@ -829,6 +759,12 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 }
             }
         });
+        if (!m_ouHandler.isOUManagable(m_stateBean.getPath())) {
+            boolean change = m_doNotChange;
+            m_doNotChange = false;
+            m_filter.select(m_filter.getItemIds().iterator().next());
+            m_doNotChange = change;
+        }
     }
 
     /**

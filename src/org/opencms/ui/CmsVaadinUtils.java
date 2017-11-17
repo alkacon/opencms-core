@@ -45,7 +45,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.user.CmsAccountsApp;
+import org.opencms.ui.apps.user.CmsOUHandler;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -584,7 +584,7 @@ public final class CmsVaadinUtils {
         try {
             IndexedContainer container = new IndexedContainer();
             container.addContainerProperty("desc", String.class, "");
-            for (String ou : CmsAccountsApp.getManagableOUs(cms)) {
+            for (String ou : CmsOUHandler.getManagableOUs(cms)) {
                 Item item = container.addItem(ou);
                 if (ou == "") {
                     CmsOrganizationalUnit root = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
@@ -1116,7 +1116,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

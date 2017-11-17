@@ -384,7 +384,7 @@ public class CmsOuTree extends Tree {
     private void addChildForOU(CmsOrganizationalUnit item) {
 
         try {
-            if (m_app.getManagableOUs().contains(item.getName())) {
+            if (m_app.isOUManagable(item.getName())) {
                 List<CmsOuTreeType> types = Arrays.asList(CmsOuTreeType.GROUP, CmsOuTreeType.ROLE, CmsOuTreeType.USER);
                 for (CmsOuTreeType type : types) {
                     String itemId = type.getID() + item.getName();

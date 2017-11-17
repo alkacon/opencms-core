@@ -167,6 +167,7 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
     public CmsGroupEditDialog(CmsObject cms, Window window, String ou) {
         this(cms, null, window);
         m_ou.setValue(ou);
+        m_enabled.setValue(new Boolean(true));
     }
 
     /**
