@@ -84,6 +84,7 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.UserError;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -571,10 +572,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private TextField m_fieldSecureServer;
 
     /**vaadin component.*/
-    private ComboBox m_fieldSelectOU;
+    ComboBox m_fieldSelectOU;
 
     /**vaadin coponent.*/
-    private ComboBox m_fieldSelectParentOU;
+    ComboBox m_fieldSelectParentOU;
 
     /**vaadin component.*/
     private CheckBox m_fieldWebServer;
@@ -654,6 +655,18 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_simpleFieldParentFolderName.setUseRootPaths(true);
         m_simpleFieldParentFolderName.setCmsObject(m_clonedCms);
         m_simpleFieldParentFolderName.setResourceFilter(CmsResourceFilter.DEFAULT_FOLDERS);
+        m_simpleFieldParentFolderName.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 4043563040462776139L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setUpOUComboBox(m_fieldSelectParentOU);
+                setUpOUComboBox(m_fieldSelectOU);
+
+            }
+
+        });
 
         m_manager = manager;
 
@@ -1241,6 +1254,39 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Fill ComboBox for OU selection.<p>
+     * @param combo combo box
+     */
+    void setUpOUComboBox(ComboBox combo) {
+
+        combo.removeAllItems();
+        combo.addItem("/");
+        try {
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                m_clonedCms,
+                "/",
+                true);
+
+            for (CmsOrganizationalUnit ou : ous) {
+
+                if (ouIsOK(ou)) {
+                    combo.addItem(ou.getName());
+                }
+
+            }
+            combo.setNewItemsAllowed(false);
+        } catch (CmsException e) {
+            LOG.error("Error on reading OUs", e);
+        }
+        combo.setNullSelectionAllowed(false);
+        combo.setTextInputAllowed(true);
+        combo.setFilteringMode(FilteringMode.CONTAINS);
+        combo.setNewItemsAllowed(false);
+        combo.select("/");
+    }
+
+    /**
      * Setup validators which get called on click.<p>
      * Site-template gets validated separately.<p>
      */
@@ -1578,6 +1624,30 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Checks if given Ou has resources matching to currently set parent folder.<p>
+     *
+     * @param ou to check
+     * @return true if ou is ok for parent folder
+     */
+    private boolean ouIsOK(CmsOrganizationalUnit ou) {
+
+        try {
+            for (CmsResource res : OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                m_clonedCms,
+                ou.getName())) {
+
+                if (m_simpleFieldParentFolderName.getValue().startsWith(res.getRootPath())) {
+                    return true;
+                }
+
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to read Resources for Org Unit", e);
+        }
+        return false;
+    }
+
+    /**
      * Sets the server field.<p>
      *
      * @param newValue value of the field.
@@ -1712,31 +1782,5 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         } catch (CmsException e) {
             // should not happen
         }
-    }
-
-    /**
-     * Fill ComboBox for OU selection.<p>
-     * @param combo combo box
-     */
-    private void setUpOUComboBox(ComboBox combo) {
-
-        combo.addItem("/");
-        try {
-            m_clonedCms.getRequestContext().setSiteRoot("");
-            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
-                m_clonedCms,
-                "/",
-                true);
-
-            for (CmsOrganizationalUnit ou : ous) {
-                combo.addItem(ou.getName());
-            }
-            combo.setNewItemsAllowed(false);
-        } catch (CmsException e) {
-            LOG.error("Error on reading OUs", e);
-        }
-        combo.setNullSelectionAllowed(false);
-        combo.setNewItemsAllowed(false);
-        combo.select("/");
     }
 }
