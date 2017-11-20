@@ -939,16 +939,8 @@ public class CmsLinkManager {
                 return link;
             }
         }
-        if (OpenCms.getSiteManager().hasRootPathPrefix(sitePath)) {
-            String rootPath = OpenCms.getSiteManager().removeRootPathPrefix(sitePath);
-            siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
-            if (siteRoot != null) {
-                sitePath = rootPath;
-            }
-        } else {
-            // check if we can find a site from the link
-            siteRoot = OpenCms.getSiteManager().getSiteRoot(sitePath);
-        }
+        // check if we can find a site from the link
+        siteRoot = OpenCms.getSiteManager().getSiteRoot(sitePath);
         if (siteRoot == null) {
             // use current site root in case no valid site root is available
             // this will also be the case if a "/system" link is used

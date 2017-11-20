@@ -47,7 +47,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,9 +74,6 @@ import com.google.common.base.Optional;
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl implements I_CmsEventListener {
-
-    /** The root path prefix used to mark root paths not pointing into a site or /system/ or /shared/. */
-    public static final String ROOT_PATH_PREFIX = "@";
 
     /** A placeholder for the title of the shared folder. */
     public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
@@ -211,15 +207,22 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
-     * Adds the root path prefix to the given path.<p>
+     * Adds a new Site matcher object to the map of server names.
      *
-     * @param rootPath the resource root path
+     * @param matcher the SiteMatcher of the server
+     * @param site the site to add
      *
-     * @return the prefixed path
+     * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
-    public String addRootPathPrefix(String rootPath) {
+    private void addServer(CmsSiteMatcher matcher, CmsSite site) throws CmsConfigurationException {
 
-        return ROOT_PATH_PREFIX + rootPath;
+        if (m_siteMatcherSites.containsKey(matcher)) {
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
+        }
+        Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
+        siteMatcherSites.put(matcher, site);
+        setSiteMatcherSites(siteMatcherSites);
     }
 
     /**
@@ -375,6 +378,36 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         }
         if (!m_workplaceServers.contains(workplaceServer)) {
             m_workplaceServers.add(workplaceServer);
+        }
+    }
+
+    /**
+     * Fetches UUID for given site root from online and offline repository.<p>
+     *
+     * @param site to read and set UUID for
+     * @param clone online CmsObject
+     * @param cms_offline offline CmsObject
+     */
+    private void checkUUIDOfSiteRoot(CmsSite site, CmsObject clone, CmsObject cms_offline) {
+
+        CmsUUID id = null;
+        try {
+            id = clone.readResource(site.getSiteRoot()).getStructureId();
+        } catch (CmsException e) {
+            //Ok, site root not available for online repository.
+        }
+
+        if (id == null) {
+            try {
+                id = cms_offline.readResource(site.getSiteRoot()).getStructureId();
+                m_onlyOfflineSites.add(site);
+            } catch (CmsException e) {
+                //Siteroot not valid for on- and offline repository.
+            }
+        }
+        if (id != null) {
+            site.setSiteRootUUID(id);
+            m_siteUUIDs.put(id, site);
         }
     }
 
@@ -677,6 +710,43 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Gets an offline project to read offline resources from.<p>
+     *
+     * @return CmsProject
+     */
+    private CmsProject getOfflineProject() {
+
+        try {
+            for (CmsProject p : OpenCms.getOrgUnitManager().getAllAccessibleProjects(m_clone, "/", true)) {
+                if (!p.isOnlineProject()) {
+                    return p;
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to find an offline project", e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the site matcher for the given request.<p>
+     *
+     * @param req the request to get the site matcher for
+     *
+     * @return the site matcher for the given request
+     */
+    private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
+
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
+        // this is required to get the right configured time offset
+        int index = m_siteMatchers.indexOf(matcher);
+        if (index < 0) {
+            return matcher;
+        }
+        return m_siteMatchers.get(index);
+    }
+
+    /**
      * Returns the shared folder path.<p>
      *
      * @return the shared folder path
@@ -797,10 +867,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     public String getSiteRoot(String rootPath) {
 
-        if (rootPath.startsWith(ROOT_PATH_PREFIX)) {
-            rootPath = rootPath.substring(ROOT_PATH_PREFIX.length());
-        }
-
         // add a trailing slash, because the path may be the path of a site root itself
         if (!rootPath.endsWith("/")) {
             rootPath = rootPath + "/";
@@ -896,18 +962,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     public CmsSiteMatcher getWorkplaceSiteMatcher() {
 
         return m_workplaceMatchers.isEmpty() ? null : m_workplaceMatchers.get(0);
-    }
-
-    /**
-     * Returns whether the given path starts with the root path prefix.<p>
-     *
-     * @param rootPath the path to check
-     *
-     * @return <code>true</code> if the given path starts with the root path prefix
-     */
-    public boolean hasRootPathPrefix(String rootPath) {
-
-        return rootPath.startsWith(ROOT_PATH_PREFIX);
     }
 
     /**
@@ -1014,6 +1068,26 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT});
             m_isListenerSet = true;
         }
+    }
+
+    /**
+     * Initializes the workplace matchers.<p>
+     */
+    private void initWorkplaceMatchers() {
+
+        List<CmsSiteMatcher> matchers = new ArrayList<CmsSiteMatcher>();
+        if (!m_workplaceServers.isEmpty()) {
+            for (String server : m_workplaceServers) {
+                CmsSiteMatcher matcher = new CmsSiteMatcher(server);
+                matchers.add(matcher);
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
+                }
+            }
+        } else if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
+        }
+        m_workplaceMatchers = matchers;
     }
 
     /**
@@ -1124,6 +1198,44 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Returns <code>true</code> if the given root path matches any of the stored additional sites.<p>
+     *
+     * @param rootPath the root path to check
+     *
+     * @return <code>true</code> if the given root path matches any of the stored additional sites
+     */
+    private String lookupAdditionalSite(String rootPath) {
+
+        for (int i = 0, size = m_additionalSiteRoots.size(); i < size; i++) {
+            String siteRoot = m_additionalSiteRoots.get(i);
+            if (rootPath.startsWith(siteRoot + "/")) {
+                return siteRoot;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the configured site if the given root path matches site in the "/sites/" folder,
+     * or <code>null</code> otherwise.<p>
+     *
+     * @param rootPath the root path to check
+     *
+     * @return the configured site if the given root path matches site in the "/sites/" folder,
+     *      or <code>null</code> otherwise
+     */
+    private CmsSite lookupSitesFolder(String rootPath) {
+
+        int pos = rootPath.indexOf('/', SITES_FOLDER_POS);
+        if (pos > 0) {
+            // this assumes that the root path may likely start with something like "/sites/default/"
+            // just cut the first 2 directories from the root path and do a direct lookup in the internal map
+            return m_siteRootSites.get(rootPath.substring(0, pos));
+        }
+        return null;
+    }
+
+    /**
      * Matches the given request against all configures sites and returns
      * the matching site, or the default site if no sites matches.<p>
      *
@@ -1173,18 +1285,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
-     * Removes the root path prefix.<p>
-     *
-     * @param rootPath the prefixed path
-     *
-     * @return the path without the prefix
-     */
-    public String removeRootPathPrefix(String rootPath) {
-
-        return rootPath.substring(ROOT_PATH_PREFIX.length());
-    }
-
-    /**
      * Removes a site from the list of configured sites.<p>
      *
      * @param cms the cms object
@@ -1228,20 +1328,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
-     * Returns whether the given resource root path requires a root path prefix.<p>
-     * This is the case if the path does not point into a configured site or below /system/ or into the shared folder.<p>
-     *
-     * @param rootPath the root path
-     *
-     * @return <code>true</code> in case the root path prefix is required
-     */
-    public boolean requiresRootPathPrefix(String rootPath) {
-
-        return (getSiteRoot(rootPath) == null)
-            && !(startsWithShared(rootPath) || rootPath.startsWith(CmsWorkplace.VFS_PATH_SYSTEM));
-    }
-
-    /**
      * Sets the default URI, this is only allowed during configuration.<p>
      *
      * If this method is called after the configuration is finished,
@@ -1268,6 +1354,18 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         m_sharedFolder = CmsStringUtil.joinPaths("/", sharedFolder, "/");
+    }
+
+    /**
+     * Sets the class member variables {@link #m_siteMatcherSites} and  {@link #m_siteMatchers}
+     * from the provided map of configured site matchers.<p>
+     *
+     * @param siteMatcherSites the site matches to set
+     */
+    private void setSiteMatcherSites(Map<CmsSiteMatcher, CmsSite> siteMatcherSites) {
+
+        m_siteMatcherSites = Collections.unmodifiableMap(siteMatcherSites);
+        m_siteMatchers = Collections.unmodifiableList(new ArrayList<CmsSiteMatcher>(m_siteMatcherSites.keySet()));
     }
 
     /**
@@ -1390,161 +1488,5 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             result = secureMatcher.equals(getRequestMatcher(req));
         }
         return result;
-    }
-
-    /**
-     * Adds a new Site matcher object to the map of server names.
-     *
-     * @param matcher the SiteMatcher of the server
-     * @param site the site to add
-     *
-     * @throws CmsConfigurationException if the site contains a server name, that is already assigned
-     */
-    private void addServer(CmsSiteMatcher matcher, CmsSite site) throws CmsConfigurationException {
-
-        if (m_siteMatcherSites.containsKey(matcher)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
-        }
-        Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
-        siteMatcherSites.put(matcher, site);
-        setSiteMatcherSites(siteMatcherSites);
-    }
-
-    /**
-     * Fetches UUID for given site root from online and offline repository.<p>
-     *
-     * @param site to read and set UUID for
-     * @param clone online CmsObject
-     * @param cms_offline offline CmsObject
-     */
-    private void checkUUIDOfSiteRoot(CmsSite site, CmsObject clone, CmsObject cms_offline) {
-
-        CmsUUID id = null;
-        try {
-            id = clone.readResource(site.getSiteRoot()).getStructureId();
-        } catch (CmsException e) {
-            //Ok, site root not available for online repository.
-        }
-
-        if (id == null) {
-            try {
-                id = cms_offline.readResource(site.getSiteRoot()).getStructureId();
-                m_onlyOfflineSites.add(site);
-            } catch (CmsException e) {
-                //Siteroot not valid for on- and offline repository.
-            }
-        }
-        if (id != null) {
-            site.setSiteRootUUID(id);
-            m_siteUUIDs.put(id, site);
-        }
-    }
-
-    /**
-     * Gets an offline project to read offline resources from.<p>
-     *
-     * @return CmsProject
-     */
-    private CmsProject getOfflineProject() {
-
-        try {
-            for (CmsProject p : OpenCms.getOrgUnitManager().getAllAccessibleProjects(m_clone, "/", true)) {
-                if (!p.isOnlineProject()) {
-                    return p;
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error("Unable to find an offline project", e);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the site matcher for the given request.<p>
-     *
-     * @param req the request to get the site matcher for
-     *
-     * @return the site matcher for the given request
-     */
-    private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
-
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
-        // this is required to get the right configured time offset
-        int index = m_siteMatchers.indexOf(matcher);
-        if (index < 0) {
-            return matcher;
-        }
-        return m_siteMatchers.get(index);
-    }
-
-    /**
-     * Initializes the workplace matchers.<p>
-     */
-    private void initWorkplaceMatchers() {
-
-        List<CmsSiteMatcher> matchers = new ArrayList<CmsSiteMatcher>();
-        if (!m_workplaceServers.isEmpty()) {
-            for (String server : m_workplaceServers) {
-                CmsSiteMatcher matcher = new CmsSiteMatcher(server);
-                matchers.add(matcher);
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
-                }
-            }
-        } else if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
-        }
-        m_workplaceMatchers = matchers;
-    }
-
-    /**
-     * Returns <code>true</code> if the given root path matches any of the stored additional sites.<p>
-     *
-     * @param rootPath the root path to check
-     *
-     * @return <code>true</code> if the given root path matches any of the stored additional sites
-     */
-    private String lookupAdditionalSite(String rootPath) {
-
-        for (int i = 0, size = m_additionalSiteRoots.size(); i < size; i++) {
-            String siteRoot = m_additionalSiteRoots.get(i);
-            if (rootPath.startsWith(siteRoot + "/")) {
-                return siteRoot;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the configured site if the given root path matches site in the "/sites/" folder,
-     * or <code>null</code> otherwise.<p>
-     *
-     * @param rootPath the root path to check
-     *
-     * @return the configured site if the given root path matches site in the "/sites/" folder,
-     *      or <code>null</code> otherwise
-     */
-    private CmsSite lookupSitesFolder(String rootPath) {
-
-        int pos = rootPath.indexOf('/', SITES_FOLDER_POS);
-        if (pos > 0) {
-            // this assumes that the root path may likely start with something like "/sites/default/"
-            // just cut the first 2 directories from the root path and do a direct lookup in the internal map
-            return m_siteRootSites.get(rootPath.substring(0, pos));
-        }
-        return null;
-    }
-
-    /**
-     * Sets the class member variables {@link #m_siteMatcherSites} and  {@link #m_siteMatchers}
-     * from the provided map of configured site matchers.<p>
-     *
-     * @param siteMatcherSites the site matches to set
-     */
-    private void setSiteMatcherSites(Map<CmsSiteMatcher, CmsSite> siteMatcherSites) {
-
-        m_siteMatcherSites = Collections.unmodifiableMap(siteMatcherSites);
-        m_siteMatchers = Collections.unmodifiableList(new ArrayList<CmsSiteMatcher>(m_siteMatcherSites.keySet()));
     }
 }
