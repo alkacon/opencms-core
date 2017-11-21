@@ -104,6 +104,9 @@ public abstract class A_CmsJspCustomContextBean {
      */
     protected I_CmsXmlDocument toXml(Object input) throws CmsException {
 
+        if (input instanceof CmsJspContentAccessBean) {
+            return ((CmsJspContentAccessBean)input).getRawContent();
+        }
         if (input instanceof I_CmsXmlDocument) {
             return (I_CmsXmlDocument)input;
         } else {
