@@ -134,6 +134,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.locale.zh",
         "org.opencms.ugc",
         "org.opencms.workplace",
+        "org.opencms.workplace.handler",
         "org.opencms.workplace.tools.link",
         "org.opencms.workplace.help.de",
         "org.opencms.workplace.help.en",
