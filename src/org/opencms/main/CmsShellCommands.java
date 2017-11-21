@@ -54,6 +54,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchIndex;
@@ -477,24 +478,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Checks whether the given user already exists.<p>
-     *
-     * @param name the user name
-     *
-     * @return <code>true</code> if the given user already exists
-     */
-    private boolean existsUser(String name) {
-
-        CmsUser user = null;
-        try {
-            user = m_cms.readUser(name);
-        } catch (CmsException e) {
-            // this will happen, if the user does not exist
-        }
-        return user != null;
-    }
-
-    /**
      * Exits the shell.<p>
      */
     public void exit() {
@@ -742,33 +725,6 @@ class CmsShellCommands implements I_CmsShellCommands {
         for (int i = locales.length - 1; i >= 0; i--) {
             m_shell.getOut().println("  \"" + locales[i].toString() + "\"");
         }
-    }
-
-    /**
-     * Returns the localized messages object for the current user.<p>
-     *
-     * @return the localized messages object for the current user
-     */
-    protected CmsMessages getMessages() {
-
-        return m_shell.getMessages();
-    }
-
-    /**
-     * Rewrites the content of the given file.<p>
-     *
-     * @param cms the CmsObject
-     * @param resource the resource to rewrite the content for
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void hardTouch(CmsObject cms, CmsResource resource) throws CmsException {
-
-        CmsFile file = cms.readFile(resource);
-        cms = OpenCms.initCmsObject(cms);
-        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
-        file.setContents(file.getContents());
-        cms.writeFile(file);
     }
 
     /**
@@ -1432,6 +1388,37 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Sets the checkpoint time of all installed modules to the current time.<p>
+     */
+    public void touchAllModules() {
+
+        CmsModuleManager manager = OpenCms.getModuleManager();
+        long time = System.currentTimeMillis();
+        for (CmsModule module : manager.getAllInstalledModules()) {
+            module.setCheckpointTime(time);
+        }
+        manager.updateModuleConfiguration();
+    }
+
+    /**
+     * Sets the checkpoint time of a given module to the current time.<p>
+     *
+     * If the module does not exist, this just prints an error message but does not throw an exception.
+     *
+     * @param moduleName the name of the module whose checkpoint time to update
+     */
+    public void touchModule(String moduleName) {
+
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        if (module == null) {
+            m_shell.getOut().println("touchModule: could not find module " + moduleName);
+        } else {
+            module.setCheckpointTime(System.currentTimeMillis());
+            OpenCms.getModuleManager().updateModuleConfiguration();
+        }
+    }
+
+    /**
      * Touches a resource and all its children.<p>
      *
      * This method also rewrites the content for all files in the subtree.
@@ -1453,49 +1440,6 @@ class CmsShellCommands implements I_CmsShellCommands {
         } finally {
             if (action.getChange() == LockChange.locked) {
                 m_cms.unlockResource(resource);
-            }
-        }
-    }
-
-    /**
-     * Performs a touch operation for a single resource.<p>
-     *
-     * @param cms the CMS context
-     * @param resourceName the resource name of the resource to touch
-     * @param timeStamp the new time stamp
-     * @param recursive the flag if the touch operation is recursive
-     * @param correctDate the flag if the new time stamp is a correct date
-     * @param touchContent if the content has to be rewritten
-     *
-     * @throws CmsException if touching the resource fails
-     */
-    private void touchSingleResource(
-        CmsObject cms,
-        String resourceName,
-        long timeStamp,
-        boolean recursive,
-        boolean correctDate,
-        boolean touchContent)
-    throws CmsException {
-
-        CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);
-        if (!correctDate) {
-            // no date value entered, use current resource modification date
-            timeStamp = sourceRes.getDateLastModified();
-        }
-        cms.setDateLastModified(resourceName, timeStamp, recursive);
-
-        if (touchContent) {
-            if (sourceRes.isFile()) {
-                hardTouch(cms, sourceRes);
-            } else if (recursive) {
-                Iterator<CmsResource> it = cms.readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
-                while (it.hasNext()) {
-                    CmsResource subRes = it.next();
-                    if (subRes.isFile()) {
-                        hardTouch(cms, subRes);
-                    }
-                }
             }
         }
     }
@@ -1618,5 +1562,93 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         m_cms.lockResource(resourceName);
         m_cms.writePropertyObject(resourceName, new CmsProperty(propertyName, value, null));
+    }
+
+    /**
+     * Returns the localized messages object for the current user.<p>
+     *
+     * @return the localized messages object for the current user
+     */
+    protected CmsMessages getMessages() {
+
+        return m_shell.getMessages();
+    }
+
+    /**
+     * Checks whether the given user already exists.<p>
+     *
+     * @param name the user name
+     *
+     * @return <code>true</code> if the given user already exists
+     */
+    private boolean existsUser(String name) {
+
+        CmsUser user = null;
+        try {
+            user = m_cms.readUser(name);
+        } catch (CmsException e) {
+            // this will happen, if the user does not exist
+        }
+        return user != null;
+    }
+
+    /**
+     * Rewrites the content of the given file.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource the resource to rewrite the content for
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void hardTouch(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsFile file = cms.readFile(resource);
+        cms = OpenCms.initCmsObject(cms);
+        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+        file.setContents(file.getContents());
+        cms.writeFile(file);
+    }
+
+    /**
+     * Performs a touch operation for a single resource.<p>
+     *
+     * @param cms the CMS context
+     * @param resourceName the resource name of the resource to touch
+     * @param timeStamp the new time stamp
+     * @param recursive the flag if the touch operation is recursive
+     * @param correctDate the flag if the new time stamp is a correct date
+     * @param touchContent if the content has to be rewritten
+     *
+     * @throws CmsException if touching the resource fails
+     */
+    private void touchSingleResource(
+        CmsObject cms,
+        String resourceName,
+        long timeStamp,
+        boolean recursive,
+        boolean correctDate,
+        boolean touchContent)
+    throws CmsException {
+
+        CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        if (!correctDate) {
+            // no date value entered, use current resource modification date
+            timeStamp = sourceRes.getDateLastModified();
+        }
+        cms.setDateLastModified(resourceName, timeStamp, recursive);
+
+        if (touchContent) {
+            if (sourceRes.isFile()) {
+                hardTouch(cms, sourceRes);
+            } else if (recursive) {
+                Iterator<CmsResource> it = cms.readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
+                while (it.hasNext()) {
+                    CmsResource subRes = it.next();
+                    if (subRes.isFile()) {
+                        hardTouch(cms, subRes);
+                    }
+                }
+            }
+        }
     }
 }
