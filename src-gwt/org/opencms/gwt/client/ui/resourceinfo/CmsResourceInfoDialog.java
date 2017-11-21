@@ -69,6 +69,9 @@ public class CmsResourceInfoDialog extends CmsPopup {
         @Override
         public void refreshResource(CmsUUID structureId) {
 
+            if (m_structureId.equals(structureId)) {
+                super.refreshResource(structureId);
+            }
             reload();
         }
     }
