@@ -145,17 +145,29 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** Text box for the author name. */
     private TextField m_authorName;
 
+    /** Check box to enable / disable version autoincrement mode. */
+    private CheckBox m_autoIncrement;
+
     /** The cancel button. */
     private Button m_cancel;
 
     /** Layout containing the module dependency widgets. */
     private FormLayout m_dependencies;
 
+    /** Group for editing lists of dependencies. */
+    private CmsEditableGroup m_dependencyGroup;
+
     /** Text box for the description. */
     private TextArea m_description;
 
     /** Parent layout for the excluded resources. */
     private FormLayout m_excludedResources;
+
+    /** The group for the excluded module resource fields. */
+    private CmsEditableGroup m_excludedResourcesGroup;
+
+    /** Group for editing list of export points. */
+    private CmsEditableGroup m_exportPointGroup;
 
     /** Parent layout for export point widgets. */
     private VerticalLayout m_exportPoints;
@@ -208,6 +220,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** The layout containing the module resources. */
     private FormLayout m_moduleResources;
 
+    /** The group for the module resource fields. */
+    private CmsEditableGroup m_moduleResourcesGroup;
+
     /** Text box for the module name. */
     private TextField m_name;
 
@@ -220,11 +235,14 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** The OK button. */
     private Button m_ok;
 
-    /** Parent layout for module parameter widgets. */
-    private FormLayout m_parameters;
+    /** The original module instance passed into the constructor. */
+    private CmsModule m_oldModuleInstance;
 
     /** Group for editing lists of parameters. */
     private CmsEditableGroup m_parameterGroup;
+
+    /** Parent layout for module parameter widgets. */
+    private FormLayout m_parameters;
 
     /** Check box for the 'reduced metadata' export mode. */
     private CheckBox m_reducedMetadata;
@@ -238,18 +256,6 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** Text box for the version. */
     private TextField m_version;
 
-    /** The group for the excluded module resource fields. */
-    private CmsEditableGroup m_excludedResourcesGroup;
-
-    /** The group for the module resource fields. */
-    private CmsEditableGroup m_moduleResourcesGroup;
-
-    /** Group for editing list of export points. */
-    private CmsEditableGroup m_exportPointGroup;
-
-    /** Group for editing lists of dependencies. */
-    private CmsEditableGroup m_dependencyGroup;
-
     /**
      * Creates a new instance.<p>
      *
@@ -259,6 +265,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
      */
     @SuppressWarnings("unchecked")
     public CmsEditModuleForm(CmsModule module, boolean newModule, Runnable updateCallback) {
+        m_oldModuleInstance = module;
         m_module = (CmsModule)(module.clone());
         String site = m_module.getSite();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
@@ -299,6 +306,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         m_fieldGroup.bind(m_folderLib, "createLibFolder");
         m_fieldGroup.bind(m_folderResources, "createResourcesFolder");
         m_fieldGroup.bind(m_folderSchemas, "createSchemasFolder");
+        m_fieldGroup.bind(m_autoIncrement, "autoIncrement");
         if (m_new) {
             m_reducedMetadata.setValue(Boolean.TRUE);
             m_name.addValidator(new Validator() {
@@ -598,6 +606,10 @@ public class CmsEditModuleForm extends CmsBasicDialog {
                 }
             }
             m_module.setExcludeResources(excludedResources);
+
+            if (!m_oldModuleInstance.isAutoIncrement() && m_module.isAutoIncrement()) {
+                m_module.setCheckpointTime(System.currentTimeMillis());
+            }
 
             CmsObject cms = A_CmsUI.getCmsObject();
             if (m_new) {

@@ -28,6 +28,8 @@
 	export-mode?,
 	description?,
 	version,
+	autoincrement?,
+	checkpoint-time?,
 	authorname?,
 	authoremail?,
 	datecreated?,
@@ -149,6 +151,19 @@
 <!ATTLIST dependency 
 	name CDATA #REQUIRED
 	version CDATA #IMPLIED>
+	
+	
+<!-- 
+# Value for the auto-increment mode: true or false.
+# If set to true, the module's version will be incremented on export if any of the current module resources
+# have been changed since the checkpoint time. 
+-->  	
+<!ELEMENT autoincrement (#PCDATA)>
+
+<!--
+# The timestamp (string representation of a Java long) used for comparison by the auto-increment mode. 
+-->
+<!ELEMENT checkpoint-time (#PCDATA)>	
 
 <!--
 # The (optional) export points of the module.

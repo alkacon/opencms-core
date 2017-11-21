@@ -52,6 +52,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+
 /**
  * Describes an OpenCms module.<p>
  *
@@ -100,10 +102,6 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The module action class name. */
     private String m_actionClass;
 
-    private String m_site;
-
-    private boolean m_hasImportSite;
-
     /** Initialized module action instance. */
     private I_CmsModuleAction m_actionInstance;
 
@@ -112,6 +110,12 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /** The name of the author of this module. */
     private String m_authorName;
+
+    /** True if the module's version should be auto-incremented based on module resource changes in the VFS. */
+    private boolean m_autoIncrement;
+
+    /** Timestamp used for version auto-incrementing: if module resources have been modified after this timestamp, increment the version. */
+    private long m_checkpointTime;
 
     /** Flag to create the classes folders when creating the module. */
     private boolean m_createClassesFolder;
@@ -149,8 +153,16 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The description of this module. */
     private String m_description;
 
+    /** List of VFS resources that do not belong to this module.
+     *  In particular used for files / folders in folders that belong to the module.
+     */
+    private List<String> m_excluderesources;
+
     /** The explorer type settings. */
     private List<CmsExplorerTypeSettings> m_explorerTypeSettings;
+
+    /** The export mode to use for the module. */
+    private ExportMode m_exportMode;
 
     /** List of export points added by this module. */
     private List<CmsExportPoint> m_exportPoints;
@@ -160,6 +172,9 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /** The group of the module. */
     private String m_group;
+
+    /** True if the module has a fixed import site. */
+    private boolean m_hasImportSite;
 
     /** The script to execute when the module is imported. */
     private String m_importScript;
@@ -176,19 +191,14 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The additional configuration parameters of this module. */
     private SortedMap<String, String> m_parameters;
 
-    /** The export mode to use for the module. */
-    private ExportMode m_exportMode;
-
     /** List of VFS resources that belong to this module. */
     private List<String> m_resources;
 
-    /** List of VFS resources that do not belong to this module.
-     *  In particular used for files / folders in folders that belong to the module.
-     */
-    private List<String> m_excluderesources;
-
     /** The list of additional resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
+
+    /** The module site. */
+    private String m_site;
 
     /** The name of the user who installed this module. */
     private String m_userInstalled;
@@ -218,7 +228,8 @@ public class CmsModule implements Comparable<CmsModule> {
      * @param group the group of this module
      * @param actionClass the (optional) module class name
      * @param importScript the script to execute when the module is imported
-     * @param importSite the site root into which this module should be imported
+     * @param site the site the module belongs to
+     * @param isImportSite true if the module site should be used as a fixed import site
      * @param exportMode the export mode that should be used for the module
      * @param description the description of this module
      * @param version the version of this module
@@ -593,6 +604,9 @@ public class CmsModule implements Comparable<CmsModule> {
             result.setExportPoints(exps);
         }
 
+        result.setAutoIncrement(m_autoIncrement);
+        result.setCheckpointTime(m_checkpointTime);
+
         result.setCreateClassesFolder(m_createClassesFolder);
         result.setCreateElementsFolder(m_createElementsFolder);
         result.setCreateLibFolder(m_createLibFolder);
@@ -683,6 +697,21 @@ public class CmsModule implements Comparable<CmsModule> {
     public String getAuthorName() {
 
         return m_authorName;
+    }
+
+    /**
+     * Gets the module checkpoint time.<p>
+     *
+     * This timestamp is used for auto-incrementing the version: if module resources have been modified in the VFS after this timestamp, increment
+     * the version.<p>
+     *
+     * Note: This is not exported in the manifest.    *
+     *
+     * @return the checkpoint timestamp
+     */
+    public long getCheckpointTime() {
+
+        return m_checkpointTime;
     }
 
     /**
@@ -790,6 +819,11 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_group;
     }
 
+    /**
+     * Returns true if the module has an import site set.<p>
+     *
+     * @return true if the module has an import site set
+     */
     public boolean getHasImportSite() {
 
         return hasImportSite();
@@ -939,6 +973,11 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_version;
     }
 
+    /**
+     * Gets the version number as a string.<p>
+     *
+     * @return the version number as a string
+     */
     public String getVersionStr() {
 
         return m_version.toString();
@@ -953,11 +992,21 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_name.hashCode();
     }
 
+    /**
+     * Returns true if the module has a fixed import site.<p>
+     *
+     * @return true if the module has a fixed import site
+     */
     public boolean hasImportSite() {
 
         return m_hasImportSite;
     }
 
+    /**
+     * Determines if the module haas resources whose site is undefined.<p>
+     *
+     * @return true if there are module resources with an undefined site
+     */
     public boolean hasModuleResourcesWithUndefinedSite() {
 
         if (getSite() == null) {
@@ -970,6 +1019,16 @@ public class CmsModule implements Comparable<CmsModule> {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns true if version auto-incrementation is enabled for this module.
+     *
+     * @return true if version auto-incrementation is enabled for this module
+     */
+    public boolean isAutoIncrement() {
+
+        return m_autoIncrement;
     }
 
     /**
@@ -1160,6 +1219,26 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Sets auto-increment mode.
+     *
+     * @param autoIncrement true if version auto-incrementation should be enabled
+     */
+    public void setAutoIncrement(boolean autoIncrement) {
+
+        m_autoIncrement = autoIncrement;
+    }
+
+    /**
+     * Sets the module checkpoint time.
+     *
+     * @param checkpointTime the module checkpoint time
+     */
+    public void setCheckpointTime(long checkpointTime) {
+
+        m_checkpointTime = checkpointTime;
+    }
+
+    /**
      * Sets the createClassesFolder flag.<p>
      *
      * @param createClassesFolder the createClassesFolder flag to set
@@ -1345,6 +1424,11 @@ public class CmsModule implements Comparable<CmsModule> {
         m_group = value;
     }
 
+    /**
+     * Sets the hasImportSite flag, which determines whether the module site should be used as a fixed import site.
+     *
+     * @param isImportSite true if the module site should be treated as a fixed import site
+     */
     public void setHasImportSite(boolean isImportSite) {
 
         checkFrozen();
@@ -1462,6 +1546,11 @@ public class CmsModule implements Comparable<CmsModule> {
         m_resourceTypes = Collections.unmodifiableList(resourceTypes);
     }
 
+    /**
+     * Sets the module site.
+     *
+     * @param siteRoot the module site root
+     */
     public void setSite(String siteRoot) {
 
         if (siteRoot == null) {
@@ -1485,11 +1574,56 @@ public class CmsModule implements Comparable<CmsModule> {
         m_userInstalled = value.trim();
     }
 
+    /**
+     * Sets the version number as a string.
+     *
+     * @param versionString the version number string
+     */
     public void setVersionStr(String versionString) {
 
         checkFrozen();
         m_version = new CmsModuleVersion(versionString);
 
+    }
+
+    /**
+     * Determines if the version should be incremented based on the module resources' modification dates.
+     *
+     * @param cms the CMS context
+     * @return true if the version number should be incremented
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public boolean shouldIncrementVersionBasedOnResources(CmsObject cms) throws CmsException {
+
+        if (m_checkpointTime == 0) {
+            return true;
+        }
+
+        // adjust the site root, if necessary
+        CmsObject cmsClone = adjustSiteRootIfNecessary(cms, this);
+
+        // calculate the module resources
+        List<CmsResource> moduleResources = calculateModuleResources(cmsClone, this);
+
+        for (CmsResource resource : moduleResources) {
+            try {
+                List<CmsResource> resourcesToCheck = Lists.newArrayList();
+                resourcesToCheck.add(resource);
+                if (resource.isFolder()) {
+                    resourcesToCheck.addAll(cms.readResources(resource, CmsResourceFilter.IGNORE_EXPIRATION, true));
+                }
+                for (CmsResource resourceToCheck : resourcesToCheck) {
+                    if (resourceToCheck.getDateLastModified() > m_checkpointTime) {
+                        return true;
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                continue;
+            }
+        }
+        return false;
     }
 
     /**

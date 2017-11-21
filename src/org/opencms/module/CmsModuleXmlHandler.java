@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.Rule;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
@@ -63,6 +64,18 @@ import org.dom4j.Element;
  */
 public class CmsModuleXmlHandler {
 
+    /**
+     * Enum used to distinguish whether we want to generate the XML for a module export's manifest or the XML for writing back
+     * opencms-modules.xml.
+     */
+    public enum XmlWriteMode {
+        /** Generating XML for the configuration. */
+        config,
+
+        /** Generating XML for a manifest. */
+        manifest
+    }
+
     /** The "name" attribute. */
     public static final String A_NAME = "name";
 
@@ -74,6 +87,12 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the authorname node. */
     public static final String N_AUTHORNAME = "authorname";
+
+    /** The node name for the auto increment mode. */
+    public static final String N_AUTOINCREMENT = "autoincrement";
+
+    /** The node name for the checkpoint time. */
+    public static final String N_CHECKPOINT_TIME = "checkpoint-time";
 
     /** The node name for the class node. */
     public static final String N_CLASS = "class";
@@ -93,6 +112,12 @@ public class CmsModuleXmlHandler {
     /** The node name for the description node. */
     public static final String N_DESCRIPTION = "description";
 
+    /** The node name for the resources node. */
+    public static final String N_EXCLUDERESOURCES = "excluderesources";
+
+    /** The node name for the import site. */
+    public static final String N_EXPORT_MODE = "export-mode";
+
     /** The node name for the group node. */
     public static final String N_GROUP = "group";
 
@@ -104,9 +129,6 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the name node. */
     public static final String N_NAME = "name";
-
-    /** The node name for the module site. */
-    public static final String N_SITE = "site";
 
     /** The node name for the nicename node. */
     public static final String N_NICENAME = "nicename";
@@ -120,8 +142,8 @@ public class CmsModuleXmlHandler {
     /** The node name for the resources node. */
     public static final String N_RESOURCES = "resources";
 
-    /** The node name for the resources node. */
-    public static final String N_EXCLUDERESOURCES = "excluderesources";
+    /** The node name for the module site. */
+    public static final String N_SITE = "site";
 
     /** The node name for the user installed node. */
     public static final String N_USERINSTALLED = "userinstalled";
@@ -135,11 +157,17 @@ public class CmsModuleXmlHandler {
     /** The node name for the import site. */
     private static final String N_IMPORT_SITE = "import-site";
 
-    /** The node name for the import site. */
-    private static final String N_EXPORT_MODE = "export-mode";
+    /** The auto-increment value. */
+    private boolean m_autoIncrement;
+
+    /** The checkpoint time. */
+    private long m_checkpointTime;
 
     /** The list of dependencies for a module. */
     private List<CmsModuleDependency> m_dependencies;
+
+    /** The list of resources excluded for a module. */
+    private List<String> m_excluderesources;
 
     /** The explorer type settings. */
     private List<CmsExplorerTypeSettings> m_explorerTypeSettings;
@@ -158,9 +186,6 @@ public class CmsModuleXmlHandler {
 
     /** The list of resources for a module. */
     private List<String> m_resources;
-
-    /** The list of resources excluded for a module. */
-    private List<String> m_excluderesources;
 
     /** The list of additional resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
@@ -211,6 +236,26 @@ public class CmsModuleXmlHandler {
         digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 12);
         digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 13);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 14);
+
+        digester.addRule("*/" + N_MODULE + "/" + N_AUTOINCREMENT, new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                CmsModuleXmlHandler handler = (CmsModuleXmlHandler)(getDigester().peek());
+                handler.setAutoIncrement(Boolean.parseBoolean(text.trim()));
+            }
+        });
+
+        digester.addRule("*/" + N_MODULE + "/" + N_CHECKPOINT_TIME, new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                CmsModuleXmlHandler handler = (CmsModuleXmlHandler)(getDigester().peek());
+                handler.setCheckpointTime(Long.parseLong(text.trim()));
+            }
+        });
 
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
@@ -287,10 +332,11 @@ public class CmsModuleXmlHandler {
      * Generates a detached XML element for a module.<p>
      *
      * @param module the module to generate the XML element for
+     * @param writeMode enum value representing the context for which we are generating the XML
      *
      * @return the detached XML element for the module
      */
-    public static Element generateXml(CmsModule module) {
+    public static Element generateXml(CmsModule module, XmlWriteMode writeMode) {
 
         Document doc = DocumentHelper.createDocument();
 
@@ -331,6 +377,13 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_DESCRIPTION);
         }
         moduleElement.addElement(N_VERSION).setText(module.getVersion().toString());
+        if (module.isAutoIncrement()) {
+            moduleElement.addElement(N_AUTOINCREMENT).setText(Boolean.TRUE.toString());
+        }
+        if ((module.getCheckpointTime() != 0) && (writeMode == XmlWriteMode.config)) {
+            moduleElement.addElement(N_CHECKPOINT_TIME).setText("" + module.getCheckpointTime());
+        }
+
         if (CmsStringUtil.isNotEmpty(module.getAuthorName())) {
             moduleElement.addElement(N_AUTHORNAME).addCDATA(module.getAuthorName());
         } else {
@@ -604,7 +657,8 @@ public class CmsModuleXmlHandler {
      * @param group the group of the module
      * @param actionClass the (optional) module action class name
      * @param importScript the import script
-     * @param importSite the import site root
+     * @param importSite the import site (only one of importSite and site is not null)
+     * @param site the module site
      * @param exportModeName the export mode name
      * @param description the description of this module
      * @param version the version of this module
@@ -727,6 +781,10 @@ public class CmsModuleXmlHandler {
 
         // set the additional explorer types
         m_module.setExplorerTypes(m_explorerTypeSettings);
+
+        m_module.setAutoIncrement(m_autoIncrement);
+
+        m_module.setCheckpointTime(m_checkpointTime);
     }
 
     /**
@@ -737,6 +795,26 @@ public class CmsModuleXmlHandler {
     public CmsModule getModule() {
 
         return m_module;
+    }
+
+    /**
+     * Sets the auto-increment mode.<p>
+     *
+     * @param autoincrement true if version auto-incrementation should be enabled
+     */
+    public void setAutoIncrement(boolean autoincrement) {
+
+        m_autoIncrement = autoincrement;
+    }
+
+    /**
+     * Sets the checkpoint time.<p>
+     *
+     * @param time the checkpoint time
+     */
+    public void setCheckpointTime(long time) {
+
+        m_checkpointTime = time;
     }
 
     /**

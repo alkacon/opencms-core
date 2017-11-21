@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.module.CmsModuleXmlHandler;
+import org.opencms.module.CmsModuleXmlHandler.XmlWriteMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,7 +104,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
         for (int i = 0; i < modules.size(); i++) {
             // append all configured modules
             CmsModule module = modules.get(i);
-            Element moduleNode = CmsModuleXmlHandler.generateXml(module);
+            Element moduleNode = CmsModuleXmlHandler.generateXml(module, XmlWriteMode.config);
             modulesNode.add(moduleNode);
         }
 

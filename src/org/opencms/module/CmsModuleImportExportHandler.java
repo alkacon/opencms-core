@@ -45,12 +45,14 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsShell;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModuleXmlHandler.XmlWriteMode;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlErrorHandler;
 import org.opencms.xml.CmsXmlException;
@@ -160,7 +162,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 + CmsSystemInfo.FOLDER_MODULES
                 + moduleName
                 + "_"
-                + module.getVersion().toString());
+                + "%(version)");
 
         CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
         moduleExportHandler.setFileName(filename);
@@ -283,9 +285,22 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // generate module XML
         CmsModule module = OpenCms.getModuleManager().getModule(getModuleName());
-        // reset update status so that all following exports auto-increment the number
+        boolean shouldIncrementVersion;
+        try {
+            shouldIncrementVersion = module.isAutoIncrement()
+                && (module.getVersion().isUpdated() || module.shouldIncrementVersionBasedOnResources(cms));
+        } catch (CmsException e) {
+            shouldIncrementVersion = false;
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         module.getVersion().setUpdated(false);
-        Element moduleElement = CmsModuleXmlHandler.generateXml(module);
+        if (shouldIncrementVersion) {
+            module.getVersion().increment();
+            module.setCheckpointTime(System.currentTimeMillis());
+            OpenCms.getModuleManager().updateModuleConfiguration();
+        }
+
+        Element moduleElement = CmsModuleXmlHandler.generateXml(module, XmlWriteMode.manifest);
 
         CmsExportParameters params = new CmsExportParameters(
             getFileName(),
@@ -341,7 +356,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      */
     public String getFileName() {
 
-        return m_fileName;
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.addMacro("version", OpenCms.getModuleManager().getModule(m_moduleName).getVersionStr());
+        return resolver.resolveMacros(m_fileName);
     }
 
     /**
@@ -671,6 +688,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             LOG.info("Shell output for import script was: \n" + outputString);
             report.println(Messages.get().container(Messages.RPT_IMPORT_SCRIPT_OUTPUT_1, outputString));
         }
+        importedModule.setCheckpointTime(System.currentTimeMillis());
+        OpenCms.getModuleManager().updateModuleConfiguration();
         return importedModule;
     }
 }

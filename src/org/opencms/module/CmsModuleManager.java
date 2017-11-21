@@ -995,6 +995,14 @@ public class CmsModuleManager {
     }
 
     /**
+     * Updates the module configuration.<p>
+     */
+    public void updateModuleConfiguration() {
+
+        OpenCms.writeConfiguration(CmsModuleConfiguration.class);
+    }
+
+    /**
      * Initializes the list of export points from all configured modules.<p>
      */
     private synchronized void initModuleExportPoints() {
@@ -1024,13 +1032,5 @@ public class CmsModuleManager {
             }
         }
         m_moduleExportPoints = Collections.unmodifiableSet(exportPoints);
-    }
-
-    /**
-     * Updates the module configuration.<p>
-     */
-    private void updateModuleConfiguration() {
-
-        OpenCms.writeConfiguration(CmsModuleConfiguration.class);
     }
 }
