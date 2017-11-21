@@ -1234,10 +1234,11 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(". "
-                + Messages.get().getBundle().key(
-                    Messages.GUI_SHELL_VERSION_1,
-                    OpenCms.getSystemInfo().getVersionNumber()));
+            CmsLog.INIT.info(
+                ". "
+                    + Messages.get().getBundle().key(
+                        Messages.GUI_SHELL_VERSION_1,
+                        OpenCms.getSystemInfo().getVersionNumber()));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
@@ -1939,6 +1940,12 @@ public final class OpenCmsCore {
 
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
+                if (uri.startsWith(CmsWorkplace.VFS_PATH_SITES)) {
+                    // resources within the sites folder may only be called with their site relative path
+                    // this should prevent showing pages from other sites with their root path
+                    throw new CmsVfsResourceNotFoundException(
+                        org.opencms.main.Messages.get().container(org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1, uri));
+                }
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
                     // if we used the request's query string for getRfsName, clients could cause an unlimited number
                     // of files to be exported just by varying the request parameters!
