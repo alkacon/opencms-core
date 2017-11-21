@@ -110,6 +110,9 @@ public abstract class CmsWorkplace {
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
 
+    /** Path to sites folder. */
+    public static final String VFS_PATH_SITES = "/sites/";
+
     /** Path to the workplace. */
     public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
 

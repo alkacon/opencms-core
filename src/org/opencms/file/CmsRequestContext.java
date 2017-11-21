@@ -171,7 +171,8 @@ public final class CmsRequestContext {
     public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {
 
         if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
-            || OpenCms.getSiteManager().startsWithShared(resourcename)) {
+            || OpenCms.getSiteManager().startsWithShared(resourcename)
+            || (resourcename.startsWith(CmsWorkplace.VFS_PATH_SITES) && !resourcename.startsWith(siteRoot))) {
             return "";
         } else {
             return siteRoot;
@@ -244,10 +245,12 @@ public final class CmsRequestContext {
     }
 
     /**
-     * Returns the adjusted site root for a resoure this context current site root.<p>
+     * Returns the adjusted site root for a resource this context current site root.<p>
      *
      * @param resourcename the resource name to get the adjusted site root for
-     * @return the adjusted site root for the resoure
+     *
+     * @return the adjusted site root for the resource
+     *
      * @see #getAdjustedSiteRoot(String, String)
      */
     public String getAdjustedSiteRoot(String resourcename) {
