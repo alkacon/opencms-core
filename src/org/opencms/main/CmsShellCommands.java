@@ -1394,10 +1394,14 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         CmsModuleManager manager = OpenCms.getModuleManager();
         long time = System.currentTimeMillis();
+
         for (CmsModule module : manager.getAllInstalledModules()) {
+            m_shell.getOut().println("Touching module: " + module.getName());
             module.setCheckpointTime(time);
         }
+        m_shell.getOut().println("Writing module configuration.");
         manager.updateModuleConfiguration();
+
     }
 
     /**
@@ -1413,7 +1417,9 @@ class CmsShellCommands implements I_CmsShellCommands {
         if (module == null) {
             m_shell.getOut().println("touchModule: could not find module " + moduleName);
         } else {
+            m_shell.getOut().println("Touching module: " + moduleName);
             module.setCheckpointTime(System.currentTimeMillis());
+            m_shell.getOut().println("Writing module configuration.");
             OpenCms.getModuleManager().updateModuleConfiguration();
         }
     }
