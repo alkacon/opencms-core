@@ -7,6 +7,7 @@
 	<directoryFactory name="DirectoryFactory"
 		class="${solr.directoryFactory:solr.StandardDirectoryFactory}" />
 	<indexConfig>
+	   <lockType>${solr.lock.type:none}</lockType>
 	</indexConfig>
 	<updateHandler class="solr.DirectUpdateHandler2">
 	</updateHandler>
