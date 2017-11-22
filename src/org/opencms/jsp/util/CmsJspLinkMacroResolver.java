@@ -199,7 +199,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
             newMacro.append(I_CmsMacroResolver.MACRO_DELIMITER);
             newMacro.append(I_CmsMacroResolver.MACRO_START);
             newMacro.append(macro);
-            newMacro.append(link.getSitePath());
+            newMacro.append(link.getSitePath(m_cms));
             if ((link.getStructureId() != null) && !link.getStructureId().isNullUUID()) {
                 newMacro.append(KEY_SEPARATOR).append(link.getStructureId());
             }

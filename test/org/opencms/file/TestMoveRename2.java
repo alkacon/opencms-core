@@ -290,7 +290,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         page = CmsXmlPageFactory.unmarshal(cms, file, true);
         CmsLinkTable links = page.getLinkTable("test", Locale.ENGLISH);
         assertEquals(links.size(), 1);
-        assertEquals(links.getLink("link0").getSitePath(), filename);
+        assertEquals(links.getLink("link0").getSitePath(cms), filename);
     }
 
     /**

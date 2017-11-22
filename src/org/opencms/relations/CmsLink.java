@@ -500,10 +500,25 @@ public class CmsLink {
      * Returns the vfs link of the target if it is internal.<p>
      *
      * @return the full link destination or null if the link is not internal
+     *
+     * @deprecated use {@link #getSitePath(CmsObject)} instead
      */
+    @Deprecated
     public String getSitePath() {
 
         return getSitePath(m_uri);
+    }
+
+    /**
+     * Returns the path of the link target relative to the current site.<p>
+     *
+     * @param cms the CMS context
+     *
+     * @return the site path
+     */
+    public String getSitePath(CmsObject cms) {
+
+        return cms.getRequestContext().removeSiteRoot(m_uri);
     }
 
     /**

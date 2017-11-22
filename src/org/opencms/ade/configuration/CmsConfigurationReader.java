@@ -625,7 +625,7 @@ public class CmsConfigurationReader {
             CmsXmlVfsFileValue locationValue = (CmsXmlVfsFileValue)locationLoc.getValue();
             CmsLink link = locationValue.getLink(m_cms);
             if (null != link) {
-                String stringValue = link.getSitePath();
+                String stringValue = link.getSitePath(m_cms);
                 // extract bundle base name from the path to the bundle file
                 int lastSlashIndex = stringValue.lastIndexOf("/");
                 String fileName = stringValue.substring(lastSlashIndex + 1);
