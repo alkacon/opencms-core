@@ -92,8 +92,6 @@ import java.util.Set;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -608,64 +606,19 @@ public final class CmsContainerpageController {
         @Override
         public void execute() {
 
-            boolean cached = false;
-            if (m_elements.containsKey(m_clientId)) {
-                if (!hasNestedContainers() && (m_dndContainer == null)) {
-
-                    // When you have an element A representing a nested container, which then contains an element B,
-                    // and the element settings of B have been changed, we would need to invalidate the cache for A.
-                    // Currently there is no time to implement this correctly, so we don't use the cached element in case
-                    // we have nested containers.
-
-                    // Additionally, in the drag and drop case we want to circumvent caching because dragging an element may require the settings
-                    // of an element to be changed on the server side.
-
-                    CmsContainerElementData elementData = m_elements.get(m_clientId);
-                    // check if the cached element data covers all possible containers in case new containers have been added to the page
-                    if (elementData.getContents().keySet().containsAll(m_targetContainers.keySet())) {
-
-                        cached = true;
-
-                        if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
-                            for (String subItemId : elementData.getSubItems()) {
-                                if (!m_elements.containsKey(subItemId)) {
-                                    cached = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (cached) {
-                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                    /**
-                     * @see com.google.gwt.user.client.Command#execute()
-                     */
-                    public void execute() {
-
-                        getCallback().execute(m_elements.get(getClientId()));
-
-                    }
-                });
-            } else {
-                List<String> clientIds = new ArrayList<String>();
-                clientIds.add(m_clientId);
-                getContainerpageService().getElementsData(
-                    getData().getRpcContext(),
-                    getData().getDetailId(),
-                    getRequestParams(),
-                    clientIds,
-                    getPageState(),
-                    !isGroupcontainerEditing(),
-                    m_alwaysCopy,
-                    m_dndContainer,
-                    getLocale(),
-
-                    this);
-            }
-
+            List<String> clientIds = new ArrayList<String>();
+            clientIds.add(m_clientId);
+            getContainerpageService().getElementsData(
+                getData().getRpcContext(),
+                getData().getDetailId(),
+                getRequestParams(),
+                clientIds,
+                getPageState(),
+                !isGroupcontainerEditing(),
+                m_alwaysCopy,
+                m_dndContainer,
+                getLocale(),
+                this);
         }
 
         /**

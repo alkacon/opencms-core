@@ -2294,6 +2294,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (elementData == null) {
                 continue;
             }
+            // make sure the element with it's current settings is cached
+            getSessionCache().setCacheContainerElement(element.editorHash(), element);
             elementData.setDndId(dndId);
             result.put(entry.getKey(), elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
