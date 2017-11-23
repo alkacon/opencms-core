@@ -106,6 +106,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.workplace.list.Messages.get(),
             org.opencms.workplace.threads.Messages.get(),
             org.opencms.workplace.tools.Messages.get(),
+            org.opencms.workplace.tools.scheduler.Messages.get(),
             org.opencms.xml.Messages.get(),
             org.opencms.xml.containerpage.Messages.get(),
             org.opencms.xml.content.Messages.get(),
