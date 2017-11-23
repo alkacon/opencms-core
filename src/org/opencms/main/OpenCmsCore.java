@@ -130,6 +130,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -1234,11 +1235,10 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(
-                ". "
-                    + Messages.get().getBundle().key(
-                        Messages.GUI_SHELL_VERSION_1,
-                        OpenCms.getSystemInfo().getVersionNumber()));
+            CmsLog.INIT.info(". "
+                + Messages.get().getBundle().key(
+                    Messages.GUI_SHELL_VERSION_1,
+                    OpenCms.getSystemInfo().getVersionNumber()));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
@@ -2066,6 +2066,7 @@ public final class OpenCmsCore {
                 try {
                     if (m_executor != null) {
                         m_executor.shutdownNow();
+                        m_executor.awaitTermination(30, TimeUnit.SECONDS);
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(
