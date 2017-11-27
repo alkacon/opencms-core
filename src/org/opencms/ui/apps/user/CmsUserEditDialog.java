@@ -231,6 +231,9 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     /**vaadin component.*/
     private ComboBox m_language;
 
+    /**vaadin component. */
+    private ComboBox m_role;
+
     /**vaadin component.*/
     ComboBox m_site;
 
@@ -270,6 +273,8 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     /**Select view for principals.*/
     private CmsPrincipalSelect m_group;
 
+    private boolean m_name_was_empty;
+
     /**
      * public constructor.<p>
      *
@@ -287,6 +292,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             m_user = m_cms.readUser(userId);
             displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
             m_group.setVisible(false);
+            m_role.setVisible(false);
             m_loginname.setValue(m_user.getSimpleName());
             m_loginname.setEnabled(false);
             m_ou.setValue(m_user.getOuFqn().isEmpty() ? "/" : m_user.getOuFqn());
@@ -296,6 +302,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             m_enabled.setValue(new Boolean(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
             init(window, settings);
+            m_next.setVisible(false);
             m_startfolder.setValue(settings.getStartFolder());
             m_startfolder.setCmsObject(getCmsObjectWithSite((String)m_site.getValue()));
             m_startfolder.setUseRootPaths(false);
@@ -327,9 +334,23 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
         m_group.setOU(m_ou.getValue());
+        iniRole();
+        m_role.select(CmsRole.ELEMENT_AUTHOR.forOrgUnit(ou));
+        m_selfmanagement.setValue(new Boolean(true));
         m_enabled.setValue(Boolean.TRUE);
         m_startfolder.setValue("/");
         init(window, null);
+        m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
+
+            private static final long serialVersionUID = -2579639520410382246L;
+
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+
+                setButtonVisibility();
+
+            }
+        });
+        setButtonVisibility();
     }
 
     /**
@@ -410,7 +431,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         boolean[] ret = new boolean[4];
         ret[0] = m_loginname.isValid();
-        ret[1] = m_userdata.isValid();
+        ret[1] = m_userdata.isValid() | m_name_was_empty;
         ret[3] = m_site.isValid() & m_startview.isValid();
         ret[2] = m_pw.getPassword1Field().isValid();
 
@@ -641,6 +662,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_group.getValue())) {
             m_cms.addUserToGroup(user.getName(), m_group.getValue());
         }
+        OpenCms.getRoleManager().addUserToRole(m_cms, (CmsRole)m_role.getValue(), user.getName());
         m_user = user;
 
     }
@@ -769,6 +791,27 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         }
     }
 
+    private void iniRole() {
+
+        try {
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, m_ou.getValue(), false);
+            CmsRole.applySystemRoleOrder(roles);
+            IndexedContainer container = new IndexedContainer();
+            container.addContainerProperty("caption", String.class, "");
+            for (CmsRole role : roles) {
+                Item item = container.addItem(role);
+                item.getItemProperty("caption").setValue(role.getDisplayName(m_cms, A_CmsUI.get().getLocale()));
+            }
+
+            m_role.setContainerDataSource(container);
+            m_role.setItemCaptionPropertyId("caption");
+            m_role.setNullSelectionAllowed(false);
+            m_role.setNewItemsAllowed(false);
+        } catch (CmsException e) {
+            //
+        }
+    }
+
     /**
      * A initialization method.<p>
      *
@@ -778,6 +821,11 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     private void init(final Window window, final CmsUserSettings settings) {
 
         m_userdata.initFields(m_user, true);
+        if (m_user != null) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getFirstname())) {
+                m_name_was_empty = true;
+            }
+        }
         iniLanguage(settings);
         iniProject(settings);
         iniSite(settings);
@@ -848,17 +896,6 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         });
 
-        m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
-
-            private static final long serialVersionUID = -2579639520410382246L;
-
-            public void selectedTabChange(SelectedTabChangeEvent event) {
-
-                setButtonVisibility();
-
-            }
-        });
-        setButtonVisibility();
         m_tab.setHeight("350px");
     }
 
