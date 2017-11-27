@@ -102,12 +102,17 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (isAdmin()) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            if (getItem(context.iterator().next()).getItemProperty(TableProperty.Type).getValue().equals(
+                CmsOuTreeType.OU)) {
+                if (isAdmin()) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                }
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-        }
 
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+
+        }
     }
 
     /**
@@ -140,10 +145,16 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (isAdmin()) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            if (getItem(context.iterator().next()).getItemProperty(TableProperty.Type).getValue().equals(
+                CmsOuTreeType.OU)) {
+                if (isAdmin()) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                }
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+
         }
 
     }
