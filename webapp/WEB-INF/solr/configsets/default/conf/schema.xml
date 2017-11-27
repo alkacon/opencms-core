@@ -278,7 +278,6 @@
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
 
    <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
-   <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_dprop"      type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
@@ -328,7 +327,6 @@
  <copyField source="*_prop"    dest="text" />
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
- <copyField source="*_prop"    dest="*_exact" />
  <copyField source="path"      dest="path_hierarchy" />
  <copyField source="category"  dest="category_exact" />
 
