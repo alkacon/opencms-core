@@ -28,18 +28,13 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceView;
-import org.opencms.workplace.commons.Messages;
+import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,44 +78,18 @@ public class CmsStartViewPreference extends CmsBuiltinPreference {
         List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
 
-        // loop through the vectors and fill the result vectors
-        List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
-        CmsWorkplaceView directEditView = new CmsWorkplaceView(
-            Messages.get().getBundle(locale).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
-            CmsWorkplace.VIEW_DIRECT_EDIT,
-            Float.valueOf(100));
-        list.add(directEditView);
+        List<I_CmsWorkplaceAppConfiguration> apps = OpenCms.getWorkplaceAppManager().getDefaultQuickLaunchConfigurations();
 
-        Iterator<CmsWorkplaceView> i = list.iterator();
-        int count = -1;
-        while (i.hasNext()) {
-            count++;
-            CmsWorkplaceView view = i.next();
-
-            boolean visible = true;
-
-            try {
-                cms.readResource(view.getUri());
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-                visible = false;
-            }
-
-            if (visible) {
-                CmsMacroResolver resolver = new CmsMacroResolver();
-                resolver.setCmsObject(cms);
-                resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
-                String localizedKey = resolver.resolveMacros(view.getKey());
-                options.add(localizedKey);
-                values.add(view.getUri());
-                if (view.getUri().equals(value)) {
-                    selectedIndex = count;
-                }
+        for (I_CmsWorkplaceAppConfiguration app : apps) {
+            if (OpenCms.getRoleManager().hasRole(
+                cms,
+                cms.getRequestContext().getCurrentUser().getName(),
+                app.getRequiredRole())) {
+                values.add(app.getId());
+                options.add(app.getName(locale));
             }
         }
+
         SelectOptions optionBean = new SelectOptions(options, values, selectedIndex);
         return optionBean;
     }
