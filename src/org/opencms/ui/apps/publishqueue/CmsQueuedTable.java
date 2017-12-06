@@ -242,14 +242,6 @@ public class CmsQueuedTable extends Table {
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsQueuedTable.class.getName());
 
-    /** list column id constant. */
-    private static final String LIST_COLUMN_ERRORS = "cse";
-
-    /** list column id constant. */
-    private static final String LIST_COLUMN_STATE = "ct";
-
-    /** list column id constant. */
-    private static final String LIST_COLUMN_WARNINGS = "csw";
     /**table column. */
     private static final String PROP_FILESCOUNT = "files";
 
@@ -568,42 +560,31 @@ public class CmsQueuedTable extends Table {
      * @param publishJob the publish job to get the state for
      * @return the state of the given publish job
      */
-    private Map<String, Object> getState(CmsPublishJobFinished publishJob) {
+    private String getState(CmsPublishJobFinished publishJob) {
 
-        Map<String, Object> result = new HashMap<String, Object>();
         byte[] reportBytes = null;
         try {
             reportBytes = OpenCms.getPublishManager().getReportContents(publishJob);
         } catch (CmsException e) {
-            result.put(LIST_COLUMN_STATE, STATE_OK);
+            //Can't read report -> error
+            return STATE_ERROR;
         }
-        if ((reportBytes != null) && (result.get(LIST_COLUMN_STATE) == null)) {
+        if (reportBytes != null) {
             String report = new String(reportBytes);
-            // see org.opencms.report.CmsHtmlReport#print(String, int)
             if (report.indexOf("<span class='err'>") > -1) {
-                result.put(LIST_COLUMN_STATE, STATE_ERROR);
-                result.put(
-                    LIST_COLUMN_ERRORS,
-                    new Integer(CmsStringUtil.splitAsList(report, "<span class='err'>").size() - 1));
-                result.put(
-                    LIST_COLUMN_WARNINGS,
-                    new Integer(CmsStringUtil.splitAsList(report, "<span class='warn'>").size() - 1));
-            } else if (report.indexOf("<span class='warn'>") > -1) {
-                result.put(LIST_COLUMN_STATE, STATE_WARNING);
-                result.put(
-                    LIST_COLUMN_WARNINGS,
-                    new Integer(CmsStringUtil.splitAsList(report, "<span class='warn'>").size() - 1));
-            } else {
-                result.put(LIST_COLUMN_STATE, STATE_OK);
+                //Report contains error span
+                return STATE_ERROR;
+
+            }
+            if (report.indexOf("<span class='warn'>") > -1) {
+                //Report contains warning span
+                return STATE_WARNING;
+
             }
         }
-        if (result.get(LIST_COLUMN_WARNINGS) == null) {
-            result.put(LIST_COLUMN_WARNINGS, new Integer(0));
-        }
-        if (result.get(LIST_COLUMN_ERRORS) == null) {
-            result.put(LIST_COLUMN_ERRORS, new Integer(0));
-        }
-        return result;
+        //no warning or error state detected -> ok
+        return STATE_OK;
+
     }
 
     /**
@@ -619,7 +600,7 @@ public class CmsQueuedTable extends Table {
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentUser());
         }
         for (CmsPublishJobFinished job : publishJobs) {
-            Map<String, Object> state = getState(job);
+            String state = getState(job);
             Item item = m_container.addItem(job);
             item.getItemProperty(PROP_PROJECT).setValue(job.getProjectName().replace("&#47;", "/")); //TODO better way for unescaping..
             try {
@@ -628,9 +609,9 @@ public class CmsQueuedTable extends Table {
             } catch (com.vaadin.data.Property.ReadOnlyException | CmsException e) {
                 LOG.error("Error while read published Resources", e);
             }
-            item.getItemProperty(PROP_STATUS).setValue(state.get(LIST_COLUMN_STATE));
+            item.getItemProperty(PROP_STATUS).setValue(state);
             item.getItemProperty(PROP_STATUS_LOCALE).setValue(
-                CmsVaadinUtils.getMessageText(STATUS_MESSAGES.get(state.get(LIST_COLUMN_STATE))));
+                CmsVaadinUtils.getMessageText(STATUS_MESSAGES.get(state)));
             item.getItemProperty(PROP_START).setValue(new Date(job.getStartTime()));
             item.getItemProperty(PROP_STOP).setValue(new Date(job.getFinishTime()));
             item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
