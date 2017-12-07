@@ -40,7 +40,7 @@ import java.util.Locale;
 public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
     /** The email regular expression. */
-    public static final String EMAIL_REGEX = "\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z";
+    public static final String EMAIL_REGEX = "\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9äöüÄÖÜ](?:[a-z0-9äöüÄÖÜ-]*[a-z0-9äöüÄÖÜ])?\\.)+[a-z0-9äöüÄÖÜ](?:[a-z0-9äöüÄÖÜ-]*[a-z0-9äöüÄÖÜ])?\\z";
 
     /** The user name constraints. */
     public static final String USERNAME_CONSTRAINTS = "-._~$@";
