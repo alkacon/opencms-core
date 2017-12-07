@@ -422,12 +422,15 @@ public class CmsSessionsTable extends Table {
                         String[] ret = CmsSessionInfo.getHourMinuteSecondTimeString(
                             ((Long)((Table)source).getItem(itemId).getItemProperty(propertyId).getValue()).longValue());
 
-                        return ret[1]
-                            + ":"
-                            + ret[2]
-                            + " "
-                            + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_MINUTES_0);
-
+                        if (Integer.parseInt(ret[1]) == 1) {
+                            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LAST_ACTIVITY_ONE_MINUTE_0);
+                        }
+                        if (Integer.parseInt(ret[1]) == 0) {
+                            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LAST_ACTIVITY_LESS_ONE_MINUTE_0);
+                        }
+                        return CmsVaadinUtils.getMessageText(
+                            Messages.GUI_MESSAGES_LAST_ACTIVITY_MINUTES_1,
+                            Integer.parseInt(ret[1]));
                     }
                     return null;
                 }
@@ -440,7 +443,7 @@ public class CmsSessionsTable extends Table {
     }
 
     /**
-     * Runnable called when a window shoule be closed.<p>
+     * Runnable called when a window should be closed.<p>
      * Reinitializes the table.<p>
      *
      * @param window to be closed

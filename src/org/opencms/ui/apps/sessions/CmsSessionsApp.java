@@ -295,6 +295,24 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
         });
         m_uiContext.addToolbarButton(broadcastToAll);
         m_uiContext.addToolbarButton(getStatisticButton());
+        Button button = CmsToolBar.createButton(
+            FontOpenCms.RESET,
+            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_REFRESH_0));
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                try {
+                    m_table.ini();
+                } catch (CmsException e) {
+                    //
+                }
+
+            }
+        });
+        m_uiContext.addToolbarButton(button);
     }
 
     /**

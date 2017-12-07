@@ -60,6 +60,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_REFRESH_0 = "GUI_MESSAGES_REFRESH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LAST_ACTIVITY_ONE_MINUTE_0 = "GUI_MESSAGES_LAST_ACTIVITY_ONE_MINUTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LAST_ACTIVITY_LESS_ONE_MINUTE_0 = "GUI_MESSAGES_LAST_ACTIVITY_LESS_ONE_MINUTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LAST_ACTIVITY_MINUTES_1 = "GUI_MESSAGES_LAST_ACTIVITY_MINUTES_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
