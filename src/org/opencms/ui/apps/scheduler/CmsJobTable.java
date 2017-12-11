@@ -28,7 +28,6 @@
 package org.opencms.ui.apps.scheduler;
 
 import org.opencms.configuration.CmsSchedulerConfiguration;
-import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -223,7 +222,7 @@ public class CmsJobTable extends Table {
                             for (String jobId : jobIds) {
                                 OpenCms.getScheduleManager().unscheduleJob(A_CmsUI.getCmsObject(), jobId);
                             }
-                            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                            OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
                             reloadJobs();
                         } catch (CmsRoleViolationException e) {
                             CmsErrorDialog.showErrorDialog(e);

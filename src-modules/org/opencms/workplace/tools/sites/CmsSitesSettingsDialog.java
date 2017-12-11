@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.tools.sites;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -112,7 +112,7 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
         if (!hasCommitErrors()) {
             // write the system configuration
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
         }
     }
 

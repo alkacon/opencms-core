@@ -27,7 +27,7 @@
 
 package org.opencms.main;
 
-import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsLoginMessage;
@@ -408,7 +408,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1339,7 +1339,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             throw new IllegalArgumentException("No site found for path: " + siteRoot);
         } else {
             site.getParameters().put(key, value);
-            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
         }
     }
 
