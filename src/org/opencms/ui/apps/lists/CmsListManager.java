@@ -28,6 +28,8 @@
 package org.opencms.ui.apps.lists;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue;
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -1188,83 +1190,85 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             @Override
             public List<I_CmsContextMenuItem> getMenuItems() {
 
-                return Arrays.<I_CmsContextMenuItem> asList(new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+                return Arrays.<I_CmsContextMenuItem> asList(
+                    new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
 
-                    @Override
-                    public void executeAction(I_CmsDialogContext context) {
+                        @Override
+                        public void executeAction(I_CmsDialogContext context) {
 
-                        CmsUUID structureId = context.getResources().get(0).getStructureId();
-                        m_currentConfig.getBlacklist().add(structureId);
-                        saveBlacklist(m_currentConfig);
-                        context.finish(Collections.singletonList(structureId));
-                    }
-
-                    @Override
-                    public String getId() {
-
-                        return "hideresource";
-                    }
-
-                    @Override
-                    public String getTitleKey() {
-
-                        return Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0;
-                    }
-
-                    @Override
-                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-                        if ((m_currentConfig != null)
-                            && (resources != null)
-                            && (resources.size() == 1)
-                            && !m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
-                            return CmsEditDialogAction.VISIBILITY.getVisibility(
-                                cms,
-                                Collections.singletonList(m_currentResource));
-                        } else {
-                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            CmsUUID structureId = context.getResources().get(0).getStructureId();
+                            m_currentConfig.getBlacklist().add(structureId);
+                            saveBlacklist(m_currentConfig);
+                            context.finish(Collections.singletonList(structureId));
                         }
-                    }
 
-                }, null, 10, 0), new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+                        @Override
+                        public String getId() {
 
-                    @Override
-                    public void executeAction(I_CmsDialogContext context) {
-
-                        CmsUUID structureId = context.getResources().get(0).getStructureId();
-                        m_currentConfig.getBlacklist().remove(structureId);
-                        saveBlacklist(m_currentConfig);
-                        context.finish(Collections.singletonList(structureId));
-                    }
-
-                    @Override
-                    public String getId() {
-
-                        return "showresource";
-                    }
-
-                    @Override
-                    public String getTitleKey() {
-
-                        return Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0;
-                    }
-
-                    @Override
-                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-                        if ((m_currentConfig != null)
-                            && (resources != null)
-                            && (resources.size() == 1)
-                            && m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
-                            return CmsEditDialogAction.VISIBILITY.getVisibility(
-                                cms,
-                                Collections.singletonList(m_currentResource));
-                        } else {
-                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            return "hideresource";
                         }
-                    }
 
-                }, null, 10, 0),
+                        @Override
+                        public String getTitleKey() {
+
+                            return Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0;
+                        }
+
+                        @Override
+                        public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                            if ((m_currentConfig != null)
+                                && (resources != null)
+                                && (resources.size() == 1)
+                                && !m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
+                                return CmsEditDialogAction.VISIBILITY.getVisibility(
+                                    cms,
+                                    Collections.singletonList(m_currentResource));
+                            } else {
+                                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            }
+                        }
+
+                    }, null, 10, 0),
+                    new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+
+                        @Override
+                        public void executeAction(I_CmsDialogContext context) {
+
+                            CmsUUID structureId = context.getResources().get(0).getStructureId();
+                            m_currentConfig.getBlacklist().remove(structureId);
+                            saveBlacklist(m_currentConfig);
+                            context.finish(Collections.singletonList(structureId));
+                        }
+
+                        @Override
+                        public String getId() {
+
+                            return "showresource";
+                        }
+
+                        @Override
+                        public String getTitleKey() {
+
+                            return Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0;
+                        }
+
+                        @Override
+                        public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                            if ((m_currentConfig != null)
+                                && (resources != null)
+                                && (resources.size() == 1)
+                                && m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
+                                return CmsEditDialogAction.VISIBILITY.getVisibility(
+                                    cms,
+                                    Collections.singletonList(m_currentResource));
+                            } else {
+                                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                            }
+                        }
+
+                    }, null, 10, 0),
                     new CmsContextMenuActionItem(new EditAction(), null, 10, 1000),
                     new CmsContextMenuActionItem(new DeleteAction(), null, 10, 1000));
             }
@@ -1756,13 +1760,43 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         m_textSearch.setVisible(!enabled);
         m_editCurrentButton.setVisible(!enabled);
         m_editCurrentButton.setEnabled(isOffline);
-        m_createNewButton.setVisible(enabled);
-        m_createNewButton.setEnabled(isOffline);
+
         m_toggleSeriesButton.setVisible(m_hasSeriesType && !enabled);
         m_resultSorter.setVisible(!enabled);
         m_localeSelect.setVisible(!enabled);
         m_isOverView = enabled;
         m_rootLayout.setMainContent(enabled ? m_overviewTable : m_resultLayout);
+        m_createNewButton.setVisible(enabled);
+        if (enabled) {
+            if (!isOffline) {
+                m_createNewButton.setEnabled(false);
+                m_createNewButton.setDescription(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_NOT_CREATABLE_ONLINE_0));
+            } else {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                CmsADEConfigData data = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().getSiteRoot());
+                CmsResourceTypeConfig typeConfig = data.getResourceType(RES_TYPE_LIST_CONFIG);
+                try {
+                    if (!typeConfig.checkCreatable(cms, cms.getRequestContext().getSiteRoot())) {
+                        m_createNewButton.setEnabled(false);
+                        m_createNewButton.setDescription(
+                            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_NOT_CREATABLE_TYPE_0));
+                    } else {
+                        m_createNewButton.setEnabled(true);
+                        m_createNewButton.setDescription(
+                            CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_CREATE_NEW_0));
+                    }
+                } catch (CmsException e) {
+                    m_createNewButton.setEnabled(false);
+                    m_createNewButton.setDescription(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_NOT_CREATABLE_TYPE_0));
+                }
+            }
+
+            m_createNewButton.setEnabled(isOffline);
+        }
     }
 
     /**
