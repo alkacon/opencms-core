@@ -30,6 +30,7 @@ package org.opencms.ui.editors;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -40,6 +41,8 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBrowserFrame;
 import org.opencms.ui.components.CmsConfirmationDialog;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -120,7 +123,11 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
         link += "?resource=" + sitepath + "&backlink=" + backLink;
         if (params != null) {
             for (Entry<String, String> entry : params.entrySet()) {
-                link += "&" + entry.getKey() + "=" + entry.getValue();
+                try {
+                    link += "&" + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), CmsEncoder.ENCODING_UTF_8);
+                } catch (UnsupportedEncodingException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
         m_frame.setSource(new ExternalResource(link));
