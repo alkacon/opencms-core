@@ -83,7 +83,7 @@ abstract class A_CmsJspValueWrapper {
     protected static String substituteLink(CmsObject cms, String target) {
 
         if (cms != null) {
-            return OpenCms.getLinkManager().substituteLink(
+            return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 cms,
                 CmsLinkManager.getAbsoluteUri(String.valueOf(target), cms.getRequestContext().getUri()));
         } else {
