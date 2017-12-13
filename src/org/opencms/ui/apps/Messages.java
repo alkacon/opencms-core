@@ -54,6 +54,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_DISABLED_0 = "GUI_USERMANAGEMENT_USER_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_INACTIVE_0 = "GUI_USERMANAGEMENT_USER_INACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_ACTIVE_0 = "GUI_USERMANAGEMENT_USER_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_DISABLED_HELP_0 = "GUI_USERMANAGEMENT_USER_DISABLED_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0 = "GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1 = "GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

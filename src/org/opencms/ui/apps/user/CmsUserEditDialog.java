@@ -720,6 +720,10 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             try {
                 CmsGroup group = m_cms.readGroup(m_group.getValue());
                 CmsRole roleFromGroup = CmsRole.valueOf(group);
+                CmsRole roleFromField = (CmsRole)m_role.getValue();
+                if (!roleFromGroup.getChildren(true).contains(roleFromField)) {
+                    roleFromGroup = roleFromField;
+                }
                 if (roleFromGroup == null) {
                     return false;
                 }
@@ -871,6 +875,16 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         });
 
         if (m_user == null) {
+            m_role.addValueChangeListener(new ValueChangeListener() {
+
+                private static final long serialVersionUID = 5697126133686172725L;
+
+                public void valueChange(ValueChangeEvent event) {
+
+                    iniStartView(settings);
+                    iniSite(settings);
+                }
+            });
             m_group.addValueChangeListener(new ValueChangeListener() {
 
                 private static final long serialVersionUID = 1512940002751242094L;
@@ -983,6 +997,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         user.setDescription(m_description.getValue());
         user.setManaged(!m_selfmanagement.getValue().booleanValue());
+        user.setEnabled(m_enabled.getValue().booleanValue());
         m_userdata.submit(user, m_cms, new Runnable() {
 
             public void run() {

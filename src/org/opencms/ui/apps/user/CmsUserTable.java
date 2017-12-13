@@ -75,6 +75,7 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -601,11 +602,17 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         /**OU. */
         OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
         /**Last login. */
-        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, String.class, ""),
+        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
         /**IsIndirect?. */
         INDIRECT("", Boolean.class, new Boolean(false)),
         /**From Other ou?. */
-        FROMOTHEROU("", Boolean.class, new Boolean(false));
+        FROMOTHEROU("", Boolean.class, new Boolean(false)),
+        /**Is the user disabled? */
+        DISABLED("", Boolean.class, new Boolean(false)),
+        /**Is the user new? */
+        NEWUSER("", Boolean.class, new Boolean(false)),
+        /**Status. */
+        STATUS("", String.class, "");
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -959,6 +966,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         item.getItemProperty(TableProperty.Name).setValue(user.getSimpleName());
         item.getItemProperty(TableProperty.FullName).setValue(user.getFullName());
         item.getItemProperty(TableProperty.SystemName).setValue(user.getName());
+        boolean disabled = !user.isEnabled();
+        item.getItemProperty(TableProperty.DISABLED).setValue(new Boolean(disabled));
+        boolean newUser = user.getLastlogin() == 0L;
+        item.getItemProperty(TableProperty.NEWUSER).setValue(new Boolean(newUser));
+        item.getItemProperty(TableProperty.STATUS).setValue(getStatus(disabled, newUser));
         try {
             item.getItemProperty(TableProperty.OU).setValue(
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, user.getOuFqn()).getDisplayName(
@@ -966,10 +978,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         } catch (CmsException e) {
             LOG.error("Can't read OU", e);
         }
-        item.getItemProperty(TableProperty.LastLogin).setValue(
-            user.getLastlogin() == 0L
-            ? CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_NEVER_LOGGED_IN_0)
-            : CmsDateUtil.getDateTime(new Date(user.getLastlogin()), DateFormat.SHORT, A_CmsUI.get().getLocale()));
+        item.getItemProperty(TableProperty.LastLogin).setValue(user.getLastlogin());
         item.getItemProperty(TableProperty.INDIRECT).setValue(new Boolean(m_indirects.contains(user)));
         item.getItemProperty(TableProperty.FROMOTHEROU).setValue(new Boolean(!user.getOuFqn().equals(m_ou)));
     }
@@ -1010,6 +1019,21 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         return cms;
     }
 
+    /**Returns status message.
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return String */
+    private String getStatus(boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_0);
+        }
+        if (newUser) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
+        }
+        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ACTIVE_0);
+    }
+
     /**
      * initializes table.
      * @param showAll boolean
@@ -1030,6 +1054,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
 
         setColumnWidth(null, 40);
+        setColumnWidth(TableProperty.STATUS, 100);
         setSelectable(true);
         setMultiSelect(true);
 
@@ -1069,6 +1094,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
+                if (TableProperty.STATUS.equals(propertyId)) {
+                    return getStatusStyleForItem(source.getItem(itemId));
+
+                }
                 String css = " ";
 
                 if (((Boolean)(source.getItem(itemId).getItemProperty(
@@ -1087,8 +1116,66 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                 return css.length() == 1 ? null : css;
             }
 
+            private String getStatusStyleForItem(Item item) {
+
+                if (((Boolean)item.getItemProperty(TableProperty.DISABLED).getValue()).booleanValue()) {
+                    return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+                }
+
+                if (((Boolean)item.getItemProperty(TableProperty.NEWUSER).getValue()).booleanValue()) {
+                    return OpenCmsTheme.TABLE_COLUMN_BOX_BLUE;
+                }
+
+                return OpenCmsTheme.TABLE_COLUMN_BOX_GREEN;
+            }
         });
-        setVisibleColumns(TableProperty.Name, TableProperty.FullName, TableProperty.OU, TableProperty.LastLogin);
+        addGeneratedColumn(TableProperty.LastLogin, new ColumnGenerator() {
+
+            private static final long serialVersionUID = -6781906011584975559L;
+
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+
+                long lastLogin = ((Long)source.getItem(itemId).getItemProperty(
+                    TableProperty.LastLogin).getValue()).longValue();
+                return lastLogin == 0L
+                ? CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_NEVER_LOGGED_IN_0)
+                : CmsDateUtil.getDateTime(new Date(lastLogin), DateFormat.SHORT, A_CmsUI.get().getLocale());
+
+            }
+
+        });
+
+        setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+
+            private static final long serialVersionUID = 7367011213487089661L;
+
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                if (TableProperty.STATUS.equals(propertyId)) {
+
+                    if (((Boolean)(((Table)source).getItem(itemId).getItemProperty(
+                        TableProperty.DISABLED).getValue())).booleanValue()) {
+                        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_HELP_0);
+                    }
+                    if (((Boolean)(((Table)source).getItem(itemId).getItemProperty(
+                        TableProperty.NEWUSER).getValue())).booleanValue()) {
+                        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0);
+                    }
+                    long lastLogin = ((Long)((Table)source).getItem(itemId).getItemProperty(
+                        TableProperty.LastLogin).getValue()).longValue();
+                    return CmsVaadinUtils.getMessageText(
+                        Messages.GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1,
+                        CmsDateUtil.getDateTime(new Date(lastLogin), DateFormat.SHORT, A_CmsUI.get().getLocale()));
+                }
+                return null;
+            }
+        });
+        setVisibleColumns(
+            TableProperty.STATUS,
+            TableProperty.Name,
+            TableProperty.FullName,
+            TableProperty.OU,
+            TableProperty.LastLogin);
     }
 
     /**

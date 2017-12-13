@@ -351,6 +351,10 @@
 	.o-box-blue-light::before{
 		background-color: $blue-light;	
 	}
+
+	.o-box-blue::before{
+		background-color: $blue;	
+	}
 	
 	.o-box-black::before{
 		background-color: $black;	

@@ -289,13 +289,13 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
         /**Icon property. */
         Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_OU)),
         /** Name property. */
-        Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_NAME_0), String.class, ""),
+        Name(Messages.GUI_USERMANAGEMENT_OU_NAME_0, String.class, ""),
         /** Description property.*/
-        Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_DESCRIPTION_0), String.class, ""),
+        Description(Messages.GUI_USERMANAGEMENT_OU_DESCRIPTION_0, String.class, ""),
         /** Type property. */
-        Type("Type", CmsOuTreeType.class, CmsOuTreeType.OU),
+        Type(null, CmsOuTreeType.class, CmsOuTreeType.OU),
         /** Resources property.*/
-        Ressources(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_EDIT_PANEL2_0), String.class, "");
+        Ressources(Messages.GUI_USERMANAGEMENT_OU_EDIT_PANEL2_0, String.class, "");
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -336,7 +336,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         String getName() {
 
-            return m_headerMessage;
+            return m_headerMessage == null ? "" : CmsVaadinUtils.getMessageText(m_headerMessage);
 
         }
 

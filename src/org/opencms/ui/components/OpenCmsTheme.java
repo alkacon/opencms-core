@@ -180,10 +180,10 @@ public final class OpenCmsTheme {
     public static final String ICON_DATABASE = "oc-icon-24-database";
 
     /** CSS style name.*/
-    public static final String ICON_EXLPORER_BIG = "oc-icon-32-explorer";
+    public static final String ICON_EXLPORER = "oc-icon-24-folder";
 
     /** CSS style name.*/
-    public static final String ICON_EXLPORER = "oc-icon-24-folder";
+    public static final String ICON_EXLPORER_BIG = "oc-icon-32-explorer";
 
     /** The group icon CSS class. */
     public static final String ICON_GROUP = "oc-icon-24-group";
@@ -193,6 +193,18 @@ public final class OpenCmsTheme {
 
     /**The Log icon. */
     public static final String ICON_LOG = "oc-icon-24-log";
+
+    /**Icon for OUs. */
+    public static final String ICON_OU = "oc-icon-24-orgunit";
+
+    /**Icon for OUs for web user. */
+    public static final String ICON_OU_WEB = "oc-icon-24-webuser";
+
+    /** The icon for all principal option (currently used in principal select).*/
+    public static final String ICON_PRINCIPAL_ALL = "oc-icon-24-principal-all";
+
+    /** The icon for overwriting principal (currently used in principal select).*/
+    public static final String ICON_PRINCIPAL_OVERWRITE = "oc-icon-24-principal-overwrite";
 
     /** The project icon CSS class. */
     public static final String ICON_PROJECT = "oc-icon-24-project";
@@ -215,20 +227,8 @@ public final class OpenCmsTheme {
     /** The cache icon CSS class. */
     public static final String ICON_SITE = "oc-icon-24-site";
 
-    /**Icon for OUs. */
-    public static final String ICON_OU = "oc-icon-24-orgunit";
-
-    /**Icon for OUs for web user. */
-    public static final String ICON_OU_WEB = "oc-icon-24-webuser";
-
     /** The user icon CSS class.*/
     public static final String ICON_USER = "oc-icon-24-user";
-
-    /** The icon for all principal option (currently used in principal select).*/
-    public static final String ICON_PRINCIPAL_ALL = "oc-icon-24-principal-all";
-
-    /** The icon for overwriting principal (currently used in principal select).*/
-    public static final String ICON_PRINCIPAL_OVERWRITE = "oc-icon-24-principal-overwrite";
 
     /** CSS style name. */
     public static final String IMAGE_GRADIENT = "o-image-gradient";
@@ -353,6 +353,8 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_BLACK = " o-box-black";
+
+    public static final String TABLE_COLUMN_BOX_BLUE = " o-box-blue";
 
     /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_BLUE_LIGHT = " o-box-blue-light";
