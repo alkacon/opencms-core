@@ -43,6 +43,7 @@ import org.opencms.xml.I_CmsXmlDocument;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -528,7 +529,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public List<Locale> getAvailableLocales() {
 
-        return m_availableLocales;
+        return Collections.unmodifiableList(m_availableLocales);
     }
 
     /**
