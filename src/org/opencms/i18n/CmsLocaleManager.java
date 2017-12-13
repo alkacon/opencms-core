@@ -559,7 +559,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
             result = getAvailableLocales(availableNames);
         }
         if ((result == null) || (result.size() == 0)) {
-            return m_availableLocales;
+            return Collections.unmodifiableList(m_availableLocales);
         } else {
             return result;
         }
@@ -592,7 +592,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
             result = getAvailableLocales(availableNames);
         }
         if ((result == null) || (result.size() == 0)) {
-            return m_availableLocales;
+            return Collections.unmodifiableList(m_availableLocales);
         } else {
             return result;
         }
