@@ -100,11 +100,20 @@ public class CmsFlushCache extends Panel {
      * public constructor.<p>
      */
     public CmsFlushCache() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_flushes.setSpacing(true);
         m_flushes.setMargin(true);
         setWidthUndefined();
-        Component c = getButtonLayout(3, null);
+        Component c = getButtonLayout(3, new Runnable() {
+
+            public void run() {
+
+                // nothing to do
+
+            }
+
+        });
         m_flushes.addComponent(c);
 
     }

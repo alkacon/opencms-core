@@ -66,6 +66,7 @@ public class CmsInfoButton extends Button {
          * @param comp vaadin component
          */
         InfoElementBean(int pos, Component comp) {
+
             m_pos = pos;
             m_component = comp;
         }
@@ -114,6 +115,7 @@ public class CmsInfoButton extends Button {
      * public constructor.<p>
      */
     public CmsInfoButton() {
+
         super(ICON);
         ini(new ArrayList<String>());
     }
@@ -124,6 +126,7 @@ public class CmsInfoButton extends Button {
      * @param htmlLines lines to show
      */
     public CmsInfoButton(final List<String> htmlLines) {
+
         super(ICON);
         m_htmlLines = htmlLines;
         ini(htmlLines);
@@ -135,6 +138,7 @@ public class CmsInfoButton extends Button {
      * @param infos map with information to display
      */
     public CmsInfoButton(Map<String, String> infos) {
+
         super(ICON);
 
         ini(getHtmlLines(infos));
