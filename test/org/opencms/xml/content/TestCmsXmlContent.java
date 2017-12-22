@@ -27,11 +27,14 @@
 
 package org.opencms.xml.content;
 
+import org.apache.commons.logging.Log;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlLocaleValue;
@@ -45,6 +48,8 @@ import java.util.Locale;
  *
  */
 public class TestCmsXmlContent extends OpenCmsTestCase {
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(TestCmsXmlContent.class);
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
@@ -170,5 +175,29 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
         assertEquals("-58254180000", dateTimeValue.getStringValue(null));
         assertEquals("<p>This is some Html</p>", htmlValue.getStringValue(null));
         assertEquals("en_EN", localeValue.getStringValue(null));
+    }
+
+    /**
+     * Unmarshalling of xsds that includes invalid nested elements must fail with an exception
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testUnmarshalXsdWithInvalidNestedSchema() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        final String SCHEMA_PATH = "org/opencms/xml/content/xmlcontent-definition-1.invalid-nested.xsd";
+        final String SCHEMA_LOCATION = "http://opencms.org/invalid-nested.xsd";
+        // unmarshal schema
+        String schemaAsString = CmsFileUtil.readFile(SCHEMA_PATH, CmsEncoder.ENCODING_UTF_8);
+        try {
+            CmsXmlContentDefinition.unmarshal(schemaAsString, SCHEMA_LOCATION, resolver);
+            fail("Shouldn't have marshaled a xsd with invalid nested elements");
+        } catch (CmsXmlException e) {
+            assertTrue(e.getMessage().contains("schemaLocation: '" + SCHEMA_LOCATION + "'"));
+            assertTrue(e.getCause().getMessage().contains("Unable to resolve included schema \"opencms://invalid.xsd\""));
+            LOG.info("Expected exception detected.");
+            LOG.debug("", e);
+        }
     }
 }
