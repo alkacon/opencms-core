@@ -749,6 +749,11 @@ public final class CmsXmlUtils {
      */
     public static Document unmarshalHelper(InputSource source, EntityResolver resolver, boolean validate)
     throws CmsXmlException {
+        if (null == source) {
+            throw new CmsXmlException(
+                    Messages.get().container(
+                            Messages.ERR_UNMARSHALLING_XML_DOC_1,"source==null!"));
+        }
 
         try {
             SAXReader reader = new SAXReader();

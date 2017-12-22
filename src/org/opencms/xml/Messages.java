@@ -38,7 +38,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CD_BAD_INCLUDE_1 = "ERR_CD_BAD_INCLUDE_1";
+    public static final String ERR_CD_BAD_INCLUDE_3 = "ERR_CD_BAD_INCLUDE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_COMPLEX_TYPE_COUNT_1 = "ERR_CD_COMPLEX_TYPE_COUNT_1";
