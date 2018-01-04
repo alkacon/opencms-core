@@ -32,6 +32,7 @@ import org.opencms.ade.publish.CmsDirectPublishProject;
 import org.opencms.ade.publish.CmsMyChangesProject;
 import org.opencms.ade.publish.CmsPublish;
 import org.opencms.ade.publish.CmsRealProjectVirtualWrapper;
+import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.ade.publish.I_CmsVirtualProject;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishListToken;
@@ -89,6 +90,13 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultWorkflowManager.class);
+
+    /**
+     * If a request context attribute of this name is set, some internal methods used
+     * to collect lists of resources for publishing will 'give up' and throw an exception
+     * when the number of resources exceeds the resource limit of the workflow manager.
+     */
+    public static final String ATTR_CHECK_PUBLISH_RESOURCE_LIMIT = "CHECK_PUBLISH_RESOURCE_LIMIT";
 
     /** The map of registered virtual  projects. */
     protected Map<CmsUUID, I_CmsVirtualProject> m_virtualProjects = Maps.newHashMap();
@@ -169,7 +177,8 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             cms,
             token.getWorkflow(),
             token.getOptions(),
-            false).getWorkflowResources();
+            false,
+            true).getWorkflowResources();
         return executeAction(cms, action, token.getOptions(), resources);
     }
 
@@ -181,7 +190,8 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         CmsObject userCms,
         CmsWorkflowAction action,
         CmsPublishOptions options,
-        List<CmsResource> resources) throws CmsException {
+        List<CmsResource> resources)
+    throws CmsException {
 
         String actionKey = action.getAction();
         if (CmsWorkflowAction.ACTION_CANCEL.equals(actionKey)) {
@@ -276,27 +286,37 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean, boolean)
      */
     @Override
     public CmsWorkflowResources getWorkflowResources(
         CmsObject cms,
         CmsWorkflow workflow,
         CmsPublishOptions options,
-        boolean canOverride) {
+        boolean canOverride,
+        boolean ignoreLimit) {
 
         try {
+            if (!ignoreLimit) {
+                cms.getRequestContext().setAttribute(
+                    CmsDefaultWorkflowManager.ATTR_CHECK_PUBLISH_RESOURCE_LIMIT,
+                    Boolean.TRUE);
+            }
             List<CmsResource> rawResourceList = new ArrayList<CmsResource>();
             I_CmsVirtualProject projectHandler = null;
             projectHandler = getRealOrVirtualProject(options.getProjectId());
             if (projectHandler != null) {
                 rawResourceList = projectHandler.getResources(cms, options.getParameters(), workflow.getId());
-                return new CmsWorkflowResources(rawResourceList);
+                return new CmsWorkflowResources(rawResourceList, null, null);
             }
-            return new CmsWorkflowResources(rawResourceList);
+            return new CmsWorkflowResources(rawResourceList, null, null);
+        } catch (CmsTooManyPublishResourcesException e) {
+            return new CmsWorkflowResources(Collections.<CmsResource> emptyList(), null, Integer.valueOf(e.getCount()));
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
-            return new CmsWorkflowResources(Collections.<CmsResource> emptyList());
+            return new CmsWorkflowResources(Collections.<CmsResource> emptyList(), null, null);
+        } finally {
+            cms.getRequestContext().removeAttribute(CmsDefaultWorkflowManager.ATTR_CHECK_PUBLISH_RESOURCE_LIMIT);
         }
     }
 
@@ -344,7 +364,8 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     protected CmsWorkflowResponse actionForcePublish(
         CmsObject userCms,
         CmsPublishOptions options,
-        List<CmsResource> resources) throws CmsException {
+        List<CmsResource> resources)
+    throws CmsException {
 
         CmsPublish publish = new CmsPublish(userCms, options.getParameters());
         publish.publishResources(resources);
@@ -370,7 +391,8 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     protected CmsWorkflowResponse actionPublish(
         CmsObject userCms,
         CmsPublishOptions options,
-        final List<CmsResource> resources) throws CmsException {
+        final List<CmsResource> resources)
+    throws CmsException {
 
         final CmsPublish publish = new CmsPublish(userCms, options);
         // use FutureTask to get the broken links, because we can then use a different thread if it takes too long

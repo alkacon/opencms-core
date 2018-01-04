@@ -27,6 +27,7 @@
 
 package org.opencms.db;
 
+import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
@@ -114,6 +115,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
+import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workplace.threads.A_CmsProgressThread;
 
 import java.util.ArrayList;
@@ -3309,8 +3311,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
                     | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
-            publishList.addAll(filterResources(dbc, null, folderList), true);
-
             List<CmsResource> fileList = getVfsDriver(dbc).readResourceTree(
                 dbc,
                 dbc.currentProject().getUuid(),
@@ -3327,7 +3327,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     | CmsDriverManager.READMODE_INCLUDE_PROJECT
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
                     | CmsDriverManager.READMODE_ONLY_FILES);
+            CmsRequestContext context = dbc.getRequestContext();
+            if ((context != null)
+                && (context.getAttribute(CmsDefaultWorkflowManager.ATTR_CHECK_PUBLISH_RESOURCE_LIMIT) != null)) {
 
+                // check if total size and if it exceeds the resource limit and the request
+                // context attribute is set, throw an exception.
+                // we do it here since filterResources() can be very expensive on large resource lists
+
+                int limit = OpenCms.getWorkflowManager().getResourceLimit();
+                int total = fileList.size() + folderList.size();
+                if (total > limit) {
+                    throw new CmsTooManyPublishResourcesException(total);
+                }
+            }
+            publishList.addAll(filterResources(dbc, null, folderList), true);
             publishList.addAll(filterResources(dbc, publishList, fileList), true);
         } else {
             // this is a direct publish

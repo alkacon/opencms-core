@@ -27,6 +27,7 @@
 
 package org.opencms.db;
 
+import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.log.CmsLogEntry;
@@ -1836,6 +1837,8 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.fillPublishList(dbc, publishList);
             checkPublishPermissions(dbc, publishList);
+        } catch (CmsTooManyPublishResourcesException e) {
+            throw e;
         } catch (Exception e) {
             if (publishList.isDirectPublish()) {
                 dbc.report(

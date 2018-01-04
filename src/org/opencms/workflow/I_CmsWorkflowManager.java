@@ -87,7 +87,8 @@ public interface I_CmsWorkflowManager {
         CmsObject userCms,
         CmsWorkflowAction action,
         CmsPublishOptions options,
-        List<CmsResource> resources) throws CmsException;
+        List<CmsResource> resources)
+    throws CmsException;
 
     /**
      * Returns the current user's manageable projects.<p>
@@ -150,6 +151,7 @@ public interface I_CmsWorkflowManager {
      * @param workflow the workflow
      * @param options the resource options
      * @param canOverride flag to indicate whether the workflow manager should be able to override the selected workflow
+     * @param ignoreLimit true if the workflow manager's resource limit should be ignored
      *
      * @return the workflow resources
      */
@@ -157,7 +159,8 @@ public interface I_CmsWorkflowManager {
         CmsObject cms,
         CmsWorkflow workflow,
         CmsPublishOptions options,
-        boolean canOverride);
+        boolean canOverride,
+        boolean ignoreLimit);
 
     /**
      * Returns the available workflows for the current user.<p>

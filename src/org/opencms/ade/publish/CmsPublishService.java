@@ -339,25 +339,20 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             I_CmsWorkflowManager workflowManager = OpenCms.getWorkflowManager();
             I_CmsPublishResourceFormatter formatter = workflowManager.createFormatter(cms, workflow, options);
-            CmsWorkflowResources workflowResources = workflowManager.getWorkflowResources(
-                cms,
-                workflow,
-                options,
-                projectChanged);
+            CmsWorkflowResources workflowResources = null;
+            workflowResources = workflowManager.getWorkflowResources(cms, workflow, options, projectChanged, false);
             if (workflowResources.getOverrideWorkflow() != null) {
                 overrideWorkflowId = workflowResources.getOverrideWorkflow().getId();
                 formatter = workflowManager.createFormatter(cms, workflowResources.getOverrideWorkflow(), options);
             }
-            List<CmsResource> resources = workflowResources.getWorkflowResources();
-
-            if (resources.size() > workflowManager.getResourceLimit()) {
+            if (workflowResources.isTooMany()) {
                 // too many resources, send a publish list token to the client which can be used later to restore the resource list
                 CmsPublishListToken token = workflowManager.getPublishListToken(cms, workflow, options);
                 CmsPublishGroupList result = new CmsPublishGroupList(token);
                 result.setTooManyResourcesMessage(
                     Messages.get().getBundle(locale).key(
                         Messages.GUI_TOO_MANY_RESOURCES_2,
-                        "" + resources.size(),
+                        "" + workflowResources.getLowerBoundForSize(),
                         "" + OpenCms.getWorkflowManager().getResourceLimit()));
                 return result;
             }
@@ -366,7 +361,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 getCmsObject(),
                 options);
             ResourceMap resourcesAndRelated = getResourcesAndRelated(
-                resources,
+                workflowResources.getWorkflowResources(),
                 options.isIncludeRelated(),
                 options.isIncludeSiblings(),
                 (options.getProjectId() == null) || options.getProjectId().isNullUUID(),

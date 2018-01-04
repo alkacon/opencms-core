@@ -174,26 +174,35 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean)
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean, boolean)
      */
     @Override
     public CmsWorkflowResources getWorkflowResources(
         CmsObject cms,
         CmsWorkflow workflow,
         CmsPublishOptions options,
-        boolean canOverrideWorkflow) {
+        boolean canOverrideWorkflow,
+        boolean ignoreLimit) {
 
         String workflowKey = workflow.getId();
         String overrideId = null;
+        Integer tooManyCount = null;
         if (WORKFLOW_RELEASE.equals(workflowKey)) {
-            List<CmsResource> result = super.getWorkflowResources(
+            boolean tooMany = false;
+            CmsWorkflowResources workflowResourcesBean = super.getWorkflowResources(
                 cms,
                 workflow,
                 options,
-                canOverrideWorkflow).getWorkflowResources();
-            if (canOverrideWorkflow) {
-                boolean override = false;
+                canOverrideWorkflow,
+                ignoreLimit);
+            List<CmsResource> result = workflowResourcesBean.getWorkflowResources();
+            tooMany = workflowResourcesBean.isTooMany();
+            if (tooMany) {
+                tooManyCount = workflowResourcesBean.getTooManyCount();
+            }
 
+            if (canOverrideWorkflow && !workflowResourcesBean.isTooMany()) {
+                boolean override = false;
                 for (CmsResource permCheckResource : result) {
                     try {
                         boolean canPublish = cms.hasPermissions(
@@ -211,20 +220,31 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
                             e);
                     }
                     if (override) {
-                        List<CmsResource> resources = getWorkflowResources(
+                        CmsWorkflowResources overrideWorkflowResources = getWorkflowResources(
                             cms,
                             getWorkflows(cms).get(CmsDefaultWorkflowManager.WORKFLOW_PUBLISH),
                             options,
-                            false).getWorkflowResources();
-                        result = resources;
+                            false,
+                            false);
+                        tooMany = overrideWorkflowResources.isTooMany();
+                        tooManyCount = overrideWorkflowResources.getTooManyCount();
+                        result = overrideWorkflowResources.getWorkflowResources();
                         overrideId = WORKFLOW_PUBLISH;
                     }
                 }
             }
-            CmsWorkflowResources realResult = new CmsWorkflowResources(result, getWorkflows(cms).get(overrideId));
+            CmsWorkflowResources realResult = new CmsWorkflowResources(
+                result,
+                getWorkflows(cms).get(overrideId),
+                tooManyCount);
             return realResult;
         } else {
-            CmsWorkflowResources realResult = super.getWorkflowResources(cms, workflow, options, canOverrideWorkflow);
+            CmsWorkflowResources realResult = super.getWorkflowResources(
+                cms,
+                workflow,
+                options,
+                canOverrideWorkflow,
+                ignoreLimit);
             return realResult;
         }
     }
