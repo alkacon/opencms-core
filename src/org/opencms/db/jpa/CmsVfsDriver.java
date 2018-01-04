@@ -903,7 +903,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 removeFile(dbc, projectId, existingResource);
 
                 OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
+                        I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
                     Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
                 OpenCms.fireCmsEvent(
                     new CmsEvent(
@@ -1458,8 +1458,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 CmsRelation rel = internalReadRelation(rr);
                 try {
                     ous.add(m_driverManager.readOrganizationalUnit(
-                        dbc,
-                        rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                            dbc,
+                            rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
                 } catch (CmsException e) {
                     // should never happen
                     if (LOG.isErrorEnabled()) {
@@ -1654,11 +1654,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         moveRelations(dbc, projectId, source.getStructureId(), destinationPath);
         repairBrokenRelations(dbc, projectId, source.getStructureId(), destinationPath);
-        try {
-            m_driverManager.repairCategories(dbc, projectId, readResource(dbc, projectId, destinationPath, true));
-        } catch (CmsException e) {
-            throw new CmsDataAccessException(e.getMessageContainer(), e);
-        }
         // repair project resources
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID) && (dbc.getRequestContext() != null)) {
             String deletedResourceRootPath = source.getRootPath();
