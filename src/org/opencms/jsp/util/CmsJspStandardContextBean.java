@@ -1224,7 +1224,7 @@ public final class CmsJspStandardContextBean {
      */
     public CmsJspCategoryAccessBean getReadCategories() {
 
-        return m_resourceCategories.get(getRequestContext().getUri());
+        return getReadResourceCategories().get(getRequestContext().getRootUri());
     }
 
     /**
