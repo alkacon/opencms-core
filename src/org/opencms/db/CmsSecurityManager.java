@@ -7378,6 +7378,20 @@ public final class CmsSecurityManager {
                 moveResource(dbc, childResource, childDestination);
             }
         }
+        CmsProject currentProject = dbc.getRequestContext().getCurrentProject();
+        if (!currentProject.isOnlineProject()) {
+            List<CmsResource> movedResources = m_driverManager.readChildResources(
+                dbc,
+                destinationResource,
+                CmsResourceFilter.ALL,
+                true,
+                true,
+                false);
+            movedResources.add(destinationResource);
+            for (CmsResource res : movedResources) {
+                m_driverManager.repairCategories(dbc, dbc.getRequestContext().getCurrentProject().getUuid(), res);
+            }
+        }
     }
 
     /**
