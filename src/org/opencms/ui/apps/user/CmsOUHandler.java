@@ -60,6 +60,7 @@ public class CmsOUHandler {
      * @param cms CmsObject
      */
     public CmsOUHandler(CmsObject cms) {
+
         m_cms = cms;
         m_isRootAccountManager = OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""));
         if (!m_isRootAccountManager) {
@@ -78,6 +79,13 @@ public class CmsOUHandler {
         List<String> ous = new ArrayList<String>();
         try {
             cms.getRequestContext().getCurrentUser().getOuFqn();
+            List<CmsRole> list = OpenCms.getRoleManager().getRolesOfUser(
+                cms,
+                cms.getRequestContext().getCurrentUser().getName(),
+                "",
+                true,
+                false,
+                true);
             for (CmsRole role : OpenCms.getRoleManager().getRolesOfUser(
                 cms,
                 cms.getRequestContext().getCurrentUser().getName(),

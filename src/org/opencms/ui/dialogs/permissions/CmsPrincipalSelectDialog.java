@@ -160,6 +160,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         WidgetType widgetType,
         boolean realOnly,
         WidgetType defaultView) {
+
         m_ou = ou;
         m_type = widgetType;
         m_realOnly = realOnly;
@@ -168,7 +169,11 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             m_selectField = cmsPrincipalSelect;
 
-            m_ouCombo = CmsVaadinUtils.getOUComboBox(m_cms, m_cms.getRequestContext().getOuFqn(), null);
+            m_ouCombo = CmsVaadinUtils.getOUComboBox(
+                m_cms,
+                m_cms.getRequestContext().getOuFqn(),
+                null,
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou).hasFlagWebuser());
             m_ouCombo.select(m_ou);
 
             IndexedContainer data;
@@ -348,6 +353,16 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     }
 
     /**
+     * En/Disables the ou combo box.<p>
+     *
+     * @param enabled enabled boolean
+     */
+    public void setOuComboBoxEnabled(boolean enabled) {
+
+        m_ouCombo.setEnabled(enabled);
+    }
+
+    /**
      * Sets the principal select handler.<p>
      *
      * @param selectHandler the principal select handler
@@ -441,7 +456,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 icon);
         }
         if (type.equals(WidgetType.userwidget)) {
-            List<CmsUser> users = OpenCms.getRoleManager().getManageableUsers(m_cms, ou, false);
+            List<CmsUser> users = OpenCms.getRoleManager().getManageableUsers(m_cms, ou, false, true);
             if (!realOnly) {
                 CmsUser user = new CmsUser(
                     CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,

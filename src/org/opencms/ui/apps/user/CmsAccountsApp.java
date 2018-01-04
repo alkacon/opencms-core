@@ -129,6 +129,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
          * @param groupID groupid
          */
         public CmsStateBean(String path, CmsOuTreeType type, CmsUUID groupID) {
+
             m_path = path;
             m_type = type;
             m_groupID = groupID;
@@ -261,6 +262,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * constructor.<p>
      */
     public CmsAccountsApp() {
+
         super();
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
@@ -636,7 +638,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      */
     void openAddUserDialog() {
 
-        CmsBasicDialog dialog;
+        CmsPrincipalSelectDialog dialog;
 
         final Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
 
@@ -648,6 +650,13 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             true,
             WidgetType.userwidget);
 
+        try {
+            dialog.setOuComboBoxEnabled(
+                !OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_stateBean.getPath()).hasFlagWebuser()
+                    | m_stateBean.getType().equals(CmsOuTreeType.ROLE));
+        } catch (CmsException e) {
+            LOG.error("Can not read OU.", e);
+        }
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_USER_TO_GROUP_0));
         window.setContent(dialog);
         A_CmsUI.get().addWindow(window);

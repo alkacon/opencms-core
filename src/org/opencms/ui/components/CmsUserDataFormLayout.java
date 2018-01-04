@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsAccountInfo;
 import org.opencms.workplace.CmsAccountInfo.Field;
 
@@ -76,6 +77,7 @@ public class CmsUserDataFormLayout extends FormLayout {
          * @param field the field to validate
          */
         public FieldValidator(Field field) {
+
             super(null);
             m_field = field;
         }
@@ -191,8 +193,24 @@ public class CmsUserDataFormLayout extends FormLayout {
      */
     public void submit(CmsUser user, CmsObject cms, Runnable afterWrite) {
 
+        submit(user, cms, afterWrite, false);
+    }
+
+    /**
+     * Store fields to given user.<p>
+     *
+     * @param user User to write information to
+     * @param cms CmsObject
+     * @param afterWrite runnable which gets called after writing user
+     * @param force force write even if data are not valid
+     */
+    public void submit(CmsUser user, CmsObject cms, Runnable afterWrite, boolean force) {
+
         try {
-            if (isValid()) {
+            if (isValid() | force) {
+                if (force) {
+                    removeValidators();
+                }
                 m_binder.commit();
                 PropertyUtilsBean propUtils = new PropertyUtilsBean();
                 for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
@@ -200,10 +218,13 @@ public class CmsUserDataFormLayout extends FormLayout {
                         if (info.isAdditionalInfo()) {
                             user.setAdditionalInfo(info.getAddInfoKey(), m_infos.getItemProperty(info).getValue());
                         } else {
-                            propUtils.setProperty(
-                                user,
-                                info.getField().name(),
-                                m_infos.getItemProperty(info).getValue());
+                            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(
+                                (String)m_infos.getItemProperty(info).getValue())) {
+                                propUtils.setProperty(
+                                    user,
+                                    info.getField().name(),
+                                    m_infos.getItemProperty(info).getValue());
+                            }
                         }
                     }
                 }
@@ -255,6 +276,16 @@ public class CmsUserDataFormLayout extends FormLayout {
             }
         } else {
             return CmsVaadinUtils.getMessageText("GUI_USER_DATA_" + info.getField().name().toUpperCase() + "_0");
+        }
+    }
+
+    /**
+     * Removes all validators.<p>
+     */
+    private void removeValidators() {
+
+        for (Component comp : this) {
+            ((TextField)comp).removeAllValidators();
         }
     }
 

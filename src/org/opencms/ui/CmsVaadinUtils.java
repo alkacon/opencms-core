@@ -580,19 +580,26 @@ public final class CmsVaadinUtils {
      */
     public static ComboBox getOUComboBox(CmsObject cms, String baseOu, Log log) {
 
+        return getOUComboBox(cms, baseOu, log, true);
+    }
+
+    public static ComboBox getOUComboBox(CmsObject cms, String baseOu, Log log, boolean includeWebOU) {
+
         ComboBox combo = null;
         try {
             IndexedContainer container = new IndexedContainer();
             container.addContainerProperty("desc", String.class, "");
             for (String ou : CmsOUHandler.getManagableOUs(cms)) {
-                Item item = container.addItem(ou);
-                if (ou == "") {
-                    CmsOrganizationalUnit root = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
-                    item.getItemProperty("desc").setValue(root.getDisplayName(A_CmsUI.get().getLocale()));
-                } else {
-                    item.getItemProperty("desc").setValue(
-                        OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou).getDisplayName(
-                            A_CmsUI.get().getLocale()));
+                if (includeWebOU | !OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou).hasFlagWebuser()) {
+                    Item item = container.addItem(ou);
+                    if (ou == "") {
+                        CmsOrganizationalUnit root = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "");
+                        item.getItemProperty("desc").setValue(root.getDisplayName(A_CmsUI.get().getLocale()));
+                    } else {
+                        item.getItemProperty("desc").setValue(
+                            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou).getDisplayName(
+                                A_CmsUI.get().getLocale()));
+                    }
                 }
             }
             combo = new ComboBox(null, container);
@@ -1116,7 +1123,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

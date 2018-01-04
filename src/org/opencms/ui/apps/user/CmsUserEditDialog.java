@@ -38,6 +38,7 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsDefaultValidationHandler;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
@@ -226,7 +227,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     private TextField m_loginname;
 
     /**Password form. */
-    private CmsPasswordForm m_pw;
+    CmsPasswordForm m_pw;
 
     /**vaadin component.*/
     private ComboBox m_language;
@@ -273,7 +274,11 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     /**Select view for principals.*/
     private CmsPrincipalSelect m_group;
 
+    /**Flag indicates if name was empty. */
     private boolean m_name_was_empty;
+
+    /**Flag indicates is user is in webou. */
+    boolean m_isWebOU;
 
     /**
      * public constructor.<p>
@@ -290,6 +295,14 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             m_cms = OpenCms.initCmsObject(cms);
             m_startfolder.disableSiteSwitch();
             m_user = m_cms.readUser(userId);
+            if (m_user.isWebuser()) {
+                m_tab.removeTab(m_tab.getTab(3));
+                m_selfmanagement.setValue(new Boolean(false));
+                m_isWebOU = true;
+            } else {
+                m_selfmanagement.setValue(new Boolean(true));
+            }
+
             displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
             m_group.setVisible(false);
             m_role.setVisible(false);
@@ -322,9 +335,25 @@ public class CmsUserEditDialog extends CmsBasicDialog {
      * @param ou organizational unit
      */
     public CmsUserEditDialog(CmsObject cms, final Window window, String ou) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        CmsOrganizationalUnit myOu = null;
         try {
             m_cms = OpenCms.initCmsObject(cms);
+            myOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou);
+
+            m_isWebOU = false;
+            if (myOu.hasFlagWebuser()) {
+                m_tab.removeTab(m_tab.getTab(3));
+                m_role.setVisible(false);
+                m_selfmanagement.setValue(new Boolean(false));
+                m_isWebOU = true;
+            } else {
+                iniRole(ou);
+                m_role.select(CmsRole.ELEMENT_AUTHOR.forOrgUnit(ou));
+                m_selfmanagement.setValue(new Boolean(true));
+
+            }
         } catch (CmsException e) {
             //
         }
@@ -334,9 +363,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
         m_group.setOU(m_ou.getValue());
-        iniRole();
-        m_role.select(CmsRole.ELEMENT_AUTHOR.forOrgUnit(ou));
-        m_selfmanagement.setValue(new Boolean(true));
+
         m_enabled.setValue(Boolean.TRUE);
         m_startfolder.setValue("/");
         init(window, null);
@@ -363,7 +390,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         return m_user == null;
     }
 
-    /**
+    /**m_next
      * Is password not matching to confirm field?<p>
      *
      * @return true, if password not equal to confirm
@@ -431,8 +458,8 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         boolean[] ret = new boolean[4];
         ret[0] = m_loginname.isValid();
-        ret[1] = m_userdata.isValid() | m_name_was_empty;
-        ret[3] = m_site.isValid() & m_startview.isValid();
+        ret[1] = m_isWebOU ? true : m_userdata.isValid() | m_name_was_empty;
+        ret[3] = m_isWebOU ? true : m_site.isValid() & m_startview.isValid();
         ret[2] = m_pw.getPassword1Field().isValid();
 
         for (int i = 0; i < ret.length; i++) {
@@ -470,8 +497,9 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         Component tab = m_tab.getSelectedTab();
         int pos = m_tab.getTabPosition(m_tab.getTab(tab));
-        m_next.setVisible(pos < 3);
-        m_ok.setVisible(pos == 3);
+        int maxPos = m_isWebOU ? 2 : 3;
+        m_next.setVisible(pos < maxPos);
+        m_ok.setVisible(pos == maxPos);
     }
 
     /**
@@ -492,6 +520,11 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         Component tab = m_tab.getSelectedTab();
         int pos = m_tab.getTabPosition(m_tab.getTab(tab));
+        if (m_isWebOU) {
+            if (pos == 0) {
+                pos = 1;
+            }
+        }
         m_tab.setSelectedTab(pos + 1);
     }
 
@@ -795,10 +828,15 @@ public class CmsUserEditDialog extends CmsBasicDialog {
         }
     }
 
-    private void iniRole() {
+    /**
+     * Initialized the role ComboBox.<p>
+     *
+     * @param ou to load roles for
+     */
+    private void iniRole(String ou) {
 
         try {
-            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, m_ou.getValue(), false);
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, ou, false);
             CmsRole.applySystemRoleOrder(roles);
             IndexedContainer container = new IndexedContainer();
             container.addContainerProperty("caption", String.class, "");
@@ -826,7 +864,9 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
         m_userdata.initFields(m_user, true);
         if (m_user != null) {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getFirstname())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getFirstname())
+                | CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getLastname())
+                | CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getEmail())) {
                 m_name_was_empty = true;
             }
         }
@@ -981,6 +1021,7 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
             public void textChange(TextChangeEvent event) {
 
+                checkSecurity(m_pw.getPassword1());
                 checkPasswordMatch(event.getText());
             }
         });
@@ -1003,6 +1044,6 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             public void run() {
                 //
             }
-        });
+        }, true);
     }
 }

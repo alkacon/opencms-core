@@ -47,7 +47,7 @@ public class CmsAccountsAppConfiguration extends A_CmsWorkplaceAppConfiguration 
     public static final String APP_ID = "accounts";
 
     /** The app icon resource (size 32x32). */
-    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-24-group");
+    public static final CmsCssIcon ICON = new CmsCssIcon("oc-icon-32-user");
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -64,15 +64,6 @@ public class CmsAccountsAppConfiguration extends A_CmsWorkplaceAppConfiguration 
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new CmsAccountsApp();
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
-    public String getButtonStyle() {
-
-        return "";
     }
 
     /**
