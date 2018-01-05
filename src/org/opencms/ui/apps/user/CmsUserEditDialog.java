@@ -96,7 +96,7 @@ import com.vaadin.ui.Window;
 /**
  * Class for the dialog to edit user settings.<p>
  */
-public class CmsUserEditDialog extends CmsBasicDialog {
+public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFetcher {
 
     /**
      * Validator for the eamil field.<p>
@@ -277,6 +277,9 @@ public class CmsUserEditDialog extends CmsBasicDialog {
     /**Flag indicates if name was empty. */
     private boolean m_name_was_empty;
 
+    /**Vaadin component. */
+    private Button m_generateButton;
+
     /**Flag indicates is user is in webou. */
     boolean m_isWebOU;
 
@@ -378,6 +381,16 @@ public class CmsUserEditDialog extends CmsBasicDialog {
             }
         });
         setButtonVisibility();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsPasswordFetcher#fetchPassword(java.lang.String)
+     */
+    public void fetchPassword(String password) {
+
+        m_pw.getPassword1Field().setValue(password);
+        m_pw.getPassword2Field().setValue(password);
+
     }
 
     /**
@@ -948,6 +961,29 @@ public class CmsUserEditDialog extends CmsBasicDialog {
 
             }
 
+        });
+
+        m_generateButton.addClickListener(new Button.ClickListener() {
+
+            private static final long serialVersionUID = 4128513094772586752L;
+
+            public void buttonClick(ClickEvent event) {
+
+                final Window windowDialog = CmsBasicDialog.prepareWindow();
+                windowDialog.setCaption(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0));
+                CmsGeneratePasswordDialog dialog = new CmsGeneratePasswordDialog(
+                    CmsUserEditDialog.this,
+                    new Runnable() {
+
+                        public void run() {
+
+                            windowDialog.close();
+                        }
+                    });
+                windowDialog.setContent(dialog);
+                A_CmsUI.get().addWindow(windowDialog);
+            }
         });
 
         m_tab.setHeight("350px");

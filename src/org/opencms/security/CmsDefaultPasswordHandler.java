@@ -50,7 +50,8 @@ import com.lambdaworks.crypto.SCryptUtil;
  *
  * @since 6.0.0
  */
-public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler, I_CmsPasswordSecurityEvaluator {
+public class CmsDefaultPasswordHandler
+implements I_CmsPasswordHandler, I_CmsPasswordSecurityEvaluator, I_CmsPasswordGenerator {
 
     /** Parameter for SCrypt fall back. */
     public static String PARAM_SCRYPT_FALLBACK = "scrypt.fallback";
@@ -267,6 +268,14 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler, I_CmsPas
         return Messages.get().getBundle(locale).key(
             Messages.GUI_PASSWORD_SECURITY_HINT_1,
             Integer.valueOf(PASSWORD_SECURE_LENGTH));
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsPasswordGenerator#getRandomPassword()
+     */
+    public String getRandomPassword() {
+
+        return CmsDefaultPasswordGenerator.getRandomPWD();
     }
 
     /**
