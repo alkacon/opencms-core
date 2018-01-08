@@ -309,6 +309,24 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Gets all site matchers which should be used for matching the site.<p>
+     *
+     * @return all site matchers to be used for matching the site
+     */
+    public List<CmsSiteMatcher> getAllMatchers() {
+
+        List<CmsSiteMatcher> result = Lists.newArrayList();
+        result.add(m_siteMatcher);
+        for (CmsSiteMatcher alias : m_aliases) {
+            result.add(alias);
+        }
+        if (m_secureServer != null) {
+            result.add(m_secureServer);
+        }
+        return result;
+    }
+
+    /**
      * Returns the errorPage.<p>
      *
      * @return the errorPage

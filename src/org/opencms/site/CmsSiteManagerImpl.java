@@ -327,25 +327,22 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         site.setErrorPage(errorPage);
         site.setWebserver(Boolean.valueOf(webserver).booleanValue());
         site.setSSLMode(CmsSSLMode.getModeFromXML(sslMode));
-        // add the server(s)
-        addServer(matcher, site);
         if (CmsStringUtil.isNotEmpty(secureServer)) {
             matcher = new CmsSiteMatcher(secureServer);
             site.setSecureServer(matcher);
             site.setExclusiveUrl(Boolean.valueOf(exclusive).booleanValue());
             site.setExclusiveError(Boolean.valueOf(error).booleanValue());
             site.setUsePermanentRedirects(Boolean.valueOf(usePermanentRedirects).booleanValue());
-            addServer(matcher, site);
         }
 
         // note that Digester first calls the addAliasToConfigSite method.
         // therefore, the aliases are already set
         site.setAliases(m_aliases);
-        Iterator<CmsSiteMatcher> i = m_aliases.iterator();
-        while (i.hasNext()) {
-            matcher = i.next();
-            addServer(matcher, site);
+
+        for (CmsSiteMatcher matcherToAdd : site.getAllMatchers()) {
+            addServer(matcherToAdd, site);
         }
+
         m_aliases = new ArrayList<CmsSiteMatcher>();
         site.setParameters(m_siteParams);
         m_siteParams = new TreeMap<String, String>();
@@ -1274,12 +1271,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         // create a new map containing all existing sites without the one to remove
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
+        List<CmsSiteMatcher> matchersForSite = site.getAllMatchers();
         for (Map.Entry<CmsSiteMatcher, CmsSite> entry : m_siteMatcherSites.entrySet()) {
-            // iterate over the existing sites
-            boolean isSite = site.getUrl().equals(entry.getKey().getUrl());
-            boolean isSecure = site.hasSecureServer() ? site.getSecureUrl().equals(entry.getKey().getUrl()) : false;
-            boolean isAlias = site.getAliases().contains(entry.getKey());
-            if (!(isSite || isSecure || isAlias)) {
+            if (!(matchersForSite.contains(entry.getKey()))) {
                 // entry not the site itself nor an alias of the site nor the secure URL of the site, so add it
                 siteMatcherSites.put(entry.getKey(), entry.getValue());
             }
