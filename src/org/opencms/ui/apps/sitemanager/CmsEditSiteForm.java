@@ -42,6 +42,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
@@ -76,10 +77,12 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.server.StreamResource;
@@ -127,6 +130,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
          * @param position of site
          */
         public PositionComboBoxElementBean(String title, float position) {
+
             m_position = position;
             m_title = title;
         }
@@ -589,6 +593,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /** The site manager instance.*/
     CmsSiteManager m_manager;
 
+    /**Vaadin component. */
+    private ComboBox m_simpleFieldEncryption;
+
     /**vaadin component.*/
     private Button m_ok;
 
@@ -600,6 +607,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
     /**Panel holding the report widget.*/
     private Panel m_report;
+
+    /**Flag to block change events. */
+    protected boolean m_blockChange;
 
     /**vaadin component.*/
     private TextField m_simpleFieldFolderName;
@@ -627,7 +637,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      * @param cms the CmsObject
      */
     public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager) {
+
         m_isFolderNameTouched = false;
+        m_blockChange = true;
         m_autoSetFolderName = "";
         m_clonedCms = cms;
 
@@ -739,6 +751,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         setUpComboBoxPosition();
         setUpComboBoxTemplate();
+        setUpComboBoxSSL();
         setUpOUComboBox(m_fieldSelectOU);
         setUpOUComboBox(m_fieldSelectParentOU);
 
@@ -815,7 +828,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_fieldSelectParentOU.setEnabled(false);
 
         m_report.setVisible(false);
-
+        m_blockChange = false;
     }
 
     /**
@@ -827,6 +840,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      * @param cms the CmsObject
      */
     public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager, String siteRoot) {
+
         this(cms, manager);
 
         m_simpleFieldSiteRoot.setVisible(true);
@@ -849,6 +863,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_simpleFieldFolderName.setVisible(false);
 
         m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+
         displayResourceInfoDirectly(
             Collections.singletonList(
                 new CmsResourceInfo(m_site.getTitle(), m_site.getSiteRoot(), m_manager.getFavIcon(siteRoot))));
@@ -902,6 +917,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
         setFaviconIfExist();
         checkOnOfflineSiteRoot();
+        m_simpleFieldEncryption.select(m_site.getSSLMode());
+
     }
 
     /**
@@ -936,6 +953,33 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
         m_ok.setEnabled(true);
         m_infoSiteRoot.setVisible(false);
+    }
+
+    /**
+     * Handles SSL changes.<p>
+     */
+    protected void handleSSLChange() {
+
+        String toBeReplaced = "http:";
+        String newString = "https:";
+        CmsSSLMode mode = (CmsSSLMode)m_simpleFieldEncryption.getValue();
+        if (mode.equals(CmsSSLMode.NO) | mode.equals(CmsSSLMode.SECURE_SERVER)) {
+            toBeReplaced = "https:";
+            newString = "http:";
+        }
+        m_simpleFieldServer.setValue(m_simpleFieldServer.getValue().replaceAll(toBeReplaced, newString));
+        for (Component c : m_aliases) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                String curValue = (String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue();
+                ((TextField)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput()).setValue(
+                    curValue.replaceAll(toBeReplaced, newString));
+            }
+        }
+
+        m_fieldSecureServer.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
+        m_fieldExclusiveError.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
+        m_fieldExclusiveURL.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
+
     }
 
     /**
@@ -1574,9 +1618,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private CmsSite getSiteFromForm() {
 
         String siteRoot = getSiteRoot();
-        CmsSiteMatcher matcher = CmsStringUtil.isNotEmpty(m_fieldSecureServer.getValue())
-        ? new CmsSiteMatcher(m_fieldSecureServer.getValue())
-        : null;
+        CmsSiteMatcher matcher = (CmsStringUtil.isNotEmpty(m_fieldSecureServer.getValue())
+            & m_simpleFieldEncryption.getValue().equals(CmsSSLMode.SECURE_SERVER))
+            ? new CmsSiteMatcher(m_fieldSecureServer.getValue())
+            : null;
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
         CmsUUID uuid = new CmsUUID();
         if ((site != null) && (site.getSiteMatcher() != null)) {
@@ -1601,7 +1646,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             m_fieldWebServer.getValue().booleanValue(),
             aliases);
         ret.setParameters((SortedMap<String, String>)getParameter());
-
+        ret.setSSLMode((CmsSSLMode)m_simpleFieldEncryption.getValue());
         return ret;
     }
 
@@ -1758,6 +1803,43 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         if (m_site == null) {
             m_fieldPosition.setValue(lastEntry);
         }
+    }
+
+    /**
+     * Sets up the ComboBox for the SSL Mode.<p>
+     */
+    private void setUpComboBoxSSL() {
+
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty("caption", String.class, "");
+        for (CmsSSLMode mode : CmsSSLMode.availableModes()) {
+            Item item = container.addItem(mode);
+            item.getItemProperty("caption").setValue(mode.getLocalizedMessage());
+        }
+
+        m_simpleFieldEncryption.setContainerDataSource(container);
+        m_simpleFieldEncryption.setItemCaptionPropertyId("caption");
+        m_simpleFieldEncryption.setNullSelectionAllowed(false);
+        m_simpleFieldEncryption.setNewItemsAllowed(false);
+        m_simpleFieldEncryption.select(CmsSSLMode.getDefault());
+
+        m_simpleFieldEncryption.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 3267990233897064320L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                if (m_blockChange) {
+                    return;
+                }
+                handleSSLChange();
+            }
+        });
+
+        m_fieldSecureServer.setVisible(CmsSSLMode.getDefault().equals(CmsSSLMode.SECURE_SERVER));
+        m_fieldExclusiveError.setVisible(CmsSSLMode.getDefault().equals(CmsSSLMode.SECURE_SERVER));
+        m_fieldExclusiveURL.setVisible(CmsSSLMode.getDefault().equals(CmsSSLMode.SECURE_SERVER));
+
     }
 
     /**

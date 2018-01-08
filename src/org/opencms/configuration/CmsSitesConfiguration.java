@@ -67,6 +67,9 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
     /** The "title" attribute. */
     public static final String A_TITLE = "title";
 
+    /** The ssl mode attribute.*/
+    public static final String A_SSL = "sslmode";
+
     /** The "usePermanentRedirects" attribute. */
     public static final String A_USE_PERMANENT_REDIRECTS = "usePermanentRedirects";
 
@@ -93,6 +96,9 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
 
     /** Shared folder node name. */
     public static final String N_SHARED_FOLDER = "shared-folder";
+
+    /** New secure modes node. */
+    public static final String N_OLD_STYLE_SECURE_SERVER = "oldStyleSecureServer";
 
     /** The node name for the sites node. */
     public static final String N_SITES = "sites";
@@ -133,6 +139,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_SITES, CmsSiteManagerImpl.class);
         digester.addCallMethod("*/" + N_SITES + "/" + N_WORKPLACE_SERVER, "addWorkplaceServer", 0);
         digester.addCallMethod("*/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
+        digester.addCallMethod("*/" + N_SITES + "/" + N_OLD_STYLE_SECURE_SERVER, "setOldStyleSecureServerAllowed", 0);
 
         String configApachePath = "*/" + N_SITES + "/" + N_WEBSERVERSCRIPTING;
         digester.addCallMethod(configApachePath, "setWebServerScripting", 6);
@@ -148,17 +155,18 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
         // add site configuration rule
         String siteXpath = "*/" + N_SITES + "/" + N_SITE;
 
-        digester.addCallMethod(siteXpath, "addSite", 10);
+        digester.addCallMethod(siteXpath, "addSite", 11);
         digester.addCallParam(siteXpath, 0, A_SERVER);
         digester.addCallParam(siteXpath, 1, A_URI);
         digester.addCallParam(siteXpath, 2, A_TITLE);
         digester.addCallParam(siteXpath, 3, A_POSITION);
         digester.addCallParam(siteXpath, 4, A_ERROR_PAGE);
         digester.addCallParam(siteXpath, 5, A_WEBSERVER);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_SERVER);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_EXCLUSIVE);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 9, A_USE_PERMANENT_REDIRECTS);
+        digester.addCallParam(siteXpath, 6, A_SSL);
+        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_SERVER);
+        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_EXCLUSIVE);
+        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 9, A_ERROR);
+        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 10, A_USE_PERMANENT_REDIRECTS);
         digester.addCallMethod(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "addParamToConfigSite", 2);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
@@ -189,6 +197,8 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
         if (sharedFolder != null) {
             sitesElement.addElement(N_SHARED_FOLDER).addText(sharedFolder);
         }
+        String oldStyleSecureAllowed = String.valueOf(m_siteManager.isOldStyleSecureServerAllowed());
+        sitesElement.addElement(N_OLD_STYLE_SECURE_SERVER).addText(oldStyleSecureAllowed);
         if (m_siteManager.isConfigurableWebServer()) {
             Element configServer = sitesElement.addElement(N_WEBSERVERSCRIPTING);
             Map<String, String> configServerMap = m_siteManager.getWebServerConfig();
@@ -217,6 +227,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
             siteElement.addAttribute(A_POSITION, Float.toString(site.getPosition()));
             siteElement.addAttribute(A_ERROR_PAGE, site.getErrorPage());
             siteElement.addAttribute(A_WEBSERVER, String.valueOf(site.isWebserver()));
+            siteElement.addAttribute(A_SSL, site.getSSLMode().getXMLValue());
 
             // create <secure server=""/> subnode
             if (site.hasSecureServer()) {

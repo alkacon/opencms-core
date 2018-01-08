@@ -123,6 +123,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /**Indicates is this site was published once to the online repo. */
     private boolean m_isOnlineUpdated;
 
+    /**The SSL Mode of the site. */
+    private CmsSSLMode m_sslMode = CmsSSLMode.SECURE_SERVER;
+
     /**
      * Constructs a new site object without title and id information,
      * this is to be used for lookup purposes only.<p>
@@ -256,6 +259,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             isWebserver(),
             getAliases());
         res.setParameters(getParameters());
+        res.setSSLMode(getSSLMode());
         return res;
     }
 
@@ -523,6 +527,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Gets the SSLMode of the site.<p>
+     *
+     * @return CmsSSLMode
+     */
+    public CmsSSLMode getSSLMode() {
+
+        return m_sslMode;
+    }
+
+    /**
      * Returns the display title of this site.<p>
      *
      * @return the display title of this site
@@ -677,6 +691,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         } else {
             m_siteRoot = siteRoot;
         }
+    }
+
+    /**
+     * Sets the SSLMode of the site.<p>
+     *
+     * @param mode the CmsSSLMode
+     */
+    public void setSSLMode(CmsSSLMode mode) {
+
+        m_sslMode = mode;
     }
 
     /**

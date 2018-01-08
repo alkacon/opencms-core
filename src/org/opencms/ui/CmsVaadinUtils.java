@@ -583,6 +583,15 @@ public final class CmsVaadinUtils {
         return getOUComboBox(cms, baseOu, log, true);
     }
 
+    /**
+     * Creates the ComboBox for OU selection.<p>
+     * @param cms CmsObject
+     * @param baseOu OU
+     * @param log Logger object
+     * @param includeWebOU include webou?
+     *
+     * @return ComboBox
+     */
     public static ComboBox getOUComboBox(CmsObject cms, String baseOu, Log log, boolean includeWebOU) {
 
         ComboBox combo = null;
@@ -1123,7 +1132,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

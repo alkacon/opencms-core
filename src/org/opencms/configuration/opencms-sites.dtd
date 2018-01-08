@@ -29,9 +29,10 @@
 #     offset:       time in seconds added to the current time written as attribute
 #                   into the session when accessing the site over this alias
 -->
-<!ELEMENT sites ((workplace-server+, default-uri, shared-folder?, webserver-scripting?, site+) | (workplace-server+, default-uri, webserver-scripting?, site+, shared-folder?))>
+<!ELEMENT sites ((workplace-server+, default-uri, shared-folder?,oldStyleSecureServer?, webserver-scripting?, site+) | (workplace-server+, default-uri, oldStyleSecureServer?,webserver-scripting?, site+, shared-folder?))>
 <!ELEMENT workplace-server (#PCDATA)>
 <!ELEMENT default-uri (#PCDATA)>
+<!ELEMENT oldStyleSecureServer (#PCDATA)>
 <!ELEMENT webserver-scripting (webserverscript, targetpath, configtemplate,securetemplate, filenameprefix, loggingdir)>
 <!ELEMENT webserverscript (#PCDATA)>
 <!ELEMENT targetpath (#PCDATA)>
@@ -47,7 +48,8 @@
 	title CDATA #IMPLIED
 	position CDATA #IMPLIED
 	errorPage CDATA #IMPLIED
-	webserver (true|false|TRUE|FALSE) "true">
+	webserver (true|false|TRUE|FALSE) "true"
+	sslmode (no|manual|manual-ep-termination|lets-encrypt|secure-server) "secure-server">
 <!ELEMENT secure EMPTY>
 <!ATTLIST secure
 	server CDATA #REQUIRED

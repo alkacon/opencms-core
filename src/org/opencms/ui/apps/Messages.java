@@ -63,6 +63,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_USER_ACTIVE_0 = "GUI_USERMANAGEMENT_USER_ACTIVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ENCRYPTION_0 = "GUI_SITE_ENCRYPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ENCRYPTION_HELP_0 = "GUI_SITE_ENCRYPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_DISABLED_HELP_0 = "GUI_USERMANAGEMENT_USER_DISABLED_HELP_0";
 
     /** Message constant for key in the resource bundle. */

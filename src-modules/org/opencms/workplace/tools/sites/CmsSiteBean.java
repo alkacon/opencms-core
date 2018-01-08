@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.sites;
 
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
@@ -63,6 +64,9 @@ public class CmsSiteBean {
 
     /** The favicon. */
     private String m_favicon;
+
+    /** The SSL Mode of the site.*/
+    private CmsSSLMode m_mode;
 
     /** The original site. */
     private CmsSite m_originalSite;
@@ -143,6 +147,7 @@ public class CmsSiteBean {
             m_errorPage = site.getErrorPage();
             m_webserver = site.isWebserver();
             m_parameters = site.getParameters();
+            m_mode = site.getSSLMode();
         }
     }
 
@@ -592,6 +597,7 @@ public class CmsSiteBean {
             m_webserver,
             aliases);
         result.setParameters(m_parameters);
+        result.setSSLMode(m_mode);
         return result;
 
     }
