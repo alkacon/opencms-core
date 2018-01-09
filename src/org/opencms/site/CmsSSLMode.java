@@ -39,15 +39,15 @@ import java.util.List;
 public enum CmsSSLMode {
 
     /**No encryption. */
-    NO("no", Messages.SSL_MODE_NOSSL_0),
+    NO("no", Messages.GUI_SSL_MODE_NOSSL_0),
     /**Manual ssl configuration of server. */
-    MANUAL("manual", Messages.SSL_MODE_MANUAL_0),
+    MANUAL("manual", Messages.GUI_SSL_MODE_MANUAL_0),
     /**Manual ssl configuration of server with endpoint termination. */
-    MANUAL_EP_TERMINATION("manual-ep-termination", Messages.SSL_MODE_MANUAL_EP_0),
+    MANUAL_EP_TERMINATION("manual-ep-termination", Messages.GUI_SSL_MODE_MANUAL_EP_0),
     /**Encryption via Let's encrypt. */
-    LETS_ENCRYPT("lets-encrypt", Messages.SSL_MODE_LETS_ENCRYPT_0),
+    LETS_ENCRYPT("lets-encrypt", Messages.GUI_SSL_MODE_LETS_ENCRYPT_0),
     /**Encryption via secure server (the old OpenCms way). */
-    SECURE_SERVER("secure-server", Messages.SSL_MODE_SECURE_SERVER_0);
+    SECURE_SERVER("secure-server", Messages.GUI_SSL_MODE_SECURE_SERVER_0);
 
     /**Message key for label. */
     private String m_message;

@@ -92,19 +92,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_READ_SITE_PROP_FAILED_0 = "LOG_READ_SITE_PROP_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String SSL_MODE_LETS_ENCRYPT_0 = "SSL_MODE_LETS_ENCRYPT_0";
+    public static final String GUI_SSL_MODE_LETS_ENCRYPT_0 = "GUI_SSL_MODE_LETS_ENCRYPT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String SSL_MODE_MANUAL_0 = "SSL_MODE_MANUAL_0";
+    public static final String GUI_SSL_MODE_MANUAL_0 = "GUI_SSL_MODE_MANUAL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String SSL_MODE_MANUAL_EP_0 = "SSL_MODE_MANUAL_EP_0";
+    public static final String GUI_SSL_MODE_MANUAL_EP_0 = "GUI_SSL_MODE_MANUAL_EP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String SSL_MODE_NOSSL_0 = "SSL_MODE_NOSSL_0";
+    public static final String GUI_SSL_MODE_NOSSL_0 = "GUI_SSL_MODE_NOSSL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String SSL_MODE_SECURE_SERVER_0 = "SSL_MODE_SECURE_SERVER_0";
+    public static final String GUI_SSL_MODE_SECURE_SERVER_0 = "GUI_SSL_MODE_SECURE_SERVER_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.site.messages";
