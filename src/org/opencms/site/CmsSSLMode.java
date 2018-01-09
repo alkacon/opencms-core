@@ -74,10 +74,22 @@ public enum CmsSSLMode {
      */
     public static List<CmsSSLMode> availableModes() {
 
+        return availableModes(true);
+    }
+
+    /**
+     * List of all available modes.<p>
+     *
+     * @param includeOldStyle include old Secure Server Styles?
+     * @return List<CmsSSLMode>
+     */
+    public static List<CmsSSLMode> availableModes(boolean includeOldStyle) {
+
+        includeOldStyle = includeOldStyle & OpenCms.getSiteManager().isOldStyleSecureServerAllowed();
         List<CmsSSLMode> res = new ArrayList<CmsSSLMode>();
         for (CmsSSLMode mode : values()) {
             if (mode.equals(CmsSSLMode.SECURE_SERVER)) {
-                if (OpenCms.getSiteManager().isOldStyleSecureServerAllowed()) {
+                if (includeOldStyle) {
                     res.add(mode);
                 }
             } else {

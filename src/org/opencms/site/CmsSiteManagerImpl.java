@@ -157,8 +157,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** The workplace site matchers. */
     private List<CmsSiteMatcher> m_workplaceMatchers;
 
-    /** The workpace servers. */
-    private List<String> m_workplaceServers;
+    /** The workplace servers. */
+    private Map<String, CmsSSLMode> m_workplaceServers;
 
     /**Is the publish listener already set? */
     private boolean m_isListenerSet;
@@ -174,7 +174,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         m_aliases = new ArrayList<CmsSiteMatcher>();
         m_siteParams = new TreeMap<String, String>();
         m_additionalSiteRoots = new ArrayList<String>();
-        m_workplaceServers = new ArrayList<String>();
+        m_workplaceServers = new TreeMap<String, CmsSSLMode>();
         m_workplaceMatchers = new ArrayList<CmsSiteMatcher>();
         m_oldStyleSecureServer = true;
 
@@ -360,14 +360,15 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * Adds a workplace server, this is only allowed during configuration.<p>
      *
      * @param workplaceServer the workplace server
+     * @param sslmode CmsSSLMode of workplace server
      */
-    public void addWorkplaceServer(String workplaceServer) {
+    public void addWorkplaceServer(String workplaceServer, String sslmode) {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
-        if (!m_workplaceServers.contains(workplaceServer)) {
-            m_workplaceServers.add(workplaceServer);
+        if (!m_workplaceServers.containsKey(workplaceServer)) {
+            m_workplaceServers.put(workplaceServer, CmsSSLMode.getModeFromXML(sslmode));
         }
     }
 
@@ -893,6 +894,24 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Gets the SSLMode for given workplace server.<p>
+     *
+     * @param server to obtain ssl mode for
+     * @return CmsSSLMode
+     */
+    public CmsSSLMode getSSLModeForWorkplaceServer(String server) {
+
+        if (server == null) {
+            return CmsSSLMode.NO;
+        }
+        if (!m_workplaceServers.containsKey(server)) {
+            return CmsSSLMode.NO;
+        }
+
+        return m_workplaceServers.get(server);
+    }
+
+    /**
      * Get web server scripting configurations.<p>
      *
      * @return Map with configuration data
@@ -909,7 +928,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     public String getWorkplaceServer() {
 
-        return m_workplaceServers.isEmpty() ? null : m_workplaceServers.get(0);
+        return m_workplaceServers.keySet().isEmpty() ? null : m_workplaceServers.keySet().iterator().next();
     }
 
     /**
@@ -919,7 +938,37 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     public List<String> getWorkplaceServers() {
 
-        return Collections.unmodifiableList(m_workplaceServers);
+        return Collections.unmodifiableList(new ArrayList<String>(m_workplaceServers.keySet()));
+    }
+
+    /**
+     * Returns the configured worklace servers.<p>
+     *
+     * @param filterMode CmsSSLMode to filter results for.
+     * @return the workplace servers
+     */
+    public List<String> getWorkplaceServers(CmsSSLMode filterMode) {
+
+        if (filterMode == null) {
+            return getWorkplaceServers();
+        }
+        List<String> ret = new ArrayList<String>();
+        for (String server : m_workplaceServers.keySet()) {
+            if (m_workplaceServers.get(server).equals(filterMode)) {
+                ret.add(server);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Returns the configured worklace servers.<p>
+     *
+     * @return the workplace servers
+     */
+    public Map<String, CmsSSLMode> getWorkplaceServersMap() {
+
+        return Collections.unmodifiableMap(m_workplaceServers);
     }
 
     /**
@@ -1327,6 +1376,35 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Method for backward compability reasons. Not sure if really needed //TODO check!
+     * CmsSSLMode are set to No as default.<p>
+     *
+     * @param cms the cms to use
+     * @param defaultUri the default URI
+     * @param workplaceServersList the workplace server URLs
+     * @param sharedFolder the shared folder URI
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void updateGeneralSettings(
+        CmsObject cms,
+        String defaultUri,
+        List<String> workplaceServersList,
+        String sharedFolder)
+    throws CmsException {
+
+        Map<String, CmsSSLMode> workplaceServers = new TreeMap<String, CmsSSLMode>();
+        for (String server : workplaceServersList) {
+            if (m_workplaceServers.containsKey(server)) {
+                workplaceServers.put(server, m_workplaceServers.get(server));
+            } else {
+                workplaceServers.put(server, CmsSSLMode.NO);
+            }
+        }
+        updateGeneralSettings(cms, defaultUri, workplaceServers, sharedFolder);
+    }
+
+    /**
      * Updates the general settings.<p>
      *
      * @param cms the cms to use
@@ -1339,7 +1417,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     public void updateGeneralSettings(
         CmsObject cms,
         String defaulrUri,
-        List<String> workplaceServers,
+        Map<String, CmsSSLMode> workplaceServers,
         String sharedFolder)
     throws CmsException {
 
@@ -1360,7 +1438,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         m_frozen = false;
         setDefaultUri(clone.readResource(defaulrUri).getRootPath());
         setSharedFolder(clone.readResource(sharedFolder).getRootPath());
-        m_workplaceServers = new ArrayList<String>(workplaceServers);
+        m_workplaceServers = workplaceServers;
         initialize(cms);
         m_frozen = true;
     }
@@ -1501,7 +1579,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         List<CmsSiteMatcher> matchers = new ArrayList<CmsSiteMatcher>();
         if (!m_workplaceServers.isEmpty()) {
-            for (String server : m_workplaceServers) {
+            for (String server : m_workplaceServers.keySet()) {
                 CmsSiteMatcher matcher = new CmsSiteMatcher(server);
                 matchers.add(matcher);
                 if (CmsLog.INIT.isInfoEnabled()) {

@@ -246,7 +246,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
         m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsGlobalForm form = new CmsGlobalForm(this);
-        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_0));
+        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_CONFIGURATION_0));
         m_dialogWindow.setContent(form);
         A_CmsUI.get().addWindow(m_dialogWindow);
         m_dialogWindow.center();

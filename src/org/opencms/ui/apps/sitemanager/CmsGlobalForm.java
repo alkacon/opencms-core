@@ -34,29 +34,30 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.components.CmsRemovableFormRow;
+import org.opencms.ui.components.editablegroup.CmsEditableGroup;
+import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.google.common.base.Supplier;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.AbstractSelect.NewItemHandler;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  *Class for the Global configuration dialog.<p>
@@ -77,15 +78,15 @@ public class CmsGlobalForm extends CmsBasicDialog {
          */
         public void validate(Object value) throws InvalidValueException {
 
-            if (value == null) {
-                return;
-            }
-            String workplaceServer = ((CmsSite)value).getUrl();
-            List<String> allServer = getWebserverList();
-            if (allServer.indexOf(workplaceServer) != allServer.lastIndexOf(workplaceServer)) {
-                throw new InvalidValueException(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_WORKPLACE_DOUBLE_1, workplaceServer));
-            }
+            //            if (value == null) {
+            //                return;
+            //            }
+            //            String workplaceServer = ((CmsSite)value).getUrl();
+            //            List<String> allServer = getWebserverList();
+            //            if (allServer.indexOf(workplaceServer) != allServer.lastIndexOf(workplaceServer)) {
+            //                throw new InvalidValueException(
+            //                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_WORKPLACE_DOUBLE_1, workplaceServer));
+            //            }
 
         }
 
@@ -120,14 +121,14 @@ public class CmsGlobalForm extends CmsBasicDialog {
     /**Site manager instance. */
     private CmsSiteManager m_manager;
 
-    /**All currently configured sites in opencms.*/
-    private List<CmsSite> m_sites;
-
     /**Vaadin field.*/
     private Button m_ok;
 
     /**Vaadin layout for server.*/
-    private FormLayout m_serverLayout;
+    private VerticalLayout m_serverLayout;
+
+    /**Edit group for workplace servers.*/
+    private CmsEditableGroup m_workplaceServerGroup;
 
     /**CmsObject.*/
     private CmsObject m_cms;
@@ -138,6 +139,7 @@ public class CmsGlobalForm extends CmsBasicDialog {
      * @param manager CmsSiteManager instance
      */
     public CmsGlobalForm(CmsSiteManager manager) {
+
         m_manager = manager;
 
         try {
@@ -169,7 +171,6 @@ public class CmsGlobalForm extends CmsBasicDialog {
             }
         }
         allSites_temp.clear();
-        m_sites = allSites;
         setUpDefaultUriComboBox(allSites);
         setUpSharedFolderComboBox();
 
@@ -200,9 +201,6 @@ public class CmsGlobalForm extends CmsBasicDialog {
                 return;
             }
         });
-
-        validateWorkplaceServerBoxes();
-
     }
 
     /**
@@ -214,43 +212,6 @@ public class CmsGlobalForm extends CmsBasicDialog {
     static void selectNewWorkplaceServer(CmsSite site, ComboBox combo) {
 
         combo.select(site);
-    }
-
-    /**
-     * Adds a new removable combo box row to the layout.<p>
-     */
-    void addWorkplaceServerBox() {
-
-        final ComboBox serverCombo = new ComboBox();
-        final CmsRemovableFormRow<ComboBox> server = new CmsRemovableFormRow<ComboBox>(serverCombo, "remove hard");
-        setUpWorkplaceComboBox(m_sites, serverCombo, true, null);
-        serverCombo.setValue(null);
-        serverCombo.addValueChangeListener(new ValueChangeListener() {
-
-            private static final long serialVersionUID = 2526672395159579782L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                server.setEnabledRemoveOption(true);
-                serverCombo.removeValueChangeListener(this);
-                addWorkplaceServerBox();
-
-            }
-        });
-
-        server.setWidth("100%");
-        server.setEnabledRemoveOption(false);
-        serverCombo.addValidator(new WorkplaceServerValidator());
-        server.setRemoveRunnable(new Runnable() {
-
-            public void run() {
-
-                validateWorkplaceServerBoxes();
-
-            }
-        });
-        m_serverLayout.addComponent(server);
-        validateWorkplaceServerBoxes();
     }
 
     /**
@@ -266,17 +227,13 @@ public class CmsGlobalForm extends CmsBasicDialog {
      *
      * @return a string list
      */
-    List<String> getWebserverList() {
+    Map<String, CmsSSLMode> getWebserverList() {
 
-        List<String> ret = new ArrayList<String>();
-        for (Component item : m_serverLayout) {
-            @SuppressWarnings("unchecked")
-            CmsRemovableFormRow<ComboBox> row = (CmsRemovableFormRow<ComboBox>)item;
-            if (((ComboBox)row.getComponent(0)).getValue() != null) {
-                ret.add(((CmsSite)((ComboBox)row.getComponent(0)).getValue()).getUrl());
-            }
+        Map<String, CmsSSLMode> ret = new TreeMap<String, CmsSSLMode>();
+        for (CmsEditableGroupRow row : m_workplaceServerGroup.getRows()) {
+            CmsWorkplaceServerWidget widget = (CmsWorkplaceServerWidget)row.getComponent();
+            ret.put(widget.getServer(), widget.getSSLMode());
         }
-
         return ret;
     }
 
@@ -287,13 +244,13 @@ public class CmsGlobalForm extends CmsBasicDialog {
      */
     boolean isValidWorkplaceServer() {
 
-        for (Component item : m_serverLayout) {
-            @SuppressWarnings("unchecked")
-            CmsRemovableFormRow<ComboBox> row = (CmsRemovableFormRow<ComboBox>)item;
-            if (!((ComboBox)row.getComponent(0)).isValid()) {
-                return false;
-            }
-        }
+        //        for (Component item : m_serverLayout) {
+        //            @SuppressWarnings("unchecked")
+        //            CmsRemovableFormRow<ComboBox> row = (CmsRemovableFormRow<ComboBox>)item;
+        //            if (!((ComboBox)row.getComponent(0)).isValid()) {
+        //                return false;
+        //            }
+        //        }
         return true;
     }
 
@@ -320,52 +277,27 @@ public class CmsGlobalForm extends CmsBasicDialog {
     }
 
     /**
-     * Sets the caption and description for first workplace server row and enables or disables the remove options.<p>
-     */
-    @SuppressWarnings("unchecked")
-    void validateWorkplaceServerBoxes() {
-
-        m_serverLayout.getComponent(0).setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_WORKPLACE_0));
-        ((CmsRemovableFormRow<ComboBox>)m_serverLayout.getComponent(0)).setDescription(
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_WORKPLACE_HELP_0));
-        int count = m_serverLayout.getComponentCount();
-        if (count > 2) {
-            for (int i = 0; i < (count - 1); i++) {
-                ((CmsRemovableFormRow<ComboBox>)m_serverLayout.getComponent(i)).setEnabledRemoveOption(true);
-            }
-        } else {
-            ((CmsRemovableFormRow<ComboBox>)m_serverLayout.getComponent(0)).setEnabledRemoveOption(false);
-        }
-
-    }
-
-    /**
      * Fills the layout with combo boxes for all setted workplace servers + one combo box for adding further urls.<p>
      *
      * @param sites from sitemanager
      */
-    private void setServerLayout(List<CmsSite> sites) {
+    private void setServerLayout(final List<CmsSite> sites) {
 
-        for (String site : OpenCms.getSiteManager().getWorkplaceServers()) {
-            ComboBox serverCombo = new ComboBox();
-            setUpWorkplaceComboBox(sites, serverCombo, false, site);
-            serverCombo.addValidator(new WorkplaceServerValidator());
+        m_workplaceServerGroup = new CmsEditableGroup(m_serverLayout, new Supplier<Component>() {
 
-            CmsRemovableFormRow<ComboBox> server = new CmsRemovableFormRow<ComboBox>(serverCombo, "remove hard");
-            server.setRemoveRunnable(new Runnable() {
+            public Component get() {
 
-                public void run() {
+                CmsWorkplaceServerWidget row = new CmsWorkplaceServerWidget(sites, null);
+                //                row.getServerComboBox().addValidator(new WorkplaceServerValidator());
+                return row;
+            }
+        }, "Add hard");
 
-                    validateWorkplaceServerBoxes();
-
-                }
-            });
-            server.setWidth("100%");
-
-            m_serverLayout.addComponent(server);
+        for (String server : OpenCms.getSiteManager().getWorkplaceServers()) {
+            CmsWorkplaceServerWidget row = new CmsWorkplaceServerWidget(sites, server);
+            //            row.getServerComboBox().addValidator(new WorkplaceServerValidator());
+            m_workplaceServerGroup.addRow(row);
         }
-
-        addWorkplaceServerBox();
     }
 
     /**
@@ -407,61 +339,6 @@ public class CmsGlobalForm extends CmsBasicDialog {
         } catch (CmsException e) {
             LOG.error("Error reading resource.", e);
         }
-    }
-
-    /**
-     * Sets the combo box for workplace.<p>
-     *
-     * @param allSites alls available sites
-     * @param combo combo box to fill
-     * @param nullselect if true, nothing is selected
-     * @param defaultValue if set, this value gets chosen
-     */
-    private void setUpWorkplaceComboBox(
-        List<CmsSite> allSites,
-        final ComboBox combo,
-        boolean nullselect,
-        String defaultValue) {
-
-        final List<CmsSite> modSites = new ArrayList<CmsSite>();
-        CmsSite siteWithDefaultURL = null;
-
-        String defaultURL = defaultValue;
-
-        for (CmsSite site : allSites) {
-            modSites.add(site);
-            if (defaultValue != null) {
-                if (defaultURL.equals(site.getUrl())) {
-                    siteWithDefaultURL = site;
-                }
-            }
-        }
-        if (defaultValue != null) {
-            if (siteWithDefaultURL == null) {
-                siteWithDefaultURL = new CmsSite("dummy", defaultURL);
-                modSites.add(0, siteWithDefaultURL);
-            }
-        }
-
-        final BeanItemContainer<CmsSite> objects = new BeanItemContainer<CmsSite>(CmsSite.class, modSites);
-        combo.setContainerDataSource(objects);
-        combo.setNullSelectionAllowed(nullselect);
-        combo.setItemCaptionPropertyId("url");
-        combo.setValue(siteWithDefaultURL);
-        combo.setNewItemsAllowed(true);
-        combo.setImmediate(true);
-        combo.setNewItemHandler(new NewItemHandler() {
-
-            private static final long serialVersionUID = -4760590374697520609L;
-
-            public void addNewItem(String newItemCaption) {
-
-                CmsSite newItem = new CmsSite("dummy", newItemCaption);
-                objects.addBean(newItem);
-                combo.select(newItem);
-            }
-        });
-
     }
 
 }

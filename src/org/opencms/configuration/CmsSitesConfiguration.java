@@ -29,6 +29,7 @@ package org.opencms.configuration;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
@@ -137,7 +138,9 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
 
         // add site configuration rule
         digester.addObjectCreate("*/" + N_SITES, CmsSiteManagerImpl.class);
-        digester.addCallMethod("*/" + N_SITES + "/" + N_WORKPLACE_SERVER, "addWorkplaceServer", 0);
+        digester.addCallMethod("*/" + N_SITES + "/" + N_WORKPLACE_SERVER, "addWorkplaceServer", 2);
+        digester.addCallParam("*/" + N_SITES + "/" + N_WORKPLACE_SERVER, 0);
+        digester.addCallParam("*/" + N_SITES + "/" + N_WORKPLACE_SERVER, 1, A_SSL);
         digester.addCallMethod("*/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
         digester.addCallMethod("*/" + N_SITES + "/" + N_OLD_STYLE_SECURE_SERVER, "setOldStyleSecureServerAllowed", 0);
 
@@ -189,8 +192,10 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             m_siteManager = OpenCms.getSiteManager();
         }
-        for (String server : m_siteManager.getWorkplaceServers()) {
-            sitesElement.addElement(N_WORKPLACE_SERVER).addText(server);
+        Map<String, CmsSSLMode> workplaceMap = m_siteManager.getWorkplaceServersMap();
+        for (String server : workplaceMap.keySet()) {
+            Element workplaceElement = sitesElement.addElement(N_WORKPLACE_SERVER).addText(server);
+            workplaceElement.addAttribute(A_SSL, workplaceMap.get(server).getXMLValue());
         }
         sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
         String sharedFolder = m_siteManager.getSharedFolder();

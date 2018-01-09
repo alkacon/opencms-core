@@ -921,6 +921,17 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
     }
 
+    protected static IndexedContainer getSSLModeContainer(String captionProp, boolean includeOldStyle) {
+
+        IndexedContainer res = new IndexedContainer();
+        res.addContainerProperty(captionProp, String.class, "");
+        for (CmsSSLMode mode : CmsSSLMode.availableModes(includeOldStyle)) {
+            Item item = res.addItem(mode);
+            item.getItemProperty(captionProp).setValue(mode.getLocalizedMessage());
+        }
+        return res;
+    }
+
     /**
      * Returns a Folder Name for a given site-root.<p>
      *
@@ -1810,12 +1821,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private void setUpComboBoxSSL() {
 
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty("caption", String.class, "");
-        for (CmsSSLMode mode : CmsSSLMode.availableModes()) {
-            Item item = container.addItem(mode);
-            item.getItemProperty("caption").setValue(mode.getLocalizedMessage());
-        }
+        IndexedContainer container = getSSLModeContainer("caption", true);
 
         m_simpleFieldEncryption.setContainerDataSource(container);
         m_simpleFieldEncryption.setItemCaptionPropertyId("caption");

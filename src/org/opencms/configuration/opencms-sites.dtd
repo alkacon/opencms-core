@@ -31,6 +31,8 @@
 -->
 <!ELEMENT sites ((workplace-server+, default-uri, shared-folder?,oldStyleSecureServer?, webserver-scripting?, site+) | (workplace-server+, default-uri, oldStyleSecureServer?,webserver-scripting?, site+, shared-folder?))>
 <!ELEMENT workplace-server (#PCDATA)>
+<!ATTLIST workplace-server
+	sslmode (no|manual|manual-ep-termination|lets-encrypt) "no">
 <!ELEMENT default-uri (#PCDATA)>
 <!ELEMENT oldStyleSecureServer (#PCDATA)>
 <!ELEMENT webserver-scripting (webserverscript, targetpath, configtemplate,securetemplate, filenameprefix, loggingdir)>
