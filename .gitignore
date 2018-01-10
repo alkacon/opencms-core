@@ -28,6 +28,3 @@
 Thumbs.db
 /.idea
 /*.iml
-/gradle
-/gradlew
-/gradlew.bat

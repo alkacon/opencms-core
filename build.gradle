@@ -162,6 +162,10 @@ sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gw
 sourceSets.testGwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
 sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 
+task wrapper(type: Wrapper){
+	gradleVersion = '3.5'
+}
+
 task copyDeps(type: Copy) {
     from configurations.distribution
     into "${buildDir}/deps"
