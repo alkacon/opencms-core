@@ -32,10 +32,13 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.file.CmsObject;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
+import org.opencms.letsencrypt.CmsSiteConfigToLetsEncryptConfigConverter;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.apps.Messages;
@@ -62,14 +65,14 @@ import org.antlr.stringtemplate.StringTemplate;
  */
 public class CmsSitesWebserverThread extends A_CmsReportThread {
 
+    /** The logger for this class. */
+    static Log LOG = CmsLog.getLog(CmsSitesWebserverThread.class.getName());
+
     /** Constant for the "http" port. */
     private static final int PORT_HTTP = 80;
 
     /** Constant for the "https" port. */
     private static final int PORT_HTTPS = 443;
-
-    /** The logger for this class. */
-    static Log LOG = CmsLog.getLog(CmsSitesWebserverThread.class.getName());
 
     /** The file path. */
     private String m_filePrefix;
@@ -114,7 +117,9 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
         super(cms, "write-to-webserver");
 
-        m_targetPath = targetPath.endsWith(File.separator) ? targetPath : targetPath + File.separator;
+        if (targetPath != null) {
+            m_targetPath = targetPath.endsWith(File.separator) ? targetPath : targetPath + File.separator;
+        }
         m_templatePath = templatePath;
         m_scriptPath = scriptPath;
         m_filePrefix = filePrefix;
@@ -139,18 +144,24 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
     public void run() {
 
         LOG.info(
-            "INFO thread for run of server script started from User: "
+            "INFO thread for run of server script started by User: "
                 + getCms().getRequestContext().getCurrentUser().getName());
-        try {
-            deleteAllWebserverConfigs(m_filePrefix);
-            createAllWebserverConfigs();
-            executeScript();
-            LOG.info("INFO server script finished successfully");
-        } catch (Exception e) {
-            LOG.error("Exception on run CmsSitesWebserverThread", e);
-            getReport().println(e);
+        if ((OpenCms.getLetsEncryptConfig() != null) && OpenCms.getLetsEncryptConfig().isValidAndEnabled()) {
+
+            updateLetsEncrypt();
+
+        } else {
+            try {
+                deleteAllWebserverConfigs(m_filePrefix);
+                createAllWebserverConfigs();
+                executeScript();
+                LOG.info("INFO server script finished successfully");
+            } catch (Exception e) {
+                LOG.error("Exception on run CmsSitesWebserverThread", e);
+                getReport().println(e);
+            }
+            LOG.info("INFO server script thread closed");
         }
-        LOG.info("INFO server script thread closed");
     }
 
     /**
@@ -314,5 +325,29 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
         String serverName = macther.getServerName();
         String portPart = ((port != PORT_HTTP) && (port != PORT_HTTPS)) ? separator + port : "";
         return serverName + portPart;
+    }
+
+    /**
+     * Updates LetsEncrypt configuration.
+     */
+    private void updateLetsEncrypt() {
+
+        getReport().println(Messages.get().container(Messages.RPT_STARTING_LETSENCRYPT_UPDATE_0));
+
+        CmsObject cms = getCms();
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, false, CmsSSLMode.LETS_ENCRYPT);
+        List<String> workplaceServers = OpenCms.getSiteManager().getWorkplaceServers(CmsSSLMode.LETS_ENCRYPT);
+        CmsLetsEncryptConfiguration config = OpenCms.getLetsEncryptConfig();
+        if ((config == null) || !config.isValidAndEnabled()) {
+            return;
+        }
+        CmsSiteConfigToLetsEncryptConfigConverter converter = new CmsSiteConfigToLetsEncryptConfigConverter(config);
+        boolean ok = converter.run(getReport(), sites, workplaceServers);
+        if (ok) {
+            getReport().println(
+                org.opencms.ui.apps.Messages.get().container(org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_FINISHED_0),
+                I_CmsReport.FORMAT_OK);
+        }
+
     }
 }

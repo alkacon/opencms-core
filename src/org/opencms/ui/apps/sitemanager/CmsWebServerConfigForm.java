@@ -39,6 +39,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -123,12 +124,16 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
         });
 
         Map<String, String> webconfig = OpenCms.getSiteManager().getWebServerConfig();
-        m_fieldConfigTemplate.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE));
-        m_fieldSecureTemplate.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE));
-        m_fieldTargetPath.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH));
-        m_fieldScript.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT));
-        m_fieldLogging.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR));
-        m_fieldPrefix.setValue(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX));
+        if (webconfig == null) {
+            webconfig = Maps.newHashMap();
+
+        }
+        m_fieldConfigTemplate.setValue(nullToEmpty(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_CONFIGTEMPLATE)));
+        m_fieldSecureTemplate.setValue(nullToEmpty(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_SECURETEMPLATE)));
+        m_fieldTargetPath.setValue(nullToEmpty(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH)));
+        m_fieldScript.setValue(nullToEmpty(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_WEBSERVERSCRIPT)));
+        m_fieldLogging.setValue(nullToEmpty(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_LOGGINGDIR)));
+        m_fieldPrefix.setValue(nullToEmpty(webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_FILENAMEPREFIX)));
     }
 
     /**
@@ -137,6 +142,21 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
     void cancel() {
 
         m_manager.closeDialogWindow(false);
+    }
+
+    /**
+     * Converts null to an empty string and returns all other strings unchanged.<p>
+     *
+     * @param s the input string
+     * @return the output string
+     */
+    String nullToEmpty(String s) {
+
+        if (s == null) {
+            return "";
+        }
+        return s;
+
     }
 
     /**
@@ -150,6 +170,9 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
         m_ok.setEnabled(false);
 
         Map<String, String> webconfig = OpenCms.getSiteManager().getWebServerConfig();
+        if (webconfig == null) {
+            webconfig = Maps.newHashMap();
+        }
         CmsSitesWebserverThread thread = new CmsSitesWebserverThread(
             A_CmsUI.getCmsObject(),
             webconfig.get(CmsSiteManagerImpl.WEB_SERVER_CONFIG_TARGETPATH),

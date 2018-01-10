@@ -2925,6 +2925,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_LETSENCRYPT_FINISHED_0 = "RPT_LETSENCRYPT_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_LETSENCRYPT_NO_DOMAINS_0 = "RPT_LETSENCRYPT_NO_DOMAINS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_LETSENCRYPT_UPDATE_FAILED_0 = "RPT_LETSENCRYPT_UPDATE_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_MACRORESOLVER_APPLY_MACROS_0 = "RPT_MACRORESOLVER_APPLY_MACROS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -3088,6 +3097,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_UNLOCK_FILE_0 = "RPT_SOURCESEARCH_UNLOCK_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STARTING_LETSENCRYPT_UPDATE_0 = "RPT_STARTING_LETSENCRYPT_UPDATE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.apps.messages";

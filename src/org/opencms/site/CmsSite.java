@@ -45,6 +45,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Describes a configured site in OpenCms.<p>
@@ -316,14 +317,43 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public List<CmsSiteMatcher> getAllMatchers() {
 
         List<CmsSiteMatcher> result = Lists.newArrayList();
-        result.add(m_siteMatcher);
-        for (CmsSiteMatcher alias : m_aliases) {
-            result.add(alias);
+        switch (getSSLMode()) {
+            case LETS_ENCRYPT:
+            case MANUAL_EP_TERMINATION:
+                List<CmsSiteMatcher> baseMatchers = Lists.newArrayList();
+                baseMatchers.add(m_siteMatcher);
+                for (CmsSiteMatcher alias : m_aliases) {
+                    baseMatchers.add(alias);
+                }
+                // For each matcher, compute both a https and http variant.
+                // Store them in a map, so we don't get duplicates if the variants have both
+                // been manually defined
+                Map<String, CmsSiteMatcher> matchersByUrl = Maps.newHashMap();
+                for (CmsSiteMatcher matcher : baseMatchers) {
+                    CmsSiteMatcher httpMatcher = matcher.forDifferentScheme("http");
+                    CmsSiteMatcher httpsMatcher = matcher.forDifferentScheme("https");
+                    for (CmsSiteMatcher current : new CmsSiteMatcher[] {httpMatcher, httpsMatcher}) {
+                        matchersByUrl.put(current.getUrl(), current);
+                    }
+                }
+                return Lists.newArrayList(matchersByUrl.values());
+
+            case NO:
+            case SECURE_SERVER:
+            case MANUAL:
+            default:
+                result = Lists.newArrayList();
+                result.add(m_siteMatcher);
+                for (CmsSiteMatcher alias : m_aliases) {
+                    result.add(alias);
+                }
+                if (m_secureServer != null) {
+                    result.add(m_secureServer);
+                }
+                return result;
+
         }
-        if (m_secureServer != null) {
-            result.add(m_secureServer);
-        }
-        return result;
+
     }
 
     /**

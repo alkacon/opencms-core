@@ -399,7 +399,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             }
         });
         m_uiContext.addToolbarButton(settings);
-        if (OpenCms.getSiteManager().isConfigurableWebServer()) {
+        if (OpenCms.getSiteManager().isConfigurableWebServer() || (OpenCms.getLetsEncryptConfig() != null)) {
             Button webServer = CmsToolBar.createButton(
                 FontAwesome.SERVER,
                 CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));

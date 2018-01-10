@@ -34,6 +34,7 @@ import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsDefaultSessionStorageProvider;
@@ -447,11 +448,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the element reuse mode. */
     private static final String N_REUSE_ELEMENTS = "reuse-elements";
 
-    /** Node name for the user session mode. */
-    private static final String N_USER_SESSION_MODE = "user-session-mode";
-
     /** Node name for the shell server options. */
     private static final String N_SHELL_SERVER = "shell-server";
+
+    /** Node name for the user session mode. */
+    private static final String N_USER_SESSION_MODE = "user-session-mode";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -500,6 +501,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
+
+    /** The LetsEncrypt configuration. */
+    private CmsLetsEncryptConfiguration m_letsEncryptConfig;
 
     /** The configured locale manager for multi language support. */
     private CmsLocaleManager m_localeManager;
@@ -551,6 +555,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The configured session storage provider class name. */
     private String m_sessionStorageProvider;
 
+    /** The shell server options. */
+    private CmsRemoteShellConfiguration m_shellServerOptions;
+
     /** The subscription manager. */
     private CmsSubscriptionManager m_subscriptionManager;
 
@@ -565,9 +572,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
-
-    /** The shell server options. */
-    private CmsRemoteShellConfiguration m_shellServerOptions;
 
     /**
      * Adds an ADE configuration parameter.<p>
@@ -1001,6 +1005,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext(workflowXpath + "/" + N_PARAMETERS, "setParameters");
         digester.addSetNext(workflowXpath, "setWorkflowManager");
 
+        CmsLetsEncryptConfiguration.CONFIG_HELPER.addRules(digester);
+        digester.addSetNext(CmsLetsEncryptConfiguration.CONFIG_HELPER.getBasePath(), "setLetsEncryptConfig");
+
         String userSessionPath = "*/" + N_SYSTEM + "/" + N_USER_SESSION_MODE;
         digester.addCallMethod(userSessionPath, "setUserSessionMode", 0);
 
@@ -1422,6 +1429,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 A_ENABLED,
                 "" + m_shellServerOptions.isEnabled()).addAttribute(A_PORT, "" + m_shellServerOptions.getPort());
         }
+        CmsLetsEncryptConfiguration.CONFIG_HELPER.generateXml(systemElement, m_letsEncryptConfig);
+
         // return the system node
         return systemElement;
     }
@@ -1614,6 +1623,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
 
         return m_httpAuthenticationSettings;
+    }
+
+    /**
+     * Gets the LetsEncrypt configuration.<p>
+     *
+     * @return the LetsEncrypt configuration
+     */
+    public CmsLetsEncryptConfiguration getLetsEncryptConfig() {
+
+        return m_letsEncryptConfig;
     }
 
     /**
@@ -2106,6 +2125,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
 
         m_httpAuthenticationSettings = httpAuthenticationSettings;
+    }
+
+    /**
+     * Sets the LetsEncrypt configuration.<p>
+     *
+     * @param letsEncryptConfig the LetsEncrypt configuration
+     */
+    public void setLetsEncryptConfig(CmsLetsEncryptConfiguration letsEncryptConfig) {
+
+        m_letsEncryptConfig = letsEncryptConfig;
     }
 
     /**

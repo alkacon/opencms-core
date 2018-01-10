@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.module.CmsModuleManager;
@@ -293,6 +294,17 @@ public final class OpenCms {
     public static CmsImportExportManager getImportExportManager() {
 
         return OpenCmsCore.getInstance().getImportExportManager();
+    }
+
+    /**
+     * Gets the LetsEncrypt configuration.<p>
+     *
+     * @return the LetsEncrypt configuration
+     */
+    public static CmsLetsEncryptConfiguration getLetsEncryptConfig() {
+
+        return OpenCmsCore.getInstance().getLetsEncryptConfig();
+
     }
 
     /**

@@ -42,7 +42,8 @@
 	credentials-resolver?,
 	publish-list-remove-mode?,
 	restrict-detail-contents?,
-	shell-server?
+	shell-server?,
+	letsencrypt?
 	)>
 
 <!--
@@ -576,3 +577,19 @@
 <!ELEMENT shell-server EMPTY>
 <!ATTLIST shell-server enabled CDATA #REQUIRED>
 <!ATTLIST shell-server port CDATA #IMPLIED>
+
+<!-- 
+# LetsEncrypt configuration.
+-->
+<!ELEMENT letsencrypt EMPTY>
+<!-- The host name of the LetsEncrypt container which should be notified when certificate config changes. -->
+<!ATTLIST letsencrypt host CDATA #REQUIRED>
+
+<!-- The port of the LetsEncrypt container to use for the 'certificate config changed' notification. -->
+<!ATTLIST letsencrypt port CDATA #REQUIRED>
+
+<!-- The mode : workplace, sites, all (= workplace + sites) or disabled -->
+<!ATTLIST letsencrypt mode CDATA #REQUIRED>
+
+<!-- The path to which the certificate configuration should be written. -->
+<!ATTLIST letsencrypt certconfig CDATA #REQUIRED>

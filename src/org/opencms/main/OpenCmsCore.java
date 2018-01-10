@@ -69,6 +69,7 @@ import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
@@ -140,6 +141,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
+
+import org.antlr.stringtemplate.StringTemplate;
 
 import com.google.common.base.Optional;
 
@@ -221,6 +224,9 @@ public final class OpenCmsCore {
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
 
+    /** The LetsEncrypt configuration. */
+    private CmsLetsEncryptConfiguration m_letsEncryptConfig;
+
     /** The link manager to resolve links in &lt;cms:link&gt; tags. */
     private CmsLinkManager m_linkManager;
 
@@ -247,6 +253,9 @@ public final class OpenCmsCore {
 
     /** The publish manager instance. */
     private CmsPublishManager m_publishManager;
+
+    /** The remote shell server. */
+    private CmsRemoteShellServer m_remoteShellServer;
 
     /** The repository manager. */
     private CmsRepositoryManager m_repositoryManager;
@@ -316,9 +325,6 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-
-    /** The remote shell server. */
-    private CmsRemoteShellServer m_remoteShellServer;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -404,6 +410,16 @@ public final class OpenCmsCore {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets the LetsEncrypt configuration.<p>
+     *
+     * @return the LetsEncrypt configuration
+     */
+    public CmsLetsEncryptConfiguration getLetsEncryptConfig() {
+
+        return m_letsEncryptConfig;
     }
 
     /**
@@ -1618,6 +1634,7 @@ public final class OpenCmsCore {
 
             m_templateContextManager = new CmsTemplateContextManager(initCmsObject(adminCms));
             m_workflowManager = systemConfiguration.getWorkflowManager();
+            m_letsEncryptConfig = systemConfiguration.getLetsEncryptConfig();
             if (m_workflowManager == null) {
                 m_workflowManager = new CmsDefaultWorkflowManager();
                 m_workflowManager.setParameters(new HashMap<String, String>());
@@ -1628,6 +1645,14 @@ public final class OpenCmsCore {
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
+        }
+
+        try {
+            // mitigate potential stringtemplate 3 class loading deadlock by making sure the class is loaded on startup
+            @SuppressWarnings("unused")
+            StringTemplate stringTemplate = new org.antlr.stringtemplate.StringTemplate();
+        } catch (Exception e) {
+            CmsLog.INIT.error("Problem with initializing stringtemplate class: " + e.getLocalizedMessage(), e);
         }
 
         try {
