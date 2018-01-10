@@ -50,7 +50,6 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -64,33 +63,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 
 public class CmsGlobalForm extends CmsBasicDialog {
-
-    /**
-     * Validator for the worlplace server combo boxes.<p>
-     */
-    class WorkplaceServerValidator implements Validator {
-
-        /**vaadin seril id.*/
-        private static final long serialVersionUID = -2592817529797310651L;
-
-        /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
-         */
-        public void validate(Object value) throws InvalidValueException {
-
-            //            if (value == null) {
-            //                return;
-            //            }
-            //            String workplaceServer = ((CmsSite)value).getUrl();
-            //            List<String> allServer = getWebserverList();
-            //            if (allServer.indexOf(workplaceServer) != allServer.lastIndexOf(workplaceServer)) {
-            //                throw new InvalidValueException(
-            //                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_WORKPLACE_DOUBLE_1, workplaceServer));
-            //            }
-
-        }
-
-    }
 
     /** The logger for this class. */
     private static Log LOG = CmsLog.getLog(CmsGlobalForm.class.getName());
