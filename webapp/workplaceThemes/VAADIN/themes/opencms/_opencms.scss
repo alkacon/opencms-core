@@ -180,11 +180,12 @@
 		font-size: $v-font-size;
 		padding-left: 10px;
 		padding-right: 40px;
+		position: relative;
 		
 		&:before{
 			position: absolute;
-			top: 6px;
-			right: 15px;
+			top: -1px;
+			right: 8px;
 			font-size: 32px;
 			margin: 0;
 		}

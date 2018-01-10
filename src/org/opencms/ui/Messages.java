@@ -528,6 +528,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TIME_1 = "GUI_TIME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATOR_EMPTY_OR_NUMBER_0 = "GUI_VALIDATOR_EMPTY_OR_NUMBER_0";
 
     /** Message constant for key in the resource bundle. */

@@ -64,6 +64,7 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -458,7 +459,7 @@ public class CmsLoginController {
                 LOG.warn(e.getLocalizedMessage(), e);
                 message = org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
-                displayError(message.key(m_params.getLocale()), true);
+                displayError(message.key(m_params.getLocale()), true, true);
                 return;
             }
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
@@ -691,6 +692,19 @@ public class CmsLoginController {
      */
     private void displayError(String message, boolean showForgotPassword) {
 
+        displayError(message, showForgotPassword, false);
+
+    }
+
+    /**
+     * Displays the given error message.<p>
+     *
+     * @param message the message
+     * @param showForgotPassword in case the forgot password link should be shown
+     * @param showTime show the time
+     */
+    private void displayError(String message, boolean showForgotPassword, boolean showTime) {
+
         message = message.replace("\n", "<br />");
         if (showForgotPassword) {
             message += "<br /><br /><a href=\""
@@ -698,6 +712,12 @@ public class CmsLoginController {
                 + "\">"
                 + CmsVaadinUtils.getMessageText(Messages.GUI_FORGOT_PASSWORD_0)
                 + "</a>";
+        }
+        if (showTime) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            message += "<div style=\"position:absolute;right:6px;bottom:5px;\">"
+                + CmsVaadinUtils.getMessageText(Messages.GUI_TIME_1, sdf.format(new Date()))
+                + "</div>";
         }
         m_ui.showLoginError(message);
     }
