@@ -160,6 +160,10 @@ sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { buil
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
 
+task wrapper(type: Wrapper){
+	gradleVersion = '2.14.1'
+}
+
 task copyDeps(type: Copy) {
     from configurations.distribution
     into "${buildDir}/deps"
