@@ -9,16 +9,18 @@
 	<body>
 		<o-cms-basic-dialog>
 			<content>			
-				<v-vertical-layout :center margin spacing style-name="o-dialog-form">
+				<v-vertical-layout :center margin spacing style-name="o-formlayout-const-capture-200" >
 				<v-panel width="100%" caption="%(key.GUI_SITE_GLOBAL_WORKPLACE_0)">	
 						<v-vertical-layout _id="m_serverLayout" margin spacing>
 						</v-vertical-layout>
 						</v-panel>
 					<v-panel width="100%">	
-						<v-form-layout margin spacing>
+					<v-vertical-layout margin spacing>
+						<v-form-layout spacing>
 							<v-combo-box _id="m_fieldDefaultURI" immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_DEFAULTURI_0)" description="%(key.GUI_SITE_GLOBAL_DEFAULTURI_HELP_0)"/>
 							<v-combo-box _id="m_fieldSharedFolder"  immediate="true"  width="100%" caption="%(key.GUI_SITE_GLOBAL_SHAREDFOLDER_0)" description="%(key.GUI_SITE_GLOBAL_SHAREDFOLDER_HELP_0)"/>
 						</v-form-layout>
+						</v-vertical-layout>
 					</v-panel>	
 				</v-vertical-layout>
 			</content>

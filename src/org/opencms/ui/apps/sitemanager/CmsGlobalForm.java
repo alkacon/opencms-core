@@ -155,11 +155,8 @@ public class CmsGlobalForm extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                if (isValidWorkplaceServer()) {
-                    submit();
-                    closeDialog();
-                }
-                return;
+                submit();
+                closeDialog();
             }
 
         });
@@ -210,23 +207,6 @@ public class CmsGlobalForm extends CmsBasicDialog {
     }
 
     /**
-     * Checks if all workplace server comboboxes are valid.<p>
-     *
-     * @return true if entered values are valid
-     */
-    boolean isValidWorkplaceServer() {
-
-        //        for (Component item : m_serverLayout) {
-        //            @SuppressWarnings("unchecked")
-        //            CmsRemovableFormRow<ComboBox> row = (CmsRemovableFormRow<ComboBox>)item;
-        //            if (!((ComboBox)row.getComponent(0)).isValid()) {
-        //                return false;
-        //            }
-        //        }
-        return true;
-    }
-
-    /**
      * Save results.<p>
      */
     void submit() {
@@ -260,14 +240,12 @@ public class CmsGlobalForm extends CmsBasicDialog {
             public Component get() {
 
                 CmsWorkplaceServerWidget row = new CmsWorkplaceServerWidget(sites, null);
-                //                row.getServerComboBox().addValidator(new WorkplaceServerValidator());
                 return row;
             }
         }, "Add hard");
 
         for (String server : OpenCms.getSiteManager().getWorkplaceServers()) {
             CmsWorkplaceServerWidget row = new CmsWorkplaceServerWidget(sites, server);
-            //            row.getServerComboBox().addValidator(new WorkplaceServerValidator());
             m_workplaceServerGroup.addRow(row);
         }
     }

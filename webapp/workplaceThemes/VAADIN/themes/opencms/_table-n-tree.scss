@@ -264,6 +264,22 @@
 
 		
 }
+ 
+ $columnWidthList: 100,150,200,250,300;
+ @each $width in $columnWidthList{
+ 	.o-formlayout-const-capture-#{$width}{
+ 		
+ 		& table{
+ 			table-layout: fixed;	
+ 		}
+ 		
+ 		& table td.v-formlayout-captioncell{
+ 		width: #{$width}px;
+ 		}
+ 		
+ 		}
+ 	
+ 	}
 
   .o-no-padding div.v-table-cell-wrapper{
   		padding:0px !important;
@@ -285,6 +301,7 @@
 	[class^="o-box-"], [class*="o-box"]{
 	
 	position:relative;
+	
 		& .v-table-cell-wrapper{
 		position:relative;
 		z-index: 2;
