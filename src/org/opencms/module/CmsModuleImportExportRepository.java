@@ -170,10 +170,12 @@ public class CmsModuleImportExportRepository {
 
             boolean needToRunExport = needToExportModule(module, moduleFile, project);
             if (needToRunExport) {
+                CmsObject exportCms = OpenCms.initCmsObject(m_adminCms);
+                exportCms.getRequestContext().setCurrentProject(project);
                 LOG.info("Module export is needed for " + module.getName());
                 moduleFile.delete();
                 CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
-                List<String> moduleResources = CmsModule.calculateModuleResourceNames(m_adminCms, module);
+                List<String> moduleResources = CmsModule.calculateModuleResourceNames(exportCms, module);
                 handler.setAdditionalResources(moduleResources.toArray(new String[] {}));
                 // the import/export handler adds the zip extension if it is not there, so we append it here
                 String tempFileName = RandomStringUtils.randomAlphanumeric(8) + ".zip";
@@ -184,8 +186,6 @@ public class CmsModuleImportExportRepository {
                 CmsException exportException = null;
                 I_CmsReport report = createReport();
                 try {
-                    CmsObject exportCms = OpenCms.initCmsObject(m_adminCms);
-                    exportCms.getRequestContext().setCurrentProject(project);
                     handler.exportData(exportCms, report);
                 } catch (CmsException e) {
                     exportException = e;
