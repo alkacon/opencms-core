@@ -23,15 +23,7 @@ chacc '/system/workplace/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 createFolder '/system/shared/' 'notification'
 writeProperty '/system/shared/notification/' 'Title' 'Content Notification'
 writeProperty '/system/workplace/commons/' 'cache' 'false'
-# create folders for categories, galleries and views
-createFolder '/system/' 'categories'
-createFolder '/system/' 'galleries'
-createFolder '/system/galleries/' 'download'
-writeProperty '/system/galleries/download/' 'exportname' 'download'
-createFolder '/system/galleries/' 'externallinks'
-writeProperty '/system/galleries/externallinks/' 'export' 'false'
-createFolder '/system/galleries/' 'pics'
-writeProperty '/system/galleries/pics/' 'exportname' 'pics'
+# create folders for user images
 chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		]]></import-script>
 		<export-mode name="reduced"/>
@@ -50,7 +42,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		<resources>
 			<resource uri="/system/handler/"/>
 			<resource uri="/system/login/"/>
-			<resource uri="/system/lost-found/"/>
 			<resource uri="/system/modules/org.opencms.base/"/>
 			<resource uri="/system/userimages/temp/"/>
 			<resource uri="/system/workplace/commons/about.jsp"/>
@@ -906,30 +897,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</properties>
 			<relations/>
 			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/lost-found</destination>
-			<type>folder</type>
-			<uuidstructure>be275b3a-2bd4-11e6-bb84-3992c1e72ece</uuidstructure>
-			<datecreated>Mon, 06 Jun 2016 10:52:20 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_MANAGER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>31</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>

@@ -7,15 +7,13 @@ setSiteRoot "/"
 # Create folder structure
 createFolder "/" "sites/"
 createFolder "/sites/" "default/"
-createFolder "/system/" "lost-found/"
-createFolder "/" "shared/" 
+createFolder "/" "shared/"
 
 # Apply folder permissions
 chacc "/" "user" "ALL_OTHERS" "+v+r+i"
 chacc "/" "role" "ROOT_ADMIN" "+v+w+r+c+d+i"
 chacc "/" "role" "DEVELOPER" "+v+w+r+c+d+i"
 chacc "/system" "role" "WORKPLACE_USER" "+v+r+i"
-chacc "/system/lost-found" "role" "WORKPLACE_MANAGER" "+v+w+r+c+d+i"
 chacc "/system/orgunits" "role" "ACCOUNT_MANAGER" "+v+w+r+c+d+i"
 
 chacc "/sites/default" "group" "Users" "+v+w+r+i"

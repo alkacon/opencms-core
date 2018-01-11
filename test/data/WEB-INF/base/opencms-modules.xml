@@ -69,15 +69,7 @@ chacc '/system/workplace/' 'GROUP' 'ALL_OTHERS' '+I+O'
 chacc '/system/workplace/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 writeProperty '/system/shared/notification/' 'Title' 'Content Notification'
 writeProperty '/system/workplace/commons/' 'cache' 'false'
-# create folders for categories, galleries and views
-createFolder '/system/' 'categories'
-createFolder '/system/' 'galleries'
-createFolder '/system/galleries/' 'download'
-writeProperty '/system/galleries/download/' 'exportname' 'download'
-createFolder '/system/galleries/' 'externallinks'
-writeProperty '/system/galleries/externallinks/' 'export' 'false'
-createFolder '/system/galleries/' 'pics'
-writeProperty '/system/galleries/pics/' 'exportname' 'pics'
+# create folders for user images
 chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		]]></import-script>
 		<export-mode name="reduced"/>
@@ -95,7 +87,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		</exportpoints>
 		<resources>
 			<resource uri="/system/login/"/>
-			<resource uri="/system/lost-found/"/>
 			<resource uri="/system/modules/org.opencms.base/"/>
 			<resource uri="/system/userimages/temp/"/>
 			<resource uri="/system/workplace/commons/about.jsp"/>

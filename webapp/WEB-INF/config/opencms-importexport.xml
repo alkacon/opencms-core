@@ -22,26 +22,21 @@
 				<importversion class="org.opencms.importexport.CmsImportVersion10" />
 			</importversions>
 			<immutables>
+				<resource uri="/shared/" />
+				<resource uri="/sites/" />
 				<resource uri="/system/" />
 				<resource uri="/system/categories/" />
-				<resource uri="/system/galleries/" />
-				<resource uri="/system/galleries/download/" />
-				<resource uri="/system/galleries/externallinks/" />
-				<resource uri="/system/galleries/htmlgalleries/" />
-				<resource uri="/system/galleries/pics/" />
+				<resource uri="/system/config/" />
+				<resource uri="/system/handler/" />
 				<resource uri="/system/login/" />
 				<resource uri="/system/modules/" />
+				<resource uri="/system/orgunits/" />
 				<resource uri="/system/shared/" />
+				<resource uri="/system/userimages/" />
 				<resource uri="/system/workplace/" />
-				<resource uri="/system/workplace/admin/" />
-				<resource uri="/system/workplace/help/" />
-				<resource uri="/system/workplace/locales/" />
+				<resource uri="/system/workplace/commons/" />
+				<resource uri="/system/workplace/editors/" />
 				<resource uri="/system/workplace/resources/" />
-				<resource uri="/system/workplace/restypes/" />
-				<resource uri="/system/workplace/scripts/" />
-				<resource uri="/system/workplace/templates/" />
-				<resource uri="/system/workplace/views/" />
-				<resource uri="/sites/" />
 			</immutables>
 			<principaltranslations />
 			<ignoredproperties />
@@ -61,9 +56,9 @@
 			<suffix key=".doc" />
 			<suffix key=".xls" />
 			<suffix key=".ppt" />
-            <suffix key=".docx" />
-            <suffix key=".xlsx" />
-            <suffix key=".pptx" />			
+			<suffix key=".docx" />
+			<suffix key=".xlsx" />
+			<suffix key=".pptx" />
 			<suffix key=".pdf" />
 			<suffix key=".txt" />
 			<suffix key=".css" />
@@ -80,8 +75,6 @@
 			<testresource uri="/system/shared/page.dtd" />
 			<resourcestorender>
 				<regex>/sites/.*</regex>
-				<regex>/system/workplace/commons/style/.*</regex>
-				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*/resources/.*</regex>
 			</resourcestorender>
 		</rendersettings>
@@ -128,7 +121,6 @@
 				<regex>/sites/.*</regex>
 				<regex>/system/</regex>
 				<regex>/system/__properties/.*</regex>
-				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*</regex>
 				<regex>/system/workplace/.*</regex>
 			</filter>
@@ -147,7 +139,6 @@
 				<regex>/sites/.*</regex>
 				<regex>/system/</regex>
 				<regex>/system/__properties/.*</regex>
-				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/</regex>
 				<regex>/system/modules/[^/]*/</regex>
 				<regex>/system/modules/[^/]*/__properties/.*</regex>
@@ -176,7 +167,7 @@
 				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPreventCreateNameCI:thumbs.db|.thumbnails|.xvpics|.DS_Store</param>
 				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperReplaceDeleted</param>
 				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperModules</param>
-			</params>					
+			</params>
 		</repository>
 	</repositories>
 </opencms>
