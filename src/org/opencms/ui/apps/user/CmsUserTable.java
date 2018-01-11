@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -56,10 +57,12 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -612,7 +615,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         /**Is the user new? */
         NEWUSER("", Boolean.class, new Boolean(false)),
         /**Status. */
-        STATUS("", String.class, "");
+        STATUS("", Integer.class, new Integer(0));
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -631,6 +634,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          * @param defaultValue value
          */
         TableProperty(String name, Class<?> type, Object defaultValue) {
+
             m_headerMessage = name;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -675,7 +679,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     private static final long serialVersionUID = 7863356514060544048L;
 
     /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUserTable.class);
+    static final Log LOG = CmsLog.getLog(CmsUserTable.class);
+
+    /**Map for password status of user. */
+    protected static final Map<CmsUUID, Boolean> USER_PASSWORD_STATUS = new HashMap<CmsUUID, Boolean>();
 
     /**Indexed container. */
     private IndexedContainer m_container;
@@ -716,6 +723,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     /**Black list of user from higher OU than current user.*/
     private HashSet<CmsUser> m_blackList = new HashSet<CmsUser>();
 
+    /**Set of user with Flag to reset password. */
+    private Set<CmsUUID> m_checkedUserPasswordReset;
+
     /**
      * public constructor.<p>
      *
@@ -723,12 +733,13 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      * @param app the app
      */
     public CmsUserTable(String ou, CmsAccountsApp app) {
+
         m_ou = ou;
         m_app = app;
         try {
             m_cms = getCmsObject();
             m_type = CmsOuTreeType.USER;
-            m_user = OpenCms.getOrgUnitManager().getUsers(m_cms, ou, false);
+            m_user = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(m_cms, ou, false);
             m_indirects = Collections.emptyList();
             init(false);
             m_fullLoaded = true;
@@ -747,6 +758,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      * @param app the app
      */
     public CmsUserTable(String ou, CmsUUID groupID, CmsOuTreeType cmsOuTreeType, boolean showAll, CmsAccountsApp app) {
+
         m_ou = ou;
         m_app = app;
 
@@ -834,7 +846,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     protected void fillContainer(boolean showIndirect) {
 
         m_container.removeAllItems();
-
+        m_checkedUserPasswordReset = new HashSet<CmsUUID>();
         for (CmsUser user : m_user) {
             if (!m_indirects.contains(user)) {
                 addUserToContainer(m_container, user);
@@ -952,6 +964,105 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     * Returns status message.
+     *
+     * @param user CmsUser
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return String
+     */
+    String getStatus(CmsUser user, boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_0);
+        }
+        if (newUser) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
+        }
+        if (isUserPasswordReset(user)) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_0);
+        }
+        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ACTIVE_0);
+    }
+
+    /**
+     * Returns status help message.
+     *
+     * @param user CmsUser
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return String
+     */
+    String getStatusHelp(CmsUser user, boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_HELP_0);
+        }
+        if (newUser) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0);
+        }
+        if (isUserPasswordReset(user)) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_HELP_0);
+        }
+        long lastLogin = user.getLastlogin();
+        return CmsVaadinUtils.getMessageText(
+            Messages.GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1,
+            CmsDateUtil.getDateTime(new Date(lastLogin), DateFormat.SHORT, A_CmsUI.get().getLocale()));
+    }
+
+    /**
+     * Integer value for status (allows to sort column).
+     *
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return Integer
+     */
+    Integer getStatusInt(boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return new Integer(2);
+        }
+        if (newUser) {
+            return new Integer(1);
+        }
+        return new Integer(0);
+    }
+
+    /**
+     * Is the user password reset?
+     *
+     * @param user User to check
+     * @return boolean
+     */
+    boolean isUserPasswordReset(CmsUser user) {
+
+        if (USER_PASSWORD_STATUS.containsKey(user.getId())) { //Check if user was checked before
+            if (!USER_PASSWORD_STATUS.get(user.getId()).booleanValue()) { // was false before, false->true is never done without changing map
+                return false;
+            }
+            if (m_checkedUserPasswordReset.contains(user.getId())) { //was true before, true->false happens when user resets password. Only check one time per table load.
+                return true; //Set gets flushed on reloading table
+            }
+        }
+        CmsUser currentUser = user;
+        if (user.getAdditionalInfo().size() < 3) {
+
+            try {
+                currentUser = m_cms.readUser(user.getId());
+            } catch (CmsException e) {
+                LOG.error("Can not read user", e);
+            }
+        }
+        if (currentUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
+            USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(true));
+            m_checkedUserPasswordReset.add(currentUser.getId());
+            return true;
+        }
+        USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(false));
+        return false;
+    }
+
+    /**
      * Adds given user to given IndexedContainer.<p>
      *
      * @param container to add the user to
@@ -970,7 +1081,6 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         item.getItemProperty(TableProperty.DISABLED).setValue(new Boolean(disabled));
         boolean newUser = user.getLastlogin() == 0L;
         item.getItemProperty(TableProperty.NEWUSER).setValue(new Boolean(newUser));
-        item.getItemProperty(TableProperty.STATUS).setValue(getStatus(disabled, newUser));
         try {
             item.getItemProperty(TableProperty.OU).setValue(
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, user.getOuFqn()).getDisplayName(
@@ -978,9 +1088,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         } catch (CmsException e) {
             LOG.error("Can't read OU", e);
         }
-        item.getItemProperty(TableProperty.LastLogin).setValue(user.getLastlogin());
+        item.getItemProperty(TableProperty.LastLogin).setValue(new Long(user.getLastlogin()));
         item.getItemProperty(TableProperty.INDIRECT).setValue(new Boolean(m_indirects.contains(user)));
         item.getItemProperty(TableProperty.FROMOTHEROU).setValue(new Boolean(!user.getOuFqn().equals(m_ou)));
+        item.getItemProperty(TableProperty.STATUS).setValue(getStatusInt(disabled, newUser));
     }
 
     /**
@@ -1017,21 +1128,6 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             cms = A_CmsUI.getCmsObject();
         }
         return cms;
-    }
-
-    /**Returns status message.
-     * @param disabled boolean
-     * @param newUser boolean
-     * @return String */
-    private String getStatus(boolean disabled, boolean newUser) {
-
-        if (disabled) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_0);
-        }
-        if (newUser) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
-        }
-        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ACTIVE_0);
     }
 
     /**
@@ -1095,7 +1191,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 if (TableProperty.STATUS.equals(propertyId)) {
-                    return getStatusStyleForItem(source.getItem(itemId));
+                    return getStatusStyleForItem(source.getItem(itemId), (CmsUser)itemId);
 
                 }
                 String css = " ";
@@ -1116,7 +1212,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                 return css.length() == 1 ? null : css;
             }
 
-            private String getStatusStyleForItem(Item item) {
+            private String getStatusStyleForItem(Item item, CmsUser user) {
 
                 if (((Boolean)item.getItemProperty(TableProperty.DISABLED).getValue()).booleanValue()) {
                     return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
@@ -1126,8 +1222,26 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                     return OpenCmsTheme.TABLE_COLUMN_BOX_BLUE;
                 }
 
+                if (isUserPasswordReset(user)) {
+                    return OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE;
+                }
+
                 return OpenCmsTheme.TABLE_COLUMN_BOX_GREEN;
             }
+        });
+        addGeneratedColumn(TableProperty.STATUS, new ColumnGenerator() {
+
+            private static final long serialVersionUID = -2144476865774782965L;
+
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+
+                return getStatus(
+                    (CmsUser)itemId,
+                    ((Boolean)source.getItem(itemId).getItemProperty(TableProperty.DISABLED).getValue()).booleanValue(),
+                    ((Boolean)source.getItem(itemId).getItemProperty(TableProperty.NEWUSER).getValue()).booleanValue());
+
+            }
+
         });
         addGeneratedColumn(TableProperty.LastLogin, new ColumnGenerator() {
 
@@ -1153,19 +1267,12 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
                 if (TableProperty.STATUS.equals(propertyId)) {
 
-                    if (((Boolean)(((Table)source).getItem(itemId).getItemProperty(
-                        TableProperty.DISABLED).getValue())).booleanValue()) {
-                        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_HELP_0);
-                    }
-                    if (((Boolean)(((Table)source).getItem(itemId).getItemProperty(
-                        TableProperty.NEWUSER).getValue())).booleanValue()) {
-                        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0);
-                    }
-                    long lastLogin = ((Long)((Table)source).getItem(itemId).getItemProperty(
-                        TableProperty.LastLogin).getValue()).longValue();
-                    return CmsVaadinUtils.getMessageText(
-                        Messages.GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1,
-                        CmsDateUtil.getDateTime(new Date(lastLogin), DateFormat.SHORT, A_CmsUI.get().getLocale()));
+                    return getStatusHelp(
+                        (CmsUser)itemId,
+                        ((Boolean)((Table)source).getItem(itemId).getItemProperty(
+                            TableProperty.DISABLED).getValue()).booleanValue(),
+                        ((Boolean)((Table)source).getItem(itemId).getItemProperty(
+                            TableProperty.NEWUSER).getValue()).booleanValue());
                 }
                 return null;
             }

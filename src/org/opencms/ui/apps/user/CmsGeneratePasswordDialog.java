@@ -63,6 +63,7 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
         layout.addStyleName(OpenCmsTheme.FORMLAYOUT_WORKPLACE_MAIN);
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setWidth("400px");
         final TextField passwordField = new TextField();
         passwordField.setValue(getPassword());
         CmsButtonFormRow<TextField> row = new CmsButtonFormRow<TextField>(

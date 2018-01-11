@@ -447,6 +447,27 @@ public class CmsLoginManager {
     }
 
     /**
+     * Checks if password has to be reset.<p>
+     *
+     * @param cms CmsObject
+     * @param user CmsUser
+     * @return true if password should be reset
+     */
+    public boolean isPasswordReset(CmsObject cms, CmsUser user) {
+
+        if (user.isManaged()
+            || user.isWebuser()
+            || OpenCms.getDefaultUsers().isDefaultUser(user.getName())
+            || OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
+            return false;
+        }
+        if (user.getAdditionalInfo().get(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Checks if a user is locked due to too many failed logins.<p>
      *
      * @param user the user to check

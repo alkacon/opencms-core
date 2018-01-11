@@ -399,6 +399,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PWCHANGE_REQUEST_DIALOG_HEADER_0 = "GUI_PWCHANGE_REQUEST_DIALOG_HEADER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_RESET_0 = "GUI_PWCHANGE_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_SUCCESS_HEADER_0 = "GUI_PWCHANGE_SUCCESS_HEADER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -406,9 +409,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_INFO_0 = "GUI_RESOURCE_INFO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SELECTED_0 = "GUI_SELECTED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";
@@ -442,6 +442,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SCHEDULER_TITLE_CREATE_0 = "GUI_SCHEDULER_TITLE_CREATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTED_0 = "GUI_SELECTED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
@@ -481,6 +484,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TARGET_FOLDER_0 = "GUI_TARGET_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TIME_1 = "GUI_TIME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";
@@ -526,9 +532,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TIME_1 = "GUI_TIME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATOR_EMPTY_OR_NUMBER_0 = "GUI_VALIDATOR_EMPTY_OR_NUMBER_0";

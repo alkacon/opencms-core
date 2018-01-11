@@ -29,17 +29,7 @@
 							<o-cms-user-data-form-layout margin _id="m_userdata"/>
 						</v-vertical-layout>
 						</tab>
-						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_AUTHENTIFICATION_0)">
-						<v-vertical-layout _id="m_authHolder" margin spacing>
-							<v-form-layout _id="m_tabSimple4" margin spacing style-name="o-formlayout-workplace-main">
-								<v-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_USER_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_USER_ENABLED_HELP_0)" />
-								<v-check-box _id="m_selfmanagement" caption="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_0)" description="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_HELP_0)" />
-								<v-button _id="m_generateButton">%(key.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0)</v-button>
-							</v-form-layout>
-							<k-cms-password-form _id="m_pw">
-							</k-cms-password-form>
-							</v-vertical-layout>
-						</tab>
+						
 
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_SETTINGS_0)">
 						<v-vertical-layout margin spacing>
@@ -51,6 +41,18 @@
 								<v-combo-box _id="m_startview" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_HELP_0)"/>
 							</v-form-layout>
 						</v-vertical-layout>
+						</tab>
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_AUTHENTIFICATION_0)">
+						<v-vertical-layout _id="m_authHolder" margin spacing>
+							<v-form-layout _id="m_tabSimple4" margin spacing style-name="o-formlayout-workplace-main">
+								<v-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_USER_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_USER_ENABLED_HELP_0)" />
+								<v-check-box _id="m_selfmanagement" caption="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_0)" description="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_HELP_0)" />
+								<v-check-box _id="m_forceResetPassword" caption="%(key.GUI_USERMANAGEMENT_USER_FORCE_PASSWORD_RESET_0)" description="%(key.GUI_USERMANAGEMENT_USER_FORCE_PASSWORD_RESET_HELP_0)" />
+								<v-button _id="m_generateButton">%(key.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0)</v-button>
+							</v-form-layout>
+							<k-cms-password-form _id="m_pw">
+							</k-cms-password-form>
+							</v-vertical-layout>
 						</tab>
 					</v-tab-sheet>
 				</v-vertical-layout>

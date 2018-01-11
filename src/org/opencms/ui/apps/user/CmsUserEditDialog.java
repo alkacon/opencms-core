@@ -205,83 +205,86 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         }
     }
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = -5198443053070008413L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserEditDialog.class);
 
-    /**vaadin component.*/
-    private CmsUser m_user;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = -5198443053070008413L;
 
-    /**CmsObject. */
-    private CmsObject m_cms;
-
-    /**vaadin component.*/
-    private Button m_ok;
-
-    /**vaadin component.*/
-    private Button m_cancel;
-
-    /**vaadin component.*/
-    private TextField m_loginname;
+    /**Flag indicates is user is in webou. */
+    boolean m_isWebOU;
 
     /**Password form. */
     CmsPasswordForm m_pw;
 
     /**vaadin component.*/
-    private ComboBox m_language;
-
-    /**vaadin component. */
-    private ComboBox m_role;
+    ComboBox m_site;
 
     /**vaadin component.*/
-    ComboBox m_site;
+    CmsPathSelectField m_startfolder;
+
+    /**Holder for authentification fields. */
+    private VerticalLayout m_authHolder;
+
+    /**vaadin component.*/
+    private Button m_cancel;
+
+    /**CmsObject. */
+    private CmsObject m_cms;
+
+    /**vaadin component.*/
+    private TextArea m_description;
+
+    /**vaadin component.*/
+    private CheckBox m_enabled;
+
+    /**vaadin component. */
+    private CheckBox m_forceResetPassword;
+
+    /**Vaadin component. */
+    private Button m_generateButton;
+
+    /**Select view for principals.*/
+    private CmsPrincipalSelect m_group;
+
+    /**vaadin component.*/
+    private ComboBox m_language;
+
+    /**vaadin component.*/
+    private TextField m_loginname;
+
+    /**Flag indicates if name was empty. */
+    private boolean m_name_was_empty;
 
     /**vaadin component. */
     private Button m_next;
 
     /**vaadin component.*/
-    private ComboBox m_project;
-
-    /**vaadin component.*/
-    CmsPathSelectField m_startfolder;
-
-    /**User data form.<p>*/
-    private CmsUserDataFormLayout m_userdata;
-
-    /**vaadin component.*/
-    private ComboBox m_startview;
-
-    /**vaadin component.*/
-    private CheckBox m_enabled;
-
-    /**vaadin component.*/
-    private CheckBox m_selfmanagement;
-
-    /**vaadin component.*/
-    private TabSheet m_tab;
+    private Button m_ok;
 
     /**vaadin component.*/
     private Label m_ou;
 
     /**vaadin component.*/
-    private TextArea m_description;
+    private ComboBox m_project;
 
-    /**Holder for authentification fields. */
-    private VerticalLayout m_authHolder;
+    /**vaadin component. */
+    private ComboBox m_role;
 
-    /**Select view for principals.*/
-    private CmsPrincipalSelect m_group;
+    /**vaadin component.*/
+    private CheckBox m_selfmanagement;
 
-    /**Flag indicates if name was empty. */
-    private boolean m_name_was_empty;
+    /**vaadin component.*/
+    private ComboBox m_startview;
 
-    /**Vaadin component. */
-    private Button m_generateButton;
+    /**vaadin component.*/
+    private TabSheet m_tab;
 
-    /**Flag indicates is user is in webou. */
-    boolean m_isWebOU;
+    /**vaadin component.*/
+    private CmsUser m_user;
+
+    /**User data form.<p>*/
+    private CmsUserDataFormLayout m_userdata;
 
     /**
      * public constructor.<p>
@@ -318,6 +321,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_enabled.setValue(new Boolean(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
             init(window, settings);
+            m_forceResetPassword.setValue(CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()));
             m_next.setVisible(false);
             m_startfolder.setValue(settings.getStartFolder());
             m_startfolder.setCmsObject(getCmsObjectWithSite((String)m_site.getValue()));
@@ -347,7 +351,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
             m_isWebOU = false;
             if (myOu.hasFlagWebuser()) {
-                m_tab.removeTab(m_tab.getTab(3));
+                m_tab.removeTab(m_tab.getTab(2));
                 m_role.setVisible(false);
                 m_selfmanagement.setValue(new Boolean(false));
                 m_isWebOU = true;
@@ -370,6 +374,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         m_enabled.setValue(Boolean.TRUE);
         m_startfolder.setValue("/");
         init(window, null);
+        m_forceResetPassword.setValue(Boolean.TRUE);
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
             private static final long serialVersionUID = -2579639520410382246L;
@@ -472,8 +477,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         boolean[] ret = new boolean[4];
         ret[0] = m_loginname.isValid();
         ret[1] = m_isWebOU ? true : m_userdata.isValid() | m_name_was_empty;
-        ret[3] = m_isWebOU ? true : m_site.isValid() & m_startview.isValid();
-        ret[2] = m_pw.getPassword1Field().isValid();
+        ret[2] = m_isWebOU ? true : m_site.isValid() & m_startview.isValid();
+        ret[3] = m_pw.getPassword1Field().isValid();
 
         for (int i = 0; i < ret.length; i++) {
 
@@ -494,6 +499,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             if (m_user == null) {
                 createNewUser();
             } else {
+
                 saveUser();
             }
 
@@ -618,7 +624,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                     | ((m_user == null)
                         & m_group.getValue().equals(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
                     Item item = container.addItem(site.getSiteRoot());
-                    System.out.println(site.getSiteRoot());
                     item.getItemProperty("caption").setValue(site.getTitle());
                 }
             } else {
@@ -898,8 +903,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 if (isValid()) {
                     save();
                     window.close();
+                    A_CmsUI.get().reload();
                 }
-                A_CmsUI.get().reload();
             }
         });
 
@@ -910,9 +915,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             public void buttonClick(ClickEvent event) {
 
                 setupValidators();
-                if (isValid()) {
-                    switchTab();
-                }
+                switchTab();
 
             }
         });
@@ -969,7 +972,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
             public void buttonClick(ClickEvent event) {
 
-                final Window windowDialog = CmsBasicDialog.prepareWindow();
+                final Window windowDialog = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.content);
                 windowDialog.setCaption(
                     CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0));
                 CmsGeneratePasswordDialog dialog = new CmsGeneratePasswordDialog(
@@ -1066,12 +1069,29 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
+     * Sets the password status for the user.<p>
+     *
+     * @param user CmsUser
+     * @param reset true or false
+     */
+    private void setUserPasswordStatus(CmsUser user, boolean reset) {
+
+        if (reset) {
+            user.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET, "true");
+        } else {
+            user.deleteAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET);
+        }
+        CmsUserTable.USER_PASSWORD_STATUS.put(user.getId(), new Boolean(reset));
+    }
+
+    /**
      *  Read form and updates a given user according to form.<p>
      *
      * @param user to be updated
      */
     private void updateUser(CmsUser user) {
 
+        setUserPasswordStatus(user, m_forceResetPassword.getValue().booleanValue());
         user.setDescription(m_description.getValue());
         user.setManaged(!m_selfmanagement.getValue().booleanValue());
         user.setEnabled(m_enabled.getValue().booleanValue());

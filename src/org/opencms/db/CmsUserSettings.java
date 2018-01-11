@@ -173,6 +173,9 @@ public class CmsUserSettings {
     /** Key for last user data check additional info. */
     public static final String ADDITIONAL_INFO_LAST_USER_DATA_CHECK = "ADDITIONAL_INFO_LAST_USER_DATA_CHECK";
 
+    /**Additional info which indicates, that a password was reset by an admin. */
+    public static final String ADDITIONAL_INFO_PASSWORD_RESET = "RESET_PASSWORD";
+
     /** Key for additional info flags. */
     public static final String ADDITIONAL_INFO_PREFERENCES = "USER_PREFERENCES";
 

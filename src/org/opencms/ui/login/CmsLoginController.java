@@ -469,12 +469,19 @@ public class CmsLoginController {
                     return;
                 }
             }
+            String messageToChange = "";
+            if (OpenCms.getLoginManager().isPasswordReset(currentCms, userObj)) {
+                messageToChange = CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_RESET_0);
+            }
             if (OpenCms.getLoginManager().requiresPasswordChange(currentCms, userObj)) {
+                messageToChange = getPasswordChangeMessage();
+            }
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(messageToChange)) {
                 CmsChangePasswordDialog passwordDialog = new CmsChangePasswordDialog(
                     currentCms,
                     userObj,
                     A_CmsUI.get().getLocale());
-                passwordDialog.setAdditionalMessage(getPasswordChangeMessage());
+                passwordDialog.setAdditionalMessage(messageToChange);
                 A_CmsUI.get().setContentToDialog(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + userObj.getSimpleName(),

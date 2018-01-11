@@ -1032,11 +1032,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         // get the entries to copy
-        ListIterator<CmsAccessControlEntry> aceList = getUserDriver(dbc).readAccessControlEntries(
-            dbc,
-            dbc.currentProject(),
-            source.getResourceId(),
-            false).listIterator();
+        ListIterator<CmsAccessControlEntry> aceList = getUserDriver(
+            dbc).readAccessControlEntries(dbc, dbc.currentProject(), source.getResourceId(), false).listIterator();
 
         // remove the current entries from the destination
         getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), destination.getResourceId());
@@ -1798,18 +1795,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             try {
                 // check online resource
-                CmsResource onlineResource = getVfsDriver(dbc).readResource(
-                    dbc,
-                    CmsProject.ONLINE_PROJECT_ID,
-                    resourcePath,
-                    true);
+                CmsResource onlineResource = getVfsDriver(
+                    dbc).readResource(dbc, CmsProject.ONLINE_PROJECT_ID, resourcePath, true);
                 // only allow to overwrite with different id if importing (createResource will set the right id)
                 try {
-                    CmsResource offlineResource = getVfsDriver(dbc).readResource(
-                        dbc,
-                        dbc.currentProject().getUuid(),
-                        onlineResource.getStructureId(),
-                        true);
+                    CmsResource offlineResource = getVfsDriver(
+                        dbc).readResource(dbc, dbc.currentProject().getUuid(), onlineResource.getStructureId(), true);
                     if (!offlineResource.getRootPath().equals(onlineResource.getRootPath())) {
                         throw new CmsVfsOnlineResourceAlreadyExistsException(
                             Messages.get().container(
@@ -1869,22 +1860,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             // delete all relations for the resource, before writing the content
-            getVfsDriver(dbc).deleteRelations(
-                dbc,
-                dbc.currentProject().getUuid(),
-                newResource,
-                CmsRelationFilter.TARGETS);
+            getVfsDriver(
+                dbc).deleteRelations(dbc, dbc.currentProject().getUuid(), newResource, CmsRelationFilter.TARGETS);
             if (overwrittenResource == null) {
                 CmsLock lock = getLock(dbc, newResource);
                 if (lock.getEditionLock().isExclusive()) {
                     unlockResource(dbc, newResource, true, false);
                 }
                 // resource does not exist.
-                newResource = getVfsDriver(dbc).createResource(
-                    dbc,
-                    dbc.currentProject().getUuid(),
-                    newResource,
-                    content);
+                newResource = getVfsDriver(
+                    dbc).createResource(dbc, dbc.currentProject().getUuid(), newResource, content);
             } else {
                 // resource already exists.
                 // probably the resource is a merged page file that gets overwritten during import, or it gets
@@ -2382,11 +2367,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             transferPrincipalResources(dbc, onlineProject, group.getId(), replacementId, true);
         }
         // remove the group
-        getUserDriver(dbc).removeAccessControlEntriesForPrincipal(
-            dbc,
-            dbc.currentProject(),
-            onlineProject,
-            group.getId());
+        getUserDriver(
+            dbc).removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
         getUserDriver(dbc).deleteGroup(dbc, group.getName());
         // backup the group
         getHistoryDriver(dbc).writePrincipal(dbc, group);
@@ -2913,12 +2895,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (resource.isFolder()) {
             // check if the folder has any resources in it
-            Iterator<CmsResource> childResources = getVfsDriver(dbc).readChildResources(
-                dbc,
-                dbc.currentProject(),
-                resource,
-                true,
-                true).iterator();
+            Iterator<CmsResource> childResources = getVfsDriver(
+                dbc).readChildResources(dbc, dbc.currentProject(), resource, true, true).iterator();
 
             CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
             if (dbc.currentProject().isOnlineProject()) {
@@ -2938,11 +2916,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 boolean error = !dbc.currentProject().isOnlineProject();
                 if (!error) {
                     try {
-                        String originalPath = getVfsDriver(dbc).readResource(
-                            dbc,
-                            projectId,
-                            errorRes.getRootPath(),
-                            true).getRootPath();
+                        String originalPath = getVfsDriver(
+                            dbc).readResource(dbc, projectId, errorRes.getRootPath(), true).getRootPath();
                         error = originalPath.equals(errorRes.getRootPath())
                             || originalPath.startsWith(resource.getRootPath());
                     } catch (CmsVfsResourceNotFoundException e) {
@@ -3036,12 +3011,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
-                    getVfsDriver(dbc).writeResourceState(
-                        dbc,
-                        dbc.currentProject(),
-                        currentResource,
-                        UPDATE_STRUCTURE,
-                        false);
+                    getVfsDriver(
+                        dbc).writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE, false);
 
                     // update the project ID
                     getVfsDriver(dbc).writeLastModifiedProjectId(
@@ -5329,11 +5300,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             boolean isInside = false;
             boolean isOutside = false;
             // check if one of the other vfs links lies in a labeled site folder
-            List<CmsResource> siblings = getVfsDriver(dbc).readSiblings(
-                dbc,
-                dbc.currentProject().getUuid(),
-                resource,
-                false);
+            List<CmsResource> siblings = getVfsDriver(
+                dbc).readSiblings(dbc, dbc.currentProject().getUuid(), resource, false);
             updateContextDates(dbc, siblings);
             Iterator<CmsResource> i = siblings.iterator();
             while (i.hasNext() && (!isInside || !isOutside)) {
@@ -6335,11 +6303,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsAccessControlEntry readAccessControlEntry(CmsDbContext dbc, CmsResource resource, CmsUUID principal)
     throws CmsException {
 
-        return getUserDriver(dbc).readAccessControlEntry(
-            dbc,
-            dbc.currentProject(),
-            resource.getResourceId(),
-            principal);
+        return getUserDriver(
+            dbc).readAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
     }
 
     /**
@@ -6576,12 +6541,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             // read the result form the database
-            resourceList = getVfsDriver(dbc).readChildResources(
-                dbc,
-                dbc.currentProject(),
-                resource,
-                getFolders,
-                getFiles);
+            resourceList = getVfsDriver(
+                dbc).readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
 
             if (checkPermissions) {
                 // apply the permission filter
@@ -7356,11 +7317,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resources = getVfsDriver(dbc).readResources(dbc, projectId, state, CmsDriverManager.READMODE_MATCHSTATE);
         } else {
             // get all resources form the database that are somehow changed (i.e. not unchanged)
-            resources = getVfsDriver(dbc).readResources(
-                dbc,
-                projectId,
-                CmsResource.STATE_UNCHANGED,
-                CmsDriverManager.READMODE_UNMATCHSTATE);
+            resources = getVfsDriver(
+                dbc).readResources(dbc, projectId, CmsResource.STATE_UNCHANGED, CmsDriverManager.READMODE_UNMATCHSTATE);
         }
 
         // filter the permissions
@@ -7938,11 +7896,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readSiblings(CmsDbContext dbc, CmsResource resource, CmsResourceFilter filter)
     throws CmsException {
 
-        List<CmsResource> siblings = getVfsDriver(dbc).readSiblings(
-            dbc,
-            dbc.currentProject().getUuid(),
-            resource,
-            filter.includeDeleted());
+        List<CmsResource> siblings = getVfsDriver(
+            dbc).readSiblings(dbc, dbc.currentProject().getUuid(), resource, filter.includeDeleted());
 
         // important: there is no permission check done on the returned list of siblings
         // this is because of possible issues with the "publish all siblings" option,
@@ -8510,6 +8465,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             user.getAdditionalInfo().put(
                 CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
                 "" + System.currentTimeMillis());
+            user.deleteAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET);
             getUserDriver(dbc).writeUser(dbc, user);
 
             if (!dbc.getProjectId().isNullUUID()) {
@@ -9170,20 +9126,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // we need this for later use
         CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
         // read the resource from the online project
-        CmsResource onlineResource = getVfsDriver(dbc).readResource(
-            dbc,
-            CmsProject.ONLINE_PROJECT_ID,
-            resource.getStructureId(),
-            true);
+        CmsResource onlineResource = getVfsDriver(
+            dbc).readResource(dbc, CmsProject.ONLINE_PROJECT_ID, resource.getStructureId(), true);
 
         CmsResource onlineResourceByPath = null;
         try {
             // this is needed to figure out if a moved resource overwrote a deleted one
-            onlineResourceByPath = getVfsDriver(dbc).readResource(
-                dbc,
-                CmsProject.ONLINE_PROJECT_ID,
-                resource.getRootPath(),
-                true);
+            onlineResourceByPath = getVfsDriver(
+                dbc).readResource(dbc, CmsProject.ONLINE_PROJECT_ID, resource.getRootPath(), true);
 
             // force undo move operation if needed
             if (!mode.isUndoMove() && !onlineResourceByPath.getRootPath().equals(onlineResource.getRootPath())) {
