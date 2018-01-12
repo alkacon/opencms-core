@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 public class CmsContentNotification extends A_CmsNotification {
 
     /** The path to the xml content with the subject, header and footer of the notification e-mail.<p> */
-    public static final String NOTIFICATION_CONTENT = "/system/shared/notification/notification";
+    public static final String NOTIFICATION_CONTENT = "/system/config/notification/notification";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContentNotification.class);

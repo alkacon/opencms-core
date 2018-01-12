@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * Define your editor display options in property files located in the VFS folder
- * <code>/system/shared/wysiwyg/</code>.<p>
+ * <code>/system/config/wysiwyg/</code>.<p>
  *
  * Set navigation position property values on the configuration files
  * and use the permission system to determine which groups and users
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
 public class CmsEditorDisplayOptions {
 
     /** The name of the configuration folder.<p> */
-    public static final String FOLDER_EDITORCONFIGURATION = "/system/shared/wysiwyg/";
+    public static final String FOLDER_EDITORCONFIGURATION = "/system/config/wysiwyg/";
 
     /** Mapping entry name that is used if no mapping is available for the user.<p> */
     public static final String NO_MAPPING_FOR_USER = "na";

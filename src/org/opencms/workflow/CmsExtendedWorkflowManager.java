@@ -560,7 +560,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      */
     protected String getNotificationResource() {
 
-        String result = getParameter(PARAM_NOTIFICATION_CONTENT, "/system/shared/notification/workflow-notification");
+        String result = getParameter(PARAM_NOTIFICATION_CONTENT, "/system/config/notification/workflow-notification");
         return result;
     }
 

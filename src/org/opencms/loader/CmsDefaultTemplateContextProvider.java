@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
 /**
  * Example implementation of a template context provider for deciding between a desktop template and a mobile template.<p>
  *
- * The template JSP paths are read from a VFS file "/system/shared/templatecontexts.json"
+ * The template JSP paths are read from a VFS file "/system/config/templatecontexts.json"
  *
  */
 public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextProvider {
@@ -115,7 +115,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         if (m_params.containsKey(PARAM_CONFIGURATION)) {
             return m_params.get(PARAM_CONFIGURATION);
         } else {
-            return "/system/shared/templatecontexts.json";
+            return "/system/config/templatecontexts.json";
         }
     }
 

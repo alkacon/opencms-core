@@ -56,7 +56,7 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     public static final String ATTRIBUTE_NAME = "org.opencms.file.history.CmsHistoryResourceHandler";
 
     /** The historical version handler path. */
-    public static final String HISTORY_HANDLER = "/system/shared/showversion";
+    public static final String HISTORY_HANDLER = "/system/config/showversion";
 
     /** Request parameter name for the version number. */
     public static final String PARAM_VERSION = "version";
@@ -148,7 +148,8 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
         CmsResource resource,
         CmsObject cms,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsResourceInitException {
+        HttpServletResponse res)
+    throws CmsResourceInitException {
 
         // we only have to check for history resources if the handler was called
         // during a real request and NOT during a dummy-request while doing

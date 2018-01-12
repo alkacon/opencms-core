@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
 public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
     /** Filename of the link exclude definition file. */
-    private static final String LINK_EXCLUDE_DEFINIFITON_FILE = "/system/shared/linkexcludes";
+    private static final String LINK_EXCLUDE_DEFINIFITON_FILE = "/system/config/linkexcludes";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAdvancedLinkSubstitutionHandler.class);

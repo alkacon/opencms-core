@@ -3,7 +3,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/shared/decoration/decoration.xsd"/>
+	<xsd:include schemaLocation="opencms://system/config/decoration/decoration.xsd"/>
 
 	<xsd:element name="DecorationConfigurations" type="OpenCmsDecorationConfigurations"/>
 	

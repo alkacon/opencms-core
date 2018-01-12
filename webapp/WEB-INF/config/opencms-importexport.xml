@@ -31,8 +31,8 @@
 				<resource uri="/system/login/" />
 				<resource uri="/system/modules/" />
 				<resource uri="/system/orgunits/" />
-				<resource uri="/system/shared/" />
 				<resource uri="/system/userimages/" />
+				<resource uri="/system/config/" />
 				<resource uri="/system/workplace/" />
 				<resource uri="/system/workplace/commons/" />
 				<resource uri="/system/workplace/editors/" />
@@ -72,7 +72,7 @@
 			<userelativelinks>false</userelativelinks>
 			<exporturl>http://127.0.0.1:8080${CONTEXT_NAME}/handle404</exporturl>
 			<plainoptimization>true</plainoptimization>
-			<testresource uri="/system/shared/page.dtd" />
+			<testresource uri="/system/config/page.dtd" />
 			<resourcestorender>
 				<regex>/sites/.*</regex>
 				<regex>/system/modules/.*/resources/.*</regex>

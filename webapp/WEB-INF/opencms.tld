@@ -403,7 +403,7 @@
         <description><![CDATA[
             This tag is used to decorate HTML.</P>
             The code in the body of the tag is decorated according to the given configuration file and locale.</P>
-            A template for the config file is found at <code>/system/shared/decoration/configuration.xml</code>.</P>
+            A template for the config file is found at <code>/system/config/decoration/configuration.xml</code>.</P>
             Look up the documentation for more information.
         ]]></description>
         <name>decorate</name>

@@ -61,7 +61,7 @@ import org.apache.commons.mail.EmailException;
 public abstract class A_CmsNotification extends CmsHtmlMail {
 
     /** Path to optional config file containing header and footer. */
-    public static final String HEADER_FOOTER_CONFIG_PATH = "/system/shared/notification-header-footer.html";
+    public static final String HEADER_FOOTER_CONFIG_PATH = "/system/config/notification-header-footer.html";
 
     /** Separator between header and footer in optional config file. */
     public static final String HEADER_FOOTER_SEPARATOR = Pattern.quote("$BODY");

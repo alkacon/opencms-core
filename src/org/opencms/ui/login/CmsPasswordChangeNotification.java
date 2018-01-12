@@ -71,7 +71,7 @@ public class CmsPasswordChangeNotification extends A_CmsNotification {
     @Override
     protected String getNotificationContent() {
 
-        return "/system/shared/notification/password-change-notification";
+        return "/system/config/notification/password-change-notification";
     }
 
 }

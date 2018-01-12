@@ -44,7 +44,7 @@ import java.util.List;
 public class CmsPublishNotification extends A_CmsNotification {
 
     /** The path to the xml content with the subject, header and footer of the notification e-mail.<p> */
-    public static final String NOTIFICATION_CONTENT = "/system/shared/notification/publish-notification";
+    public static final String NOTIFICATION_CONTENT = "/system/config/notification/publish-notification";
 
     /** The report containing the errors and warnings to put into the notification. */
     private I_CmsReport m_report;

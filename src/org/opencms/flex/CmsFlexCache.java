@@ -209,7 +209,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     public static final int CLEAR_ONLINE_ENTRIES = 3;
 
     /** The configuration for the Flex cache buckets. */
-    public static final String CONFIG_PATH = "/system/shared/flexconfig.properties";
+    public static final String CONFIG_PATH = "/system/config/flexconfig.properties";
 
     /** Initial cache size, this should be a power of 2 because of the Java collections implementation. */
     public static final int INITIAL_CAPACITY_CACHE = 512;
