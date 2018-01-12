@@ -1,0 +1,194 @@
+\chapter{About this documentation}
+\label{About this documentation}
+
+\section{Version of this document}
+
+This document is \verb Revision: 1.9 \\
+It was last changed as of \verb 2005/06/28 \\
+
+\section{The documentation structure of OpenCms 5.0}
+
+We have finally decided to eat our own dogfood and manage the contents of the documentation 
+with our content management system.
+So from version 5.0 onward, the main part of the documentation will be maintained 
+in the form of OpenCms interactive documentation modules.
+These are content modules that you can install and read directly in OpenCms.
+One of the big advantages is that this gives the reader an interactive documentation 
+with a lot of working example code,
+because everything can directly be checked out in the running system.
+It's also easier to write the documentation that way.
+
+The main purpose of this book is now to provide introductory material about OpenCms,
+especially providing installation instructions, an ``end user" introduction and a general system overview.
+
+It will take some time to shift all of the contents of the previous ``book only" version to 
+the content module form, so this document will likely be around for some time.
+However, the new functionality of 5.0 and the following releases are not described here,
+but only in the content modules. 
+Please refer to chapter \ref{About the archived documentation} for more information about 
+the chapters of the documentation that still have to be shifted to the interactive format.
+
+Of course, if someone wants to contribute his time and do the work to 
+put the interactive documentation modules back into this ``static" form, this is very much appreciated. 
+On the other hand we would also appreciate if someone would make interactive documentation modules
+from the parts of the book that are still described only in this static document.
+Please send an email to {\em contributions@opencms.org} if you are interested in doing any of this.
+
+\section{Where to get the documentation modules}
+
+As of the writing of this document, the following documentation modules are available:
+
+\subsection{OpenCms documentation base}
+This module provides a set of JSP templates and elements that are used by
+all other documentation modules provided by Alkacon Software GmbH. {\em This module is required
+by all other {\tt com.alkacon.*} documentation modules listed here and has to be installed first!}
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{OpenCms JSP basic documentation}
+A basic introduction to JSP in OpenCms: How to create, edit \& publish a JSP, options to access 
+the OpenCms system and some technical background information.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-jsp}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{OpenCms JSP taglib documentation}
+OpenCms includes it's own JSP taglib. This is the reference documentation (with test cases) for 
+each tag of the OpenCms Taglib.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-taglib}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{OpenCms JSP scriptlet documentation}
+Learn here how to use the same functionality offered by the OpenCms JSP taglib in JSP scriptlet 
+code in your JSPs.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-scriptlet}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{OpenCms Flexcache documentation}
+The Flexcache can cache JSP output to increase the speed of page delivery. This is the complete 
+documentation of all FlexCache configuration options and parameters to set up your page caching 
+policy using the Flexcache.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-flexcache}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{OpenCms module documentation}
+Get acquainted with the OpenCms module mechanism that allows you to easily bundle and distribute 
+templates and JSPs.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-modules}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Flex examples set 1}
+The first set of tests and examples developed for the OpenCms / JSP Flex integration package. 
+Basic stuff dealing with inclusion, caching, headers and redirects.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-flex-1}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Flex examples set 2}
+The second set of tests and examples, including demos on how to build a simple template from JSP.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-flex-2}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Flex examples set 3}
+Further test cases and examples for the OpenCms/Flex JSP integration. These are rather 
+specialized as they deal with encoding and inclusion of subelements.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-flex-3}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Original JSTL 1.0 standard taglib examples}
+The JSTL will be part of the next JSP/Servlet specification release. These are the original 
+JSTL 1.0 examples imported into OpenCms.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-jstl}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Original Tomcat 4.x JSP examples}
+The original Tomcat 4.x JSP examples imported into OpenCms. Check these out to see what you can 
+do with JSP in OpenCms.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-tomcat}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Howto: JSP template development}
+An introduction in the JSP template development with OpenCms. Learn how to create templates 
+for your web site.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.howto-template}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}
+
+\subsection{Howto: Translating the OpenCms workplace}
+A detailed description how to translate the OpenCms workplace and the online help to another language.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.howto-workplace-translation}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Provided by: & {\em Alkacon Software GmbH}\\
+\end{tabular}

@@ -1,0 +1,225 @@
+\chapter{Static Export}
+
+\section{Introduction}
+\index{Static Export}
+
+OpenCms has the feature "Static Export". With this feature it is possible to export the static resources to a docroot in the server filesystem. During this export all links to this static resources and back to dynamic resources will be adjusted automatically. In this scenario it is possible that a traditional web server like Apache (\rqhttp{http://httpd.apache.org}{http://httpd.apache.org}) serves all static resources and OpenCms delivers all dynamic resources (like forms or personalized sites). This splits up the work to each software that can handle the specific request in a better way.
+
+\section{Setting up Static Export}
+
+The static export is already preset for a tomcat standalone installation, so you don't have to modify anything if you use tomcat in standalone-mode and can jump to the next section.
+
+In the file opencms.properties (located in \texttt{webapps/opencms/WEB-INF/config/}) you can enable static export:
+
+\texttt{staticexport.enabled = true}
+
+Note: If you enable the static export your publishing cycle will slow down because of the additional work of exporting the resources to the server filesystem.
+
+After this you have to define the export path on your server. This path should be the http-servers docroot or a subdirectory of it. If you define a relative path it is relative to your webapplication.
+
+\texttt{staticexport.path = export/}
+
+Now you have to define some url\_prefixes so the static export can adjust all links to the correct location (http-server or OpenCms).
+
+\begin{verbatim}
+url_prefix_export = /${WEB_APP_NAME}/export
+url_prefix_http   = /${WEB_APP_NAME}/opencms
+\end{verbatim}
+
+The string \texttt{\${WEB\_APP\_NAME}} will be replaced by the current name of the webapplication. In normal installations this would be opencms.
+
+Now you can define resource(s) the static export should start with. This can be a single or multiple file(s) or folder(s). This property is only used if you start the static export manually (via admin view).
+
+\texttt{staticexport.start = /}
+
+All the other properties for static export are advanced properties. In normal installations you will never need to adjust them on your own. If you are interested in them you should have a look into the comments of the opencms.properties file.
+
+\section{How to use static export}
+
+To get used to the static export you should create two pages like \texttt{/index.html} and \texttt{/page1.html}. You should add some content to this pages and create a link from each page to the other with the HTML edit control. Now you can publish your project. If static export is enabled all changed resources will be exported to the server filesystem into the folder you have specified. The two links will be adjusted, so they will refer to each other even after the export. You can browse the two resources by pointing your explorer or navigator to the following location:
+
+\texttt{http://yourserver.com:8080/opencms/export/index.html}
+
+This is the static copy of the resource you can reach with:
+
+\texttt{http://yourserver.com:8080/opencms/opencms/index.html}
+
+\section{What have I to do?}
+\index{link tag}
+OpenCms needs your help to adjust all links between resources. Therefore you have to mark all links in the templates (mastertemplates, frametemplates, contenttemplates and elements) with the tag \texttt{<link>}. In this link tag you define the link to another resource within the OpenCms system (No scheme, server name, port or webapplication name is allowed). You can add url parameters to the link, if you need:
+
+\begin{quote}
+\begin{verbatim}
+href="]]><link>/index.html</link><![CDATA["
+href="]]><link>/news.html?newsid=7</link><![CDATA["
+src="]]><link>/pics/logo.gif</link><![CDATA["
+\end{verbatim}
+\end{quote}
+
+An editor can use the HTML edit control. OpenCms will take care about links added with the control. Therefore it uses the JTidy library to find all "a href" and "img src" tags and inserts the needed OpenCms link tag.
+
+\index{getLinkSubstitution}
+A module developer has to call the method getLinkSubstitution to get adjusted links:
+
+\texttt{String adjustedLink = cms.getLinkSubstitution(String link);}
+
+You need to call this method for dynamic creation of pages. E.g. a navigation element that creates a list of links dynamically should call \texttt{getLinkSubstitution} for each navigation entry.
+
+\section{How does static export work?}
+
+After the publishing to the online project is done OpenCms starts to export all static resources. It starts with all changed resource(s) in that project. After the export of this resource(s) it will follow all links defined in the link tags or substituted with the \texttt{getLinkSubstitution } method. These resources will be exported, too. This cycle will end if all resources are exported.
+
+A next run of the static export will only export the changed resources. A resource is marked as changed, if one of the resources this resource depends on was changed. OpenCms will find the "normal" dependencies like mastertemplate, frametemplate, contenttemplate and elements. Additional dependencies like dependencies for dynamic navigation templates or displaying content definitions you have to register yourself. How to register these dependencies you have learned in the chapter about using the element cache.
+
+Note: You can find the names of all exported resources in the opencms.log file. So you can check which resources are exported.
+
+\section{How to control what is exported?}
+\index{export property}
+
+Only resources that are readable as a \texttt{Guest} user are exported. You can control the export behaviour of these resources by adding properties to that resource. The property "\texttt{export}" controls if and how the resource will be exported. The following values are possible:
+
+\begin{itemize}
+\item false:\\
+The resource will never be touched by the export (not exported and no link adjustment)
+
+\item dynamic:\\
+The resource is dynamic. It will not be exported. All requests will be delivered by OpenCms. A link to this resource will be adjusted to a link into the OpenCms system.
+
+\index{https}
+\item https:\\
+The resource is dynamic. A link to this resource will be adjusted to a link into the OpenCms system. Additionally the scheme will be set to https. You need to configure OpenCms and the web server to handle https requests.
+
+\item true, or no property:\\
+This is a static resource. The resource will be exported to the docroot of the web server.
+
+\item https\_enabled:\\
+This is a static resource. The resource will be exported to the docroot of the web server. The links to this resource from a https page will not be set to http. Used to show pics on a https page.
+
+\item dynamic\_https\_enabled:\\
+Like dynamic but the links to this resource from a https page will not be set to http. 
+\end{itemize}
+
+\index{exportname}
+You can control the name of an exported resource with the property "\texttt{exportname}". This is useful for modules which reside in the folder 
+
+\texttt{/system/modules/YOURMODULENAME/YOURMODULEFILES}. 
+
+If you want to reach the resource with a shorter and nicer URL you can define the "\texttt{exportname}" property. You should add it to the folder \texttt{YOURMODULENAME} and set it to a nice short path (e.g. \texttt{/YOURSHORTMODULENAME/}). After the export was done, you can reach your module with the URL:
+
+\texttt{/opencms/export/YOURSHORTMODULENAME/YOURMODULEFILES}
+
+instead of
+
+\texttt{/opencms/export/system/modules/YOURMODULENAME/YOURMODULEFILES}.
+
+Note: You can control single resources or complete folders with all sub resources by adding the property "\texttt{export}" and "\texttt{exportname}".
+
+\section{How to export resources with parameters?}
+
+OpenCms will even export static resource with parameters:
+
+\begin{quote}
+\begin{verbatim}
+/news.html?newsid=7&channelid=25 -> /news_1.html
+/news.html?newsid=44&channelid=3 -> /news_2.html
+...
+\end{verbatim}
+\end{quote}
+
+The parameters will be substituted to a consecutive number. There is no relationship between the consecutive number and the URL parameters.
+
+\section{Advanced properties of the static export: switch standard to dynamic}
+
+As above mentioned there are properties for the static export you may wish to use as a advanced user. 
+
+The static export is controlled by the resource property export. Normaly a resource with no property set (including the parent folders) is handeld as if the property is set to true. This feature is good when most of the side is static and can be exported, but when everthing is dynamic you sure want OpenCms to export only files with the property export=true and let everything withouth the export proptery stay in OpenCms. Therefore you can set the default value for the export property to 'dynamic'.
+
+\texttt{staticexport.default.export=dynamic}
+
+Only 'true'(standard) and 'dynamic' are allowed. There are two set of linkrules defined in the opencms.properties. In the dynamic mode the second ruleset is used. This ruleset includes automatical export of some filetypes like css, js, gif, jpg,... If you want additional filetypes automaticaly exported, just add the corresponding lines to the ruleset.dynamic\_exportrules and the ruleset.dynamic\_externrules:
+
+\begin{quote}
+\begin{verbatim}
+s#(.*\.ppt$)#${url_prefix_export}$1#,\
+s#(.*\.ppt$)#$1#,\
+\end{verbatim}
+\end{quote}
+
+Note that all files will be exported that include the '.ppt' at the end of there name.
+
+\section{Advanced properties of the static export: Configure Https}
+
+If you want to use the ssl protocol you can configure the static export to set the scheme as prefix ahead of the link if the Page has the https property and to set the http scheme ahead of links that reference from a https page to a http page. 
+All this is done automaticaly by OpenCms. You just have to set the property "export" to https on the folder where your ssl pages are. Then you configure the prefixes in the opencms.properties:
+
+\begin{quote}
+\begin{verbatim}
+url_prefix_https=https://server.de/${WEB_APP_NAME}/opencms
+url_prefix_servername=http://server.de
+\end{verbatim}
+\end{quote}
+
+The servername is used in addition to the export resp. the http prefix for links from https to http pages. The https prefix is set ahead of links to the https pages. Note that only link tags will be processed. If you write a template, don't forget to use it consequently.
+
+\section{Advanced properties of the static export: Relative Links in Export}
+
+If you just need a static site with no dynamic content you might want to use the exported pages without OpenCms. Then it could be necessary to have all links in the export relative. 
+
+\begin{quote}
+\begin{verbatim}
+relativelinks_in_export=true
+\end{verbatim}
+\end{quote}
+
+This feature only works with the standard rulesets and it needs some extra performance.
+
+\section{Advanced properties of the static export: The Rulesets}
+
+In the majority of cases you don't need to modify the linkrules. 
+First you can configure which ruleset is used for which situation. OpenCms needs four rulesets. Three for the link replacement for a link on a page that is a) shown in the online project, b) shown in the offline project and c) exported to the filesystem. The fourth rule is used for OpenCms to know under which name a exported page should be saved in the filesystem. Mostly the export and the online rules are the same. 
+
+\begin{quote}
+\begin{verbatim}
+linkrules.true.export=exportrules
+linkrules.true.online=exportrules
+linkrules.true.offline=offlinerules
+linkrules.true.extern=externrules
+linkrules.dynamic.export=dynamic_exportrules
+linkrules.dynamic.online=dynamic_exportrules
+linkrules.dynamic.offline=dynamic_offlinerules
+linkrules.dynamic.extern=dynamic_externrules
+\end{verbatim}
+\end{quote}
+
+Which definition is used depends on the value of the staticexport.default.export parameter: true or dynamic. The value of the linkrules must apear as the name of a ruleset in the opencms.properties. 
+
+A ruleset is a commaseperated list of substitution rules in perl5 standard. 
+In General when a link tag is resolved or the getLinkSubstitution() method is called in a module one rule after the other is executed till a rule matches. Then the result is returned. When it comes the the *dynamic rules* entry the dynamic rules OpenCms has generated with the resource property 'export'. In this case all dynamic rules are executed till one matches. If nothing matches the original is returned. 
+You can use the \$\{WEB\_APP\_NAME\} variable for the webapplication name and the
+four prefix variables defined above (\$\{url\_prefix\_export\}, \$\{url\_prefix\_http\},...).
+They will be replaced befor using the regular expression.
+In addition to this it is possible to define the place where the dynamic
+generated rules should be used instead of a rule use the expression 
+*dynamicRules* (including the *'s). OpenCms replaces this with the dynamic
+generated rules.
+There are two types of dynamic rules. The first one is generated with the 
+resourceproperty "exportname". For each resouce with this property a rule 
+will be generated that replaces the absolute path of this resource with the 
+value of the property. It is principally used to get nice short foldernames 
+on the disc.
+The second kind of dynamic rules are generated with the property "export".
+The value can be 'dynamic' or 'https'. The system generates
+rules so that the links to these resources go back to the opencmssystem from the 
+static content (with protocol https in the second case).
+There is a third value posible: 'false' means the resource is not exported and it 
+will not be created for getting furter links on it like the 'dynamic' ones. 
+New possible values are 'true', 'https\_enabled' and 'dynamic\_https\_enabled'. True 
+is needed for the case when default is set to dynamic. https\_enabled works like true
+but it will not set the http scheme ahead the link. dynamic\_https\_enabled is the same 
+for dynamic resources.
+
+The dynamic rules are only for export, online and extern rules. Don't use them in 
+the offlineruleset.
+The parameterreplacement is done in the dynamic rules. So it works together with
+the exportname rule. If you have a rule befor the dynamic rules that is triggered
+the parameterreplacement will not happen.

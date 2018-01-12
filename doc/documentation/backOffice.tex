@@ -1,0 +1,515 @@
+\chapter {Backoffice Modules}
+\label{Backoffice Modules}
+When writing a module for OpenCms (e.g. a News Module), it is often
+required to edit the external data that is used to create the output
+with this module. This functionality is called the Backoffice of this
+module. A Backoffice can either be an integrated component of a module
+or an additional module that will use the functionality and Content
+Definition of an already existing module (like the News Module).
+
+\index{Backoffice modules}
+Backoffice modules are integrated into the OpenCms administration view,
+but it is also possible to add them as a separate view into the system.
+Since Backoffice modules are part of the workplace, this chapter will
+first show the differences between a {\class "normal"} template class and a
+workplace template class and then point out the special needs that are
+required to use the predefined Backoffice super class.
+
+\section {Workplace Classes in general}
+In principle, workplace template classes are written the same way as
+normal template classes, they contain a getContent method that is used
+to generate the output of this class which is done with the same three
+steps:
+\begin{itemize}
+\item Read the template file.
+\item Set the dynamically generated out
+\item Generate the HTML
+\end{itemize}
+
+Since the workplace classes need some special extensions to ease their
+production, the workplace classes do not extend the CmsXmlTemplate
+class, but the CmsWorkplaceDefault class, so that a workplace class
+would start like this:
+\begin{java}
+public class CmsAdministration extends CmsWorkplaceDefault implements
+I\_CmsConstants {....}
+\end{java}
+
+The {\class CmsWorkplaceDefault} class provides some other additional predefined
+user methods that can be used in the templates used for creating the
+workplace. Those methods can be used the same way as the default methods
+in the normal template classes. The following methods are provided by
+the {\class CmsWorkplaceDefault} class (Table~\ref{CmsWPClass}).
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|p{0.70\linewidth}|}
+\hline
+{\bf Method}&
+{\bf Description}\\ \hline
+commonPicsUrl()&
+This method generates an URL for the common template pics folder.\\ \hline
+helpUrl()&
+User method to generate an URL for a help file. The
+system help file path and the currently selected language will be
+considered. The path to the help file folder can be set in the
+workplace.ini \\ \hline
+picsUrl()&
+User method to generate an URL for the system pics folder. \\ \hline
+userName()&
+User method to get the name of the user.\\ \hline
+\end{tabular}
+\caption[Methods]{Methods}
+\label{CmsWPClass}
+\end{center} 
+\end{table}
+
+
+The other difference to the normal template classes is the kind of
+template file to be used.  Instead of using a template file of the type
+CmsXmlTemplateFile, a special workplace template file named
+CmsXmlWpTemplateFile is used in the getContent method.  So a getContent
+method for a workplace class would start like this:
+
+\begin{java}
+public byte[] getContent(CmsObject cms, String templateFile,\\
+\jtabd  String elementName, Hashtable parameters,\\
+\jtabd  String templateSelector) throws CmsException \{\\
+\jtabe      CmsXmlWpTemplateFile xmlTemplateDocument =\\
+\jtabe      new CmsXmlWpTemplateFile(cms,templateFile);\\
+....\\
+\}\\
+\end{java}
+
+This is done because the {\name CmsXmlWpTemplateFile} is able to handle several
+additional tags that are not required in normal templates but used to
+generate the workplace templates more easier. To use this kind of
+template file object, the appropriate XML template must be defined
+slighly different than normal. All XML templates so far were defined
+this way:
+
+\begin{xml}
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
+<xmltemplate>\\
+\xtaba  <template>\\
+\xtaba   ...\\
+\xtaba  </template>\\
+</xmltemplate>\\
+\end{xml}
+
+XML templates to be used with the {\name CmsXmlWpTemplateFile} do not use the
+{\tag <xmltemplate>} tag, but the {\tag <workplace>} tag. Besides this difference,
+those templates are written the same way than the already known normal
+templates
+
+\begin{xml}
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
+<workplace>\\
+\xtaba  <template>\\
+...\\
+\xtaba  </template>\\
+</workplace>\\
+\end{xml}
+
+The reason to use a different kind of templates and template objects is
+the enhanced functionality that is needed for writing workplace
+templates and classes, like multi language support and the additional
+tags. For further information of their use, see their usage in the
+existing workplace classes and templates. The only tag that is needed
+to explained in detail is the <label> tag.
+
+To enable multilanguage support, a workplace template must not contain
+any text output coded directly into the template, otherwise it would not
+be possible  to change the language for those templates. Therefore, the
+{\tag <label>} tag is used to add the required information to the template. An
+example for using it is shown in the following code fragment:
+
+\begin{java}
+...\\
+<tr>\\
+<td class="head">]]><LABEL value="label.group" /><![CDATA[</td>\\
+</tr>\\
+...\\
+\end{java}
+
+This tag will be replaced with an corresponding text string depending on
+the language used on the workplace. The actual language output is
+defined in a language file of the module, see the documentation of the
+module mechanism how to do this. In this example, the language
+information for this value would stored like this:
+\begin{java}
+<label><group>Group</group></label>\\
+\end{java}
+It is highly recommended to use this mechanism to add text output to the
+workplace templates and not to add the text directly to the template.
+
+\section {Abstract Backoffice class}
+It is now possible to write a workplace template with a corresponding
+class that can be used as a Backoffice module for a given module - but
+in many cases this would be an inconvenient way. Many module - like a
+news module or guestbook -  require a very similar Backoffice
+functionality. The single data objects of those models must either be
+edited, created or deleted. This can be done with a Backoffice tool
+that allows two different views:
+
+\begin{itemize}
+\item A list of all available data objects which can be configured
+with various display filters. Data objects can be deleted in this view.
+       
+\item An input form to edit existing or adding new data objects.
+\end{itemize}
+
+To speed up the development of new Backoffice modules, OpenCms provides
+a predefined abstract class (and templates) that enables the
+functionality of the data list.  It contains a {\meth getContent} method to
+produce the output of the data list template based on the information
+provided by a Content Definition. This class can be easily extended and
+modified for each individual Backoffice module. Only the input form -
+which is always depending on the data fields of a module - must be
+implemented separately. The list of all available data objects that is
+generated with the predefined classes looks like figure~\ref{AbstactBO}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[clip,width=\sgw]{pics/backOffice/list}
+\end{center}
+\caption[List view in the Abstract Backoffice]
+    {List view in the Abstract Backoffice}
+\label{AbstactBO}\jtabd
+\end{figure}
+
+To use the abstract class, it has to be extended by an implementation
+class that extends several configuration methods, providing the
+necessary data about the Content Definition to be used and the URLs of
+the forms required for adding, editing or deleting data. The following
+methods have to be overwritten in the implementation class to archive
+this:
+\begin{itemize}
+\item getContentDefinitionClass(): Returns the Content Definition
+class used by this implementation
+\item getCreateUrl: Returns the URL of the dialog to add a new data
+entry.
+\item getEditUrl: Returns the URL of the dialog to edit an existing
+data entry.
+\item getDeleteUrl: Returns the URL of the dialog to delete an
+existing data entry.
+\item getSetupUrl: Return the URL of the setup dialog
+\end{itemize}
+
+The returned URLs of those methods direct to the dialogs (i.e. templates
+and classes) that have to be produced in the process of creating the
+Backoffice Module. Those dialogs have to be adapted to the requirements
+of the data fields of the Content Definition which should be possible to
+be edited. When those dialogs are called, they require a special
+information, which data object should be editied or deleted.
+This is done by adding the URL-Parameter {\code ?id=value} to the URL. The value
+given is either the unique id of the data object (which can be accessed
+by calling  the {\meth getUniqueId()} method of the used Content Definition) or
+the keyword "new" to add a new data object.
+In most cases the {\meth getCreateUrl()} and {\meth getEditUrl()} will return the same
+value, i.e. the same dialog will be shown when adding a new data entry
+or editing an existing one, the second option would require that the
+input fields of the form would be preset with the existing values.
+
+A sample implementation of the News Backoffice has the following
+implementation of those abstract classes:
+
+\begin{java}
+public class NewsBackoffice extends A\_CmsBackoffice \{\\
+\jtaba        public Class getContentDefinitionClass() \{\\
+\jtabb                  return NewsContentDefinition.class;
+\jtaba        \}\\
+\jtaba        public String getCreateUrl(CmsObject cms) \{\\
+\jtabb                return "NewsEditBackoffice.html";\\
+\jtaba        \}\\
+\jtaba        public String getDeleteUrl(CmsObject cms) \{\\
+\jtabb                return "NewsEditBackoffice.html";\\
+\jtaba        \}\\
+\jtaba        public String getEditUrl(CmsObject cms) \{\\
+\jtabb                return "NewsEditBackoffice.html";\\
+\jtaba        \}\\
+\}\\
+\end{java}
+\index{getContentDefinitionClass()}
+\index{getCreateUrl(CmsObject cms)}
+\index{getDeleteUrl(CmsObject cms)}
+\index{getEditUrl(CmsObject cms)}
+
+Using the predefined classes, the list of data objects of a given
+content definition can be created without writing new template files.
+They are required for the create, edit and delete dialogs. Since those
+dialogs depend on the data to be modified, there is no general rule how
+to write the templates and the belonging classes. Those dialogs are made
+the same way than a normal form in the OpenCms (see the chapters about
+creating forms in OpenCms). There are some formalities to comply with
+when writing those forms:
+\begin{itemize}
+\item The form class must extend the class CmsWorkplaceDefault.
+\item The template file object must be an instance of
+CmsXmlWpTemplateFile.
+\item The form template must be of the XML type <workplace>.
+\item The information, which data object has to be edited is given as
+the URL-Parameter ?id=value .
+\item The form class must use the given Content Definition to access
+the data object.
+\end{itemize}
+
+It is important that the template classes for those dialogs are able to
+check the entered data for correct inputs before storing the values in
+the Content Definition. For example, it should be checked  if a given
+date is correct or an email address is formed after the correct syntax.
+
+The dialog to edit an existing news entry could look like figure~\ref{AbsrtactBO1}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[clip,width=\sgw]{pics/backOffice/new}
+\end{center}
+\caption[Abstract Backoffice class Pic 2]{Abstract Backoffice class Pic 2.}
+\label{AbsrtactBO1}
+\end{figure}
+
+The Java class to process this dialog has to do the following steps:
+First to read all given parameters from the input fields, then to check
+if all data values are non empty,  to create a new Content Definition
+object with the given data and finally to store it in the data storage.
+
+%====================================================================
+\section{Changes to the Abstract Backoffice class since OpenCms 4.4}
+OpenCms uses the abstract backoffice class {\name A\_CmsBackOffice} from the
+package  \\
+{\name com.opencms.defaults} to make the writing of new backoffice 
+modules more easy. 
+This part describes the changes to the existing mechanism and how these
+changes can be used.
+
+\subsection{Changes to the getContent... methods}
+The abstract backoffice class defines three methods for processing the 
+input-form of the backoffice:
+
+\begin{itemize}
+\item getContentEdit: form to modify an existing dataset
+\item getContentNew:  form to create a new dataset
+\item getContentDelete: form to delete a dataset
+\end{itemize}
+
+The parameters of these getContent... methods are now the following:
+
+\begin{java}
+public {\bf String} getContentEdit(CmsObject cms,\\
+\jtabf CmsXmlWpTemplateFile templateFile,\\
+\jtabf {\bf A\_CmsContentDefinition cd},\\
+\jtabf String elementName,\\
+\jtabf {\bf Enumeration keys},\\
+\jtabf Hashtable parameters,\\
+\jtabf String templateSelector)\\
+\jtabf throws CmsException
+\end{java}
+\index{Enumeration keys}
+The modifications to the existing version are highlighted.
+
+\begin{itemize}
+\item A\_CmsContentDefinition cd: gives the correct instance of the Content Definition
+    to the method. This method is either a new (empty) CD or a CD which includes
+    an existing dataset.This way you can always access the correct CD, without 
+    fetching it with your own programm code.
+\item Enumeration keys: Inherits the names of all data which comes from the form
+    (URL and form-paramter). It can be used to determine which parameters had 
+    been on a certain page, when working with forms over multiple pages.
+\item return-value String: The method returns a String. An empty String signals that
+    no error has occurred while processing the form. If an error has occurred, the 
+    String contains the error-message which will be displayed in the template.
+\end{itemize}
+
+\subsection{Additional method getSetupUrl}
+Now it is possible to add an additional setup page to the module, which can be
+called from the backoffice. This does the method
+
+\begin{java}
+public String getSetupUrl(CmsObject cms, String tagcontent, A\_CmsXmlContent doc, 
+Object userObject) throws Exception
+\end{java}
+\index{getSetupUrl() }
+
+This method has to be overwritten from your own class, which extends the class
+{\name A\_Cms\-Backoffice}, if this function is wanted. The method returns the URL 
+of the setup page of the module. This page can be put at any place within the module
+directory.
+\index{setup page}
+
+If a setup page is defined in this way, a button to access this page is shown in 
+the list view of the module.
+
+\subsection{Filling the template from the CD automatically}
+The main target of the changes of abstract backoffice class is to decrease the
+sumpturay of creating an own backoffice class. In order to let the abstract backoffice
+do as many tasks as possible, some conventions concerning names of variables, methods,
+datablocks and fields have to be known.
+Table~\ref{nameConv} shows an example for these naming conventions.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+member &
+get-method&
+name of&  
+name of \\
+variable&
+&
+datablock&
+inputfield\\ \hline  
+m\_text&
+public String&
+<process>text</process>&
+text\\
+&
+getText()&
+&  \\ \hline
+\end{tabular}
+\caption[name conventions]{name conventions}
+\label{nameConv}
+\end{center} 
+\end{table}
+
+With the help of this naming scheme, the form is automatically filled with the right
+values.
+
+The methods {\name getXYZ} have to return a String to enable the automatically assignment
+of the data to the fields. In the case that the method {\name getXYZ} accesses a value
+that is no String, another method {\name getXYZString} has to be written, which returns 
+the value as a String.
+The returned value is then inserted into the datablock {\name XYZ}.
+
+Member variables have always to be initialized, with 'null' in case of an Object,
+and '-1' in case of an integer.
+
+\subsection{Filling the CD from the template's fields automatically}
+Just like filling the datablocks before, the assignment of the data from the 
+templateform to the CD takes place automatically. The naming scheme for this 
+is the same as before (Table~\ref{nameConv2}).
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+member &
+set-method&
+name of&  
+name of \\
+variable&
+&
+datablock&
+inputfield\\ \hline  
+m\_text&
+public String&
+<process>text</process>&
+text\\
+&
+setText()&
+&  \\ \hline
+\end{tabular}
+\caption[name conventions]{name conventions}
+\label{nameConv2}
+\end{center} 
+\end{table}
+
+\subsubsection{special case: file upload}
+To make it possible to read out uploaded files automatically, some further
+naming conventions has to be followed (Table~\ref{nameConv3}).
+\index{file upload}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+member &
+set-method&
+name of&  
+name of \\
+variable&
+&
+datablock&
+inputfield\\ \hline  
+m\_upload&
+public void&
+<process>text&
+Upload\\
+&
+setUpload(String filename)&
+</process>&  \\ \hline
+m\_uploadcontent&
+public void&
+---&
+---\\
+&
+setUploadContent(byte content)&
+& \\ \hline
+
+\end{tabular}
+\caption[name conventions]{name conventions}
+\label{nameConv3}
+\end{center} 
+\end{table}
+
+This means that two values are always stored, the name of the file which was
+uploaded as well as the content of the file.
+The name of the inputfield in the template is used as a key for the name within 
+the Content Definition. The according method name to set the content is 
+derived from that.
+
+\subsection{Testing for errors}
+A method in the Content Definition tests the values which have been inserted.
+This method is called automatically before the data is stored to the database.
+
+\begin{java}
+public void check(boolean finalcheck) throws CmsPlausibilizationException
+\end{java}
+\index{check() }
+\index{CmsPlausibilizationException}
+
+All data has to be tested within this method and a CmsPlausibilizationException
+has to be thrown in case of an error. The exception contains a vector of 
+error codes, which is passed to the constructor of the exception.
+
+\begin{java}
+public CmsPlausibilizationException(Vector error)
+\end{java}
+
+The certain errorcodes within the vector are Strings which are build 
+after the following scheme:
+
+'fieldname\_error'
+
+'Fieldname' is the inputfield in which the error has occurred and error is
+the kind of error (e.g. 'empty'). Errormessages according to these errorcodes
+are searched within the backoffice. There is a mechanism with 3 stages, which
+serves as a naming scheme for the datablocks inside the template. The following
+datablocks are searched one after another and issued in case one was found.
+This way it is possible to have different graduations of the error messages.
+
+\begin{itemize}
+\item <errfieldname\_error>errorcode<errfieldname\_error>: This datablock 
+    defines an error text which is issued when the error code
+    'fieldname\_error' appears.
+\item <errfieldname>errorcode<errfieldname> This datablock defines
+    an error for the inputfield 'fieldname'. It is used if the 
+    datablock \\
+    '<errfieldname\_error>errorcode<errfieldname\_error>' could
+    not be found.
+\item <errerror>errorcode<errerror>: This datablock defines an error text for
+    a kind of error. It is used if the datablock 
+    '<errfieldname>errorcode<errfieldname>' could not be found.
+\end{itemize}
+
+If no error text can be found for the error code, the error code is given 
+directly to the template.
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "OpenCmsDoc"
+%%% End:

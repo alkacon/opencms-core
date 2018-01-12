@@ -1,0 +1,135 @@
+%============================================================
+% The OpenCms 5.0 documentation - book part
+%============================================================
+
+\documentclass[a4paper,titlepage,12pt]{scrbook}
+
+%--------------------------------------------------
+% Package declarations 
+%--------------------------------------------------
+\usepackage[colorlinks,backref,pagebackref]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xspace}
+%\usepackage{graphicx}         % enable if you want to use latex
+\usepackage[pdftex]{graphicx}  %enable if you want to use pdflatex
+% enable if you have installed the ae fonts !!!
+% and want to use T1 fonts together with pdflatex
+\usepackage{ae}
+%\usepackage{psfig}
+\usepackage{makeidx}
+\usepackage{fancyhdr}                    % for header and footer
+\makeindex                               % necessary to make an index
+%--------------------------------------------------
+
+\newfont{\titleFont}{cmssbx10 scaled 3300} % Title font
+\typearea[6mm]{14}                         % Text font
+
+%\areaset[16mm]{15.1cm}{22.3cm}
+%\addtolength{\oddsidemargin}{0.6cm}
+%\addtolength{\evensidemargin}{-0.6cm}
+
+%--------------------------------------------------
+% fancyhdr
+%--------------------------------------------------
+\pagestyle{fancy}
+\fancyhead{}                            % Clear all fields
+\fancyhead[RE,LO]{\small \slshape \leftmark \normalsize}
+\fancyhead[RO,LE]{\includegraphics[width=0.13\linewidth]{pics/logo}}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[CE,CO]{}
+\fancyfoot[RE,LO]{www.opencms.org}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+%--------------------------------------------------
+
+%\addtolength{\topmargin}{-1.5cm}
+\setcounter{topnumber}{1}              % Allow only one figure at top
+\setcounter{bottomnumber}{1}           % Allow only one figure at bottom
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex plus0.5ex minus0.5ex}
+\renewcommand{\baselinestretch}{1.1}   % Set line spacing to 1.1
+%\renewcommand{\textfraction}{0.0}
+
+%--------------------------------------------------
+% Hyphenation suggestions
+%--------------------------------------------------
+\hyphenation{Cms-Xml-Content CmsXml-Wp-Template-File
+CmsXml-Form-Temp-late-File com open-cms temp-late Cms-Xml-Temp-late
+an-other user-def-ined met-hods temp-late al-rea-dy  get-Title
+temp-late sec-ond Cms-Xml-Conten de-sign-ed Cms-Xml-Wp-Temp-late-File
+cre-at-ed fet-ched cal-ling get-Ses-sion met-hod Cms-Ses-sion
+ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion 
+}
+
+%============================================================
+% Main document starts here
+%============================================================
+
+\begin{document}
+
+%--------------------------------------------------
+% Some variables
+%--------------------------------------------------
+
+% This is for the generated JavaDocs ...
+\input html2latex/html2latex
+
+% some new commands and enviroments
+
+\newcommand{\sgw}{0.8\linewidth}  % standard graphic width
+
+% XML
+\newenvironment{xml}
+ {\begin{flushleft}\begin{tt}}
+ {\end{tt} \end{flushleft}}
+
+\newcommand{\xtaba}{\hspace{0.5cm} }
+\newcommand{\xtabb}{\hspace{1cm} }
+\newcommand{\xtabc}{\hspace{1.5cm} }
+\newcommand{\xtabd}{\hspace{2cm} }
+\newcommand{\xtabe}{\hspace{2.5cm} }
+\newcommand{\xtabf}{\hspace{3cm} }
+
+% Java code
+\newenvironment{java}
+ {\begin{flushleft}\begin{tt}}
+ {\end{tt} \end{flushleft}}
+\newcommand{\jtaba}{\hspace{0.5cm} }
+\newcommand{\jtabb}{\hspace{1cm} }
+\newcommand{\jtabc}{\hspace{1.5cm} }
+\newcommand{\jtabd}{\hspace{2cm} }
+\newcommand{\jtabe}{\hspace{2.5cm} }
+\newcommand{\jtabf}{\hspace{3cm} }
+
+% Markup
+\newcommand{\name}{\it}
+\newcommand{\meth}{\it}
+\newcommand{\dir}{\it}
+\newcommand{\tag}{\it}
+\newcommand{\code}{\tt}
+\newcommand{\class}{\it}
+\newcommand{\backbug}{}
+
+% Macros for hypertext-references (has to be used in install...
+% tex-files for correct conversion into html)
+\def\rqtilde{\ensuremath{\tilde{\;}}\xspace}
+\def\rqhttp#1#2{\texttt{#2}}
+
+%--------------------------------------------------
+% Table of contents and chapters start here
+%--------------------------------------------------
+
+\input{userdoc_title}
+
+\frontmatter
+\tableofcontents
+\mainmatter
+
+\include{userguide}
+
+\end{document}
+
+%============================================================
+% End of the document
+%============================================================

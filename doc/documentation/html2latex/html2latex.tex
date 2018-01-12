@@ -1,0 +1,351 @@
+%
+%  html2latex.tex
+%
+%  This is a support file for html2latex that defines a few items
+%  necessary for HTML mode in latex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Update History:
+%
+%  who    when		what
+%  ----  ------        --------------------------------
+%  schaefer 8/97        Added overset and underset
+%
+%  dpvc  10/95		Wrote it.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The following was the file html2tex-common.tex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Default is no indenting for paragraphs, and paragraphs separated by
+%  a blank line.  We increase the stretchability of paragraph breaks a
+%  bit, and require a bit more space between lines (this helps forms)
+%
+% changed
+%\parindent=0pt
+%\parskip=\baselineskip
+%\advance\parskip by 0pt plus 6pt minus 3pt
+%\multiply\lineskip by 2
+%\multiply\normallineskip by 2
+
+%
+%  Some special characters need special treatment:
+%
+\def\htmlGt{$>$}
+\def\htmlLt{$<$}
+\def\htmlBar{$|$}
+\def\htmlHat{{\char"5E}}
+\def\htmlTilde{$\sim$}
+\def\htmlBackslash{$\backslash$}
+
+%
+%  This routine is used by &frac12; and the realted entities
+%
+\def\htmlFrac#1/#2%           from exercise 11.6, the TeXbook
+{%
+  \leavevmode\kern.1em
+  \raise .5ex\hbox{\the\scriptfont0 #1}\kern-.1em
+  /\kern-.1em \lower.25ex\hbox{\the\scriptfont0 #2}%
+}
+
+%
+%  In PRE-formatted mode, spaces will really be spaces
+%
+{\obeyspaces\gdef\htmlSpaces{\let =\ }}
+
+
+%
+%  We treat line breaks a bit carefully, because we want to be able to
+%  remove them before <HR> in particular.  In order to do this, we
+%  leave a special mark after a forced line break so we can recognize
+%  it later.  To remove the break, we look for the special marker, and
+%  if it is there, remove the marker and the line break.
+%
+\newdimen\htmlBRmark \htmlBRmark=1995sp
+\def\htmlBR{\leavevmode \hfill\break\null\kern-\htmlBRmark\kern\htmlBRmark}
+\def\htmlRemoveBR
+{%
+  \ifhmode
+    \ifdim\lastkern=\htmlBRmark
+      \unkern \unkern \setbox0=\lastbox \unpenalty \unskip
+    \fi
+  \fi
+}
+
+%
+%  This routine allows us to insert postscript graphics with the
+%  correct alignment (top, middle, bottom).  
+%
+\def\epsFile#1#2%
+{%
+  \leavevmode
+  \ifx #1b\hbox{\epsBox{#2}}\else
+  \ifx #1t\hbox{\eps@Top{\epsBox{#2}}}\else
+  \ifx #1m\hbox{$\vcenter{\epsBox{#2}}$}\fi\fi\fi
+}
+%
+%  Lower the contents of a box so that its top matches the top of the
+%  line of text.
+%
+\def\eps@Top#1%
+{%
+  \setbox0=\vbox{#1}%
+  \dimen0=\ht0 \advance\dimen0 by -\ht\strutbox
+  \lower\dimen0\box0
+}
+%
+%  You can redefine this to do whatever you want with the postscript
+%  file name.
+%
+\def\epsBox{\epsfbox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Routines for handle forms
+%
+
+%
+%  To format a text field, set \tt font, and get the width of a space.
+%  Multiply this by the number of characters in the field and add two
+%  more (I suppose we could have used em's here throughout, oh well).
+%  Draw the underline (slightly below the baseline) and the add a
+%  box of the correct width that contains the default data for the
+%  field
+%
+\def\htmlInputText#1#2%
+{{%
+  \tt\setbox0=\hbox{ }%
+  \dimen0=#1\wd0 \advance\dimen0 by 2ex
+  \lower .4ex \hbox to 0pt{\vbox{\hrule width \dimen0}\hss}%
+  \hbox to \dimen0 {\kern 1ex #2\hss}%
+}}
+
+%
+%  For a checkbox, make sure we're in horizontal mode, then make a box
+%  around the check bullet mark (if this box is checked) or around a
+%  blank box of the same size as the check bullet mark.  Raise the box
+%  a bit so that it is above the baseline slightly.
+%
+\def\htmlInputCheckbox#1%
+{%
+  \leavevmode
+  \raise .1em \hbox
+  {%
+    \htmlBox{.2em}%
+    {%
+       \ifx\empty#1\empty \phantom{\htmlCheckBullet}%
+	 \else \htmlCheckBullet \fi
+    }%
+  }%
+}
+%
+%  The check bullet mark is a solid square
+%
+\def\htmlCheckBullet{\kern-.2em\vrule width .4em height .4em\kern-.2em}
+
+
+%
+%  For a radio button, either use the big empty circle, or use the big
+%  cirlce with a bullet in the center.
+%
+\def\htmlInputRadio#1%
+  {\ifx\empty#1\empty $\bigcirc$\else
+     \htmlOverlay\bigcirc{\strut\lower .2ex\hbox{$\bullet$}}\fi}
+
+%
+%  A button is a box around another box around the name of the button
+%
+\def\htmlInputButton#1{\htmlBox{1pt}{\htmlBox{.5ex}{\strut#1}}}
+
+
+%
+%  A pull-down menu is a button with the given name and a big triangle
+%  pointing down at the end
+%
+\def\htmlInputMenu#1%
+{
+   \htmlInputButton
+     {\ignorespaces#1\unskip\ \raise .3ex\hbox{$\bigtriangledown$}}%
+}
+
+%
+%  The select marker for a multi-line menu item is a bullet
+%
+\def\htmlSelectBullet{\leavevmode\hbox to 1em{\hss$\bullet$\hss}}
+
+%
+%  A multi-line menu is just a multi-line text area
+%
+\let\htmlSelect=\htmlTextarea
+
+%
+%  A multi-line text area obeys spaces and lines
+%  It is typset in \tt and is a box that is the specified number of
+%  characters tall and wide.  There is no paragraph spaces or indents
+%  in the typein area.  Once the box is typeset, the correct amount of
+%  material is split off the top of it, and it is placed in a centered
+%  box with an outline
+%  
+\def\htmlTextarea{\bgroup \obeylines\obeyspaces\htmlSpaces \htmlDoTextarea}
+\def\htmlDoTextarea#1#2#3\htmlEnd
+{%
+  \tt\setbox0=\hbox{ }%
+  \dimen0=#1\wd0
+  \dimen1=#2\baselineskip
+  \setbox1=\vtop
+  {%
+    \parskip=0pt \parindent=0pt
+    \hsize=\dimen0
+    \noindent\strut #3\vfill
+  }%
+  \splittopskip=\topskip
+  \vbadness=10000
+  \setbox2=\vsplit1 to \dimen1
+  \htmlBox{.5ex}{$\vcenter to\dimen1{\unvbox2}$}%
+  \egroup
+}
+
+
+%
+%  This routine draws a boder around a box.  The border is separated
+%  from the contents of the box by the amount of space specified in
+%  #1.  The width of the line is the standard .4pt.  The baseline of
+%  the constructed box should be the baseline of the material
+%  containined within it.
+%
+\def\htmlBox#1#2%
+{{%
+  \setbox0=\hbox{#2}%
+  \dimen1=#1
+  \dimen0=\dp0 \advance\dimen0 by \dimen1 \advance\dimen0 by .4pt
+  \leavevmode \lower \dimen0 \hbox
+  {%
+    \vrule
+    \vbox
+    {%
+      \hrule\kern\dimen1
+      \hbox{\kern2\dimen1 \box0 \kern2\dimen1}%
+      \kern\dimen1\hrule
+    }%
+    \vrule
+  }%
+}}
+
+%
+%  This routine is used to contruct special symbols like the checkbox
+%  and radio button.  It centers one symbol on top of another (the
+%  larger one is given first, and both are assumed to be in math
+%  mode).
+%
+\def\htmlOverlay#1#2%
+{{%
+  \setbox0=\hbox{$#1$}%
+  \hbox
+  {%
+    \vbox to \ht0 {\vss \hbox to \wd0 {\hss$#2$\hss}\vss}%
+    \kern-\wd0\box0
+  }%
+}}
+
+%%%%%%%%% End of the old file html2tex-common.tag %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%
+%  Handle a <DD> that is not preceeded by <DT>
+%
+\def\htmlDD{\item \leavevmode \kern-\itemindent \kern-\labelsep}
+
+%
+%  Do a <HR>:
+%    Remove a previsous <BR> if any
+%    If we're in horizontal mode, end it
+%    Otherwise if there is no previuous skip, add the paragraph skip
+%     (this is a hack, since we can't tell whether there was a
+%      preceeding <P> or not, so we assume there was)
+%    Add the rule
+%    Undo the parskip that will be added by the next paragraph
+\def\htmlHR
+{%
+  \htmlRemoveBR \ifhmode \endgraf \else
+     \ifdim\lastskip=0pt \vskip\parskip \fi\fi
+  \kern6pt \hrule width\hsize height 1pt \kern6pt
+  \vskip-\parskip
+}
+
+%
+%  Define a PRE environment for preformatted text
+%
+%  Starting PRE:
+%    Ends the paragraph and inserts parskip (since we set it to 0 below)
+%    Sets the paragraph skipping to 0
+%    Obeys lines and spaces, and makes spaces be real spaces
+%    Sets \tt font
+%
+%  Ending PRE:
+%    Ends the paragraph (the following paragraph will add the parskip
+%      space)
+\newenvironment{PRE}{\htmlPRE}{\htmlEndPRE}
+\def\htmlPRE
+{%
+  \endgraf\vskip\parskip
+  \parskip=0pt
+  \obeylines\obeyspaces\htmlSpaces\tt
+}
+\def\htmlEndPRE{\endgraf}
+
+
+%%%%%%%%%%%%Definitions added by J. Schaefer%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \htmlOVERSET
+%
+% Set expression #1 directly above expression #2:
+%   raise by height = (height of #2)+(0.5ex)+(depth of #1)
+%   To center #1 relative to #2, put #1 in a box roughly the 
+%     width of #2 (automatically centered)
+%   Raise #1's box
+%   Pretend #1's box has 0 width, so that #2 can be placed below it.
+%
+\newlength{\HTMLBasewd}
+\newlength{\HTMLBaseht} \newlength{\HTMLUpperdp}
+\newcommand{\htmlOVERSET}[2]{%
+\settoheight{\HTMLBaseht}{$#2$}%
+\addtolength{\HTMLBaseht}{0.5ex}%
+\settodepth{\HTMLUpperdp}{$#1$}%
+\addtolength{\HTMLBaseht}{\HTMLUpperdp}%
+\settodepth{\HTMLUpperdp}{$#1$}%
+\settowidth{\HTMLBasewd}{$#2$}%
+\raisebox{\HTMLBaseht}{\makebox[0pt]{\hspace{\HTMLBasewd}$#1$}}%
+{#2}}%
+
+%
+% \htmlUNDERSET
+%
+% Set expression #1 directly below expression #2:
+%   lower by amount = (depth of #2)+(0.5ex)+(height of #1)
+%   To center #1 relative to #2, put #1 in a box roughly the 
+%     width of #2 (automatically centered)
+%   Lower #1's box
+%   Pretend #1's box has 0 width, so that #2 can be placed above it.
+%
+\newlength{\HTMLLowerht} \newlength{\HTMLBasedp}
+\newcommand{\htmlUNDERSET}[2]{%
+\settoheight{\HTMLLowerht}{$#1$}%
+\settodepth{\HTMLBasedp}{$#2$}%
+\addtolength{\HTMLLowerht}{0.5ex}%
+\addtolength{\HTMLLowerht}{\HTMLBasedp}%
+\settowidth{\HTMLBasewd}{$#2$}%
+\raisebox{-\HTMLLowerht}{\makebox[0pt]{\hspace{\HTMLBasewd}$#1$}}%
+{#2}}%
+
+

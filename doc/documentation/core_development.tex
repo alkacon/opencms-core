@@ -1,0 +1,183 @@
+\chapter{Core Development}
+
+\section{Introduction}
+
+In this section you can learn something about the interna of OpenCms. This
+is interesting for people who want to contribute to the project at 
+core\-level. Currently there are two subsections. One about how to build
+OpenCms from scratch by your own using ant. The other about interna of the
+project mechanism used by OpenCms since version 4.4.
+
+\section{How to compile the OpenCms core}
+OpenCms provides a full source distribution that you can use to build the
+OpenCms core. This is only needed if you want to add your own core 
+extensions. To develop the usual kind of website functionality, you 
+should use the OpenCms module mechanism which is much easier to start with 
+and also much better documented. Before even considering starting to work 
+on the core, you definitly should have written some OpenCms modules to 
+understand the separation between a module and a core extension. 
+
+The OpenCms core comes with the best possible documentation: The source
+code itself. This is really not something for the novice Java developer.
+However, if you have some experience in Java, Java Servlets, JDBC, XML in 
+general and the Apache Xerces API you might take a look. As said before, 
+you should also have already a firm understanding of the OpenCms module API. 
+
+Since this is rather deep stuff more for experts than for beginners, I 
+will not explain every detail of the process.
+
+\subsection{Before you start}
+
+In case you really intend to contribute to the OpenCms core development, 
+please make sure you use the latest version from the CVS source tree. The
+source distribution ZIP file provided for download is the code of the latest
+major release, not the current development status of OpenCms. The ZIP provides
+a good starting point, but contributions should be based on the latest 
+development version. The way to do it is to first get the source distribution 
+(because it also contains the libaries), see if you can build this, and then 
+simply checkout the latest \texttt{/opencms} directory from the CVS, replacing the 
+\texttt{/opencms} directory from the source distribution (see below).
+
+Ok, now on to the real work:
+
+\subsection{Have Ant installed}
+
+Apache Ant is a Java based build tool. In theory it is kind of like make
+without make's wrinkles. You need Ant version 1.4 or later to build the 
+OpenCms core. Ant is part of the Jakarta Apache Project 
+(\rqhttp{http://jakarta.apache.org/}{http://jakarta.apache.org/}) and can be downloaded
+here: \rqhttp{http://jakarta.apache.org/ant/}{http://jakarta.apache.org/ant/}. 
+Please check the Ant documentation to make sure you understand the basic 
+principles behind Ant. 
+
+Ant installation is described in the manual
+(\rqhttp{http://jakarta.apache.org/ant/manual/}{http://jakarta.apache.org/ant/manual/}). 
+It requires that you have set up your path to Java correctly. Make sure 
+Ant runs before proceeding.
+
+\subsection{Get the OpenCms Source distribution}
+
+Download the latest OpenCms source distribution. It contains all classes 
+neccessary to build the OpenCms core. You can also checkout an OpenCms version
+from our CVS tree, but make sure you have downloaded the source distribution 
+before that because the necessary libraries are not included in the CVS. 
+
+The source distribution comes in a ZIP file. Unpack this in your working 
+directory, lets say this is called \texttt{/work}. You will then end up with the 
+following structure in your work directory:
+
+\begin{verbatim}
+/work
+    /opencms               <= Start of the OpenCms source tree
+        /etc
+        /src
+        /web
+        build.xml          <= This is needed by Ant 
+        ...  
+    /ExternalComponents    <= Contains the neccessary libaries
+        activation.jar
+        fesi.jar
+        ...
+\end{verbatim}
+
+
+\subsection{Get additional classes (optional)}
+
+In case you want to use the Oracle database, you need the Oracle JDBC driver
+which you can download from the Oracle Technology Network 
+(\rqhttp{http://otn.oracle.com}{http://otn.oracle.com}). You have to register 
+there to get the driver. The file 
+you need is the JDBC driver called classes12.zip. Place the file in the 
+directory \texttt{/ExternalComponents} of the OpenCms source tree (see above). If you 
+don't have this file, the OpenCms Oracle Driver 
+(package org.opencms.file.oracleplsql) is not compiled, which is ok if you 
+don't run on Oracle.
+
+\subsection{Build the source by starting Ant}
+
+Ok this is the easy part. Call up a commandline, move to the \texttt{/opencms} 
+directory (where the file \texttt{build.xml} resides) of the OpenCms source tree. 
+In your commandline, enter the following: 
+
+\texttt{ant all} 
+
+That's it! This will build a complete OpenCms distribution. Your work 
+directory will look like this after Ant is finished: 
+
+\begin{verbatim}
+/work
+    /opencms               <= Unchanged
+    /ExternalComponents    <= Unchanged
+    /build
+        /classes           <= Will contain the compiled OpenCms classes
+        /opencms           <= This is the standard .war directory layout
+            /WEB-INF
+                /lib
+                /oclib
+            /META-INF
+    /zip                   <= The OpenCms distribution file will be placed
+    /pdf                      here
+\end{verbatim}
+
+
+The final result of the compilation will be a ZIP file which will be placed 
+in the \texttt{/zip} directory. This ZIP is exactly the same layout as the OpenCms
+binary distributions, so it will contain the opencms.war archive. 
+
+\subsection{Install your new version}
+
+Now that you have your new OpenCms binary distribution, you simply need to 
+follow the installation guide for your server setup. Please make sure you 
+don't mess up any existing installation. Best have a separate machine that 
+is used only for testing and development. 
+
+\subsection{Other Ant targets}
+
+There are several more targets in the ANT that might be useful for you.
+Here's a short overview:
+
+\begin{itemize}
+\item Ant target: \texttt{war}\\
+This creates the opencms.war, but does not create the binary distribution 
+ZIP file.
+
+\item Ant target: \texttt{srcdist}\\
+This generates the source distribution ZIP file. Like the one you 
+can download. 
+
+\item Ant target: \texttt{tomcat.dist}\\
+This is useful if you really are in developing core extensions. Provided
+that OpenCms runs on your machine using Tomcat (and that you have all 
+environment variables set up, esp. TOMCAT\_HOME or CATALINA\_HOME), calling 
+this target will have Ant updating the OpenCms classes on your machine. 
+This is done by replacing the files in the Tomcat \texttt{webapps/opencms} directory.
+If you have renamed opencms.war, or if your Tomcat is not installed the 
+usual way, this probably will not work.
+
+\item Ant target: \texttt{setup}\\
+This is an extension to tomcat.dist: It depends on tomcat.dist, but will 
+also update the OpenCms database, provided you run MySQL on your development
+machine. This is usefull if you do changes to the OpenCms Workplace template
+files. CAUTION: This drops your complete database without further notice. 
+Don't use until you know what you do. 
+
+\item Ant target: \texttt{tex}\\
+This generates the OpenCms documentation from the TeX sources. It's outside 
+the scope of this document to explain what setup you need to do that.
+
+\end{itemize}
+
+To get a complete actual list of all targets please call ant with this parameter:\\
+\texttt{ant -projecthelp}.
+
+\subsection{Important}
+
+In case you replace files in the Tomcat OpenCms \texttt{webapps} directory without doing a new setup of the database, you will get a message on login saying something like: 
+
+\texttt{The version of workplace-templates and workplace-classes are different.\\Please update one.}
+
+Since the workplace templates make very close usage of the core, this should 
+definitely be fixed on production systems. To remove the message, make a new 
+setup of the OpenCms database using the installation wizard from your newly 
+generated binary distribution file. If you know what you do, you can ignore 
+this message on development machines. 
