@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.DateFormat;
@@ -196,6 +197,7 @@ public final class CmsSearchUtil {
             if (sharedFolder != null) {
                 result.add(sharedFolder);
             }
+            result.add(CmsSiteManagerImpl.PATH_SYSTEM_SHARED_FOLDER);
         }
         return result;
     }

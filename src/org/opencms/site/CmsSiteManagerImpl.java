@@ -107,6 +107,13 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** The length of the "/sites/" folder plus 1. */
     private static final int SITES_FOLDER_POS = SITES_FOLDER.length() + 1;
 
+    /**
+     * The VFS root path to the system shared folder, where shared content that belongs to modules,
+     * and that should not be edited by normal editors can be stored.
+     * The folder is searched in the gallery search when shared folders should be searched.
+     */
+    public static final String PATH_SYSTEM_SHARED_FOLDER = "/system/shared/";
+
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
     private List<String> m_additionalSiteRoots;
 
