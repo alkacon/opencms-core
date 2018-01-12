@@ -82,6 +82,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_VALIDATOR_INSTANTIATION_FAILED_1 = "ERR_VALIDATOR_INSTANTIATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3 = "ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_0 = "GUI_ALIAS_0";
 
     /** Message constant for key in the resource bundle. */
