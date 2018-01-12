@@ -29,6 +29,7 @@ package org.opencms.gwt;
 
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.galleries.CmsPreviewService;
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -75,6 +76,7 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsImageScaler;
@@ -96,6 +98,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.widgets.dataview.I_CmsDataView;
 import org.opencms.widgets.dataview.I_CmsDataViewItem;
 import org.opencms.workplace.comparison.CmsHistoryListUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -336,7 +339,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         listInfo.setSubTitle(cms.getSitePath(resource));
         listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
         String resTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
+        CmsExplorerTypeSettings cmsExplorerTypeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            resTypeName);
+        if (null == cmsExplorerTypeSettings) {
+            CmsMessageContainer errMsg = Messages.get().container(
+                Messages.ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3,
+                resource.getRootPath(),
+                resTypeName,
+                Integer.valueOf(resource.getTypeId()));
+            throw new CmsConfigurationException(errMsg);
+        }
+        String key = cmsExplorerTypeSettings.getKey();
         Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
         String resTypeNiceName = messages.key(key);
