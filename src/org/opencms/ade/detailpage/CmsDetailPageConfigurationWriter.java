@@ -113,7 +113,7 @@ public class CmsDetailPageConfigurationWriter {
      */
     private I_CmsXmlDocument getDocument() throws CmsException {
 
-        if (m_document == null) {
+        if ((m_document == null) && (m_resource != null)) {
             m_file = m_cms.readFile(m_resource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_file);
             m_document = content;
