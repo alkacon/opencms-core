@@ -28,6 +28,7 @@
 package org.opencms.gwt;
 
 import org.opencms.ade.galleries.CmsPreviewService;
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -74,6 +75,7 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspNavBuilder;
@@ -97,6 +99,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.widgets.dataview.I_CmsDataView;
 import org.opencms.widgets.dataview.I_CmsDataViewItem;
 import org.opencms.workplace.comparison.CmsHistoryListUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -126,6 +129,7 @@ import com.google.common.collect.Multimap;
  *
  * @since 8.0.0
  */
+@SuppressWarnings("GwtServiceNotRegistered")
 public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** The static log object for this class. */
@@ -347,6 +351,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
         String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        CmsExplorerTypeSettings cmsExplorerTypeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+        if (null == cmsExplorerTypeSettings) {
+            CmsMessageContainer errMsg = Messages.get().container(
+                    Messages.ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3, resource.getRootPath(), resTypeName, resource.getTypeId());
+            // Extended info for the admin
+            LOG.warn(String.format("Explorer type settings for resource \"%s\" of type \"%s\" (%d) not found. (Hint: check your config/opencms-workplace.xml)",
+                    resource.getRootPath(), resTypeName, resource.getTypeId()));
+            throw new CmsConfigurationException(errMsg);
+        }
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
         Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
