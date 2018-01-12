@@ -92,16 +92,16 @@ public class CmsDetailPageConfigurationWriter {
      */
     public void updateAndSave(List<CmsDetailPageInfo> infos, CmsUUID newId) throws CmsException {
 
-        //lock(m_cms, m_resource);
-        getDocument();
-        removeOldValues();
-        writeDetailPageInfos(infos, newId);
-        m_document.setAutoCorrectionEnabled(true);
-        m_document.correctXmlStructure(m_cms);
-        byte[] content = m_document.marshal();
-        m_file.setContents(content);
-        m_cms.writeFile(m_file);
-        //m_cms.unlockResource(m_cms.getSitePath(m_resource));
+        if (m_resource != null) {
+            getDocument();
+            removeOldValues();
+            writeDetailPageInfos(infos, newId);
+            m_document.setAutoCorrectionEnabled(true);
+            m_document.correctXmlStructure(m_cms);
+            byte[] content = m_document.marshal();
+            m_file.setContents(content);
+            m_cms.writeFile(m_file);
+        }
     }
 
     /**
@@ -113,7 +113,7 @@ public class CmsDetailPageConfigurationWriter {
      */
     private I_CmsXmlDocument getDocument() throws CmsException {
 
-        if ((m_document == null) && (m_resource != null)) {
+        if (m_document == null) {
             m_file = m_cms.readFile(m_resource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_file);
             m_document = content;
