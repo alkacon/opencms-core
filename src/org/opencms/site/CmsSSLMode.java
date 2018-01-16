@@ -70,30 +70,29 @@ public enum CmsSSLMode {
     /**
      * List of all available modes.<p>
      *
-     * @return List<CmsSSLMode>
-     */
-    public static List<CmsSSLMode> availableModes() {
-
-        return availableModes(true);
-    }
-
-    /**
-     * List of all available modes.<p>
-     *
      * @param includeOldStyle include old Secure Server Styles?
-     * @return List<CmsSSLMode>
+     * @param includeLetsEncrypt if true, include the LETS_ENCRYPT mode in the result
+     *
+     * @return List<CmsSSLMode> -- the list of available modes
      */
-    public static List<CmsSSLMode> availableModes(boolean includeOldStyle) {
+    public static List<CmsSSLMode> availableModes(boolean includeOldStyle, boolean includeLetsEncrypt) {
 
         includeOldStyle = includeOldStyle & OpenCms.getSiteManager().isOldStyleSecureServerAllowed();
         List<CmsSSLMode> res = new ArrayList<CmsSSLMode>();
         for (CmsSSLMode mode : values()) {
-            if (mode.equals(CmsSSLMode.SECURE_SERVER)) {
-                if (includeOldStyle) {
+            switch (mode) {
+                case SECURE_SERVER:
+                    if (includeOldStyle) {
+                        res.add(mode);
+                    }
+                    break;
+                case LETS_ENCRYPT:
+                    if (includeLetsEncrypt) {
+                        res.add(mode);
+                    }
+                    break;
+                default:
                     res.add(mode);
-                }
-            } else {
-                res.add(mode);
             }
         }
         return res;

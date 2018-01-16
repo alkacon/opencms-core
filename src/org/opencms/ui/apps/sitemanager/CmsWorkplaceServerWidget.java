@@ -71,12 +71,13 @@ public class CmsWorkplaceServerWidget extends FormLayout {
     public CmsWorkplaceServerWidget(List<CmsSite> sites, String server) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_encryption.setContainerDataSource(CmsEditSiteForm.getSSLModeContainer("caption", false));
+        CmsSSLMode sslMode = OpenCms.getSiteManager().getSSLModeForWorkplaceServer(server);
+        m_encryption.setContainerDataSource(CmsEditSiteForm.getSSLModeContainer("caption", false, sslMode));
         m_encryption.setItemCaptionPropertyId("caption");
         m_encryption.setNullSelectionAllowed(false);
         m_encryption.setNewItemsAllowed(false);
         m_encryption.select(CmsSSLMode.NO);
-        CmsSSLMode sslMode = OpenCms.getSiteManager().getSSLModeForWorkplaceServer(server);
+
         m_serverContainer = setUpWorkplaceComboBox(sites, m_server, false, server, sslMode);
 
         m_encryption.select(sslMode);

@@ -299,6 +299,8 @@ public final class OpenCms {
     /**
      * Gets the LetsEncrypt configuration.<p>
      *
+     * Returns null if LetsEncrypt integration is not configured at all.
+     *
      * @return the LetsEncrypt configuration
      */
     public static CmsLetsEncryptConfiguration getLetsEncryptConfig() {

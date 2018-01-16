@@ -917,15 +917,33 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
         setFaviconIfExist();
         checkOnOfflineSiteRoot();
+        m_simpleFieldEncryption.setContainerDataSource(getSSLModeContainer("caption", true, m_site.getSSLMode()));
         m_simpleFieldEncryption.select(m_site.getSSLMode());
 
     }
 
-    protected static IndexedContainer getSSLModeContainer(String captionProp, boolean includeOldStyle) {
+    /**
+     * Creates an IndexedContaienr for use in SSL mode selection widgets.<p>
+     *
+     * @param captionProp the name of the property to use for captions
+     * @param includeOldStyle true if the old-style secure server mode should be included
+     * @param currentValue the current value of the mode (may be null)
+     *
+     * @return the container with the SSL mode items
+     */
+    protected static IndexedContainer getSSLModeContainer(
+        String captionProp,
+        boolean includeOldStyle,
+        CmsSSLMode currentValue) {
 
         IndexedContainer res = new IndexedContainer();
         res.addContainerProperty(captionProp, String.class, "");
-        for (CmsSSLMode mode : CmsSSLMode.availableModes(includeOldStyle)) {
+        boolean isLetsEncrypt = currentValue == CmsSSLMode.LETS_ENCRYPT;
+        boolean letsEncryptConfigured = (OpenCms.getLetsEncryptConfig() != null)
+            && OpenCms.getLetsEncryptConfig().isValidAndEnabled();
+        boolean skipLetsEncrypt = !letsEncryptConfigured && !isLetsEncrypt;
+
+        for (CmsSSLMode mode : CmsSSLMode.availableModes(includeOldStyle, !skipLetsEncrypt)) {
             Item item = res.addItem(mode);
             item.getItemProperty(captionProp).setValue(mode.getLocalizedMessage());
         }
@@ -974,6 +992,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         String toBeReplaced = "http:";
         String newString = "https:";
         CmsSSLMode mode = (CmsSSLMode)m_simpleFieldEncryption.getValue();
+        if (mode == null) {
+            // mode is null if this is triggered by setContainerDataSource
+            return;
+        }
         if (mode.equals(CmsSSLMode.NO) | mode.equals(CmsSSLMode.SECURE_SERVER)) {
             toBeReplaced = "https:";
             newString = "http:";
@@ -1821,7 +1843,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private void setUpComboBoxSSL() {
 
-        IndexedContainer container = getSSLModeContainer("caption", true);
+        IndexedContainer container = getSSLModeContainer("caption", true, null);
 
         m_simpleFieldEncryption.setContainerDataSource(container);
         m_simpleFieldEncryption.setItemCaptionPropertyId("caption");
