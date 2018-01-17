@@ -1617,7 +1617,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    public synchronized CmsResource createResource(
+    public CmsResource createResource(
         CmsDbContext dbc,
         String resourcePath,
         CmsResource resource,
@@ -1632,306 +1632,311 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         try {
-            // need to provide the parent folder id for resource creation
-            String parentFolderName = CmsResource.getParentFolder(resourcePath);
-            CmsResource parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
+            synchronized (this) {
+                // need to provide the parent folder id for resource creation
+                String parentFolderName = CmsResource.getParentFolder(resourcePath);
+                CmsResource parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
 
-            CmsLock parentLock = getLock(dbc, parentFolder);
-            // it is not allowed to create a resource in a folder locked by other user
-            if (!parentLock.isUnlocked() && !parentLock.isOwnedBy(dbc.currentUser())) {
-                // one exception is if the admin user tries to create a temporary resource
-                if (!CmsResource.getName(resourcePath).startsWith(TEMP_FILE_PREFIX)
-                    || !m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)) {
-                    throw new CmsLockException(
-                        Messages.get().container(
-                            Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
-                            dbc.removeSiteRoot(resourcePath)));
-                }
-            }
-            if (CmsResourceTypeJsp.isJsp(resource)) {
-                // security check when trying to create a new jsp file
-                m_securityManager.checkRoleForResource(dbc, CmsRole.VFS_MANAGER, parentFolder);
-            }
-
-            // check import configuration of "lost and found" folder
-            boolean useLostAndFound = importCase && !OpenCms.getImportExportManager().overwriteCollidingResources();
-
-            // check if the resource already exists by name
-            CmsResource currentResourceByName = null;
-            try {
-                currentResourceByName = readResource(dbc, resourcePath, CmsResourceFilter.ALL);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // if the resource does exist, we have to check the id later to decide what to do
-            }
-
-            // check if the resource already exists by id
-            try {
-                CmsResource currentResourceById = readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
-                // it is not allowed to import resources when there is already a resource with the same id but different path
-                if (!currentResourceById.getRootPath().equals(resourcePath)) {
-                    throw new CmsVfsResourceAlreadyExistsException(
-                        Messages.get().container(
-                            Messages.ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3,
-                            dbc.removeSiteRoot(resourcePath),
-                            dbc.removeSiteRoot(currentResourceById.getRootPath()),
-                            currentResourceById.getStructureId()));
-                }
-            } catch (CmsVfsResourceNotFoundException e) {
-                // if the resource does exist, we have to check the id later to decide what to do
-            }
-
-            // check the permissions
-            if (currentResourceByName == null) {
-                // resource does not exist - check parent folder
-                m_securityManager.checkPermissions(
-                    dbc,
-                    parentFolder,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION);
-            } else {
-                // resource already exists - check existing resource
-                m_securityManager.checkPermissions(
-                    dbc,
-                    currentResourceByName,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    !importCase,
-                    CmsResourceFilter.ALL);
-            }
-
-            // now look for the resource by name
-            if (currentResourceByName != null) {
-                boolean overwrite = true;
-                if (currentResourceByName.getState().isDeleted()) {
-                    if (!currentResourceByName.isFolder()) {
-                        // if a non-folder resource was deleted it's treated like a new resource
-                        overwrite = false;
-                    }
-                } else {
-                    if (!importCase) {
-                        // direct "overwrite" of a resource is possible only during import,
-                        // or if the resource has been deleted
-                        throw new CmsVfsResourceAlreadyExistsException(
-                            org.opencms.db.generic.Messages.get().container(
-                                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                                dbc.removeSiteRoot(resource.getRootPath())));
-                    }
-                    // the resource already exists
-                    if (!resource.isFolder()
-                        && useLostAndFound
-                        && (!currentResourceByName.getResourceId().equals(resource.getResourceId()))) {
-                        // semantic change: the current resource is moved to L&F and the imported resource will overwrite the old one
-                        // will leave the resource with state deleted,
-                        // but it does not matter, since the state will be set later again
-                        moveToLostAndFound(dbc, currentResourceByName, false);
-                    }
-                }
-                if (!overwrite) {
-                    // lock the resource, will throw an exception if not lockable
-                    lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
-
-                    // trigger createResource instead of writeResource
-                    currentResourceByName = null;
-                }
-            }
-            // if null, create new resource, if not null write resource
-            CmsResource overwrittenResource = currentResourceByName;
-
-            // extract the name (without path)
-            String targetName = CmsResource.getName(resourcePath);
-
-            int contentLength;
-
-            // modify target name and content length in case of folder creation
-            if (resource.isFolder()) {
-                // folders never have any content
-                contentLength = -1;
-                // must cut of trailing '/' for folder creation (or name check fails)
-                if (CmsResource.isFolder(targetName)) {
-                    targetName = targetName.substring(0, targetName.length() - 1);
-                }
-            } else {
-                // otherwise ensure content and content length are set correctly
-                if (content != null) {
-                    // if a content is provided, in each case the length is the length of this content
-                    contentLength = content.length;
-                } else if (overwrittenResource != null) {
-                    // we have no content, but an already existing resource - length remains unchanged
-                    contentLength = overwrittenResource.getLength();
-                } else {
-                    // we have no content - length is used as set in the resource
-                    contentLength = resource.getLength();
-                }
-            }
-
-            // check if the target name is valid (forbidden chars etc.),
-            // if not throw an exception
-            // must do this here since targetName is modified in folder case (see above)
-            CmsResource.checkResourceName(targetName);
-
-            // set structure and resource ids as given
-            CmsUUID structureId = resource.getStructureId();
-            CmsUUID resourceId = resource.getResourceId();
-
-            // decide which structure id to use
-            if (overwrittenResource != null) {
-                // resource exists, re-use existing ids
-                structureId = overwrittenResource.getStructureId();
-            }
-            if (structureId.isNullUUID()) {
-                // need a new structure id
-                structureId = new CmsUUID();
-            }
-
-            // decide which resource id to use
-            if (overwrittenResource != null) {
-                // if we are overwriting we have to assure the resource id is the same
-                resourceId = overwrittenResource.getResourceId();
-            }
-            if (resourceId.isNullUUID()) {
-                // need a new resource id
-                resourceId = new CmsUUID();
-            }
-
-            try {
-                // check online resource
-                CmsResource onlineResource = getVfsDriver(dbc).readResource(
-                    dbc,
-                    CmsProject.ONLINE_PROJECT_ID,
-                    resourcePath,
-                    true);
-                // only allow to overwrite with different id if importing (createResource will set the right id)
-                try {
-                    CmsResource offlineResource = getVfsDriver(dbc).readResource(
-                        dbc,
-                        dbc.currentProject().getUuid(),
-                        onlineResource.getStructureId(),
-                        true);
-                    if (!offlineResource.getRootPath().equals(onlineResource.getRootPath())) {
-                        throw new CmsVfsOnlineResourceAlreadyExistsException(
+                CmsLock parentLock = getLock(dbc, parentFolder);
+                // it is not allowed to create a resource in a folder locked by other user
+                if (!parentLock.isUnlocked() && !parentLock.isOwnedBy(dbc.currentUser())) {
+                    // one exception is if the admin user tries to create a temporary resource
+                    if (!CmsResource.getName(resourcePath).startsWith(TEMP_FILE_PREFIX)
+                        || !m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)) {
+                        throw new CmsLockException(
                             Messages.get().container(
-                                Messages.ERR_ONLINE_RESOURCE_EXISTS_2,
+                                Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
+                                dbc.removeSiteRoot(resourcePath)));
+                    }
+                }
+                if (CmsResourceTypeJsp.isJsp(resource)) {
+                    // security check when trying to create a new jsp file
+                    m_securityManager.checkRoleForResource(dbc, CmsRole.VFS_MANAGER, parentFolder);
+                }
+                
+                // check import configuration of "lost and found" folder
+                boolean useLostAndFound = importCase && !OpenCms.getImportExportManager().overwriteCollidingResources();
+
+                // check if the resource already exists by name
+                CmsResource currentResourceByName = null;
+                try {
+                    currentResourceByName = readResource(dbc, resourcePath, CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // if the resource does exist, we have to check the id later to decide what to do
+                }
+
+                // check if the resource already exists by id
+                try {
+                    CmsResource currentResourceById = readResource(
+                        dbc,
+                        resource.getStructureId(),
+                        CmsResourceFilter.ALL);
+                    // it is not allowed to import resources when there is already a resource with the same id but different path
+                    if (!currentResourceById.getRootPath().equals(resourcePath)) {
+                        throw new CmsVfsResourceAlreadyExistsException(
+                            Messages.get().container(
+                                Messages.ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3,
                                 dbc.removeSiteRoot(resourcePath),
-                                dbc.removeSiteRoot(offlineResource.getRootPath())));
+                                dbc.removeSiteRoot(currentResourceById.getRootPath()),
+                                currentResourceById.getStructureId()));
                     }
                 } catch (CmsVfsResourceNotFoundException e) {
-                    // there is no problem for now
-                    // but should never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
+                    // if the resource does exist, we have to check the id later to decide what to do
+                }
+
+                // check the permissions
+                if (currentResourceByName == null) {
+                    // resource does not exist - check parent folder
+                    m_securityManager.checkPermissions(
+                        dbc,
+                        parentFolder,
+                        CmsPermissionSet.ACCESS_WRITE,
+                        false,
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                } else {
+                    // resource already exists - check existing resource
+                    m_securityManager.checkPermissions(
+                        dbc,
+                        currentResourceByName,
+                        CmsPermissionSet.ACCESS_WRITE,
+                        !importCase,
+                        CmsResourceFilter.ALL);
+                }
+
+                // now look for the resource by name
+                if (currentResourceByName != null) {
+                    boolean overwrite = true;
+                    if (currentResourceByName.getState().isDeleted()) {
+                        if (!currentResourceByName.isFolder()) {
+                            // if a non-folder resource was deleted it's treated like a new resource
+                            overwrite = false;
+                        }
+                    } else {
+                        if (!importCase) {
+                            // direct "overwrite" of a resource is possible only during import,
+                            // or if the resource has been deleted
+                            throw new CmsVfsResourceAlreadyExistsException(
+                                org.opencms.db.generic.Messages.get().container(
+                                    org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                                    dbc.removeSiteRoot(resource.getRootPath())));
+                        }
+                        // the resource already exists
+                        if (!resource.isFolder()
+                            && useLostAndFound
+                            && (!currentResourceByName.getResourceId().equals(resource.getResourceId()))) {
+                            // semantic change: the current resource is moved to L&F and the imported resource will overwrite the old one
+                            // will leave the resource with state deleted,
+                            // but it does not matter, since the state will be set later again
+                            moveToLostAndFound(dbc, currentResourceByName, false);
+                        }
+                    }
+                    if (!overwrite) {
+                        // lock the resource, will throw an exception if not lockable
+                        lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
+
+                        // trigger createResource instead of writeResource
+                        currentResourceByName = null;
                     }
                 }
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ok, there is no online entry to worry about
-            }
+                // if null, create new resource, if not null write resource
+                CmsResource overwrittenResource = currentResourceByName;
 
-            // now create a resource object with all informations
-            newResource = new CmsResource(
-                structureId,
-                resourceId,
-                resourcePath,
-                resource.getTypeId(),
-                resource.isFolder(),
-                resource.getFlags(),
-                dbc.currentProject().getUuid(),
-                resource.getState(),
-                resource.getDateCreated(),
-                resource.getUserCreated(),
-                resource.getDateLastModified(),
-                resource.getUserLastModified(),
-                resource.getDateReleased(),
-                resource.getDateExpired(),
-                1,
-                contentLength,
-                resource.getDateContent(),
-                resource.getVersion()); // version number does not matter since it will be computed later
+                // extract the name (without path)
+                String targetName = CmsResource.getName(resourcePath);
 
-            // ensure date is updated only if required
-            if (resource.isTouched()) {
-                // this will trigger the internal "is touched" state on the new resource
-                newResource.setDateLastModified(resource.getDateLastModified());
-            }
+                int contentLength;
 
-            if (resource.isFile()) {
-                // check if a sibling to the imported resource lies in a marked site
-                if (labelResource(dbc, resource, resourcePath, 2)) {
-                    int flags = resource.getFlags();
-                    flags |= CmsResource.FLAG_LABELED;
-                    resource.setFlags(flags);
+                // modify target name and content length in case of folder creation
+                if (resource.isFolder()) {
+                    // folders never have any content
+                    contentLength = -1;
+                    // must cut of trailing '/' for folder creation (or name check fails)
+                    if (CmsResource.isFolder(targetName)) {
+                        targetName = targetName.substring(0, targetName.length() - 1);
+                    }
+                } else {
+                    // otherwise ensure content and content length are set correctly
+                    if (content != null) {
+                        // if a content is provided, in each case the length is the length of this content
+                        contentLength = content.length;
+                    } else if (overwrittenResource != null) {
+                        // we have no content, but an already existing resource - length remains unchanged
+                        contentLength = overwrittenResource.getLength();
+                    } else {
+                        // we have no content - length is used as set in the resource
+                        contentLength = resource.getLength();
+                    }
                 }
-                // ensure siblings don't overwrite existing resource records
-                if (content == null) {
-                    newResource.setState(CmsResource.STATE_KEEP);
-                }
-            }
 
-            // delete all relations for the resource, before writing the content
-            getVfsDriver(dbc).deleteRelations(
-                dbc,
-                dbc.currentProject().getUuid(),
-                newResource,
-                CmsRelationFilter.TARGETS);
-            if (overwrittenResource == null) {
-                CmsLock lock = getLock(dbc, newResource);
-                if (lock.getEditionLock().isExclusive()) {
-                    unlockResource(dbc, newResource, true, false);
+                // check if the target name is valid (forbidden chars etc.),
+                // if not throw an exception
+                // must do this here since targetName is modified in folder case (see above)
+                CmsResource.checkResourceName(targetName);
+
+                // set structure and resource ids as given
+                CmsUUID structureId = resource.getStructureId();
+                CmsUUID resourceId = resource.getResourceId();
+
+                // decide which structure id to use
+                if (overwrittenResource != null) {
+                    // resource exists, re-use existing ids
+                    structureId = overwrittenResource.getStructureId();
                 }
-                // resource does not exist.
-                newResource = getVfsDriver(dbc).createResource(
+                if (structureId.isNullUUID()) {
+                    // need a new structure id
+                    structureId = new CmsUUID();
+                }
+
+                // decide which resource id to use
+                if (overwrittenResource != null) {
+                    // if we are overwriting we have to assure the resource id is the same
+                    resourceId = overwrittenResource.getResourceId();
+                }
+                if (resourceId.isNullUUID()) {
+                    // need a new resource id
+                    resourceId = new CmsUUID();
+                }
+
+                try {
+                    // check online resource
+                    CmsResource onlineResource = getVfsDriver(dbc).readResource(
+                        dbc,
+                        CmsProject.ONLINE_PROJECT_ID,
+                        resourcePath,
+                        true);
+                    // only allow to overwrite with different id if importing (createResource will set the right id)
+                    try {
+                        CmsResource offlineResource = getVfsDriver(dbc).readResource(
+                            dbc,
+                            dbc.currentProject().getUuid(),
+                            onlineResource.getStructureId(),
+                            true);
+                        if (!offlineResource.getRootPath().equals(onlineResource.getRootPath())) {
+                            throw new CmsVfsOnlineResourceAlreadyExistsException(
+                                Messages.get().container(
+                                    Messages.ERR_ONLINE_RESOURCE_EXISTS_2,
+                                    dbc.removeSiteRoot(resourcePath),
+                                    dbc.removeSiteRoot(offlineResource.getRootPath())));
+                        }
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // there is no problem for now
+                        // but should never happen
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ok, there is no online entry to worry about
+                }
+
+                // now create a resource object with all informations
+                newResource = new CmsResource(
+                    structureId,
+                    resourceId,
+                    resourcePath,
+                    resource.getTypeId(),
+                    resource.isFolder(),
+                    resource.getFlags(),
+                    dbc.currentProject().getUuid(),
+                    resource.getState(),
+                    resource.getDateCreated(),
+                    resource.getUserCreated(),
+                    resource.getDateLastModified(),
+                    resource.getUserLastModified(),
+                    resource.getDateReleased(),
+                    resource.getDateExpired(),
+                    1,
+                    contentLength,
+                    resource.getDateContent(),
+                    resource.getVersion()); // version number does not matter since it will be computed later
+
+                // ensure date is updated only if required
+                if (resource.isTouched()) {
+                    // this will trigger the internal "is touched" state on the new resource
+                    newResource.setDateLastModified(resource.getDateLastModified());
+                }
+
+                if (resource.isFile()) {
+                    // check if a sibling to the imported resource lies in a marked site
+                    if (labelResource(dbc, resource, resourcePath, 2)) {
+                        int flags = resource.getFlags();
+                        flags |= CmsResource.FLAG_LABELED;
+                        resource.setFlags(flags);
+                    }
+                    // ensure siblings don't overwrite existing resource records
+                    if (content == null) {
+                        newResource.setState(CmsResource.STATE_KEEP);
+                    }
+                }
+
+                // delete all relations for the resource, before writing the content
+                getVfsDriver(dbc).deleteRelations(
                     dbc,
                     dbc.currentProject().getUuid(),
                     newResource,
-                    content);
-            } else {
-                // resource already exists.
-                // probably the resource is a merged page file that gets overwritten during import, or it gets
-                // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.
-                int updateStates = (overwrittenResource.getState().isNew()
-                ? CmsDriverManager.NOTHING_CHANGED
-                : CmsDriverManager.UPDATE_ALL);
-                getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), newResource, updateStates);
-
-                if ((content != null) && resource.isFile()) {
-                    // also update file content if required
-                    getVfsDriver(dbc).writeContent(dbc, newResource.getResourceId(), content);
-                }
-            }
-
-            // write the properties (internal operation, no events or duplicate permission checks)
-            writePropertyObjects(dbc, newResource, properties, false);
-
-            // lock the created resource
-            try {
-                // if it is locked by another user (copied or moved resource) this lock should be preserved and
-                // the exception is OK: locks on created resources are a slave feature to original locks
-                lockResource(dbc, newResource, CmsLockType.EXCLUSIVE);
-            } catch (CmsLockException cle) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CREATE_RESOURCE_LOCK_1,
-                            new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
-                }
-            }
-
-            if (!importCase) {
-                log(
-                    dbc,
-                    new CmsLogEntry(
+                    CmsRelationFilter.TARGETS);
+                if (overwrittenResource == null) {
+                    CmsLock lock = getLock(dbc, newResource);
+                    if (lock.getEditionLock().isExclusive()) {
+                        unlockResource(dbc, newResource, true, false);
+                    }
+                    // resource does not exist.
+                    newResource = getVfsDriver(dbc).createResource(
                         dbc,
-                        newResource.getStructureId(),
-                        CmsLogEntryType.RESOURCE_CREATED,
-                        new String[] {resource.getRootPath()}),
-                    false);
-            } else {
-                log(
-                    dbc,
-                    new CmsLogEntry(
+                        dbc.currentProject().getUuid(),
+                        newResource,
+                        content);
+                } else {
+                    // resource already exists.
+                    // probably the resource is a merged page file that gets overwritten during import, or it gets
+                    // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.
+                    int updateStates = (overwrittenResource.getState().isNew()
+                    ? CmsDriverManager.NOTHING_CHANGED
+                    : CmsDriverManager.UPDATE_ALL);
+                    getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), newResource, updateStates);
+
+                    if ((content != null) && resource.isFile()) {
+                        // also update file content if required
+                        getVfsDriver(dbc).writeContent(dbc, newResource.getResourceId(), content);
+                    }
+                }
+
+                // write the properties (internal operation, no events or duplicate permission checks)
+                writePropertyObjects(dbc, newResource, properties, false);
+
+                // lock the created resource
+                try {
+                    // if it is locked by another user (copied or moved resource) this lock should be preserved and
+                    // the exception is OK: locks on created resources are a slave feature to original locks
+                    lockResource(dbc, newResource, CmsLockType.EXCLUSIVE);
+                } catch (CmsLockException cle) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_CREATE_RESOURCE_LOCK_1,
+                                new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
+                    }
+                }
+
+                if (!importCase) {
+                    log(
                         dbc,
-                        newResource.getStructureId(),
-                        CmsLogEntryType.RESOURCE_IMPORTED,
-                        new String[] {resource.getRootPath()}),
-                    false);
+                        new CmsLogEntry(
+                            dbc,
+                            newResource.getStructureId(),
+                            CmsLogEntryType.RESOURCE_CREATED,
+                            new String[] {resource.getRootPath()}),
+                        false);
+                } else {
+                    log(
+                        dbc,
+                        new CmsLogEntry(
+                            dbc,
+                            newResource.getStructureId(),
+                            CmsLogEntryType.RESOURCE_IMPORTED,
+                            new String[] {resource.getRootPath()}),
+                        false);
+                }
             }
         } finally {
             // clear the internal caches
