@@ -30,7 +30,6 @@ package org.opencms.ui.editors;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -70,8 +69,6 @@ public class CmsAcaciaEditor extends A_CmsFrameEditor {
         if (!plainText && (type instanceof CmsResourceTypeXmlContent)) {
             try {
                 result = CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(A_CmsUI.getCmsObject(), resource);
-            } catch (CmsException e) {
-                LOG.error("Error evaluating XML schema for acacia editor.", e);
             } catch (CmsRuntimeException e) {
                 LOG.error("Error evaluating XML schema for acacia editor.", e);
                 return true;

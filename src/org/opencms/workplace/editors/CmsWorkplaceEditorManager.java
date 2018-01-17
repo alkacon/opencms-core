@@ -166,7 +166,7 @@ public class CmsWorkplaceEditorManager {
             }
             CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
             return visitor.isEditorCompatible(content.getContentDefinition());
-        } catch (Exception e) {
+        } catch (CmsException e) {
             LOG.info("error thrown in checkAcaciaEditorAvailable for " + resource + " : " + e.getLocalizedMessage(), e);
             return true;
         }
