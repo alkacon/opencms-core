@@ -107,5 +107,8 @@ public enum CmsVisibilityCheckFlag {
     writepermisssion,
 
     /** Checks if resource is xml content. */
-    xml;
+    xml,
+
+    /** If resource is an XML content, check if unmarshalling succeeds. */
+    xmlunmarshal;
 }

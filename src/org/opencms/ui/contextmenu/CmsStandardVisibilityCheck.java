@@ -52,6 +52,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.xmlunmarshal;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 
@@ -76,6 +77,7 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleTy
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.Messages;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Set;
 
@@ -134,6 +136,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notdeleted,
         writepermisssion,
         inproject,
+        xmlunmarshal,
         haseditor);
 
     /** Like DEFAULT, but only active for files. */
@@ -416,6 +419,17 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             if (flag(notnew) && (inActiveKey == null) && resource.getState().isNew()) {
                 inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0;
+            }
+
+            if (flag(xmlunmarshal)) {
+                if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                    try {
+                        CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+                    } catch (Exception e) {
+                        return VISIBILITY_INVISIBLE;
+                    }
+                }
+
             }
 
             if (flag(haseditor) && (OpenCms.getWorkplaceAppManager().getEditorForResource(resource, false) == null)) {

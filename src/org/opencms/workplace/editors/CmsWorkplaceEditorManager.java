@@ -147,7 +147,7 @@ public class CmsWorkplaceEditorManager {
      *
      * @throws CmsException if something goes wrong
      */
-    public static boolean checkAcaciaEditorAvailable(CmsObject cms, CmsResource resource) throws CmsException {
+    public static boolean checkAcaciaEditorAvailable(CmsObject cms, CmsResource resource) {
 
         if (resource == null) {
             try {
@@ -158,13 +158,18 @@ public class CmsWorkplaceEditorManager {
             }
             return false;
         }
-        CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-        if (content.getContentDefinition().getContentHandler().isAcaciaEditorDisabled()) {
-            return false;
+        try {
+            CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+            if (content.getContentDefinition().getContentHandler().isAcaciaEditorDisabled()) {
+                return false;
+            }
+            CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
+            return visitor.isEditorCompatible(content.getContentDefinition());
+        } catch (Exception e) {
+            LOG.info("error thrown in checkAcaciaEditorAvailable for " + resource + " : " + e.getLocalizedMessage(), e);
+            return true;
         }
-        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
-        return visitor.isEditorCompatible(content.getContentDefinition());
     }
 
     /**
