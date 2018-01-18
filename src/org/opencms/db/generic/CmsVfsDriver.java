@@ -1366,7 +1366,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String poolUrl = configuration.get("db.vfs.pool");
         String classname = configuration.get("db.vfs.sqlmanager");
         m_sqlManager = initSqlManager(classname);
-        m_sqlManager.init(I_CmsVfsDriver.DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsVfsDriver.DRIVER_TYPE_ID, poolUrl, driverManager);
 
         m_driverManager = driverManager;
 

@@ -425,7 +425,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         }
 
         m_sqlManager = initSqlManager(classname);
-        m_sqlManager.init(I_CmsHistoryDriver.DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsHistoryDriver.DRIVER_TYPE_ID, poolUrl, driverManager);
 
         m_driverManager = driverManager;
 

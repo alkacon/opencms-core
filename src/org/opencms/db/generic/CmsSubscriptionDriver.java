@@ -165,7 +165,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         String poolUrl = config.get("db.subscription.pool");
         String classname = config.get("db.subscription.sqlmanager");
         m_sqlManager = initSqlManager(classname);
-        m_sqlManager.init(I_CmsSubscriptionDriver.DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsSubscriptionDriver.DRIVER_TYPE_ID, poolUrl, driverManager);
 
         m_driverManager = driverManager;
 

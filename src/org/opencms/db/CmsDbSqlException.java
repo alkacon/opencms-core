@@ -33,7 +33,6 @@ import org.opencms.main.CmsLog;
 
 import java.sql.Statement;
 
-import org.apache.commons.dbcp.DelegatingPreparedStatement;
 import org.apache.commons.logging.Log;
 
 /**
@@ -87,15 +86,8 @@ public class CmsDbSqlException extends CmsDbException {
     public static String getErrorQuery(Statement stmt) {
 
         if (stmt != null) {
-            // unfortunately, DelegatingPreparedStatement has no toString() method implementation
-            Statement s = stmt;
-            while (s instanceof DelegatingPreparedStatement) {
-                s = ((DelegatingPreparedStatement)s).getInnermostDelegate();
-            }
-            if (s != null) {
-                // the query that crashed
-                return s.toString();
-            }
+            // the query that crashed
+            return stmt.toString();
         }
         return "";
     }
