@@ -335,14 +335,12 @@ public final class OpenCmsCore {
     private OpenCmsCore()
     throws CmsInitException {
 
-        synchronized (LOCK) {
-            if ((m_instance != null) && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
-                throw new CmsInitException(Messages.get().container(Messages.ERR_ALREADY_INITIALIZED_0));
-            }
-            initMembers();
-            m_instance = this;
-            setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
+        if ((m_instance != null) && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
+            throw new CmsInitException(Messages.get().container(Messages.ERR_ALREADY_INITIALIZED_0));
         }
+        initMembers();
+        m_instance = this;
+        setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
     }
 
     /**
@@ -356,13 +354,18 @@ public final class OpenCmsCore {
             // OpenCms is not properly initialized
             throw new CmsInitException(m_errorCondition, false);
         }
-        if (m_instance == null) {
-            try {
-                // create a new core object with runlevel 1
-                m_instance = new OpenCmsCore();
-            } catch (CmsInitException e) {
-                // already initialized, this is all we need
-                LOG.debug(e.getMessage(), e);
+
+        if (m_instance != null)
+            return m_instance;
+        synchronized (LOCK) {
+            if (m_instance == null) {
+                try {
+                    // create a new core object with runlevel 1
+                    m_instance = new OpenCmsCore();
+                } catch (CmsInitException e) {
+                    // already initialized, this is all we need
+                    LOG.debug(e.getMessage(), e);
+                }
             }
         }
         return m_instance;
