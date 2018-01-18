@@ -32,9 +32,9 @@ import org.opencms.workplace.list.CmsListDirectAction;
 
 import java.util.Locale;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Action handler for single actions from logging view.<p>
@@ -113,7 +113,7 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
             }
         }
         if (logger != null) {
-            isVisible = !logger.getEffectiveLevel().equals(m_logLevel);
+            isVisible = !logger.getLevel().equals(m_logLevel);
         }
         return isVisible;
     }

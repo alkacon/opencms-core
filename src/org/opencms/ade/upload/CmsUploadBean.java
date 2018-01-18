@@ -71,8 +71,8 @@ import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededExcepti
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.log4j.spi.ThrowableInformation;
 
 /**
  * Bean to be used in JSP scriptlet code that provides
@@ -413,12 +413,7 @@ public class CmsUploadBean extends CmsJspBean {
      * @return the stacktrace as String
      */
     private String formatStackTrace(Throwable e) {
-
-        StringBuffer result = new StringBuffer(64);
-        for (String s : new ThrowableInformation(e).getThrowableStrRep()) {
-            result.append(s + "\n");
-        }
-        return result.toString();
+        return StringUtils.join(CmsLog.render(e), '\n');
     }
 
     /**

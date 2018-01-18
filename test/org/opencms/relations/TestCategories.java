@@ -41,7 +41,7 @@ import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.List;
 
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.LogEvent;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -57,16 +57,6 @@ public class TestCategories extends OpenCmsTestCase {
 
     /** Stores an error. */
     private static String m_storedError;
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCategories(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Stores an error message which will cause the test to fail.<p>
@@ -120,6 +110,16 @@ public class TestCategories extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Default JUnit constructor.<p>
+     *
+     * @param arg0 JUnit parameters
+     */
+    public TestCategories(String arg0) {
+
+        super(arg0);
     }
 
     /**
@@ -366,19 +366,21 @@ public class TestCategories extends OpenCmsTestCase {
         CmsResource resource = cms.readResource("index.html");
         CmsResource resCatB = cms.readResource(".categories/b/");
         assertTrue(
-            relations.contains(new CmsRelation(
-                resource.getStructureId(),
-                resource.getRootPath(),
-                catA.getId(),
-                catA.getRootPath(),
-                CmsRelationType.CATEGORY)));
+            relations.contains(
+                new CmsRelation(
+                    resource.getStructureId(),
+                    resource.getRootPath(),
+                    catA.getId(),
+                    catA.getRootPath(),
+                    CmsRelationType.CATEGORY)));
         assertTrue(
-            relations.contains(new CmsRelation(
-                resource.getStructureId(),
-                resource.getRootPath(),
-                resCatB.getStructureId(),
-                resCatB.getRootPath(),
-                CmsRelationType.CATEGORY)));
+            relations.contains(
+                new CmsRelation(
+                    resource.getStructureId(),
+                    resource.getRootPath(),
+                    resCatB.getStructureId(),
+                    resCatB.getRootPath(),
+                    CmsRelationType.CATEGORY)));
 
         // repair category associations
         CmsCategoryService.getInstance().repairRelations(cms, "index.html");
@@ -403,12 +405,13 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals(1, relations.size());
         resource = cms.readResource("index.html");
         assertTrue(
-            relations.contains(new CmsRelation(
-                resource.getStructureId(),
-                resource.getRootPath(),
-                catA.getId(),
-                catA.getRootPath(),
-                CmsRelationType.CATEGORY)));
+            relations.contains(
+                new CmsRelation(
+                    resource.getStructureId(),
+                    resource.getRootPath(),
+                    catA.getId(),
+                    catA.getRootPath(),
+                    CmsRelationType.CATEGORY)));
     }
 
     /**
@@ -958,7 +961,7 @@ public class TestCategories extends OpenCmsTestCase {
             OpenCmsTestLogAppender.setBreakOnError(true);
             OpenCmsTestLogAppender.setHandler(new I_CmsLogHandler() {
 
-                public void handleLogEvent(LoggingEvent event) {
+                public void handleLogEvent(LogEvent event) {
 
                     if (event.getLevel().toString().contains("ERROR")) {
                         // TODO: This may be an error unrelated to the original error. Need more precise check.
@@ -987,7 +990,7 @@ public class TestCategories extends OpenCmsTestCase {
             OpenCms.getPublishManager().waitWhileRunning();
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
         }
 
     }
@@ -1006,7 +1009,7 @@ public class TestCategories extends OpenCmsTestCase {
             OpenCmsTestLogAppender.setBreakOnError(true);
             OpenCmsTestLogAppender.setHandler(new I_CmsLogHandler() {
 
-                public void handleLogEvent(LoggingEvent event) {
+                public void handleLogEvent(LogEvent event) {
 
                     if (event.getLevel().toString().contains("ERROR")) {
                         storeError(event.getMessage().toString());
@@ -1033,7 +1036,7 @@ public class TestCategories extends OpenCmsTestCase {
             OpenCms.getPublishManager().waitWhileRunning();
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
         }
     }
 

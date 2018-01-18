@@ -27,9 +27,14 @@
 
 package org.opencms.test;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Priority;
-import org.apache.log4j.spi.LoggingEvent;
+import java.io.Serializable;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 /**
  * Simple extension of the log4j console appender that throws a
@@ -37,8 +42,11 @@ import org.apache.log4j.spi.LoggingEvent;
  * causing the running test to fail.<p>
  *
  * @since 6.0.0
+ *
+ * @deprecated NOT TESTED for log4j2
  */
-public class OpenCmsTestLogAppender extends ConsoleAppender {
+@Deprecated
+public class OpenCmsTestLogAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     // indicates if a logged error / fatal message should cause a test to fail
     private static boolean m_breakOnError;
@@ -60,11 +68,23 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
         m_handler = handler;
     }
 
+    protected OpenCmsTestLogAppender(
+        String name,
+        Layout<? extends Serializable> layout,
+        Filter filter,
+        boolean ignoreExceptions,
+        boolean immediateFlush,
+        OutputStreamManager manager) {
+
+        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+
+    }
+
     /**
-     * @see org.apache.log4j.WriterAppender#append(org.apache.log4j.spi.LoggingEvent)
+     * @see org.apache.logging.log4j.core.Appender#append(LogEvent event)
      */
     @Override
-    public void append(LoggingEvent logEvent) {
+    public void append(LogEvent logEvent) {
 
         // first log the event as usual
         super.append(logEvent);
@@ -73,20 +93,16 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
         }
 
         if (m_breakOnError) {
-            int logLevel = logEvent.getLevel().toInt();
-            switch (logLevel) {
-                case Priority.ERROR_INT:
-                case Priority.FATAL_INT:
-                    if (logEvent.getThrowableInformation() != null) {
-                        if (logEvent.getThrowableInformation().getThrowable() != null) {
-                            throw new RuntimeException(
-                                logEvent.getRenderedMessage(),
-                                logEvent.getThrowableInformation().getThrowable());
-                        }
+            int logLevel = logEvent.getLevel().intLevel();
+            if ((logLevel == Level.ERROR.intLevel()) || (logLevel == Level.FATAL.intLevel())) {
+                if (logEvent.getThrownProxy() != null) {
+                    if (logEvent.getThrownProxy().getThrowable() != null) {
+                        throw new RuntimeException(
+                            logEvent.getMessage().getFormattedMessage(),
+                            logEvent.getThrownProxy().getThrowable());
                     }
-                    throw new RuntimeException(logEvent.getRenderedMessage());
-                default:
-                    // empty
+                }
+                throw new RuntimeException(logEvent.getMessage().getFormattedMessage());
             }
         }
     }
