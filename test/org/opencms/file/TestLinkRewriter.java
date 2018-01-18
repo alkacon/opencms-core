@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.LogEvent;
 
 import junit.framework.Test;
 
@@ -84,7 +84,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
          *
          * @param event the log event
          */
-        public void handleLogEvent(LoggingEvent event) {
+        public void handleLogEvent(LogEvent event) {
 
             if (event.getLevel().toString().equalsIgnoreCase("error")
                 && event.getMessage().toString().toLowerCase().contains(m_text.toLowerCase())) {
@@ -453,7 +453,8 @@ public class TestLinkRewriter extends OpenCmsTestCase {
         assertSetEquals(Collections.singleton(external), links("/system/multibase2", "/system/multibase"));
         Set<String> expected = getMultiBaseLinks("/system/multibase2");
         assertSetEquals(expected, links("/system/multibase2", "/system/multibase2"));
-        assertTrue(links("/system/multibase", "/system/multibase").contains(
+        assertTrue(
+            links("/system/multibase", "/system/multibase").contains(
                 "XML_WEAK:/system/multibase/D4.html:/system/multibase/D4.html"));
 
     }
@@ -467,7 +468,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        ExpectErrorLogHandler handler = new ExpectErrorLogHandler("error");
+        ExpectErrorLogHandler handler = new ExpectErrorLogHandler("xml validation error");
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(handler);
@@ -475,7 +476,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
             // Setup: Create a XML content that is wrong according to the schema
             String wrongContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
                 + "\r\n"
-                + "<LinkSeq xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"internal://org/opencms/file/links.xsd\">\r\n"
+                + "<LinkSequences xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"internal://org/opencms/file/links.xsd\">\r\n"
                 + "  <LinkSequence language=\"en\">\r\n"
                 + "  <Text>Correct node</Text>\r\n"
                 + "  <!-- This 2nd Text node is intentionally wrong according to the schema! --> \r\n"
@@ -506,7 +507,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
             cms.adjustLinks("/system/w", "/system/w2");
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(true);
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
             assertTrue(handler.isTriggered());
         }
     }

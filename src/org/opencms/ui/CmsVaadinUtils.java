@@ -40,6 +40,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
@@ -71,7 +72,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
-import org.apache.log4j.Logger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -237,7 +237,7 @@ public final class CmsVaadinUtils {
         + "    });";
 
     /** The logger of this class. */
-    private static final Logger LOG = Logger.getLogger(CmsVaadinUtils.class);
+    private static final Log LOG = CmsLog.getLog(CmsVaadinUtils.class);
 
     /**
      * Hidden default constructor for utility class.<p>
@@ -1132,7 +1132,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

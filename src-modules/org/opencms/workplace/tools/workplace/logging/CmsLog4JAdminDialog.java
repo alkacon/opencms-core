@@ -41,8 +41,8 @@ import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -50,14 +50,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Category;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  * Main logging management list view.<p>
@@ -239,12 +239,20 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         // iterate about all log channels to set the above selected loglevel
         while (itItems.hasNext()) {
             String logchannnelName = itItems.next().getId();
-            Logger logchannel = LogManager.getLogger(logchannnelName);
-            logchannel.setLevel(newLogchannelLevel);
+            Configurator.setLevel(logchannnelName, newLogchannelLevel);
         }
 
         refreshList();
 
+    }
+
+    /**
+     * @param logchannnelName
+     * @return
+     */
+    private Logger getLoggerImpl(String logchannnelName) {
+
+        return (Logger)LogManager.getLogger(logchannnelName);
     }
 
     /**
@@ -259,7 +267,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         }
         // get the log-channel to change the level
         String logchannnelName = getSelectedItem().getId();
-        Logger logchannel = LogManager.getLogger(logchannnelName);
+        Logger logchannel = getLoggerImpl(logchannnelName);
         if (logchannel == null) {
             return;
         }
@@ -281,9 +289,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         if (newLogchannelLevel != null) {
             isparentlogger(logchannel);
             if (newLogchannelLevel.equals(logchannel.getParent().getLevel())) {
-                logchannel.setLevel(null);
+                Configurator.setLevel(logchannnelName, null);
             } else {
-                logchannel.setLevel(newLogchannelLevel);
+                Configurator.setLevel(logchannnelName, newLogchannelLevel);
             }
         }
         if (ACTION_ACTIVATE_LOGFILE.equals(getParamListAction())) {
@@ -293,27 +301,25 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             // the button was active
             if (isloggingactivated(logchannel)) {
                 // remove the private Appender from logger
-                logchannel.removeAllAppenders();
+                logchannel.getAppenders().clear();;
                 // activate the heredity so the logger get the appender from parent logger
-                logchannel.setAdditivity(true);
+                logchannel.setAdditive(true);
 
             }
             // the button was inactive
             else {
-                @SuppressWarnings("unchecked")
-                List<Appender> rootAppenders = Collections.list(Logger.getRootLogger().getAllAppenders());
+                Collection<Appender> rootAppenders = ((Logger)LogManager.getRootLogger()).getAppenders().values();
                 // get the layout and file path from root logger
                 for (Appender appender : rootAppenders) {
                     if (appender instanceof FileAppender) {
                         FileAppender fapp = (FileAppender)appender;
-                        filepath = fapp.getFile().substring(0, fapp.getFile().lastIndexOf(File.separatorChar));
+                        filepath = fapp.getFileName().substring(0, fapp.getFileName().lastIndexOf(File.separatorChar));
                         layout = fapp.getLayout();
                         break;
                     }
                 }
 
-                @SuppressWarnings("unchecked")
-                List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
+                Collection<Appender> appenders = logchannel.getAppenders().values();
                 // check if the logger has an Appender get his layout
                 for (Appender appender : appenders) {
                     if (appender instanceof FileAppender) {
@@ -349,16 +355,20 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 FileAppender fapp = null;
                 try {
                     // create new FileAppender for separate log file
-                    fapp = new FileAppender(layout, logfilename, true);
-                    // set the log file e.g.: "C:\tomcat6\webapps\opencms\WEB-INF\logs"
-                    fapp.setName(logchannnelName);
-                } catch (IOException e) {
+                    fapp = ((FileAppender.Builder) FileAppender.newBuilder()
+                            .withLayout(layout)
+                            .withFileName(logfilename)
+                            .withAppend(true)
+                            .withName(logchannnelName))
+                            .build();
+
+                } catch (Exception e) {
                     LOG.error(Messages.get().container(Messages.LOG_CREATING_APPENDER_0), e);
                 }
                 // deactivate the heredity so the logger get no longer the appender from parent logger
-                logchannel.setAdditivity(false);
+                logchannel.setAdditive(false);
                 // remove all active Appenders from logger
-                logchannel.removeAllAppenders();
+                logchannel.getAppenders().clear();
                 // add the new created Appender to the logger
                 logchannel.addAppender(fapp);
             }
@@ -389,44 +399,38 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             Logger logger = iterator.next();
             CmsListItem item = getList().newItem(logger.getName());
             item.set(COLUMN_CHANNELS, logger.getName());
-            Category parentLogger = logger.getParent();
+            Logger parentLogger = logger.getParent();
             if (parentLogger == null) {
                 item.set(COLUMN_PARENT_CHANNELS, "");
             } else {
                 item.set(COLUMN_PARENT_CHANNELS, logger.getParent().getName());
             }
-            item.set(COLUMN_LOG_LEVEL, String.valueOf(logger.getEffectiveLevel()));
+            item.set(COLUMN_LOG_LEVEL, String.valueOf(logger.getLevel()));
 
             String test = "";
-            @SuppressWarnings("unchecked")
-            List<Appender> appenders = Collections.list(logger.getAllAppenders());
-            Iterator<Appender> appendersIt = appenders.iterator();
+            Collection<Appender> appenders = logger.getAppenders().values();
             int count = 0;
             // select the Appender from logger
-            while (appendersIt.hasNext()) {
-                Appender appender = appendersIt.next();
+            for (Appender appender : appenders) {
                 // only use file appenders
                 if (appender instanceof FileAppender) {
                     FileAppender fapp = (FileAppender)appender;
                     String temp = "";
-                    temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                    temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
                     test = test + temp;
                     count++;
                     break;
                 }
             }
-            @SuppressWarnings("unchecked")
-            List<Appender> parentAppenders = Collections.list(logger.getParent().getAllAppenders());
-            Iterator<Appender> parentAppendersIt = parentAppenders.iterator();
+            Collection<Appender> parentAppenders = logger.getParent().getAppenders().values();
             // if no Appender found from logger, select the Appender from parent logger
             if (count == 0) {
-                while (parentAppendersIt.hasNext()) {
-                    Appender appender = parentAppendersIt.next();
+                for (Appender appender : parentAppenders) {
                     // only use file appenders
                     if (appender instanceof FileAppender) {
                         FileAppender fapp = (FileAppender)appender;
                         String temp = "";
-                        temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                        temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
                         test = test + temp;
                         count++;
                         break;
@@ -435,17 +439,14 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             }
 
             if (count == 0) {
-                @SuppressWarnings("unchecked")
-                List<Appender> rootAppenders = Collections.list(Logger.getRootLogger().getAllAppenders());
-                Iterator<Appender> rootAppendersIt = rootAppenders.iterator();
+                Collection<Appender> rootAppenders = ((Logger)LogManager.getRootLogger()).getAppenders().values();
                 // if no Appender found from parent logger, select the Appender from root logger
-                while (rootAppendersIt.hasNext()) {
-                    Appender appender = rootAppendersIt.next();
+                for (Appender appender : rootAppenders) {
                     // only use file appenders
                     if (appender instanceof FileAppender) {
                         FileAppender fapp = (FileAppender)appender;
                         String temp = "";
-                        temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                        temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
                         test = test + temp;
                         break;
                     }
@@ -466,14 +467,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
      * */
     protected boolean isloggingactivated(Logger logchannel) {
 
-        boolean check = false;
-        @SuppressWarnings("unchecked")
-        List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
-        Iterator<Appender> app = appenders.iterator();
-        while (app.hasNext()) {
-            check = app.next().getName().equals(logchannel.getName());
-        }
-        return check;
+        return logchannel.getAppenders().containsKey(logchannel.getName());
     }
 
     /**
@@ -504,10 +498,10 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
 
-                    if (actuallevel.toInt() < Priority.FATAL_INT) {
+                    if (actuallevel.intLevel() < Level.FATAL.intLevel()) {
                         setIconPath(PATH_FATAL_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_FATAL_HELP_DEACTIVATE_0));
-                    } else if (actuallevel.toInt() == Priority.FATAL_INT) {
+                    } else if (actuallevel.intLevel() == Level.FATAL.intLevel()) {
                         setIconPath(PATH_FATAL_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ACTIVE_0));
                     } else {
@@ -542,10 +536,10 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
                 Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
-                    if ((actuallevel.toInt() < Priority.ERROR_INT)) {
+                    if ((actuallevel.intLevel() < Level.ERROR.intLevel())) {
                         setIconPath(PATH_ERROR_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ERROR_HELP_DEACTIVATE_0));
-                    } else if (actuallevel.toInt() == Priority.ERROR_INT) {
+                    } else if (actuallevel.intLevel() == Level.ERROR.intLevel()) {
                         setIconPath(PATH_ERROR_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ACTIVE_0));
                     } else {
@@ -580,10 +574,10 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
                 Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
-                    if ((actuallevel.toInt() < Priority.WARN_INT)) {
+                    if ((actuallevel.intLevel() < Level.WARN.intLevel())) {
                         setIconPath(PATH_WARN_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_WARN_HELP_DEACTIVATE_0));
-                    } else if (actuallevel.toInt() == Priority.WARN_INT) {
+                    } else if (actuallevel.intLevel() == Level.WARN.intLevel()) {
                         setIconPath(PATH_WARN_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ACTIVE_0));
                     } else {
@@ -619,10 +613,10 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 // check the Loglevel from hidden column and set the right icon
                 Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
-                    if ((actuallevel.toInt() < Priority.INFO_INT)) {
+                    if ((actuallevel.intLevel() < Level.INFO.intLevel())) {
                         setIconPath(PATH_INFO_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_INFO_HELP_DEACTIVATE_0));
-                    } else if (actuallevel.toInt() == Priority.INFO_INT) {
+                    } else if (actuallevel.intLevel() == Level.INFO.intLevel()) {
                         setIconPath(PATH_INFO_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ACTIVE_0));
                     } else {
@@ -658,10 +652,10 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
                 Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
-                    if (actuallevel.toInt() < Priority.DEBUG_INT) {
+                    if (actuallevel.intLevel() < Level.DEBUG.intLevel()) {
                         setIconPath(PATH_DEBUG_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_DEBUG_HELP_DEACTIVATE_0));
-                    } else if (actuallevel.toInt() == Priority.DEBUG_INT) {
+                    } else if (actuallevel.intLevel() == Level.DEBUG.intLevel()) {
                         setIconPath(PATH_DEBUG_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ACTIVE_0));
                     } else {
@@ -697,7 +691,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
                 Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
-                    if (actuallevel.toInt() == Priority.OFF_INT) {
+                    if (actuallevel.intLevel() == Level.OFF.intLevel()) {
                         setIconPath(PATH_OFF_ACTIVE);
                         setName(Messages.get().container(Messages.GUI_LOG_LEVEL_OFF_HELP_ACTIVATE_0));
                     } else {
@@ -774,7 +768,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Logger logger = LogManager.getLogger((String)getItem().get(COLUMN_CHANNELS));
+                Logger logger = getLoggerImpl((String)getItem().get(COLUMN_CHANNELS));
                 if (logger != null) {
                     if (isloggingactivated(logger)) {
                         setIconPath(PATH_FILE_ACTIVE);
@@ -922,9 +916,8 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         List<Logger> definedLoggers = new ArrayList<Logger>();
         // list of all parent loggers
         List<Logger> packageLoggers = new ArrayList<Logger>();
-        @SuppressWarnings("unchecked")
-        List<Logger> curentloggerlist = Collections.list(LogManager.getCurrentLoggers());
-        Iterator<Logger> it_curentlogger = curentloggerlist.iterator();
+        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+        Iterator<Logger> it_curentlogger = logContext.getLoggers().iterator();
         // get all current loggers
         while (it_curentlogger.hasNext()) {
             // get the logger
@@ -942,9 +935,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 if (temp.lastIndexOf(".") > 1) {
                     // generate new logger with "org.opencms" prefix and the next element
                     // between the points e.g.: "org.opencms.search"
-                    Logger temp_logger = Logger.getLogger(prefix[i] + "." + temp.substring(0, temp.indexOf(".")));
+                    Logger temp_logger = getLoggerImpl(prefix[i] + "." + temp.substring(0, temp.indexOf(".")));
                     // activate the heredity so the logger get the appender from parent logger
-                    temp_logger.setAdditivity(true);
+                    temp_logger.setAdditive(true);
                     // add the logger to the packageLoggers list if it is not part of it
                     if (!packageLoggers.contains(temp_logger)) {
                         packageLoggers.add(temp_logger);
