@@ -49,6 +49,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -192,6 +193,22 @@ public class CmsJsonPartFilter implements Filter {
                 public void write(int b) {
 
                     m_byteStream.write(b);
+                }
+
+                /**
+                 * @see javax.servlet.ServletOutputStream#isReady()
+                 */
+                @Override
+                public boolean isReady() {
+
+                    return null != m_byteStream;
+                }
+
+                /**
+                 * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
+                 */
+                @Override
+                public void setWriteListener(WriteListener writeListener) {
                 }
             };
         }

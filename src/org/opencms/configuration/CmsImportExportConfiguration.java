@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 
@@ -310,7 +310,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     private CmsStaticExportManager m_staticExportManager;
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
@@ -325,8 +325,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // add rules for import/export handlers
         digester.addObjectCreate(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORTEXPORTHANDLERS + "/" + N_IMPORTEXPORTHANDLER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORTEXPORTHANDLERS + "/" + N_IMPORTEXPORTHANDLER,
             "addImportExportHandler");
@@ -346,8 +346,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // add rules for the import versions
         digester.addObjectCreate(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IMPORTVERSIONS + "/" + N_IMPORTVERSION,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IMPORTVERSIONS + "/" + N_IMPORTVERSION,
             "addImportVersionClass");
@@ -599,7 +599,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_REPOSITORIES, "setRepositoryManager");
 
         // repository
-        digester.addObjectCreate("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, A_CLASS, CmsConfigurationException.class);
+        digester.addObjectCreate("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, CmsConfigurationException.class.getName(), A_CLASS);
 
         // repository name
         digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "setName", 1);

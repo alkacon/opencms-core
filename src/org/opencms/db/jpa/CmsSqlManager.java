@@ -51,7 +51,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.SoftReferenceObjectPool;

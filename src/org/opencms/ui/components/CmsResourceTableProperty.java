@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.google.common.collect.Maps;
 import com.vaadin.data.util.converter.Converter;

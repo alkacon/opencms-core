@@ -109,6 +109,8 @@ public class CmsSchedulerThreadPool implements ThreadPool {
 
     /** The threads. */
     private CmsSchedulerThread[] m_workers;
+    
+    private String schedulerInstanceName, schedulerInstanceId;
 
     /**
      * Create a new <code>CmsSchedulerThreadPool</code> with default values.
@@ -418,5 +420,15 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                 m_nextRunnableLock.notifyAll();
             }
         }
+    }
+
+    public void setInstanceId(String schedInstId) {
+
+        schedulerInstanceId = schedInstId;
+    }
+
+    public void setInstanceName(String schedName) {
+
+        schedulerInstanceName = schedName;
     }
 }

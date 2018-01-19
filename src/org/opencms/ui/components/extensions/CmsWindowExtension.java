@@ -33,7 +33,7 @@ import org.opencms.ui.shared.rpc.I_CmsWindowServerRpc;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.vaadin.server.AbstractExtension;

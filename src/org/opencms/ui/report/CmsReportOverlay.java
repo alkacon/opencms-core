@@ -35,8 +35,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -128,7 +128,7 @@ public class CmsReportOverlay extends CustomLayout {
             "document.querySelector('#"
                 + getId()
                 + " .fakewindowheader').innerHTML = '"
-                + StringEscapeUtils.escapeJavaScript(title)
+                + StringEscapeUtils.escapeEcmaScript(title)
                 + "'");
     }
 }

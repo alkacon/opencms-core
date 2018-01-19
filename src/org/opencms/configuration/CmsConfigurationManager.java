@@ -61,7 +61,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
@@ -212,15 +212,15 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
         // add rule for <configuration> node
         digester.addObjectCreate(
             "*/" + N_CONFIGURATION + "/" + N_CONFIG,
-            I_CmsXmlConfiguration.A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            I_CmsXmlConfiguration.A_CLASS);
         digester.addSetNext("*/" + N_CONFIGURATION + "/" + N_CONFIG, "addConfiguration");
     }
 

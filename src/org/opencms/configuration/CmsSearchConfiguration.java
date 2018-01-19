@@ -51,7 +51,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 
@@ -227,7 +227,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     private CmsSearchManager m_searchManager;
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
@@ -237,7 +237,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(XPATH_SEARCH, "initializeFinished");
 
         // creation of the search manager
-        digester.addObjectCreate(XPATH_SEARCH, A_CLASS, CmsSearchManager.class);
+        digester.addObjectCreate(XPATH_SEARCH, CmsSearchManager.class.getName(), A_CLASS);
 
         // search manager finished
         digester.addSetNext(XPATH_SEARCH, "setSearchManager");
@@ -302,7 +302,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // search index rule
         xPath = XPATH_SEARCH + "/" + N_INDEXES + "/" + N_INDEX;
-        digester.addObjectCreate(xPath, A_CLASS, CmsSearchIndex.class);
+        digester.addObjectCreate(xPath, CmsSearchIndex.class.getName(), A_CLASS);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
         digester.addCallMethod(xPath + "/" + N_PROJECT, "setProject", 0);
@@ -323,7 +323,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // field configuration rules
         xPath = XPATH_SEARCH + "/" + N_FIELDCONFIGURATIONS + "/" + N_FIELDCONFIGURATION;
-        digester.addObjectCreate(xPath, A_CLASS, CmsLuceneFieldConfiguration.class);
+        digester.addObjectCreate(xPath, CmsLuceneFieldConfiguration.class.getName(), A_CLASS);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_DESCRIPTION, "setDescription", 0);
         digester.addSetNext(xPath, "addFieldConfiguration");
@@ -351,7 +351,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext(xPath, "addField");
 
         xPath = xPath + "/" + N_MAPPING;
-        digester.addObjectCreate(xPath, A_CLASS, CmsSearchFieldMapping.class);
+        digester.addObjectCreate(xPath, CmsSearchFieldMapping.class.getName(), A_CLASS);
         digester.addCallMethod(xPath, "setDefaultValue", 1);
         digester.addCallParam(xPath, 0, A_DEFAULT);
         digester.addCallMethod(xPath, "setType", 1);
