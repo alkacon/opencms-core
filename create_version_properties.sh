@@ -57,6 +57,7 @@ if [ $OPENCMS_GIT_BRANCH == "HEAD" ]; then
 fi
 OPENCMS_GIT_ID="${GIT_COMMIT:0:7}"
 OPENCMS_GIT_BRANCH_SHOWN="${OpenCmsGitBranchShown:-$OPENCMS_GIT_BRANCH}"
+OPENCMS_GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat)
 
 #
 # The OpenCms version ID.
@@ -73,15 +74,16 @@ OPENCMS_VERSION_ID="$OPENCMS_BUILD_TYPE $OPENCMS_BUILD_NUMBER ($OPENCMS_GIT_BRAN
 echo "# "
 echo "# OpenCms Version Information:"
 echo "# "
-echo "# Build Type      : $OPENCMS_BUILD_TYPE"
-echo "# Build System    : $OPENCMS_BUILD_SYSTEM"
-echo "# Build Number    : $OPENCMS_BUILD_NUMBER"
-echo "# Version Number  : $OPENCMS_VERSION_NUMBER"
-echo "# Version ID      : $OPENCMS_VERSION_ID"
-echo "# Version File    : $OUTPUT_FILE"
-echo "# Git commit      : $OPENCMS_GIT_ID"
-echo "# Git branch      : $OPENCMS_GIT_BRANCH"
-echo "# Git branch shown: $OPENCMS_GIT_BRANCH_SHOWN"
+echo "# Build Type        : $OPENCMS_BUILD_TYPE"
+echo "# Build System      : $OPENCMS_BUILD_SYSTEM"
+echo "# Build Number      : $OPENCMS_BUILD_NUMBER"
+echo "# Version Number    : $OPENCMS_VERSION_NUMBER"
+echo "# Version ID        : $OPENCMS_VERSION_ID"
+echo "# Version File      : $OUTPUT_FILE"
+echo "# Git commit        : $OPENCMS_GIT_ID"
+echo "# Git commit message: $OPENCMS_GIT_COMMIT_MESSAGE"
+echo "# Git branch        : $OPENCMS_GIT_BRANCH"
+echo "# Git branch shown  : $OPENCMS_GIT_BRANCH_SHOWN"
 echo "# "
 
 #
@@ -101,6 +103,7 @@ echo "build.date=$OPENCMS_BUILD_DATE" >> "$OUTPUT_FILE"
 echo "build.type=$OPENCMS_BUILD_TYPE" >> "$OUTPUT_FILE"
 echo "build.system=$OPENCMS_BUILD_SYSTEM" >> "$OUTPUT_FILE"
 echo "build.gitid=$OPENCMS_GIT_ID" >> "$OUTPUT_FILE"
+echo "build.gitmessage=$OPENCMS_GIT_COMMIT_MESSAGE" >> "$OUTPUT_FILE"
 echo "build.gitbranch=$OPENCMS_GIT_BRANCH_SHOWN" >> "$OUTPUT_FILE"
 #
 # Nice names for the build information (optional).
@@ -112,4 +115,5 @@ echo "nicename.build.date=Build Date" >> "$OUTPUT_FILE"
 echo "nicename.build.type=Build Type" >> "$OUTPUT_FILE"
 echo "nicename.build.system=Build System" >> "$OUTPUT_FILE"
 echo "nicename.build.gitid=Git Commit ID" >> "$OUTPUT_FILE"
+echo "nicename.build.gitmessage=Git Commit Message" >> "$OUTPUT_FILE"
 echo "nicename.build.gitbranch=Git Branch" >> "$OUTPUT_FILE"
