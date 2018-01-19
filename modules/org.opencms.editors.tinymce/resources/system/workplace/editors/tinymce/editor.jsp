@@ -6,7 +6,6 @@
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
 	org.opencms.main.*,
-	org.apache.commons.lang.StringUtils,
 	java.util.*
 "%><%@ 
 	taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%

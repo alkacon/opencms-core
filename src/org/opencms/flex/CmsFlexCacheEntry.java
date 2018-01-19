@@ -48,7 +48,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.logging.Log;
 
 /**

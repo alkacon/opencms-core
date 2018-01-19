@@ -36,7 +36,7 @@ import org.opencms.main.CmsException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * Helper class for dealing with authorization tokens for the 'forgot password' functionality.<p>

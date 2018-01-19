@@ -70,8 +70,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
@@ -665,7 +665,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
@@ -679,8 +679,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add locale handler creation rule
         digester.addObjectCreate(
             "*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALEHANDLER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALEHANDLER, "setLocaleHandler");
 
         // add locale rules
@@ -736,7 +736,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, 0, A_CLASS);
 
         // add password handler creation rule
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, A_CLASS, CmsConfigurationException.class);
+        digester.addObjectCreate(
+            "*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER,
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);

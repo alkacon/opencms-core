@@ -39,13 +39,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
+import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.SimpleTrigger;
+import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.triggers.CronTriggerImpl;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 /**
  * Test cases for the OpenCms scheduler thread pool.<p>
@@ -325,9 +331,21 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         SimpleTrigger[] trigger = new SimpleTrigger[THREADS_TO_RUN];
 
         for (int i = 0; i < jobDetail.length; i++) {
-            jobDetail[i] = new JobDetail("myJob" + i, Scheduler.DEFAULT_GROUP, TestCmsJob.class);
 
-            trigger[i] = new SimpleTrigger("myTrigger" + i, Scheduler.DEFAULT_GROUP, new Date(), null, 0, 0L);
+            JobDetailImpl tmp = (JobDetailImpl)JobBuilder.newJob(TestCmsJob.class).build();
+            tmp.setName("myJob" + i);
+            tmp.setGroup(Scheduler.DEFAULT_GROUP);
+            
+            jobDetail[i] = tmp;
+
+            SimpleTriggerImpl tmp2 = (SimpleTriggerImpl)SimpleScheduleBuilder.simpleSchedule().build();
+            tmp2.setName("myTrigger" + i);
+            tmp2.setGroup(Scheduler.DEFAULT_GROUP);
+            tmp2.setStartTime(new Date());
+            tmp2.setEndTime(null);
+            tmp2.setRepeatCount(0);
+            tmp2.setRepeatInterval(0L);
+            trigger[i] = tmp2;
         }
 
         for (int i = 0; i < THREADS_TO_RUN; i++) {
@@ -365,7 +383,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
         Scheduler scheduler = initOpenCmsScheduler();
 
-        JobDetail jobDetail = new JobDetail("cmsLaunch", Scheduler.DEFAULT_GROUP, CmsScheduleManager.class);
+        JobDetailImpl jobDetail = (JobDetailImpl)JobBuilder.newJob(CmsScheduleManager.class).build();
+        jobDetail.setName("cmsLaunch");
+        jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
 
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
@@ -377,9 +397,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
         jobDetail.setJobDataMap(jobData);
 
-        CronTrigger trigger = new CronTrigger("cmsLaunchTrigger", Scheduler.DEFAULT_GROUP);
-
-        trigger.setCronExpression("0/2 * * * * ?");
+        CronTriggerImpl trigger = (CronTriggerImpl)CronScheduleBuilder.cronSchedule("0/2 * * * * ?").build();
+        trigger.setName("cmsLaunchTrigger");
+        trigger.setGroup(Scheduler.DEFAULT_GROUP);
 
         scheduler.scheduleJob(jobDetail, trigger);
 

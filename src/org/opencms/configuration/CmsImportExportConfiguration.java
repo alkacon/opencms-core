@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 
@@ -328,7 +328,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
@@ -343,8 +343,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // add rules for import/export handlers
         digester.addObjectCreate(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORTEXPORTHANDLERS + "/" + N_IMPORTEXPORTHANDLER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORTEXPORTHANDLERS + "/" + N_IMPORTEXPORTHANDLER,
             "addImportExportHandler");
@@ -364,8 +364,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // add rules for the import versions
         digester.addObjectCreate(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IMPORTVERSIONS + "/" + N_IMPORTVERSION,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext(
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IMPORTVERSIONS + "/" + N_IMPORTVERSION,
             "addImportVersionClass");
@@ -406,45 +406,56 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             A_NAME);
 
         // add rules for export settings
-        digester.addCallMethod("*/"
-            + N_IMPORTEXPORT
-            + "/"
-            + N_EXPORT
-            + "/"
-            + N_EXPORT_DEFAULTTIMESTAMPMODES
-            + "/"
-            + N_EXPORT_TIMESTAMPMODE, "addDefaultTimestampMode", 1);
+        digester.addCallMethod(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE,
+            "addDefaultTimestampMode",
+            1);
 
-        digester.addCallParam("*/"
-            + N_IMPORTEXPORT
-            + "/"
-            + N_EXPORT
-            + "/"
-            + N_EXPORT_DEFAULTTIMESTAMPMODES
-            + "/"
-            + N_EXPORT_TIMESTAMPMODE, 0, A_MODE);
+        digester.addCallParam(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE,
+            0,
+            A_MODE);
 
-        digester.addCallMethod("*/"
-            + N_IMPORTEXPORT
-            + "/"
-            + N_EXPORT
-            + "/"
-            + N_EXPORT_DEFAULTTIMESTAMPMODES
-            + "/"
-            + N_EXPORT_TIMESTAMPMODE
-            + "/"
-            + N_EXPORT_RESOURCETYPENAME, "addResourceTypeForDefaultTimestampMode", 1);
+        digester.addCallMethod(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE
+                + "/"
+                + N_EXPORT_RESOURCETYPENAME,
+            "addResourceTypeForDefaultTimestampMode",
+            1);
 
-        digester.addCallParam("*/"
-            + N_IMPORTEXPORT
-            + "/"
-            + N_EXPORT
-            + "/"
-            + N_EXPORT_DEFAULTTIMESTAMPMODES
-            + "/"
-            + N_EXPORT_TIMESTAMPMODE
-            + "/"
-            + N_EXPORT_RESOURCETYPENAME, 0);
+        digester.addCallParam(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE
+                + "/"
+                + N_EXPORT_RESOURCETYPENAME,
+            0);
 
         digester.addCallMethod("*/" + N_IMPORTEXPORT + "/" + N_TEMP_EXPORTPONT_PATH, "addTempExportpointPath", 1);
         digester.addCallParam("*/" + N_IMPORTEXPORT + "/" + N_TEMP_EXPORTPONT_PATH, 0);
@@ -535,14 +546,17 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             0,
             A_URI);
         // resources to export rule
-        digester.addCallMethod("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_REGEX, "setExportFolderPattern", 0);
+        digester.addCallMethod(
+            "*/"
+                + N_STATICEXPORT
+                + "/"
+                + N_STATICEXPORT_RENDERSETTINGS
+                + "/"
+                + N_STATICEXPORT_RESOURCESTORENDER
+                + "/"
+                + N_STATICEXPORT_REGEX,
+            "setExportFolderPattern",
+            0);
 
         // export-rules configuration
         String exportRulePath = "*/"
@@ -601,24 +615,33 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             1);
         digester.addCallParam("*/" + N_PROTECTED_EXPORT + "/" + N_STATICEXPORT_EXPORTPATH, 0);
         // add rules for the protected export points
-        digester.addCallMethod("*/"
-            + N_PROTECTED_EXPORT
-            + "/"
-            + I_CmsXmlConfiguration.N_EXPORTPOINTS
-            + "/"
-            + I_CmsXmlConfiguration.N_EXPORTPOINT, "addProtectedExportPoint", 2);
-        digester.addCallParam("*/"
-            + N_PROTECTED_EXPORT
-            + "/"
-            + I_CmsXmlConfiguration.N_EXPORTPOINTS
-            + "/"
-            + I_CmsXmlConfiguration.N_EXPORTPOINT, 0, I_CmsXmlConfiguration.A_URI);
-        digester.addCallParam("*/"
-            + N_PROTECTED_EXPORT
-            + "/"
-            + I_CmsXmlConfiguration.N_EXPORTPOINTS
-            + "/"
-            + I_CmsXmlConfiguration.N_EXPORTPOINT, 1, I_CmsXmlConfiguration.A_DESTINATION);
+        digester.addCallMethod(
+            "*/"
+                + N_PROTECTED_EXPORT
+                + "/"
+                + I_CmsXmlConfiguration.N_EXPORTPOINTS
+                + "/"
+                + I_CmsXmlConfiguration.N_EXPORTPOINT,
+            "addProtectedExportPoint",
+            2);
+        digester.addCallParam(
+            "*/"
+                + N_PROTECTED_EXPORT
+                + "/"
+                + I_CmsXmlConfiguration.N_EXPORTPOINTS
+                + "/"
+                + I_CmsXmlConfiguration.N_EXPORTPOINT,
+            0,
+            I_CmsXmlConfiguration.A_URI);
+        digester.addCallParam(
+            "*/"
+                + N_PROTECTED_EXPORT
+                + "/"
+                + I_CmsXmlConfiguration.N_EXPORTPOINTS
+                + "/"
+                + I_CmsXmlConfiguration.N_EXPORTPOINT,
+            1,
+            I_CmsXmlConfiguration.A_DESTINATION);
 
         // add rules for the user data export
         digester.addObjectCreate("*/" + N_USERCSVEXPORT, CmsUserExportSettings.class);
@@ -632,7 +655,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_REPOSITORIES, "setRepositoryManager");
 
         // repository
-        digester.addObjectCreate("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, A_CLASS, CmsConfigurationException.class);
+        digester.addObjectCreate(
+            "*/" + N_REPOSITORIES + "/" + N_REPOSITORY,
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
 
         // repository name
         digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "setName", 1);
@@ -707,22 +733,28 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_SETTINGS + "/" + N_EXTHTMLIMPORT_ENCODING,
             "setEncoding",
             0);
-        digester.addCallMethod("*/"
-            + N_EXTHTMLIMPORT
-            + "/"
-            + N_EXTHTMLIMPORT_SETTINGS
-            + "/"
-            + N_EXTHTMLIMPORT_PATTERN
-            + "/"
-            + N_EXTHTMLIMPORT_PATTERN_START, "setStartPattern", 0);
-        digester.addCallMethod("*/"
-            + N_EXTHTMLIMPORT
-            + "/"
-            + N_EXTHTMLIMPORT_SETTINGS
-            + "/"
-            + N_EXTHTMLIMPORT_PATTERN
-            + "/"
-            + N_EXTHTMLIMPORT_PATTERN_END, "setEndPattern", 0);
+        digester.addCallMethod(
+            "*/"
+                + N_EXTHTMLIMPORT
+                + "/"
+                + N_EXTHTMLIMPORT_SETTINGS
+                + "/"
+                + N_EXTHTMLIMPORT_PATTERN
+                + "/"
+                + N_EXTHTMLIMPORT_PATTERN_START,
+            "setStartPattern",
+            0);
+        digester.addCallMethod(
+            "*/"
+                + N_EXTHTMLIMPORT
+                + "/"
+                + N_EXTHTMLIMPORT_SETTINGS
+                + "/"
+                + N_EXTHTMLIMPORT_PATTERN
+                + "/"
+                + N_EXTHTMLIMPORT_PATTERN_END,
+            "setEndPattern",
+            0);
         digester.addCallMethod(
             "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_SETTINGS + "/" + N_EXTHTMLIMPORT_OVERWRITE,
             "setOverwrite",

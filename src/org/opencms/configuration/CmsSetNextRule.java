@@ -26,7 +26,7 @@
  *
  *
  * This file is based upon:
- * org.apache.commons.digester.CallMethodRule.
+ * org.apache.commons.digester3.CallMethodRule.
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  *
@@ -50,8 +50,8 @@ import org.opencms.main.CmsLog;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.Rule;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 import org.apache.commons.logging.Log;
 
 import org.xml.sax.Attributes;
@@ -65,7 +65,7 @@ import org.xml.sax.Attributes;
  * which is the case in the OpenCms usage the first argument <code>CmsObject</code>
  * will be null at method invocation time. <p>
 
- * This is an alternative for <code>{@link org.apache.commons.digester.SetNextRule}</code>
+ * This is an alternative for <code>{@link org.apache.commons.digester3.SetNextRule}</code>
  * if a parent to child-property configuration has been done but the setter for that
  * property requires additional arguments that are only available at real runtime
  * of the application.<p>
@@ -74,8 +74,8 @@ import org.xml.sax.Attributes;
  * given <code>{@link java.lang.Class}[]</code>: It is used as argument on the position
  * where the <code>Class[]</code> has an instance of the same type as it's own <code>Class</code>.<p>
  *
- * @see org.apache.commons.digester.CallMethodRule
- * @see org.apache.commons.digester.SetNextRule
+ * @see org.apache.commons.digester3.CallMethodRule
+ * @see org.apache.commons.digester3.SetNextRule
  *
  * @since 6.0.0
  */
@@ -124,7 +124,7 @@ public class CmsSetNextRule extends Rule {
      *
      * The 1<sup>st</sup> argument of the method will be of type <code>{@link CmsObject}</code>.
      * It's value will remain null (except subsequent
-     * <code>{@link org.apache.commons.digester.CallParamRule}</code> would put a value
+     * <code>{@link org.apache.commons.digester3.CallParamRule}</code> would put a value
      * which currently is impossible at initialization time within OpenCms).<p>
      *
      * The 2<sup>nd</sup> argument will be the top-stack element at digestion time.
@@ -146,10 +146,10 @@ public class CmsSetNextRule extends Rule {
      *
      * The 1<sup>st</sup> argument of the method will be of type <code>{@link CmsObject}</code>.
      * It's value will remain null (except subsequent
-     * <code>{@link org.apache.commons.digester.CallParamRule}</code> would put a value
+     * <code>{@link org.apache.commons.digester3.CallParamRule}</code> would put a value
      * which currently is impossible at initialization time within OpenCms).<p>
      *
-     * The further arguments will be filled by the subsequent <code>{@link org.apache.commons.digester.CallParamRule}</code>
+     * The further arguments will be filled by the subsequent <code>{@link org.apache.commons.digester3.CallParamRule}</code>
      * matches. If the first <code>Class</code> in the given array matches the top stack element
      * (child) that value will be used. If at digestion time no parameters are found for the given
      * types their values for invocation of the method remain null.<p>
@@ -189,7 +189,7 @@ public class CmsSetNextRule extends Rule {
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = null;
             }
-            digester.pushParams(parameters);
+            getDigester().pushParams(parameters);
         }
     }
 
@@ -222,13 +222,13 @@ public class CmsSetNextRule extends Rule {
     public void end(String namespace, String name) throws Exception {
 
         // Determine the target object for the method call: the parent object
-        Object parent = digester.peek(1);
-        Object child = digester.peek(0);
+        Object parent = getDigester().peek(1);
+        Object child = getDigester().peek(0);
 
         // Retrieve or construct the parameter values array
         Object[] parameters = null;
         if (m_paramCount > 0) {
-            parameters = (Object[])digester.popParams();
+            parameters = getDigester().popParams();
             if (LOG.isTraceEnabled()) {
                 for (int i = 0, size = parameters.length; i < size; i++) {
                     LOG.trace("[SetNextRuleWithParams](" + i + ")" + parameters[i]);
@@ -302,12 +302,12 @@ public class CmsSetNextRule extends Rule {
         if (parent == null) {
             StringBuffer sb = new StringBuffer();
             sb.append("[SetNextRuleWithParams]{");
-            sb.append(digester.getMatch());
+            sb.append(getDigester().getMatch());
             sb.append("} Call target is null (");
             sb.append("targetOffset=");
             sb.append(m_targetOffset);
             sb.append(",stackdepth=");
-            sb.append(digester.getCount());
+            sb.append(getDigester().getCount());
             sb.append(")");
             throw new org.xml.sax.SAXException(sb.toString());
         }
@@ -315,7 +315,7 @@ public class CmsSetNextRule extends Rule {
         // Invoke the required method on the top object
         if (LOG.isDebugEnabled()) {
             StringBuffer sb = new StringBuffer("[SetNextRuleWithParams]{");
-            sb.append(digester.getMatch());
+            sb.append(getDigester().getMatch());
             sb.append("} Call ");
             sb.append(parent.getClass().getName());
             sb.append(".");

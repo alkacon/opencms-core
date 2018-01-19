@@ -31,7 +31,7 @@ import org.opencms.file.types.CmsResourceTypeUnknown;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
 
-import org.apache.commons.digester.AbstractObjectCreationFactory;
+import org.apache.commons.digester3.AbstractObjectCreationFactory;
 import org.apache.commons.logging.Log;
 
 import org.xml.sax.Attributes;
@@ -46,7 +46,7 @@ import org.xml.sax.Attributes;
  *
  * @since 6.0.2
  */
-public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreationFactory {
+public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreationFactory<I_CmsResourceType> {
 
     /** The log object of this class. */
     private static final Log LOG = CmsLog.getLog(CmsDigesterResourceTypeCreationFactory.class);
@@ -60,10 +60,10 @@ public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreati
     }
 
     /**
-     * @see org.apache.commons.digester.ObjectCreationFactory#createObject(org.xml.sax.Attributes)
+     * @see org.apache.commons.digester3.ObjectCreationFactory#createObject(org.xml.sax.Attributes)
      */
     @Override
-    public Object createObject(Attributes attributes) throws Exception {
+    public I_CmsResourceType createObject(Attributes attributes) throws Exception {
 
         // get the class name attribute
         String className = attributes.getValue(I_CmsXmlConfiguration.A_CLASS);

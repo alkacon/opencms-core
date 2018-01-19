@@ -51,7 +51,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 
@@ -430,7 +430,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
@@ -447,8 +447,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         // add rules for resource loaders
         digester.addObjectCreate(
             "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addCallMethod(
             "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);

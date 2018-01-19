@@ -519,6 +519,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Tag#toTagHtml()
          */
+        @Override
         public String toTagHtml() {
 
             return m_decorated.toTagHtml();

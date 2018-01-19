@@ -55,7 +55,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -313,8 +313,8 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                 while (itSubs.hasNext()) {
                     CmsCategory cat = itSubs.next();
                     String title = cat.getTitle();
-                    String titleJs = StringEscapeUtils.escapeJavaScript(title);
-                    String titleHtml = StringEscapeUtils.escapeHtml(title);
+                    String titleJs = StringEscapeUtils.escapeEcmaScript(title);
+                    String titleHtml = StringEscapeUtils.escapeHtml4(title);
                     if ((CmsResource.getPathLevel(cat.getPath()) + 1) == level) {
                         itSubs.remove();
                         if (done.contains(cat.getPath())) {

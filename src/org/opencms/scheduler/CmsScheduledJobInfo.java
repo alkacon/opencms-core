@@ -46,6 +46,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.logging.Log;
 
+import org.quartz.CronExpression;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Trigger;
 
@@ -822,7 +824,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         try {
             // check if the cron expression is valid
-            new CronTrigger().setCronExpression(cronExpression);
+            new CronExpression(cronExpression);
         } catch (Exception e) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_BAD_CRON_EXPRESSION_2, getJobName(), cronExpression));

@@ -40,7 +40,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.pdfbox.util.ImageIOUtil;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import org.jpedal.PdfDecoder;
 import org.jpedal.fonts.FontMappings;

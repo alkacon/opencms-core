@@ -47,6 +47,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 /**
@@ -560,6 +561,30 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
 
     public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
     throws IllegalStateException {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.ServletRequest#getContentLengthLong()
+     */
+    public long getContentLengthLong() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.http.HttpServletRequest#changeSessionId()
+     */
+    public String changeSessionId() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.http.HttpServletRequest#upgrade(java.lang.Class)
+     */
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
 
         throw new RuntimeException("Not implemented");
     }
