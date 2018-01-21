@@ -713,19 +713,22 @@ public final class CmsFileUtil {
 
         // read in the bytes
         int offset = 0;
-        int numRead = 0;
-        while (offset < size) {
-            numRead = in.read(bytes, offset, size - offset);
-            if (numRead >= 0) {
-                offset += numRead;
-            } else {
-                break;
+        
+        try {
+            int numRead = 0;
+            while (offset < size) {
+                numRead = in.read(bytes, offset, size - offset);
+                if (numRead >= 0) {
+                    offset += numRead;
+                } else {
+                    break;
+                }
             }
-        }
-
-        // close the input stream and return bytes
-        if (closeStream) {
-            in.close();
+        } finally {
+            // close the input stream
+            if (closeStream) {
+                in.close();
+            }
         }
 
         // ensure all the bytes have been read in
