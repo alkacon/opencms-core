@@ -208,13 +208,6 @@ public interface I_CmsSearchDocument {
     String getType();
 
     /**
-     * Sets the boost factor for the whole document.<p>
-     *
-     * @param boost the factor to set
-     */
-    void setBoost(float boost);
-
-    /**
      * Sets the score for this document.<p>
      *
      * @param score the score

@@ -31,11 +31,17 @@
 
 package org.opencms.search.solr;
 
+import org.apache.commons.logging.Log;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrException;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.schema.*;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.CmsSearchField;
@@ -43,26 +49,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.nio.ByteBuffer;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.logging.Log;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrException;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.util.DateUtil;
-import org.apache.solr.schema.FieldType;
-import org.apache.solr.schema.IndexSchema;
-import org.apache.solr.schema.SchemaField;
-import org.apache.solr.schema.TrieDateField;
+import java.util.*;
 
 /**
  * A search document implementation for Solr indexes.<p>
@@ -70,9 +58,6 @@ import org.apache.solr.schema.TrieDateField;
  * @since 8.5.0
  */
 public class CmsSolrDocument implements I_CmsSearchDocument {
-
-    /** A constant for the Solr date format. */
-    protected static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrDocument.class);
@@ -91,7 +76,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     public CmsSolrDocument(SolrDocument doc) {
 
         this();
-        m_doc = ClientUtils.toSolrInputDocument(doc);
+        m_doc = CmsSearchUtil.toSolrInputDocument(doc);
     }
 
     /**
@@ -110,7 +95,6 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     private CmsSolrDocument() {
 
-        DF.setTimeZone(DateUtil.UTC);
     }
 
     /**
@@ -150,7 +134,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addDateField(String name, long time, boolean analyzed) {
 
-        String val = DF.format(new Date(time));
+        String val = CmsSearchUtil.getDateAsIso8601(time);
         m_doc.addField(name, val);
         if (analyzed) {
             m_doc.addField(name + CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX, val);
@@ -278,8 +262,8 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                         try {
                             FieldType type = schema.getFieldType(fieldName);
-                            if (type instanceof TrieDateField) {
-                                val = DF.format(new Date(new Long(val).longValue()));
+                            if (type instanceof DatePointField || type instanceof TrieDateField) {
+                                val = CmsSearchUtil.getDateAsIso8601(new Long(val).longValue());
                             }
                         } catch (SolrException e) {
                             LOG.debug(e.getMessage(), e);
@@ -289,11 +273,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                             // TODO: make the length and the area configurable
                             val = CmsStringUtil.trimToSize(val, 1000, 50, "");
                         }
-                        if (schema.hasExplicitField(fieldName) || (schema.getDynamicPattern(fieldName) != null)) {
-                            m_doc.addField(fieldName, val);
-                        } else {
-                            m_doc.addField(fieldName, val, field.getBoost());
-                        }
+                        m_doc.addField(fieldName, val);
                     }
                 }
             } catch (SolrException e) {
@@ -362,7 +342,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         }
         if (o != null) {
             try {
-                return DateUtil.parseDate(o.toString());
+                return CmsSearchUtil.parseDate(o.toString());
             } catch (ParseException e) {
                 // ignore: not a valid date format
                 LOG.debug(e);
@@ -434,7 +414,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public SolrDocument getSolrDocument() {
 
-        return ClientUtils.toSolrDocument(m_doc);
+        return CmsSearchUtil.toSolrDocument(m_doc);
     }
 
     /**
@@ -445,13 +425,6 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         return getFieldValueAsString(CmsSearchField.FIELD_TYPE);
     }
 
-    /**
-     * @see org.opencms.search.I_CmsSearchDocument#setBoost(float)
-     */
-    public void setBoost(float boost) {
-
-        m_doc.setDocumentBoost(boost);
-    }
 
     /**
      * Sets the id of this document.<p>

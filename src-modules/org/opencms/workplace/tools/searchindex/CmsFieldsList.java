@@ -392,7 +392,6 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             }
             item.set(LIST_COLUMN_NAME, field.getName());
             item.set(LIST_COLUMN_DISPLAY, resolveMacros(field.getDisplayName()));
-            item.set(LIST_COLUMN_BOOST, new Float(field.getBoost()).toString());
             item.set(LIST_COLUMN_INDEX, field.getIndexed());
             item.set(LIST_COLUMN_EXCERPT_HIDE, Boolean.valueOf(field.isInExcerpt()));
             item.set(LIST_COLUMN_STORE_HIDE, Boolean.valueOf(field.isStored()));

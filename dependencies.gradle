@@ -53,8 +53,7 @@ dependencies {
     distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.7.0'
     distribution group: 'org.json', name: 'json', version: '20140107'
     distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.1'
-    distribution group: 'com.spatial4j', name: 'spatial4j', version: '0.4.1' 
-    
+
     distribution group: 'xml-resolver', name: 'xml-resolver', version: '1.2'
     distribution group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.1' 
     distribution group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11'
@@ -171,23 +170,86 @@ dependencies {
     distribution group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.4'
     distribution group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.8'
     distribution group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.4'
-    distribution group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-core', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-grouping', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-memory', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-misc', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-queries', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-suggest', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-join', version: '5.5.3'
-    distribution group: 'org.apache.lucene', name: 'lucene-backward-codecs', version: '5.5.3'
 
     
-    distribution group: 'org.apache.solr', name: 'solr-core', version: '5.5.3'
-    distribution group: 'org.apache.solr', name: 'solr-solrj', version: '5.5.3'
-    
+    distribution group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-core', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-grouping', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-memory', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-misc', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-queries', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-spatial-extras', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-suggest', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-join', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-backward-codecs', version: '7.2.1'
+    distribution(group: 'org.apache.solr', name: 'solr-core', version:'7.2.1') {
+	exclude(module: 'calcite-core')
+	exclude(module: 'avatica-core')
+	exclude(module: 'calcite-linq4j')
+	exclude(module: 'caffeine')
+	exclude(module: 'commons-exec')
+	exclude(module: 'curator-framework')
+	exclude(module: 'curator-client')
+	exclude(module: 'commons-configuration')
+	exclude(module: 'commons-cli')
+	exclude(module: 'curator-recipes')
+	exclude(module: 'commons-compiler')
+	exclude(module: 'jetty-jmx')
+	exclude(module: 'jetty-rewrite')
+	exclude(module: 'jetty-http')
+	exclude(module: 'jetty-continuation')
+	exclude(module: 'jetty-io')
+	exclude(module: 'jackson-core-asl')
+	exclude(module: 'jackson-core')
+	exclude(module: 'htrace-core')
+	exclude(module: 'hadoop-hdfs')
+	exclude(module: 'jcl-over-slf4j')
+	exclude(module: 'jackson-databind')
+	exclude(module: 'jetty-util')
+	exclude(module: 'jetty-webapp')
+	exclude(module: 'jetty-xml')
+	exclude(module: 'jetty-servlets')
+	exclude(module: 'dom4j')
+	exclude(module: 'jackson-annotations')
+	exclude(module: 'hadoop-common')
+	exclude(module: 'hadoop-auth')
+	exclude(module: 'eigenbase-properties')
+	exclude(module: 'jetty-server')
+	exclude(module: 'jackson-mapper-asl')
+	exclude(module: 'janino')
+	exclude(module: 'jetty-security')
+	exclude(module: 'hadoop-annotations')
+	exclude(module: 'jetty-deploy')
+	exclude(module: 'gmetric4j')
+	exclude(module: 'jackson-dataformat-smile')
+	exclude(module: 'jetty-servlet')
+	exclude(module: 'lucene-codecs')
+	exclude(module: 't-digest')
+	exclude(module: 'org.restlet.ext.servlet')
+	exclude(module: 'lucene-sandbox')
+	exclude(module: 'lucene-analyzers-phonetic')
+	exclude(module: 'lucene-analyzers-kuromoji')
+	exclude(module: 'lucene-classification')
+	exclude(module: 'lucene-expressions')
+	exclude(module: 'metrics-graphite')
+	exclude(module: 'metrics-ganglia')
+	exclude(module: 'metrics-jetty9')
+	exclude(module: 'protobuf-java')
+	exclude(module: 'metrics-jvm')
+	exclude(module: 'hppc')
+    }
+    distribution(group: 'org.apache.solr', name: 'solr-solrj', version:'7.2.1') {
+	exclude(module: 'commons-math3')
+	exclude(module: 'jcl-over-slf4j')
+    }
+    // https://mvnrepository.com/artifact/org.locationtech.spatial4j/spatial4j
+    distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6'
+    // https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core
+    distribution group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.6'
+
     distribution(group: 'org.apache.openjpa', name: 'openjpa', version:'2.4.2') {
 	exclude(module: 'commons-pool')
     }
@@ -292,7 +354,11 @@ dependencies {
     distribution group: 'org.glassfish.web', name: 'javax.servlet.jsp.jstl', version: '1.2.5-b03'
     distribution group: 'xalan', name: 'xalan', version: '2.7.2'
     distribution group: 'xalan', name: 'serializer', version: '2.7.2'
-    
+    // https://mvnrepository.com/artifact/xml-apis/xml-apis
+    distribution group: 'xml-apis', name: 'xml-apis', version: '1.4.01'
+    // https://mvnrepository.com/artifact/xerces/xercesImpl
+    distribution group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+
     distribution group: 'com.lambdaworks', name: 'scrypt', version: '1.4.0'
     
     distribution(group: 'org.apache.cxf', name: 'cxf-core', version:'3.2.1') {

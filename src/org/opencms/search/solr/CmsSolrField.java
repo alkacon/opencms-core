@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.apache.solr.schema.IndexSchema;
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
@@ -38,8 +39,6 @@ import org.opencms.search.fields.I_CmsSearchFieldMapping;
 
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.solr.schema.IndexSchema;
 
 /**
  * An individual field for the Solr search index.<p>
@@ -81,7 +80,6 @@ public class CmsSolrField extends CmsSearchField {
             name = luceneField.getName() + "_txt";
         }
         setName(name);
-        setBoost(luceneField.getBoost());
         setDefaultValue(luceneField.getDefaultValue());
 
         for (I_CmsSearchFieldMapping mapping : luceneField.getMappings()) {
@@ -96,11 +94,10 @@ public class CmsSolrField extends CmsSearchField {
      * @param copyFields the field names to copy this field's value to
      * @param locale the locale
      * @param defaultValue the default value
-     * @param boost the boost factor
      */
-    public CmsSolrField(String targetField, List<String> copyFields, Locale locale, String defaultValue, float boost) {
+    public CmsSolrField(String targetField, List<String> copyFields, Locale locale, String defaultValue) {
 
-        super(targetField, defaultValue, boost);
+        super(targetField, defaultValue);
         m_targetField = targetField;
         m_copyFields = copyFields;
         m_locale = locale;
@@ -174,8 +171,6 @@ public class CmsSolrField extends CmsSearchField {
 
         return getName()
             + "["
-            + " boost:"
-            + getBoost()
             + " defaultValue:"
             + getDefaultValue()
             + " targetField:"
