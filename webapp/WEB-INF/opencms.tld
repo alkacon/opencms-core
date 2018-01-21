@@ -3134,7 +3134,7 @@
         <name>isSubSitemap</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
-            java.lang.String isSubSitemap(org.opencms.file.CmsResource)
+            boolean isSubSitemap(org.opencms.file.CmsResource)
         </function-signature>
     </function>
 
@@ -3158,7 +3158,7 @@
         <name>changeFileNameSuffixToo</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
         <function-signature>
-            java.lang.String changeFileNameSuffixToo(java.lang.String, java.lang.String)
+            java.lang.String changeFileNameSuffixTo(java.lang.String,java.lang.String)
         </function-signature>
     </function>
 
