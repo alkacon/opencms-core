@@ -130,6 +130,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_FORMATTER_CONFIG_4 = "ERR_READ_FORMATTER_CONFIG_4";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_REQUEST_SECURE_RESOURCE_0 = "ERR_REQUEST_SECURE_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
