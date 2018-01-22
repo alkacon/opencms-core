@@ -61,6 +61,7 @@ import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.ui.login.CmsPasswordForm;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +70,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -90,7 +92,6 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 /**
@@ -224,7 +225,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     CmsPathSelectField m_startfolder;
 
     /**Holder for authentification fields. */
-    private VerticalLayout m_authHolder;
+    //    private VerticalLayout m_authHolder;
 
     /**vaadin component.*/
     private Button m_cancel;
@@ -240,6 +241,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
     /**vaadin component. */
     private CheckBox m_forceResetPassword;
+
+    /**vaadin component. */
+    private CheckBox m_sendEmail;
 
     /**Vaadin component. */
     private Button m_generateButton;
@@ -321,6 +325,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_enabled.setValue(new Boolean(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
             init(window, settings);
+            m_sendEmail.setEnabled(false);
             m_forceResetPassword.setValue(CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()));
             m_next.setVisible(false);
             m_startfolder.setValue(settings.getStartFolder());
@@ -362,7 +367,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
             }
         } catch (CmsException e) {
-            //
+            LOG.error("Unable to read OU", e);
         }
         setPasswordFields();
         m_ou.setValue(ou.isEmpty() ? "/" : ou);
@@ -374,6 +379,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         m_enabled.setValue(Boolean.TRUE);
         m_startfolder.setValue("/");
         init(window, null);
+        m_sendEmail.setValue(Boolean.TRUE);
         m_forceResetPassword.setValue(Boolean.TRUE);
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
@@ -395,6 +401,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         m_pw.getPassword1Field().setValue(password);
         m_pw.getPassword2Field().setValue(password);
+        m_forceResetPassword.setValue(Boolean.TRUE);
+        m_sendEmail.setValue(Boolean.TRUE);
+        m_sendEmail.setEnabled(true);
 
     }
 
@@ -495,15 +504,19 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      */
     protected void save() {
 
+        boolean newUser = false;
         try {
             if (m_user == null) {
                 createNewUser();
+                newUser = true;
             } else {
 
                 saveUser();
             }
-
             saveUserSettings();
+            if (m_sendEmail.getValue().booleanValue() & m_sendEmail.isEnabled()) {
+                sendMail(newUser);
+            }
         } catch (CmsException e) {
             LOG.error("Unable to save user", e);
         }
@@ -519,6 +532,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         int maxPos = m_isWebOU ? 2 : 3;
         m_next.setVisible(pos < maxPos);
         m_ok.setVisible(pos == maxPos);
+    }
+
+    /**
+     * En/Diables the email box.<p>
+     */
+    protected void setEmailBox() {
+
+        m_sendEmail.setEnabled(
+            !CmsStringUtil.isEmptyOrWhitespaceOnly(m_pw.getPassword1())
+                | !CmsStringUtil.isEmptyOrWhitespaceOnly(m_pw.getPassword2()));
     }
 
     /**
@@ -982,6 +1005,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                         public void run() {
 
                             windowDialog.close();
+
                         }
                     });
                 windowDialog.setContent(dialog);
@@ -989,7 +1013,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
         });
 
-        m_tab.setHeight("350px");
+        m_tab.setHeight("400px");
     }
 
     /**
@@ -1030,6 +1054,27 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
+     * Sends an email to the user.<p>
+     *
+     * @param newUser is the user new?
+     */
+    private void sendMail(boolean newUser) {
+
+        CmsSendPasswordNotification notification = new CmsSendPasswordNotification(
+            m_cms,
+            m_pw.getPassword1(),
+            m_user,
+            m_cms.getRequestContext().getCurrentUser(),
+            OpenCms.getLinkManager().getWorkplaceLink(m_cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false),
+            newUser);
+        try {
+            notification.send();
+        } catch (EmailException e) {
+            LOG.error("Unable to send email with password", e);
+        }
+    }
+
+    /**
      * Sets the password fields.<p>
      */
     private void setPasswordFields() {
@@ -1052,6 +1097,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             public void textChange(TextChangeEvent event) {
 
                 checkSecurity(event.getText());
+                setEmailBox();
             }
         });
         m_pw.getPassword2Field().addTextChangeListener(new TextChangeListener() {
@@ -1062,10 +1108,10 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
                 checkSecurity(m_pw.getPassword1());
                 checkPasswordMatch(event.getText());
+                setEmailBox();
             }
         });
 
-        m_authHolder.addComponent(m_pw);
     }
 
     /**

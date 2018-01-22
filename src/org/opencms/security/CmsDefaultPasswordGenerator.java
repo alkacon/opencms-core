@@ -31,8 +31,12 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+/**
+ * Default Password Generator class.<p>
+ */
 public class CmsDefaultPasswordGenerator implements I_CmsPasswordGenerator {
 
+    /**Capital letters. */
     private static final String[] Capitals = {
         "A",
         "B",
@@ -60,6 +64,8 @@ public class CmsDefaultPasswordGenerator implements I_CmsPasswordGenerator {
         "X",
         "Y",
         "Z"};
+
+    /**Letters. */
     private static final String[] Letters = {
         "a",
         "b",
@@ -87,7 +93,11 @@ public class CmsDefaultPasswordGenerator implements I_CmsPasswordGenerator {
         "x",
         "y",
         "z"};
+
+    /**Numbers. */
     private static final String[] Numbers = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
+    /**Special chars. */
     private static final String[] Specials = {
         "!",
         "?",
@@ -99,35 +109,69 @@ public class CmsDefaultPasswordGenerator implements I_CmsPasswordGenerator {
         "$",
         "%",
         "&",
-        "§",
+        ":",
         "(",
         ")",
         "[",
         "]"};
 
+    /**
+     * Get a random password.<p>
+     *
+     * @return random password
+     */
     public static String getRandomPWD() {
 
-        CmsDefaultPasswordGenerator generator = new CmsDefaultPasswordGenerator();
-        return generator.getRandomPassword();
+        return getRandomPWD(10, 2, 2);
     }
 
+    /**
+     * Get a random password.<p>
+     * @param countTotal Desired password length
+     * @param countCapitals minimal count of Capital letters
+     * @param countSpecials count of special chars
+     *
+     * @return random password
+     */
+    public static String getRandomPWD(int countTotal, int countCapitals, int countSpecials) {
+
+        CmsDefaultPasswordGenerator generator = new CmsDefaultPasswordGenerator();
+        return generator.getRandomPassword(countTotal, countCapitals, countSpecials);
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsPasswordGenerator#getRandomPassword()
+     */
     public String getRandomPassword() {
+
+        return getRandomPassword(10, 2, 2);
+    }
+
+    /**
+     * Generates a random password.<p>
+     *
+     * @param countTotal Total password length
+     * @param countCapitals Minimal count of capitals
+     * @param countSpecials count of special chars
+     * @return random password
+     */
+    public String getRandomPassword(int countTotal, int countCapitals, int countSpecials) {
 
         String res = "";
 
         String[] Normals = ArrayUtils.addAll(ArrayUtils.addAll(Capitals, Letters), Numbers);
         Random rand = new Random();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < (countTotal - countCapitals - countSpecials); i++) {
             res = res + Normals[rand.nextInt(Normals.length)];
         }
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < countSpecials; i++) {
             int pos = rand.nextInt(res.length());
             res = res.substring(0, pos) + Specials[rand.nextInt(Specials.length)] + res.substring(pos);
         }
-        int pos = rand.nextInt(res.length());
-        res = res.substring(0, pos) + Capitals[rand.nextInt(Capitals.length)] + res.substring(pos);
-        pos = rand.nextInt(res.length());
-        res = res.substring(0, pos) + Letters[rand.nextInt(Letters.length)] + res.substring(pos);
+        for (int i = 0; i < countCapitals; i++) {
+            int pos = rand.nextInt(res.length());
+            res = res.substring(0, pos) + Capitals[rand.nextInt(Capitals.length)] + res.substring(pos);
+        }
         return res;
     }
 

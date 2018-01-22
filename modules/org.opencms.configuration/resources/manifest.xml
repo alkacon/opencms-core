@@ -33,6 +33,8 @@
 			<resource uri="/system/config/notification/publish-notification"/>
 			<resource uri="/system/config/notification/workflow-notification"/>
 			<resource uri="/system/config/notification/password-change-notification"/>
+			<resource uri="/system/config/notification/password-new-password-from-admin-notification"/>
+			<resource uri="/system/config/notification/password-new-user-notification"/>
 			<resource uri="/system/config/wysiwyg/"/>
 		</resources>
 		<excluderesources/>
@@ -222,6 +224,66 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Change password for OpenCms user: %(user)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+			<file>
+			<source>system/config/notification/password-new-password-from-admin-notification</source>
+			<destination>system/config/notification/password-new-password-from-admin-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>1f88f566-f76b-11e7-a6cf-5b9ef2cddbe8</uuidstructure>
+			<uuidresource>1f88f567-f76b-11e7-a6cf-5b9ef2cddbe8</uuidresource>
+			<datecreated>Fri, 12 Jan 2018 07:35:12 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New password for OpenCms user: %(user)]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/config/notification/password-new-user-notification</source>
+			<destination>system/config/notification/password-new-user-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>dec1d49a-f76d-11e7-a6cf-5b9ef2cddbe8</uuidstructure>
+			<uuidresource>dec1d49b-f76d-11e7-a6cf-5b9ef2cddbe8</uuidresource>
+			<datecreated>Fri, 12 Jan 2018 07:54:51 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome %(user) to OpenCms]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>

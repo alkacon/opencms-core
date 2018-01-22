@@ -85,7 +85,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     private Locale m_locale;
 
     /** The macro resolver used. */
-    private CmsMacroResolver m_macroResolver;
+    private CmsNotificationMacroResolver m_macroResolver;
 
     /** The receiver of the notification. */
     private CmsUser m_receiver;
@@ -101,7 +101,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
         m_cms = cms;
         m_receiver = receiver;
 
-        m_macroResolver = new CmsMacroResolver();
+        m_macroResolver = new CmsNotificationMacroResolver(cms, receiver);
         m_macroResolver.setCmsObject(cms);
     }
 
@@ -188,6 +188,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             }
 
             // define macro resolver
+            //TODO Remove when old notifications were adjusted
             m_macroResolver.addMacro("firstname", m_receiver.getFirstname());
             m_macroResolver.addMacro("lastname", m_receiver.getLastname());
             m_macroResolver.addMacro("project", m_cms.getRequestContext().getCurrentProject().getName());
