@@ -419,6 +419,10 @@
 		padding-bottom: $o-layout-reduced-margin;
 	}
   
+  	.v-panel-content > .o-no-padding{
+  		padding: 0px !important;
+  	}
+  
 	.o-responsive{
 		display: block;
 		background: $v-app-background-color;

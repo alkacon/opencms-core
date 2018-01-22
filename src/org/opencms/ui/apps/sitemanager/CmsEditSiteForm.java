@@ -105,7 +105,6 @@ import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the Form to edit or add a site.<p>
@@ -654,6 +653,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_tab.setHeight("400px");
         m_infoSiteRoot.setVisible(false);
         m_simpleFieldSiteRoot.setVisible(false);
 
@@ -745,9 +745,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             }
         });
-
-        m_tab.addStyleName(ValoTheme.TABSHEET_FRAMED);
-        m_tab.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 
         setUpComboBoxPosition();
         setUpComboBoxTemplate();
