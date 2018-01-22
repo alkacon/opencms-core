@@ -2237,7 +2237,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String testQuery = getDbTestQuery();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(testQuery)) {
             setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + "v11.connectionTestQuery", testQuery);
-        } 
+        }
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + CmsDbPoolV11.KEY_JDBC_URL_PARAMS, getDbConStrParams());
     }
 
@@ -3017,10 +3017,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     private void save(CmsParameterConfiguration properties, String source, String target, Set<String> forceWrite) {
 
-        System.out.println("save");
-        System.out.println("prop = " + properties);
-        System.out.println("source = " + source);
-        System.out.println("target = " + target);
         try {
             Set<String> alreadyWritten = new HashSet<String>();
 
