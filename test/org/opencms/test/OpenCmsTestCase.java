@@ -28,7 +28,7 @@
 package org.opencms.test;
 
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.db.CmsDbPool;
+import org.opencms.db.CmsDbPoolV11;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
@@ -4082,49 +4082,51 @@ public class OpenCmsTestCase extends TestCase {
 
             String key = "setup";
             m_setupConnection = new ConnectionData();
-            m_setupConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+            m_setupConnection.m_dbName = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
             m_setupConnection.m_jdbcUrl = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
-            m_setupConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "user");
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
+            m_setupConnection.m_userName = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "user");
             m_setupConnection.m_userPassword = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "password");
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "password");
             m_setupConnection.m_jdbcDriver = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_DRIVER);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
             m_setupConnection.m_jdbcUrl = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
             m_setupConnection.m_jdbcUrlParams = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL_PARAMS);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
 
             key = "default";
             m_defaultConnection = new ConnectionData();
             m_defaultConnection.m_dbName = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
             m_defaultConnection.m_userName = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_USERNAME);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_USERNAME);
             m_defaultConnection.m_userPassword = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_PASSWORD);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_PASSWORD);
             m_defaultConnection.m_jdbcDriver = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_DRIVER);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
             m_defaultConnection.m_jdbcUrl = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
             m_defaultConnection.m_jdbcUrlParams = m_configuration.get(
-                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL_PARAMS);
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
 
             key = getConnectionName();
-            if (m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
+            if (m_configuration.get(CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
                 m_additionalConnection = new ConnectionData();
                 m_additionalConnection.m_dbName = m_configuration.get(
-                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
                 m_additionalConnection.m_userName = m_configuration.get(
-                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_USERNAME);
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_USERNAME);
                 m_additionalConnection.m_userPassword = m_configuration.get(
-                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_PASSWORD);
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_PASSWORD);
                 m_additionalConnection.m_jdbcDriver = m_configuration.get(
-                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_DRIVER);
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
                 m_additionalConnection.m_jdbcUrl = m_configuration.get(
-                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL);
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
                 m_additionalConnection.m_jdbcUrlParams = m_configuration.get(
-                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL_PARAMS);
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
             }
 
             m_defaultTablespace = m_configuration.get("db.oracle.defaultTablespace");

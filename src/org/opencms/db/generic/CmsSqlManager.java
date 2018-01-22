@@ -28,7 +28,6 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -298,10 +297,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param poolUrl the pool URL to get connections from the JDBC driver manager
      */
     public void init(int driverType, String poolUrl) {
-
-        if (!poolUrl.startsWith(CmsDbPool.DBCP_JDBC_URL_PREFIX)) {
-            poolUrl = CmsDbPool.DBCP_JDBC_URL_PREFIX + poolUrl;
-        }
 
         m_driverType = driverType;
         m_poolUrl = poolUrl;

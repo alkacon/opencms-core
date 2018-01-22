@@ -93,6 +93,8 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -2100,6 +2102,20 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Gets a connection from a connection pool.<p>
+     * @param poolUrl the connection pool url
+     * @return a new connection from the pool
+     *
+     * @throws SQLException if getting the connection fails
+     */
+    public Connection getConnection(String poolUrl) throws SQLException {
+
+        CmsDbPoolV11 pool = CmsDriverManager.m_pools.get(poolUrl);
+        return pool.getConnection();
+
     }
 
     /**

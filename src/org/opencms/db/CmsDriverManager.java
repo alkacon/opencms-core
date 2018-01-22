@@ -133,14 +133,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
-import org.apache.commons.pool.ObjectPool;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Maps;
 
 /**
  * The OpenCms driver manager.<p>
@@ -329,8 +329,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
 
-    /** The list of initialized JDBC pools. */
-    private List<PoolingDriver> m_connectionPools;
+    /** Map of pools defined in opencms.properties. */
+    protected static ConcurrentMap<String, CmsDbPoolV11> m_pools = Maps.newConcurrentMap();
 
     /** The history driver. */
     private I_CmsHistoryDriver m_historyDriver;
@@ -441,9 +441,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // set the security manager
         driverManager.m_securityManager = securityManager;
-
-        // set connection pools
-        driverManager.m_connectionPools = new ArrayList<PoolingDriver>();
 
         // set the lock manager
         driverManager.m_lockManager = new CmsLockManager(driverManager);
@@ -3232,23 +3229,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 m_historyDriver = null;
             }
 
-            if (m_connectionPools != null) {
-                for (int i = 0; i < m_connectionPools.size(); i++) {
-                    PoolingDriver driver = m_connectionPools.get(i);
-                    String[] pools = driver.getPoolNames();
-                    for (String pool : pools) {
-                        try {
-                            driver.closePool(pool);
-                            if (CmsLog.INIT.isDebugEnabled()) {
-                                CmsLog.INIT.debug(
-                                    Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, pool));
-                            }
-                        } catch (Throwable t) {
-                            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pool), t);
+            if (m_pools != null) {
+                for (CmsDbPoolV11 pool : m_pools.values()) {
+                    try {
+                        pool.close();
+                        if (CmsLog.INIT.isDebugEnabled()) {
+                            CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, pool));
                         }
+
+                    } catch (Throwable t) {
+                        LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pool), t);
                     }
                 }
-                m_connectionPools = null;
+                m_pools.clear();
             }
 
             m_monitor.clearCache();
@@ -3524,18 +3517,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
 
+        CmsDbPoolV11 pool = m_pools.get(dbPoolUrl);
+        if (pool == null) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
+            throw new CmsDbException(message);
+        }
         try {
-            for (PoolingDriver d : m_connectionPools) {
-                ObjectPool p = d.getConnectionPool(dbPoolUrl);
-                return p.getNumActive();
-            }
+            return pool.getActiveConnections();
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
             throw new CmsDbException(message, exc);
         }
 
-        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
-        throw new CmsDbException(message);
     }
 
     /**
@@ -4082,18 +4075,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public int getIdleConnections(String dbPoolUrl) throws CmsDbException {
 
+        CmsDbPoolV11 pool = m_pools.get(dbPoolUrl);
+        if (pool == null) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
+            throw new CmsDbException(message);
+        }
         try {
-            for (PoolingDriver d : m_connectionPools) {
-                ObjectPool p = d.getConnectionPool(dbPoolUrl);
-                return p.getNumIdle();
-            }
+            return pool.getIdleConnections();
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
             throw new CmsDbException(message, exc);
         }
 
-        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
-        throw new CmsDbException(message);
     }
 
     /**
@@ -6036,10 +6029,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void newPoolInstance(CmsParameterConfiguration configuration, String poolName) throws CmsInitException {
 
-        PoolingDriver driver;
+        CmsDbPoolV11 pool;
 
         try {
-            driver = CmsDbPool.createDriverManagerConnectionPool(configuration, poolName);
+            pool = new CmsDbPoolV11(configuration, poolName);
         } catch (Exception e) {
 
             CmsMessageContainer message = Messages.get().container(Messages.ERR_INIT_CONN_POOL_1, poolName);
@@ -6048,8 +6041,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             throw new CmsInitException(message, e);
         }
-
-        m_connectionPools.add(driver);
+        addPool(pool);
     }
 
     /**
@@ -10671,6 +10663,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     long countUsers(CmsDbContext dbc, CmsUserSearchParameters searchParams) throws CmsDataAccessException {
 
         return getUserDriver(dbc).countUsers(dbc, searchParams);
+    }
+
+    /**
+     * Adds a pool to the static pool map.<p>
+     *
+     * @param pool the pool to add
+     */
+    private void addPool(CmsDbPoolV11 pool) {
+
+        m_pools.put(pool.getPoolUrl(), pool);
     }
 
     /**

@@ -28,8 +28,8 @@
 package org.opencms.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,8 +46,7 @@ public class CmsSqlManager {
      * Protected constructor to allow only subclassing.<p>
      */
     protected CmsSqlManager() {
-
-        // hides the public constructor
+        // hide public constructor
     }
 
     /**
@@ -81,7 +80,7 @@ public class CmsSqlManager {
      */
     public Connection getConnection(String dbPoolName) throws SQLException {
 
-        return getConnectionByUrl(CmsDbPool.DBCP_JDBC_URL_PREFIX + CmsDbPool.OPENCMS_URL_PREFIX + dbPoolName);
+        return getConnectionByUrl(CmsDbPoolV11.OPENCMS_URL_PREFIX + dbPoolName);
     }
 
     /**
@@ -93,7 +92,7 @@ public class CmsSqlManager {
      */
     public Connection getConnectionByUrl(String dbPoolUrl) throws SQLException {
 
-        return DriverManager.getConnection(dbPoolUrl);
+        return CmsDriverManager.m_pools.get(dbPoolUrl).getConnection();
     }
 
     /**
@@ -103,7 +102,8 @@ public class CmsSqlManager {
      */
     public List<String> getDbPoolUrls() {
 
-        return CmsDbPool.getDbPoolUrls(m_driverManager.getPropertyConfiguration());
+        return new ArrayList<String>(CmsDriverManager.m_pools.keySet());
+
     }
 
     /**
@@ -113,7 +113,7 @@ public class CmsSqlManager {
      */
     public String getDefaultDbPoolName() {
 
-        return CmsDbPool.getDefaultDbPoolName();
+        return CmsDbPoolV11.getDefaultDbPoolName();
     }
 
     /**

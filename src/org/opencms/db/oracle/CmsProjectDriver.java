@@ -44,8 +44,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp.DelegatingResultSet;
-
 /**
  * Oracle/OCI implementation of the project driver methods.<p>
  *
@@ -103,6 +101,15 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)
+     */
+    @Override
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishReport(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
      */
     @Override
@@ -131,7 +138,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
         CmsUUID publishJobHistoryId,
         String queryKey,
         String fieldName,
-        byte[] data) throws CmsDataAccessException {
+        byte[] data)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -150,7 +158,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
 
             // update the file content in the contents table
             stmt.setString(1, publishJobHistoryId.toString());
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
+            res = stmt.executeQuery();
             if (!res.next()) {
                 throw new CmsDbEntryNotFoundException(
                     Messages.get().container(Messages.ERR_READ_PUBLISH_JOB_1, publishJobHistoryId));
@@ -197,14 +205,5 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 commit,
                 wasInTransaction);
         }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)
-     */
-    @Override
-    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
-
-        return CmsSqlManager.getInstance(classname);
     }
 }

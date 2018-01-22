@@ -39,7 +39,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.db.CmsDbPool;
+import org.opencms.db.CmsDbPoolV11;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.jpa.CmsSqlManager;
 import org.opencms.file.CmsObject;
@@ -768,7 +768,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         if (m_provider.equals(POSTGRESQL_PROVIDER)) {
             return getDbProperty(m_databaseKey + ".constr.newDb");
         } else {
-            return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".jdbcUrl");
+            return getExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + ".jdbcUrl");
         }
     }
 
@@ -779,7 +779,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getDbWorkPwd() {
 
-        return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".password");
+        return getExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + ".password");
     }
 
     /**
@@ -789,7 +789,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getDbWorkUser() {
 
-        String user = getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".user");
+        String user = getExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + ".user");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(user)) {
             return getDbCreateUser();
         }
@@ -1662,7 +1662,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 setDatabase(m_databaseKey);
                 if (m_driverType == DRIVER_TYPE_JPA) {
                     setEntityManagerPoolSize(
-                        getDbProperty(m_databaseKey + "." + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE));
+                        getDbProperty(m_databaseKey + "." + CmsDbPoolV11.KEY_ENTITY_MANAGER_POOL_SIZE));
                 }
                 saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
 
@@ -2232,10 +2232,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
         } else {
             driver = getDbProperty(m_databaseKey + ".driver");
         }
-        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_JDBC_DRIVER, driver);
-        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_JDBC_URL, dbWorkConStr);
-        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_TEST_QUERY, getDbTestQuery());
-        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_JDBC_URL_PARAMS, getDbConStrParams());
+        setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + CmsDbPoolV11.KEY_JDBC_DRIVER, driver);
+        setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + CmsDbPoolV11.KEY_JDBC_URL, dbWorkConStr);
+        String testQuery = getDbTestQuery();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(testQuery)) {
+            setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + "v11.connectionTestQuery", testQuery);
+        } 
+        setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + CmsDbPoolV11.KEY_JDBC_URL_PARAMS, getDbConStrParams());
     }
 
     /**
@@ -2245,7 +2248,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkPwd(String dbWorkPwd) {
 
-        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_PASSWORD, dbWorkPwd);
+        setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_PASSWORD, dbWorkPwd);
     }
 
     /**
@@ -2255,7 +2258,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkUser(String dbWorkUser) {
 
-        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_POOL_USER, dbWorkUser);
+        setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_POOL_USER, dbWorkUser);
     }
 
     /**
@@ -3014,6 +3017,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     private void save(CmsParameterConfiguration properties, String source, String target, Set<String> forceWrite) {
 
+        System.out.println("save");
+        System.out.println("prop = " + properties);
+        System.out.println("source = " + source);
+        System.out.println("target = " + target);
         try {
             Set<String> alreadyWritten = new HashSet<String>();
 
@@ -3102,7 +3109,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private void setEntityManagerPoolSize(String poolSize) {
 
         setExtProperty(
-            CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE,
+            CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_ENTITY_MANAGER_POOL_SIZE,
             poolSize);
     }
 
