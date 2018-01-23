@@ -164,7 +164,7 @@ dependencies {
     distribution group: 'com.lambdaworks', name: 'scrypt', version: '1.4.0'
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-core', version: '9.0.4'
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.0.4'
-    distribution group: 'com.lowagie', name: 'itext', version: '2.1.7'
+    distribution group: 'com.github.librepdf', name: 'openpdf', version: '1.0.5'
     distribution group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
     distribution group: 'wsdl4j', name: 'wsdl4j', version: '1.6.3'
     distribution group: 'org.apache.neethi', name: 'neethi', version: '3.0.3'
