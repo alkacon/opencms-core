@@ -50,6 +50,7 @@ import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -254,6 +255,10 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 throw new CmsRuntimeException(
                     Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0),
                     e);
+            } catch (IOException e) {
+                throw new CmsRuntimeException(
+                        Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0),
+                        e);
             }
         }
         return m_xmlPageContentDefinition;
