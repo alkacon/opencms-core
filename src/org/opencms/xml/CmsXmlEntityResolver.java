@@ -46,6 +46,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -348,7 +349,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     /**
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
-    public InputSource resolveEntity(String publicId, String systemId) {
+    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
 
         // lookup the system id caches first
         byte[] content;
@@ -410,8 +411,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_CACHED_SYS_ID_1, cacheKey));
                 }
                 return createInputSource(content, systemId);
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
+            } catch (CmsException e) {
+                throw new IOException(
+                        Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), e);
             } finally {
                 m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
