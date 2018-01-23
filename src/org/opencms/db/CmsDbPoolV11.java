@@ -101,6 +101,16 @@ public final class CmsDbPoolV11 {
     /** The prefix used for opencms JDBC pools. */
     public static final String OPENCMS_URL_PREFIX = "opencms:";
 
+    /** Map of default test queries. */
+    private static Map<String, String> testQueries = Maps.newHashMap();
+
+    static {
+        testQueries.put("com.ibm.db2.jcc.DB2Driver", "SELECT 1 FROM SYSIBM.SYSDUMMY1");
+        testQueries.put("net.sourceforge.jtds.jdbc.Driver", "SELECT 1");
+        testQueries.put("oracle.jdbc.driver.OracleDriver", "SELECT 1 FROM DUAL");
+        testQueries.put("com.ibm.as400.access.AS400JDBCDriver", "SELECT NOW()");
+    }
+
     /** The opencms pool url. */
     private String m_poolUrl;
 
@@ -176,7 +186,8 @@ public final class CmsDbPoolV11 {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             String suffix = getPropertyRelativeSuffix(KEY_DATABASE_POOL + "." + key, entry.getKey());
             if ((suffix != null) && !CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getValue())) {
-                poolMap.put(suffix, entry.getValue());
+                String value = entry.getValue().trim();
+                poolMap.put(suffix, value);
             }
         }
 
@@ -219,6 +230,12 @@ public final class CmsDbPoolV11 {
             if (suffix != null) {
                 hikariProps.put(suffix, entry.getValue());
             }
+        }
+
+        String configuredTestQuery = (String)(hikariProps.get("connectionTestQuery"));
+        String testQueryForDriver = testQueries.get(driver);
+        if ((testQueryForDriver != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(configuredTestQuery)) {
+            hikariProps.put("connectionTestQuery", testQueryForDriver);
         }
         hikariProps.put("registerMbeans", "true");
         HikariConfig result = new HikariConfig(hikariProps);
