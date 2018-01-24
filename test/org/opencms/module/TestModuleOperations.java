@@ -41,7 +41,6 @@ import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
@@ -49,6 +48,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -647,6 +648,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void testModuleImportMissingResTypeClass() throws Throwable {
 
         CmsObject cms = getCmsObject();

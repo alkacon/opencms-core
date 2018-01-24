@@ -771,7 +771,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             // try to create another user 'test1' in the /test ou
             cms.createUser("test/test1", "test1", "test user", null);
             fail("it could not be possible to create 2 users with the same name in an ou");
-        } catch (CmsVfsException e) {
+        } catch (CmsException e) {
             // ok, ignore
         }
         assertEquals(1, OpenCms.getOrgUnitManager().getUsers(cms, "test/", false).size());
@@ -791,7 +791,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             // try to create another group 'group1' in the /test ou
             cms.createGroup("test/group1", "test group", 0, null);
             fail("it could not be possible to create 2 groups with the same name in an ou");
-        } catch (CmsVfsException e) {
+        } catch (CmsException e) {
             // ok, ignore
         }
         assertEquals(2, OpenCms.getOrgUnitManager().getGroups(cms, "test", false).size());

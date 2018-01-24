@@ -36,12 +36,12 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -57,6 +57,16 @@ public class TestCategories extends OpenCmsTestCase {
 
     /** Stores an error. */
     private static String m_storedError;
+
+    /**
+     * Default JUnit constructor.<p>
+     *
+     * @param arg0 JUnit parameters
+     */
+    public TestCategories(String arg0) {
+
+        super(arg0);
+    }
 
     /**
      * Stores an error message which will cause the test to fail.<p>
@@ -113,16 +123,6 @@ public class TestCategories extends OpenCmsTestCase {
     }
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCategories(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
      * @see junit.framework.TestCase#run(junit.framework.TestResult)
      */
     @Override
@@ -142,6 +142,7 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void testCategoryBaseFolder() throws Exception {
 
         System.out.println("Testing changing the base folder name of the category repositories.");
@@ -648,6 +649,7 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void testCategoryTree() throws Exception {
 
         System.out.println("Testing the category tree access with different repositories.");
@@ -901,6 +903,7 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void testCopyValid() throws Exception {
 
         System.out.println(
@@ -952,6 +955,7 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @SuppressWarnings("deprecation")
     public void testPublishMovedResourceWithCategories1() throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -1000,6 +1004,7 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @SuppressWarnings("deprecation")
     public void testPublishMovedResourceWithCategories2() throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());

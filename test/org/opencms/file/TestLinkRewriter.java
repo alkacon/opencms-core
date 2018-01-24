@@ -34,7 +34,6 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 
@@ -47,6 +46,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import junit.framework.Test;
 
@@ -182,6 +182,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public void createFolder(String path) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -464,6 +465,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @SuppressWarnings("deprecation")
     public void testNotAbort() throws Exception {
 
         CmsObject cms = getCmsObject();

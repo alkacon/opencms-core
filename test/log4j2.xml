@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="org.apache.logging.log4j.core.appender" >
+	<Appenders>
+	    <TestLogAppender name="TESTLOG" target="SYSTEM_OUT">
+	      <PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
+	    </TestLogAppender>
+	</Appenders>
+	<Loggers>
+	    <Logger level="warn" name="org.opencms.importexport"/>
+	    <Logger level="warn" name="org.apache.solr"/>
+	    <Root level="info">
+	        <AppenderRef ref="TESTLOG"/>
+	    </Root>
+	</Loggers>
+</Configuration>

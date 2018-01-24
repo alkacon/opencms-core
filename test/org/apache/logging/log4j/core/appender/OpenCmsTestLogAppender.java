@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,7 +25,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.test;
+package org.apache.logging.log4j.core.appender;
+
+import org.opencms.test.I_CmsLogHandler;
 
 import java.io.Serializable;
 
@@ -33,25 +35,79 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
-import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
  * Simple extension of the log4j console appender that throws a
  * <code>RuntimeException</code> if an error (or fatal) event is logged,
  * causing the running test to fail.<p>
  *
- * @since 6.0.0
+ * @since 11.0.0
  *
- * @deprecated NOT TESTED for log4j2
  */
-@Deprecated
+@Plugin(name = "TestLogAppender", category = "Core", elementType = "appender", printObject = true)
 public class OpenCmsTestLogAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
-    // indicates if a logged error / fatal message should cause a test to fail
+    /** Indicates if a logged error / fatal message should cause a test to fail. */
     private static boolean m_breakOnError;
 
+    /** Instance counter used for name generation. */
+    private static int m_count = 0;
+
+    /** Current log handler. */
     private static I_CmsLogHandler m_handler;
+
+    /**
+     * Constructor.<p>
+     *
+     * @param name appender name
+     * @param layout the log layout
+     * @param filter the log filter
+     * @param manager the output stream manager
+     */
+    protected OpenCmsTestLogAppender(
+        String name,
+        Layout<? extends Serializable> layout,
+        Filter filter,
+        OutputStreamManager manager) {
+
+        super(name, layout, filter, false, true, manager);
+
+    }
+
+    /**
+     * Factory method used by log4j2 to create appender instances when reading the log4j2 configuration.<p>
+     *
+     * @param name the appender name
+     * @param layout the log layout
+     * @param filter the filter
+     *
+     * @return the appender instance
+     */
+    @SuppressWarnings("resource")
+    @PluginFactory
+    public static OpenCmsTestLogAppender createAppender(
+        @PluginAttribute("name") String name,
+        @PluginElement("Layout") Layout<? extends Serializable> layout,
+        @PluginElement("Filter") final Filter filter) {
+
+        if (name == null) {
+            LOGGER.error("No name provided for MyCustomAppenderImpl");
+            return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+        return new OpenCmsTestLogAppender(
+            name,
+            layout,
+            filter,
+            new OutputStreamManager(System.out, "OpenCmsTestLogAppender_" + m_count++, layout, true));
+    }
 
     /**
      * Sets the "break on error" status.<p>
@@ -63,21 +119,14 @@ public class OpenCmsTestLogAppender extends AbstractOutputStreamAppender<OutputS
         m_breakOnError = value;
     }
 
+    /**
+     * Sets the current log handler.<p>
+     *
+     * @param handler the handler
+     */
     public static void setHandler(I_CmsLogHandler handler) {
 
         m_handler = handler;
-    }
-
-    protected OpenCmsTestLogAppender(
-        String name,
-        Layout<? extends Serializable> layout,
-        Filter filter,
-        boolean ignoreExceptions,
-        boolean immediateFlush,
-        OutputStreamManager manager) {
-
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
-
     }
 
     /**

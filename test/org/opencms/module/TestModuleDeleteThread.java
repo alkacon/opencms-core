@@ -32,12 +32,13 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.workplace.threads.CmsModuleDeleteThread;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;

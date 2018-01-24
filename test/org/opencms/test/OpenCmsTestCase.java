@@ -82,6 +82,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -338,6 +339,7 @@ public class OpenCmsTestCase extends TestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public static int generateContent(
         CmsObject cms,
         String vfsFolder,
@@ -1425,6 +1427,7 @@ public class OpenCmsTestCase extends TestCase {
     throws Exception {
 
         byte[] content = CmsFileUtil.readFile(rfsPath);
+        @SuppressWarnings("deprecation")
         CmsResource result = cms.createResource(vfsPath, type, content, properties);
         cms.unlockResource(vfsPath);
         return result;

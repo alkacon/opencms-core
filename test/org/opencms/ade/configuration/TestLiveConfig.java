@@ -37,7 +37,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
@@ -47,6 +46,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -74,6 +75,14 @@ public class TestLiveConfig extends OpenCmsTestCase {
         super(name);
     }
 
+    /**
+     * Generates a sitemap config XML with the given types.<p>
+     *
+     * @param types the types to use
+     * @param masterConfigId the master configuration id
+     *
+     * @return the XML string
+     */
     public static String generateSitemapConfigWithTypes(Map<String, String> types, String masterConfigId) {
 
         String template = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -104,14 +113,6 @@ public class TestLiveConfig extends OpenCmsTestCase {
             "masterConfigs",
             masterConfigId != null ? Collections.singletonList(masterConfigId) : Collections.emptyList());
         return st.toString();
-    }
-
-    public static void main(String[] args) {
-
-        Map<String, String> types = Maps.newHashMap();
-        types.put("foo", "foo0");
-        types.put("bar", "bar0");
-        System.out.println(generateSitemapConfigWithTypes(types, "444444444444"));
     }
 
     /**
@@ -331,6 +332,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @SuppressWarnings("deprecation")
     public void testModuleConfig1() throws Exception {
 
         CmsObject cms = rootCms();
@@ -498,7 +500,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests whether getSubsiteFolder works correctly with the shared folder.<p>
+     *
+     * @throws Exception in case resource creation fails
      */
+    @SuppressWarnings("deprecation")
     public void testSharedGetSubSite() throws Exception {
 
         CmsObject cms = rootCms();
@@ -525,6 +530,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Tests that sitmeap folder types override module folder types.<p>
      * @throws Exception -
      */
+    @SuppressWarnings("deprecation")
     public void testSitemapFolderTypesOverrideModuleFolderTypes() throws Exception {
 
         CmsObject cms = rootCms();
@@ -665,7 +671,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * @param elems the elements
      * @return a list containing the elements
      */
-    protected <X> List<X> list(X... elems) {
+    protected <X> List<X> list(@SuppressWarnings("unchecked") X... elems) {
 
         List<X> result = new ArrayList<X>();
         for (X x : elems) {
