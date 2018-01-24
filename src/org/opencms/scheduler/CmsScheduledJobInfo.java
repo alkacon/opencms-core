@@ -815,6 +815,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @param cronExpression the cron expression to set
      */
+    @SuppressWarnings("unused")
     public void setCronExpression(String cronExpression) {
 
         checkFrozen();

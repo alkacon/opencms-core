@@ -28,6 +28,7 @@
 package org.opencms.scheduler;
 
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsStringUtil;
@@ -81,7 +82,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         // set this job as "not active"
         jobInfo.setActive(false);
 
-        List jobs = new ArrayList();
+        List<CmsScheduledJobInfo> jobs = new ArrayList<CmsScheduledJobInfo>();
         jobs.add(jobInfo);
         // create the scheduler with the test job
         CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
@@ -191,7 +192,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
         jobInfo.setCronExpression("0/2 * * * * ?");
 
-        List jobs = new ArrayList();
+        List<CmsScheduledJobInfo> jobs = new ArrayList<CmsScheduledJobInfo>();
         jobs.add(jobInfo);
         // create the scheduler with the test job
         CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
@@ -249,7 +250,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
         jobInfo.setCronExpression("0/2 * * * * ?");
 
-        List jobs = new ArrayList();
+        List<CmsScheduledJobInfo> jobs = new ArrayList<CmsScheduledJobInfo>();
         jobs.add(jobInfo);
         // create the scheduler with the test job
         CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
@@ -294,7 +295,6 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         newInfo.setActive(true);
 
         // uncomment because of rolled back quartz due to bugs in version 1.6.x
-        /**
         CmsIllegalArgumentException ex = null;
         try {
             newInfo.setCronExpression("* * * * * *");
@@ -303,8 +303,8 @@ public class TestCmsScheduler extends OpenCmsTestCase {
             ex = e;
         }
         assertNotNull("Expected exception not thrown when using invalid CRON expression", ex);
-        */
-        newInfo.setCronExpression("* * * * * *");
+
+        newInfo.setCronExpression("* * * * * ?");
         assertEquals(1, scheduler.getJobs().size());
 
         // shutdown the scheduler
@@ -420,7 +420,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
         jobInfo.setCronExpression("0/2 * * * * ?");
 
-        List jobs = new ArrayList();
+        List<CmsScheduledJobInfo> jobs = new ArrayList<CmsScheduledJobInfo>();
         jobs.add(jobInfo);
         // create the scheduler with the test job
         CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
@@ -471,7 +471,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         jobInfo.setReuseInstance(true);
         jobInfo.setCronExpression("0/2 * * * * ?");
 
-        List jobs = new ArrayList();
+        List<CmsScheduledJobInfo> jobs = new ArrayList<CmsScheduledJobInfo>();
         jobs.add(jobInfo);
         // create the scheduler with the test job
         CmsScheduleManager scheduler = new CmsScheduleManager(jobs);

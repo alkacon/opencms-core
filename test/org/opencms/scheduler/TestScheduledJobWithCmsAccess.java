@@ -50,7 +50,7 @@ public class TestScheduledJobWithCmsAccess implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         if ((cms == null) || (parameters == null)) {
             throw new RuntimeException("CmsObject in TestScheduledJobWithCmsAccess (or parameter Map) is null!");
