@@ -39,18 +39,17 @@ import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.FileAppender.Builder;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -123,6 +122,7 @@ public class CmsLogChannelTable extends Table {
          * @param defaultValue of column
          */
         TableColumn(String headerMessage, Class<?> type, Object defaultValue) {
+
             m_headerMessage = headerMessage;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -220,6 +220,7 @@ public class CmsLogChannelTable extends Table {
          * @param caption for the level
          */
         private LoggerLevel(Level level, String css, String caption) {
+
             m_css = css;
             m_level = level;
             m_caption = caption;
@@ -234,7 +235,7 @@ public class CmsLogChannelTable extends Table {
         protected static LoggerLevel fromLogger(Logger logger) {
 
             for (LoggerLevel item : LoggerLevel.values()) {
-                if (item.getLevel().equals(logger.getEffectiveLevel())) {
+                if (item.getLevel().equals(logger.getLevel())) {
                     return item;
                 }
             }
@@ -307,6 +308,7 @@ public class CmsLogChannelTable extends Table {
      * constructor.<p>
      */
     protected CmsLogChannelTable() {
+
         m_container = new IndexedContainer();
 
         setContainerDataSource(m_container);
@@ -389,11 +391,8 @@ public class CmsLogChannelTable extends Table {
     protected boolean isloggingactivated(Logger logchannel) {
 
         boolean check = false;
-        @SuppressWarnings("unchecked")
-        List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
-        Iterator<Appender> app = appenders.iterator();
-        while (app.hasNext()) {
-            check = app.next().getName().equals(logchannel.getName());
+        for (Appender appender : logchannel.getAppenders().values()) {
+            check = appender.getName().equals(logchannel.getName());
         }
         return check;
     }
@@ -403,6 +402,7 @@ public class CmsLogChannelTable extends Table {
      *
      * @param logchannel to set or remove log file to
      */
+    @SuppressWarnings({"rawtypes", "unchecked", "unchecked"})
     protected void toggleOwnFile(Logger logchannel) {
 
         String filepath = "";
@@ -412,29 +412,27 @@ public class CmsLogChannelTable extends Table {
         // the button was active
         if (isloggingactivated(logchannel)) {
             // remove the private Appender from logger
-            logchannel.removeAllAppenders();
+            for (Appender appender : logchannel.getAppenders().values()) {
+                logchannel.removeAppender(appender);
+            }
             // activate the heredity so the logger get the appender from parent logger
-            logchannel.setAdditivity(true);
+            logchannel.setAdditive(true);
 
         }
         // the button was inactive
         else {
-            @SuppressWarnings("unchecked")
-            List<Appender> rootAppenders = Collections.list(Logger.getRootLogger().getAllAppenders());
             // get the layout and file path from root logger
-            for (Appender appender : rootAppenders) {
+            for (Appender appender : ((Logger)LogManager.getRootLogger()).getAppenders().values()) {
                 if (appender instanceof FileAppender) {
                     FileAppender fapp = (FileAppender)appender;
-                    filepath = fapp.getFile().substring(0, fapp.getFile().lastIndexOf(File.separatorChar));
+                    filepath = fapp.getFileName().substring(0, fapp.getFileName().lastIndexOf(File.separatorChar));
                     layout = fapp.getLayout();
                     break;
                 }
             }
 
-            @SuppressWarnings("unchecked")
-            List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
             // check if the logger has an Appender get his layout
-            for (Appender appender : appenders) {
+            for (Appender appender : logchannel.getAppenders().values()) {
                 if (appender instanceof FileAppender) {
                     FileAppender fapp = (FileAppender)appender;
                     layout = fapp.getLayout();
@@ -461,19 +459,16 @@ public class CmsLogChannelTable extends Table {
                 logfilename = filepath + File.separator + "opencms-" + temp.replace(".", "-") + ".log";
             }
 
-            FileAppender fapp = null;
-            try {
-                // create new FileAppender for separate log file
-                fapp = new FileAppender(layout, logfilename, true);
-                // set the log file e.g.: "C:\tomcat6\webapps\opencms\WEB-INF\logs"
-                fapp.setName(logchannel.getName());
-            } catch (IOException e) {
-                //
-            }
+            @SuppressWarnings("unchecked")
+            FileAppender fapp = ((Builder)FileAppender.<FileAppender.Builder> newBuilder().withFileName(
+                logfilename).withLayout(layout).withName(logchannel.getName())).build();
+
             // deactivate the heredity so the logger get no longer the appender from parent logger
-            logchannel.setAdditivity(false);
+            logchannel.setAdditive(false);
             // remove all active Appenders from logger
-            logchannel.removeAllAppenders();
+            for (Appender appender : logchannel.getAppenders().values()) {
+                logchannel.removeAppender(appender);
+            }
             // add the new created Appender to the logger
             logchannel.addAppender(fapp);
         }
@@ -559,7 +554,7 @@ public class CmsLogChannelTable extends Table {
                 }
             });
             if (loggerSet.size() == 1) {
-                if (level.getLevel().equals(loggerSet.iterator().next().getEffectiveLevel())) {
+                if (level.getLevel().equals(loggerSet.iterator().next().getLevel())) {
                     item.setIcon(FontOpenCms.CHECK_SMALL);
                 }
             }
@@ -607,18 +602,14 @@ public class CmsLogChannelTable extends Table {
     private String getLogFiles(Logger logger) {
 
         String test = "";
-        @SuppressWarnings("unchecked")
-        List<Appender> appenders = Collections.list(logger.getAllAppenders());
-        Iterator<Appender> appendersIt = appenders.iterator();
         int count = 0;
         // select the Appender from logger
-        while (appendersIt.hasNext()) {
-            Appender appender = appendersIt.next();
+        for (Appender appender : logger.getAppenders().values()) {
             // only use file appenders
             if (appender instanceof FileAppender) {
                 FileAppender fapp = (FileAppender)appender;
                 String temp = "";
-                temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
                 test = test + temp;
                 count++;
                 break;
@@ -626,21 +617,17 @@ public class CmsLogChannelTable extends Table {
         }
 
         //iterate all parent loggers until a logger with appender was found
-        while (!logger.equals(Logger.getRootLogger())) {
+        while (!logger.equals(LogManager.getRootLogger())) {
 
-            logger = (Logger)logger.getParent();
-            @SuppressWarnings("unchecked")
-            List<Appender> parentAppenders = Collections.list(logger.getAllAppenders());
-            Iterator<Appender> parentAppendersIt = parentAppenders.iterator();
+            logger = logger.getParent();
             // if no Appender found from logger, select the Appender from parent logger
             if (count == 0) {
-                while (parentAppendersIt.hasNext()) {
-                    Appender appender = parentAppendersIt.next();
+                for (Appender appender : logger.getAppenders().values()) {
                     // only use file appenders
                     if (appender instanceof FileAppender) {
                         FileAppender fapp = (FileAppender)appender;
                         String temp = "";
-                        temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                        temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
                         test = test + temp;
                         count++;
                         break;

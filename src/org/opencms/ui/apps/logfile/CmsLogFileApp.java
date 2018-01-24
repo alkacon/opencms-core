@@ -44,8 +44,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
@@ -139,13 +140,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         List<Logger> definedLoggers = new ArrayList<Logger>();
         // list of all parent loggers
         List<Logger> packageLoggers = new ArrayList<Logger>();
-        @SuppressWarnings("unchecked")
-        List<Logger> curentloggerlist = Collections.list(LogManager.getCurrentLoggers());
-        Iterator<Logger> it_curentlogger = curentloggerlist.iterator();
-        // get all current loggers
-        while (it_curentlogger.hasNext()) {
-            // get the logger
-            Logger log = it_curentlogger.next();
+        for (Logger log : ((LoggerContext)LogManager.getContext(false)).getLoggers()) {
             String logname = log.getName();
             String[] prefix = buildsufix(logname);
             // create all possible package logger from given logger name
@@ -159,9 +154,10 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
                 if (temp.lastIndexOf(".") > 1) {
                     // generate new logger with "org.opencms" prefix and the next element
                     // between the points e.g.: "org.opencms.search"
-                    Logger temp_logger = Logger.getLogger(prefix[i] + "." + temp.substring(0, temp.indexOf(".")));
+                    Logger temp_logger = (Logger)LogManager.getLogger(
+                        prefix[i] + "." + temp.substring(0, temp.indexOf(".")));
                     // activate the heredity so the logger get the appender from parent logger
-                    temp_logger.setAdditivity(true);
+                    temp_logger.setAdditive(true);
                     // add the logger to the packageLoggers list if it is not part of it
                     if (!packageLoggers.contains(temp_logger)) {
                         packageLoggers.add(temp_logger);

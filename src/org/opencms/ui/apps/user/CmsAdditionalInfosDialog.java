@@ -30,6 +30,7 @@ package org.opencms.ui.apps.user;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
@@ -46,7 +47,7 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
 import com.vaadin.ui.Button;
@@ -67,7 +68,7 @@ public class CmsAdditionalInfosDialog extends CmsBasicDialog {
     private static final long serialVersionUID = 9007206105761103873L;
 
     /** The logger of this class. */
-    private static final Logger LOG = Logger.getLogger(CmsAdditionalInfosDialog.class);
+    private static final Log LOG = CmsLog.getLog(CmsAdditionalInfosDialog.class);
 
     /**CmsUser to edit additional infos for. */
     private CmsUser m_user;
@@ -107,6 +108,7 @@ public class CmsAdditionalInfosDialog extends CmsBasicDialog {
      * @param window window
      */
     public CmsAdditionalInfosDialog(CmsObject cms, CmsUUID userID, final Window window) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_cms = cms;

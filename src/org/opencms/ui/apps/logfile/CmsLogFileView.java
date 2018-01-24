@@ -38,13 +38,12 @@ import java.io.File;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.FileAppender;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -92,6 +91,7 @@ public class CmsLogFileView extends VerticalLayout {
      * @param app which uses this view
      */
     protected CmsLogFileView(final CmsLogFileApp app) {
+
         if (CmsLogFileApp.LOG_FOLDER.isEmpty()) {
             addComponent(CmsVaadinUtils.getInfoLayout(Messages.GUI_LOGFILE_WRONG_CONFIG_0));
         } else {
@@ -100,13 +100,11 @@ public class CmsLogFileView extends VerticalLayout {
             List<Logger> allLogger = CmsLogFileApp.getLoggers();
             List<FileAppender> allAppender = new ArrayList<FileAppender>();
 
-            allLogger.add(0, LogManager.getRootLogger());
+            allLogger.add(0, (Logger)LogManager.getRootLogger());
 
             for (Logger logger : allLogger) {
 
-                @SuppressWarnings("unchecked")
-                List<Appender> appenders = Collections.list(logger.getAllAppenders());
-                for (Appender appen : appenders) {
+                for (Appender appen : logger.getAppenders().values()) {
                     if (appen instanceof FileAppender) {
                         if (!allAppender.contains(appen)) {
                             allAppender.add((FileAppender)appen);
@@ -228,11 +226,11 @@ public class CmsLogFileView extends VerticalLayout {
     private void selectLogFile(List<FileAppender> appender, String filePath) {
 
         for (FileAppender app : appender) {
-            if (app.getFile().equals(filePath)) {
-                m_logfile.select(app.getFile());
+            if (app.getFileName().equals(filePath)) {
+                m_logfile.select(app.getFileName());
                 return;
             }
         }
-        m_logfile.select(appender.get(0).getFile()); //Default, take file from root appender
+        m_logfile.select(appender.get(0).getFileName()); //Default, take file from root appender
     }
 }
