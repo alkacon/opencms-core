@@ -102,6 +102,8 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
+
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
  *
@@ -117,6 +119,9 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public class CmsSetupBean implements I_CmsShellCommands {
+
+    /** Prefix for 'marker' properties in opencms.properties where additional properties should be inserted. */
+    public static final String ADDITIONAL_PREFIX = "additional.";
 
     /** DB provider constant for as400. */
     public static final String AS400_PROVIDER = "as400";
@@ -270,6 +275,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** The absolute path to the home directory of the OpenCms webapp. */
     protected String m_webAppRfsPath;
+
+    /** Additional property sets to be inserted into opencms.properties during setup. */
+    private Map<String, String> m_additionalProperties = Maps.newHashMap();
 
     /** Signals whether the setup is executed in the auto mode or in the wizard mode. */
     private boolean m_autoMode;
@@ -1925,6 +1933,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty("db.history.sqlmanager", sqlManager);
         setExtProperty("db.subscription.driver", subscriptionDriver);
         setExtProperty("db.subscription.sqlmanager", sqlManager);
+        String additionalProps = (String)(getDatabaseProperties().get(m_databaseKey).get("additionalProperties"));
+        if (additionalProps != null) {
+            m_additionalProperties.put("dbprops", additionalProps);
+        }
     }
 
     /**
@@ -2816,14 +2828,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
             // create the properties with all possible configurations
             if (databaseSetupFolder.exists()) {
                 for (String key : databaseKeys) {
-                    String configPath = m_webAppRfsPath
+                    String dbDir = m_webAppRfsPath
                         + "setup"
                         + File.separatorChar
                         + "database"
                         + File.separatorChar
-                        + key
-                        + File.separatorChar
-                        + "database.properties";
+                        + key;
+                    String configPath = dbDir + File.separatorChar + "database.properties";
                     try {
                         input = new FileInputStream(new File(configPath));
                         Properties databaseProps = new Properties();
@@ -3046,6 +3057,17 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                         String key = line.substring(0, line.indexOf('=')).trim();
                         if (alreadyWritten.contains(key)) {
+                            continue;
+                        }
+                        String additionalPrefix = ADDITIONAL_PREFIX;
+                        if (key.startsWith(additionalPrefix)) {
+                            String additionalPropKey = key.substring(additionalPrefix.length());
+                            String additionalContent = m_additionalProperties.get(additionalPropKey);
+                            if (additionalContent == null) {
+                                fw.write(key + "=\n");
+                            } else {
+                                fw.write(additionalContent + "\n");
+                            }
                             continue;
                         }
                         // write key
