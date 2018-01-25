@@ -1,5 +1,5 @@
 #!/bin/bash
-# Simplified version of module-checkin.sh meant for a manual Git workflow using the OpenCms JLAN share as a source of exported modules. 
+# Simplified version of module-checkin.sh meant for a manual Git workflow using the OpenCms JLAN share as a source of exported modules.
 
 getExportedModule(){
 	echo $( ls | grep "${module}.zip" | head -n1 )
@@ -17,7 +17,7 @@ testGitRepository(){
 	echo
 	if [[ $? != 0 ]]; then
 		echo "ERROR: You have not specified a GIT repository's main folder via\
-              \"REPOSITORY_HOME\" ($REPOSITORY_HOME)"
+			\"REPOSITORY_HOME\" ($REPOSITORY_HOME)"
 		exit 6
 	fi
 	if [[ -n $(git status --porcelain) ]]; then
@@ -33,79 +33,22 @@ testGitRepository(){
 	cd $__pwd
 }
 
-adjustGitConfig(){
+testModuleSourcePath(){
 	__pwd=$(pwd)
-	cd $REPOSITORY_HOME
-
-	if [[ ! -z $userName ]]; then
-		oldUserName=$(git config --local user.name)
-		git config --replace-all user.name "$userName"
-		adjustedUserName=1
-		echo "     * Adjusted local git user.name from \"$oldUserName\" to \"$userName\"."
-	else
-		echo "     * Do not adjust current user.name. Using \"$(git config user.name)\"."
-	fi
-	if [[ ! -z $userEmail ]]; then
-		oldUserEmail=$(git config --local user.email)
-		git config --replace-all user.email "$userEmail"
-		adjustedUserEmail=1
-		echo "     * Adjusted local git user.email from \"$oldUserEmail\" to \"$userEmail\"."
-	else
-		echo "     * Do not adjust current user.email. Using \"$(git config user.email)\"."
-	fi
-	echo "Here's your local git configuration after the adjustments:"
-	git config --local -l | awk '$0="   * "$0'
-	echo
-	cd $__pwd
-}
-
-resetGitConfig(){
-	__pwd=$(pwd)
-	cd $REPOSITORY_HOME
-	if [[ $adjustedUserName == 1 ]]; then
-		if [[ -z $oldUserName ]]; then
-			git config --unset user.name
-			echo "     * Reset local git user.name from \"$userName\" to <unset>."
-		else
-			git config --replace-all user.name "$oldUserName"
-			echo "     * Reset local git user.name from \"$userName\" to \"$oldUserName\"."
-		fi
-	else
-		echo "     * The git user.name was not adjusted. So there is nothing to do."
-	fi
-	if [[ $adjustedUserEmail == 1 ]]; then
-		if [[ -z $oldUserEmail ]]; then
-			git config --unset user.email
-			echo "     * Reset local git user.email from \"$userEmail\" to <unset>."
-		else
-			git config --replace-all user.email "$oldUserEmail"
-			echo "     * Reset local git user.email from \"$userEmail\" to \"$oldUserEmail\"."
-		fi
-	else
-		echo "     * The git user.email was not adjusted. So there is nothing to do."
-	fi
-	echo "Here's your local git configuration after the reset:"
-	git config --local -l | awk '$0="   * "$0'
-	echo
-	cd $__pwd
-}
-
-testModuleExportFolder(){
-	__pwd=$(pwd)
-	cd $moduleExportFolder
+	cd $moduleSourcePath
 	if [[ $? != 0 ]]; then
-		echo "ERROR: The specified module export folder \"$moduleExportFolder\" does not exist."
+		echo "ERROR: The specified module source path \"$moduleSourcePath\" does not exist."
 		exit 7
 	fi
 	echo " * Test ok: Module export folder \"$(pwd)\" exists."
 	cd $_pwd
 }
 
-testModuleMainFolder(){
+testModuleTargetPath(){
 	__pwd=$(pwd)
-	cd $MODULE_PATH
+	cd $MODULE_TARGET_PATH
 	if [[ $? != 0 ]]; then
-		echo "ERROR: The specified module export folder \"$MODULE_PATH\" does not exist."
+		echo "ERROR: The specified module target path \"$MODULE_TARGET_PATH\" does not exist."
 		exit 8
 	fi
 	echo " * Test ok: Module main folder \"$(pwd)\" exists."
@@ -114,27 +57,27 @@ testModuleMainFolder(){
 
 
 echo
-echo "Started script for automatic check in of OpenCms modules into a GIT repository."
+echo "Started automatic export of OpenCms modules over an existing GIT repository."
 echo "-------------------------------------------------------------------------------"
 echo
 echo "Reading command line arguments ..."
 
 #read commandline arguments
 while [ "$1" != "" ]; do
-    case $1 in
-        -m | --modules )       	shift
-                                modulesToExport=$1
+	case $1 in
+		-m | --modules )       	shift
+								modulesToExport=$1
 								echo " * Read modules to export: \"$modulesToExport\"."
-                                ;;
-        --no-exclude-libs )		excludeLibs=0;
-        						echo " * Read no-exclude-libs option."
-        						;;
-        --exclude-libs )		excludeLibs=1;
-        						echo " * Read exclude-libs option."
-        						;;
+								;;
+		--no-exclude-libs )		excludeLibs=0;
+								echo " * Read no-exclude-libs option."
+								;;
+		--exclude-libs )		excludeLibs=1;
+								echo " * Read exclude-libs option."
+								;;
 		--export-folder )		shift
-								moduleExportFolder=$1
-								echo " * Read module export folder: \"$moduleExportFolder\"."
+								moduleSourcePath=$1
+								echo " * Read module source path: \"$moduleSourcePath\"."
 								;;
 		--ignore-unclean )      ignoreUnclean=1
 								echo " * Read ignore-unclean option."
@@ -148,10 +91,10 @@ while [ "$1" != "" ]; do
 		--no-copy-and-unzip )   copyAndUnzip=0
 								echo " * Read no-copy-and-unzip option."
 								;;
-        * )             		configfile=$1
+		* )             		configfile=$1
 								echo " * Read config file: \"$configfile\"."
-    esac
-    shift
+	esac
+	shift
 done
 
 echo
@@ -165,29 +108,35 @@ source $configfile
 echo " * Read file \"$configfile\":"
 cat $configfile | awk '$0="   * "$0'
 
+# see http://wiki.bash-hackers.org/syntax/pe#use_a_default_value
+MODULES_TO_EXPORT=${MODULES_TO_EXPORT:-$DEFAULT_MODULES_TO_EXPORT}
+MODULE_RESOURCES_SUBFOLDER=${MODULE_RESOURCES_SUBFOLDER:-resources/}
+MODULE_SOURCE_PATH=${MODULE_SOURCE_PATH:-$MODULE_EXPORT_FOLDER}
+MODULE_TARGET_PATH=${MODULE_TARGET_PATH:-$MODULE_PATH}
+REPOSITORY_HOME=${REPOSITORY_HOME:-$MODULE_TARGET_PATH}
+
 echo
 echo "Values read from configuration:"
 echo
-echo "* Default modules : ${DEFAULT_MODULES_TO_EXPORT}"
-echo "* Repository home : ${REPOSITORY_HOME}"
-echo "* Module path     : ${MODULE_PATH}"
-echo "* Module export to: ${MODULE_EXPORT_FOLDER}"
+echo "* Modules to export : ${MODULES_TO_EXPORT}"
+echo "* Module source path: ${MODULE_SOURCE_PATH}"
+echo "* Module target path: ${MODULE_TARGET_PATH}"
 
 echo
 echo "Setting parameters ..."
 
 ## set modules to export
 if [[ -z "$modulesToExport" ]]; then
-	modulesToExport=$DEFAULT_MODULES_TO_EXPORT
+	modulesToExport=$MODULES_TO_EXPORT
 else
 	newModules=""
 	for module in $modulesToExport; do
-		if [[ ! ($DEFAULT_MODULES_TO_EXPORT =~ (^| )$module($| ) ) ]]; then
+		if [[ ! ($MODULES_TO_EXPORT =~ (^| )$module($| ) ) ]]; then
 			newModules="${newModules}${module} "
 		fi
 	done
 	if [[ $newModules != "" ]]; then
-		sed -i "/^DEFAULT_MODULES_TO_EXPORT/s/=\"/=\"$newModules/" $configfile
+		sed -i "/^MODULES_TO_EXPORT/s/=\"/=\"$newModules/" $configfile
 		echo
 		echo " * Added new modules \"$newModules\" to the config file."
 		echo
@@ -206,14 +155,14 @@ esac
 echo " * Set export mode: $exportMode."
 
 ## set module export folder
-if [[ -z "$moduleExportFolder" ]]; then
-	moduleExportFolder=$MODULE_EXPORT_FOLDER
+if [[ -z "$moduleSourcePath" ]]; then
+	moduleSourcePath=$MODULE_SOURCE_PATH
 fi
-echo " * Set module export folder: \"$moduleExportFolder\"."
+echo " * Set module export folder: \"$moduleSourcePath\"."
 
 echo
 echo "Testing module export folder ..."
-testModuleExportFolder
+testModuleSourcePath
 
 
 echo
@@ -222,7 +171,7 @@ echo "Setting parameters (continued) ..."
 ## set ignore-unclean
 if [[ -z "$ignoreUnclean" ]]; then
 	if [[ -z "$GIT_IGNORE_UNCLEAN" ]]; then
-		ignoreUnclean=0
+		ignoreUnclean=1
 	else
 		ignoreUnclean=$GIT_IGNORE_UNCLEAN
 	fi
@@ -233,7 +182,6 @@ echo " * Set ignore-unclean: $ignoreUnclean."
 if [[ -z "$copyAndUnzip" ]]; then
 	if [[ -z "$COPY_AND_UNZIP" ]]; then
 		copyAndUnzip=1
-		echo " * Copy & unzip of module zips not specified. Using mode 1, i.e., do copy and unzip."
 	else
 		copyAndUnzip=$COPY_AND_UNZIP
 	fi
@@ -244,25 +192,25 @@ echo " * Set copy-and-unzip: $copyAndUnzip."
 ## set export libs flag
 if [[ -z "$excludeLibs" ]]; then
 	if [[ -z "$DEFAULT_EXCLUDE_LIBS" ]]; then
-		excludeLibs=0
+		excludeLibs=1
 	else
 		excludeLibs=$DEFAULT_EXCLUDE_LIBS
 	fi
 fi
 echo " * Set exclude libs flag: $excludeLibs."
 
-# Read associative array from variable MODULE_MAPPINGS, which should have the form "key1=value1 key2=value2..."  
+# Read associative array from variable MODULE_MAPPINGS, which should have the form "key1=value1 key2=value2..."
 
 declare -A moduleMappings
 if [ ! -z "$MODULE_MAPPINGS" ] ; then
 	for MAPPING in $MODULE_MAPPINGS ; do
 		IFS="=" read k v <<< "$MAPPING"
-		moduleMappings[$k]="$v"		
+		moduleMappings[$k]="$v"
 	done
 	command -v perl || {
 		echo "Perl is required when using module mappings."
 		exit 15
-	} 
+	}
 fi
 
 
@@ -272,8 +220,8 @@ echo "Testing Git repository and adjusting user information"
 testGitRepository
 
 echo
-echo "Testing module main folder of the specified repository ..."
-testModuleMainFolder
+echo "Testing module target path ..."
+testModuleTargetPath
 
 echo "Copy and unzip modules ..."
 if [ $copyAndUnzip == 1 ]; then
@@ -283,16 +231,16 @@ if [ $copyAndUnzip == 1 ]; then
 		echo
 		echo " * Handling module ${module} ..."
 		echo
-		cd $moduleExportFolder
+		cd $moduleSourcePath
 		fileName=$(getExportedModule)
 		if [[ ! -z "$fileName" ]]; then
 			targetModule=${moduleMappings[$module]}
 			if [ -z "$targetModule" ] ; then
 				targetModule=$module
-			fi 
+			fi
 			echo "   * Found zip file ${fileName}."
 			#switch to project's module path
-			cd "${MODULE_PATH}"
+			cd "${MODULE_TARGET_PATH}"
 			#check if a subdirectory for the module exists - if not add it
 			if [ ! -d "$targetModule" ]; then
 				echo "   * Creating missing module directory \"$targetModule\" under \"$(pwd)\"."
@@ -307,7 +255,7 @@ if [ $copyAndUnzip == 1 ]; then
 			#if necessary, add the resources' subfolder of the module
 			if [[ (! -z "$MODULE_RESOURCES_SUBFOLDER") && (! -d "$MODULE_RESOURCES_SUBFOLDER") ]]; then
 				echo "   * Creating missing resources subfolder \"$MODULE_RESOURCES_SUBFOLDER\"\
-				       under $(pwd)."
+					under $(pwd)."
 				mkdir $MODULE_RESOURCES_SUBFOLDER
 			fi
 			#if there's a resources subfolder, switch to it
@@ -315,7 +263,7 @@ if [ $copyAndUnzip == 1 ]; then
 				cd $MODULE_RESOURCES_SUBFOLDER
 			fi
 			#delete all resources currently checked in in the project
-			if [[ "$(pwd)" == "${MODULE_PATH}"* ]]; then
+			if [[ "$(pwd)" == "${MODULE_TARGET_PATH}"* ]]; then
 				echo "   * Removing old version of the module resources under $(pwd)."
 				rm -fr ./{.[^.],}*
 				if [[ $? != 0 ]]; then
@@ -327,15 +275,15 @@ if [ $copyAndUnzip == 1 ]; then
 				fi
 			else
 				echo "   * ERROR: Something went wrong the current directory \($(pwd)\) is not a\
-				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})."
+				subdirectory of the repository's configured modules main folder (${MODULE_TARGET_PATH})."
 				exit 4
 			fi
-			echo "   * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
+			echo "   * Copying "${moduleSourcePath}/${fileName}" to $(pwd) ..."
 			#copy the new module .zip
-			cp "${moduleExportFolder}/${fileName}" ./
+			cp "${moduleSourcePath}/${fileName}" ./
 			if [[ $? != 0 ]]; then
 				echo
-				echo "ERROR: Failed to copy \"${moduleExportFolder}/${fileName}\" to $(pwd)."
+				echo "ERROR: Failed to copy \"${moduleSourcePath}/${fileName}\" to $(pwd)."
 				echo "Exit script with exit code 13."
 				echo
 				exit 13
@@ -351,21 +299,21 @@ if [ $copyAndUnzip == 1 ]; then
 				exit 13
 			fi
 			if [ ! "$module" == "$targetModule" ] ; then
-				echo "Adjusting module name from $module to $targetModule in manifest" 
+				echo "Adjusting module name from $module to $targetModule in manifest"
 				manifest=$(find -type f -name manifest.xml | head -1)
-				echo "CWD=$(pwd)" 
-				echo "Manifest path: $manifest" 
+				echo "CWD=$(pwd)"
+				echo "Manifest path: $manifest"
 				if [ ! -z "$manifest" ] ; then
 					export targetModule
 					perl -ne 'if (/<module>/../<\/module>/) { s#<name>.*?</name>#<name>$ENV{"targetModule"}</name>#; } ; print;' < $manifest > "${manifest}.tmp"
 					tmpContent=$(cat "${manifest}.tmp")
 					if [ ! -z "$tmpContent" ] ; then
-						rm "$manifest" 
-						mv "${manifest}.tmp" "$manifest" 
+						rm "$manifest"
+						mv "${manifest}.tmp" "$manifest"
 					fi
 				fi
-			fi 
-			 
+			fi
+
 			echo "   * Deleting copy of the .zip file."
 			#remove the .zip file
 			rm "${fileName}"
