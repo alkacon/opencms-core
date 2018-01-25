@@ -326,7 +326,10 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             CmsUserSettings settings = new CmsUserSettings(m_user);
             init(window, settings);
             m_sendEmail.setEnabled(false);
-            m_forceResetPassword.setValue(CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()));
+            m_forceResetPassword.setValue(
+                CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()) == null
+                ? Boolean.FALSE
+                : CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()));
             m_next.setVisible(false);
             m_startfolder.setValue(settings.getStartFolder());
             m_startfolder.setCmsObject(getCmsObjectWithSite((String)m_site.getValue()));
