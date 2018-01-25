@@ -391,6 +391,20 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
+     * Renames a nested container within a container page XML.<p>
+     *
+     * @param targetContainerPage the target container page
+     * @param layoutResource the container element resource generating the nested container
+     * @param oldName the old container name
+     * @param newName the new container name
+     */
+    private void renameNestedContainers(
+        CmsResource targetContainerPage,
+        CmsResource layoutResource,
+        String oldName,
+        String newName) {}
+
+    /**
      * Performs the replacement in content.<p>
      *
      * @param file the file object
