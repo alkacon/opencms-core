@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="org.apache.logging.log4j.core.appender" >
 	<Appenders>
-	    <TestLogAppender name="TESTLOG" target="SYSTEM_OUT">
+	    <TestLogAppender name="TESTLOG">
 	      <PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
 	    </TestLogAppender>
 	</Appenders>

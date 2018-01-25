@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 
@@ -146,7 +146,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
     private ScheduledFuture<?> m_updateFuture;
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 

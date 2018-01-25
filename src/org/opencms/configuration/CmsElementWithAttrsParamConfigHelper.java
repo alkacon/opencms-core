@@ -27,8 +27,8 @@
 
 package org.opencms.configuration;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.Rule;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 
 import org.dom4j.Element;
 import org.xml.sax.Attributes;
@@ -59,6 +59,7 @@ public class CmsElementWithAttrsParamConfigHelper {
      * @param attrs the attributes to read / write
      */
     public CmsElementWithAttrsParamConfigHelper(String parentPath, String name, Class<?> cls, String... attrs) {
+
         m_basePath = parentPath + "/" + name;
         m_name = name;
         m_class = cls;

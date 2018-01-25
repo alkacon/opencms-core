@@ -46,6 +46,7 @@ public class TestPdfExtraction extends OpenCmsTestCase {
     public void testBasicPdfExtraction() throws Exception {
 
         // open an input stream for the test file
+        @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.pdf");
 
         // extract the content
@@ -79,7 +80,7 @@ public class TestPdfExtraction extends OpenCmsTestCase {
         assertEquals("This is the subject", items.get(I_CmsExtractionResult.ITEM_SUBJECT));
         assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_AUTHOR));
         assertEquals("Key1, Key2", items.get(I_CmsExtractionResult.ITEM_KEYWORDS));
-        assertEquals("Microsoft Excel", items.get(I_CmsExtractionResult.ITEM_CREATOR));
+        assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_CREATOR));
         assertEquals("Jaws PDF Creator v4.0.24", items.get(I_CmsExtractionResult.ITEM_PRODUCER));
     }
 }

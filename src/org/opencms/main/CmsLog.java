@@ -34,7 +34,6 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -56,7 +55,7 @@ import org.apache.logging.log4j.core.util.Loader;
  * we may switch the logging interface to log4j <code>UGLI</code> once the final release is available.<p>
  *
  * The log4j configuration file shipped with OpenCms is located
- * in <code>${opencms.WEB-INF}/classes/log4j.properties</code>. OpenCms will auto-configure itself
+ * in <code>${opencms.WEB-INF}/classes/log4j2.xml</code>. OpenCms will auto-configure itself
  * to write it's log file to <code>${opencms.WEB-INF}/logs/opencms.log</code>. This default behaviour
  * can be supressed by either using a log4j configuration file from another location, or by setting the
  * special property <code>${opencms.set.logfile}</code> in the log4j configuration file to <code>false</code>.
@@ -89,8 +88,8 @@ public final class CmsLog {
         // OTHERWISE THEIR LOGGER WOULD NOT BE INITIALIZED PROPERLY
         //
         try {
-            // look for the log4j.properties that shipped with OpenCms
-            URL url = Loader.getResource("log4j.properties", null);
+            // look for the log4j2.xml that shipped with OpenCms
+            URL url = Loader.getResource("log4j2.xml", null);
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
                 File log4jProps = new File(URLDecoder.decode(url.getPath(), Charset.defaultCharset().name()));
@@ -117,7 +116,8 @@ public final class CmsLog {
                         System.setProperty("opencms.logfile", m_logFileRfsPath);
                         System.setProperty("opencms.logfolder", m_logFileRfsFolder);
                         // re-read the configuration with the new environment variable available
-                        ConfigurationSource source = ConfigurationSource.fromUri(Loader.getResource("/log4j2.xml", null).toURI());
+                        ConfigurationSource source = ConfigurationSource.fromUri(
+                            Loader.getResource("/log4j2.xml", null).toURI());
                         Configurator.initialize(null, source);
                     }
                 }
@@ -164,6 +164,40 @@ public final class CmsLog {
     }
 
     /**
+     * Render throwable using Throwable.printStackTrace.
+     * <p>This code copy from "org.apache.log4j.DefaultThrowableRenderer.render(Throwable throwable)"</p>
+     * @param throwable throwable, may not be null.
+     * @return string representation.
+     */
+    public static String[] render(final Throwable throwable) {
+
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        try {
+            throwable.printStackTrace(pw);
+        } catch (RuntimeException ex) {
+            // nothing to do
+        }
+        pw.flush();
+        LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
+        ArrayList<String> lines = new ArrayList<>();
+        try {
+            String line = reader.readLine();
+            while (line != null) {
+                lines.add(line);
+                line = reader.readLine();
+            }
+        } catch (IOException ex) {
+            if (ex instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            lines.add(ex.toString());
+        }
+        //String[] tempRep = new String[lines.size()];
+        return lines.toArray(new String[0]);
+    }
+
+    /**
      * Returns the filename of the log file (in the "real" file system).<p>
      *
      * If the method returns <code>null</code>, this means that the log
@@ -174,57 +208,5 @@ public final class CmsLog {
     protected static String getLogFileRfsPath() {
 
         return m_logFileRfsPath;
-    }
-
-    /**
-     * Helper method to get the java.io.File corresponding to the given URL.<p>
-     *
-     * This is needed to deal with escaped spaces in URLs.
-     *
-     * @param url the URL
-     * @return the file
-     */
-    private static File getFileForURL(URL url) {
-
-        File result;
-        try {
-            result = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            result = new File(url.getPath());
-        }
-        return result;
-    }
-
-    /**
-     * Render throwable using Throwable.printStackTrace.
-     * <p>This code copy from "org.apache.log4j.DefaultThrowableRenderer.render(Throwable throwable)"</p>
-     * @param throwable throwable, may not be null.
-     * @return string representation.
-     */
-    public static String[] render(final Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        try {
-            throwable.printStackTrace(pw);
-        } catch(RuntimeException ex) {
-        }
-        pw.flush();
-        LineNumberReader reader = new LineNumberReader(
-                new StringReader(sw.toString()));
-        ArrayList<String> lines = new ArrayList<>();
-        try {
-          String line = reader.readLine();
-          while(line != null) {
-            lines.add(line);
-            line = reader.readLine();
-          }
-        } catch(IOException ex) {
-            if (ex instanceof InterruptedIOException) {
-                Thread.currentThread().interrupt();
-            }
-            lines.add(ex.toString());
-        }
-        //String[] tempRep = new String[lines.size()];
-        return lines.toArray(new String[0]);
     }
 }

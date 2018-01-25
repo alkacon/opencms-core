@@ -31,7 +31,7 @@ import org.opencms.db.CmsLoginMessage;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 
@@ -71,7 +71,7 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
     private CmsLoginMessage m_loginMessage;
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 

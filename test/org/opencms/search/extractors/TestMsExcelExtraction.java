@@ -46,6 +46,7 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
     public void testExcelExtractionOLE2() throws Exception {
 
         // open an input stream for the test file
+        @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.xls");
 
         // extract the content
@@ -61,7 +62,7 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(10, items.size());
+        assertEquals(11, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
@@ -93,6 +94,7 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
     public void testExcelExtractionOOXML() throws Exception {
 
         // open an input stream for the test file
+        @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.xlsx");
 
         // extract the content
@@ -108,7 +110,7 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(9, items.size());
+        assertEquals(10, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();

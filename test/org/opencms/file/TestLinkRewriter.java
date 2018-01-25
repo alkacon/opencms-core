@@ -470,7 +470,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        ExpectErrorLogHandler handler = new ExpectErrorLogHandler("xml validation error");
+        ExpectErrorLogHandler handler = new ExpectErrorLogHandler("unmarshalling xml document failed");
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(handler);
@@ -478,7 +478,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
             // Setup: Create a XML content that is wrong according to the schema
             String wrongContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
                 + "\r\n"
-                + "<LinkSequences xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"internal://org/opencms/file/links.xsd\">\r\n"
+                + "<LinkSeq xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"internal://org/opencms/file/links.xsd\">\r\n"
                 + "  <LinkSequence language=\"en\">\r\n"
                 + "  <Text>Correct node</Text>\r\n"
                 + "  <!-- This 2nd Text node is intentionally wrong according to the schema! --> \r\n"
