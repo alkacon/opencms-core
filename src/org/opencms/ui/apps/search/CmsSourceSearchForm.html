@@ -23,12 +23,16 @@
 				<v-combo-box _id="m_searchIndex" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_INDEX_0)" description="%(key.GUI_SOURCESEARCH_INDEX_HELP_0)"/>
 				<v-check-box _id="m_replace" caption="%(key.GUI_SOURCESEARCH_REPLACE_0)" description="%(key.GUI_SOURCESEARCH_REPLACE_HELP_0)" />
 				<v-text-field _id="m_replacePattern" width="100%" caption="%(key.GUI_SOURCESEARCH_REPLACE_PATTERN_0)" description="%(key.GUI_SOURCESEARCH_REPLACE_PATTERN_HELP_0)" />
-				<f-cms-path-select-field _id="m_replaceResource" width="100%" caption="%(key.GUI_SOURCESEARCH_RESOURCE_REPLACE_0)" description="%(key.GUI_SOURCESEARCH_RESOURCE_REPLACE_HELP_0)" />
+				<f-cms-path-select-field _id="m_replaceResource" width="100%" caption="%(key.GUI_SOURCESEARCH_RESOURCE_0)" description="%(key.GUI_SOURCESEARCH_RESOURCE_REPLACE_HELP_0)" />
+				<v-text-field _id="m_oldName" width="100%" caption="%(key.GUI_SOURCESEARCH_REPLACE_OLD_NAME_0)" description="%(key.GUI_SOURCESEARCH_REPLACE_OLD_NAME_HELP_0)" />
+				<v-text-field _id="m_newName" width="100%" caption="%(key.GUI_SOURCESEARCH_REPLACE_NEW_NAME_0)" description="%(key.GUI_SOURCESEARCH_REPLACE_NEW_NAME_HELP_0)" />
 				<v-combo-box _id="m_workProject" immediate="true"  width="100%" caption="%(key.GUI_SOURCESEARCH_PROJECT_0)" description="%(key.GUI_SOURCESEARCH_PROJECT_HELP_0)"/>
-			</v-form-layout>
+				<v-label _id="m_place"/>			
+				</v-form-layout>
 			<v-horizontal-layout :right margin spacing style-name="o-dialog-button-bar">
 					<v-button _id="m_search">%(key.GUI_SOURCESEARCH_SEARCH_0)</v-button>
 				</v-horizontal-layout>
+
 	</v-vertical-layout>
 </body>
 </html>

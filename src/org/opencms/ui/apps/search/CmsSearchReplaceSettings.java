@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.search;
 
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.util.CmsStringUtil;
 
@@ -92,7 +93,11 @@ public class CmsSearchReplaceSettings implements Serializable {
     /**Property definition for property search.*/
     private CmsPropertyDefinition m_property = CmsPropertyDefinition.getNullPropertyDefinition();
 
+    /**Ignore subsites? */
     private boolean m_ignoreSubSites;
+
+    /**Element to search for. */
+    private CmsResource m_element;
 
     /**
      * Bean constructor with cms object for path validation.<p>
@@ -101,6 +106,17 @@ public class CmsSearchReplaceSettings implements Serializable {
 
         super();
         m_paths.add("/");
+    }
+
+    /**
+     * Get element to search for.<p>
+     *
+     * @return CmsResource
+     */
+
+    public CmsResource getElementResource() {
+
+        return m_element;
     }
 
     /**
@@ -137,6 +153,11 @@ public class CmsSearchReplaceSettings implements Serializable {
         return m_project;
     }
 
+    /**
+     * Get property.<p>
+     *
+     * @return CmsPropertyDefinition
+     */
     public CmsPropertyDefinition getProperty() {
 
         return m_property;
@@ -246,6 +267,11 @@ public class CmsSearchReplaceSettings implements Serializable {
         return m_xpath;
     }
 
+    /**
+     * Should subsites be ignored?
+     *
+     * @return boolean
+     */
     public boolean ignoreSubSites() {
 
         return m_ignoreSubSites;
@@ -284,6 +310,16 @@ public class CmsSearchReplaceSettings implements Serializable {
     }
 
     /**
+     * Set Element to search for.<p>
+     *
+     * @param resource CmsResource
+     */
+    public void setElementResource(CmsResource resource) {
+
+        m_element = resource;
+    }
+
+    /**
      * Sets the force replace flag.<p>
      *
      * @param forceReplace the force replace flag to set
@@ -293,6 +329,11 @@ public class CmsSearchReplaceSettings implements Serializable {
         m_forceReplace = forceReplace;
     }
 
+    /**
+     * Set if subsites should be ignored.<p>
+     *
+     * @param ignore boolean
+     */
     public void setIgnoreSubSites(boolean ignore) {
 
         m_ignoreSubSites = ignore;
@@ -345,7 +386,9 @@ public class CmsSearchReplaceSettings implements Serializable {
     }
 
     /**
-     * @param value
+     * Sets the property.<p>
+     *
+     * @param value CmsPropertyDefinition
      */
     public void setProperty(CmsPropertyDefinition value) {
 

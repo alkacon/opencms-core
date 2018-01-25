@@ -48,6 +48,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2 = "ERR_MODULEMANAGER_ACTION_MODULE_DEPENDENCY_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_RENAME_CONTAINER_SEARCH_0 = "GUI_SOURCESEARCH_RENAME_CONTAINER_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -61,6 +64,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_REPLACE_OLD_NAME_0 = "GUI_SOURCESEARCH_REPLACE_OLD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_REPLACE_OLD_NAME_HELP_0 = "GUI_SOURCESEARCH_REPLACE_OLD_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_REPLACE_NEW_NAME_0 = "GUI_SOURCESEARCH_REPLACE_NEW_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_REPLACE_NEW_NAME_HELP_0 = "GUI_SOURCESEARCH_REPLACE_NEW_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";

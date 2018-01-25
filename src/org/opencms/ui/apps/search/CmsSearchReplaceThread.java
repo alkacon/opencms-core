@@ -46,6 +46,7 @@ import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
@@ -446,6 +447,14 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             m_matchedResources.add(file);
             getReport().println(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
             if (m_replace) {
+                if (m_settings.getType().equals(SearchType.renameContainer)) {
+
+                    return renameNestedContainers(
+                        file,
+                        m_settings.getElementResource(),
+                        m_settings.getReplacepattern().split(";")[0],
+                        m_settings.getReplacepattern().split(";")[1]);
+                }
                 return matcher.replaceAll(m_settings.getReplacepattern()).getBytes(encoding);
             }
         } else {

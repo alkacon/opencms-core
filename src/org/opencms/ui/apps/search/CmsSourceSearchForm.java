@@ -82,7 +82,9 @@ public class CmsSourceSearchForm extends VerticalLayout {
         /** Property search. */
         properties(false, false, true),
         /** */
-        resourcetype(false, false, false);
+        resourcetype(false, false, false),
+        /** */
+        renameContainer(false, false, false);
 
         /** The content values only flag. */
         private boolean m_contentValuesOnly;
@@ -164,6 +166,12 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
     /** The search button. */
     private Button m_search;
+
+    /** Vaadin component.*/
+    private TextField m_oldName;
+
+    /** Vaadin component.*/
+    private TextField m_newName;
 
     /** Check box to ignore subsites. */
     private CheckBox m_ignoreSubSites;
@@ -304,9 +312,10 @@ public class CmsSourceSearchForm extends VerticalLayout {
         SearchType type = (SearchType)m_searchType.getValue();
 
         m_property.setVisible(type.isPropertySearch());
-        m_searchPattern.setVisible(!type.equals(SearchType.resourcetype));
-        m_resourceSearch.setVisible(type.equals(SearchType.resourcetype));
-        if (!type.equals(SearchType.resourcetype)) {
+        m_searchPattern.setVisible(
+            (!type.equals(SearchType.resourcetype)) & (!type.equals(SearchType.renameContainer)));
+        m_resourceSearch.setVisible(type.equals(SearchType.resourcetype) | type.equals(SearchType.renameContainer));
+        if ((!type.equals(SearchType.resourcetype)) & (!type.equals(SearchType.renameContainer))) {
             m_ignoreSubSites.setValue(Boolean.FALSE);
             m_ignoreSubSites.setVisible(false);
         } else {
@@ -319,7 +328,10 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_xPath.setVisible(type.isContentValuesOnly());
         m_locale.setVisible(type.isContentValuesOnly());
 
-        m_resourceType.setVisible(!type.isPropertySearch() & !type.equals(SearchType.resourcetype));
+        m_resourceType.setVisible(
+            !type.isPropertySearch()
+                & !type.equals(SearchType.resourcetype)
+                & !type.equals(SearchType.renameContainer));
 
         IndexedContainer types = (IndexedContainer)m_resourceType.getContainerDataSource();
         types.removeAllContainerFilters();
@@ -341,8 +353,20 @@ public class CmsSourceSearchForm extends VerticalLayout {
         if (type != null) {
             settings.setTypes(type.getTypeName());
         }
-        if (SearchType.resourcetype.equals(m_searchType.getValue())) {
+        if (SearchType.resourcetype.equals(m_searchType.getValue())
+            | SearchType.renameContainer.equals(m_searchType.getValue())) {
             settings.setTypes(CmsResourceTypeXmlContainerPage.getStaticTypeName());
+        }
+
+        if (SearchType.renameContainer.equals(m_searchType.getValue())) {
+            try {
+                CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                cms.getRequestContext().setSiteRoot("");
+                CmsResource element = cms.readResource(m_resourceSearch.getValue());
+                settings.setElementResource(element);
+            } catch (CmsException e) {
+                LOG.error("Can not read resource", e);
+            }
         }
 
         if (m_replace.getValue().booleanValue()) {
@@ -366,6 +390,8 @@ public class CmsSourceSearchForm extends VerticalLayout {
                 } catch (CmsException e) {
                     LOG.error("Unable to read resource.", e);
                 }
+            } else if (SearchType.renameContainer.equals(m_searchType.getValue())) {
+                settings.setReplacepattern(m_oldName.getValue() + ";" + m_newName.getValue());
             } else {
 
                 settings.setReplacepattern(m_replacePattern.getValue());
@@ -373,7 +399,8 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
         }
 
-        if (SearchType.resourcetype.equals(m_searchType.getValue())) {
+        if (SearchType.resourcetype.equals(m_searchType.getValue())
+            | SearchType.renameContainer.equals(m_searchType.getValue())) {
             try {
                 CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
                 cms.getRequestContext().setSiteRoot("");
@@ -418,7 +445,14 @@ public class CmsSourceSearchForm extends VerticalLayout {
         boolean replace = m_replace.getValue().booleanValue();
 
         m_replaceResource.setVisible(replace ? SearchType.resourcetype.equals(m_searchType.getValue()) : replace);
-        m_replacePattern.setVisible(replace ? !SearchType.resourcetype.equals(m_searchType.getValue()) : replace);
+        m_replacePattern.setVisible(
+            replace
+            ? !SearchType.resourcetype.equals(m_searchType.getValue())
+                & !SearchType.renameContainer.equals(m_searchType.getValue())
+            : replace);
+
+        m_newName.setVisible(replace ? SearchType.renameContainer.equals(m_searchType.getValue()) : replace);
+        m_oldName.setVisible(replace ? SearchType.renameContainer.equals(m_searchType.getValue()) : replace);
 
         m_workProject.setVisible(replace);
 
@@ -479,6 +513,10 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_searchType.setItemCaption(
             SearchType.resourcetype,
             CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_SEARCH_0));
+        m_searchType.addItem(SearchType.renameContainer);
+        m_searchType.setItemCaption(
+            SearchType.renameContainer,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RENAME_CONTAINER_SEARCH_0));
         if (OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled()) {
 
             m_searchIndex.setFilteringMode(FilteringMode.OFF);
