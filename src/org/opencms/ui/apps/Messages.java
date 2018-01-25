@@ -2283,7 +2283,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCESEARCH_IGNORE_SUBSITES_0 = "GUI_SOURCESEARCH_IGNORE_SUBSITES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SOURCESEARCH_IGNORE_SUBSITES_HELP_0 = "GUI_SOURCESEARCH_IGNORE_SUBSITES_0";
+    public static final String GUI_SOURCESEARCH_IGNORE_SUBSITES_HELP_0 = "GUI_SOURCESEARCH_IGNORE_SUBSITES_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_LOCALE_0 = "GUI_SOURCESEARCH_LOCALE_0";

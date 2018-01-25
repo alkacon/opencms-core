@@ -398,11 +398,14 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
      * @param oldName the old container name
      * @param newName the new container name
      */
-    private void renameNestedContainers(
+    private byte[] renameNestedContainers(
         CmsResource targetContainerPage,
         CmsResource layoutResource,
         String oldName,
-        String newName) {}
+        String newName) {
+
+        return null;
+    }
 
     /**
      * Performs the replacement in content.<p>
