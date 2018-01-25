@@ -3086,7 +3086,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         } catch (Exception e) {
             LOG.error(
-                Messages.get().container(
+                Messages.get().getBundle().key(
                     Messages.ERR_SOLR_CORE_CONTAINER_NOT_CREATED_1,
                     m_solrConfig.getSolrFile().getAbsolutePath()),
                 e);
