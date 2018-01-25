@@ -742,7 +742,25 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                     } else {
                         // only read resources which are files and not deleted, which are in the current time range window and where the current
                         // user has the sufficient permissions to read them
+
                         List<CmsResource> tmpResources = getCms().readResources(path, filter);
+
+                        if (m_settings.ignoreSubSites()) {
+                            List<String> subsites = OpenCms.getADEManager().getSubSitePaths(getCms(), path);
+                            subsites.remove(
+                                OpenCms.getADEManager().getSubSiteRoot(
+                                    getCms(),
+                                    getCms().readResource(path).getRootPath()));
+                            Iterator<CmsResource> iterator = tmpResources.iterator();
+                            while (iterator.hasNext()) {
+                                CmsResource r = iterator.next();
+                                if (subsites.contains(
+                                    OpenCms.getADEManager().getSubSiteRoot(getCms(), r.getRootPath()))) {
+                                    iterator.remove();
+                                }
+                            }
+                        }
+
                         if ((tmpResources != null) && !tmpResources.isEmpty()) {
                             resources.addAll(tmpResources);
                         }

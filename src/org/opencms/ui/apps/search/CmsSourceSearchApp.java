@@ -99,6 +99,9 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
     /** The search pattern key. */
     public static final String SEARCH_PATTERN = "sp";
 
+    /** The ignore subsites key. */
+    public static final String IGNORE_SUBSITES = "igss";
+
     /** The type key. */
     public static final String SEARCH_TYPE = "t";
 
@@ -159,6 +162,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
         state = A_CmsWorkplaceApp.addParamToState(state, QUERY, settings.getQuery());
         state = A_CmsWorkplaceApp.addParamToState(state, INDEX, settings.getSource());
         state = A_CmsWorkplaceApp.addParamToState(state, XPATH, settings.getXpath());
+        state = A_CmsWorkplaceApp.addParamToState(state, IGNORE_SUBSITES, String.valueOf(settings.ignoreSubSites()));
         state = A_CmsWorkplaceApp.addParamToState(state, PROPERTY, settings.getProperty().getName());
 
         return state;
@@ -179,6 +183,8 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             SearchType type = SearchType.valueOf(typeString);
             settings = new CmsSearchReplaceSettings();
             settings.setType(type);
+            settings.setIgnoreSubSites(
+                Boolean.parseBoolean(A_CmsWorkplaceApp.getParamFromState(state, IGNORE_SUBSITES)));
             settings.setSiteRoot(A_CmsWorkplaceApp.getParamFromState(state, SITE_ROOT));
             settings.setPaths(Collections.singletonList(A_CmsWorkplaceApp.getParamFromState(state, FOLDER)));
             String resType = A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_TYPE);

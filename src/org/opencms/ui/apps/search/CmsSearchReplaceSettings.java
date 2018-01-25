@@ -92,6 +92,8 @@ public class CmsSearchReplaceSettings implements Serializable {
     /**Property definition for property search.*/
     private CmsPropertyDefinition m_property = CmsPropertyDefinition.getNullPropertyDefinition();
 
+    private boolean m_ignoreSubSites;
+
     /**
      * Bean constructor with cms object for path validation.<p>
      */
@@ -244,6 +246,11 @@ public class CmsSearchReplaceSettings implements Serializable {
         return m_xpath;
     }
 
+    public boolean ignoreSubSites() {
+
+        return m_ignoreSubSites;
+    }
+
     /**
      * Returns the force replace flag, if <code>true</code> the replacement
      * will also be performed if the replacement String is empty.<p>
@@ -284,6 +291,11 @@ public class CmsSearchReplaceSettings implements Serializable {
     public void setForceReplace(boolean forceReplace) {
 
         m_forceReplace = forceReplace;
+    }
+
+    public void setIgnoreSubSites(boolean ignore) {
+
+        m_ignoreSubSites = ignore;
     }
 
     /**
@@ -332,6 +344,9 @@ public class CmsSearchReplaceSettings implements Serializable {
         m_project = project;
     }
 
+    /**
+     * @param value
+     */
     public void setProperty(CmsPropertyDefinition value) {
 
         m_property = value;
