@@ -109,6 +109,36 @@ public class CmsSearchReplaceSettings implements Serializable {
     }
 
     /**
+     * Replace element pattern.<p>
+     *
+     * @param resource Resource to replace
+     * @return String regex
+     */
+    public static String replaceElementInPagePattern(CmsResource resource) {
+
+        return "<target><![CDATA["
+            + resource.getRootPath()
+            + "]]></target>//t<uuid>"
+            + resource.getStructureId().getStringValue()
+            + "</uuid>";
+    }
+
+    /**
+     * Search element in xml page pattern.<p>
+     *
+     * @param resource Resource
+     * @return String regex
+     */
+    public static String searchElementInPagePattern(CmsResource resource) {
+
+        return "<target>.{0,9}"
+            + resource.getRootPath()
+            + ".{0,3}</target>\\s*<uuid>"
+            + resource.getStructureId().getStringValue()
+            + "</uuid>";
+    }
+
+    /**
      * Get element to search for.<p>
      *
      * @return CmsResource

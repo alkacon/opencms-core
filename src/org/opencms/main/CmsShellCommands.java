@@ -42,6 +42,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -55,6 +56,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.report.CmsShellLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchIndex;
@@ -65,6 +67,9 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.ui.apps.search.CmsSearchReplaceSettings;
+import org.opencms.ui.apps.search.CmsSearchReplaceThread;
+import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -72,6 +77,7 @@ import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -80,6 +86,8 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides additional commands for the CmsShell.<p>
@@ -92,9 +100,11 @@ import java.util.StringTokenizer;
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsShellCommands.class);
+
     /** The OpenCms context object. */
     private CmsObject m_cms;
-
     /** The Cms shell object. */
     private CmsShell m_shell;
 
@@ -408,7 +418,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1182,6 +1192,102 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void rebuildIndex(String index) throws Exception {
 
         OpenCms.getSearchManager().rebuildIndex(index, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Replaces elements on container pages.<p>
+     *
+     * @param elementPath to be found in container pages
+     * @param oldName to replace
+     * @param newName new name
+     * @param project project to replace in
+     * @param basePath basePath to find resources
+     * @param ignoreSubSites ignore subsites?
+     */
+    public void renameNestedContainers(
+        String elementPath,
+        String oldName,
+        String newName,
+        String project,
+        String basePath,
+        boolean ignoreSubSites) {
+
+        try {
+            CmsObject cms = OpenCms.initCmsObject(m_cms);
+            cms.getRequestContext().setCurrentProject(cms.readProject(project));
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource resource = cms.readResource(elementPath);
+            CmsSearchReplaceSettings settings = new CmsSearchReplaceSettings();
+            settings.setType(SearchType.renameContainer);
+            settings.setSearchpattern(CmsSearchReplaceSettings.searchElementInPagePattern(resource));
+            settings.setElementResource(resource);
+            settings.setReplacepattern(oldName + ";" + newName);
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
+            settings.setSiteRoot(siteRoot);
+            settings.setPaths(Collections.singletonList(basePath.substring(siteRoot.length())));
+            settings.setIgnoreSubSites(ignoreSubSites);
+            settings.setProject(project);
+            settings.setTypes(
+                CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME
+                    + ","
+                    + CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+
+            CmsSearchReplaceThread thread = new CmsSearchReplaceThread(
+                null,
+                cms,
+                settings,
+                new CmsShellLogReport(m_cms.getRequestContext().getLocale()));
+            thread.run();
+        } catch (CmsException e) {
+            //
+        }
+    }
+
+    /**
+     * Replaces elements on container pages.<p>
+     *
+     * @param elementPath to be found in container pages
+     * @param targetElementPath new elements in pages
+     * @param project project to replace in
+     * @param basePath basePath to find resources
+     * @param ignoreSubSites ignore subsites?
+     */
+    public void replaceElementsInPages(
+        String elementPath,
+        String targetElementPath,
+        String project,
+        String basePath,
+        boolean ignoreSubSites) {
+
+        try {
+            CmsObject cms = OpenCms.initCmsObject(m_cms);
+            cms.getRequestContext().setCurrentProject(cms.readProject(project));
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource resource = cms.readResource(elementPath);
+            CmsResource targetResource = cms.readResource(targetElementPath);
+            CmsSearchReplaceSettings settings = new CmsSearchReplaceSettings();
+            settings.setType(SearchType.resourcetype);
+            settings.setSearchpattern(CmsSearchReplaceSettings.searchElementInPagePattern(resource));
+            settings.setReplacepattern(CmsSearchReplaceSettings.replaceElementInPagePattern(targetResource));
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
+            settings.setSiteRoot(siteRoot);
+            settings.setPaths(Collections.singletonList(basePath.substring(siteRoot.length())));
+            settings.setIgnoreSubSites(ignoreSubSites);
+            settings.setProject(project);
+            settings.setTypes(
+                CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME
+                    + ","
+                    + CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+
+            CmsSearchReplaceThread thread = new CmsSearchReplaceThread(
+                null,
+                cms,
+                settings,
+                new CmsShellLogReport(m_cms.getRequestContext().getLocale()));
+            thread.run();
+        } catch (CmsException e) {
+            LOG.error("test", e);
+        }
     }
 
     /**

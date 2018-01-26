@@ -51,7 +51,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
     private CmsUUID m_id;
 
     /** The report that belongs to the thread. */
-    private I_CmsReport m_report;
+    protected I_CmsReport m_report;
 
     /** The time this report is running. */
     private long m_starttime;

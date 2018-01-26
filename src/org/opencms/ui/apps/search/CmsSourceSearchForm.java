@@ -355,7 +355,10 @@ public class CmsSourceSearchForm extends VerticalLayout {
         }
         if (SearchType.resourcetype.equals(m_searchType.getValue())
             | SearchType.renameContainer.equals(m_searchType.getValue())) {
-            settings.setTypes(CmsResourceTypeXmlContainerPage.getStaticTypeName());
+            settings.setTypes(
+                CmsResourceTypeXmlContainerPage.getStaticTypeName()
+                    + ","
+                    + CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
         }
 
         if (SearchType.renameContainer.equals(m_searchType.getValue())) {
@@ -381,12 +384,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
                     CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
                     cms.getRequestContext().setSiteRoot("");
                     CmsResource resource = cms.readResource(m_replaceResource.getValue());
-                    settings.setReplacepattern(
-                        "<target><![CDATA["
-                            + resource.getRootPath()
-                            + "]]></target>//t<uuid>"
-                            + resource.getStructureId().getStringValue()
-                            + "</uuid>");
+                    settings.setReplacepattern(CmsSearchReplaceSettings.replaceElementInPagePattern(resource));
                 } catch (CmsException e) {
                     LOG.error("Unable to read resource.", e);
                 }
@@ -405,12 +403,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
                 CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
                 cms.getRequestContext().setSiteRoot("");
                 CmsResource resource = cms.readResource(m_resourceSearch.getValue());
-                settings.setSearchpattern(
-                    "<target>.{0,9}"
-                        + resource.getRootPath()
-                        + ".{0,3}</target>\\s*<uuid>"
-                        + resource.getStructureId().getStringValue()
-                        + "</uuid>");
+                settings.setSearchpattern(CmsSearchReplaceSettings.searchElementInPagePattern(resource));
             } catch (CmsException e) {
                 LOG.error("Unable to read resource.", e);
             }

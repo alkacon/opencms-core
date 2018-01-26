@@ -117,6 +117,24 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
+     * Creates a replace html tag Thread.<p>
+     *
+     * @param session the current session
+     * @param cms the current cms object
+     * @param settings the settings needed to perform the operation.
+     */
+    public CmsSearchReplaceThread(
+        HttpSession session,
+        CmsObject cms,
+        CmsSearchReplaceSettings settings,
+        I_CmsReport report) {
+
+        super(cms, "searchAndReplace");
+        m_report = report;
+        m_settings = settings;
+    }
+
+    /**
      * Returns the matched resources.<p>
      *
      * @return the matched resources
@@ -319,6 +337,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 if ((result != null) && (contents != null) && !contents.equals(result)) {
                     // rewrite the content
                     writeContent(file, result);
+                } else {
+                    getReport().println();
                 }
 
             } catch (Exception e) {
@@ -478,7 +498,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
         if (CmsSourceSearchForm.REGEX_ALL.equals(m_settings.getSearchpattern()) & !m_replace) {
             m_matchedResources.add(file);
-            getReport().println(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
+            getReport().print(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
             return null;
         }
 
@@ -487,7 +507,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         if (matcher.find()) {
             // search pattern did match here, so take this file in the list with matches resources
             m_matchedResources.add(file);
-            getReport().println(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
+            getReport().print(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
             if (m_replace) {
                 if (m_settings.getType().equals(SearchType.renameContainer)) {
 
@@ -501,7 +521,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             }
         } else {
             // search pattern did not match
-            getReport().println(
+            getReport().print(
                 Messages.get().container(Messages.RPT_SOURCESEARCH_NOT_MATCHED_0),
                 I_CmsReport.FORMAT_NOTE);
         }
@@ -782,17 +802,21 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         } else {
             CmsResourceFilter filter = CmsResourceFilter.ALL.addExcludeState(
                 CmsResource.STATE_DELETED).addRequireVisible();
+            List<CmsResourceFilter> filterList = new ArrayList<CmsResourceFilter>();
             if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                 for (String resTypeName : m_settings.getTypesArray()) {
                     try {
                         int typeId = OpenCms.getResourceManager().getResourceType(resTypeName).getTypeId();
-                        filter = filter.addRequireType(typeId);
+                        filterList.add(((CmsResourceFilter)filter.clone()).addRequireType(typeId));
                     } catch (CmsLoaderException e) {
                         // noop
                     } catch (NullPointerException e) {
                         // noop
                     }
                 }
+            }
+            if (filterList.size() == 1) {
+                filter = filterList.get(0);
             }
 
             // iterate over all selected paths
@@ -812,20 +836,35 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                         // user has the sufficient permissions to read them
 
                         List<CmsResource> tmpResources = getCms().readResources(path, filter);
-
+                        List<String> subsites = null;
                         if (m_settings.ignoreSubSites()) {
-                            List<String> subsites = OpenCms.getADEManager().getSubSitePaths(getCms(), path);
+                            subsites = OpenCms.getADEManager().getSubSitePaths(getCms(), path);
                             subsites.remove(
                                 OpenCms.getADEManager().getSubSiteRoot(
                                     getCms(),
                                     getCms().readResource(path).getRootPath()));
-                            Iterator<CmsResource> iterator = tmpResources.iterator();
-                            while (iterator.hasNext()) {
-                                CmsResource r = iterator.next();
+                        }
+                        Iterator<CmsResource> iterator = tmpResources.iterator();
+                        while (iterator.hasNext()) {
+                            CmsResource r = iterator.next();
+                            boolean remove = true;
+                            if (filterList.size() > 1) {
+                                for (CmsResourceFilter f : filterList) {
+                                    if (f.isValid(getCms().getRequestContext(), r)) {
+                                        remove = false;
+                                    }
+                                }
+                            } else {
+                                remove = false;
+                            }
+                            if ((subsites != null) & !remove) {
                                 if (subsites.contains(
                                     OpenCms.getADEManager().getSubSiteRoot(getCms(), r.getRootPath()))) {
-                                    iterator.remove();
+                                    remove = true;
                                 }
+                            }
+                            if (remove) {
+                                iterator.remove();
                             }
                         }
 
