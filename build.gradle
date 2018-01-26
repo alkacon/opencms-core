@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'eclipse'
 
 sourceCompatibility = java_target_version
 targetCompatibility = java_target_version
@@ -122,8 +123,7 @@ configurations.all {
     transitive = false;
 }
 
-// import dependencies
-apply from: 'dependencies.gradle'
+
 
 sourceSets{
     main {
@@ -135,35 +135,44 @@ sourceSets{
         resources.srcDirs=['src-modules']
     }
     gwt {
-        java.srcDirs=['src-gwt']
-        resources.srcDirs=['src-gwt']
+        java {
+        	srcDirs=['src-gwt']
+        	exclude '**/super_src/**'
+        }
+        resources {
+        	srcDirs=['src-gwt']
+        	exclude '**/super_src/**'
+        }
     }
     setup {
         java.srcDirs=['src-setup']
         resources.srcDirs=['src-setup']
     }
     test {
-        java.srcDirs=['test']
-        resources.srcDirs=['test','src','src-modules','src-setup']
+        java {
+        	srcDirs=['test']
+        	exclude 'data/**'
+        }
+        resources {
+        	srcDirs=['test','src','src-modules','src-setup']
+        	exclude 'data/**'
+        }
     }
 
     testGwt {
-        java.srcDirs=['src-gwt','test-gwt']
-        resources.srcDirs=['src-gwt','test-gwt']
+        java {
+        	srcDirs=['src-gwt','test-gwt']
+        	exclude '**/super_src/**'
+        }
+        resources {
+        	srcDirs=['src-gwt','test-gwt']
+        	exclude '**/super_src/**'
+        }
     }
 }
 
-// adding generated dependencies during configuration phase to avoid build path problems in IDE
-sourceSets.modules.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.setup.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-sourceSets.test.compileClasspath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-sourceSets.test.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-sourceSets.test.compileClasspath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
-sourceSets.testGwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.testGwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
+// import dependencies
+apply from: 'dependencies.gradle'
 
 task wrapper(type: Wrapper){
 	gradleVersion = '4.4'
@@ -178,7 +187,6 @@ task copyCompileDeps(type: Copy) {
 	from configurations.compile
 	into "${buildDir}/deps"
 }
-
 
 jar {
     manifest {
@@ -275,6 +283,13 @@ task gwtJar(dependsOn: jar, type: Jar) {
     includeEmptyDirs false
     archiveName 'opencms-gwt.jar'
     baseName 'opencms-gwt'
+    exclude '**/.gitignore'
+}
+
+task modulesJar(type: Jar) {
+	from sourceSets.modules.output
+    archiveName 'opencms-modules.jar'
+    baseName 'opencms-modules'
     exclude '**/.gitignore'
 }
 
@@ -425,81 +440,23 @@ task opencmsFonts (type: JavaExec) {
 }
 
 
+Properties gwtProps = new Properties()
+gwtProps.load(new FileInputStream("$projectDir/src-gwt/gwt-modules.properties"))
+project.ext.gwtModuleNames = gwtProps['gwtmodules']
 
-task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
-    ext.buildDir =  project.buildDir.toString()  +"/gwt/widgetSet"
-    ext.extraDir =  project.buildDir.toString() + "/extra/widgetSet"
-    inputs.files sourceSets.gwt.java.srcDirs
-    inputs.dir sourceSets.gwt.output.resourcesDir
-    outputs.dir buildDir
-
-    // Workaround for incremental build (GRADLE-1483)
-    outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
-
+task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
     doFirst {
         println '======================================================'
-        println "Building GWT resources for WidgetSet"
-        println '======================================================'
-        // to clean the output directory, delete it first
-        def dir = file(buildDir)
-        if (dir.exists()){
-            delete(dir)
-        }
-        dir.mkdirs()
-    }
-
-    main = 'com.google.gwt.dev.Compiler'
-
-    classpath {
-        [
-            // Java source core
-            sourceSets.main.java.srcDirs,
-            // Java source gwt
-            sourceSets.gwt.java.srcDirs,
-            // Java source modules
-            sourceSets.modules.java.srcDirs,
-            // Generated resources
-            sourceSets.gwt.output.resourcesDir,
-            // Generated classes
-            sourceSets.gwt.output.classesDir,
-            // Dependecies
-            sourceSets.gwt.compileClasspath,
-        ]
-    }
-
-
-    args =
-            [
-                'org.opencms.ui.WidgetSet',
-                // Your GWT module
-                '-war',
-                buildDir,
-                '-logLevel',
-                'ERROR',
-                '-localWorkers',
-                '2',
-                '-style',
-                'obfuscated',
-                '-extra',
-                extraDir,
-                '-strict'
-                // '-draftCompile' // Speeds up compile with 25%
-            ]
-    jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
-    
-
-    maxHeapSize = max_heap_size
-}
-
-task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme, opencmsFonts]){
-    doFirst {
-        println '======================================================'
-        println "Building WidgetSet Jar"
-        println "including resources from ${project.buildDir}/gwt/widgetSet"
+        println "Building Resources Jar"
         println '======================================================'
     }
-    baseName='opencms-widgetset'
-    archiveName='opencms-widgetset.jar'
+    baseName='opencms-resources'
+    archiveName='opencms-resources.jar'
+    allModuleNames.split(',').each{ moduleName ->
+	    from ("${projectDir}/modules/${moduleName}/static"){
+	    	into "OPENCMS"
+	    }
+    }
     from ("${projectDir}/webapp/workplaceThemes"){
         exclude '**/*.scss'
     }
@@ -509,7 +466,16 @@ task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme, opencmsF
     from ("${project.buildDir}/workplaceThemes/opencmsFonts"){
         into 'VAADIN/themes/opencms'
     }
-    from ("${project.buildDir}/gwt/widgetSet"){
+    gwtModuleNames.split(',').each{ gwtModule ->
+    	if (!'org.opencms.ui.WidgetSet'.equals(gwtModule)){
+	    	from( "${project.buildDir}/gwt/${gwtModule}") {
+				exclude '**/WEB-INF/**'
+			    into "OPENCMS/gwt"
+			}
+		}
+    }
+    
+    from ("${project.buildDir}/gwt/org.opencms.ui.WidgetSet"){
         include 'org.opencms.ui.WidgetSet/**'
         into 'VAADIN/widgetsets'
     }
@@ -524,6 +490,77 @@ task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme, opencmsF
         }
     }
 }
+
+// iterate gwt modules and create the required tasks
+gwtModuleNames.split(',').each{ gwtModule ->
+	task "gwt_${gwtModule}" (dependsOn: gwtClasses, type: JavaExec) {
+	    ext.buildDir =  project.buildDir.toString()  +"/gwt/${gwtModule}"
+	    ext.extraDir =  project.buildDir.toString() + "/extra/${gwtModule}"
+	    inputs.files sourceSets.gwt.java.srcDirs
+	    inputs.dir sourceSets.gwt.output.resourcesDir
+	    outputs.dir buildDir
+	
+	    // Workaround for incremental build (GRADLE-1483)
+	    outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
+	
+	    doFirst {
+	        println '======================================================'
+	        println "Building GWT resources for ${gwtModule}"
+	        println '======================================================'
+	        // to clean the output directory, delete it first
+	        def dir = file(buildDir)
+	        if (dir.exists()){
+	            delete(dir)
+	        }
+	        dir.mkdirs()
+	    }
+	
+	    main = 'com.google.gwt.dev.Compiler'
+	
+	    classpath {
+	        [
+	            // Java source core
+	            sourceSets.main.java.srcDirs,
+	            // Java source gwt
+	            sourceSets.gwt.java.srcDirs,
+	            // Java source modules
+	            sourceSets.modules.java.srcDirs,
+	            // Generated resources
+	            sourceSets.gwt.output.resourcesDir,
+	            // Generated classes
+	            sourceSets.gwt.java.outputDir,
+	            // Dependecies
+	            sourceSets.gwt.compileClasspath,
+	        ]
+	    }
+	
+	
+	    args =
+	            [
+	                gwtModule,
+	                // Your GWT module
+	                '-war',
+	                buildDir,
+	                '-logLevel',
+	                'ERROR',
+	                '-localWorkers',
+	                '2',
+	                '-style',
+	                'obfuscated',
+	                '-extra',
+	                extraDir,
+	                '-strict'
+	                // '-draftCompile' // Speeds up compile with 25%
+	            ]
+	    jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
+	    
+	
+	    maxHeapSize = max_heap_size
+	}
+	
+	tasks['resourcesJar'].dependsOn(tasks["gwt_${gwtModule}"])
+}
+
 
 
 task setupJar(dependsOn: jar, type: Jar) {
@@ -601,10 +638,10 @@ allModuleNames.split(',').each{ moduleName ->
     if (propertyFile.exists()){
         Properties moduleProperties= new Properties()
         moduleProperties.load(new FileInputStream(propertyFile))
-        if (moduleProperties['module.packages']!=null){
+        if (isExternal.toBoolean() && moduleProperties['module.packages']!=null){
             modulePackages=moduleProperties['module.packages']
         }
-        if (moduleProperties['module.gwt']!=null){
+        if (isExternal.toBoolean() && moduleProperties['module.gwt']!=null){
             gwtModule = moduleProperties['module.gwt']
             def moduleXml = (new XmlParser()).parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
             gwtRename = moduleXml['@rename-to']
@@ -627,8 +664,8 @@ allModuleNames.split(',').each{ moduleName ->
         moduleVersion = parsedManifest.module[0].version[0].text()
     }
 	def staticFolder=file("${moduleFolder}/static")
-    def requiresJar = gwtModule!=null || staticFolder.exists() || workplacelocalization!=null
-    if (!requiresJar){
+    def requiresJar = isExternal.toBoolean() && (gwtModule!=null || staticFolder.exists()) || workplacelocalization!=null
+    if (isExternal.toBoolean() &&!requiresJar){
 	    // check if there are any java packages to include into the module's jar
 	    modulePackages.split(',').each{ pack ->
 	        def packageFolder
@@ -692,31 +729,32 @@ allModuleNames.split(',').each{ moduleName ->
     }
 
     if (requiresJar.toBoolean()){
-
-        sourceSets.create(moduleName)
-        sourceSets[moduleName].java.srcDirs=files("$moduleSrcFolder")
-        sourceSets[moduleName].resources.srcDirs=files("$moduleSrcFolder")
-        modulePackages.split(',').each{ pack ->
-            sourceSets[moduleName].java.includes.add(pack.replaceAll('\\.','/')+'/*')
-            sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/*')
-        }
-
-        sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
-        def libFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/lib")
-        if (libFolder.exists()){
-        	println("Detecting lib folder for module $moduleName")
-        	sourceSets[moduleName].compileClasspath+= fileTree(libFolder){ include '**/*.jar' }
-        	
-        }
-        def libExtFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/libext")
-        if (libExtFolder.exists()){
-        	println("Detecting libext folder for module $moduleName")
-        	sourceSets[moduleName].compileClasspath+= fileTree(libExtFolder){ include '**/*.jar' }
-        }
-
+		if (isExternal.toBoolean()){
+	        sourceSets.create(moduleName)
+	        sourceSets[moduleName].java.srcDirs=files("$moduleSrcFolder")
+	        sourceSets[moduleName].resources.srcDirs=files("$moduleSrcFolder")
+	        modulePackages.split(',').each{ pack ->
+	            sourceSets[moduleName].java.includes.add(pack.replaceAll('\\.','/')+'/*')
+	            sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/*')
+	        }
+	
+	        sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
+	        def libFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/lib")
+	        if (libFolder.exists()){
+	        	println("Detecting lib folder for module $moduleName")
+	        	sourceSets[moduleName].compileClasspath+= fileTree(libFolder){ include '**/*.jar' }
+	        	
+	        }
+	        def libExtFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/libext")
+	        if (libExtFolder.exists()){
+	        	println("Detecting libext folder for module $moduleName")
+	        	sourceSets[moduleName].compileClasspath+= fileTree(libExtFolder){ include '**/*.jar' }
+	        }
+		}
         task "jar_$moduleName" (type: Jar) {
         	ext.gwtModule = gwtModule
         	ext.moduleName = moduleName
+        	ext.isExternal = isExternal
         	ext.workplacelocalization=workplacelocalization
         	manifest {
                 attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
@@ -724,13 +762,15 @@ allModuleNames.split(',').each{ moduleName ->
                 	attributes 'OpenCms-Localization': workplacelocalization
                 }
             }
-            from sourceSets[moduleName].output
-            from ("$moduleFolder") { include "META-INF/**" }
-            from ("$staticFolder") { into "OPENCMS" }
-            if (gwtModule != null){
-	            from( "${project.buildDir}/gwt/${moduleName}") {
-	                exclude '**/WEB-INF/**'
-	                into "OPENCMS/gwt"
+            if (isExternal.toBoolean()){
+	            from sourceSets[moduleName].output
+	            from ("$moduleFolder") { include "META-INF/**" }
+	            from ("$staticFolder") { into "OPENCMS" }
+	            if (gwtModule != null){
+		            from( "${project.buildDir}/gwt/${moduleName}") {
+		                exclude '**/WEB-INF/**'
+		                into "OPENCMS/gwt"
+		            }
 	            }
             }
             if (workplacelocalization!=null) {
@@ -755,28 +795,27 @@ allModuleNames.split(',').each{ moduleName ->
                 }
             }
         }
+		if (isExternal.toBoolean()){
+	        task "javadoc_$moduleName" (type: Javadoc){
+	            source = sourceSets[moduleName].allJava
+	            classpath = project.sourceSets[moduleName].compileClasspath
+	            destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
+	            
+	        }
+	
+	        task "javadocJar_$moduleName"(type: Jar) {
+	            it.dependsOn("javadoc_$moduleName")
+	            classifier = 'javadoc'
+	            from "${buildDir}/docs/javadoc${moduleName}"
+	            baseName moduleName
+	        }
+	
+	        task "sourcesJar_$moduleName"(type: Jar) {
+	            from sourceSets[moduleName].java.srcDirs
+	            classifier = 'sources'
+	            baseName moduleName
+	        }
 
-        task "javadoc_$moduleName" (type: Javadoc){
-            source = sourceSets[moduleName].allJava
-            classpath = project.sourceSets[moduleName].compileClasspath
-            destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
-            
-        }
-
-        task "javadocJar_$moduleName"(type: Jar) {
-            it.dependsOn("javadoc_$moduleName")
-            classifier = 'javadoc'
-            from "${buildDir}/docs/javadoc${moduleName}"
-            baseName moduleName
-        }
-
-        task "sourcesJar_$moduleName"(type: Jar) {
-            from sourceSets[moduleName].java.srcDirs
-            classifier = 'sources'
-            baseName moduleName
-        }
-
-      	if (isExternal.toBoolean()){
       		tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
       	}
     }
@@ -820,14 +859,14 @@ allModuleNames.split(',').each{ moduleName ->
                     // Generated resources
                     sourceSets.gwt.output.resourcesDir,
                     // Generated classes
-                    sourceSets.gwt.output.classesDir,
+                    sourceSets.gwt.java.outputDir,
                     // Dependecies
                     sourceSets.gwt.compileClasspath,
 
                     // Souceset folders of the current module
                     sourceSets[moduleName+'_gwt'].java.srcDirs,
                     sourceSets[moduleName+'_gwt'].output.resourcesDir,
-                    sourceSets[moduleName+'_gwt'].output.classesDir
+                    sourceSets[moduleName+'_gwt'].java.outputDir
                 ]
             }
 
@@ -864,16 +903,18 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
         dist_task.dependencies.each{ dep ->
             def depCompileName = 'compile'+dep.replaceAll('\\.','')+'java'
             tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals(depCompileName)}.each {comp_task ->
-                sourceSets[dist_task.moduleName].compileClasspath += files(sourceSets[dep].output.classesDir) { builtBy comp_task.name }
+                sourceSets[dist_task.moduleName].compileClasspath += files(sourceSets[dep].java.outputDir) { builtBy comp_task.name }
                 // we need to manipulate the classpath of the java doc task specifically
-                tasks['javadoc_'+dist_task.moduleName].classpath += files(sourceSets[dep].output.classesDir) { builtBy comp_task.name }
+                tasks['javadoc_'+dist_task.moduleName].classpath += files(sourceSets[dep].java.outputDir) { builtBy comp_task.name }
             }
         }
         tasks['jar_'+dist_task.moduleName].dependsOn{
             tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals('compile'+dist_task.moduleName.replaceAll('\\.','')+'java')}
         }
+        if (tasks.hasProperty('javadoc_'+dist_task.moduleName)){
         tasks['javadoc_'+dist_task.moduleName].dependsOn{
             tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals('compile'+dist_task.moduleName.replaceAll('\\.','')+'java')}
+        }
         }
     }
 }
@@ -886,7 +927,7 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
     }
 }
 
-task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
+task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip){
 
     archiveName 'opencms.war'
     baseName 'opencms-webapp'
@@ -967,7 +1008,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     from("${projectDir}/lib/jni") { into "/WEB-INF/lib/jni" }
 }
 
-task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
+task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip){
     baseName 'opencms-upgrade-to'
     ext.preserveLibModules = preserveLibModules
     ext.allExternalModuleNames = allExternalModuleNames
@@ -1095,15 +1136,15 @@ task bindist (dependsOn: war, type: Zip){
 
 test {
     classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-    classpath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-    classpath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-    classpath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
+    classpath += files(sourceSets.setup.java.outputDir) { builtBy 'setupClasses' }
+    classpath += files(sourceSets.modules.java.outputDir) { builtBy 'modulesClasses' }
+    classpath += files(sourceSets.gwt.java.outputDir) { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.output.classesDir
+    testClassesDir = sourceSets.test.java.outputDir
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
@@ -1116,9 +1157,9 @@ test {
 task testSingle(type: Test, dependsOn: [compileTestJava]) {
     description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
     classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-    classpath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-    classpath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-    classpath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
+    classpath += files(sourceSets.setup.java.outputDir) { builtBy 'setupClasses' }
+    classpath += files(sourceSets.modules.java.outputDir) { builtBy 'modulesClasses' }
+    classpath += files(sourceSets.gwt.java.outputDir) { builtBy 'gwtClasses' }
     useJUnit()
     if (!project.hasProperty('testCaseToRun')){
         ext {
@@ -1132,7 +1173,7 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.output.classesDir
+    testClassesDir = sourceSets.test.java.outputDir
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
@@ -1178,7 +1219,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.testGwt.output.classesDir
+    testClassesDir = sourceSets.testGwt.java.outputDir
     systemProperties['gwt.args'] = "-logLevel WARN"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
@@ -1194,10 +1235,13 @@ artifacts {
     if (project.hasProperty('publish_repository')){
         // do not include the war if only running the install task, it takes ages to build
         archives war
-        archives widgetSetJar
+        archives resourcesJar
     }
     archives setupJar
     archives sourcesJarSetup
+    
+    archives modulesJar
+    archives sourcesJarModules
     
     archives gwtJar
     archives sourcesJarGwt
@@ -1209,19 +1253,24 @@ artifacts {
         if (task.name.startsWith("jar_org.opencms.")){
         	def moduleName=task.baseName
             archives task
-            archives tasks["sourcesJar_$moduleName"]
+            if (tasks.hasProperty("sourcesJar_$moduleName")){
+            	archives tasks["sourcesJar_$moduleName"]
+            }
         }
     }
     // in case the property 'skip_javadoc' is set to 'true', javadoc generation is skipped - this is supposed to speed up build time for CI
     if (!(project.hasProperty('skip_javadoc') && skip_javadoc.toBoolean())){
     	archives javadocJar
     	archives javadocJarSetup
+    	archives javadocJarModules
     	archives javadocJarGwt
     	archives javadocJarTest
     	tasks.each{ task ->
         if (task.name.startsWith("jar_org.opencms.")){
         	def moduleName=task.baseName
+        	if (tasks.hasProperty("javadocJar_$moduleName")){
             archives tasks["javadocJar_$moduleName"]
+            }
         }
     }
     }
@@ -1620,7 +1669,7 @@ install {
 
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ["-sourcepath", ""]
+    options.sourcepath=files()
     options.encoding='UTF-8'
 }
 tasks.withType(Javadoc) {

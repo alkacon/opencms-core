@@ -1,4 +1,20 @@
 dependencies {
+
+	// internal source set dependencies
+	modulesCompile sourceSets.main.output
+    setupCompile sourceSets.main.output
+	gwtCompile sourceSets.main.output
+	gwtCompile sourceSets.modules.output
+	testCompile fileTree('webapp/setup/database'){ include '**/*.jar' }
+	testCompile sourceSets.setup.output
+	testCompile sourceSets.modules.output
+	testCompile sourceSets.gwt.output
+	testGwtCompile sourceSets.main.output
+	testGwtCompile sourceSets.modules.output
+
+	// please add dependencies in following order, sorted by configuration, group and name
+
+	// servlet API libs must be added first, to override classes included in GWT
     compile group: 'javax.servlet', name: 'jsp-api', version: '2.0'
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 
@@ -176,4 +192,9 @@ dependencies {
     distribution group: 'org.apache.cxf', name: 'cxf-rt-ws-policy', version: '3.0.10'
     distribution group: 'org.apache.cxf', name: 'cxf-rt-wsdl', version: '3.0.10'
     distribution files("lib/runtime/jpedal_lgpl.jar")
+    
+    compile group: 'dumbster', name: 'dumbster', version: '1.6'
+    compile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
+    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.3.2'
 }
