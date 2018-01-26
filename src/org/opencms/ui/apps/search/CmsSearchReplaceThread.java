@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -50,12 +51,16 @@ import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -398,14 +403,51 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
      * @param layoutResource the container element resource generating the nested container
      * @param oldName the old container name
      * @param newName the new container name
+     *
+     * @return the changed content bytes
+     *
+     * @throws Exception in case unmarshalling of the container page fails
      */
     private byte[] renameNestedContainers(
-        CmsResource targetContainerPage,
+        CmsFile targetContainerPage,
         CmsResource layoutResource,
         String oldName,
-        String newName) {
+        String newName)
+    throws Exception {
 
-        return null;
+        byte[] contents = targetContainerPage.getContents();
+        Set<String> replaceElementIds = new HashSet<String>();
+        try {
+            CmsXmlContainerPage page = CmsXmlContainerPageFactory.unmarshal(getCms(), targetContainerPage);
+            for (CmsContainerElementBean element : page.getContainerPage(getCms()).getElements()) {
+                if (element.getId().equals(layoutResource.getStructureId()) && (element.getInstanceId() != null)) {
+                    replaceElementIds.add(element.getInstanceId());
+                }
+            }
+            if (replaceElementIds.size() > 0) {
+                String encoding = CmsLocaleManager.getResourceEncoding(getCms(), targetContainerPage);
+                String content = new String(contents, encoding);
+                for (String instanceId : replaceElementIds) {
+                    Pattern patt = Pattern.compile(
+                        CmsJspTagContainer.getNestedContainerName(oldName, instanceId, null));
+                    Matcher m = patt.matcher(content);
+                    StringBuffer sb = new StringBuffer(content.length());
+                    while (m.find()) {
+                        m.appendReplacement(
+                            sb,
+                            Matcher.quoteReplacement(
+                                CmsJspTagContainer.getNestedContainerName(newName, instanceId, null)));
+                    }
+                    m.appendTail(sb);
+                    content = sb.toString();
+                }
+                contents = content.getBytes(encoding);
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw e;
+        }
+        return contents;
     }
 
     /**

@@ -325,6 +325,29 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     }
 
     /**
+     * Returns the prefixed nested container name.<p>
+     * This will be either {parentInstanceId}-{name} or {namePrefix}-{name} or in case namePrefix equals 'none' {name} only.<p>
+     *
+     * @param name the container name
+     * @param parentIstanceId the parent instance id
+     * @param namePrefix the name prefix attribute
+     *
+     * @return the nested container name
+     */
+    public static String getNestedContainerName(String name, String parentIstanceId, String namePrefix) {
+
+        String prefix;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(namePrefix)) {
+            prefix = parentIstanceId + "-";
+        } else if ("none".equals(namePrefix)) {
+            prefix = "";
+        } else {
+            prefix = namePrefix + "-";
+        }
+        return prefix + name;
+    }
+
+    /**
      * Creates the closing tag for the container.<p>
      *
      * @param tagName the tag name
@@ -628,15 +651,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     public String getName() {
 
         if (isNested()) {
-            String prefix;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_namePrefix)) {
-                prefix = m_parentElement.getInstanceId() + "-";
-            } else if ("none".equals(m_namePrefix)) {
-                prefix = "";
-            } else {
-                prefix = m_namePrefix + "-";
-            }
-            return prefix + m_name;
+            return getNestedContainerName(m_name, m_parentElement.getInstanceId(), m_namePrefix);
         }
         return m_name;
     }
