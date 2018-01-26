@@ -96,7 +96,7 @@ public final class CmsAutoSetupProperties {
     /** The property key <code>db.product</code> for specifying the used DBMS. Values should match the folders under the OpenCms webapp's folder <code>setup/database/</code>. */
     public static final String PROP_DB_PRODUCT = "db.product";
 
-    /** The property key <code>db.provider</code> for specifying the database provider. This either <code>jpa</code> or the DBMS' product name. <P>
+    /** The property key <code>db.provider</code> for specifying the database provider. <P>
      * Hint: The available providers are defined as constants in {@link org.opencms.setup.CmsSetupBean}. */
     public static final String PROP_DB_PROVIDER = "db.provider";
 

@@ -59,11 +59,7 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 	<tr>
 		<td>Select Database</td>
 		<td><%= Bean.getHtmlForDbSelection() %></td>
-		<% if (Bean.getFullDatabaseKey().endsWith("_jpa")) { %>
-			<td><%= Bean.getHtmlHelpIcon("7", "../../") %></td>
-		<% } else { %>
-			<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
-		<% } %>
+		<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -72,11 +68,8 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 <tr><td style="vertical-align: middle;">
 
 <div class="dialogspacer" unselectable="on">&nbsp;</div>
-<% if (Bean.getFullDatabaseKey().contains("_jpa")) { %>
-	<iframe src="database_information_jpa.html" name="dbinfo" style="width: 100%; height: 80px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
-<% } else { %>
-	<iframe src="database_information.html" name="dbinfo" style="width: 100%; height: 82px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
-<% } %>
+<iframe src="database_information.html" name="dbinfo" style="width: 100%; height: 82px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
+
 <div class="dialogspacer" unselectable="on">&nbsp;</div>
 
 </td></tr>

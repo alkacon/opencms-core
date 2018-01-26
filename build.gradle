@@ -179,23 +179,8 @@ task copyCompileDeps(type: Copy) {
 	into "${buildDir}/deps"
 }
 
-task enhance {
-	doLast {
-	    ant.taskdef(
-	    name      : 'openjpaenhancer',
-	    classpath : sourceSets.modules.compileClasspath.asPath,
-	    classname : 'org.apache.openjpa.ant.PCEnhancerTask'
-	    )
-	
-	    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
-	        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
-	        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
-	    }
-    }
-}
 
 jar {
-    it.dependsOn enhance
     manifest {
         attributes 'Implementation-Title': 'Alkacon OpenCms',
         'Implementation-Version': version,

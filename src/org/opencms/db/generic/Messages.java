@@ -98,9 +98,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_JDBC_CONN_INVALID_PROJECT_ID_1 = "ERR_JDBC_CONN_INVALID_PROJECT_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_JPA_PERSITENCE_1 = "ERR_JPA_PERSITENCE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_ACE_FOUND_2 = "ERR_NO_ACE_FOUND_2";
 
     /** Message constant for key in the resource bundle. */

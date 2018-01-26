@@ -32,7 +32,6 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.CmsPersistenceUnitConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
@@ -41,7 +40,6 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsDbPoolV11;
 import org.opencms.db.CmsUserSettings;
-import org.opencms.db.jpa.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -132,12 +130,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** DB provider constant for db2. */
     public static final String DB2_PROVIDER = "db2";
 
-    /** jpa type constant. */
-    public static final byte DRIVER_TYPE_JPA = 1;
-
-    /** jpa type constant. */
-    public static final byte DRIVER_TYPE_SQL = 0;
-
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
 
@@ -158,12 +150,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
-
-    /** The jpa CmsDbContextFactory for the opencms-system.xml node: runtimeclasses -> runtimeinfo. */
-    public static final String JPA_FACTOTY = "org.opencms.db.jpa.CmsDbContextFactory";
-
-    /** DB provider constant for jpa. */
-    public static final String JPA_PROVIDER = "jpa";
 
     /** DB provider constant for maxdb. */
     public static final String MAXDB_PROVIDER = "maxdb";
@@ -198,9 +184,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Properties file key constant post fix. */
     protected static final String PROPKEY_DESCRIPTION = ".description";
 
-    /** True if OpenCms supports a generic JPA driver implementation. */
-    protected static final String PROPKEY_JPA_SUPPORTED = "jpaSupported";
-
     /** Properties file key constant post fix. */
     protected static final String PROPKEY_MODULES = ".modules";
 
@@ -209,9 +192,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Properties file key constant post fix. */
     protected static final String PROPKEY_POSITION = ".position";
-
-    /** True if OpenCms supports a native SQL driver implementation. */
-    protected static final String PROPKEY_SQL_SUPPORTED = "sqlSupported";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSetupBean.class);
@@ -224,12 +204,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
         "step_4_database_setup.jsp",
         "database.properties",
         "create_tables.sql",
-        "drop_tables.sql"};
-
-    /** Required files per database setup (for jpa only supported dbs). */
-    private static final String[] REQUIRED_JPA_DB_SETUP_FILES = {
-        "step_4_database_setup.jsp",
-        "database.properties",
         "drop_tables.sql"};
 
     /** Required files per database setup (for sql supported dbs). */
@@ -306,9 +280,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** The name of the default web application (in web.xml). */
     private String m_defaultWebApplication;
 
-    /** Driver implementation should be used (SQL or JPA). */
-    private byte m_driverType;
-
     /** Contains the error messages to be displayed in the setup wizard. */
     private List<String> m_errors;
 
@@ -317,9 +288,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** The full key of the selected database including the "_jpa" or "_sql" information. */
     private String m_fullDatabaseKey;
-
-    /** A reference to the persistence configuration. */
-    private CmsPersistenceUnitConfiguration m_peristenceConfigurator;
 
     /** The Database Provider used in setup. */
     private String m_provider;
@@ -628,14 +596,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public List<String> getDatabaseLibs(String databaseKey) {
 
         List<String> lst;
-        if (JPA_PROVIDER.equalsIgnoreCase(m_provider)) {
-            lst = new ArrayList<String>();
-        } else {
-            lst = CmsStringUtil.splitAsList(
-                getDatabaseProperties().get(databaseKey).getProperty(databaseKey + ".libs"),
-                ',',
-                true);
-        }
+        lst = CmsStringUtil.splitAsList(
+            getDatabaseProperties().get(databaseKey).getProperty(databaseKey + ".libs"),
+            ',',
+            true);
+
         return lst;
     }
 
@@ -907,17 +872,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         if ((databases != null) && (databases.size() > 0)) {
 
             List<String> sqlDbs = new ArrayList<String>();
-            List<String> jpaDbs = new ArrayList<String>();
 
-            // devide sql dbs from jpa dbs
             for (String dbKey : databases) {
-                boolean isJpaSupported = isJpaSupported(dbKey);
-                boolean isSqlSupported = isSqlSupported(dbKey);
-                if (isSqlSupported) {
-                    sqlDbs.add(dbKey);
-                } else if (isJpaSupported) {
-                    jpaDbs.add(dbKey);
-                }
+                sqlDbs.add(dbKey);
             }
 
             // show the sql dbs first
@@ -928,16 +885,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     selected = "selected";
                 }
                 buf.append("<option value='" + dbKey + "_sql' " + selected + ">" + dn);
-            }
-
-            // then show the jpa dbs
-            for (String dbKey : jpaDbs) {
-                String dn = getDatabaseName(dbKey);
-                String selected = "";
-                if (getFullDatabaseKey().equals(dbKey + "_jpa")) {
-                    selected = "selected";
-                }
-                buf.append("<option value='" + dbKey + "_jpa' " + selected + ">" + dn + " [JPA]");
             }
         } else {
             buf.append("<option value='null'>no database found");
@@ -1354,13 +1301,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_errors = new ArrayList<String>();
 
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(webAppRfsPath)) {
-                // workaround for JUnit test cases, this must not be executed in a test case
-
-                // init persistence configurator
-                String inFileName = m_webAppRfsPath + CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FILE_PERSISTENCE;
-                m_peristenceConfigurator = new CmsPersistenceUnitConfiguration(
-                    CmsSqlManager.JPA_PERSISTENCE_UNIT,
-                    inFileName);
                 m_configuration = new CmsParameterConfiguration(m_configRfsPath + CmsSystemInfo.FILE_PROPERTIES);
                 readDatabaseConfig();
             }
@@ -1444,32 +1384,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public boolean isInitialized() {
 
         return m_configuration != null;
-    }
-
-    /**
-     * Returns true if jpa is supported for the given dbKey.<p>
-     *
-     * @param dbKey the database key to check the jpa support for
-     *
-     * @return true if jpa is supported for the given dbKey
-     */
-    public boolean isJpaSupported(String dbKey) {
-
-        String key = dbKey + "." + PROPKEY_JPA_SUPPORTED;
-        return Boolean.valueOf(getDbProperty(key)).booleanValue();
-    }
-
-    /**
-     * Returns true if sql is supported for the given dbKey.<p>
-     *
-     * @param dbKey the database key to check the sql support for
-     *
-     * @return true if sql is supported for the given dbKey
-     */
-    public boolean isSqlSupported(String dbKey) {
-
-        String key = dbKey + "." + PROPKEY_SQL_SUPPORTED;
-        return Boolean.valueOf(getDbProperty(key)).booleanValue();
     }
 
     /**
@@ -1627,9 +1541,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
             lockWizard();
             // save Properties to file "opencms.properties"
             saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false);
-
-            setSchemaGeneration(false);
-            m_peristenceConfigurator.save();
         }
     }
 
@@ -1668,16 +1579,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                 // save Properties to file "opencms.properties"
                 setDatabase(m_databaseKey);
-                if (m_driverType == DRIVER_TYPE_JPA) {
-                    setEntityManagerPoolSize(
-                        getDbProperty(m_databaseKey + "." + CmsDbPoolV11.KEY_ENTITY_MANAGER_POOL_SIZE));
-                }
                 saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
 
                 // if has sql driver the sql scripts will be eventualy executed
-                setSchemaGeneration(!isSqlSupported(m_databaseKey));
-                m_peristenceConfigurator.save();
-
                 CmsSetupTestResult testResult = new CmsSetupTestSimapi().execute(this);
                 if (testResult.getResult().equals(I_CmsSetupTest.RESULT_FAILED)) {
                     // "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']/param[@name='image.scaling.enabled']";
@@ -1716,20 +1620,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 xp.append("/default/']/@").append(CmsSitesConfiguration.A_SERVER);
 
                 getXmlHelper().setValue(CmsSitesConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
-
-                if (m_driverType == DRIVER_TYPE_JPA) {
-                    // /opencms/system/runtimeclasses/runtimeinfo
-                    xp = new StringBuffer(256);
-                    xp.append("/").append(CmsConfigurationManager.N_ROOT);
-                    xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-                    xp.append("/").append(CmsSystemConfiguration.N_RUNTIMECLASSES);
-                    xp.append("/").append(CmsSystemConfiguration.N_RUNTIMEINFO);
-                    getXmlHelper().setAttribute(
-                        CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                        xp.toString(),
-                        "class",
-                        JPA_FACTOTY);
-                }
                 getXmlHelper().writeAll();
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
@@ -1905,22 +1795,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String subscriptionDriver;
         String sqlManager;
 
-        if (m_driverType == DRIVER_TYPE_JPA) {
-            vfsDriver = "org.opencms.db.jpa.CmsVfsDriver";
-            userDriver = "org.opencms.db.jpa.CmsUserDriver";
-            projectDriver = "org.opencms.db.jpa.CmsProjectDriver";
-            historyDriver = "org.opencms.db.jpa.CmsHistoryDriver";
-            sqlManager = "org.opencms.db.jpa.CmsSqlManager";
-            subscriptionDriver = "org.opencms.db.jpa.CmsSubscriptionDriver";
-        } else {
-            vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
-            userDriver = getDbProperty(m_databaseKey + ".user.driver");
-            projectDriver = getDbProperty(m_databaseKey + ".project.driver");
-            historyDriver = getDbProperty(m_databaseKey + ".history.driver");
-            subscriptionDriver = getDbProperty(m_databaseKey + ".subscription.driver");
-            sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
-        }
-
+        vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
+        userDriver = getDbProperty(m_databaseKey + ".user.driver");
+        projectDriver = getDbProperty(m_databaseKey + ".project.driver");
+        historyDriver = getDbProperty(m_databaseKey + ".history.driver");
+        subscriptionDriver = getDbProperty(m_databaseKey + ".subscription.driver");
+        sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
         // set the db properties
         setExtProperty("db.name", m_databaseKey);
         setExtProperty("db.vfs.driver", vfsDriver);
@@ -2035,13 +1915,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
         // store the DB provider
         m_provider = provider;
 
-        // ensure that the driver type and the provider is set accordingly to the full database key
-        if (getFullDatabaseKey().toLowerCase().endsWith(JPA_PROVIDER) || JPA_PROVIDER.equalsIgnoreCase(m_provider)) {
-            m_driverType = DRIVER_TYPE_JPA;
-        } else {
-            m_driverType = DRIVER_TYPE_SQL;
-        }
-
         boolean isFormSubmitted = ((getReqValue(request, "submit") != null) && (conStr != null));
         if (conStr == null) {
             conStr = "";
@@ -2062,8 +1935,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             || provider.equals(DB2_PROVIDER)) {
             isFormSubmitted = (isFormSubmitted && (database != null));
         }
-        if (!(JPA_PROVIDER.equals(provider)
-            || MAXDB_PROVIDER.equals(provider)
+        if (!(MAXDB_PROVIDER.equals(provider)
             || MSSQL_PROVIDER.equals(provider)
             || MYSQL_PROVIDER.equals(provider)
             || ORACLE_PROVIDER.equals(provider)
@@ -2086,13 +1958,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
             }
 
             if (isFormSubmitted) {
-                if (m_driverType == DRIVER_TYPE_JPA) {
-                    if (isJpaSupported(m_databaseKey) && !isSqlSupported(m_databaseKey)) {
-                        // driver name should be specified for only JPA supported databases
-                        String driverName = getReqValue(request, "jdbcDriver");
-                        setDbDriver(driverName);
-                    }
-                }
 
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
@@ -2123,16 +1988,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
                         conStr += ";";
                     }
                     conStr += "libraries='" + database + "'";
-                } else if (isJpaSupported(m_databaseKey) && !isSqlSupported(m_databaseKey)) {
-                    conStr = getReqValue(request, "dbCreateConStr")
-                        + getDbProperty(m_databaseKey + "." + "separator")
-                        + getReqValue(request, "db");
-                    setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".newDb"));
-                    setDbWorkConStr(conStr);
-                    boolean createTbls = "true".equalsIgnoreCase(getReqValue(request, "createTables")) ? true : false;
-                    if (session != null) {
-                        session.setAttribute("createTables", Boolean.valueOf(createTbls));
-                    }
                 }
                 setDbWorkConStr(conStr);
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
@@ -2239,11 +2094,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String driver;
         String pool = '.' + getPool() + '.';
 
-        if (m_driverType == DRIVER_TYPE_JPA) {
-            driver = getDbDriver();
-        } else {
-            driver = getDbProperty(m_databaseKey + ".driver");
-        }
+        driver = getDbProperty(m_databaseKey + ".driver");
+
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + CmsDbPoolV11.KEY_JDBC_DRIVER, driver);
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + pool + CmsDbPoolV11.KEY_JDBC_URL, dbWorkConStr);
         String testQuery = getDbTestQuery();
@@ -2274,16 +2126,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Sets the driver type.<p>
-     *
-     * @param type the type to set
-     */
-    public void setDriverType(String type) {
-
-        m_driverType = JPA_PROVIDER.equalsIgnoreCase(type) ? DRIVER_TYPE_JPA : DRIVER_TYPE_SQL;
-    }
-
-    /**
      * Set the mac ethernet address, required for UUID generation.<p>
      *
      * @param ethernetAddress the mac addess to set
@@ -2303,9 +2145,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
         m_fullDatabaseKey = fullDatabaseKey;
 
         String driverPart = fullDatabaseKey.substring(fullDatabaseKey.lastIndexOf("_"), fullDatabaseKey.length());
-        if (driverPart.toLowerCase().contains(JPA_PROVIDER)) {
-            setDriverType(JPA_PROVIDER);
-        }
         String keyPart = fullDatabaseKey.substring(0, fullDatabaseKey.lastIndexOf("_"));
         setDatabase(keyPart);
     }
@@ -2452,10 +2291,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public boolean validateJdbc() {
 
         boolean result = false;
-        // There is not defined libraries for supported databases from OpenJPA
-        if (m_driverType == DRIVER_TYPE_JPA) {
-            return true;
-        }
         String libFolder = getLibFolder();
         Iterator<String> it = getDatabaseLibs(getDatabase()).iterator();
         while (it.hasNext()) {
@@ -2855,10 +2690,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
                         String dataBasekey = childResource.getName().trim();
                         Properties props = databaseProperties.get(dataBasekey);
-                        boolean supportsJPA = Boolean.valueOf(
-                            props.getProperty(dataBasekey + "." + PROPKEY_JPA_SUPPORTED)).booleanValue();
-                        boolean supportsSQL = Boolean.valueOf(
-                            props.getProperty(dataBasekey + "." + PROPKEY_SQL_SUPPORTED)).booleanValue();
+                        boolean supportsSQL = true;
                         boolean isAS400orDB2 = dataBasekey.equalsIgnoreCase(AS400_PROVIDER)
                             || dataBasekey.equalsIgnoreCase(DB2_PROVIDER);
 
@@ -2867,13 +2699,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
                                 m_databaseKeys.add(childResource.getName().trim());
                                 m_databaseProperties.put(dataBasekey, props);
                             }
-                        } else if (supportsSQL) {
+                        } else {
                             if (checkFilesExists(REQUIRED_SQL_DB_SETUP_FILES, childResource)) {
-                                m_databaseKeys.add(childResource.getName().trim());
-                                m_databaseProperties.put(dataBasekey, props);
-                            }
-                        } else if (supportsJPA && !supportsSQL) {
-                            if (checkFilesExists(REQUIRED_JPA_DB_SETUP_FILES, childResource)) {
                                 m_databaseKeys.add(childResource.getName().trim());
                                 m_databaseProperties.put(dataBasekey, props);
                             }
@@ -3129,22 +2956,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty(
             CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_ENTITY_MANAGER_POOL_SIZE,
             poolSize);
-    }
-
-    /**
-     * Lock/unlock schema generation in persistence xml file.<p>
-     *
-     * @param generate - true schema generation is on.
-     */
-    private void setSchemaGeneration(boolean generate) {
-
-        if (generate) {
-            m_peristenceConfigurator.setPropertyValue(
-                CmsPersistenceUnitConfiguration.ATTR_GENERATE_SCHEMA,
-                CmsPersistenceUnitConfiguration.ATTR_GENERATE_SCHEMA_VALUE);
-        } else {
-            m_peristenceConfigurator.removeProperty(CmsPersistenceUnitConfiguration.ATTR_GENERATE_SCHEMA);
-        }
     }
 
     /**

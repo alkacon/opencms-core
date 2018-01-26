@@ -60,9 +60,6 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 	<tr>
 		<td>Select Database</td>
 		<td><%= Bean.getHtmlForDbSelection() %></td>
-		<% if (Bean.getFullDatabaseKey().endsWith("_jpa")) { %>
-			<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
-		<% } %>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -71,11 +68,7 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 <tr><td style="vertical-align: middle;">
 
 <div class="dialogspacer" unselectable="on">&nbsp;</div>
-<% if (Bean.getFullDatabaseKey().contains("_jpa")) { %>
-	<iframe src="database_information_jpa.html" name="dbinfo" style="width: 100%; height: 80px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
-<% } else { %>
 	<iframe src="database_information.html" name="dbinfo" style="width: 100%; height: 82px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
-<% } %>
 <div class="dialogspacer" unselectable="on">&nbsp;</div>
 
 </td></tr>
@@ -155,11 +148,6 @@ Enter the JDBC <b>Connection String</b> to your database.
 The setup wizard <b>creates</b> the HSQLDB database and the tables for Alkacon OpenCms.<br>&nbsp;<br>
 <b>Attention</b>: Existing databases will be overwritten!<br>&nbsp;<br>
 Uncheck this option if an already existing database should be used.
-<%= Bean.getHtmlPart("C_HELP_END") %>
-
-<%= Bean.getHtmlPart("C_HELP_START", "6") %>
-This <b>JPA</b> (Java Persistence API) driver uses the <b>Apache OpenJPA</b> implementation. 
-<b>Traditional SQL drivers</b> are well tested and offer a slight performance increase in comparison with JPA driver.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>

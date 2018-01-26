@@ -3255,8 +3255,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_DESTROY_1, getClass().getName()));
         }
-
-        org.opencms.db.jpa.CmsSqlManager.destroy();
     }
 
     /**

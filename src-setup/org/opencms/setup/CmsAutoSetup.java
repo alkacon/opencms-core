@@ -268,11 +268,7 @@ public class CmsAutoSetup {
             if (dbExists && m_props.isCreateTables() && !m_props.isDropDb() && (db != null)) {
                 throw new Exception("You have selected to not drop existing DBs, but a DB with the given name exists.");
             }
-            if (dbExists
-                && m_props.isCreateDb()
-                && m_props.isDropDb()
-                && (db != null)
-                && (!CmsSetupBean.JPA_PROVIDER.equals(m_props.getDbProvider()))) {
+            if (dbExists && m_props.isCreateDb() && m_props.isDropDb() && (db != null)) {
                 // drop the DB
                 db.closeConnection();
                 db.setConnection(
@@ -293,7 +289,7 @@ public class CmsAutoSetup {
                 System.out.println("Database dropped successfully.");
             }
 
-            if (m_props.isCreateDb() && (db != null) && (!CmsSetupBean.JPA_PROVIDER.equals(m_props.getDbProvider()))) {
+            if (m_props.isCreateDb() && (db != null)) {
                 // Create Database
                 db.createDatabase(m_bean.getDatabase(), m_bean.getReplacer());
                 if (!db.noErrors()) {
