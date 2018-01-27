@@ -8,7 +8,7 @@ dependencies {
     
     compile group: 'com.vaadin', name: 'vaadin-client', version: '7.7.12'
     compile group: 'com.vaadin', name: 'vaadin-client-compiler', version: '7.7.12'
-    compile group: 'com.vaadin', name: 'vaadin-sass-compiler', version: '0.9.13' 
+    compile group: 'com.vaadin', name: 'vaadin-sass-compiler', version: '0.9.13'
 
     compile group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: '2.4.8'
     compile group: 'org.w3c.css', name: 'sac', version: '1.3'
@@ -24,7 +24,6 @@ dependencies {
             classifier = 'sources'
         }
     }
-    distribution group: 'org.ow2.asm', name: 'asm', version: '6.0'
     compile group: 'org.ow2.asm', name: 'asm-commons', version: '6.0'
     compile group: 'org.ow2.asm', name: 'asm-util', version: '6.0'
     compile group: 'org.ow2.asm', name: 'asm-tree', version: '6.0'
@@ -33,12 +32,14 @@ dependencies {
 
     testCompile group: 'dumbster', name: 'dumbster', version: '1.6'
     testCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
     testCompile group: 'org.hsqldb', name: 'hsqldb', version: '2.3.2'
+
+    testGwtCompile group: 'junit', name: 'junit', version: '4.12'
     
-    testGwtCompile group: 'junit', name: 'junit', version: '4.11'
     
+    distribution group: 'org.ow2.asm', name: 'asm', version: '6.0'
     distribution group: 'antlr', name: 'antlr', version: '2.7.7'
     
     distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.3'
@@ -265,59 +266,63 @@ dependencies {
     distribution group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
     distribution group: 'org.apache.tika', name: 'tika-core', version: '1.17'
     distribution(group: 'org.apache.tika', name: 'tika-parsers', version:'1.17') {
-	exclude(module: 'bcmail-jdk15on')
-	exclude(module: 'bcprov-jdk15on')
-	exclude(module: 'bzip2')
-	exclude(module: 'boilerpipe')
-	exclude(module: 'bcpkix-jdk15on')
-	exclude(module: 'c3p0')
-	exclude(module: 'cdm')
-	exclude(module: 'commons-exec')
-	exclude(module: 'commons-csv')
-	exclude(module: 'isoparser')
-	exclude(module: 'jcommander')
-	exclude(module: 'jempbox')
-	exclude(module: 'javax.annotation-api')
-	exclude(module: 'jhighlight')
-	exclude(module: 'jdom2')
-	exclude(module: 'javax.ws.rs-api')
-	exclude(module: 'jackson-core')
-	exclude(module: 'jackcess')
-	exclude(module: 'jcl-over-slf4j')
-	exclude(module: 'jackcess-encrypt')
-	exclude(module: 'gson')
-	exclude(module: 'jcip-annotations')
-	exclude(module: 'cxf-rt-frontend-jaxrs')
-	exclude(module: 'java-libpst')
-	exclude(module: 'grib')
-	exclude(module: 'httpservices')
-	exclude(module: 'geoapi')
-	exclude(module: 'xz')
-	exclude(module: 'sis-storage')
-	exclude(module: 'jmatio')
-	exclude(module: 'jna')
-	exclude(module: 'sentiment-analysis-parser')
-	exclude(module: 'udunits')
-	exclude(module: 'sis-netcdf')
-	exclude(module: 'sis-metadata')
-	exclude(module: 'junrar')
-	exclude(module: 'sis-utility')
-	exclude(module: 'xmpcore')
-	exclude(module: 'json')
-	exclude(module: 'tagsoup')
-	exclude(module: 'rome')
-	exclude(module: 'vorbis-java-core')
-	exclude(module: 'opennlp-tools')
-	exclude(module: 'sis-referencing')
-	exclude(module: 'juniversalchardet')
-	exclude(module: 'rome-utils')
-	exclude(module: 'netcdf4')
-	exclude(module: 'protobuf-java')
-	exclude(module: 'vorbis-java-tika')
-	exclude(module: 'jsr-275')
-	exclude(module: 'cxf-rt-rs-client')
+        exclude(module: 'bcpkix-jdk15on')
+        exclude(module: 'bcprov-jdk15on')
+        exclude(module: 'bcmail-jdk15on')
+        exclude(module: 'boilerpipe')
+        exclude(module: 'bzip2')
+        exclude(module: 'c3p0')
+        exclude(module: 'cdm')
+        exclude(module: 'commons-csv')
+        exclude(module: 'commons-exec')
+        exclude(module: 'cxf-rt-frontend-jaxrs')
+        exclude(module: 'cxf-rt-rs-client')
+        exclude(module: 'geoapi')
+        exclude(module: 'grib')
+        exclude(module: 'gson')
+        exclude(module: 'httpservices')
+        exclude(module: 'isoparser')
+        exclude(module: 'jackcess')
+        exclude(module: 'jackcess-encrypt')
+        exclude(module: 'jackson-core')
+        exclude(module: 'java-libpst')
+        exclude(module: 'javax.annotation-api')
+        exclude(module: 'javax.ws.rs-api')
+        exclude(module: 'jcip-annotations')
+        exclude(module: 'jcl-over-slf4j')
+        exclude(module: 'jcommander')
+        exclude(module: 'jdom2')
+        exclude(module: 'jhighlight')
+        exclude(module: 'jmatio')
+        exclude(module: 'jna')
+        exclude(module: 'json')
+        exclude(module: 'jsr-275')
+        exclude(module: 'juniversalchardet')
+        exclude(module: 'junrar')
+        exclude(module: 'netcdf4')
+        exclude(module: 'opennlp-tools')
+        exclude(module: 'protobuf-java')
+        exclude(module: 'rome')
+        exclude(module: 'rome-utils')
+        exclude(module: 'sentiment-analysis-parser')
+        exclude(module: 'sis-metadata')
+        exclude(module: 'sis-netcdf')
+        exclude(module: 'sis-referencing')
+        exclude(module: 'sis-storage')
+        exclude(module: 'sis-utility')
+        exclude(module: 'tagsoup')
+        exclude(module: 'udunits')
+        exclude(module: 'vorbis-java-core')
+        exclude(module: 'vorbis-java-tika')
+        exclude(module: 'xz')
     }
-    
+    // https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox
+    distribution group: 'org.apache.pdfbox', name: 'jempbox', version: '1.8.13'
+    // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
+    distribution group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.11.0'
+    // https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore
+    distribution group: 'com.adobe.xmp', name: 'xmpcore', version: '5.1.3'
+
     distribution(group: 'org.apache.xmlbeans', name: 'xmlbeans', version:'2.6.0') {
 	exclude(module: 'stax-api')
     }

@@ -28,6 +28,7 @@
 package org.opencms.security;
 
 import org.opencms.db.CmsDbConsistencyException;
+import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
@@ -771,6 +772,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             // try to create another user 'test1' in the /test ou
             cms.createUser("test/test1", "test1", "test user", null);
             fail("it could not be possible to create 2 users with the same name in an ou");
+        } catch (CmsDbEntryAlreadyExistsException e) {
+            // ok, ignore
         } catch (CmsVfsException e) {
             // ok, ignore
         }

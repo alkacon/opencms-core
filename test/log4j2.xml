@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" packages="org.opencms.test">
+	<Appenders>
+		<OpenCmsTestLog name="A1" >
+			<PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
+		</OpenCmsTestLog>
+	</Appenders>
+	<Loggers>
+	    <Logger level="INFO" name="com.opencms"/>
+	    <Logger level="INFO" name="org.opencms"/>
+	    <Logger level="TRACE" name="org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache"/>
+	    <Logger level="warn" name="org.opencms.importexport"/>
+	    <Logger level="warn" name="openjpa"/>
+	    <Logger level="warn" name="org.apache.solr"/>
+	    <Root level="warn">
+			<AppenderRef ref="A1"/>
+	    </Root>
+	</Loggers>
+</Configuration>

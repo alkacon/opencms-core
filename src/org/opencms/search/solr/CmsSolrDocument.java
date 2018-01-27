@@ -261,9 +261,11 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 for (String val : splitedValues) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                         try {
-                            FieldType type = schema.getFieldType(fieldName);
-                            if (type instanceof DatePointField || type instanceof TrieDateField) {
-                                val = CmsSearchUtil.getDateAsIso8601(new Long(val).longValue());
+                            FieldType fieldType = schema.getFieldType(fieldName);
+                            if (fieldType instanceof DatePointField) {
+                                //sometime,the val is already Iso8601 formated
+                                if(!val.contains("Z"))
+                                    val = CmsSearchUtil.getDateAsIso8601(new Long(val).longValue());
                             }
                         } catch (SolrException e) {
                             LOG.debug(e.getMessage(), e);

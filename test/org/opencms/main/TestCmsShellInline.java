@@ -169,7 +169,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
             + OpenCms.getSystemInfo().getVersionNumber()
             + ".\n";
 
-        String result = bytes.toString();
+        //for windows is \r\n, but in the string is \n
+        String result = bytes.toString().replaceAll("\r\n", "\n");
         assertEquals("Shell did not produce expected output", expected, result);
     }
 
@@ -212,7 +213,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
             + "\n"
             + "Goodbye!\n";
 
-        String result = bytes.toString();
+        //for windows is \r\n, but in the string is \n
+        String result = bytes.toString().replaceAll("\r\n", "\n");
         assertEquals("Shell did not produce expected output", expected, result);
     }
 

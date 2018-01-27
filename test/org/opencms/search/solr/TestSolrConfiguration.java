@@ -190,7 +190,9 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), null);
         squery.setSearchRoots("/sites/default/");
         squery.setRows(new Integer(100));
-        CmsSolrResultList results = index.search(getCmsObject(), squery);
+        //Need to specify ignoreMaxRows, the default MAX_ROWS is 50. 
+        //Otherwise it will search to 56 data, but only returns 50, resulting in the test failed.
+        CmsSolrResultList results = index.search(getCmsObject(), squery, true);
         AllTests.printResults(getCmsObject(), results, true);
         assertEquals(56, results.getNumFound());
 
@@ -200,7 +202,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         assertEquals(50, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
-        results = index.search(cms, squery);
+        //Need to specify ignoreMaxRows, the default MAX_ROWS is 50
+        results = index.search(cms, squery, true);
         AllTests.printResults(cms, results, true);
         assertEquals(52, results.getNumFound());
     }

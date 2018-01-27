@@ -62,7 +62,20 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
         List<String> classNames = OpenCmsTestCase.getClassNames();
         for (String className : classNames) {
             if (className.endsWith("ClientMessages")) {
-                Class<?> cls = Class.forName(className);
+                // I do not know why it happened,
+                // with some characters in front of the package name.
+                // such as,"ain.org.opencms.ade.containerpage.ClientMessages",
+                // or "n.org.opencms.ade.containerpage.ClientMessages".
+                // This will result in a java.lang.ClassNotFoundException
+                Class<?> cls = null;
+                try {
+                    cls = Class.forName(className);
+                } catch (ClassNotFoundException e) {
+                    if(className.contains(".org.")) {
+                        className = className.substring(className.indexOf(".org.") + 1);
+                        cls = Class.forName(className);
+                    }
+                }
                 try {
                     Object instance = cls.getMethod("get", new Class[] {}).invoke(null);
                     result.add((I_CmsClientMessageBundle)instance);

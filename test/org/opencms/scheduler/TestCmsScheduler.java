@@ -310,7 +310,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         }
         assertNotNull("Expected exception not thrown when using invalid CRON expression", ex);
         */
-        newInfo.setCronExpression("* * * * * *");
+        //FORMAT:Seconds,Minutes,Hours,Day-of-month,Month,Day-of-Week
+        //NOTE:"Support for specifying both a day-of-week AND a day-of-month parameter is not implemented."
+        newInfo.setCronExpression("* * * * * ?");
         assertEquals(1, scheduler.getJobs().size());
 
         // shutdown the scheduler

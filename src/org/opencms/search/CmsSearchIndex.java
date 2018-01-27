@@ -1375,9 +1375,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 params.setParsedQuery(query.toString(CmsSearchField.FIELD_CONTENT));
             }
 
-            final BooleanQuery.Builder finalQuery = new BooleanQuery.Builder();
-            finalQuery.add(query, BooleanClause.Occur.MUST);
-            finalQuery.add(builder.build(), BooleanClause.Occur.FILTER);
+            // build the final query
+            final BooleanQuery.Builder finalQueryBuilder = new BooleanQuery.Builder();
+            finalQueryBuilder.add(query, BooleanClause.Occur.MUST);
+            finalQueryBuilder.add(builder.build(), BooleanClause.Occur.FILTER);
+            final BooleanQuery finalQuery = finalQueryBuilder.build();
+
             // collect the categories
             CmsSearchCategoryCollector categoryCollector;
             if (params.isCalculateCategories()) {
@@ -1385,7 +1388,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // this may slow down searched by an order of magnitude
                 categoryCollector = new CmsSearchCategoryCollector(searcher);
                 // perform a first search to collect the categories
-                searcher.search(finalQuery.build(), categoryCollector);
+                searcher.search(finalQuery, categoryCollector);
                 // store the result
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
@@ -1393,11 +1396,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // perform the search operation
             if ((params.getSort() == null) || (params.getSort() == CmsSearchParameters.SORT_DEFAULT)) {
                 // apparently scoring is always enabled by Lucene if no sort order is provided
-                hits = searcher.search(finalQuery.build(), getMaxHits());
+                hits = searcher.search(finalQuery, getMaxHits());
             } else {
                 // if  a sort order is provided, we must check if scoring must be calculated by the searcher
                 boolean isSortScore = isSortScoring(searcher, params.getSort());
-                hits = searcher.search(finalQuery.build(), getMaxHits(), params.getSort(), isSortScore, isSortScore);
+                hits = searcher.search(finalQuery, getMaxHits(), params.getSort(), isSortScore, isSortScore);
             }
 
             timeLucene += System.currentTimeMillis();
@@ -1819,7 +1822,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         
         // add the calculated path filter for the root path
         BooleanQuery.Builder build = new BooleanQuery.Builder();
-        terms.forEach(term -> build.add(new TermQuery(term), Occur.FILTER));
+        terms.forEach(term -> build.add(new TermQuery(term), Occur.SHOULD));
         filter.add(new BooleanClause(build.build(), BooleanClause.Occur.MUST));
         return filter;
     }
@@ -1889,7 +1892,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
             // create the filter for the date
             BooleanQuery.Builder build = new BooleanQuery.Builder();
-            terms.forEach(term -> build.add(new TermQuery(term), Occur.FILTER));
+            terms.forEach(term -> build.add(new TermQuery(term), Occur.SHOULD));
             filter = build.build();
         }
         return filter;
@@ -2148,9 +2151,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             for (int i = 0; i < termsList.size(); i++) {
                 terms.add(new Term(field, termsList.get(i)));
             }
-            
+
             BooleanQuery.Builder build = new BooleanQuery.Builder();
-            terms.forEach(term -> build.add(new TermQuery(term), Occur.FILTER));
+            terms.forEach(term -> build.add(new TermQuery(term), Occur.SHOULD));
             Query termsQuery = build.build();//termsFilter
             
             try {
