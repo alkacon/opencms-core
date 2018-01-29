@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
@@ -144,7 +145,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
     public static final String REGEX_ALL = ".*";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSourceSearchForm.class);
+    static final Log LOG = CmsLog.getLog(CmsSourceSearchForm.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 1023130318064811880L;
@@ -302,6 +303,20 @@ public class CmsSourceSearchForm extends VerticalLayout {
             }
 
         }
+    }
+
+    /**
+     * Updates the search root.<p>
+     *
+     * @throws CmsException if CmsObject init fails
+     */
+    protected void updateSearchRoot() throws CmsException {
+
+        CmsObject newCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+        newCms.getRequestContext().setSiteRoot((String)m_siteSelect.getValue());
+        m_searchRoot.setCmsObject(newCms);
+        m_searchRoot.setValue("/");
+
     }
 
     /**
@@ -469,7 +484,21 @@ public class CmsSourceSearchForm extends VerticalLayout {
         }
         m_resourceSearch.setUseRootPaths(true);
         m_replaceResource.setUseRootPaths(true);
+        m_resourceSearch.requireFile();
+        m_replaceResource.requireFile();
+        CmsObject rootCms;
+        try {
+            rootCms = OpenCms.initCmsObject(cms);
 
+            rootCms.getRequestContext().setSiteRoot("");
+            m_resourceSearch.setCmsObject(rootCms);
+            m_resourceSearch.setDefaultPath(cms.getRequestContext().getSiteRoot());
+            m_replaceResource.setCmsObject(rootCms);
+            m_replaceResource.setDefaultPath(cms.getRequestContext().getSiteRoot());
+
+        } catch (CmsException e1) {
+            //
+        }
         m_siteSelect.setContainerDataSource(
             CmsVaadinUtils.getAvailableSitesContainer(cms, CmsVaadinUtils.PROPERTY_LABEL));
         m_siteSelect.setItemCaptionPropertyId(CmsVaadinUtils.PROPERTY_LABEL);
@@ -485,6 +514,20 @@ public class CmsSourceSearchForm extends VerticalLayout {
         } catch (CmsException e) {
             //
         }
+        m_siteSelect.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = -1079794209679015125L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                try {
+                    updateSearchRoot();
+                } catch (CmsException e) {
+                    LOG.error("Unable to initialize CmsObject", e);
+                }
+            }
+
+        });
         m_property.setNullSelectionAllowed(false);
         m_property.select(m_property.getItemIds().iterator().next());
         m_property.setFilteringMode(FilteringMode.CONTAINS);
@@ -543,7 +586,9 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_searchType.setValue(SearchType.fullText);
 
         m_searchRoot.setValue("/");
-
+        m_searchRoot.disableSiteSwitch();
+        m_searchRoot.setResourceFilter(CmsResourceFilter.DEFAULT_FOLDERS);
+        m_searchRoot.requireFolder();
         m_locale.setFilteringMode(FilteringMode.OFF);
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
             m_locale.addItem(locale);
