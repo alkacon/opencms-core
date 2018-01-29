@@ -1164,7 +1164,7 @@ test {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.java.outputDir
+    testClassesDirs = files(sourceSets.test.java.outputDir)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
@@ -1193,7 +1193,7 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.java.outputDir
+    testClassesDirs = files(sourceSets.test.java.outputDir)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
@@ -1239,7 +1239,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.testGwt.java.outputDir
+    testClassesDirs = files(sourceSets.testGwt.java.outputDir)
     systemProperties['gwt.args'] = "-logLevel WARN"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
