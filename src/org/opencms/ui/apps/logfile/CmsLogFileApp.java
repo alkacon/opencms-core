@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.logfile;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -37,6 +38,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,7 +46,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -75,6 +79,9 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
     /**Path to channel settings view.*/
     static String PATH_LOGCHANNEL = "log-channel";
+
+    /**Logger.*/
+    private static Log LOG = CmsLog.getLog(CmsLogFileApp.class);
 
     /**The log file view layout.*/
     protected CmsLogFileView m_fileView;
@@ -127,6 +134,27 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             nullreturn[0] = logname;
             return nullreturn;
         }
+    }
+
+    /**
+     * Returns the file name or <code>null</code> associated with the given appender.<p>
+     *
+     * @param app the appender
+     *
+     * @return the file name
+     */
+    protected static String getFileName(Appender app) {
+
+        String result = null;
+        Method getFileName;
+        try {
+            getFileName = app.getClass().getDeclaredMethod("getFileName", (Class<?>[])null);
+
+            result = (String)getFileName.invoke(app, (Object[])null);
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**
@@ -193,6 +221,28 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         });
         // return all loggers
         return definedLoggers;
+    }
+
+    /**
+     * Checks whether the given log appender has a getFileName method to identify file based appenders.<p>
+     * As since log4j 2.0 file appenders don't have one common super class that allows access to the file name,
+     * but they all implement a method 'getFileName'.<p>
+     *
+     * @param appender the appender to check
+     *
+     * @return in case of a file based appender
+     */
+    protected static boolean isFileAppender(Appender appender) {
+
+        boolean result = false;
+        try {
+            Method getFileNameMethod = appender.getClass().getDeclaredMethod("getFileName", (Class<?>[])null);
+            result = getFileNameMethod != null;
+
+        } catch (Exception e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**

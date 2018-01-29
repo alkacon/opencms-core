@@ -48,8 +48,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.FileAppender.Builder;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -90,20 +93,20 @@ public class CmsLogChannelTable extends Table {
      */
     enum TableColumn {
 
+        /**Channel column.*/
+        Channel(Messages.GUI_LOGFILE_LOGSETTINGS_CHANNEL_0, String.class, ""),
+
+        /**Log file column. */
+        File(Messages.GUI_LOGFILE_LOGSETTINGS_FILE_0, String.class, ""),
+
         /**Icon column.*/
         Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_LOG)),
 
         /**Level column.*/
         Level(Messages.GUI_LOGFILE_LOGSETTINGS_LEVEL_0, LoggerLevel.class, null),
 
-        /**Channel column.*/
-        Channel(Messages.GUI_LOGFILE_LOGSETTINGS_CHANNEL_0, String.class, ""),
-
         /**Parent channel column.*/
-        ParentChannel(Messages.GUI_LOGFILE_LOGSETTINGS_PARENT_CHANNEL_0, String.class, ""),
-
-        /**Log file column. */
-        File(Messages.GUI_LOGFILE_LOGSETTINGS_FILE_0, String.class, "");
+        ParentChannel(Messages.GUI_LOGFILE_LOGSETTINGS_PARENT_CHANNEL_0, String.class, "");
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -185,32 +188,32 @@ public class CmsLogChannelTable extends Table {
      */
     private enum LoggerLevel {
 
-        /**Fatal level.*/
-        Fatal(Level.FATAL, OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT, null),
+        /**Debug level.*/
+        Debug(Level.DEBUG, OpenCmsTheme.TABLE_COLUMN_BOX_RED, null),
 
         /**Error level. */
         Error(Level.ERROR, OpenCmsTheme.TABLE_COLUMN_BOX_CYAN, "Default"),
 
-        /**Warning level. */
-        Warn(Level.WARN, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE, null),
+        /**Fatal level.*/
+        Fatal(Level.FATAL, OpenCmsTheme.TABLE_COLUMN_BOX_BLUE_LIGHT, null),
 
         /**Info level. */
         Info(Level.INFO, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE_DARK, null),
 
-        /**Debug level.*/
-        Debug(Level.DEBUG, OpenCmsTheme.TABLE_COLUMN_BOX_RED, null),
-
         /**Off level. */
-        Off(Level.OFF, OpenCmsTheme.TABLE_COLUMN_BOX_GRAY, null);
+        Off(Level.OFF, OpenCmsTheme.TABLE_COLUMN_BOX_GRAY, null),
+
+        /**Warning level. */
+        Warn(Level.WARN, OpenCmsTheme.TABLE_COLUMN_BOX_ORANGE, null);
+
+        /**Caption for logger level.*/
+        private String m_caption;
 
         /**CSS class.*/
         private String m_css;
 
         /**Corresponging log4j Level.*/
         private Level m_level;
-
-        /**Caption for logger level.*/
-        private String m_caption;
 
         /**
          * constructor.<p>
@@ -292,11 +295,11 @@ public class CmsLogChannelTable extends Table {
 
     }
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = 5467369614234190999L;
-
     /** The prefix of opencms classes. */
     private static final String OPENCMS_CLASS_PREFIX = "org.opencms";
+
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 5467369614234190999L;
 
     /**Container holding table data. */
     private IndexedContainer m_container;
@@ -367,6 +370,7 @@ public class CmsLogChannelTable extends Table {
      *
      * @param search string to be looked for.
      */
+    @SuppressWarnings("unchecked")
     public void filterTable(String search) {
 
         m_container.removeAllContainerFilters();
@@ -402,7 +406,7 @@ public class CmsLogChannelTable extends Table {
      *
      * @param logchannel to set or remove log file to
      */
-    @SuppressWarnings({"rawtypes", "unchecked", "unchecked"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected void toggleOwnFile(Logger logchannel) {
 
         String filepath = "";
@@ -423,19 +427,18 @@ public class CmsLogChannelTable extends Table {
         else {
             // get the layout and file path from root logger
             for (Appender appender : ((Logger)LogManager.getRootLogger()).getAppenders().values()) {
-                if (appender instanceof FileAppender) {
-                    FileAppender fapp = (FileAppender)appender;
-                    filepath = fapp.getFileName().substring(0, fapp.getFileName().lastIndexOf(File.separatorChar));
-                    layout = fapp.getLayout();
+                if (CmsLogFileApp.isFileAppender(appender)) {
+                    String fileName = CmsLogFileApp.getFileName(appender);
+                    filepath = fileName.substring(0, fileName.lastIndexOf(File.separatorChar));
+                    layout = appender.getLayout();
                     break;
                 }
             }
 
             // check if the logger has an Appender get his layout
             for (Appender appender : logchannel.getAppenders().values()) {
-                if (appender instanceof FileAppender) {
-                    FileAppender fapp = (FileAppender)appender;
-                    layout = fapp.getLayout();
+                if (CmsLogFileApp.isFileAppender(appender)) {
+                    layout = appender.getLayout();
                     break;
                 }
             }
@@ -459,7 +462,6 @@ public class CmsLogChannelTable extends Table {
                 logfilename = filepath + File.separator + "opencms-" + temp.replace(".", "-") + ".log";
             }
 
-            @SuppressWarnings("unchecked")
             FileAppender fapp = ((Builder)FileAppender.<FileAppender.Builder> newBuilder().withFileName(
                 logfilename).withLayout(layout).withName(logchannel.getName())).build();
 
@@ -483,8 +485,13 @@ public class CmsLogChannelTable extends Table {
      */
     void changeLoggerLevel(LoggerLevel clickedLevel, Set<Logger> clickedLogger) {
 
-        for (Logger loggerItem : clickedLogger) {
-            loggerItem.setLevel(clickedLevel.getLevel());
+        for (Logger logger : clickedLogger) {
+            @SuppressWarnings("resource")
+            LoggerContext context = logger.getContext();
+            Configuration config = context.getConfiguration();
+            LoggerConfig loggerConfig = config.getLoggerConfig(logger.getName());
+            loggerConfig.setLevel(clickedLevel.getLevel());
+            context.updateLoggers();
         }
         updateLevel();
     }
@@ -587,7 +594,8 @@ public class CmsLogChannelTable extends Table {
         for (Logger logger : loggerList) {
             Item item = m_container.addItem(logger);
             item.getItemProperty(TableColumn.Channel).setValue(logger.getName());
-            item.getItemProperty(TableColumn.ParentChannel).setValue(logger.getParent().getName());
+            item.getItemProperty(TableColumn.ParentChannel).setValue(
+                logger.getParent() != null ? logger.getParent().getName() : "none");
             item.getItemProperty(TableColumn.File).setValue(getLogFiles(logger));
             item.getItemProperty(TableColumn.Level).setValue(LoggerLevel.fromLogger(logger));
         }
@@ -606,10 +614,10 @@ public class CmsLogChannelTable extends Table {
         // select the Appender from logger
         for (Appender appender : logger.getAppenders().values()) {
             // only use file appenders
-            if (appender instanceof FileAppender) {
-                FileAppender fapp = (FileAppender)appender;
+            if (CmsLogFileApp.isFileAppender(appender)) {
+                String fileName = CmsLogFileApp.getFileName(appender);
                 String temp = "";
-                temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
+                temp = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
                 test = test + temp;
                 count++;
                 break;
@@ -624,10 +632,10 @@ public class CmsLogChannelTable extends Table {
             if (count == 0) {
                 for (Appender appender : logger.getAppenders().values()) {
                     // only use file appenders
-                    if (appender instanceof FileAppender) {
-                        FileAppender fapp = (FileAppender)appender;
+                    if (CmsLogFileApp.isFileAppender(appender)) {
+                        String fileName = CmsLogFileApp.getFileName(appender);
                         String temp = "";
-                        temp = fapp.getFileName().substring(fapp.getFileName().lastIndexOf(File.separatorChar) + 1);
+                        temp = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
                         test = test + temp;
                         count++;
                         break;

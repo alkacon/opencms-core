@@ -43,7 +43,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.appender.FileAppender;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -98,17 +97,18 @@ public class CmsLogFileView extends VerticalLayout {
             CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
             List<Logger> allLogger = CmsLogFileApp.getLoggers();
-            List<FileAppender> allAppender = new ArrayList<FileAppender>();
+            List<Appender> allAppender = new ArrayList<Appender>();
 
             allLogger.add(0, (Logger)LogManager.getRootLogger());
 
             for (Logger logger : allLogger) {
 
-                for (Appender appen : logger.getAppenders().values()) {
-                    if (appen instanceof FileAppender) {
-                        if (!allAppender.contains(appen)) {
-                            allAppender.add((FileAppender)appen);
+                for (Appender appender : logger.getAppenders().values()) {
+                    if (CmsLogFileApp.isFileAppender(appender)) {
+                        if (!allAppender.contains(appender)) {
+                            allAppender.add(appender);
                         }
+
                     }
                 }
             }
@@ -223,14 +223,22 @@ public class CmsLogFileView extends VerticalLayout {
      * @param appender all given appender
      * @param filePath of log file
      */
-    private void selectLogFile(List<FileAppender> appender, String filePath) {
+    private void selectLogFile(List<Appender> appender, String filePath) {
 
-        for (FileAppender app : appender) {
-            if (app.getFileName().equals(filePath)) {
-                m_logfile.select(app.getFileName());
+        for (Appender app : appender) {
+
+            String fileName = CmsLogFileApp.getFileName(app);
+            if ((fileName != null) && fileName.equals(filePath)) {
+                m_logfile.select(fileName);
                 return;
             }
         }
-        m_logfile.select(appender.get(0).getFileName()); //Default, take file from root appender
+        if (!appender.isEmpty()) {
+            Appender app = appender.get(0);
+            String fileName = CmsLogFileApp.getFileName(app);
+            if (fileName != null) {
+                m_logfile.select(fileName); //Default, take file from root appender
+            }
+        }
     }
 }
