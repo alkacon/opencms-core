@@ -40,6 +40,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.editablegroup.I_CmsEditableGroup;
 import org.opencms.ui.components.fileselect.CmsResourceSelectDialog.Options;
+import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
 
@@ -84,10 +85,20 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     /**Indicates if changing the website should be possible. */
     protected boolean m_diableSiteSwitch;
 
+    /**The default path to be opened in file select dialog if no path was entered before. */
+    private String m_defaultPath = "";
+
+    /**Require the resource to be a folder?*/
+    private boolean m_requireFolder;
+
+    /**Require the resource to be a file?*/
+    private boolean m_requireFile;
+
     /**
      * Creates a new instance.<p>
      */
     public A_CmsFileSelectField() {
+
         m_textField = new TextField();
         m_textField.setWidth("100%");
         m_filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
@@ -110,6 +121,34 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     }
 
     /**
+     * Require the resource to be a file.<p>
+     */
+    public void requireFile() {
+
+        m_requireFile = true;
+        m_requireFolder = false;
+    }
+
+    /**
+     * Require the resource to be a folder.<p>
+     */
+    public void requireFolder() {
+
+        m_requireFile = false;
+        m_requireFolder = true;
+    }
+
+    /**
+     * Resets the type requirements.<p>
+     */
+    public void resetRequireType() {
+
+        m_requireFile = false;
+        m_requireFolder = false;
+
+    }
+
+    /**
      * Method to set cms object to make it possible to user other site context.<p>
      *
      * @param cms Object to use
@@ -117,6 +156,21 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     public void setCmsObject(CmsObject cms) {
 
         m_cms = cms;
+    }
+
+    /**
+     * Sets the default path to open if no Path is selected yet.<p>
+     *
+     * @param path to be opened
+     */
+    public void setDefaultPath(String path) {
+
+        m_defaultPath = path;
+        if (!m_defaultPath.endsWith("/")) {
+            m_defaultPath += "/";
+        }
+        //Add some chars.. only the parent is considered
+        m_defaultPath += "aa";
     }
 
     /**
@@ -204,10 +258,7 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
         try {
 
             final Window window = CmsBasicDialog.prepareWindow();
-            window.setCaption(
-                m_fileSelectCaption != null
-                ? m_fileSelectCaption
-                : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
+            window.setCaption(m_fileSelectCaption != null ? m_fileSelectCaption : getWindowCaption());
             A_CmsUI.get().addWindow(window);
             CmsResourceSelectDialog fileSelect;
 
@@ -216,9 +267,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
                 fileSelect = new CmsResourceSelectDialog(m_filter, A_CmsUI.getCmsObject(), getOptions());
             } else {
                 fileSelect = new CmsResourceSelectDialog(m_filter, m_cms, getOptions());
-                if (m_diableSiteSwitch) {
-                    fileSelect.disableSiteSwitch();
-                }
+            }
+            if (m_diableSiteSwitch) {
+                fileSelect.disableSiteSwitch();
             }
             fileSelect.showSitemapView(m_startWithSitemapView);
 
@@ -226,7 +277,11 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
             if (value instanceof CmsResource) {
                 fileSelect.showStartResource((CmsResource)value);
             } else if (value instanceof String) {
-                fileSelect.openPath((String)value);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly((String)value)) {
+                    fileSelect.openPath(m_defaultPath);
+                } else {
+                    fileSelect.openPath((String)value);
+                }
             }
 
             window.setContent(fileSelect);
@@ -234,8 +289,12 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
 
                 public void onSelection(CmsResource selected) {
 
+                    if (!resourceIsValid(selected)) {
+                        return;
+                    }
                     setResourceValue(selected);
                     window.close();
+
                 }
             });
         } catch (CmsException e) {
@@ -245,9 +304,34 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     }
 
     /**
+     * Checks if the given resource is valid according to require Folder or File.<p>
+     *
+     * @param resource to check
+     * @return true if resource is valid
+     */
+    protected boolean resourceIsValid(CmsResource resource) {
+
+        if (m_requireFile & resource.isFolder()) {
+            return false;
+        }
+        if (m_requireFolder & resource.isFile()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Sets the field value.<p>
      *
      * @param resource the resource
      */
     protected abstract void setResourceValue(CmsResource resource);
+
+    private String getWindowCaption() {
+
+        if (m_requireFolder) {
+            return CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FOLDER_SELECT_CAPTION_0);
+        }
+        return CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0);
+    }
 }

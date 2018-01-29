@@ -105,6 +105,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_FILE_SELECT_CAPTION_0 = "GUI_FILE_SELECT_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FOLDER_SELECT_CAPTION_0 = "GUI_FOLDER_SELECT_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_INFO_BUTTON_CAPTION_0 = "GUI_INFO_BUTTON_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
