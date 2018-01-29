@@ -666,6 +666,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_simpleFieldParentFolderName.setValue(CmsSiteManager.PATH_SITES);
         m_simpleFieldParentFolderName.setUseRootPaths(true);
         m_simpleFieldParentFolderName.setCmsObject(m_clonedCms);
+        m_simpleFieldParentFolderName.requireFolder();
         m_simpleFieldParentFolderName.setResourceFilter(CmsResourceFilter.DEFAULT_FOLDERS);
         m_simpleFieldParentFolderName.addValueChangeListener(new ValueChangeListener() {
 
@@ -820,6 +821,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         m_fieldLoadSiteTemplate.setUseRootPaths(true);
         m_fieldLoadSiteTemplate.setCmsObject(m_clonedCms);
+        m_fieldLoadSiteTemplate.requireFolder();
         m_fieldLoadSiteTemplate.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
 
         m_fieldSelectParentOU.setEnabled(false);
