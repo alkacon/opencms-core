@@ -39,7 +39,6 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -103,10 +102,8 @@ public final class CmsLog {
                 String tldFilePath = webInfPath + CmsSystemInfo.FILE_TLD;
                 File tldFile = new File(tldFilePath);
                 if (tldFile.exists()) {
-                    // assume this is a default OpenCms log configuration
-                    ExtendedProperties configuration = new ExtendedProperties(path);
                     // check if OpenCms should set the log file environment variable
-                    boolean setLogFile = configuration.getBoolean("opencms.set.logfile", false);
+                    boolean setLogFile = Boolean.parseBoolean(System.getProperty("opencms.set.logfile", "true"));
                     if (setLogFile) {
                         // set "opencms.log" variable
                         String logFilePath = webInfPath + FOLDER_LOGS + FILE_LOG;
