@@ -418,7 +418,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1270,8 +1270,14 @@ class CmsShellCommands implements I_CmsShellCommands {
             settings.setSearchpattern(CmsSearchReplaceSettings.searchElementInPagePattern(resource));
             settings.setReplacepattern(CmsSearchReplaceSettings.replaceElementInPagePattern(targetResource));
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
-            settings.setSiteRoot(siteRoot);
-            settings.setPaths(Collections.singletonList(basePath.substring(siteRoot.length())));
+            if (siteRoot != null) {
+                settings.setSiteRoot(siteRoot);
+                settings.setPaths(Collections.singletonList(basePath.substring(siteRoot.length())));
+            } else {
+                settings.setSiteRoot("");
+                settings.setPaths(Collections.singletonList(basePath));
+            }
+
             settings.setIgnoreSubSites(ignoreSubSites);
             settings.setProject(project);
             settings.setTypes(
