@@ -43,9 +43,9 @@ import org.opencms.ui.components.editablegroup.CmsEditableGroup;
 import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
@@ -198,7 +198,7 @@ public class CmsGlobalForm extends CmsBasicDialog {
      */
     Map<String, CmsSSLMode> getWebserverList() {
 
-        Map<String, CmsSSLMode> ret = new TreeMap<String, CmsSSLMode>();
+        Map<String, CmsSSLMode> ret = new LinkedHashMap<String, CmsSSLMode>();
         for (CmsEditableGroupRow row : m_workplaceServerGroup.getRows()) {
             CmsWorkplaceServerWidget widget = (CmsWorkplaceServerWidget)row.getComponent();
             ret.put(widget.getServer(), widget.getSSLMode());

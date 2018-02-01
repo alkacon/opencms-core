@@ -55,6 +55,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -183,7 +184,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         m_aliases = new ArrayList<CmsSiteMatcher>();
         m_siteParams = new TreeMap<String, String>();
         m_additionalSiteRoots = new ArrayList<String>();
-        m_workplaceServers = new TreeMap<String, CmsSSLMode>();
+        m_workplaceServers = new LinkedHashMap<String, CmsSSLMode>();
         m_workplaceMatchers = new ArrayList<CmsSiteMatcher>();
         m_oldStyleSecureServer = true;
 
@@ -1396,7 +1397,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         String sharedFolder)
     throws CmsException {
 
-        Map<String, CmsSSLMode> workplaceServers = new TreeMap<String, CmsSSLMode>();
+        Map<String, CmsSSLMode> workplaceServers = new LinkedHashMap<String, CmsSSLMode>();
         for (String server : workplaceServersList) {
             if (m_workplaceServers.containsKey(server)) {
                 workplaceServers.put(server, m_workplaceServers.get(server));
