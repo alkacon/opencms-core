@@ -31,6 +31,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -179,17 +180,18 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
      */
     public synchronized void reload(boolean isStartup) {
 
-        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT)
+            && OpenCms.getResourceManager().hasResourceType(TYPE_XML_BUNDLE)) {
             List<CmsResource> xmlBundles = Lists.newArrayList();
             List<CmsResource> propertyBundles = Lists.newArrayList();
             try {
-                int xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE).getTypeId();
+                I_CmsResourceType xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE);
                 xmlBundles = m_cms.readResources("/", CmsResourceFilter.ALL.addRequireType(xmlType), true);
             } catch (Exception e) {
                 logError(e, isStartup);
             }
             try {
-                int propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE).getTypeId();
+                I_CmsResourceType propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE);
                 propertyBundles = m_cms.readResources("/", CmsResourceFilter.ALL.addRequireType(propType), true);
             } catch (Exception e) {
                 logError(e, isStartup);
