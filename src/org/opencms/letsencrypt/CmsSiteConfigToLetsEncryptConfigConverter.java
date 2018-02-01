@@ -1,5 +1,5 @@
 /*
- * This library is part of OpenCms -
+* This library is part of OpenCms -
  * the Open Source Content Management System
  *
  * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
@@ -29,6 +29,7 @@ package org.opencms.letsencrypt;
 
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONObject;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration.Mode;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.site.CmsSite;
@@ -225,90 +226,17 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
     /** The object to which the configuration is sent after it is generated. */
     private I_CmsLetsEncryptUpdater m_configUpdater;
 
+    /** The configuration. */
+    private CmsLetsEncryptConfiguration m_config;
+
     /**
      * Creates a new instance.<p>
      *
      * @param config the LetsEncrypt configuration
      */
     public CmsSiteConfigToLetsEncryptConfigConverter(CmsLetsEncryptConfiguration config) {
+        m_config = config;
         m_configUpdater = new CmsLetsEncryptUpdater(config);
-    }
-
-    /**
-     * Computes the domain grouping for a set of sites and workplace URLs.<p>
-     *
-     * @param sites the sites
-     * @param workplaceUrls the workplace URLS
-     * @return the domain grouping
-     */
-    private static DomainGrouping computeDomainGrouping(Collection<CmsSite> sites, Collection<String> workplaceUrls) {
-
-        DomainGrouping result = new DomainGrouping();
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Computing domain grouping for sites...");
-            List<String> servers = Lists.newArrayList();
-            for (CmsSite site : sites) {
-                servers.add(site.getUrl());
-            }
-            LOG.info("SITES = " + CmsStringUtil.listAsString(servers, ", "));
-        }
-        Set<String> workplaceDomains = Sets.newHashSet();
-        for (String wpServer : workplaceUrls) {
-            try {
-                URI uri = new URI(wpServer);
-                workplaceDomains.add(uri.getHost());
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-        result.addDomainSet(workplaceDomains);
-
-        Multimap<String, SiteDomainInfo> infosByRootDomain = ArrayListMultimap.create();
-
-        List<SiteDomainInfo> ungroupedSites = Lists.newArrayList();
-        for (CmsSite site : sites) {
-            SiteDomainInfo info = getDomainInfo(site);
-            if (info.hasInvalidPort()) {
-                LOG.warn("Invalid port occuring in site definition: " + site);
-                continue;
-            }
-            String root = info.getCommonRootDomain();
-            if (root == null) {
-                ungroupedSites.add(info);
-            } else {
-                infosByRootDomain.put(root, info);
-            }
-        }
-        List<String> keysToRemove = Lists.newArrayList();
-
-        for (String key : infosByRootDomain.keySet()) {
-            Collection<SiteDomainInfo> siteInfos = infosByRootDomain.get(key);
-            Set<String> domains = getDomains(siteInfos);
-            if (domains.size() > 100) {
-                LOG.info("Too many domains for root domain " + key + ", splitting them up by site instead.");
-                keysToRemove.add(key);
-                for (SiteDomainInfo info : siteInfos) {
-                    ungroupedSites.add(info);
-                }
-            }
-        }
-        for (String key : keysToRemove) {
-            infosByRootDomain.removeAll(key);
-        }
-
-        for (SiteDomainInfo ungroupedSite : ungroupedSites) {
-            Set<String> domains = getDomains(Collections.singletonList(ungroupedSite));
-            result.addDomainSet(domains);
-            LOG.info("DOMAINS (site config): " + domains);
-        }
-
-        for (String key : infosByRootDomain.keySet()) {
-            Set<String> domains = getDomains(infosByRootDomain.get(key));
-            result.addDomainSet(domains);
-            LOG.info("DOMAINS (" + key + ")" + domains);
-        }
-
-        return result;
     }
 
     /**
@@ -410,9 +338,7 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
     public boolean run(I_CmsReport report, Collection<CmsSite> sites, Collection<String> workplaceUrls) {
 
         try {
-            DomainGrouping domainGrouping = CmsSiteConfigToLetsEncryptConfigConverter.computeDomainGrouping(
-                sites,
-                workplaceUrls);
+            DomainGrouping domainGrouping = computeDomainGrouping(sites, workplaceUrls);
             if (domainGrouping.isEmpty()) {
                 report.println(
                     org.opencms.ui.apps.Messages.get().container(
@@ -437,6 +363,95 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
             report.println(e);
             return false;
         }
+    }
+
+    /**
+     * Computes the domain grouping for a set of sites and workplace URLs.<p>
+     *
+     * @param sites the sites
+     * @param workplaceUrls the workplace URLS
+     * @return the domain grouping
+     */
+    private DomainGrouping computeDomainGrouping(Collection<CmsSite> sites, Collection<String> workplaceUrls) {
+
+        DomainGrouping result = new DomainGrouping();
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Computing domain grouping for sites...");
+            List<String> servers = Lists.newArrayList();
+            for (CmsSite site : sites) {
+                servers.add(site.getUrl());
+            }
+            LOG.info("SITES = " + CmsStringUtil.listAsString(servers, ", "));
+        }
+
+        Mode mode = m_config.getMode();
+        boolean addWp = false;
+        boolean addSites = false;
+        if ((mode == Mode.all) || (mode == Mode.sites)) {
+            addSites = true;
+        }
+        if ((mode == Mode.all) || (mode == Mode.workplace)) {
+            addWp = true;
+        }
+
+        if (addWp) {
+            Set<String> workplaceDomains = Sets.newHashSet();
+            for (String wpServer : workplaceUrls) {
+                try {
+                    URI uri = new URI(wpServer);
+                    workplaceDomains.add(uri.getHost());
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            result.addDomainSet(workplaceDomains);
+        }
+
+        if (addSites) {
+            Multimap<String, SiteDomainInfo> infosByRootDomain = ArrayListMultimap.create();
+
+            List<SiteDomainInfo> ungroupedSites = Lists.newArrayList();
+            for (CmsSite site : sites) {
+                SiteDomainInfo info = getDomainInfo(site);
+                if (info.hasInvalidPort()) {
+                    LOG.warn("Invalid port occuring in site definition: " + site);
+                    continue;
+                }
+                String root = info.getCommonRootDomain();
+                if (root == null) {
+                    ungroupedSites.add(info);
+                } else {
+                    infosByRootDomain.put(root, info);
+                }
+            }
+            List<String> keysToRemove = Lists.newArrayList();
+
+            for (String key : infosByRootDomain.keySet()) {
+                Collection<SiteDomainInfo> siteInfos = infosByRootDomain.get(key);
+                Set<String> domains = getDomains(siteInfos);
+                if (domains.size() > 100) {
+                    LOG.info("Too many domains for root domain " + key + ", splitting them up by site instead.");
+                    keysToRemove.add(key);
+                    for (SiteDomainInfo info : siteInfos) {
+                        ungroupedSites.add(info);
+                    }
+                }
+            }
+            for (String key : keysToRemove) {
+                infosByRootDomain.removeAll(key);
+            }
+            for (SiteDomainInfo ungroupedSite : ungroupedSites) {
+                Set<String> domains = getDomains(Collections.singletonList(ungroupedSite));
+                result.addDomainSet(domains);
+                LOG.info("DOMAINS (site config): " + domains);
+            }
+            for (String key : infosByRootDomain.keySet()) {
+                Set<String> domains = getDomains(infosByRootDomain.get(key));
+                result.addDomainSet(domains);
+                LOG.info("DOMAINS (" + key + ")" + domains);
+            }
+        }
+        return result;
     }
 
 }
