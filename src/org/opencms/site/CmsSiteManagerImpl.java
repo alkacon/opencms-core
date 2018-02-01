@@ -67,6 +67,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Manages all configured sites in OpenCms.<p>
@@ -1580,13 +1582,28 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         List<CmsSiteMatcher> matchers = new ArrayList<CmsSiteMatcher>();
         if (!m_workplaceServers.isEmpty()) {
+            Map<String, CmsSiteMatcher> matchersByUrl = Maps.newHashMap();
             for (String server : m_workplaceServers.keySet()) {
+                CmsSSLMode mode = m_workplaceServers.get(server);
                 CmsSiteMatcher matcher = new CmsSiteMatcher(server);
-                matchers.add(matcher);
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
+                if ((mode == CmsSSLMode.LETS_ENCRYPT) || (mode == CmsSSLMode.MANUAL_EP_TERMINATION)) {
+                    CmsSiteMatcher httpMatcher = matcher.forDifferentScheme("http");
+                    CmsSiteMatcher httpsMatcher = matcher.forDifferentScheme("https");
+                    for (CmsSiteMatcher current : new CmsSiteMatcher[] {httpMatcher, httpsMatcher}) {
+                        matchersByUrl.put(current.getUrl(), current);
+                        if (CmsLog.INIT.isInfoEnabled()) {
+                            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
+                        }
+                    }
+                } else {
+                    matchersByUrl.put(matcher.getUrl(), matcher);
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, matcher));
+                    }
+
                 }
             }
+            matchers = Lists.newArrayList(matchersByUrl.values());
         } else if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
         }
