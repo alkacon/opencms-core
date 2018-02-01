@@ -218,7 +218,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             m_dialogWindow.close();
         }
 
-        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.content);
+        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsEditSiteForm form;
         if (siteRoot != null) {
             form = new CmsEditSiteForm(m_rootCms, this, siteRoot);

@@ -740,6 +740,7 @@
     	padding-right: 6px;
     }
     
+    
     .o-sitemap-locale-bar {
     
     	padding-left: 42px;
@@ -760,6 +761,10 @@
     		margin-top: -1px;
     	}
     }
+   
+   .o-wrap .v-checkbox{
+   		white-space:normal !important;
+   	}
     
     #sitemap-ui-overlays { 
 		.v-context-menu, div.v-menubar-submenu {	

@@ -178,7 +178,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public void executeAction(Set<String> context) {
 
-            Window window = CmsBasicDialog.prepareWindow();
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EDIT_USER_0));
             window.setContent(new CmsUserEditDialog(m_cms, new CmsUUID(context.iterator().next()), window));
 

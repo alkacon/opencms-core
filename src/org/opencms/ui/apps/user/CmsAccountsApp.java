@@ -608,7 +608,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      */
     protected void openNewDialog() {
 
-        final Window window = CmsBasicDialog.prepareWindow();
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsBasicDialog dialog = new CmsNewElementDialog(m_cms, m_stateBean.getPath(), window);
         window.setContent(dialog);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
