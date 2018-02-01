@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.sites;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
@@ -43,12 +44,17 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Dialog object for a single site.<p>
  *
  * @since 9.0.0
  */
 public class CmsSiteBean {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSiteBean.class);
 
     /** The aliases. */
     private List<String> m_aliases = new ArrayList<String>();
@@ -66,7 +72,7 @@ public class CmsSiteBean {
     private String m_favicon;
 
     /** The SSL Mode of the site.*/
-    private CmsSSLMode m_mode;
+    private String m_mode;
 
     /** The original site. */
     private CmsSite m_originalSite;
@@ -147,7 +153,7 @@ public class CmsSiteBean {
             m_errorPage = site.getErrorPage();
             m_webserver = site.isWebserver();
             m_parameters = site.getParameters();
-            m_mode = site.getSSLMode();
+            m_mode = site.getSSLMode().name();
         }
     }
 
@@ -309,6 +315,16 @@ public class CmsSiteBean {
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    /**
+     * Gets the SSL mode.<p>
+     *
+     * @return the SSL mode
+     */
+    public String getSslMode() {
+
+        return m_mode;
     }
 
     /**
@@ -536,6 +552,16 @@ public class CmsSiteBean {
     }
 
     /**
+     * Sets the SSL mode.<p>
+     *
+     * @param mode the SSL mode
+     */
+    public void setSslMode(String mode) {
+
+        m_mode = mode;
+    }
+
+    /**
      * Sets the timeOffset.<p>
      *
      * @param timeOffset the timeOffset to set
@@ -597,7 +623,12 @@ public class CmsSiteBean {
             m_webserver,
             aliases);
         result.setParameters(m_parameters);
-        result.setSSLMode(m_mode);
+        try {
+            result.setSSLMode(CmsSSLMode.valueOf(m_mode));
+        } catch (Exception e) {
+            result.setSSLMode(CmsSSLMode.NO);
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         return result;
 
     }
