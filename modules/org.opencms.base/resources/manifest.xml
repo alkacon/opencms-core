@@ -23,6 +23,8 @@ chacc '/system/workplace/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 createFolder '/system/config/' 'notification'
 writeProperty '/system/config/notification/' 'Title' 'Content Notification'
 writeProperty '/system/workplace/commons/' 'cache' 'false'
+# create folders for categories
+createFolder '/system/' 'categories'
 # create folders for user images
 chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		]]></import-script>
