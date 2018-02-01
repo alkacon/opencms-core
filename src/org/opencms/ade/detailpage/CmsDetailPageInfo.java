@@ -84,7 +84,7 @@ public class CmsDetailPageInfo implements Serializable {
      *
      * @param name the detail page type name
      *
-     * @return the detail page type name withotu the function prefix
+     * @return the detail page type name without the function prefix
      */
     public static String removeFunctionPrefix(String name) {
 

@@ -113,14 +113,14 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
             @SuppressWarnings("synthetic-access")
             @Override
-            public Boolean load(CmsResource key) throws Exception {
+            public Boolean load(CmsResource key) {
 
                 if (m_state == null) {
                     // this can only happen before the ADE manager is initialized
                     return Boolean.FALSE;
                 }
                 try {
-                    return Boolean.valueOf(m_state.isDetailPage(m_cms, key));
+                    return m_state.isDetailPage(m_cms, key);
                 } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                     return Boolean.FALSE;
