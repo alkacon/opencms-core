@@ -1379,7 +1379,7 @@ if (project.hasProperty('publish_repository')){
                         }
                     }
                 }
-                'setup,gwt,widgetset,test'.split(",").each { groupName ->
+                'setup,gwt,modules,resources,test'.split(",").each { groupName ->
                     addFilter(groupName){artifact, file ->
                         artifact.name.startsWith("opencms-$groupName")
                     }
@@ -1570,7 +1570,7 @@ install {
                     }
                 }
             }
-            'setup,gwt,test,widgetset'.split(",").each { groupName ->
+            'setup,gwt,test,modules,resources'.split(",").each { groupName ->
                 addFilter(groupName){artifact, file ->
                     artifact.name.startsWith("opencms-$groupName")
                 }
