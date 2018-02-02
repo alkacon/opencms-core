@@ -36,6 +36,8 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,7 +55,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.google.common.net.InternetDomainName;
+
+import de.malkusch.whoisServerList.publicSuffixList.PublicSuffixList;
+import de.malkusch.whoisServerList.publicSuffixList.PublicSuffixListFactory;
 
 /**
  * Class which converts the OpenCms site configuration to a certificate configuration for the LetsEncrypt docker instance.
@@ -220,6 +224,43 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
         }
     }
 
+    /**
+     * Timed cache for the public suffix list.<p>
+     */
+    static class SuffixListCache {
+
+        /** The public suffix list. */
+        private PublicSuffixList m_suffixList;
+
+        /** The time the list was last cached. */
+        private long m_timestamp = -1;
+
+        /**
+         * Gets the public suffix list, loading it if hasn't been loaded before or the time since it was loaded was too long ago.<p>
+         *
+         * @return the public suffix list
+         */
+        public synchronized PublicSuffixList getPublicSuffixList() {
+
+            long now = System.currentTimeMillis();
+            if ((m_suffixList == null) || ((now - m_timestamp) > (1000 * 3600))) {
+                PublicSuffixListFactory factory = new PublicSuffixListFactory();
+                try (InputStream stream = CmsSiteConfigToLetsEncryptConfigConverter.class.getResourceAsStream(
+                    "public_suffix_list.dat")) {
+                    m_suffixList = factory.build(stream);
+                    m_timestamp = now;
+                } catch (IOException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return m_suffixList;
+
+        }
+    }
+
+    /** The cache for the public suffix list. */
+    private static SuffixListCache SUFFIX_LIST_CACHE = new SuffixListCache();
+
     /** The logger used for this class. */
     static final Log LOG = CmsLog.getLog(CmsSiteConfigToLetsEncryptConfigConverter.class);
 
@@ -300,13 +341,7 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
     private static String getDomainRoot(URI uri) {
 
         String host = uri.getHost();
-        InternetDomainName name = InternetDomainName.from(host);
-        if (name.isUnderPublicSuffix()) {
-            return name.topPrivateDomain().toString();
-        } else {
-            // localhost, ip address or something else that is not a 'normal' internet domain
-            return null;
-        }
+        return SUFFIX_LIST_CACHE.getPublicSuffixList().getRegistrableDomain(host);
     }
 
     /**
