@@ -263,7 +263,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsUUID principal,
         int allowed,
         int denied,
-        int flags) throws CmsDataAccessException {
+        int flags)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -297,7 +298,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String groupFqn,
         String description,
         int flags,
-        String parentGroupFqn) throws CmsDataAccessException {
+        String parentGroupFqn)
+    throws CmsDataAccessException {
 
         CmsUUID parentId = CmsUUID.getNullUUID();
         CmsGroup group = null;
@@ -353,7 +355,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String description,
         int flags,
         CmsOrganizationalUnit parent,
-        String associatedResource) throws CmsDataAccessException {
+        String associatedResource)
+    throws CmsDataAccessException {
 
         // check the parent
         if ((parent == null) && !name.equals("")) {
@@ -513,7 +516,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         long lastlogin,
         int flags,
         long dateCreated,
-        Map<String, Object> additionalInfos) throws CmsDataAccessException {
+        Map<String, Object> additionalInfos)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -843,7 +847,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsDbContext dbc,
         CmsOrganizationalUnit orgUnit,
         boolean includeSubOus,
-        boolean readRoles) throws CmsDataAccessException {
+        boolean readRoles)
+    throws CmsDataAccessException {
 
         // compose the query
         String sqlQuery = createRoleQuery("C_GROUPS_GET_GROUPS_0", includeSubOus, readRoles);
@@ -888,7 +893,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
     public List<CmsOrganizationalUnit> getOrganizationalUnits(
         CmsDbContext dbc,
         CmsOrganizationalUnit parent,
-        boolean includeChildren) throws CmsDataAccessException {
+        boolean includeChildren)
+    throws CmsDataAccessException {
 
         List<CmsOrganizationalUnit> orgUnits = new ArrayList<CmsOrganizationalUnit>();
         try {
@@ -958,7 +964,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
     public List<CmsUser> getUsersWithoutAdditionalInfo(
         CmsDbContext dbc,
         CmsOrganizationalUnit orgUnit,
-        boolean recursive) throws CmsDataAccessException {
+        boolean recursive)
+    throws CmsDataAccessException {
 
         return internalGetUsers(dbc, orgUnit, recursive, false);
     }
@@ -1040,7 +1047,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsUUID offlineId,
-        CmsUUID onlineId) throws CmsDataAccessException {
+        CmsUUID onlineId)
+    throws CmsDataAccessException {
 
         // at first, we remove all access contries of this resource in the online project
         m_driverManager.getUserDriver(dbc).removeAccessControlEntries(dbc, onlineProject, onlineId);
@@ -1052,11 +1060,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         } else {
             dbc.setProjectId(CmsUUID.getNullUUID());
         }
-        List<CmsAccessControlEntry> aces = m_driverManager.getUserDriver(dbc).readAccessControlEntries(
-            dbc,
-            offlineProject,
-            offlineId,
-            false);
+        List<CmsAccessControlEntry> aces = m_driverManager.getUserDriver(
+            dbc).readAccessControlEntries(dbc, offlineProject, offlineId, false);
         dbc.setProjectId(dbcProjectId);
 
         for (CmsAccessControlEntry ace : aces) {
@@ -1071,7 +1076,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID resource,
-        boolean inheritedOnly) throws CmsDataAccessException {
+        boolean inheritedOnly)
+    throws CmsDataAccessException {
 
         List<CmsAccessControlEntry> aceList = new ArrayList<CmsAccessControlEntry>();
         PreparedStatement stmt = null;
@@ -1118,7 +1124,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID resource,
-        CmsUUID principal) throws CmsDataAccessException {
+        CmsUUID principal)
+    throws CmsDataAccessException {
 
         CmsAccessControlEntry ace = null;
         PreparedStatement stmt = null;
@@ -1288,7 +1295,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String ouFqn,
         boolean includeChildOus,
         String remoteAddress,
-        boolean readRoles) throws CmsDataAccessException {
+        boolean readRoles)
+    throws CmsDataAccessException {
 
         // compose the query
         String sqlQuery = createRoleQuery("C_GROUPS_GET_GROUPS_OF_USER_1", includeChildOus, readRoles);
@@ -1627,7 +1635,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsProject onlineProject,
-        CmsUUID principal) throws CmsDataAccessException {
+        CmsUUID principal)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1694,7 +1703,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
     public void removeResourceFromOrganizationalUnit(
         CmsDbContext dbc,
         CmsOrganizationalUnit orgUnit,
-        CmsResource resource) throws CmsDataAccessException {
+        CmsResource resource)
+    throws CmsDataAccessException {
 
         // check for root ou
         if (orgUnit.getParentFqn() == null) {
@@ -1968,11 +1978,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 // online persistence
                 CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
                 resource.setState(CmsResource.STATE_UNCHANGED);
-                m_driverManager.getVfsDriver(dbc).writeResource(
-                    dbc,
-                    onlineProject.getUuid(),
-                    resource,
-                    CmsDriverManager.NOTHING_CHANGED);
+                m_driverManager.getVfsDriver(
+                    dbc).writeResource(dbc, onlineProject.getUuid(), resource, CmsDriverManager.NOTHING_CHANGED);
             }
 
             OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES, null);
@@ -2246,10 +2253,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             return;
         }
         String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
-        String parentGroup = null;
-        if (parentOu != null) {
-            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
-        }
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
@@ -2261,7 +2264,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             usersGroup,
             groupDescription,
             I_CmsPrincipal.FLAG_ENABLED | CmsRole.ELEMENT_AUTHOR.getVirtualGroupFlags(),
-            parentGroup);
+            null);
 
         if (parentOu != null) {
             // default users/groups(except the users group) are only for the root ou
@@ -2559,11 +2562,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
                     resource.getResourceId());
 
                 // delete relations
-                m_driverManager.getVfsDriver(dbc).deleteRelations(
-                    dbc,
-                    dbc.getRequestContext().getCurrentProject().getUuid(),
-                    resource,
-                    filter);
+                m_driverManager.getVfsDriver(
+                    dbc).deleteRelations(dbc, dbc.getRequestContext().getCurrentProject().getUuid(), resource, filter);
             } finally {
                 dbc.getRequestContext().setCurrentProject(project);
             }
@@ -2585,11 +2585,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
             resource.getResourceId());
 
         // delete relations
-        m_driverManager.getVfsDriver(dbc).deleteRelations(
-            dbc,
-            dbc.getRequestContext().getCurrentProject().getUuid(),
-            resource,
-            filter);
+        m_driverManager.getVfsDriver(
+            dbc).deleteRelations(dbc, dbc.getRequestContext().getCurrentProject().getUuid(), resource, filter);
 
         // flush all relevant caches
         OpenCms.getMemoryMonitor().clearAccessControlListCache();
@@ -2652,7 +2649,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         CmsDbContext dbc,
         CmsOrganizationalUnit orgUnit,
         boolean recursive,
-        boolean readAdditionalInfos) throws CmsDataAccessException {
+        boolean readAdditionalInfos)
+    throws CmsDataAccessException {
 
         List<CmsUser> users = new ArrayList<CmsUser>();
         ResultSet res = null;
@@ -2938,11 +2936,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         try {
             m_driverManager.writePropertyObject(dbc, resource, property); // assume the resource is identical in both projects
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver(dbc).writeResource(
-                dbc,
-                dbc.currentProject().getUuid(),
-                resource,
-                CmsDriverManager.NOTHING_CHANGED);
+            m_driverManager.getVfsDriver(
+                dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, CmsDriverManager.NOTHING_CHANGED);
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
         }

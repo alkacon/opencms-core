@@ -343,12 +343,18 @@ public class TestSiblings extends OpenCmsTestCase {
             "test",
             0,
             "/folder1");
-
+        // allow +r+w+v+c on "/" folder for OU users group
+        cms.lockResource("/");
+        cms.chacc(
+            "/",
+            I_CmsPrincipal.PRINCIPAL_GROUP,
+            ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
+            "+r+w+v+c+i");
+        cms.unlockResource("/");
         // this user will have publish permissions on the test ou project, but not on the root Offline project
         cms.createUser("/test/myuser", "myuser", "blah-blah", null);
         cms.addUserToGroup("/test/myuser", ou.getName() + OpenCms.getDefaultUsers().getGroupUsers());
-        // the default permissions for the user are: +r+w+v+c since it is indirect user of the /Users group,
-        // so we need to explicitly remove the w flag, but we can not do that on the sibling itself,
+        // we need to explicitly remove the w flag, but we can not do that on the sibling itself,
         // since the ACEs are bound to the resource entries, so we do it on the folder
         cms.lockResource("/folder2/");
         cms.chacc("/folder2/", I_CmsPrincipal.PRINCIPAL_USER, "/test/myuser", "-w");
@@ -468,7 +474,7 @@ public class TestSiblings extends OpenCmsTestCase {
      // - this is to ensure that the new/changed/deleted other sibling still have a valid
      // state which consist of the last-modified-in-project ID plus the resource state
      // - otherwise this may result in grey flags
-
+    
      Another issue:
      What happens if a user A has an exclusive lock on a resource X,
      and user B does a "copy as sibling Y" of X, or "create
@@ -476,7 +482,7 @@ public class TestSiblings extends OpenCmsTestCase {
      to A, but test implies that it would be switched to B after operation!
      Maybe copy as / create new sibling must not be allowed if original is
      currently locked by another user?
-
+    
      }
      */
 
