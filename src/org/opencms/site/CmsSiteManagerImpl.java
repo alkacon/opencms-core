@@ -394,6 +394,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
      *                             if set to <code>false</code> will redirect to secure URL
      * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
+     * @throws CmsConfigurationException
      *
      */
 
@@ -408,7 +409,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         String secureServer,
         String exclusive,
         String error,
-        String usePermanentRedirects) {
+        String usePermanentRedirects)
+    throws CmsConfigurationException {
 
         try {
             addSite(
@@ -425,7 +427,25 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 usePermanentRedirects);
 
         } catch (CmsConfigurationException e) {
-            LOG.error("Error reading site.", e);
+            LOG.error("Error reading definitions. Try to read without aliase..", e);
+
+            //If the aliases are making problems, just remove them
+            m_aliases.clear();
+
+            //If this fails, the webserver was defined before ->throw exception
+            addSite(
+                server,
+                uri,
+                title,
+                position,
+                errorPage,
+                webserver,
+                sslMode,
+                secureServer,
+                exclusive,
+                error,
+                usePermanentRedirects);
+
         }
     }
 
