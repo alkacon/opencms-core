@@ -376,6 +376,60 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Adds a new CmsSite to the list of configured sites,
+     * this is only allowed during configuration.<p>
+     *
+     * If this method is called after the configuration is finished,
+     * a <code>RuntimeException</code> is thrown.<p>
+     *
+     * @param server the Server
+     * @param uri the VFS path
+     * @param title the display title for this site
+     * @param position the display order for this site
+     * @param errorPage the URI to use as error page for this site
+     * @param sslMode the SSLMode of the site
+     * @param webserver indicates whether to write the web server configuration for this site or not
+     * @param secureServer a secure server, can be <code>null</code>
+     * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
+     * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
+     *                             if set to <code>false</code> will redirect to secure URL
+     * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
+     *
+     */
+
+    public void addSiteInternally(
+        String server,
+        String uri,
+        String title,
+        String position,
+        String errorPage,
+        String webserver,
+        String sslMode,
+        String secureServer,
+        String exclusive,
+        String error,
+        String usePermanentRedirects) {
+
+        try {
+            addSite(
+                server,
+                uri,
+                title,
+                position,
+                errorPage,
+                webserver,
+                sslMode,
+                secureServer,
+                exclusive,
+                error,
+                usePermanentRedirects);
+
+        } catch (CmsConfigurationException e) {
+            LOG.error("Error reading site.", e);
+        }
+    }
+
+    /**
      * Adds a workplace server, this is only allowed during configuration.<p>
      *
      * @param workplaceServer the workplace server
