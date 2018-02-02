@@ -62,13 +62,16 @@ public class CmsOuTree extends Tree {
     protected enum CmsOuTreeType {
 
         /**Group. */
-        GROUP(Messages.GUI_USERMANAGEMENT_GROUPS_0, "g", true, new CmsCssIcon(OpenCmsTheme.ICON_GROUP), Messages.GUI_USERMANAGEMENT_NO_GROUPS_0),
+        GROUP(Messages.GUI_USERMANAGEMENT_GROUPS_0, "g", true, new CmsCssIcon(OpenCmsTheme.ICON_GROUP),
+        Messages.GUI_USERMANAGEMENT_NO_GROUPS_0),
         /**OU. */
         OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, "o", true, new CmsCssIcon(OpenCmsTheme.ICON_OU), ""),
         /**Role. */
-        ROLE(Messages.GUI_USERMANAGEMENT_ROLES_0, "r", true, new CmsCssIcon(OpenCmsTheme.ICON_ROLE), Messages.GUI_USERMANAGEMENT_NO_USER_0),
+        ROLE(Messages.GUI_USERMANAGEMENT_ROLES_0, "r", true, new CmsCssIcon(OpenCmsTheme.ICON_ROLE),
+        Messages.GUI_USERMANAGEMENT_NO_USER_0),
         /**User.*/
-        USER(Messages.GUI_USERMANAGEMENT_USER_0, "u", false, new CmsCssIcon(OpenCmsTheme.ICON_USER), Messages.GUI_USERMANAGEMENT_NO_USER_0);
+        USER(Messages.GUI_USERMANAGEMENT_USER_0, "u", false, new CmsCssIcon(OpenCmsTheme.ICON_USER),
+        Messages.GUI_USERMANAGEMENT_NO_USER_0);
 
         /**Name of entry. */
         private String m_name;
@@ -95,6 +98,7 @@ public class CmsOuTree extends Tree {
          * @param empty empty string
          */
         CmsOuTreeType(String name, String id, boolean isExpandable, CmsCssIcon icon, String empty) {
+
             m_name = name;
             m_id = id;
             m_isExpandable = isExpandable;
@@ -220,6 +224,7 @@ public class CmsOuTree extends Tree {
      * @param baseOU baseOu
      */
     public CmsOuTree(CmsObject cms, CmsAccountsApp app, String baseOU) {
+
         m_cms = cms;
         try {
             m_rootSystemOU = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, "");
@@ -342,6 +347,20 @@ public class CmsOuTree extends Tree {
             roleOrGroupID = (CmsUUID)itemId;
 
         }
+        if (type.equals(CmsOuTreeType.ROLE)) {
+            String ou = getOuFromItem(itemId, CmsOuTreeType.ROLE);
+            boolean isRoot = ou.isEmpty();
+            if (isRoot) {
+                ou = "/";
+            }
+            if (!((String)itemId).endsWith(ou)) {
+                if (isRoot) {
+                    roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 1));
+                } else {
+                    roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 2));
+                }
+            }
+        }
 
         m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID);
         if (isExpanded(itemId) | (itemId instanceof CmsUUID)) {
@@ -432,14 +451,15 @@ public class CmsOuTree extends Tree {
             List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, ouItem.substring(1), false);
             CmsRole.applySystemRoleOrder(roles);
             for (CmsRole role : roles) {
-                Item roleItem = m_treeContainer.addItem(role.getId());
+                String roleId = ouItem + "/" + role.getId();
+                Item roleItem = m_treeContainer.addItem(roleId);
                 if (roleItem == null) {
-                    roleItem = getItem(role.getId());
+                    roleItem = getItem(roleId);
                 }
                 roleItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(role, CmsOuTreeType.ROLE));
                 roleItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.ROLE);
-                setChildrenAllowed(role.getId(), false);
-                m_treeContainer.setParent(role.getId(), ouItem);
+                setChildrenAllowed(roleId, false);
+                m_treeContainer.setParent(roleId, ouItem);
             }
         } catch (CmsException e) {
             LOG.error("Can not read group", e);
