@@ -349,6 +349,18 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         // therefore, the aliases are already set
         site.setAliases(m_aliases);
 
+        boolean valid = true;
+        List<CmsSiteMatcher> toAdd = new ArrayList<CmsSiteMatcher>();
+        for (CmsSiteMatcher matcherToAdd : site.getAllMatchers()) {
+            valid = valid & isServerValid(matcherToAdd) & !toAdd.contains(matcherToAdd);
+            toAdd.add(matcherToAdd);
+        }
+
+        if (!valid) {
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
+        }
+
         for (CmsSiteMatcher matcherToAdd : site.getAllMatchers()) {
             addServer(matcherToAdd, site);
         }
@@ -1498,12 +1510,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      *
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
-    private void addServer(CmsSiteMatcher matcher, CmsSite site) throws CmsConfigurationException {
+    private void addServer(CmsSiteMatcher matcher, CmsSite site) {
 
-        if (m_siteMatcherSites.containsKey(matcher)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
-        }
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
         siteMatcherSites.put(matcher, site);
         setSiteMatcherSites(siteMatcherSites);
@@ -1609,6 +1617,12 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
         }
         m_workplaceMatchers = matchers;
+    }
+
+    private boolean isServerValid(CmsSiteMatcher matcher) {
+
+        return !m_siteMatcherSites.containsKey(matcher);
+
     }
 
     /**
