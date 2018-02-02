@@ -30,6 +30,7 @@ package org.opencms.ui.apps.user;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
@@ -48,6 +49,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -61,6 +64,9 @@ import com.vaadin.ui.Window;
  * Dialog for delete multiple principal.<p>
  */
 public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDeleteMultiplePrincipalDialog.class);
 
     /**vaadin serial id. */
     private static final long serialVersionUID = -1191281655158071555L;
@@ -106,6 +112,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
      * @param window window
      */
     public CmsDeleteMultiplePrincipalDialog(CmsObject cms, Set<String> context, Window window) {
+
         init(cms, window);
         m_ids = context;
         m_groupIDs = new HashSet<CmsUUID>();
@@ -118,7 +125,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
                     m_userIDs.add(new CmsUUID(id));
                 }
             } catch (CmsException e) {
-                //
+                LOG.error("Unable to read Principal.", e);
             }
         }
         try {
@@ -151,7 +158,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
 
             }
         } catch (CmsException e) {
-            //
+            LOG.error("Unable to initialize delete principal dialog.", e);
         }
     }
 
@@ -174,7 +181,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
                 m_cms.deleteUser(id, principalTarget != null ? principalTarget.getId() : null);
             }
         } catch (CmsException e) {
-            //
+            LOG.error("Unable to delete principal", e);
         }
     }
 
