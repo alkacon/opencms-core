@@ -529,8 +529,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         List<CmsSite> visSites = getAvailableSites(cms, workplaceMode);
         Map<CmsSiteMatcher, CmsSite> allsites = getSites();
         for (CmsSiteMatcher matcher : allsites.keySet()) {
-            if (!visSites.contains(allsites.get(matcher))) {
-                res.add(allsites.get(matcher));
+            CmsSite site = allsites.get(matcher);
+            if (!visSites.contains(site) & !res.contains(site)) {
+                res.add(site);
             }
         }
         return res;
