@@ -500,11 +500,6 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
                         org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_NO_DOMAINS_0));
                 return false;
             }
-            Set<String> unresolvableDomains = domainGrouping.getUnresolvableDomains();
-            if (unresolvableDomains.size() > 0) {
-                LOG.warn(
-                    "Found unresolvable domains while trying to generate LetsEncrypt config: " + unresolvableDomains);
-            }
             String certConfig = domainGrouping.generateCertJson();
             if (!m_configUpdater.update(certConfig)) {
                 report.println(
