@@ -416,10 +416,11 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
         }
 
         Map<String, String> infos = new LinkedHashMap<String, String>();
+        int corruptedSites = OpenCms.getSiteManager().getAvailableCorruptedSites(m_rootCms, false).size();
         infos.put(
             CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_WEBSITES_0),
-            String.valueOf(OpenCms.getSiteManager().getSites().size()));
-        int corruptedSites = OpenCms.getSiteManager().getSites().size() - m_sitesTable.getSitesCount();
+            String.valueOf(OpenCms.getSiteManager().getAvailableSites(m_rootCms, false).size() + corruptedSites));
+
         if (corruptedSites > 0) {
             infos.put(
                 CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_CORRUPTED_WEBSITES_0),

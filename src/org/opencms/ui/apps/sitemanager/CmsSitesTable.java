@@ -331,6 +331,9 @@ public class CmsSitesTable extends Table {
     /**Is site config ok? */
     public static final String PROP_OK = "ok";
 
+    /**Is site path below other existing site? */
+    public static final String PROP_UNDER_OTHER_SITE = "othersite";
+
     /**Were site root moved or renamed? */
     public static final String PROP_CHANGED = "changed";
 
@@ -374,6 +377,7 @@ public class CmsSitesTable extends Table {
         m_container.addContainerProperty(PROP_ALIASES, String.class, "");
         m_container.addContainerProperty(PROP_SECURESITES, String.class, "");
         m_container.addContainerProperty(PROP_OK, Boolean.class, new Boolean(true));
+        m_container.addContainerProperty(PROP_UNDER_OTHER_SITE, Boolean.class, new Boolean(false));
         m_container.addContainerProperty(PROP_CHANGED, Boolean.class, new Boolean(false));
         m_container.addContainerProperty(PROP_NEW, Boolean.class, new Boolean(false));
 
@@ -524,19 +528,23 @@ public class CmsSitesTable extends Table {
         for (CmsSite site : OpenCms.getSiteManager().getAvailableCorruptedSites(m_manager.getRootCmsObject(), true)) {
 
             Item item = m_container.addItem(site.getSiteRoot());
-            item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
-            item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
-            item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
-            item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
-            item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
-            item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
-            item.getItemProperty(PROP_OK).setValue(new Boolean(false));
-            if (!site.getSiteRootUUID().isNullUUID()) {
-                item.getItemProperty(PROP_CHANGED).setValue(new Boolean(true));
-                showPublishButton = true;
-            }
-            if (site.hasSecureServer()) {
-                item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
+            if (item != null) {
+                item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
+                item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
+                item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
+                item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
+                item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
+                item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
+                item.getItemProperty(PROP_OK).setValue(new Boolean(false));
+                if (!site.getSiteRootUUID().isNullUUID()) {
+                    item.getItemProperty(PROP_CHANGED).setValue(new Boolean(true));
+                    showPublishButton = true;
+                }
+                if (site.hasSecureServer()) {
+                    item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
+                }
+            } else {
+                System.out.println("double");
             }
         }
         m_manager.showPublishButton(showPublishButton);

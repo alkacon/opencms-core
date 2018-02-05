@@ -53,6 +53,7 @@ import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.report.CmsReportWidget;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -67,6 +68,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -156,6 +158,36 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     *Validator for server field.<p>
+     */
+    class AliasValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = 9014118214418269697L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            String enteredServer = (String)value;
+            if (enteredServer == null) {
+                return;
+            }
+            if (enteredServer.isEmpty()) {
+                return;
+            }
+            if (m_alreadyUsedURL.contains(new CmsSiteMatcher(enteredServer))) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
+            }
+            if (enteredServer.equals(getFieldServer())) {
+                throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_EQUAL_ALIAS_0));
+            }
+        }
+    }
+
+    /**
      * Receiver class for upload of favicon.<p>
      */
     class FavIconReceiver implements Receiver, SucceededListener {
@@ -218,7 +250,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_FORBIDDEN_1, enteredName));
             }
 
-            if (m_alreadyUsedFolderPath.contains(getParentFolder() + enteredName)) {
+            //            if (m_alreadyUsedFolderPath.contains(getParentFolder() + enteredName)) {
+            if (OpenCms.getSiteManager().getSiteForRootPath(getParentFolder() + enteredName) != null) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1, enteredName));
             }
@@ -250,7 +283,13 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARENTFOLDER_NOT_EXIST_0));
             }
-
+            if (OpenCms.getSiteManager().getSiteForRootPath(
+                CmsFileUtil.removeTrailingSeparator(getParentFolder())) != null) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(
+                        Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1,
+                        CmsFileUtil.removeTrailingSeparator(getParentFolder())));
+            }
             if (!(getParentFolder()).startsWith(CmsSiteManager.PATH_SITES)) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_WRONGPARENT_0));
@@ -400,6 +439,17 @@ public class CmsEditSiteForm extends CmsBasicDialog {
          */
         public void validate(Object value) throws InvalidValueException {
 
+            CmsSite parentSite = OpenCms.getSiteManager().getSiteForRootPath(
+                CmsFileUtil.removeTrailingSeparator((String)value));
+            if (parentSite != null) {
+                if (!parentSite.equals(m_site)) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(
+                            Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1,
+                            CmsFileUtil.removeTrailingSeparator((String)value)));
+                }
+            }
+
             CmsProject currentProject = m_clonedCms.getRequestContext().getCurrentProject();
             try {
 
@@ -506,7 +556,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     List<String> m_alreadyUsedFolderPath = new ArrayList<String>();
 
     /**List of all urls already used for sites.*/
-    List<CmsSiteMatcher> m_alreadyUsedURL = new ArrayList<CmsSiteMatcher>();
+    Set<CmsSiteMatcher> m_alreadyUsedURL = new HashSet<CmsSiteMatcher>();
 
     /**cloned cms obejct.*/
     CmsObject m_clonedCms;
@@ -712,12 +762,17 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 setupValidators();
-                if (isValidInputSimple() & isValidInputSiteTemplate()) {
+                setupValidatorAliase();
+                if (isValidInputSimple() & isValidInputSiteTemplate() & isValidAliase()) {
                     submit();
                     return;
                 }
                 if (isValidInputSimple()) {
-                    m_tab.setSelectedTab(4);
+                    if (isValidAliase()) {
+                        m_tab.setSelectedTab(4);
+                        return;
+                    }
+                    m_tab.setSelectedTab(3);
                     return;
                 }
                 m_tab.setSelectedTab(0);
@@ -880,7 +935,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         disableOUComboBox();
 
-        m_alreadyUsedURL.remove(m_alreadyUsedURL.indexOf(m_site.getSiteMatcher())); //Remove current url to avoid validation problem
+        m_alreadyUsedURL.remove(m_site.getSiteMatcher()); //Remove current url to avoid validation problem
 
         setFieldTitle(m_site.getTitle());
         setFieldFolder(getFolderNameFromSiteRoot(siteRoot));
@@ -981,6 +1036,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
         m_ok.setEnabled(true);
         m_infoSiteRoot.setVisible(false);
+    }
+
+    /**
+     * Reads server field.<p>
+     *
+     * @return server as string
+     */
+    protected String getFieldServer() {
+
+        return m_simpleFieldServer.getValue();
     }
 
     /**
@@ -1179,6 +1244,22 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Are the aliase valid?<p>
+     *
+     * @return true if ok
+     */
+    boolean isValidAliase() {
+
+        boolean ret = true;
+        for (Component c : m_aliases) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                ret = ret & ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().isValid();
+            }
+        }
+        return ret;
+    }
+
+    /**
      * Checks if all required fields are set correctly at first Tab.<p>
      *
      * @return true if all inputs are valid.
@@ -1363,6 +1444,18 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Setup for the aliase validator.<p>
+     */
+    void setupValidatorAliase() {
+
+        for (Component c : m_aliases) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().addValidator(new AliasValidator());
+            }
+        }
+    }
+
+    /**
      * Setup validators which get called on click.<p>
      * Site-template gets validated separately.<p>
      */
@@ -1498,9 +1591,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         for (Component c : m_aliases) {
             if (c instanceof CmsRemovableFormRow<?>) {
-                ret.add(
-                    new CmsSiteMatcher(
-                        ((String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue())));
+                String url = ((String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue());
+                if (!url.isEmpty()) {
+                    ret.add(new CmsSiteMatcher(url));
+                }
             }
         }
         return ret;
@@ -1561,16 +1655,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             }
         }
         return bundles;
-    }
-
-    /**
-     * Reads server field.<p>
-     *
-     * @return server as string
-     */
-    private String getFieldServer() {
-
-        return m_simpleFieldServer.getValue();
     }
 
     /**
