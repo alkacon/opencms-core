@@ -27,6 +27,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
@@ -134,6 +135,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /** The configuration based on <code>opencms.properties</code>. */
     private CmsParameterConfiguration m_propertyConfiguration;
+
+    /** The admin CmsObject. */
+    private CmsObject m_adminCms;
 
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -366,6 +370,25 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
 
     /**
+     * Sets the admin CmsObject.<p>
+     * 
+     * @param cms the admin CmsObject
+     */
+    public void setAdminCms(CmsObject cms) {
+
+        if (m_adminCms != null) {
+            LOG.error("Can not set admin CmsObject of configuration manager because it is already set.");
+            return;
+        }
+        for (I_CmsXmlConfiguration config : m_configurations) {
+            if (config instanceof I_CmsXmlConfigurationWithUpdateHandler) {
+                ((I_CmsXmlConfigurationWithUpdateHandler)config).setCmsObject(cms);
+            }
+        }
+        m_adminCms = cms;
+    }
+
+    /**
      * Sets the configuration read from the <code>opencms.properties</code>.<p>
      *
      * @param propertyConfiguration the configuration read from the <code>opencms.properties</code>
@@ -423,6 +446,16 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             }
         }
 
+        if (configuration instanceof I_CmsXmlConfigurationWithUpdateHandler) {
+            try {
+                LOG.info("Running configuration update handler for " + configuration.getClass().getName());
+                ((I_CmsXmlConfigurationWithUpdateHandler)configuration).handleUpdate();
+                LOG.info("Finished configuration update handler for " + configuration.getClass().getName());
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         if (LOG.isInfoEnabled()) {
             LOG.info(
                 Messages.get().getBundle().key(
@@ -430,6 +463,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                     file.getAbsolutePath(),
                     configuration.getClass().getName()));
         }
+
     }
 
     /**

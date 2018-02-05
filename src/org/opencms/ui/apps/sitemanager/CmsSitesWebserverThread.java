@@ -38,7 +38,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
-import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.apps.Messages;
@@ -146,10 +145,8 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
         LOG.info(
             "INFO thread for run of server script started by User: "
                 + getCms().getRequestContext().getCurrentUser().getName());
-        if ((OpenCms.getLetsEncryptConfig() != null) && OpenCms.getLetsEncryptConfig().isValidAndEnabled()) {
-
+        if (CmsSiteManager.isLetsEncryptConfiguredForWebserverThread()) {
             updateLetsEncrypt();
-
         } else {
             try {
                 deleteAllWebserverConfigs(m_filePrefix);
@@ -334,15 +331,12 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
         getReport().println(Messages.get().container(Messages.RPT_STARTING_LETSENCRYPT_UPDATE_0));
 
-        CmsObject cms = getCms();
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, false, CmsSSLMode.LETS_ENCRYPT);
-        List<String> workplaceServers = OpenCms.getSiteManager().getWorkplaceServers(CmsSSLMode.LETS_ENCRYPT);
         CmsLetsEncryptConfiguration config = OpenCms.getLetsEncryptConfig();
         if ((config == null) || !config.isValidAndEnabled()) {
             return;
         }
         CmsSiteConfigToLetsEncryptConfigConverter converter = new CmsSiteConfigToLetsEncryptConfigConverter(config);
-        boolean ok = converter.run(getReport(), sites, workplaceServers);
+        boolean ok = converter.run(getReport(), OpenCms.getSiteManager());
         if (ok) {
             getReport().println(
                 org.opencms.ui.apps.Messages.get().container(org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_FINISHED_0),

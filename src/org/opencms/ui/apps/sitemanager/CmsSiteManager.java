@@ -29,6 +29,7 @@ package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration.Trigger;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -139,6 +140,18 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Check if LetsEncrypt updates are configured to be triggered by webserver configuration updates.<p>
+     *
+     * @return true if LetsEncrypt updates are configured to be triggered by webserver configuration updates
+     */
+    public static boolean isLetsEncryptConfiguredForWebserverThread() {
+
+        return (OpenCms.getLetsEncryptConfig() != null)
+            && OpenCms.getLetsEncryptConfig().isValidAndEnabled()
+            && (OpenCms.getLetsEncryptConfig().getTrigger() == Trigger.webserverThread);
     }
 
     /**
@@ -399,7 +412,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
             }
         });
         m_uiContext.addToolbarButton(settings);
-        if (OpenCms.getSiteManager().isConfigurableWebServer() || (OpenCms.getLetsEncryptConfig() != null)) {
+        if (OpenCms.getSiteManager().isConfigurableWebServer() || isLetsEncryptConfiguredForWebserverThread()) {
             Button webServer = CmsToolBar.createButton(
                 FontAwesome.SERVER,
                 CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));

@@ -56,6 +56,17 @@ public class CmsLetsEncryptConfiguration implements I_CmsConfigurationParameterH
         workplace
     }
 
+    /**
+     * Enum which represents the different types of events that LetsEncrypt updates should be triggered by.
+     */
+    public static enum Trigger {
+        /** Triggered when webserver config is updated. */
+        siteConfig,
+
+        /** Triggered when the webserver thread is run. */
+        webserverThread
+    }
+
     /** Attribute name for the certificate configuration path. */
     public static final String ATTR_CERTCONFIG = "certconfig";
 
@@ -67,6 +78,9 @@ public class CmsLetsEncryptConfiguration implements I_CmsConfigurationParameterH
 
     /** Attribute name for the port. */
     public static final String ATTR_PORT = "port";
+
+    /** Attribute name for the trigger mode. */
+    public static final String ATTR_TRIGGER = "trigger";
 
     /** Node name. */
     public static final String N_LETSENCRYPT = "letsencrypt";
@@ -81,10 +95,14 @@ public class CmsLetsEncryptConfiguration implements I_CmsConfigurationParameterH
         ATTR_HOST,
         ATTR_PORT,
         ATTR_MODE,
-        ATTR_CERTCONFIG);
+        ATTR_CERTCONFIG,
+        ATTR_TRIGGER);
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLetsEncryptConfiguration.class);
+
+    /** The default trigger mode. */
+    public static final Trigger DEFAULT_TRIGGER = Trigger.siteConfig;
 
     /** The internal configuration object. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
@@ -159,6 +177,27 @@ public class CmsLetsEncryptConfiguration implements I_CmsConfigurationParameterH
             LOG.error("Error getting letsencrypt port: " + e.getLocalizedMessage(), e);
             return -1;
         }
+    }
+
+    /**
+     * Gets the trigger mode.<p>
+     *
+     * @return the trigger mode
+     */
+    public Trigger getTrigger() {
+
+        try {
+            String triggerStr = m_config.get(ATTR_TRIGGER);
+            if (triggerStr == null) {
+                return DEFAULT_TRIGGER; // trigger is optional, don't log an error
+            }
+            Trigger trigger = Trigger.valueOf(triggerStr);
+            return trigger;
+        } catch (Exception e) {
+            LOG.error("Error getting configured letsencrypt trigger: " + e.getLocalizedMessage(), e);
+            return DEFAULT_TRIGGER;
+        }
+
     }
 
     /**

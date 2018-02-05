@@ -593,3 +593,5 @@
 
 <!-- The path to which the certificate configuration should be written. -->
 <!ATTLIST letsencrypt certconfig CDATA #REQUIRED>
+
+<!ATTLIST letsencrypt trigger (siteConfig|webserverThread) #IMPLIED>

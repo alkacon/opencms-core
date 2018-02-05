@@ -32,7 +32,9 @@ import org.opencms.json.JSONObject;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration.Mode;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 
@@ -45,6 +47,7 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -258,17 +261,20 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
         }
     }
 
-    /** The cache for the public suffix list. */
-    private static SuffixListCache SUFFIX_LIST_CACHE = new SuffixListCache();
-
     /** The logger used for this class. */
     static final Log LOG = CmsLog.getLog(CmsSiteConfigToLetsEncryptConfigConverter.class);
 
-    /** The object to which the configuration is sent after it is generated. */
-    private I_CmsLetsEncryptUpdater m_configUpdater;
+    /** Lock to prevent two converters from running simultaneously. */
+    private static Object LOCK = new Object();
+
+    /** The cache for the public suffix list. */
+    private static SuffixListCache SUFFIX_LIST_CACHE = new SuffixListCache();
 
     /** The configuration. */
     private CmsLetsEncryptConfiguration m_config;
+
+    /** The object to which the configuration is sent after it is generated. */
+    private I_CmsLetsEncryptUpdater m_configUpdater;
 
     /**
      * Creates a new instance.<p>
@@ -362,41 +368,27 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
     }
 
     /**
-     * Runs the certificate configuration update for a given set of sites and workplace URLS.<p>
+     * Runs the certificate configuration update for the sites configured in a site manager.<p>
      *
      * @param report the report to write to
-     * @param sites the sites
-     * @param workplaceUrls the workplace URLS
+     * @param siteManager the site manager instance
      *
      * @return true if the Letsencrypt update was successful
      */
-    public boolean run(I_CmsReport report, Collection<CmsSite> sites, Collection<String> workplaceUrls) {
+    public boolean run(I_CmsReport report, CmsSiteManagerImpl siteManager) {
 
-        try {
-            DomainGrouping domainGrouping = computeDomainGrouping(sites, workplaceUrls);
-            if (domainGrouping.isEmpty()) {
-                report.println(
-                    org.opencms.ui.apps.Messages.get().container(
-                        org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_NO_DOMAINS_0));
-                return false;
+        synchronized (LOCK) {
+            // *not* using getAvailable sites here, because the result does not include sites with unpublished site folders if called with a CmsObject in the Online project
+            // Instead we use getSites() and avoid duplicates using an IdentityHashMap
+            IdentityHashMap<CmsSite, CmsSite> siteIdMap = new IdentityHashMap<CmsSite, CmsSite>();
+            for (CmsSite site : siteManager.getSites().values()) {
+                if (site.getSSLMode() == CmsSSLMode.LETS_ENCRYPT) {
+                    siteIdMap.put(site, site);
+                }
             }
-            Set<String> unresolvableDomains = domainGrouping.getUnresolvableDomains();
-            if (unresolvableDomains.size() > 0) {
-                LOG.warn(
-                    "Found unresolvable domains while trying to generate LetsEncrypt config: " + unresolvableDomains);
-            }
-            String certConfig = domainGrouping.generateCertJson();
-            if (!m_configUpdater.update(certConfig)) {
-                report.println(
-                    org.opencms.ui.apps.Messages.get().container(
-                        org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_UPDATE_FAILED_0),
-                    I_CmsReport.FORMAT_WARNING);
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            report.println(e);
-            return false;
+            List<CmsSite> sites = Lists.newArrayList(siteIdMap.values());
+            List<String> workplaceServers = siteManager.getWorkplaceServers(CmsSSLMode.LETS_ENCRYPT);
+            return run(report, sites, workplaceServers);
         }
     }
 
@@ -487,6 +479,45 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
             }
         }
         return result;
+    }
+
+    /**
+     * Runs the certificate configuration update for a given set of sites and workplace URLS.<p>
+     *
+     * @param report the report to write to
+     * @param sites the sites
+     * @param workplaceUrls the workplace URLS
+     *
+     * @return true if the Letsencrypt update was successful
+     */
+    private boolean run(I_CmsReport report, Collection<CmsSite> sites, Collection<String> workplaceUrls) {
+
+        try {
+            DomainGrouping domainGrouping = computeDomainGrouping(sites, workplaceUrls);
+            if (domainGrouping.isEmpty()) {
+                report.println(
+                    org.opencms.ui.apps.Messages.get().container(
+                        org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_NO_DOMAINS_0));
+                return false;
+            }
+            Set<String> unresolvableDomains = domainGrouping.getUnresolvableDomains();
+            if (unresolvableDomains.size() > 0) {
+                LOG.warn(
+                    "Found unresolvable domains while trying to generate LetsEncrypt config: " + unresolvableDomains);
+            }
+            String certConfig = domainGrouping.generateCertJson();
+            if (!m_configUpdater.update(certConfig)) {
+                report.println(
+                    org.opencms.ui.apps.Messages.get().container(
+                        org.opencms.ui.apps.Messages.RPT_LETSENCRYPT_UPDATE_FAILED_0),
+                    I_CmsReport.FORMAT_WARNING);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            report.println(e);
+            return false;
+        }
     }
 
 }

@@ -157,6 +157,7 @@ public class CmsSiteBean {
         }
     }
 
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */

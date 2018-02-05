@@ -27,8 +27,13 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.CmsObject;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
+import org.opencms.letsencrypt.CmsLetsEncryptConfiguration.Trigger;
+import org.opencms.letsencrypt.CmsSiteConfigToLetsEncryptConfigConverter;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsLogReport;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
@@ -36,7 +41,10 @@ import org.opencms.site.CmsSiteMatcher;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.digester.Digester;
 
@@ -45,7 +53,7 @@ import org.dom4j.Element;
 /**
  * Class to read and write the OpenCms site configuration.<p>
  */
-public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
+public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfigurationWithUpdateHandler {
 
     /** The "error" attribute. */
     public static final String A_ERROR = "error";
@@ -128,8 +136,15 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the workplace-server node. */
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
+    /** The CmsObject with admin privileges. */
+    @SuppressWarnings("unused")
+    private CmsObject m_adminCms;
+
     /** The configured site manager. */
     private CmsSiteManagerImpl m_siteManager;
+
+    /** Future for the LetsEncrypt async update. */
+    private ScheduledFuture<?> m_updateFuture;
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -285,6 +300,51 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration {
     public CmsSiteManagerImpl getSiteManager() {
 
         return m_siteManager;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfigurationWithUpdateHandler#handleUpdate()
+     */
+    public synchronized void handleUpdate() throws Exception {
+
+        CmsLetsEncryptConfiguration config = OpenCms.getLetsEncryptConfig();
+        if ((config != null) && config.isValidAndEnabled() && (config.getTrigger() == Trigger.siteConfig)) {
+
+            // the configuration may be written several times in quick succession. We want to update when this
+            // happens for the last time, not the first, so we use a scheduled task.
+
+            if (m_updateFuture != null) {
+                m_updateFuture.cancel(false);
+                m_updateFuture = null;
+            }
+            m_updateFuture = OpenCms.getExecutor().schedule(new Runnable() {
+
+                @SuppressWarnings("synthetic-access")
+                public void run() {
+
+                    m_updateFuture = null;
+                    CmsLogReport report = new CmsLogReport(
+                        Locale.ENGLISH,
+                        org.opencms.letsencrypt.CmsSiteConfigToLetsEncryptConfigConverter.class);
+                    CmsSiteConfigToLetsEncryptConfigConverter converter = new CmsSiteConfigToLetsEncryptConfigConverter(
+                        config);
+                    converter.run(report, OpenCms.getSiteManager());
+
+                    // TODO Auto-generated method stub
+
+                }
+            }, 5, TimeUnit.SECONDS);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsXmlConfigurationWithUpdateHandler#setCmsObject(org.opencms.file.CmsObject)
+     */
+    public void setCmsObject(CmsObject cms) {
+
+        System.out.println("CmsObject initialized");
+        m_adminCms = cms;
     }
 
     /**

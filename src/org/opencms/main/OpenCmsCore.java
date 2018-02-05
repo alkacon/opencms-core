@@ -1573,6 +1573,8 @@ public final class OpenCmsCore {
                 flexCache.initializeCms(initCmsObject(adminCms));
             }
 
+            m_configurationManager.setAdminCms(adminCms);
+
             // initialize the scheduler
             m_scheduleManager.initialize(initCmsObject(adminCms));
 
