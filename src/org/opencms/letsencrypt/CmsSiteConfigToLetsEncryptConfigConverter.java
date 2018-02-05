@@ -264,6 +264,9 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
     /** The logger used for this class. */
     static final Log LOG = CmsLog.getLog(CmsSiteConfigToLetsEncryptConfigConverter.class);
 
+    /** Disables grouping. */
+    public static final boolean GROUPING_DISABLED = true;
+
     /** Lock to prevent two converters from running simultaneously. */
     private static Object LOCK = new Object();
 
@@ -445,7 +448,7 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
                     continue;
                 }
                 String root = info.getCommonRootDomain();
-                if (root == null) {
+                if ((root == null) || GROUPING_DISABLED) {
                     ungroupedSites.add(info);
                 } else {
                     infosByRootDomain.put(root, info);
