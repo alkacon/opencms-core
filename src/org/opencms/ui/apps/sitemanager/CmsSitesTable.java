@@ -528,6 +528,8 @@ public class CmsSitesTable extends Table {
         for (CmsSite site : OpenCms.getSiteManager().getAvailableCorruptedSites(m_manager.getRootCmsObject(), true)) {
 
             Item item = m_container.addItem(site.getSiteRoot());
+
+            //Make sure item doesn't exist in table yet.. should never happen
             if (item != null) {
                 item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
                 item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
@@ -543,8 +545,6 @@ public class CmsSitesTable extends Table {
                 if (site.hasSecureServer()) {
                     item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
                 }
-            } else {
-                System.out.println("double");
             }
         }
         m_manager.showPublishButton(showPublishButton);

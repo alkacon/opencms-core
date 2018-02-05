@@ -178,8 +178,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                 return;
             }
             if (m_alreadyUsedURL.contains(new CmsSiteMatcher(enteredServer))) {
-                throw new InvalidValueException(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
+                if (!OpenCms.getSiteManager().getSites().get(new CmsSiteMatcher(enteredServer)).equals(m_site)) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
+                }
             }
             if (enteredServer.equals(getFieldServer())) {
                 throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_EQUAL_ALIAS_0));
@@ -698,9 +700,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         for (CmsSite site : allSites) {
             if (site.getSiteMatcher() != null) {
                 m_alreadyUsedFolderPath.add(site.getSiteRoot());
-                m_alreadyUsedURL.add(site.getSiteMatcher());
             }
         }
+
+        m_alreadyUsedURL.addAll(OpenCms.getSiteManager().getSites().keySet());
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_tab.setHeight("400px");

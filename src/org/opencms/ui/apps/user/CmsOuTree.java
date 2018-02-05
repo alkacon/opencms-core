@@ -355,7 +355,10 @@ public class CmsOuTree extends Tree {
             }
             if (!((String)itemId).endsWith(ou)) {
                 if (isRoot) {
-                    roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 1));
+                    if (((String)itemId).length() > (ou.length() + 1)) {
+                        roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 1));
+                    }
+
                 } else {
                     roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 2));
                 }
