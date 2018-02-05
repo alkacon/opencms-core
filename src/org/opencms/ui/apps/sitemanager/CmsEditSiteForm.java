@@ -183,8 +183,12 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                         CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
                 }
             }
-            if (enteredServer.equals(getFieldServer())) {
+            if ((new CmsSiteMatcher(enteredServer)).equals(new CmsSiteMatcher(getFieldServer()))) {
                 throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_EQUAL_ALIAS_0));
+            }
+            if (isDoubleAlias(enteredServer)) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
             }
         }
     }
@@ -501,7 +505,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             }
             try {
                 m_clonedCms.readResource(pathToCheck + CmsADEManager.CONTENT_FOLDER_NAME);
-                //                m_clonedCms.readResource(pathToCheck + CmsSiteManager.MACRO_FOLDER);
             } catch (CmsException e) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SITETEMPLATE_INVALID_0));
@@ -1237,6 +1240,27 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Checks if an alias was entered twice.<p>
+     *
+     * @param aliasName to check
+     * @return true if it was defined double
+     */
+    boolean isDoubleAlias(String aliasName) {
+
+        CmsSiteMatcher testAlias = new CmsSiteMatcher(aliasName);
+        int count = 0;
+        for (Component c : m_aliases) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                String alName = (String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue();
+                if (testAlias.equals(new CmsSiteMatcher(alName))) {
+                    count++;
+                }
+            }
+        }
+        return count > 1;
+    }
+
+    /**
      * Checks if folder name was touched.<p>
      *
      * Considered as touched if side is edited or value of foldername was changed by user.<p>
@@ -1461,6 +1485,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         for (Component c : m_aliases) {
             if (c instanceof CmsRemovableFormRow<?>) {
+                ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().removeAllValidators();
                 ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().addValidator(new AliasValidator());
             }
         }

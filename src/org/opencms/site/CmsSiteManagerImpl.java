@@ -1290,7 +1290,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     public boolean isSiteUnderSite(String siteRootPath) {
 
         for (String siteRoot : getSiteRoots()) {
-            if ((siteRootPath.length() > siteRoot.length()) & siteRootPath.startsWith(siteRoot)) {
+            if ((siteRootPath.length() > siteRoot.length())
+                & siteRootPath.startsWith(CmsFileUtil.addTrailingSeparator(siteRoot))) {
                 return true;
             }
         }
