@@ -455,10 +455,7 @@ public class CmsLoginManager {
      */
     public boolean isPasswordReset(CmsObject cms, CmsUser user) {
 
-        if (user.isManaged()
-            || user.isWebuser()
-            || OpenCms.getDefaultUsers().isDefaultUser(user.getName())
-            || OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
+        if (user.isManaged() || user.isWebuser() || OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
             return false;
         }
         if (user.getAdditionalInfo().get(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
