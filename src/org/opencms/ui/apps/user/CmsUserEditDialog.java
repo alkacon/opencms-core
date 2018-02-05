@@ -188,6 +188,59 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**
      * Validator for start view and start site field.<p>
      */
+    class StartPathValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = -4257155941690487831L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (!m_visSites) {
+                return;
+            }
+            if (!isSiteNull()) {
+                if (!isSitePathValid()) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(
+                            Messages.GUI_USERMANAGEMENT_USER_VALIDATION_START_PATH_NOT_VALID_0));
+
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Validator for start view and start site field.<p>
+     */
+    class StartSiteValidator implements Validator {
+
+        /**vaadin serial id.*/
+        private static final long serialVersionUID = -4257155941690487831L;
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (!m_visSites) {
+                return;
+            }
+            if (isSiteNull()) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_VALIDATION_STARTSITE_EMPTY_0));
+
+            }
+
+        }
+    }
+
+    /**
+     * Validator for start view and start site field.<p>
+     */
     class StartViewValidator implements Validator {
 
         /**vaadin serial id.*/
@@ -198,11 +251,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
          */
         public void validate(Object value) throws InvalidValueException {
 
-            if (isRootSiteSelected() & !isStartViewAvailableOnRoot()) {
-                throw new InvalidValueException(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_VALIDATION_STARTVIEW_NOTFORROOT_0));
-            }
+            if (!isSiteNull()) {
 
+                if (isRootSiteSelected() & !isStartViewAvailableOnRoot()) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(
+                            Messages.GUI_USERMANAGEMENT_USER_VALIDATION_STARTVIEW_NOTFORROOT_0));
+                }
+
+            }
         }
     }
 
@@ -247,6 +304,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
     /**Vaadin component. */
     private Button m_generateButton;
+
+    /**Visible sites? */
+    protected boolean m_visSites = true;
 
     /**Select view for principals.*/
     private CmsPrincipalSelect m_group;
@@ -331,9 +391,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 ? Boolean.FALSE
                 : CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()));
             m_next.setVisible(false);
-            m_startfolder.setValue(settings.getStartFolder());
-            m_startfolder.setCmsObject(getCmsObjectWithSite((String)m_site.getValue()));
-            m_startfolder.setUseRootPaths(false);
+            setupStartFolder(settings.getStartFolder());
 
             m_loginname.setEnabled(false);
 
@@ -380,8 +438,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         m_group.setOU(m_ou.getValue());
 
         m_enabled.setValue(Boolean.TRUE);
-        m_startfolder.setValue("/");
+
         init(window, null);
+        setupStartFolder(null);
         m_sendEmail.setValue(Boolean.TRUE);
         m_forceResetPassword.setValue(Boolean.TRUE);
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
@@ -465,6 +524,36 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
+     * Checks if the chosen site is valid.<p>
+     *
+     * @return true if site is null
+     */
+    protected boolean isSiteNull() {
+
+        return m_site.getValue() == null;
+    }
+
+    /**
+     * Checks if the given path is valid resource in site.<p>
+     *
+     * @return true if the resource is valid
+     */
+    protected boolean isSitePathValid() {
+
+        try {
+            CmsObject cmsLocal = OpenCms.initCmsObject(m_cms);
+            cmsLocal.getRequestContext().setSiteRoot((String)m_site.getValue());
+            if (m_startfolder.getValue().length() <= ((String)m_site.getValue()).length()) {
+                return false;
+            }
+            return cmsLocal.existsResource(m_startfolder.getValue().substring(((String)m_site.getValue()).length()));
+        } catch (CmsException e) {
+            LOG.error("Unabel to ini CmsObject", e);
+            return false;
+        }
+    }
+
+    /**
      * Checks if the currently chosen start view is visible for root site.<p>
      *
      * @return true if app is available for root site
@@ -489,7 +578,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         boolean[] ret = new boolean[4];
         ret[0] = m_loginname.isValid();
         ret[1] = m_isWebOU ? true : m_userdata.isValid() | m_name_was_empty;
-        ret[2] = m_isWebOU ? true : m_site.isValid() & m_startview.isValid();
+        ret[2] = m_isWebOU ? true : m_site.isValid() & m_startview.isValid() & m_startfolder.isValid();
         ret[3] = m_pw.getPassword1Field().isValid();
 
         for (int i = 0; i < ret.length; i++) {
@@ -548,6 +637,30 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
+     * Sets the start folder depending on current set site field.<p>
+     *
+     * @param startFolder default value or null
+     */
+    protected void setupStartFolder(String startFolder) {
+
+        try {
+            CmsObject cmsCopy = OpenCms.initCmsObject(m_cms);
+            if (m_site.getValue() != null) {
+                cmsCopy.getRequestContext().setSiteRoot((String)m_site.getValue());
+            } else {
+                cmsCopy.getRequestContext().setSiteRoot("");
+            }
+            m_startfolder.requireFolder();
+            m_startfolder.disableSiteSwitch();
+            m_startfolder.setValue(cmsCopy.getRequestContext().addSiteRoot(startFolder == null ? "/" : startFolder));
+            m_startfolder.setCmsObject(cmsCopy);
+            m_startfolder.setUseRootPaths(true);
+        } catch (CmsException e) {
+            LOG.error("Unable to ini CmsObject", e);
+        }
+    }
+
+    /**
      * Sets up the validators.<p>
      */
     protected void setupValidators() {
@@ -555,8 +668,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         if (m_loginname.getValidators().size() == 0) {
             m_loginname.addValidator(new LoginNameValidator());
             m_pw.getPassword1Field().addValidator(new PasswordValidator());
-            m_site.addValidator(new StartViewValidator());
+            m_site.addValidator(new StartSiteValidator());
             m_startview.addValidator(new StartViewValidator());
+            m_startfolder.addValidator(new StartPathValidator());
         }
     }
 
@@ -660,6 +774,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 item.getItemProperty("caption").setValue(site.getTitle());
             }
         }
+        if (container.size() == 0) {
+            m_visSites = false;
+        }
         m_site.setContainerDataSource(container);
         m_site.setItemCaptionPropertyId("caption");
         m_site.setNewItemsAllowed(false);
@@ -674,7 +791,10 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             if (firstNoRootSite != null) {
                 m_site.select(firstNoRootSite.getSiteRoot());
             } else {
-                m_site.select(m_site.getItemIds().iterator().next());
+                Iterator<?> it = m_site.getItemIds().iterator();
+                if (it.hasNext()) {
+                    m_site.select(it);
+                }
             }
         }
     }
@@ -919,6 +1039,18 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         iniSite(settings);
         iniStartView(settings);
 
+        m_site.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 5111762655156037899L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setupStartFolder(null);
+
+            }
+
+        });
+
         m_ok.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = -2579639520410382246L;
@@ -963,8 +1095,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
                 public void valueChange(ValueChangeEvent event) {
 
-                    iniStartView(settings);
                     iniSite(settings);
+                    iniStartView(settings);
                 }
             });
             m_group.addValueChangeListener(new ValueChangeListener() {
@@ -1049,9 +1181,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         settings.setLocale((Locale)m_language.getValue());
         settings.setStartSite((String)m_site.getValue() + "/");
         settings.setStartProject(m_ou.getValue() + (String)m_project.getValue());
-        settings.setStartFolder(m_startfolder.getValue());
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly((String)m_startview.getValue())) {
-            settings.setStartView((String)m_startview.getValue());
+        if (m_visSites) {
+            settings.setStartFolder(m_startfolder.getValue().substring(((String)m_site.getValue()).length()));
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly((String)m_startview.getValue())) {
+                settings.setStartView((String)m_startview.getValue());
+            }
         }
         settings.save(m_cms);
     }
