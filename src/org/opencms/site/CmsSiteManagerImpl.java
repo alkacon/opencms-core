@@ -1271,6 +1271,33 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Checks if a given site is under another site.<p>
+     *
+     * @param site CmsSite to check
+     * @return true if given site is invalid
+     */
+    public boolean isSiteUnderSite(CmsSite site) {
+
+        return isSiteUnderSite(site.getSiteRoot());
+    }
+
+    /**
+     * Checks if a given site is under another site.<p>
+     *
+     * @param siteRootPath site root path to check
+     * @return true if given site is invalid
+     */
+    public boolean isSiteUnderSite(String siteRootPath) {
+
+        for (String siteRoot : getSiteRoots()) {
+            if ((siteRootPath.length() > siteRoot.length()) & siteRootPath.startsWith(siteRoot)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns <code>true</code> if the given site matcher matches the configured OpenCms workplace.<p>
      *
      * @param matcher the site matcher to match the site with

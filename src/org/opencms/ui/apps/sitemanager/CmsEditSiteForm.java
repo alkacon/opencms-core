@@ -1034,6 +1034,14 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                 return;
             }
 
+            if (!m_site.getSiteRootUUID().isNullUUID()) {
+                if (m_clonedCms.existsResource(m_site.getSiteRootUUID()) & !m_clonedCms.existsResource(rootPath)) {
+                    m_ok.setEnabled(false);
+                    m_infoSiteRoot.setVisible(true);
+                    return;
+                }
+            }
+
         } catch (CmsException e) {
             LOG.error("Can not initialize CmsObject", e);
         }

@@ -522,6 +522,7 @@ public class CmsSitesTable extends Table {
                 if (site.hasSecureServer()) {
                     item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
                 }
+                item.getItemProperty(PROP_OK).setValue(new Boolean(!OpenCms.getSiteManager().isSiteUnderSite(site)));
             }
         }
 
@@ -531,7 +532,7 @@ public class CmsSitesTable extends Table {
 
             //Make sure item doesn't exist in table yet.. should never happen
             if (item != null) {
-                item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
+                item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtml(), ContentMode.HTML));
                 item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
                 item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
                 item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
@@ -539,8 +540,15 @@ public class CmsSitesTable extends Table {
                 item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
                 item.getItemProperty(PROP_OK).setValue(new Boolean(false));
                 if (!site.getSiteRootUUID().isNullUUID()) {
-                    item.getItemProperty(PROP_CHANGED).setValue(new Boolean(true));
-                    showPublishButton = true;
+                    if (m_manager.getRootCmsObject().existsResource(site.getSiteRootUUID())) {
+                        item.getItemProperty(PROP_CHANGED).setValue(new Boolean(true));
+                        item.getItemProperty(PROP_ICON).setValue(
+                            new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
+                        showPublishButton = true;
+                    } else {
+                        //Site root deleted, publish makes no sense any more (-> OK=FALSE)
+
+                    }
                 }
                 if (site.hasSecureServer()) {
                     item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
