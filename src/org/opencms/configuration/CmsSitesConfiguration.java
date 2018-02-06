@@ -137,7 +137,6 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
     /** The CmsObject with admin privileges. */
-    @SuppressWarnings("unused")
     private CmsObject m_adminCms;
 
     /** The configured site manager. */
@@ -343,7 +342,6 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
      */
     public void setCmsObject(CmsObject cms) {
 
-        System.out.println("CmsObject initialized");
         m_adminCms = cms;
     }
 
