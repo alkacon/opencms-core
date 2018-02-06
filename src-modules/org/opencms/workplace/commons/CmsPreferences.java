@@ -28,6 +28,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
+import org.opencms.configuration.preferences.CmsBuiltinPreference.SelectOptions;
 import org.opencms.configuration.preferences.CmsStartViewPreference;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
@@ -63,8 +64,6 @@ import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 
-import static org.opencms.configuration.preferences.CmsBuiltinPreference.SelectOptions;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,7 +98,6 @@ import org.apache.commons.logging.Log;
  */
 public class CmsPreferences extends CmsTabDialog {
 
-
     /** Value for the action: change the password. */
     public static final int ACTION_CHPWD = 202;
 
@@ -117,12 +115,6 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "preferences";
-
-    /** Request parameter name prefix for the preferred editors. */
-    public static final String INPUT_DEFAULT = CmsWorkplace.INPUT_DEFAULT;
-
-    /** Request parameter name for no settings in start galleries. */
-    public static final String INPUT_NONE = CmsWorkplace.INPUT_NONE;
 
     /** Request parameter name for global gallery settings. */
     public static final String INPUT_PRESELECT = "preselect";
@@ -1604,7 +1596,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         return getSiteSelectOptionsStatic(
             getCms(),
-            m_userSettings.getStartSite(),
+            CmsWorkplace.getStartSiteRoot(getCms(), m_userSettings),
             getSettings().getUserSettings().getLocale());
     }
 

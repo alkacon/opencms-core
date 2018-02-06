@@ -574,6 +574,51 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the start site from the given user settings.<p>
+     *
+     * @param cms the cms context
+     * @param userSettings the user settings
+     *
+     * @return the start site root
+     */
+    public static String getStartSiteRoot(CmsObject cms, CmsUserSettings userSettings) {
+
+        String startSiteRoot = userSettings.getStartSite();
+        if (startSiteRoot.endsWith("/")) {
+            // remove trailing slash
+            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
+        }
+        if (CmsStringUtil.isNotEmpty(startSiteRoot)
+            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
+            // this is not the root site and the site is not in the list
+            List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+                cms,
+                false,
+                cms.getRequestContext().getCurrentUser().getOuFqn());
+            if (sites.size() == 1) {
+                startSiteRoot = sites.get(0).getSiteRoot();
+            } else if (sites.size() > 1) {
+                String siteRoot = null;
+                String defaultSite = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+                // check if the default start site is available to the user
+                for (CmsSite site : sites) {
+                    if (site.getSiteRoot().equals(defaultSite)) {
+                        siteRoot = defaultSite;
+                        break;
+                    }
+                }
+                if (siteRoot == null) {
+                    // list of available sites contains more than one site, but not the configured default, pick any
+                    startSiteRoot = sites.get(0).getSiteRoot();
+                } else {
+                    startSiteRoot = siteRoot;
+                }
+            }
+        }
+        return startSiteRoot;
+    }
+
+    /**
      * Returns the start site from the given workplace settings.<p>
      *
      * @param cms the cms context
@@ -583,38 +628,7 @@ public abstract class CmsWorkplace {
      */
     public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
 
-        String currentSite = cms.getRequestContext().getSiteRoot();
-        String startSiteRoot = settings.getUserSettings().getStartSite();
-        if (startSiteRoot.endsWith("/")) {
-            // remove trailing slash
-            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
-        }
-        if (CmsStringUtil.isNotEmpty(startSiteRoot)
-            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
-            // this is not the root site and the site is not in the list
-            startSiteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
-            if (startSiteRoot.endsWith("/")) {
-                // remove trailing slash
-                startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
-            }
-        }
-        boolean access = false;
-
-        cms.getRequestContext().setSiteRoot(startSiteRoot);
-        try {
-            // check access to the site
-            access = cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE);
-
-            if (!access) {
-                List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
-                if (sites.size() > 0) {
-                    startSiteRoot = sites.get(0).getSiteRoot();
-                }
-            }
-        } finally {
-            cms.getRequestContext().setSiteRoot(currentSite);
-        }
-        return startSiteRoot;
+        return getStartSiteRoot(cms, settings.getUserSettings());
     }
 
     /**

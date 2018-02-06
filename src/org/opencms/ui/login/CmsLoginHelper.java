@@ -330,12 +330,16 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
             try {
                 CmsObject cloneCms = OpenCms.initCmsObject(cms);
-                cloneCms.getRequestContext().setSiteRoot(userSettings.getStartSite());
+                String startSite = CmsWorkplace.getStartSiteRoot(cloneCms, userSettings);
+                cloneCms.getRequestContext().setSiteRoot(startSite);
                 String projectName = userSettings.getStartProject();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
                     cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
                 }
                 String folder = userSettings.getStartFolder();
+                if (!cloneCms.existsResource(folder)) {
+                    folder = "/";
+                }
                 CmsResource targetRes = cloneCms.readDefaultFile(folder);
                 if (targetRes != null) {
                     return cloneCms.getSitePath(targetRes);

@@ -36,6 +36,7 @@ import org.opencms.file.wrapper.I_CmsResourceWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,7 +115,7 @@ public class CmsRepository extends A_CmsRepository {
 
         CmsUserSettings settings = new CmsUserSettings(cms);
 
-        cms.getRequestContext().setSiteRoot(settings.getStartSite());
+        cms.getRequestContext().setSiteRoot(CmsWorkplace.getStartSiteRoot(cms, settings));
         cms.getRequestContext().setCurrentProject(cms.readProject(settings.getStartProject()));
 
         // set the object wrapper as an attribute in the request context, so that it can be

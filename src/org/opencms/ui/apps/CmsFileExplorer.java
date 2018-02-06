@@ -63,6 +63,7 @@ import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.ui.dialogs.CmsNewDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
@@ -334,6 +335,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
          * @param projectId the project id
          */
         public StateBean(String siteRoot, String folder, String projectId) {
+
             m_siteRoot = siteRoot;
             m_folder = folder;
             m_projectId = projectId;
@@ -565,6 +567,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      * Constructor.<p>
      */
     public CmsFileExplorer() {
+
         m_shortcutActions = new HashMap<Action, Runnable>();
         m_shortcutActions.put(ACTION_DELETE, new Runnable() {
 
@@ -762,7 +765,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         });
 
         m_locationCache = CmsQuickLaunchLocationCache.getLocationCache(CmsAppWorkplaceUi.get().getHttpSession());
-        String startSite = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartSite();
+        String startSite = CmsWorkplace.getStartSiteRoot(
+            A_CmsUI.getCmsObject(),
+            CmsAppWorkplaceUi.get().getWorkplaceSettings());
         // remove trailing slashes
         while (startSite.endsWith("/")) {
             startSite = startSite.substring(0, startSite.length() - 1);

@@ -40,6 +40,7 @@ import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -428,6 +429,7 @@ public class CmsSessionManager {
      * @param cms the current CmsObject
      * @param req the current request
      * @param user the user to switch to
+     * @param sessionInfo to switch to a currently logged in user using the same session state
      *
      * @return the direct edit target if available
      *
@@ -463,7 +465,9 @@ public class CmsSessionManager {
             } catch (Exception e) {
                 // ignore, use default
             }
-            userSiteRoot = settings.getStartSite();
+            CmsObject cloneCms = OpenCms.initCmsObject(cms, new CmsContextInfo(user.getName()));
+
+            userSiteRoot = CmsWorkplace.getStartSiteRoot(cloneCms, settings);
         } else {
             userProject = cms.readProject(sessionInfo.getProject());
             userSiteRoot = sessionInfo.getSiteRoot();
@@ -707,11 +711,12 @@ public class CmsSessionManager {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
             m_sessionCountTotal++;
             if (LOG.isInfoEnabled()) {
-                LOG.info(tid
-                    + Messages.get().getBundle().key(
-                        Messages.LOG_SESSION_CREATED_2,
-                        new Integer(m_sessionCountTotal),
-                        new Integer(m_sessionCountCurrent)));
+                LOG.info(
+                    tid
+                        + Messages.get().getBundle().key(
+                            Messages.LOG_SESSION_CREATED_2,
+                            new Integer(m_sessionCountTotal),
+                            new Integer(m_sessionCountCurrent)));
             }
         }
 

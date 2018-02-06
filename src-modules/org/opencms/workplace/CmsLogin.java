@@ -233,7 +233,8 @@ public class CmsLogin extends CmsJspLoginBean {
 
             try {
                 CmsObject cloneCms = OpenCms.initCmsObject(cms);
-                cloneCms.getRequestContext().setSiteRoot(userSettings.getStartSite());
+                String startSite = CmsWorkplace.getStartSiteRoot(cloneCms, userSettings);
+                cloneCms.getRequestContext().setSiteRoot(startSite);
                 String projectName = userSettings.getStartProject();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
                     cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
@@ -505,20 +506,14 @@ public class CmsLogin extends CmsJspLoginBean {
      * @return the HTML for the login dialog
      *
      * @throws IOException in case a redirect fails
-     * @throws CmsException
+     * @throws CmsException in case displaying the login dialog fails
      */
     public String displayDialog() throws IOException, CmsException {
 
         if ((OpenCms.getSiteManager().getSites().size() > 1)
             && !OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {
 
-            //            // this is a multi site-configuration, but not a request to the configured Workplace site
-            //            StringBuffer loginLink = new StringBuffer(256);
-            //            loginLink.append(OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString());
-            //            loginLink.append(getFormLink());
-            //            // send a redirect to the workplace site
-            //            getResponse().sendRedirect(loginLink.toString());
-
+            // this is a multi site-configuration, but not a request to the configured Workplace site
             // do not send any redirects to the workplace site for security reasons
             getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
