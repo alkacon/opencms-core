@@ -1091,6 +1091,8 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     }
     from ("${project.buildDir}/libs") {
     	include '*.jar'
+    	exclude '*-sources.jar'
+    	exclude '*-javadoc.jar'
     	allExternalModuleNames.split(',').each{ externalModule ->
     		exclude externalModule+'.jar'
     	}
