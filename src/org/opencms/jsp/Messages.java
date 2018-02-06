@@ -89,7 +89,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IMAGE_TAG_VFS_ACCESS_1 = "ERR_IMAGE_TAG_VFS_ACCESS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_CONTAINER_PARENT_2 = "ERR_INVALID_CONTAINER_PARENT_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CMS_CONTROLLER_1 = "ERR_MISSING_CMS_CONTROLLER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_CUSTOM_BEAN_1 = "ERR_NO_CUSTOM_BEAN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENTLESS_TAG_1 = "ERR_PARENTLESS_TAG_1";
@@ -119,6 +125,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_TAG_CONTENTLOAD_MISSING_PARAM_0 = "ERR_TAG_CONTENTLOAD_MISSING_PARAM_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_INVALID_LOCALE_1 = "ERR_TAG_INVALID_LOCALE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_TAG_RESOURCELOAD_INDEX_SIZE_0 = "ERR_TAG_RESOURCELOAD_INDEX_SIZE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -126,9 +135,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TAG_RESOURCELOAD_MISSING_PARAM_0 = "ERR_TAG_RESOURCELOAD_MISSING_PARAM_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_TAG_INVALID_LOCALE_1 = "ERR_TAG_INVALID_LOCALE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_DOCUMENT_UNMARSHAL_1 = "ERR_XML_DOCUMENT_UNMARSHAL_1";
@@ -224,6 +230,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_MAXELEMENTS_NOT_SET_2 = "LOG_MAXELEMENTS_NOT_SET_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_TAG_SEARCH_SEARCH_FAILED_0 = "LOG_TAG_SEARCH_SEARCH_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_CONTAINER_MAXELEMENTS_3 = "LOG_WRONG_CONTAINER_MAXELEMENTS_3";
 
     /** Message constant for key in the resource bundle. */
@@ -231,12 +240,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_DEVICE_TYPE_2 = "LOG_WRONG_DEVICE_TYPE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_TAG_SEARCH_SEARCH_FAILED_0 = "LOG_TAG_SEARCH_SEARCH_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_CUSTOM_BEAN_1 = "ERR_NO_CUSTOM_BEAN_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.messages";

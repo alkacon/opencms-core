@@ -466,6 +466,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 if (detailOnly) {
                     if (detailContent == null) {
                         // this is no detail page, so the detail only container will not be rendered at all
+                        resetState();
                         return EVAL_PAGE;
                     } else {
                         CmsContainerPageBean detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(cms, req);
@@ -486,6 +487,17 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         (m_parentContainer == null) || (m_detailOnly && !m_parentContainer.isDetailOnly()),
                         maxElements,
                         Collections.<CmsContainerElementBean> emptyList());
+                } else if ((m_parentElement != null)
+                    && !m_parentElement.getInstanceId().equals(container.getParentInstanceId())) {
+                    // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
+                    LOG.error(
+                        new CmsIllegalStateException(
+                            Messages.get().container(
+                                Messages.ERR_INVALID_CONTAINER_PARENT_2,
+                                getName(),
+                                m_parentElement.getInstanceId())));
+                    resetState();
+                    return EVAL_PAGE;
                 }
                 // set the parameter
                 container.setParam(getParam());
@@ -564,23 +576,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             }
         }
 
-        // clear all members so the tag object may be reused
-        m_type = null;
-        m_name = null;
-        m_param = null;
-        m_maxElements = null;
-        m_tag = null;
-        m_tagClass = null;
-        m_detailView = false;
-        m_detailOnly = false;
-        m_width = null;
-        m_editableBy = null;
-        m_bodyContent = null;
-        // reset the current element
-        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setElement(m_parentElement);
-        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setContainer(m_parentContainer);
-        m_parentElement = null;
-        m_parentContainer = null;
+        resetState();
         return super.doEndTag();
     }
 
@@ -1474,6 +1470,31 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             }
             return result;
         }
+    }
+
+    /**
+     * Resets the tag instance and standard context state.<p>
+     */
+    private void resetState() {
+
+        // clear all members so the tag object may be reused
+        m_type = null;
+        m_name = null;
+        m_param = null;
+        m_maxElements = null;
+        m_tag = null;
+        m_tagClass = null;
+        m_detailView = false;
+        m_detailOnly = false;
+        m_width = null;
+        m_editableBy = null;
+        m_bodyContent = null;
+        // reset the current element
+        CmsJspStandardContextBean cmsContext = CmsJspStandardContextBean.getInstance(pageContext.getRequest());
+        cmsContext.setElement(m_parentElement);
+        cmsContext.setContainer(m_parentContainer);
+        m_parentElement = null;
+        m_parentContainer = null;
     }
 
     /**
