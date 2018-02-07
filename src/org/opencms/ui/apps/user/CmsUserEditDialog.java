@@ -150,6 +150,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_INVALID_0));
             }
+
+            if (userAlreadyExists((String)value)) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_DOUBLE_0));
+            }
         }
     }
 
@@ -423,7 +428,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 m_isWebOU = true;
             } else {
                 iniRole(ou);
-                m_role.select(CmsRole.ELEMENT_AUTHOR.forOrgUnit(ou));
+                m_role.select(CmsRole.EDITOR.forOrgUnit(ou));
                 m_selfmanagement.setValue(new Boolean(true));
 
             }
@@ -685,6 +690,25 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
         }
         m_tab.setSelectedTab(pos + 1);
+    }
+
+    /**
+     * Checks if given user exists.<p>
+     *
+     * @param username to check
+     * @return boolean
+     */
+    protected boolean userAlreadyExists(String username) {
+
+        CmsUser user = null;
+        try {
+            user = m_cms.readUser(m_ou.getValue() + username);
+        } catch (CmsException e) {
+            return false;
+        }
+
+        return user != null;
+
     }
 
     /**

@@ -901,7 +901,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      */
     protected void openInfoDialog(CmsUUID id) {
 
-        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.content);
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsBasicDialog dialog = new CmsBasicDialog();
         dialog.setContent(new CmsUserInfo(id));
         Button cancelButton = new Button(CmsVaadinUtils.messageClose());
