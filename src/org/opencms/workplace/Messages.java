@@ -315,6 +315,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_SUCCESS_WITH_MESSAGE_2 = "GUI_LOGIN_SUCCESS_WITH_MESSAGE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_SUCCESS_WITH_MESSAGE_WITHOUT_TIME_1 = "GUI_LOGIN_SUCCESS_WITH_MESSAGE_WITHOUT_TIME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_TITLE_0 = "GUI_LOGIN_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

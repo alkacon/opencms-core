@@ -502,11 +502,20 @@ public class CmsLoginController {
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());
             if ((loginMessage != null) && loginMessage.isLoginCurrentlyForbidden()) {
-                // we are an administrator
-                storedMessage = org.opencms.workplace.Messages.get().container(
-                    org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
-                    loginMessage.getMessage(),
-                    new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+                if (loginMessage.getTimeEnd() == CmsLoginMessage.DEFAULT_TIME_END) {
+                    // we are an administrator
+                    storedMessage = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_WITHOUT_TIME_1,
+                        loginMessage.getMessage(),
+                        new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+
+                } else {
+                    // we are an administrator
+                    storedMessage = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
+                        loginMessage.getMessage(),
+                        new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+                }
             }
 
             if (storedMessage != null) {
