@@ -140,6 +140,30 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ZIPCODE_VALIDATION_1 = "ERR_ZIPCODE_VALIDATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_CHARS_IN_A_ROW_5 = "ERR_PWD_CHARS_IN_A_ROW_5";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_INVALID_SIZE_0 = "ERR_PWD_INVALID_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_NO_CAPITAL_LETTER_0 = "ERR_PWD_NO_CAPITAL_LETTER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_NO_LETTERS_0 = "ERR_PWD_NO_LETTERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_NO_SPECIAL_CHARS_0 = "ERR_PWD_NO_SPECIAL_CHARS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_NULL_0 = "ERR_PWD_NULL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_UMLAUTS_0 = "ERR_PWD_UMLAUTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWD_HINT_0 = "GUI_PWD_HINT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_DISPLAY_NAME_2 = "GUI_ORGUNIT_DISPLAY_NAME_2";
 
     /** Message constant for key in the resource bundle. */
