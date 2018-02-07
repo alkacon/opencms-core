@@ -171,8 +171,28 @@ sourceSets{
     }
 }
 
+
+
 // import dependencies
 apply from: 'dependencies.gradle'
+
+
+// The  Eclipse Buildship gradle integration for some reason assigns output folder test/bin to the .classpath entry for 
+// the src folder, so we fix it here manually.
+// 
+// The gradle_scope attribute also looks wrong in the generated file, but since I don't know what the correct value should
+// be, we leave it be for now. 
+eclipse.classpath.file {
+    whenMerged { classpath ->
+        classpath.entries.each {entry -> 
+        	if (entry.kind == 'src') {
+        		if (entry.path == 'src') {
+        			entry.output='bin/main'
+        		}
+        	}
+        } 
+    }
+}
 
 task wrapper(type: Wrapper){
 	gradleVersion = '4.4'
