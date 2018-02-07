@@ -38,6 +38,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsUserDataFormLayout;
@@ -50,12 +51,10 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Dialog to edit the user data.<p>
@@ -86,15 +85,13 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** The edited user. */
     CmsUser m_user;
 
-    /** Displays the user icon and name. */
-    private Label m_userInfo;
-
     /**
      * Creates a new instance.<p>
      *
      * @param context the dialog context
      */
     public CmsUserDataDialog(I_CmsDialogContext context) {
+
         m_context = context;
         CmsObject cms = context.getCms();
         m_user = cms.getRequestContext().getCurrentUser();
@@ -107,12 +104,8 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
-        m_userInfo.setContentMode(ContentMode.HTML);
-        m_userInfo.setValue(
-            "<img src=\""
-                + OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(cms, m_user)
-                + "\" style=\"vertical-align:middle; margin: -4px 10px 0 0;\" />"
-                + m_user.getName());
+
+        displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
 
         m_form.initFields(m_user);
 
@@ -162,9 +155,10 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
      * @param forcedCheck <code>true</code> in case of a forced user data check after login
      */
     public CmsUserDataDialog(I_CmsDialogContext context, boolean forcedCheck) {
+
         this(context);
         if (forcedCheck) {
-            ((VerticalLayout)m_userInfo.getParent()).addComponent(new Label(getUserDataCheckMessage()), 1);
+            addComponent(new Label(getUserDataCheckMessage()), 0);
 
             m_cancelButton.setVisible(false);
         }
@@ -238,11 +232,7 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
 
         try {
             m_user = m_context.getCms().readUser(m_user.getId());
-            m_userInfo.setValue(
-                "<img src=\""
-                    + OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(m_context.getCms(), m_user)
-                    + "\" style=\"vertical-align:middle; margin: -4px 10px 0 0;\" />"
-                    + m_user.getName());
+            displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
         } catch (CmsException e) {
             LOG.error("Error updating user info.", e);
         }
