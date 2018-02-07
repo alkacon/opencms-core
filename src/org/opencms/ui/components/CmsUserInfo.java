@@ -98,6 +98,9 @@ public class CmsUserInfo extends VerticalLayout {
     /** The info. */
     private Label m_info;
 
+    /** The status.*/
+    private Label m_status;
+
     /** The details. */
     private Label m_details;
 
@@ -110,12 +113,15 @@ public class CmsUserInfo extends VerticalLayout {
     /** The upload listener. */
     private I_UploadListener m_uploadListener;
 
+    private String m_userStatusHTML;
+
     /**
      * Constructor.<p>
      *
      * @param cmsUUID uuid of user to show info for
      */
     public CmsUserInfo(CmsUUID cmsUUID) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         try {
@@ -124,6 +130,8 @@ public class CmsUserInfo extends VerticalLayout {
 
             m_info.setContentMode(ContentMode.HTML);
             m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
+            m_status.setContentMode(ContentMode.HTML);
+            m_status.setVisible(false);
             m_details.setContentMode(ContentMode.HTML);
             m_details.setValue(generateInfoDetails(cms, UI.getCurrent().getLocale()));
             m_infoPanel.addComponent(createImageButton(), 0);
@@ -141,6 +149,7 @@ public class CmsUserInfo extends VerticalLayout {
      * @param context the dialog context
      */
     public CmsUserInfo(I_UploadListener uploadListener, I_CmsDialogContext context) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
         m_uploadListener = uploadListener;
@@ -148,6 +157,8 @@ public class CmsUserInfo extends VerticalLayout {
         m_context = context;
         m_info.setContentMode(ContentMode.HTML);
         m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
+        m_status.setContentMode(ContentMode.HTML);
+        m_status.setVisible(false);
         m_details.setContentMode(ContentMode.HTML);
         m_details.setValue(generateInfoDetails(cms, UI.getCurrent().getLocale()));
         m_infoPanel.addComponent(createImageButton(), 0);
@@ -172,9 +183,8 @@ public class CmsUserInfo extends VerticalLayout {
      */
     public void addUserStatus(String statusHTML) {
 
-        int pos = m_info.getValue().indexOf("</p>");
-
-        m_info.setValue(m_info.getValue().substring(0, pos) + statusHTML + "</p>");
+        m_status.setValue(statusHTML);
+        m_status.setVisible(true);
     }
 
     /**
