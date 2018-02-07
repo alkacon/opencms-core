@@ -700,6 +700,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      */
     protected boolean userAlreadyExists(String username) {
 
+        if (m_user != null) {
+            return false;
+        }
         CmsUser user = null;
         try {
             user = m_cms.readUser(m_ou.getValue() + username);
