@@ -99,6 +99,9 @@ public class CmsJspImageBean {
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsJspImageBean.class);
 
+    /** Size variations for source sets. */
+    static final double[] m_sizeVariants = {1.000, 0.7500, 0.5000, 0.3750, 0.2500, 0.1250};
+
     /** The CmsResource for this image. */
     CmsResource m_resource = null;
 
@@ -109,7 +112,7 @@ public class CmsJspImageBean {
     Map<String, CmsJspImageBean> m_scaleWidth = null;
 
     /** Map used for creating a image source set. */
-    Map<Integer, CmsJspImageBean> m_srcSet = null;
+    TreeMap<Integer, CmsJspImageBean> m_srcSet = null;
 
     /** The CmsImageScaler that describes the basic adjustments (usually cropping) that have been set on the original image. */
     private CmsImageScaler m_baseScaler;
@@ -327,6 +330,35 @@ public class CmsJspImageBean {
             m_hiDpiImages = CmsCollectionsGenericWrapper.createLazyMap(new CmsScaleHiDpiTransformer());
         }
         m_hiDpiImages.put(factor, image);
+    }
+
+    /**
+     * Adds a number of size variations to the source set.<p>
+     *
+     * In case the screen size is not really known, it may be a good idea to add
+     * some variations for large images to make sure there are some common options in case the basic
+     * image is very large.<p>
+     *
+     * @param minWidth the minimum image width to add size variations for
+     * @param maxWidth the maximum width size variation to create
+     */
+    public void addSrcSetWidthVariants(int minWidth, int maxWidth) {
+
+        int imageWidth = getWidth();
+        if (imageWidth > minWidth) {
+            // only add variants in case the image is larger then the given minimum
+            int srcSetMaxWidth = getSrcSetMaxWidth();
+            for (double factor : m_sizeVariants) {
+                long width = Math.round(imageWidth * factor);
+                if (width > srcSetMaxWidth) {
+                    if (width <= maxWidth) {
+                        setSrcSets(createWidthVariation(String.valueOf(width)));
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -627,6 +659,35 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Returns the source set map.<p>
+     *
+     * In case no source set entries have been added before, the map is not initialized and <code>null</code> is returned.
+     *
+     * @return the source set map
+     */
+    public Map<Integer, CmsJspImageBean> getSrcSetMap() {
+
+        return m_srcSet;
+    }
+
+    /**
+     * Returns the largest width value form the source set.<p>
+     *
+     * In case no source set entries have been added before, the map is not initialized and <code>0</code> is returned.
+     *
+     * @return the largest width value form the source set
+     */
+    public int getSrcSetMaxWidth() {
+
+        int result = 0;
+        if ((m_srcSet != null) && (m_srcSet.size() > 0)) {
+
+            result = m_srcSet.lastKey().intValue();
+        }
+        return result;
+    }
+
+    /**
      * Getter for {@link #setSrcSets(CmsJspImageBean)} which returns this image bean.<p>
      *
      * Exists to make sure {@link #setSrcSets(CmsJspImageBean)} is available as property on a JSP.<p>
@@ -634,6 +695,7 @@ public class CmsJspImageBean {
      * @return this image bean
      *
      * @see CmsJspImageBean#getSrcSet()
+     * @see CmsJspImageBean#getSrcSetMap()
      */
     public CmsJspImageBean getSrcSets() {
 

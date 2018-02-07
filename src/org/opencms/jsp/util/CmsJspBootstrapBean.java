@@ -178,6 +178,20 @@ public class CmsJspBootstrapBean {
     }
 
     /**
+     * Returns the pixel size of a grid column.<p>
+     *
+     * The index must be between 0 (XS) and 3 (LG).<p>
+     *
+     * @param gridIndex the grid index to get the size for
+     *
+     * @return the pixel size of a grid column
+     */
+    public int getGridSize(int gridIndex) {
+
+        return m_gridSize[gridIndex];
+    }
+
+    /**
      * Returns the gutter size this bean was initialized width.<p>
      *
      * @return the gutter size this bean was initialized width
@@ -315,6 +329,19 @@ public class CmsJspBootstrapBean {
             }
             m_cssArray = result.toArray(new String[result.size()]);
         }
+    }
+
+    /**
+     * Sets the pixel size of a grid column.<p>
+     *
+     * The index must be between 0 (XS) and 3 (LG).<p>
+     *
+     * @param gridIndex the grid index to set the size for
+     * @param gridWidth the grid width to set
+     */
+    public void setGridSize(int gridIndex, int gridWidth) {
+
+        m_gridSize[gridIndex] = gridWidth;
     }
 
     /**
