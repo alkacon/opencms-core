@@ -1304,7 +1304,21 @@ class CmsShellCommands implements I_CmsShellCommands {
     /**
      * Replaces a module with another revision.<p>
      *
-     * @param moduleName the name of the module
+     * @param importFile the name of the import file
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void replaceModule(String importFile) throws Exception {
+
+        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importFile);
+        String moduleName = module.getName();
+        replaceModule(moduleName, importFile);
+    }
+
+    /**
+     * Replaces a module with another revision.<p>
+     *
+     * @param moduleName the name of the module to delete
      * @param importFile the name of the import file
      *
      * @throws Exception if something goes wrong
@@ -1325,7 +1339,20 @@ class CmsShellCommands implements I_CmsShellCommands {
     /**
      * Replaces a module with another revision.<p>
      *
-     * @param moduleName the name of the module
+     * @param importFile the name of the import file
+     * @throws Exception if something goes wrong
+     */
+    public void replaceModuleFromDefault(String importFile) throws Exception {
+
+        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importFile);
+        String moduleName = module.getName();
+        replaceModuleFromDefault(moduleName, importFile);
+    }
+
+    /**
+     * Replaces a module with another revision.<p>
+     *
+     * @param moduleName the name of the module to delete
      * @param importFile the name of the import file
      * @throws Exception if something goes wrong
      */
