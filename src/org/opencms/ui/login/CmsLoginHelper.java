@@ -31,6 +31,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspLoginBean;
@@ -340,7 +341,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
                 if (!cloneCms.existsResource(folder)) {
                     folder = "/";
                 }
-                CmsResource targetRes = cloneCms.readDefaultFile(folder);
+                CmsResource targetRes = cloneCms.readDefaultFile(folder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 if (targetRes != null) {
                     return cloneCms.getSitePath(targetRes);
                 }

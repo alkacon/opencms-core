@@ -488,6 +488,13 @@ public class CmsLoginController {
                     passwordDialog);
                 return;
             }
+            // do a provisional login first, to check the login target
+            CmsObject cloneCms = OpenCms.initCmsObject(currentCms);
+            cloneCms.loginUser(realUser, password);
+            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(cloneCms);
+            final String loginTarget = getLoginTarget(cloneCms, settings, m_params.getRequestedResource());
+
+            // provisional login successful, now do for real
             currentCms.loginUser(realUser, password);
             if (LOG.isInfoEnabled()) {
                 CmsRequestContext context = currentCms.getRequestContext();
@@ -498,6 +505,7 @@ public class CmsLoginController {
                         "{workplace login dialog}",
                         context.getRemoteAddress()));
             }
+            settings = CmsLoginHelper.initSiteAndProject(currentCms);
             OpenCms.getSessionManager().updateSessionInfo(
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());
@@ -524,7 +532,6 @@ public class CmsLoginController {
                     storedMessage,
                     currentCms.getRequestContext().getCurrentUser());
             }
-            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(currentCms);
 
             CmsLoginHelper.setCookieData(
                 pcType,
@@ -536,7 +543,6 @@ public class CmsLoginController {
                 CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
                 settings);
 
-            final String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
             final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
             if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
                 I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, null) {
@@ -625,8 +631,6 @@ public class CmsLoginController {
                         org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
                 }
             }
-
-            //   m_ui.displayError(message.key(m_params.getLocale()));
 
             if (e instanceof CmsException) {
                 CmsJspLoginBean.logLoginException(currentCms.getRequestContext(), user, (CmsException)e);
