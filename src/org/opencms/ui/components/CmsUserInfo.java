@@ -86,6 +86,9 @@ public class CmsUserInfo extends VerticalLayout {
     /**HTML open div tag.*/
     static final String DIV_HTML = "<div style=\"vertical-align:middle;\">";
 
+    /**Free space. */
+    static final String HTML_SPACE = "&nbsp;";
+
     /**Html close div tag.*/
     static final String DIV_END = "</div>";
 
@@ -97,9 +100,6 @@ public class CmsUserInfo extends VerticalLayout {
 
     /** The info. */
     private Label m_info;
-
-    /** The status.*/
-    private Label m_status;
 
     /** The details. */
     private Label m_details;
@@ -113,8 +113,6 @@ public class CmsUserInfo extends VerticalLayout {
     /** The upload listener. */
     private I_UploadListener m_uploadListener;
 
-    private String m_userStatusHTML;
-
     /**
      * Constructor.<p>
      *
@@ -122,7 +120,23 @@ public class CmsUserInfo extends VerticalLayout {
      */
     public CmsUserInfo(CmsUUID cmsUUID) {
 
+        this(cmsUUID, null);
+
+    }
+
+    /**
+     * Constructor with the option to set a width for the name label.<p>
+     *
+     * @param cmsUUID of user
+     * @param widthString valid width string or null
+     */
+    public CmsUserInfo(CmsUUID cmsUUID, String widthString) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        if (widthString != null) {
+            m_info.setWidth(widthString);
+        }
 
         try {
             CmsObject cms = A_CmsUI.getCmsObject();
@@ -130,8 +144,6 @@ public class CmsUserInfo extends VerticalLayout {
 
             m_info.setContentMode(ContentMode.HTML);
             m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
-            m_status.setContentMode(ContentMode.HTML);
-            m_status.setVisible(false);
             m_details.setContentMode(ContentMode.HTML);
             m_details.setValue(generateInfoDetails(cms, UI.getCurrent().getLocale()));
             m_infoPanel.addComponent(createImageButton(), 0);
@@ -157,8 +169,6 @@ public class CmsUserInfo extends VerticalLayout {
         m_context = context;
         m_info.setContentMode(ContentMode.HTML);
         m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
-        m_status.setContentMode(ContentMode.HTML);
-        m_status.setVisible(false);
         m_details.setContentMode(ContentMode.HTML);
         m_details.setValue(generateInfoDetails(cms, UI.getCurrent().getLocale()));
         m_infoPanel.addComponent(createImageButton(), 0);
@@ -173,18 +183,9 @@ public class CmsUserInfo extends VerticalLayout {
      */
     public void addDetailLine(String lineHtml) {
 
+        lineHtml = lineHtml.isEmpty() ? HTML_SPACE : lineHtml;
+
         m_details.setValue(m_details.getValue() + DIV_HTML + lineHtml + DIV_END);
-    }
-
-    /**
-     * Adds an element behind user name (used in session management app to attach status box).<p>
-     *
-     * @param statusHTML html to be added
-     */
-    public void addUserStatus(String statusHTML) {
-
-        m_status.setValue(statusHTML);
-        m_status.setVisible(true);
     }
 
     /**

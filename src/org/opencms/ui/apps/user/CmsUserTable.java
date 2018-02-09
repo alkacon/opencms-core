@@ -40,11 +40,11 @@ import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.sessions.CmsKillSessionDialog;
+import org.opencms.ui.apps.sessions.CmsUserInfoDialog;
 import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsConfirmationDialog;
-import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -75,9 +75,6 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -292,7 +289,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public void executeAction(Set<String> context) {
 
-            openInfoDialog(new CmsUUID(context.iterator().next()));
+            try {
+                openInfoDialog(new CmsUUID(context.iterator().next()));
+            } catch (CmsException e) {
+                LOG.error("Error on opening user info dialog", e);
+            }
         }
 
         /**
@@ -308,7 +309,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
          */
         public String getTitle(Locale locale) {
 
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_TITLE_0);
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SHOW_USER_0);
         }
 
         /**
@@ -553,7 +554,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                             if (path == null) {
                                 path = CmsVaadinUtils.getWorkplaceLink() + "?_lrid=" + (new Date()).getTime();
                             }
+
                             A_CmsUI.get().getPage().setLocation(path);
+                            if (path.contains("workplace#")) {
+                                A_CmsUI.get().getPage().reload();
+                            }
                             window.close();
                         } catch (CmsException e) {
                             //
@@ -898,27 +903,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      * Opens the user info dialog.<p>
      *
      * @param id of user
+     * @throws CmsException exception
      */
-    protected void openInfoDialog(CmsUUID id) {
+    protected void openInfoDialog(CmsUUID id) throws CmsException {
 
-        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        CmsBasicDialog dialog = new CmsBasicDialog();
-        dialog.setContent(new CmsUserInfo(id));
-        Button cancelButton = new Button(CmsVaadinUtils.messageClose());
-        cancelButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                window.close();
-
-            }
-        });
-        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_TITLE_0));
-        dialog.addButton(cancelButton);
-        window.setContent(dialog);
-        A_CmsUI.get().addWindow(window);
+        CmsUserInfoDialog.showUserInfo(m_cms.readUser(id));
     }
 
     /**
@@ -1178,7 +1167,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                 } else if (event.getButton().equals(MouseButton.LEFT)
                     && TableProperty.Name.equals(event.getPropertyId())) {
                     CmsUser user = ((Set<CmsUser>)getValue()).iterator().next();
-                    openInfoDialog(user.getId());
+                    try {
+                        openInfoDialog(user.getId());
+                    } catch (CmsException e) {
+                        LOG.error("Error on opening user info dialog", e);
+                    }
                 }
 
             }

@@ -200,6 +200,7 @@ public class CmsSessionsTable extends Table {
          * @param collapsable should this column be collapsable?
          */
         TableProperty(String headerMessage, Class<?> type, Object defaultValue, boolean collapsable) {
+
             m_headerMessage = headerMessage;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -314,7 +315,7 @@ public class CmsSessionsTable extends Table {
     static Log LOG = CmsLog.getLog(CmsSessionsTable.class.getName());
 
     /**Time limit (in milliseconds) since when a user is inactive.*/
-    private static final long INACTIVE_LIMIT = 3 * 60 * 1000; //3 minute
+    public static final long INACTIVE_LIMIT = 3 * 60 * 1000; //3 minute
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4136423899776482696L;
@@ -335,6 +336,7 @@ public class CmsSessionsTable extends Table {
      * public constructor.<p>
      */
     public CmsSessionsTable() {
+
         try {
 
             m_mySessionId = OpenCms.getSessionManager().getSessionInfo(
@@ -381,7 +383,8 @@ public class CmsSessionsTable extends Table {
                     }
 
                     if (TableProperty.IS_ACTIVE.equals(propertyId)) {
-                        return getStatusStyleForItem((String)itemId);
+                        return CmsUserInfoDialog.getStatusStyleForItem(
+                            (Long)source.getItem(itemId).getItemProperty(TableProperty.IS_ACTIVE).getValue());
 
                     }
 
@@ -405,7 +408,8 @@ public class CmsSessionsTable extends Table {
 
                 public Object generateCell(Table source, Object itemId, Object columnId) {
 
-                    return getStatusForItem((String)itemId);
+                    return CmsUserInfoDialog.getStatusForItem(
+                        (Long)source.getItem(itemId).getItemProperty(TableProperty.IS_ACTIVE).getValue());
 
                 }
 
@@ -430,7 +434,7 @@ public class CmsSessionsTable extends Table {
                         }
                         return CmsVaadinUtils.getMessageText(
                             Messages.GUI_MESSAGES_LAST_ACTIVITY_MINUTES_1,
-                            Integer.parseInt(ret[1]));
+                            new Integer(ret[1]));
                     }
                     return null;
                 }
@@ -504,37 +508,9 @@ public class CmsSessionsTable extends Table {
     }
 
     /**
-     * Gets the status text from given session.
-     *
-     * @param item session id
-     * @return status string
-     */
-    protected String getStatusForItem(String item) {
-
-        if (((Long)getItem(item).getItemProperty(TableProperty.IS_ACTIVE).getValue()).longValue() < INACTIVE_LIMIT) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_ACTIVE_0);
-        }
-        return CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_INACTIVE_0);
-    }
-
-    /**
-     * Gets the status style for given session.<p>
-     *
-     * @param itemId sessionid
-     * @return style
-     */
-    protected String getStatusStyleForItem(String itemId) {
-
-        if (((Long)getItem(itemId).getItemProperty(TableProperty.IS_ACTIVE).getValue()).longValue() < INACTIVE_LIMIT) {
-            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
-        }
-        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
-    }
-
-    /**
      * Initializes the table.<p>
      *
-     * @throws CmsException when somethink goes wrong
+     * @throws CmsException when something goes wrong
      */
     protected void ini() throws CmsException {
 
@@ -608,15 +584,7 @@ public class CmsSessionsTable extends Table {
      */
     protected void showUserInfoWindow(String data) {
 
-        Window window = CmsBasicDialog.prepareWindow();
-        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SHOW_USER_0));
-        CmsUserInfoDialog dialog = new CmsUserInfoDialog(
-            data,
-            getFurtherInfoLines(data),
-            getCloseRunnable(window, this));
-        dialog.setHideSwitchButton(m_mySessionId.equals(data));
-        window.setContent(dialog);
-        A_CmsUI.get().addWindow(window);
+        CmsUserInfoDialog.showUserInfo(OpenCms.getSessionManager().getSessionInfo(data));
     }
 
     /**
@@ -676,42 +644,6 @@ public class CmsSessionsTable extends Table {
             setValue(null);
             select(itemId);
         }
-    }
-
-    /**
-     * Adds information lines to the user dialog.<p>
-     *
-     * @param sessionId to be shown
-     * @return list of lines
-     */
-    private List<String> getFurtherInfoLines(String sessionId) {
-
-        List<String> res = new ArrayList<String>();
-        String[] inactiveTime = CmsSessionInfo.getHourMinuteSecondTimeString(
-            (Long)getItem(sessionId).getItemProperty(TableProperty.IS_ACTIVE).getValue());
-        String is_activ = "<span class=\""
-            + getStatusStyleForItem(sessionId)
-            + "\">"
-            + getStatusForItem(sessionId)
-            + "</span> ";
-        res.add(is_activ);
-
-        res.add(
-            CmsVaadinUtils.getMessageText(
-                Messages.GUI_MESSAGES_LAST_ACTIVITY_2,
-                inactiveTime[1] + ":" + inactiveTime[2],
-                CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_MINUTES_0)));
-
-        res.add(
-            TableProperty.Site.getLocalizedMessage()
-                + ": "
-                + getItem(sessionId).getItemProperty(TableProperty.Site).getValue());
-        res.add(
-            TableProperty.Project.getLocalizedMessage()
-                + ": "
-                + getItem(sessionId).getItemProperty(TableProperty.Project).getValue());
-
-        return res;
     }
 
 }
