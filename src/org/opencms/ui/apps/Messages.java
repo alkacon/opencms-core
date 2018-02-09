@@ -54,10 +54,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
+    public static final String GUI_USER_INFO_LAST_LOGIN_YESTERDAY_0 = "GUI_USER_INFO_LAST_LOGIN_YESTERDAY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_DOUBLE_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_DOUBLE_0";
+    public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
@@ -430,12 +430,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0 = "GUI_DATABASEAPP_EXPORTSERVER_ADMIN_TOOL_NAME_SHORT_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0 = "GUI_DATABASEAPP_IMPORT_CHOOSE_FILE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_FILES_1 = "GUI_DATABASEAPP_IMPORT_FILES_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORT_IMPORTFILE_0 = "GUI_DATABASEAPP_IMPORT_IMPORTFILE_0";
     /** Message constant for key in the resource bundle. */
@@ -544,16 +548,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_SYNC_ENABLED_HELP_0 = "GUI_DATABASEAPP_SYNC_ENABLED_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_SYNC_HELP_0 = "GUI_DATABASEAPP_SYNC_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_SYNC_NAME_0 = "GUI_DATABASEAPP_SYNC_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_SYNC_REMOVE_RESOURCE_0 = "GUI_DATABASEAPP_SYNC_REMOVE_RESOURCE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_SYNC_RESOURCE_0 = "GUI_DATABASEAPP_SYNC_RESOURCE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_0 = "GUI_DATABASEAPP_SYNC_SOURCELISTINVFS_0";
 
@@ -1252,6 +1252,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_SWITCH_USER_CONFIRM_0 = "GUI_MESSAGES_SWITCH_USER_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_SWITCH_USER_SESSION_0 = "GUI_MESSAGES_SWITCH_USER_SESSION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_USER_COUNT_0 = "GUI_MESSAGES_USER_COUNT_0";
@@ -2424,6 +2427,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_INFO_LAST_LOGIN_DAYS_AGO_1 = "GUI_USER_INFO_LAST_LOGIN_DAYS_AGO_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_INFO_LAST_LOGIN_LESS_A_DAY_0 = "GUI_USER_INFO_LAST_LOGIN_LESS_A_DAY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_INFO_TITLE_0 = "GUI_USER_INFO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2890,6 +2899,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_VALIDATION_LASTNAME_EMPTY_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_LASTNAME_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_DOUBLE_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_DOUBLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_EMPTY_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_LOGINNAME_EMPTY_0";
