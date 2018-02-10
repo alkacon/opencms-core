@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.apache.commons.logging.Log;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -34,7 +35,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.json.JSONObject;
-import org.opencms.json.JSONTokener;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -42,16 +42,13 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Example implementation of a template context provider for deciding between a desktop template and a mobile template.<p>
@@ -230,13 +227,11 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
             resolver.addMacro(param.getKey(), param.getValue());
         }
         fileContent = resolver.resolveMacros(fileContent);
-        JSONTokener tok = new JSONTokener(fileContent);
-        tok.setOrdered(true);
-        JSONObject root = new JSONObject(tok, true);
+        JSONObject root = new JSONObject(fileContent);
         for (String templateContextName : root.keySet()) {
             JSONObject templateContextJson = (JSONObject)(root.opt(templateContextName));
             CmsJsonMessageContainer jsonMessage = new CmsJsonMessageContainer(templateContextJson.opt(A_NICE_NAME));
-            String templatePath = (String)templateContextJson.opt(A_PATH);
+            String templatePath = templateContextJson.optString(A_PATH);
             JSONObject variantsJson = (JSONObject)templateContextJson.opt(A_VARIANTS);
             List<CmsClientVariant> variants = new ArrayList<CmsClientVariant>();
             if (variantsJson != null) {

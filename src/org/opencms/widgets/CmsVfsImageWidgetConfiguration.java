@@ -230,7 +230,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
         setShowFormat(jsonObj.optBoolean(CONFIG_KEY_USEFORMAT));
         if (isShowFormat()) {
             // only parse options if the format select box should be shown
-            String optionsStr = (String)jsonObj.opt(CONFIG_KEY_FORMATNAMES);
+            String optionsStr = jsonObj.optString(CONFIG_KEY_FORMATNAMES);
             setSelectFormatString(optionsStr);
             setSelectFormat(CmsSelectWidgetOption.parseOptions(optionsStr));
             // get the corresponding format values as well

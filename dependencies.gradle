@@ -204,17 +204,14 @@ dependencies {
 	exclude(module: 'jetty-continuation')
 	exclude(module: 'jetty-io')
 	exclude(module: 'jackson-core-asl')
-	exclude(module: 'jackson-core')
 	exclude(module: 'htrace-core')
 	exclude(module: 'hadoop-hdfs')
 	exclude(module: 'jcl-over-slf4j')
-	exclude(module: 'jackson-databind')
 	exclude(module: 'jetty-util')
 	exclude(module: 'jetty-webapp')
 	exclude(module: 'jetty-xml')
 	exclude(module: 'jetty-servlets')
 	exclude(module: 'dom4j')
-	exclude(module: 'jackson-annotations')
 	exclude(module: 'hadoop-common')
 	exclude(module: 'hadoop-auth')
 	exclude(module: 'eigenbase-properties')
@@ -250,6 +247,14 @@ dependencies {
     distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6'
     // https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core
     distribution group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.6'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    distribution group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.4'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    distribution group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.4'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    distribution group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+
 
     distribution(group: 'org.apache.openjpa', name: 'openjpa', version:'2.4.2') {
 	exclude(module: 'commons-pool')
