@@ -86,6 +86,7 @@ public class OpenCmsUrlServletFilter implements Filter {
     static String createRegex(String contextPath, String[] defaultExcludePrefixes, String additionalExcludePrefixes) {
 
         StringBuffer regex = new StringBuffer();
+        regex.append('^');
         regex.append(contextPath);
         regex.append('(');
         regex.append(defaultExcludePrefixes[0]);
@@ -170,6 +171,7 @@ public class OpenCmsUrlServletFilter implements Filter {
                 "/handle404",
                 "/services"};
             StringBuffer regex = new StringBuffer();
+            regex.append('^');
             regex.append(m_contextPath);
             regex.append('(');
             regex.append(defaultExcludePrefixes[0]);
