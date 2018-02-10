@@ -373,7 +373,6 @@ public class JSONObject extends ObjectNode {
             if (object instanceof BigInteger) return jnf.numberNode((BigInteger)object);
             if (object instanceof BigDecimal) return jnf.numberNode((BigDecimal)object);
             if (object instanceof Boolean) return jnf.booleanNode((Boolean)object);
-            if (object instanceof String) return jnf.textNode((String)object);
             if (object instanceof Character) return jnf.numberNode(((Character)object).charValue());
             if (object instanceof Enum) jnf.pojoNode(object);
 
@@ -382,15 +381,10 @@ public class JSONObject extends ObjectNode {
 
             if (object.getClass().isArray()) return new JSONArray(object);
 
+            //A string may be just a string or a string of Json data structures.
+            if (object instanceof String)
+                return mapper.readTree((String)object);
 
-//            Package objectPackage = object.getClass().getPackage();
-//            String objectPackageName = objectPackage != null ? objectPackage.getName() : "";
-//            if (objectPackageName.startsWith("java.")
-//                    || objectPackageName.startsWith("javax.")
-//                    || object.getClass().getClassLoader() == null) {
-//                return object.toString();
-//            }
-            //return new JSONObject(object);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
