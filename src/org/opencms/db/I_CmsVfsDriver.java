@@ -733,6 +733,53 @@ public interface I_CmsVfsDriver {
         int mode) throws CmsDataAccessException;
 
     /**
+     * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
+     *
+     * Important: If {@link CmsDriverManager#READMODE_EXCLUDE_TREE} is true (or {@link CmsDriverManager#READMODE_INCLUDE_TREE} is false),
+     * the provided parent String must be the UUID of the parent folder, NOT the parent folder path.<p>
+     *
+     * @param dbc the current database context
+     * @param projectId the project id for matching resources
+     * @param parent the path to the resource used as root of the searched subtree or {@link CmsDriverManager#READ_IGNORE_PARENT},
+     *               {@link CmsDriverManager#READMODE_EXCLUDE_TREE} means to read immediate children only
+     * @param type the resource type of matching resources or {@link CmsDriverManager#READ_IGNORE_TYPE} (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_TYPE}
+     * @param state the state of matching resources (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_STATE} or <code>null</code> to ignore
+     * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME
+     * @param endTime the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
+     * @param releasedAfter the start of the time range for the release date of matching resources
+     * @param releasedBefore the end of the time range for the release date of matching resources
+     * @param expiredAfter the start of the time range for the expire date of matching resources
+     * @param expiredBefore the end of the time range for the expire date of matching resources
+     * @param mode additional mode flags:
+     * @param limit the maximum number of entries for getting data
+     * <ul>
+     *  <li>{@link CmsDriverManager#READMODE_INCLUDE_TREE}
+     *  <li>{@link CmsDriverManager#READMODE_EXCLUDE_TREE}
+     *  <li>{@link CmsDriverManager#READMODE_INCLUDE_PROJECT}
+     *  <li>{@link CmsDriverManager#READMODE_EXCLUDE_TYPE}
+     *  <li>{@link CmsDriverManager#READMODE_EXCLUDE_STATE}
+     * </ul>
+     *
+     * @return a list of CmsResource objects matching the given criteria
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List<CmsResource> readResourceTree(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        String parent,
+        int type,
+        CmsResourceState state,
+        long startTime,
+        long endTime,
+        long releasedAfter,
+        long releasedBefore,
+        long expiredAfter,
+        long expiredBefore,
+        int mode,
+        int limit) throws CmsDataAccessException;
+
+    /**
      * Reads the rewrite aliases matching a given filter.<p>
      *
      * @param dbc the current database context

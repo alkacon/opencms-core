@@ -5072,7 +5072,6 @@ public final class CmsSecurityManager {
      *
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required)
      * @throws CmsException if something goes wrong
-     *
      */
     public List<CmsResource> readResources(
         CmsRequestContext context,
@@ -5080,13 +5079,39 @@ public final class CmsSecurityManager {
         CmsResourceFilter filter,
         boolean readTree)
     throws CmsException, CmsSecurityException {
+        return readResources(context, parent, filter, readTree, -1);
+    }
+    /**
+     * Reads all resources below the given path matching the filter criteria,
+     * including the full tree below the path only in case the <code>readTree</code>
+     * parameter is <code>true</code>.<p>
+     *
+     * @param context the current request context
+     * @param parent the parent path to read the resources from
+     * @param filter the filter
+     * @param readTree <code>true</code> to read all subresources
+     * @param limit the maximum number of entries for getting data
+     *
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
+     *
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required)
+     * @throws CmsException if something goes wrong
+     *
+     */
+    public List<CmsResource> readResources(
+        CmsRequestContext context,
+        CmsResource parent,
+        CmsResourceFilter filter,
+        boolean readTree,
+        int limit)
+    throws CmsException, CmsSecurityException {
 
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
             checkPermissions(dbc, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
-            result = m_driverManager.readResources(dbc, parent, filter, readTree);
+            result = m_driverManager.readResources(dbc, parent, filter, readTree, limit);
         } catch (Exception e) {
             dbc.report(
                 null,

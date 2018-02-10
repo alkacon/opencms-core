@@ -3271,8 +3271,28 @@ public final class CmsObject {
     public List<CmsResource> readResources(String resourcename, CmsResourceFilter filter, boolean readTree)
     throws CmsException {
 
+        return readResources(resourcename, filter, readTree, -1);
+    }
+
+    /**
+     * Reads all resources below the given path matching the filter criteria,
+     * including the full tree below the path only in case the <code>readTree</code>
+     * parameter is <code>true</code>.<p>
+     *
+     * @param resourcename the parent path to read the resources from
+     * @param filter the filter
+     * @param readTree <code>true</code> to read all sub resources
+     * @param limit the maximum number of entries for getting data
+     *
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readResources(String resourcename, CmsResourceFilter filter, boolean readTree, int limit)
+    throws CmsException {
+        
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        return m_securityManager.readResources(m_context, resource, filter, readTree);
+        return m_securityManager.readResources(m_context, resource, filter, readTree, limit);
     }
 
     /**

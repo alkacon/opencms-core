@@ -7731,6 +7731,31 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResourceFilter filter,
         boolean readTree)
     throws CmsException, CmsDataAccessException {
+        return readResources(dbc, parent, filter, readTree, -1);
+    }
+    /**
+     * Reads all resources below the given path matching the filter criteria,
+     * including the full tree below the path only in case the <code>readTree</code>
+     * parameter is <code>true</code>.<p>
+     *
+     * @param dbc the current database context
+     * @param parent the parent path to read the resources from
+     * @param filter the filter
+     * @param readTree <code>true</code> to read all subresources
+     * @param limit the maximum number of entries for getting data
+     *
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
+     *
+     * @throws CmsDataAccessException if the bare reading of the resources fails
+     * @throws CmsException if security and permission checks for the resources read fail
+     */
+    public List<CmsResource> readResources(
+        CmsDbContext dbc,
+        CmsResource parent,
+        CmsResourceFilter filter,
+        boolean readTree,
+        int limit)
+    throws CmsException, CmsDataAccessException {
 
         // try to get the sub resources from the cache
         String cacheKey = getCacheKey(
@@ -7759,7 +7784,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ? (filter.getOnlyFolders().booleanValue()
                     ? CmsDriverManager.READMODE_ONLY_FOLDERS
                     : CmsDriverManager.READMODE_ONLY_FILES)
-                    : 0));
+                    : 0),
+                    limit);
 
             // HACK: do not take care of permissions if reading organizational units
             if (!parent.getRootPath().startsWith("/system/orgunits/")) {
