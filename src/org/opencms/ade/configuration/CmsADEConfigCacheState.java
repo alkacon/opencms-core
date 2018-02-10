@@ -259,14 +259,17 @@ public class CmsADEConfigCacheState {
      * @return the parent folder content type
      */
     public String getParentFolderType(String rootPath) {
-
-        String parent = CmsResource.getParentFolder(rootPath);
-        if (parent == null) {
-            return null;
-        }
-        String type = m_folderTypes.get(parent);
-        // type may be null
-        return type;
+        String parent = rootPath;
+        do {
+            parent = CmsResource.getParentFolder(parent);
+            if (parent == null) {
+                return null;
+            }
+            String type = m_folderTypes.get(parent);
+            if (null != type) {
+                return type;
+            }
+        } while (true);
     }
 
     /**
