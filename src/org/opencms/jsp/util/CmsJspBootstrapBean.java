@@ -140,6 +140,7 @@ public class CmsJspBootstrapBean {
         last = (lg < 0) ? last : lg;
 
         boolean newLayer = (last != m_maxCols) || hideXs || hideSm || hideMd || hideLg;
+        newLayer = newLayer || (xs > -1) || (sm > -1) || (md > -1) || (lg > -1);
         if (newLayer) {
             int[] result = {xsCols, smCols, mdCols, lgCols};
             addLayer(result);

@@ -671,6 +671,23 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Returns the largest image from the generated source set.<p>
+     *
+     * In case the source set has not been initialized,
+     * it returns the instance itself.
+     *
+     * @return the largest image from the generated source set
+     */
+    public CmsJspImageBean getSrcSetMaxImage() {
+
+        CmsJspImageBean result = this;
+        if (m_srcSet != null) {
+            result = m_srcSet.lastEntry().getValue();
+        }
+        return result;
+    }
+
+    /**
      * Returns the largest width value form the source set.<p>
      *
      * In case no source set entries have been added before, the map is not initialized and <code>0</code> is returned.
@@ -755,6 +772,7 @@ public class CmsJspImageBean {
     public void setQuality(int quality) {
 
         m_quality = quality;
+        getScaler().setQuality(m_quality);
     }
 
     /**
@@ -787,7 +805,7 @@ public class CmsJspImageBean {
                 } else {
                     quality = 85;
                 }
-                imageBean.getScaler().setQuality(quality);
+                imageBean.setQuality(quality);
             }
         }
     }
