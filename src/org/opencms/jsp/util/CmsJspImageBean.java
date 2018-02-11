@@ -758,6 +758,41 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Adjusts the quality settings for all image beans in the srcSet depending on the pixel count.<p>
+     *
+     * The idea is to make sure large pixel images use a higher JPEG compression in order to reduce the size.<p>
+     *
+     * The following quality settings are used depending on the image size:
+     * <ul>
+     * <li>larger then 1200 * 800: quality 75
+     * <li>larger then 1024 * 768: quality 80
+     * <li>otherwise: quality 85
+     * </ul>
+     *
+     */
+    public void setSrcSetQuality() {
+
+        if (m_srcSet != null) {
+
+            for (Map.Entry<Integer, CmsJspImageBean> entry : m_srcSet.entrySet()) {
+                CmsJspImageBean imageBean = entry.getValue();
+                int quality;
+                long pixel = imageBean.getScaler().getWidth() * imageBean.getScaler().getWidth();
+                if (pixel > 960000) {
+                    // image size 1200 * 800
+                    quality = 75;
+                } else if (pixel > 786432) {
+                    // image size 1024 * 768
+                    quality = 80;
+                } else {
+                    quality = 85;
+                }
+                imageBean.getScaler().setQuality(quality);
+            }
+        }
+    }
+
+    /**
      * Adds another image bean instance to the source set map of this bean.<p>
      *
      * @param imageBean the image bean to add
