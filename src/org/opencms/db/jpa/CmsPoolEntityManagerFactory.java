@@ -30,14 +30,16 @@ package org.opencms.db.jpa;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 /**
  * Implementation of the jpa pool entity manager factory.<p>
  *
  * @since 8.0.0
  */
-public class CmsPoolEntityManagerFactory extends BasePoolableObjectFactory {
+public class CmsPoolEntityManagerFactory extends BasePooledObjectFactory<EntityManager> {
 
     /** EntityManagerFactory which creates EntityManager instances. */
     protected EntityManagerFactory m_emFactory;
@@ -53,31 +55,39 @@ public class CmsPoolEntityManagerFactory extends BasePoolableObjectFactory {
     }
 
     /**
-     * @see org.apache.commons.pool.BasePoolableObjectFactory#destroyObject(java.lang.Object)
+     * @see org.apache.commons.pool2.BasePooledObjectFactory#create()
      */
     @Override
-    public void destroyObject(Object obj) {
-
-        EntityManager em = (EntityManager)obj;
-        em.close();
-    }
-
-    /**
-     * @see org.apache.commons.pool.BasePoolableObjectFactory#makeObject()
-     */
-    @Override
-    public Object makeObject() {
+    public EntityManager create() throws Exception {
 
         return m_emFactory.createEntityManager();
     }
 
     /**
-     * @see org.apache.commons.pool.BasePoolableObjectFactory#passivateObject(java.lang.Object)
+     * @see org.apache.commons.pool2.BasePooledObjectFactory#wrap(java.lang.Object)
      */
     @Override
-    public void passivateObject(Object obj) {
+    public PooledObject<EntityManager> wrap(EntityManager obj) {
 
-        EntityManager em = (EntityManager)obj;
-        em.clear();
+        // TODO Auto-generated method stub
+        return new DefaultPooledObject<EntityManager>(obj);
+    }
+
+    /**
+     * @see org.apache.commons.pool2.BasePooledObjectFactory#destroyObject(org.apache.commons.pool2.PooledObject)
+     */
+    @Override
+    public void destroyObject(PooledObject<EntityManager> p) throws Exception {
+    
+        p.getObject().close();
+    }
+
+    /**
+     * @see org.apache.commons.pool2.BasePooledObjectFactory#passivateObject(org.apache.commons.pool2.PooledObject)
+     */
+    @Override
+    public void passivateObject(PooledObject<EntityManager> p) throws Exception {
+    
+        p.getObject().clear();
     }
 }

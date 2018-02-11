@@ -27,7 +27,7 @@
 
 package org.opencms.configuration;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 import org.dom4j.Element;
 

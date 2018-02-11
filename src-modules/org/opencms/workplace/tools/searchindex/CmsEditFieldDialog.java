@@ -139,7 +139,6 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
             m_field.setStored(true);
             m_field.setIndexed(true);
             m_field.setDisplayed(true);
-            m_field.setBoost(CmsSearchField.BOOST_DEFAULT);
         }
 
         // widgets to display

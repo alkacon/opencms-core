@@ -115,6 +115,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.threads.A_CmsProgressThread;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -133,11 +134,10 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
-import org.apache.commons.pool.ObjectPool;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * The OpenCms driver manager.<p>
@@ -327,7 +327,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
 
     /** The list of initialized JDBC pools. */
-    private List<PoolingDriver> m_connectionPools;
+    private Map<String, HikariDataSource> m_datasourcePools;
 
     /** The history driver. */
     private I_CmsHistoryDriver m_historyDriver;
@@ -440,7 +440,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         driverManager.m_securityManager = securityManager;
 
         // set connection pools
-        driverManager.m_connectionPools = new ArrayList<PoolingDriver>();
+        driverManager.m_datasourcePools = new HashMap<>();
 
         // set the lock manager
         driverManager.m_lockManager = new CmsLockManager(driverManager);
@@ -3224,23 +3224,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 m_historyDriver = null;
             }
 
-            if (m_connectionPools != null) {
-                for (int i = 0; i < m_connectionPools.size(); i++) {
-                    PoolingDriver driver = m_connectionPools.get(i);
-                    String[] pools = driver.getPoolNames();
-                    for (String pool : pools) {
-                        try {
-                            driver.closePool(pool);
-                            if (CmsLog.INIT.isDebugEnabled()) {
-                                CmsLog.INIT.debug(
-                                    Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, pool));
-                            }
-                        } catch (Throwable t) {
-                            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pool), t);
+            if (m_datasourcePools != null) {
+                m_datasourcePools.forEach((key, ds) -> {
+                    try {
+                        ds.close();
+                        if (CmsLog.INIT.isDebugEnabled()) {
+                            CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, ds));
                         }
+                    } catch (Throwable t) {
+                        LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, ds), t);
                     }
-                }
-                m_connectionPools = null;
+                });
+                m_datasourcePools = null;
             }
 
             m_monitor.clearCache();
@@ -3496,6 +3491,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * @param dbPoolUrl datasource key
+     * @return Connection from datasource
+     * @throws CmsDbException if dbPoolUrl not inited
+     */
+    public Connection getConnection(String dbPoolUrl) throws CmsDbException {
+        
+        try {
+            HikariDataSource ds = m_datasourcePools.get(dbPoolUrl);
+            if(null != ds) {
+                return ds.getConnection();
+            }
+        } catch (Exception exc) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
+            throw new CmsDbException(message, exc);
+        }
+        
+        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
+        throw new CmsDbException(message);
+    }
+    /**
      * Returns the number of active connections managed by a pool.<p>
      *
      * @param dbPoolUrl the url of a pool
@@ -3505,9 +3520,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
 
         try {
-            for (PoolingDriver d : m_connectionPools) {
-                ObjectPool p = d.getConnectionPool(dbPoolUrl);
-                return p.getNumActive();
+            HikariDataSource ds = m_datasourcePools.get(dbPoolUrl);
+            if(null != ds) {
+                return ds.getHikariPoolMXBean().getActiveConnections();
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
@@ -4063,9 +4078,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public int getIdleConnections(String dbPoolUrl) throws CmsDbException {
 
         try {
-            for (PoolingDriver d : m_connectionPools) {
-                ObjectPool p = d.getConnectionPool(dbPoolUrl);
-                return p.getNumIdle();
+            HikariDataSource ds = m_datasourcePools.get(dbPoolUrl);
+            if(null != ds) {
+                return ds.getHikariPoolMXBean().getIdleConnections();
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
@@ -6015,10 +6030,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void newPoolInstance(CmsParameterConfiguration configuration, String poolName) throws CmsInitException {
 
-        PoolingDriver driver;
+        String dbPoolUrl = CmsDbPool.getDbPoolName(configuration, poolName);
+        HikariDataSource ds = m_datasourcePools.get(dbPoolUrl);
+        if(null != ds)
+            return;
 
         try {
-            driver = CmsDbPool.createDriverManagerConnectionPool(configuration, poolName);
+            ds = CmsDbPool.createDriverManagerConnectionPool(configuration, poolName);
         } catch (Exception e) {
 
             CmsMessageContainer message = Messages.get().container(Messages.ERR_INIT_CONN_POOL_1, poolName);
@@ -6027,8 +6045,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             throw new CmsInitException(message, e);
         }
-
-        m_connectionPools.add(driver);
+        m_datasourcePools.put(dbPoolUrl, ds);
     }
 
     /**

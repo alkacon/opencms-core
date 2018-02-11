@@ -242,11 +242,13 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
         }
 
         /////////// collect bundles configured in module configurations ////////
-        Set<String> bundleNames = OpenCms.getADEManager().getConfiguredWorkplaceBundles();
-        for (String bundleName : bundleNames) {
-            CmsMessages msg = new CmsMessages(bundleName, locale);
-            if (msg.isInitialized()) {
-                result.add(msg);
+        if(OpenCms.getADEManager().isInitialized()) {
+            Set<String> bundleNames = OpenCms.getADEManager().getConfiguredWorkplaceBundles();
+            for (String bundleName : bundleNames) {
+                CmsMessages msg = new CmsMessages(bundleName, locale);
+                if (msg.isInitialized()) {
+                    result.add(msg);
+                }
             }
         }
         return result;

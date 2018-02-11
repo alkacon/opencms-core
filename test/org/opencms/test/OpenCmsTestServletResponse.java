@@ -325,4 +325,12 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
         throw new RuntimeException("Not implemented");
     }
+
+    /**
+     * @see javax.servlet.ServletResponse#setContentLengthLong(long)
+     */
+    public void setContentLengthLong(long len) {
+
+        throw new RuntimeException("Not implemented");
+    }
 }

@@ -27,11 +27,12 @@
 
 package org.opencms.search.solr;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -49,21 +50,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.common.util.DateUtil;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.*;
 
 /**
  * Tests if Solr search queries are able to do what was earlier done with Lucene.<p>
@@ -554,7 +541,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     public void testLimitTimeRanges() throws Exception {
 
         DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DF.setTimeZone(DateUtil.UTC);
+        DF.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
@@ -632,7 +619,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     public void testLimitTimeRangesOptimized() throws Exception {
 
         DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DF.setTimeZone(DateUtil.UTC);
+        DF.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");

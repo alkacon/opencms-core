@@ -93,7 +93,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.core.CoreContainer;
@@ -1749,7 +1749,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // HTTP Server configured
             // TODO Implement multi core support for HTTP server
             // @see http://lucidworks.lucidimagination.com/display/solr/Configuring+solr.xml
-            index.setSolrServer(new HttpSolrClient(m_solrConfig.getServerUrl()));
+            index.setSolrServer(new HttpSolrClient.Builder().withBaseSolrUrl(m_solrConfig.getServerUrl()).build());
         }
 
         // get the core container that contains one core for each configured index
@@ -1758,7 +1758,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         // create a new core if no core exists for the given index
-        if (!m_coreContainer.getCoreNames().contains(index.getCoreName())) {
+        if (!m_coreContainer.getAllCoreNames().contains(index.getCoreName())) {
             // Being sure the core container is not 'null',
             // we can create a core for this index if not already existent
             File dataDir = new File(index.getPath());
@@ -1794,7 +1794,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Map<String, String> properties = new HashMap<String, String>(3);
                 properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
                 properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
-                core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties);
+                core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties, false);
             } catch (NullPointerException e) {
                 if (core != null) {
                     core.close();

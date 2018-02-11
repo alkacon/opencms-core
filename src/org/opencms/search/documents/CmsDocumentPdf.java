@@ -36,8 +36,7 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractorPdf;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
-import org.apache.pdfbox.exceptions.CryptographyException;
-import org.apache.pdfbox.exceptions.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
 /**
  * Lucene document factory class to extract index data from a cms resource
@@ -70,7 +69,7 @@ public class CmsDocumentPdf extends A_CmsVfsDocument {
         try {
             return CmsExtractorPdf.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
-            if (e instanceof CryptographyException) {
+            if (e.getClass().getSimpleName().equals("EncryptedDocumentException")) {
                 throw new CmsIndexException(
                     Messages.get().container(Messages.ERR_DECRYPTING_RESOURCE_1, resource.getRootPath()),
                     e);

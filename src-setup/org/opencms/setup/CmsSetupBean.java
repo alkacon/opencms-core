@@ -167,6 +167,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** DB provider constant for mysql. */
     public static final String MYSQL_PROVIDER = "mysql";
+    
+    /** DB provider constant for mariadb. */
+    public static final String MARIADB_PROVIDER = "mariadb";
 
     /** DB provider constant for oracle. */
     public static final String ORACLE_PROVIDER = "oracle";
@@ -2043,6 +2046,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
         String database = "";
         if (provider.equals(MYSQL_PROVIDER)
+            || provider.equals(MARIADB_PROVIDER)
             || provider.equals(MSSQL_PROVIDER)
             || provider.equals(DB2_PROVIDER)
             || provider.equals(AS400_PROVIDER)) {
@@ -2051,6 +2055,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             database = getReqValue(request, "dbName");
         }
         if (provider.equals(MYSQL_PROVIDER)
+            || provider.equals(MARIADB_PROVIDER)
             || provider.equals(MSSQL_PROVIDER)
             || provider.equals(POSTGRESQL_PROVIDER)
             || provider.equals(AS400_PROVIDER)
@@ -2061,6 +2066,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             || MAXDB_PROVIDER.equals(provider)
             || MSSQL_PROVIDER.equals(provider)
             || MYSQL_PROVIDER.equals(provider)
+            || MARIADB_PROVIDER.equals(provider)
             || ORACLE_PROVIDER.equals(provider)
             || DB2_PROVIDER.equals(provider)
             || AS400_PROVIDER.equals(provider)
@@ -2103,6 +2109,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     setDbProperty(getDatabase() + ".constr.newDb", conStr + getDbProperty(getDatabase() + ".newDb"));
                     conStr += database;
                 } else if (provider.equals(MYSQL_PROVIDER)
+                    || provider.equals(MARIADB_PROVIDER)
                     || provider.equals(DB2_PROVIDER)
                     || provider.equals(MSSQL_PROVIDER)
                     || provider.equals(POSTGRESQL_PROVIDER)) {
@@ -2171,6 +2178,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     replacer.put("${password}", dbWorkPwd);
                 }
                 if (provider.equals(MYSQL_PROVIDER)
+                    || provider.equals(MARIADB_PROVIDER)
                     || provider.equals(MSSQL_PROVIDER)
                     || provider.equals(POSTGRESQL_PROVIDER)) {
                     replacer.put("${database}", database);

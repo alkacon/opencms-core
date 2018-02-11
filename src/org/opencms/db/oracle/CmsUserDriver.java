@@ -49,8 +49,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp.DelegatingResultSet;
-
 import com.google.common.base.Joiner;
 
 /**
@@ -207,7 +205,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERDATA_UPDATE_2");
             stmt.setString(1, userId.toString());
             stmt.setString(2, key);
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
+            res = stmt.executeQuery();
             if (!res.next()) {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_NO_USER_WITH_ID_1, userId));
             }

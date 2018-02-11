@@ -31,6 +31,10 @@
 
 package org.opencms.search;
 
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.IndexOptions;
+import org.apache.lucene.index.IndexableField;
+import org.apache.tika.io.IOUtils;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
@@ -40,25 +44,7 @@ import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexableField;
-import org.apache.tika.io.IOUtils;
+import java.util.*;
 
 /**
  * A Lucene search document implementation.<p>
@@ -182,7 +168,6 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
                     CmsSearchField.FIELD_CATEGORY,
                     categoryBuffer.toString().toLowerCase(),
                     STORED_ANALYSED_TYPE);
-                field.setBoost(0);
                 add(field);
             }
         } else {
@@ -221,7 +206,6 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
             name,
             DateTools.dateToString(new Date(date), DateTools.Resolution.MILLISECOND),
             STORED_NOT_ANALYSED_TYPE);
-        field.setBoost(0.0F);
         add(field);
 
         if (analyzed) {
@@ -248,7 +232,6 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
 
         String parentFolders = CmsSearchFieldConfiguration.getParentFolderTokens(rootPath);
         Field field = new Field(CmsSearchField.FIELD_PARENT_FOLDERS, parentFolders, NOT_STORED_ANALYSED_TYPE);
-        field.setBoost(0.0F);
         add(field);
     }
 
@@ -393,55 +376,6 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     public String getType() {
 
         return getFieldValueAsString(CmsSearchField.FIELD_TYPE);
-    }
-
-    /**
-     * @see org.opencms.search.I_CmsSearchDocument#setBoost(float)
-     */
-    public void setBoost(float boost) {
-
-        m_doc.removeFields(CmsSearchField.FIELD_META);
-        m_doc.removeFields(CmsSearchField.FIELD_CONTENT);
-        m_doc.removeFields(CmsSearchField.FIELD_DESCRIPTION);
-        m_doc.removeFields(CmsSearchField.FIELD_KEYWORDS);
-        m_doc.removeFields(CmsSearchField.FIELD_TITLE);
-        m_doc.removeFields(CmsSearchField.FIELD_TITLE_UNSTORED);
-
-        Field f = m_fields.get(CmsSearchField.FIELD_META);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
-        f = m_fields.get(CmsSearchField.FIELD_CONTENT);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
-        f = m_fields.get(CmsSearchField.FIELD_DESCRIPTION);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
-        f = m_fields.get(CmsSearchField.FIELD_KEYWORDS);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
-        f = m_fields.get(CmsSearchField.FIELD_TITLE);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
-        f = m_fields.get(CmsSearchField.FIELD_META);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
-        f = m_fields.get(CmsSearchField.FIELD_TITLE_UNSTORED);
-        if (f != null) {
-            f.setBoost(boost);
-            m_doc.add(f);
-        }
     }
 
     /**

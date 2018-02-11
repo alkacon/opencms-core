@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.apache.commons.logging.Log;
@@ -180,9 +181,8 @@ public class CmsSolrConfiguration {
     public SolrConfig getSolrConfig() {
 
         if (m_solrConfig == null) {
-            try {
-                InputSource solrConfig = new InputSource(new FileInputStream(getSolrConfigFile()));
-                m_solrConfig = new SolrConfig(Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER), null, solrConfig);
+            try (FileInputStream fis = new FileInputStream(getSolrConfigFile())){
+                m_solrConfig = new SolrConfig(Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER), null, new InputSource(fis));
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),
@@ -240,10 +240,10 @@ public class CmsSolrConfiguration {
     public IndexSchema getSolrSchema() {
 
         if (m_schema == null) {
-            try {
-                InputSource solrSchema = new InputSource(new FileInputStream(getSolrSchemaFile()));
+            try(FileInputStream fis = new FileInputStream(getSolrSchemaFile())) {
+                InputSource solrSchema = new InputSource(fis);
                 m_schema = new IndexSchema(getSolrConfig(), SOLR_SCHEMA_NAME, solrSchema);
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(
                         Messages.LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1,
@@ -261,8 +261,15 @@ public class CmsSolrConfiguration {
      * @return the Solr index schema file
      */
     public File getSolrSchemaFile() {
+        final String dir = getHome() + DEFAULT_CONFIGSET_FOLDER + CONF_FOLDER;
+        //SOLR7 Schema took a new name, also removed the file extension.
+        File file = new File(dir, "managed-schema");
+        if(file.exists())
+            return file;
 
-        return new File(getHome() + DEFAULT_CONFIGSET_FOLDER + CONF_FOLDER + IndexSchema.DEFAULT_SCHEMA_FILE);
+        //If use the old Schema.xml, it will automatically "upgrade" to a new filename.
+        file = new File(dir, IndexSchema.DEFAULT_SCHEMA_FILE);
+        return file;
     }
 
     /**

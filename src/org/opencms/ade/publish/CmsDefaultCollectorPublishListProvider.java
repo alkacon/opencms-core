@@ -37,7 +37,7 @@ import org.opencms.main.OpenCms;
 
 import java.util.Set;
 
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Default implementation of the I_CmsCollectorPublishListProvider interface.<p>

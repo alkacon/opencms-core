@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.LogEvent;
 
 import junit.framework.Test;
 
@@ -84,7 +84,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
          *
          * @param event the log event
          */
-        public void handleLogEvent(LoggingEvent event) {
+        public void handleLogEvent(LogEvent event) {
 
             if (event.getLevel().toString().equalsIgnoreCase("error")
                 && event.getMessage().toString().toLowerCase().contains(m_text.toLowerCase())) {
@@ -506,7 +506,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
             cms.adjustLinks("/system/w", "/system/w2");
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(true);
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
             assertTrue(handler.isTriggered());
         }
     }

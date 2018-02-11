@@ -59,6 +59,15 @@ public class CmsSqlManager {
 
         m_driverManager = driverManager;
     }
+    
+    
+    /**
+     * @param driverManager the low level database driver manager
+     */
+    public void setDriverManager(CmsDriverManager driverManager) {
+
+        m_driverManager = driverManager;
+    }
 
     /**
      * Returns the number of active connections managed by a pool.<p>
@@ -81,7 +90,7 @@ public class CmsSqlManager {
      */
     public Connection getConnection(String dbPoolName) throws SQLException {
 
-        return getConnectionByUrl(CmsDbPool.DBCP_JDBC_URL_PREFIX + CmsDbPool.OPENCMS_URL_PREFIX + dbPoolName);
+        return getConnectionByUrl(dbPoolName.startsWith(CmsDbPool.OPENCMS_URL_PREFIX) ? dbPoolName : CmsDbPool.OPENCMS_URL_PREFIX + dbPoolName);
     }
 
     /**
@@ -93,7 +102,13 @@ public class CmsSqlManager {
      */
     public Connection getConnectionByUrl(String dbPoolUrl) throws SQLException {
 
-        return DriverManager.getConnection(dbPoolUrl);
+        try {
+            if(null==m_driverManager)
+                System.out.println();
+            return m_driverManager.getConnection(dbPoolUrl);
+        } catch (CmsDbException e) {
+            throw new SQLException(e);
+        }
     }
 
     /**

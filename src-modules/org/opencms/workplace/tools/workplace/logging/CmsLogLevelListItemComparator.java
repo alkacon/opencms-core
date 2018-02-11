@@ -33,7 +33,7 @@ import org.opencms.workplace.list.I_CmsListItemComparator;
 import java.util.Comparator;
 import java.util.Locale;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 
 /**
  * Help function to select the comparator. <p>
@@ -90,9 +90,9 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                             test = 1;
                         } else {
                             // sort other values by level value
-                            if (o1temp.toInt() == o2temp.toInt()) {
+                            if (o1temp.intLevel() == o2temp.intLevel()) {
                                 test = 0;
-                            } else if (o1temp.toInt() < o2temp.toInt()) {
+                            } else if (o1temp.intLevel() < o2temp.intLevel()) {
                                 test = -1;
                             } else {
                                 test = 1;
@@ -127,9 +127,9 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                             test = 1;
                         } else {
                             // sort other values by level value
-                            if (o1temp.toInt() == o2temp.toInt()) {
+                            if (o1temp.intLevel() == o2temp.intLevel()) {
                                 test = 0;
-                            } else if (o1temp.toInt() < o2temp.toInt()) {
+                            } else if (o1temp.intLevel() < o2temp.intLevel()) {
                                 test = -1;
                             } else {
                                 test = 1;
@@ -164,9 +164,9 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                             test = 1;
                         } else {
                             // sort other values by level value
-                            if (o1temp.toInt() == o2temp.toInt()) {
+                            if (o1temp.intLevel() == o2temp.intLevel()) {
                                 test = 0;
-                            } else if (o1temp.toInt() < o2temp.toInt()) {
+                            } else if (o1temp.intLevel() < o2temp.intLevel()) {
                                 test = -1;
                             } else {
                                 test = 1;
@@ -201,9 +201,9 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                             test = 1;
                         } else {
                             // sort other values by level value
-                            if (o1temp.toInt() == o2temp.toInt()) {
+                            if (o1temp.intLevel() == o2temp.intLevel()) {
                                 test = 0;
-                            } else if (o1temp.toInt() < o2temp.toInt()) {
+                            } else if (o1temp.intLevel() < o2temp.intLevel()) {
                                 test = -1;
                             } else {
                                 test = 1;
@@ -238,9 +238,9 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                             test = 1;
                         } else {
                             // sort other values by level value
-                            if (o1temp.toInt() == o2temp.toInt()) {
+                            if (o1temp.intLevel() == o2temp.intLevel()) {
                                 test = 0;
-                            } else if (o1temp.toInt() < o2temp.toInt()) {
+                            } else if (o1temp.intLevel() < o2temp.intLevel()) {
                                 test = -1;
                             } else {
                                 test = 1;
@@ -275,9 +275,9 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                             test = 1;
                         } else {
                             // sort other values by level value
-                            if (o1temp.toInt() == o2temp.toInt()) {
+                            if (o1temp.intLevel() == o2temp.intLevel()) {
                                 test = 0;
-                            } else if (o1temp.toInt() < o2temp.toInt()) {
+                            } else if (o1temp.intLevel() < o2temp.intLevel()) {
                                 test = -1;
                             } else {
                                 test = 1;

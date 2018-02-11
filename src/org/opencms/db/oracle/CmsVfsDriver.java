@@ -45,8 +45,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp.DelegatingResultSet;
-
 /**
  * Oracle implementation of the VFS driver methods.<p>
  *
@@ -215,7 +213,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 stmt.setInt(2, publishTag);
                 stmt.setInt(3, publishTag);
             }
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
+            res = stmt.executeQuery();
             if (!res.next()) {
                 throw new CmsDbEntryNotFoundException(
                     Messages.get().container(Messages.LOG_READING_RESOURCE_1, resourceId));

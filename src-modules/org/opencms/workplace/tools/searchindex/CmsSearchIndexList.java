@@ -592,7 +592,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
                 boolean fieldStore = field.isStored();
                 String fieldIndex = field.getIndexed();
                 boolean fieldExcerpt = field.isInExcerpt();
-                float fieldBoost = field.getBoost();
                 String fieldDefault = field.getDefaultValue();
 
                 html.append("  <li>\n").append("    ");
@@ -605,9 +604,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
                 }
                 if (fieldExcerpt) {
                     html.append(", ").append("excerpt=").append(fieldExcerpt);
-                }
-                if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
-                    html.append(", ").append("boost=").append(fieldBoost);
                 }
                 if (fieldDefault != null) {
                     html.append(", ").append("default=").append(field.getDefaultValue());

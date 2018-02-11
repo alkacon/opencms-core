@@ -78,14 +78,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queries.BooleanFilter;
-import org.apache.lucene.queries.FilterClause;
-import org.apache.lucene.queries.TermsFilter;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.CachingWrapperFilter;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.MultiTermQuery;
@@ -98,8 +94,8 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.IOContext;
-import org.apache.lucene.uninverting.UninvertingReader;
-import org.apache.lucene.uninverting.UninvertingReader.Type;
+import org.apache.solr.uninverting.UninvertingReader;
+import org.apache.solr.uninverting.UninvertingReader.Type;
 
 /**
  * Abstract search index implementation.<p>
@@ -243,7 +239,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     private boolean m_createExcerpt;
 
     /** Map of display query filters to use. */
-    private Map<String, Filter> m_displayFilters;
+    private Map<String, Query> m_displayFilters;
 
     /** Document types of folders/channels. */
     private Map<String, List<String>> m_documenttypes;
@@ -1274,21 +1270,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             timeLucene = -System.currentTimeMillis();
 
             // several search options are searched using filters
-            BooleanFilter filter = new BooleanFilter();
+            BooleanQuery.Builder builder = new BooleanQuery.Builder();
             // append root path filter
-            filter = appendPathFilter(searchCms, filter, params.getRoots());
+            builder = appendPathFilter(searchCms, builder, params.getRoots());
             // append category filter
-            filter = appendCategoryFilter(searchCms, filter, params.getCategories());
+            builder = appendCategoryFilter(searchCms, builder, params.getCategories());
             // append resource type filter
-            filter = appendResourceTypeFilter(searchCms, filter, params.getResourceTypes());
+            builder = appendResourceTypeFilter(searchCms, builder, params.getResourceTypes());
 
             // append date last modified filter
-            filter = appendDateLastModifiedFilter(
-                filter,
+            builder = appendDateLastModifiedFilter(
+                builder,
                 params.getMinDateLastModified(),
                 params.getMaxDateLastModified());
             // append date created filter
-            filter = appendDateCreatedFilter(filter, params.getMinDateCreated(), params.getMaxDateCreated());
+            builder = appendDateCreatedFilter(builder, params.getMinDateCreated(), params.getMaxDateCreated());
 
             // the search query to use, will be constructed in the next lines
             Query query = null;
@@ -1307,8 +1303,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     fieldsQuery = p.parse(params.getParsedQuery());
                 } else if (params.getFieldQueries() != null) {
                     // each field has an individual query
-                    BooleanQuery mustOccur = null;
-                    BooleanQuery shouldOccur = null;
+                    BooleanQuery.Builder mustOccur = null;
+                    BooleanQuery.Builder shouldOccur = null;
                     for (CmsSearchParameters.CmsSearchFieldQuery fq : params.getFieldQueries()) {
                         // add one sub-query for each defined field
                         QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
@@ -1319,43 +1315,43 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                             keywordQuery = p.parse(fq.getSearchTerms().get(0));
                         } else {
                             // multiple size keyword list
-                            BooleanQuery keywordListQuery = new BooleanQuery();
+                            BooleanQuery.Builder keywordListQuery = new BooleanQuery.Builder();
                             for (String keyword : fq.getSearchTerms()) {
                                 keywordListQuery.add(p.parse(keyword), fq.getTermOccur());
                             }
-                            keywordQuery = keywordListQuery;
+                            keywordQuery = keywordListQuery.build();
                         }
                         if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
                             if (shouldOccur == null) {
-                                shouldOccur = new BooleanQuery();
+                                shouldOccur = new BooleanQuery.Builder();
                             }
                             shouldOccur.add(keywordQuery, fq.getOccur());
                         } else {
                             if (mustOccur == null) {
-                                mustOccur = new BooleanQuery();
+                                mustOccur = new BooleanQuery.Builder();
                             }
                             mustOccur.add(keywordQuery, fq.getOccur());
                         }
                     }
-                    BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                    BooleanQuery.Builder booleanFieldsQuery = new BooleanQuery.Builder();
                     if (mustOccur != null) {
-                        booleanFieldsQuery.add(mustOccur, BooleanClause.Occur.MUST);
+                        booleanFieldsQuery.add(mustOccur.build(), BooleanClause.Occur.MUST);
                     }
                     if (shouldOccur != null) {
-                        booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
+                        booleanFieldsQuery.add(shouldOccur.build(), BooleanClause.Occur.MUST);
                     }
-                    fieldsQuery = searcher.rewrite(booleanFieldsQuery);
+                    fieldsQuery = searcher.rewrite(booleanFieldsQuery.build());
                 } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
                     // no individual field queries have been defined, so use one query for all fields
-                    BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                    BooleanQuery.Builder booleanFieldsQuery = new BooleanQuery.Builder();
                     // this is a "regular" query over one or more fields
                     // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                     for (int i = 0; i < params.getFields().size(); i++) {
                         QueryParser p = new QueryParser(params.getFields().get(i), getAnalyzer());
-                        p.setMultiTermRewriteMethod(MultiTermQuery.SCORING_BOOLEAN_QUERY_REWRITE);
+                        p.setMultiTermRewriteMethod(MultiTermQuery.SCORING_BOOLEAN_REWRITE);
                         booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                     }
-                    fieldsQuery = searcher.rewrite(booleanFieldsQuery);
+                    fieldsQuery = searcher.rewrite(booleanFieldsQuery.build());
                 } else {
                     // if no fields are provided, just use the "content" field by default
                     QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
@@ -1379,6 +1375,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 params.setParsedQuery(query.toString(CmsSearchField.FIELD_CONTENT));
             }
 
+            final BooleanQuery.Builder finalQuery = new BooleanQuery.Builder();
+            finalQuery.add(query, BooleanClause.Occur.MUST);
+            finalQuery.add(builder.build(), BooleanClause.Occur.FILTER);
             // collect the categories
             CmsSearchCategoryCollector categoryCollector;
             if (params.isCalculateCategories()) {
@@ -1386,7 +1385,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // this may slow down searched by an order of magnitude
                 categoryCollector = new CmsSearchCategoryCollector(searcher);
                 // perform a first search to collect the categories
-                searcher.search(query, filter, categoryCollector);
+                searcher.search(finalQuery.build(), categoryCollector);
                 // store the result
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
@@ -1394,20 +1393,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // perform the search operation
             if ((params.getSort() == null) || (params.getSort() == CmsSearchParameters.SORT_DEFAULT)) {
                 // apparently scoring is always enabled by Lucene if no sort order is provided
-                hits = searcher.search(query, filter, getMaxHits());
+                hits = searcher.search(finalQuery.build(), getMaxHits());
             } else {
                 // if  a sort order is provided, we must check if scoring must be calculated by the searcher
                 boolean isSortScore = isSortScoring(searcher, params.getSort());
-                hits = searcher.search(query, filter, getMaxHits(), params.getSort(), isSortScore, isSortScore);
+                hits = searcher.search(finalQuery.build(), getMaxHits(), params.getSort(), isSortScore, isSortScore);
             }
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
 
             if (hits != null) {
-                int hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
+                long hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
                 int page = params.getSearchPage();
-                int start = -1, end = -1;
+                long start = -1, end = -1;
                 if ((params.getMatchesPerPage() > 0) && (page > 0) && (hitCount > 0)) {
                     // calculate the final size of the search result
                     start = params.getMatchesPerPage() * (page - 1);
@@ -1424,7 +1423,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 Set<String> returnFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getReturnFields();
                 Set<String> excerptFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getExcerptFields();
 
-                int visibleHitCount = hitCount;
+                long visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
                         Document doc = searcher.doc(hits.scoreDocs[i].doc, returnFields);
@@ -1456,7 +1455,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
 
                 // save the total count of search results
-                searchResults.setHitCount(visibleHitCount);
+                searchResults.setHitCount((int)visibleHitCount);
             } else {
                 searchResults.setHitCount(0);
             }
@@ -1475,7 +1474,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (LOG.isDebugEnabled()) {
             timeTotal += System.currentTimeMillis();
             Object[] logParams = new Object[] {
-                new Integer(hits == null ? 0 : hits.totalHits),
+                new Long(hits == null ? 0 : hits.totalHits),
                 new Long(timeTotal),
                 new Long(timeLucene),
                 new Long(timeResultProcessing)};
@@ -1712,7 +1711,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanFilter appendCategoryFilter(CmsObject cms, BooleanFilter filter, List<String> categories) {
+    protected BooleanQuery.Builder appendCategoryFilter(CmsObject cms, BooleanQuery.Builder filter, List<String> categories) {
 
         if ((categories != null) && (categories.size() > 0)) {
             // add query categories (if required)
@@ -1724,7 +1723,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 lowerCaseCategories.add(category.toLowerCase());
             }
             filter.add(
-                new FilterClause(
+                new BooleanClause(
                     getMultiTermQueryFilter(CmsSearchField.FIELD_CATEGORY, lowerCaseCategories),
                     BooleanClause.Occur.MUST));
         }
@@ -1747,13 +1746,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanFilter appendDateCreatedFilter(BooleanFilter filter, long startTime, long endTime) {
+    protected BooleanQuery.Builder appendDateCreatedFilter(BooleanQuery.Builder filter, long startTime, long endTime) {
 
         // create special optimized sub-filter for the date last modified search
-        Filter dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, startTime, endTime);
+        Query dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, startTime, endTime);
         if (dateFilter != null) {
             // extend main filter with the created date filter
-            filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
+            filter.add(new BooleanClause(dateFilter, BooleanClause.Occur.MUST));
         }
 
         return filter;
@@ -1774,13 +1773,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanFilter appendDateLastModifiedFilter(BooleanFilter filter, long startTime, long endTime) {
+    protected BooleanQuery.Builder appendDateLastModifiedFilter(BooleanQuery.Builder filter, long startTime, long endTime) {
 
         // create special optimized sub-filter for the date last modified search
-        Filter dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, startTime, endTime);
+        Query dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, startTime, endTime);
         if (dateFilter != null) {
             // extend main filter with the created date filter
-            filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
+            filter.add(new BooleanClause(dateFilter, BooleanClause.Occur.MUST));
         }
 
         return filter;
@@ -1799,7 +1798,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanFilter appendPathFilter(CmsObject cms, BooleanFilter filter, List<String> roots) {
+    protected BooleanQuery.Builder appendPathFilter(CmsObject cms, BooleanQuery.Builder filter, List<String> roots) {
 
         // complete the search root
         List<Term> terms = new ArrayList<Term>();
@@ -1817,9 +1816,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 extendPathFilter(terms, OpenCms.getSiteManager().getSharedFolder());
             }
         }
-
+        
         // add the calculated path filter for the root path
-        filter.add(new FilterClause(new TermsFilter(terms), BooleanClause.Occur.MUST));
+        BooleanQuery.Builder build = new BooleanQuery.Builder();
+        terms.forEach(term -> build.add(new TermQuery(term), Occur.FILTER));
+        filter.add(new BooleanClause(build.build(), BooleanClause.Occur.MUST));
         return filter;
     }
 
@@ -1836,12 +1837,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanFilter appendResourceTypeFilter(CmsObject cms, BooleanFilter filter, List<String> resourceTypes) {
+    protected BooleanQuery.Builder appendResourceTypeFilter(CmsObject cms, BooleanQuery.Builder filter, List<String> resourceTypes) {
 
         if ((resourceTypes != null) && (resourceTypes.size() > 0)) {
             // add query resource types (if required)
             filter.add(
-                new FilterClause(
+                new BooleanClause(
                     getMultiTermQueryFilter(CmsSearchField.FIELD_TYPE, resourceTypes),
                     BooleanClause.Occur.MUST));
         }
@@ -1861,9 +1862,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return an optimized date range filter for the date of last modification or creation
      */
-    protected Filter createDateRangeFilter(String fieldName, long startTime, long endTime) {
+    protected Query createDateRangeFilter(String fieldName, long startTime, long endTime) {
 
-        Filter filter = null;
+        Query filter = null;
         if ((startTime != Long.MIN_VALUE) || (endTime != Long.MAX_VALUE)) {
             // a date range has been set for this document search
             if (startTime == Long.MIN_VALUE) {
@@ -1887,7 +1888,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 terms.add(new Term(fieldName, range));
             }
             // create the filter for the date
-            filter = new TermsFilter(terms);
+            BooleanQuery.Builder build = new BooleanQuery.Builder();
+            terms.forEach(term -> build.add(new TermQuery(term), Occur.FILTER));
+            filter = build.build();
         }
         return filter;
     }
@@ -1927,10 +1930,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             backupPath = null;
         } finally {
             if (oldDir != null) {
-                oldDir.close();
+                try {
+                    oldDir.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             if (newDir != null) {
-                newDir.close();
+                try {
+                    newDir.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return backupPath;
@@ -1981,7 +1992,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             indexWriter = new IndexWriter(dir, indexConfig);
         } catch (Exception e) {
             if (dir != null) {
-                dir.close();
+                try {
+                    dir.close();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
             if (indexWriter != null) {
                 try {
@@ -2083,7 +2099,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return a cached Lucene term query filter for the given field and terms
      */
-    protected Filter getMultiTermQueryFilter(String field, List<String> terms) {
+    protected Query getMultiTermQueryFilter(String field, List<String> terms) {
 
         return getMultiTermQueryFilter(field, null, terms);
     }
@@ -2096,7 +2112,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return a cached Lucene term query filter for the given field and terms
      */
-    protected Filter getMultiTermQueryFilter(String field, String terms) {
+    protected Query getMultiTermQueryFilter(String field, String terms) {
 
         return getMultiTermQueryFilter(field, terms, null);
     }
@@ -2110,7 +2126,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return a cached Lucene term query filter for the given field and terms
      */
-    protected Filter getMultiTermQueryFilter(String field, String termsStr, List<String> termsList) {
+    protected Query getMultiTermQueryFilter(String field, String termsStr, List<String> termsList) {
 
         if (termsStr == null) {
             StringBuffer buf = new StringBuffer(64);
@@ -2122,7 +2138,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
             termsStr = buf.toString();
         }
-        Filter result = m_displayFilters.get(
+        Query result = m_displayFilters.get(
             (new StringBuffer(64)).append(field).append('|').append(termsStr).toString());
         if (result == null) {
             List<Term> terms = new ArrayList<Term>();
@@ -2132,8 +2148,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             for (int i = 0; i < termsList.size(); i++) {
                 terms.add(new Term(field, termsList.get(i)));
             }
-            result = new CachingWrapperFilter(new TermsFilter(terms));
-            m_displayFilters.put(field + termsStr, result);
+            
+            BooleanQuery.Builder build = new BooleanQuery.Builder();
+            terms.forEach(term -> build.add(new TermQuery(term), Occur.FILTER));
+            Query termsQuery = build.build();//termsFilter
+            
+            try {
+                result = termsQuery.createWeight(m_indexSearcher, false, 1).getQuery();
+                m_displayFilters.put(field + termsStr, result);
+            } catch (IOException e) {
+                // TODO don't know what happend
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -2198,7 +2224,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return a cached Lucene term query filter for the given field and term
      */
-    protected Filter getTermQueryFilter(String field, String term) {
+    protected Query getTermQueryFilter(String field, String term) {
 
         return getMultiTermQueryFilter(field, term, Collections.singletonList(term));
     }
@@ -2272,7 +2298,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
                 m_indexSearcher = new IndexSearcher(reader);
                 m_indexSearcher.setSimilarity(m_sim);
-                m_displayFilters = new HashMap<String, Filter>();
+                m_displayFilters = new HashMap<>();
             }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
