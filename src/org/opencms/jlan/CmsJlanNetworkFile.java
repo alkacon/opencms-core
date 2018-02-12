@@ -75,16 +75,24 @@ public class CmsJlanNetworkFile extends NetworkFile {
     /** The wrapped resource. */
     private CmsResource m_resource;
 
+    /** The repository instance. */
+    private CmsJlanRepository m_repository;
+
     /** Creates a new network file instance.<p>
-     *
+     * @param repository the repository instance
      * @param cms the CMS object wrapper to use
      * @param resource the actual CMS resource
      * @param fullName the raw repository path
      */
-    public CmsJlanNetworkFile(CmsObjectWrapper cms, CmsResource resource, String fullName) {
+    public CmsJlanNetworkFile(
+        CmsJlanRepository repository,
+        CmsObjectWrapper cms,
+        CmsResource resource,
+        String fullName) {
 
         super(resource.getName());
         m_resource = resource;
+        m_repository = repository;
         m_cms = cms;
         updateFromResource();
         setFullName(normalizeName(fullName));
@@ -147,7 +155,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
                 if (file != null) {
                     CmsWrappedResource wr = new CmsWrappedResource(file);
                     String rootPath = m_cms.getRequestContext().addSiteRoot(
-                        CmsJlanDiskInterface.getCmsPath(getFullName()));
+                        CmsJlanDiskInterface.getCmsPath(getFullName(), m_repository.isFileTranslationEnabled()));
                     wr.setRootPath(rootPath);
                     file = wr.getFile();
                     file.setContents(m_buffer.getContents());
@@ -283,7 +291,11 @@ public class CmsJlanNetworkFile extends NetworkFile {
                     m_cms.getSitePath(m_resource),
                     CmsJlanDiskInterface.STANDARD_FILTER);
                 for (CmsResource child : children) {
-                    CmsJlanNetworkFile childFile = new CmsJlanNetworkFile(m_cms, child, getFullChildPath(child));
+                    CmsJlanNetworkFile childFile = new CmsJlanNetworkFile(
+                        m_repository,
+                        m_cms,
+                        child,
+                        getFullChildPath(child));
                     if (!matchesSearchAttributes(searchAttributes)) {
                         continue;
                     }

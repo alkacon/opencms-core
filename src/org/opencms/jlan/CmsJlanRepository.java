@@ -70,6 +70,9 @@ public class CmsJlanRepository implements I_CmsRepository {
     /** Parameter for controlling whether byte order marks should be added to plaintext files. */
     public static final String PARAM_ADD_BOM = "addBOM";
 
+    /** Name of the parameter to enable/disable file translation. */
+    public static final String PARAM_FILE_TRANSLATION = "fileTranslation";
+
     /** The parameter for the project in which this repository should operate. */
     public static final String PARAM_PROJECT = "project";
 
@@ -99,6 +102,9 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /** The JLAN disk interface for this repository. */
     private DiskInterface m_diskInterface;
+
+    /** Flag that controls whether file name translation is used. */
+    private boolean m_fileTranslation;
 
     /** The name of the repository. */
     private String m_name;
@@ -315,7 +321,9 @@ public class CmsJlanRepository implements I_CmsRepository {
         m_root = getConfiguration().getString(PARAM_ROOT, "").trim();
         m_projectName = getConfiguration().getString(PARAM_PROJECT, "Offline").trim();
         String addByteOrderMarkStr = getConfiguration().getString(PARAM_ADD_BOM, "" + true).trim();
+        String translationStr = getConfiguration().getString(PARAM_FILE_TRANSLATION, "" + true).trim();
         m_addByteOrderMark = Boolean.parseBoolean(addByteOrderMarkStr);
+        m_fileTranslation = Boolean.parseBoolean(translationStr);
     }
 
     /**
@@ -327,6 +335,16 @@ public class CmsJlanRepository implements I_CmsRepository {
         m_project = m_cms.readProject(m_projectName);
         m_device = new DiskSharedDevice(getName(), getDiskInterface(), getDeviceContext(), 0);
         m_device.addAccessControl(new CmsRepositoryAccessControl(this));
+    }
+
+    /**
+     * Check if file name translation is enabled.<p>
+     *
+     * @return true if file name translation is enabled
+     */
+    public boolean isFileTranslationEnabled() {
+
+        return m_fileTranslation;
     }
 
     /**

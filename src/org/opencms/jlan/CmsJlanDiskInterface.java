@@ -34,6 +34,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
@@ -105,9 +106,10 @@ public class CmsJlanDiskInterface implements DiskInterface {
      * Converts a CIFS path to an OpenCms path by converting backslashes to slashes and translating special characters in the file name.<p>
      *
      * @param path the path to transform
+     * @param fileTranslation flag indicating whether file name translation should be used
      * @return the OpenCms path for the given path
      */
-    protected static String getCmsPath(String path) {
+    protected static String getCmsPath(String path, boolean fileTranslation) {
 
         String slashPath = path.replace('\\', '/');
 
@@ -118,7 +120,9 @@ public class CmsJlanDiskInterface implements DiskInterface {
             if (segment.length() > 0) {
                 String translatedSegment = "*".equals(segment)
                 ? "*"
-                : OpenCms.getResourceManager().getFileTranslator().translateResource(segment);
+                : (fileTranslation
+                ? OpenCms.getResourceManager().getFileTranslator().translateResource(segment)
+                : segment);
                 nonEmptySegments.add(translatedSegment);
             }
         }
@@ -255,13 +259,14 @@ public class CmsJlanDiskInterface implements DiskInterface {
     throws IOException {
 
         String path = params.getPath();
-        String cmsPath = getCmsPath(path);
+        CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
+        String cmsPath = getCmsPath(path, repository.isFileTranslationEnabled());
         // TODO: Check access control
         try {
             CmsObjectWrapper cms = getCms(session, connection);
             CmsResource resource = cms.readResource(cmsPath, STANDARD_FILTER);
 
-            return new CmsJlanNetworkFile(cms, resource, path);
+            return new CmsJlanNetworkFile(repository, cms, resource, path);
         } catch (CmsException e) {
             throw convertCmsException(e);
         }
@@ -278,7 +283,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
         byte[] buf,
         int bufPos,
         int siz,
-        long filePos) throws java.io.IOException {
+        long filePos)
+    throws java.io.IOException {
 
         //    Check if the file is a directory
 
@@ -307,12 +313,15 @@ public class CmsJlanDiskInterface implements DiskInterface {
     public void renameFile(SrvSession session, TreeConnection connection, String oldName, String newName)
     throws IOException {
 
-        String cmsNewPath = getCmsPath(newName);
+        CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
+        String cmsNewPath = getCmsPath(newName, repository.isFileTranslationEnabled());
         try {
             CmsJlanNetworkFile file = getFileForPath(session, connection, oldName);
             file.moveTo(cmsNewPath);
         } catch (CmsException e) {
             throw convertCmsException(e);
+        } catch (CmsRuntimeException e) {
+            throw new IOException(e);
         }
     }
 
@@ -333,9 +342,10 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
         try {
             CmsObjectWrapper cms = getCms(session, connection);
-            String cmsPath = getCmsPath(path);
+            CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
+            String cmsPath = getCmsPath(path, repository.isFileTranslationEnabled());
             CmsResource resource = cms.readResource(cmsPath, STANDARD_FILTER);
-            CmsJlanNetworkFile file = new CmsJlanNetworkFile(cms, resource, path);
+            CmsJlanNetworkFile file = new CmsJlanNetworkFile(repository, cms, resource, path);
             file.setFileInformation(info);
         } catch (CmsException e) {
             throw convertCmsException(e);
@@ -353,7 +363,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
         try {
 
-            String cmsPath = getCmsPath(searchPath);
+            CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
+            String cmsPath = getCmsPath(searchPath, repository.isFileTranslationEnabled());
             if (cmsPath.endsWith("/")) {
                 cmsPath = cmsPath + "*";
             }
@@ -408,7 +419,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
         byte[] data,
         int bufferOffset,
         int length,
-        long fileOffset) throws IOException {
+        long fileOffset)
+    throws IOException {
 
         if (file.isDirectory()) {
             throw new AccessDeniedException("Can't write data to a directory!");
@@ -449,12 +461,15 @@ public class CmsJlanDiskInterface implements DiskInterface {
         CmsObjectWrapper cms,
         SrvSession session,
         TreeConnection connection,
-        String path) throws CmsException {
+        String path)
+    throws CmsException {
 
         try {
-            String cmsPath = getCmsPath(path);
+            CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
+            boolean fileTranslations = repository.isFileTranslationEnabled();
+            String cmsPath = getCmsPath(path, fileTranslations);
             CmsResource resource = cms.readResource(cmsPath, STANDARD_FILTER);
-            CmsJlanNetworkFile result = new CmsJlanNetworkFile(cms, resource, path);
+            CmsJlanNetworkFile result = new CmsJlanNetworkFile(repository, cms, resource, path);
             return result;
         } catch (CmsVfsResourceNotFoundException e) {
             return null;
@@ -494,10 +509,12 @@ public class CmsJlanDiskInterface implements DiskInterface {
         SrvSession session,
         TreeConnection connection,
         FileOpenParams params,
-        String typeName) throws IOException {
+        String typeName)
+    throws IOException {
 
         String path = params.getPath();
-        String cmsPath = getCmsPath(path);
+        CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
+        String cmsPath = getCmsPath(path, repository.isFileTranslationEnabled());
         try {
             CmsObjectWrapper cms = getCms(session, connection);
             if (typeName == null) {
@@ -507,12 +524,14 @@ public class CmsJlanDiskInterface implements DiskInterface {
                 cmsPath,
                 OpenCms.getResourceManager().getResourceType(typeName).getTypeId());
             tryUnlock(cms, cmsPath);
-            CmsJlanNetworkFile result = new CmsJlanNetworkFile(cms, createdResource, path);
+            CmsJlanNetworkFile result = new CmsJlanNetworkFile(repository, cms, createdResource, path);
             result.setFullName(params.getPath());
             return result;
         } catch (CmsVfsResourceAlreadyExistsException e) {
             throw new FileExistsException("File exists: " + path);
         } catch (CmsException e) {
+            throw new IOException(e);
+        } catch (CmsRuntimeException e) {
             throw new IOException(e);
         }
 
