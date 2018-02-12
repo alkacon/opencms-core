@@ -234,7 +234,9 @@ public class CmsToolManager {
         while (!parent.equals(getBaseToolPath(wp))) {
             parent = getParent(wp, parent);
             adminTool = resolveAdminTool(getCurrentRoot(wp).getKey(), parent);
-
+            if (adminTool == null) {
+                break;
+            }
             String id = "nav" + adminTool.getId();
             String link = linkForToolPath(wp.getJsp(), parent, adminTool.getHandler().getParameters(wp));
             String onClic = "openPage('" + link + "');";
@@ -798,7 +800,7 @@ public class CmsToolManager {
             path = getParent(wp, path);
         }
         // navigate until to reach a valid tool
-        while (resolveAdminTool(rootKey, path) == null) {
+        while ((resolveAdminTool(rootKey, path) == null) && !"/".equals(path)) {
             // log failure
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_MISSING_ADMIN_TOOL_1, path));
             // try parent
@@ -807,7 +809,7 @@ public class CmsToolManager {
 
         // navigate until to reach an enabled path
         CmsTool aTool = resolveAdminTool(rootKey, path);
-        while (!aTool.getHandler().isEnabled(wp)) {
+        while ((aTool != null) && !aTool.getHandler().isEnabled(wp)) {
             if (aTool.getHandler().getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                 // just grouping
                 break;

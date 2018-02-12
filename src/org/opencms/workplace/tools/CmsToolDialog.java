@@ -138,7 +138,6 @@ public class CmsToolDialog extends CmsWorkplace {
         String parentPath = getParentPath();
         String rootKey = getToolManager().getCurrentRoot(this).getKey();
         String upLevelLink = computeUpLevelLink();
-        String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
         // build title
@@ -149,7 +148,8 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append(CmsEncoder.decode(CmsToolMacroResolver.resolveMacros(getAdminTool().getHandler().getName(), this)));
         html.append("\n\t\t\t</td>");
         // uplevel button only if needed
-        if (!getParentPath().equals(toolPath)) {
+        if ((upLevelLink != null) && !getParentPath().equals(toolPath)) {
+            String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
             html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
             html.append(
                 A_CmsHtmlIconButton.defaultButtonHtml(
@@ -547,11 +547,14 @@ public class CmsToolDialog extends CmsWorkplace {
         String parentPath = getParentPath();
         String rootKey = getToolManager().getCurrentRoot(this).getKey();
         CmsTool parentTool = getToolManager().resolveAdminTool(rootKey, parentPath);
-        String upLevelLink = CmsToolManager.linkForToolPath(
-            getJsp(),
-            parentPath,
-            parentTool.getHandler().getParameters(this));
-        upLevelLink = CmsRequestUtil.appendParameter(upLevelLink, PARAM_FORCE, Boolean.TRUE.toString());
+        String upLevelLink = null;
+        if (parentTool != null) {
+            upLevelLink = CmsToolManager.linkForToolPath(
+                getJsp(),
+                parentPath,
+                parentTool.getHandler().getParameters(this));
+            upLevelLink = CmsRequestUtil.appendParameter(upLevelLink, PARAM_FORCE, Boolean.TRUE.toString());
+        }
         return upLevelLink;
     }
 
