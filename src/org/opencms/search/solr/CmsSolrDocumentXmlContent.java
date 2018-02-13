@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.CmsIndexNoContentException;
 import org.opencms.search.documents.Messages;
@@ -63,6 +64,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlSerialDateValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -125,6 +127,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
          * @param locale the locale in the XML content
          */
         public GalleryNameChooser(CmsObject cms, A_CmsXmlDocument content, Locale locale) {
+
             m_cms = cms;
             m_content = content;
             m_locale = locale;
@@ -144,7 +147,10 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             String result = null;
             for (String resultCandidateWithMacros : new String[] {
                 // Prioritize gallery name over title, and actual content values over defaults
-                m_mappedGalleryNameValue, m_defaultGalleryNameValue, m_mappedTitleValue, m_defaultTitleValue}) {
+                m_mappedGalleryNameValue,
+                m_defaultGalleryNameValue,
+                m_mappedTitleValue,
+                m_defaultTitleValue}) {
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(resultCandidateWithMacros)) {
                     CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(m_cms, m_content, m_locale);
                     result = resolver.resolveMacros(resultCandidateWithMacros);
@@ -312,10 +318,15 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 String extracted = null;
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
                 try {
-                    extracted = value.getPlainText(cms);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted) && value.isSimpleType()) {
-                        // no text value for simple type, so take the string value as item
-                        extracted = value.getStringValue(cms);
+                    //the new DatePointField.createField dose not support milliseconds
+                    if (value instanceof CmsXmlDateTimeValue) {
+                        extracted = CmsSearchUtil.getDateAsIso8601(((CmsXmlDateTimeValue)value).getDateTimeValue());
+                    } else {
+                        extracted = value.getPlainText(cms);
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted) && value.isSimpleType()) {
+                            // no text value for simple type, so take the string value as item
+                            extracted = value.getStringValue(cms);
+                        }
                     }
                 } catch (Exception e) {
                     // it can happen that a exception is thrown while extracting a single value

@@ -30,8 +30,7 @@ package org.opencms.ui.apps.lists.daterestrictions;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.solr.common.util.DateUtil;
+import java.util.TimeZone;
 
 /**
  * Restriction to a date between a fixed start and end date, but only one of them has to be given.<p>
@@ -41,7 +40,7 @@ public class CmsListDateRangeRestriction implements I_CmsListDateRestriction {
     /** A constant for the Solr date format. */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     static {
-        DATE_FORMAT.setTimeZone(DateUtil.UTC);
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     /** The start date. */
@@ -57,6 +56,7 @@ public class CmsListDateRangeRestriction implements I_CmsListDateRestriction {
      * @param toDate the end date
      */
     public CmsListDateRangeRestriction(Date fromDate, Date toDate) {
+
         m_from = fromDate;
         m_to = toDate;
     }

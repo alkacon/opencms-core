@@ -27,13 +27,12 @@
 
 package org.opencms.search.fields;
 
-import org.opencms.search.CmsSearchManager;
-import org.opencms.util.CmsStringUtil;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.index.IndexOptions;
+import org.opencms.search.CmsSearchManager;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * An individual field configuration in a Lucene search index.<p>
@@ -66,9 +65,6 @@ public class CmsLuceneField extends CmsSearchField {
     /** The special analyzer to use for this field. */
     private Analyzer m_analyzer;
 
-    /** The boost factor of the field. */
-    private float m_boost;
-
     /** Indicates if the content of this field is compressed. */
     private boolean m_compressed;
 
@@ -100,7 +96,6 @@ public class CmsLuceneField extends CmsSearchField {
      *
      * The field will be tokenized if it is indexed.
      * The field will not be in the excerpt.
-     * The boost value is the default, that is no special boost is used.
      * There is no default value.<p>
      *
      * @param name the name of the field, see {@link #setName(String)}
@@ -110,7 +105,7 @@ public class CmsLuceneField extends CmsSearchField {
      */
     public CmsLuceneField(String name, String displayName, boolean isStored, boolean isIndexed) {
 
-        this(name, displayName, isStored, isIndexed, isIndexed, false, BOOST_DEFAULT, null);
+        this(name, displayName, isStored, isIndexed, isIndexed, false, null);
     }
 
     /**
@@ -124,7 +119,6 @@ public class CmsLuceneField extends CmsSearchField {
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
      * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
      * @param analyzer the analyzer to use, see {@link #setAnalyzer(Analyzer)}
-     * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
     public CmsLuceneField(
@@ -136,10 +130,9 @@ public class CmsLuceneField extends CmsSearchField {
         boolean isTokenized,
         boolean isInExcerpt,
         Analyzer analyzer,
-        float boost,
         String defaultValue) {
 
-        super(name, defaultValue, boost);
+        super(name, defaultValue);
         setDisplayName(displayName);
         setStored(isStored);
         setCompressed(isCompressed);
@@ -158,7 +151,6 @@ public class CmsLuceneField extends CmsSearchField {
      * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
      * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
-     * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
     public CmsLuceneField(
@@ -168,10 +160,9 @@ public class CmsLuceneField extends CmsSearchField {
         boolean isIndexed,
         boolean isTokenized,
         boolean isInExcerpt,
-        float boost,
         String defaultValue) {
 
-        this(name, displayName, isStored, false, isIndexed, isTokenized, isInExcerpt, null, boost, defaultValue);
+        this(name, displayName, isStored, false, isIndexed, isTokenized, isInExcerpt, null, defaultValue);
     }
 
     /**
@@ -220,9 +211,6 @@ public class CmsLuceneField extends CmsSearchField {
             }
             ft.setStored(isStored() || isCompressed());
             Field result = new Field(name, content, ft);
-            if (getBoost() != BOOST_DEFAULT) {
-                result.setBoost(getBoost());
-            }
             return result;
         }
         return null;
@@ -236,19 +224,6 @@ public class CmsLuceneField extends CmsSearchField {
     public Analyzer getAnalyzer() {
 
         return m_analyzer;
-    }
-
-    /**
-     * Returns the boost factor of this field as String value for display use.<p>
-     *
-     * @return the boost factor of this field as String value for display use
-     */
-    public String getBoostDisplay() {
-
-        if (m_boost == BOOST_DEFAULT) {
-            return null;
-        }
-        return String.valueOf(m_boost);
     }
 
     /**
@@ -409,18 +384,6 @@ public class CmsLuceneField extends CmsSearchField {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(analyzerName)) {
             setAnalyzer(CmsSearchManager.getAnalyzer(analyzerName));
         }
-    }
-
-    /**
-     * Sets the boost factor of this field (only for display use).<p>
-     *
-     * @param boost the boost factor to set
-     *
-     * @see #setBoost(String)
-     */
-    public void setBoostDisplay(String boost) {
-
-        setBoost(boost);
     }
 
     /**

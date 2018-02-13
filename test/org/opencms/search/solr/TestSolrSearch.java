@@ -30,7 +30,6 @@ package org.opencms.search.solr;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -40,6 +39,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchResource;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -59,7 +59,6 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.common.util.DateUtil;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -107,18 +106,9 @@ public class TestSolrSearch extends OpenCmsTestCase {
         suite.addTest(new TestSolrSearch("testQueryParameterStrength"));
         suite.addTest(new TestSolrSearch("testSortResults"));
         suite.addTest(new TestSolrSearch("testXmlContent"));
-        suite.addTest(new TestSolrSearch("testDocumentBoost"));
         suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
         suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
 
-        // suite.addTest(new TestSolrSearch("testAdvancedMoreLikeThis"));
-        // suite.addTest(new TestSolrSearch("testAdvancedPaging"));
-        // suite.addTest(new TestSolrSearch("testAdvancedRangingDates"));
-        // suite.addTest(new TestSolrSearch("testAdvancedRangingNumerics"));
-        // suite.addTest(new TestSolrSearch("testAdvancedSorting"));
-        // suite.addTest(new TestSolrSearch("testAdvancedSpellChecking"));
-        // suite.addTest(new TestSolrSearch("testAdvancedSugesstion"));
-        // suite.addTest(new TestSolrSearch("testAdvancedSynonyms"));
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -298,115 +288,6 @@ public class TestSolrSearch extends OpenCmsTestCase {
     }
 
     /**
-     * @throws Throwable if something goes wrong
-     */
-    public void testDocumentBoost() throws Throwable {
-
-        echo("Testing document boost");
-        CmsObject cms = getCmsObject();
-
-        cms.createResource("0searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
-        CmsResource resource1 = cms.createResource(
-            "1searchNew.txt",
-            CmsResourceTypePlain.getStaticTypeId(),
-            "OpenCms".getBytes(),
-            null);
-        cms.createResource("2searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
-        cms.createResource("3searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
-        cms.createResource("4searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
-        cms.createResource("5searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
-        cms.createResource("6searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
-        CmsResource resource7 = cms.createResource(
-            "7searchNew.txt",
-            CmsResourceTypePlain.getStaticTypeId(),
-            "OpenCms".getBytes(),
-            null);
-        CmsResource resource8 = cms.createResource(
-            "8searchNew.txt",
-            CmsResourceTypePlain.getStaticTypeId(),
-            "OpenCms".getBytes(),
-            null);
-        CmsResource resource9 = cms.createResource(
-            "9searchNew.txt",
-            CmsResourceTypePlain.getStaticTypeId(),
-            "OpenCms".getBytes(),
-            null);
-
-        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
-        OpenCms.getPublishManager().publishProject(cms, report);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        String query = "?rows=10&q=text:OpenCms&sort=score desc&fq=path:*searchNew.txt";
-        CmsSolrResultList results = index.search(getCmsObject(), query);
-        AllTests.printResults(cms, results, false);
-
-        CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "max", "max");
-        List<CmsProperty> props1 = cms.readPropertyObjects(resource1, false);
-        props1.add(prop);
-        cms.lockResource(resource9);
-        cms.writePropertyObjects(resource9, props1);
-
-        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "high", "high");
-        List<CmsProperty> props2 = cms.readPropertyObjects(resource1, false);
-        props2.add(prop);
-        cms.lockResource(resource8);
-        cms.writePropertyObjects(resource8, props2);
-
-        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "low", "low");
-        List<CmsProperty> props3 = cms.readPropertyObjects(resource1, false);
-        props3.add(prop);
-        cms.lockResource(resource1);
-        cms.writePropertyObjects(resource1, props3);
-
-        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "high", "high");
-        List<CmsProperty> props4 = cms.readPropertyObjects(resource1, false);
-        props4.add(prop);
-        cms.lockResource(resource7);
-        cms.writePropertyObjects(resource7, props4);
-
-        OpenCms.getPublishManager().publishProject(cms, report);
-        OpenCms.getPublishManager().waitWhileRunning();
-        Thread.sleep(200);
-
-        results = index.search(getCmsObject(), query);
-        AllTests.printResults(cms, results, false);
-
-        // 1   /sites/default/9searchNew.txt      plain     20.11.13 10:03   score: 100
-        assertTrue(
-            "9searchNew.txt with priority 'max' should be the first",
-            results.get(0).getDocument().getPath().equals("/sites/default/9searchNew.txt"));
-        assertTrue(
-            "9searchNew.txt with priority 'max' should have a score of 100%",
-            results.get(0).getScore(results.getMaxScore().floatValue()) == 100);
-
-        // 2   /sites/default/7searchNew.txt      plain     20.11.13 10:03   score: 80
-        assertTrue(
-            "7searchNew.txt with priority 'high' should be the second",
-            results.get(1).getDocument().getPath().equals("/sites/default/7searchNew.txt"));
-        assertTrue(
-            "7searchNew.txt with priority 'high' should have a score of 75%",
-            results.get(1).getScore(results.getMaxScore().floatValue()) == 75);
-
-        // 3   /sites/default/8searchNew.txt      plain     20.11.13 10:03   score: 80
-        assertTrue(
-            "8searchNew.txt with priority 'high' should be the second",
-            results.get(2).getDocument().getPath().equals("/sites/default/8searchNew.txt"));
-        assertTrue(
-            "8searchNew.txt with priority 'high' should have a score of 75%",
-            results.get(2).getScore(results.getMaxScore().floatValue()) == 75);
-
-        // 10 /sites/default/1searchNew.txt      plain     20.11.13 10:03   score: 25
-        assertTrue(
-            "1searchNew.txt with priority 'low' should be the third",
-            results.get(9).getDocument().getPath().equals("/sites/default/1searchNew.txt"));
-        assertTrue(
-            "1searchNew.txt with priority 'low' should have a score of 25%",
-            results.get(9).getScore(results.getMaxScore().floatValue()) == 25);
-
-    }
-
-    /**
      * Tests searching in various document types.<p>
      *
      * @throws Throwable if something goes wrong
@@ -554,7 +435,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     public void testLimitTimeRanges() throws Exception {
 
         DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DF.setTimeZone(DateUtil.UTC);
+        DF.setTimeZone(CmsSearchUtil.TIMEZONE_UTC);
 
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
@@ -632,7 +513,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     public void testLimitTimeRangesOptimized() throws Exception {
 
         DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DF.setTimeZone(DateUtil.UTC);
+        DF.setTimeZone(CmsSearchUtil.TIMEZONE_UTC);
 
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");

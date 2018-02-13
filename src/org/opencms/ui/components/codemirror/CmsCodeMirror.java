@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.json.client.JSONException;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
@@ -85,6 +84,7 @@ implements Property<String>, Property.ValueChangeNotifier {
          * @param fileTypes the file types suported by this language
          */
         private CodeMirrorLanguage(String languageName, String[] fileTypes) {
+
             m_languageName = languageName;
             m_supportedFileTypes = new HashSet<String>(Arrays.asList(fileTypes));
         }
@@ -255,6 +255,7 @@ implements Property<String>, Property.ValueChangeNotifier {
          * @param themeName the theme name
          */
         private CodeMirrorTheme(String themeName) {
+
             this.m_themeName = themeName;
         }
 
@@ -293,6 +294,7 @@ implements Property<String>, Property.ValueChangeNotifier {
          * @param eventSource the field that caused the event.
          */
         public ValueChangeEvent(CmsCodeMirror eventSource) {
+
             super(eventSource);
         }
 
@@ -359,6 +361,7 @@ implements Property<String>, Property.ValueChangeNotifier {
      * Constructor.<p>
      */
     public CmsCodeMirror() {
+
         m_componentId = m_componentCount;
         m_componentCount++;
         m_codeValue = "";
@@ -409,7 +412,7 @@ implements Property<String>, Property.ValueChangeNotifier {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void call(JsonArray arguments) throws JSONException {
+            public void call(JsonArray arguments) {
 
                 onBlur(arguments.getString(0));
             }
@@ -419,7 +422,7 @@ implements Property<String>, Property.ValueChangeNotifier {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void call(JsonArray arguments) throws JSONException {
+            public void call(JsonArray arguments) {
 
                 onChange(arguments.getString(0));
             }

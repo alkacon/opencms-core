@@ -192,6 +192,8 @@ eclipse.classpath.file {
     }
 }
 
+eclipse.classpath.plusConfigurations = configurations.findAll { it.name.endsWith("Compile") }
+
 task wrapper(type: Wrapper){
 	gradleVersion = '4.4'
 }
@@ -414,7 +416,7 @@ task workplaceTheme (type: JavaExec) {
 
     classpath {
         [
-            sourceSets.main.compileClasspath
+            sourceSets.gwt.compileClasspath
  
         ]
     }
@@ -443,7 +445,7 @@ task opencmsFonts (type: JavaExec) {
 
     classpath {
         [
-            sourceSets.main.compileClasspath
+            sourceSets.gwt.compileClasspath
  
         ]
     }
@@ -1155,10 +1157,6 @@ task bindist (dependsOn: war, type: Zip){
 
 
 test {
-    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-    classpath += files(sourceSets.setup.java.outputDir) { builtBy 'setupClasses' }
-    classpath += files(sourceSets.modules.java.outputDir) { builtBy 'modulesClasses' }
-    classpath += files(sourceSets.gwt.java.outputDir) { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes
@@ -1176,10 +1174,7 @@ test {
 
 task testSingle(type: Test, dependsOn: [compileTestJava]) {
     description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
-    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-    classpath += files(sourceSets.setup.java.outputDir) { builtBy 'setupClasses' }
-    classpath += files(sourceSets.modules.java.outputDir) { builtBy 'modulesClasses' }
-    classpath += files(sourceSets.gwt.java.outputDir) { builtBy 'gwtClasses' }
+    classpath +=sourceSets.test.compileClasspath
     useJUnit()
     if (!project.hasProperty('testCaseToRun')){
         ext {

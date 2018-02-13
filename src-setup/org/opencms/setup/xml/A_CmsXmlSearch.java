@@ -182,12 +182,6 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             index = CmsStringUtil.FALSE;
         }
         CmsSetupXmlHelper.setValue(document, xpath + "/@" + CmsSearchConfiguration.A_INDEX, index);
-        if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
-            CmsSetupXmlHelper.setValue(
-                document,
-                xpath + "/@" + CmsSearchConfiguration.A_BOOST,
-                String.valueOf(field.getBoost()));
-        }
         if (field.isInExcerptAndStored()) {
             CmsSetupXmlHelper.setValue(document, xpath + "/@" + CmsSearchConfiguration.A_EXCERPT, String.valueOf(true));
         }

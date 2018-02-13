@@ -35,9 +35,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 
-import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
+import org.opencms.search.CmsSearchUtil;
 
 /**
  * This Solr post processor generates for each found document the corresponding link and
@@ -51,7 +51,7 @@ public class CmsSolrLinkProcessor implements I_CmsSolrPostSearchProcessor {
     public SolrDocument process(CmsObject cms, CmsResource resource, SolrInputDocument document) {
 
         document.addField("link", OpenCms.getLinkManager().substituteLink(cms, resource));
-        return ClientUtils.toSolrDocument(document);
+        return CmsSearchUtil.toSolrDocument(document);
     }
 
     /**

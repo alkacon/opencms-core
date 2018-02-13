@@ -2717,10 +2717,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     String copyFieldNames = solrElement.attributeValue(APPINFO_ATTR_COPY_FIELDS, "");
                     List<String> copyFields = CmsStringUtil.splitAsList(copyFieldNames, ',');
                     String defaultValue = solrElement.attributeValue(APPINFO_ATTR_DEFAULT);
-                    String defaultBoost = String.valueOf(CmsSearchField.BOOST_DEFAULT);
-                    float boost = Float.valueOf(
-                        solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
-                    CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
+                    CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue);
 
                     // create the field mappings for this element
                     Iterator<Element> ite = CmsXmlGenericWrapper.elementIterator(solrElement, APPINFO_ATTR_MAPPING);

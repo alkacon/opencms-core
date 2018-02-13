@@ -31,9 +31,9 @@
 
 package org.opencms.search.fields;
 
+import org.apache.solr.uninverting.UninvertingReader.Type;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
@@ -45,14 +45,7 @@ import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.lucene.uninverting.UninvertingReader.Type;
+import java.util.*;
 
 /**
  * Abstract implementation for OpenCms search field configurations.<p>
@@ -251,7 +244,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             extraction,
             properties,
             propertiesSearched);
-        document = setBoost(document, cms, resource, extraction, properties, propertiesSearched);
 
         return document;
     }
@@ -721,46 +713,4 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         return document;
     }
 
-    /**
-     * Extends the given document with a boost factor.<p>
-     *
-     * @param document the document to extend
-     * @param cms the OpenCms context used for building the search index
-     * @param resource the resource that is indexed
-     * @param extractionResult the plain text extraction result from the resource
-     * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource
-     *
-     * @return the document extended by a boost factor
-     */
-    protected I_CmsSearchDocument setBoost(
-        I_CmsSearchDocument document,
-        CmsObject cms,
-        CmsResource resource,
-        I_CmsExtractionResult extractionResult,
-        List<CmsProperty> properties,
-        List<CmsProperty> propertiesSearched) {
-
-        String value;
-        // set individual document boost factor for the search
-        float boost = CmsSearchField.BOOST_DEFAULT;
-        // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
-        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, propertiesSearched).getValue();
-        if (value != null) {
-            value = value.trim().toLowerCase();
-            if (value.equals(I_CmsSearchDocument.SEARCH_PRIORITY_MAX_VALUE)) {
-                boost = 2.0f;
-            } else if (value.equals(I_CmsSearchDocument.SEARCH_PRIORITY_HIGH_VALUE)) {
-                boost = 1.5f;
-            } else if (value.equals(I_CmsSearchDocument.SEARCH_PRIORITY_LOW_VALUE)) {
-                boost = 0.5f;
-            }
-        }
-        if (boost != CmsSearchField.BOOST_DEFAULT) {
-            // set individual document boost factor if required
-            document.setBoost(boost);
-        }
-
-        return document;
-    }
 }

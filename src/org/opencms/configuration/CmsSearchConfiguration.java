@@ -584,9 +584,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                         index = CmsStringUtil.FALSE;
                     }
                     fieldElement.addAttribute(A_INDEX, index);
-                    if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
-                        fieldElement.addAttribute(A_BOOST, String.valueOf(field.getBoost()));
-                    }
                     if (field.isInExcerptAndStored()) {
                         fieldElement.addAttribute(A_EXCERPT, String.valueOf(true));
                     }

@@ -31,6 +31,7 @@
 
 package org.opencms.search.fields;
 
+import org.apache.solr.uninverting.UninvertingReader.Type;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
@@ -38,17 +39,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.uninverting.UninvertingReader.Type;
-
 /**
  * A abstract implementation for a search field.<p>
  *
  * @since 8.5.0
  */
 public class CmsSearchField implements Serializable {
-
-    /** Th default boost factor (1.0), used in case no boost has been set for a field. */
-    public static final float BOOST_DEFAULT = 1.0f;
 
     /** Name of the field that contains the (optional) category of the document (hardcoded). */
     public static final String FIELD_CATEGORY = "category";
@@ -268,9 +264,6 @@ public class CmsSearchField implements Serializable {
     /** Serial version UID. */
     private static final long serialVersionUID = 3185631015824549119L;
 
-    /** The boost factor of the field. */
-    private float m_boost;
-
     /** A default value for the field in case the content does not provide the value. */
     private String m_defaultValue;
 
@@ -295,7 +288,6 @@ public class CmsSearchField implements Serializable {
     public CmsSearchField() {
 
         m_mappings = new ArrayList<I_CmsSearchFieldMapping>();
-        m_boost = BOOST_DEFAULT;
     }
 
     /**
@@ -303,18 +295,16 @@ public class CmsSearchField implements Serializable {
      *
      * @param name the name of the field, see {@link #setName(String)}
      * @param defaultValue the default value to use, see {@link #setDefaultValue(String)}
-     * @param boost the boost factor, see {@link #setBoost(float)}
      *
      */
-    public CmsSearchField(String name, String defaultValue, float boost) {
+    public CmsSearchField(String name, String defaultValue) {
 
         this();
         m_name = name;
-        m_boost = boost;
         m_defaultValue = defaultValue;
     }
 
-    /** To allow sorting on a field the field must be added to the map given to {@link org.apache.lucene.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
+    /** To allow sorting on a field the field must be added to the map given to {@link org.apache.solr.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
      *  The method adds all default fields.
      * @param uninvertingMap the map to which the fields are added.
      */
@@ -387,20 +377,6 @@ public class CmsSearchField implements Serializable {
             return CmsStringUtil.isEqual(m_name, ((CmsSearchField)obj).getName());
         }
         return false;
-    }
-
-    /**
-     * Returns the boost factor of this field.<p>
-     *
-     * The boost factor is a Lucene function that controls the "importance" of a field in the
-     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field
-     * less important for the result ranking, a higher value will make it more important.<p>
-     *
-     * @return the boost factor of this field
-     */
-    public float getBoost() {
-
-        return m_boost;
     }
 
     /**
@@ -491,43 +467,6 @@ public class CmsSearchField implements Serializable {
     public boolean isStored() {
 
         return m_stored;
-    }
-
-    /**
-     * Sets the boost factor for this field.<p>
-     *
-     * The boost factor is a Lucene function that controls the "importance" of a field in the
-     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field
-     * less important for the result ranking, a higher value will make it more important.<p>
-     *
-     * <b>Use with caution:</b> You should only use this if you fully understand the concept behind
-     * boost factors. Otherwise it is likely that your result rankings will be worse then with
-     * the default values.<p>
-     *
-     * @param boost the boost factor to set
-     */
-    public void setBoost(float boost) {
-
-        if (boost < 0.0F) {
-            boost = 0.0F;
-        }
-        m_boost = boost;
-    }
-
-    /**
-     * Sets the boost factor for this field from a String value.<p>
-     *
-     * @param boostAsString the boost factor to set
-     *
-     * @see #setBoost(float)
-     */
-    public void setBoost(String boostAsString) {
-
-        try {
-            setBoost(Float.valueOf(boostAsString).floatValue());
-        } catch (NumberFormatException e) {
-            setBoost(1.0F);
-        }
     }
 
     /**

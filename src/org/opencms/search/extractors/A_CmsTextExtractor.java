@@ -36,11 +36,11 @@ import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.metadata.DublinCore;
 import org.apache.tika.metadata.MSOffice;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.OfficeOpenXMLExtended;
-import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
@@ -147,20 +147,30 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
         // appends all known document meta data as content items
         combineContentItem(meta.get(DublinCore.TITLE), I_CmsExtractionResult.ITEM_TITLE, content, contentItems);
         combineContentItem(meta.get(MSOffice.KEYWORDS), I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
-        combineContentItem(
-            meta.get(TikaCoreProperties.TRANSITION_SUBJECT_TO_OO_SUBJECT),
-            I_CmsExtractionResult.ITEM_SUBJECT,
-            content,
-            contentItems);
+        String subject = meta.get(I_CmsExtractionResult.ITEM_SUBJECT);
+        if (StringUtils.isBlank(subject)) {
+            subject = meta.get(DublinCore.SUBJECT);
+        }
+        combineContentItem(subject, I_CmsExtractionResult.ITEM_SUBJECT, content, contentItems);
         combineContentItem(meta.get(MSOffice.AUTHOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
-        combineContentItem(meta.get(DublinCore.CREATOR), I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
+        String creator = meta.get("xmp:CreatorTool");
+        if (StringUtils.isBlank(creator)) {
+            creator = meta.get(DublinCore.CREATOR);
+        }
+        if (StringUtils.isBlank(creator)) {
+            creator = meta.get(I_CmsExtractionResult.ITEM_CREATOR);
+        }
+        combineContentItem(creator, I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
+        //
         combineContentItem(meta.get(MSOffice.CATEGORY), I_CmsExtractionResult.ITEM_CATEGORY, content, contentItems);
+        //
         combineContentItem(meta.get(MSOffice.COMMENTS), I_CmsExtractionResult.ITEM_COMMENTS, content, contentItems);
-        combineContentItem(
-            meta.get(OfficeOpenXMLExtended.COMPANY),
-            I_CmsExtractionResult.ITEM_COMPANY,
-            content,
-            contentItems);
+        String company = meta.get(OfficeOpenXMLExtended.COMPANY);
+        if (StringUtils.isBlank(company)) {
+            company = meta.get(MSOffice.COMPANY);
+        }
+        combineContentItem(company, I_CmsExtractionResult.ITEM_COMPANY, content, contentItems);
+        //
         combineContentItem(meta.get(MSOffice.MANAGER), I_CmsExtractionResult.ITEM_MANAGER, content, contentItems);
         // this constant seems to be missing from TIKA
         combineContentItem(

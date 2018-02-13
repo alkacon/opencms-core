@@ -69,7 +69,7 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
             System.out.println("\nKey: " + e.getKey());
             System.out.println("Value: " + e.getValue());
         }
-
+        //This should be 11, adding 10 for CmsTextExtractor.extractText, and adding one for new CmsExtractionResult.
         assertEquals(11, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
@@ -119,7 +119,7 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
             System.out.println("\nKey: " + e.getKey());
             System.out.println("Value: " + e.getValue());
         }
-
+        //This should be 10, adding 9 for CmsTextExtractor.extractText, and adding one for new CmsExtractionResult.
         assertEquals(10, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));

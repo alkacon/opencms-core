@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -309,7 +308,8 @@ public class TestCmsScheduler extends OpenCmsTestCase {
             ex = e;
         }
         assertNotNull("Expected exception not thrown when using invalid CRON expression", ex);
-
+        //FORMAT:Seconds,Minutes,Hours,Day-of-month,Month,Day-of-Week
+        //NOTE:"Support for specifying both a day-of-week AND a day-of-month parameter is not implemented."
         newInfo.setCronExpression("* * * * * ?");
         assertEquals(1, scheduler.getJobs().size());
 
@@ -335,7 +335,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
             JobDetailImpl tmp = (JobDetailImpl)JobBuilder.newJob(TestCmsJob.class).build();
             tmp.setName("myJob" + i);
             tmp.setGroup(Scheduler.DEFAULT_GROUP);
-            
+
             jobDetail[i] = tmp;
 
             SimpleTriggerImpl tmp2 = (SimpleTriggerImpl)SimpleScheduleBuilder.simpleSchedule().build();

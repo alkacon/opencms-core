@@ -61,7 +61,7 @@
 					<solrfield targetfield="mteaser" locale="none" />
 				</searchsetting>
 				<searchsetting element="Text" searchcontent="true">
-					<solrfield targetfield="ahtml" boost="2.0"/>
+					<solrfield targetfield="ahtml"/>
 				</searchsetting>
 				<searchsetting element="Release" searchcontent="false">
 					<solrfield targetfield="arelease" sourcefield="*_dt" />
