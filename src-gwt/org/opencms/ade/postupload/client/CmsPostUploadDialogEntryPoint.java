@@ -74,7 +74,7 @@ public class CmsPostUploadDialogEntryPoint extends A_CmsEntryPoint {
         };
         dialog.setCloseCmd(onFinish);
         dialog.setTitle(Messages.get().key(Messages.GUI_DIALOG_TITLE_0));
-        dialog.setWidth(600); //545
+        dialog.setWidth(950); //545
         dialog.loadAndShow();
     }
 
@@ -85,6 +85,6 @@ public class CmsPostUploadDialogEntryPoint extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-                                           return $wnd[@org.opencms.ade.postupload.shared.I_CmsDialogConstants::ATTR_CLOSE_LINK];
-                                           }-*/;
+        return $wnd[@org.opencms.ade.postupload.shared.I_CmsDialogConstants::ATTR_CLOSE_LINK];
+    }-*/;
 }

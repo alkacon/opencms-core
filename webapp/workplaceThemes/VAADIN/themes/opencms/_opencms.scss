@@ -1231,4 +1231,7 @@
 	    /* Turn off Chrome scroll anchoring because it doesn't work with Vaadin tables and produces weird "jumping" effects when updating a table. */ 
 		overflow-anchor: none;
 	}
+	& ~ .mce-tooltip, .mce-fullscreen {
+		z-index: 200000 !important;
+	}		
 }

@@ -28,6 +28,7 @@
 package org.opencms.ui.client;
 
 import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -114,6 +115,26 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
 
         super.onModuleLoad();
         exportUtitlityFunctions();
+        String tinyMCE = CmsCoreProvider.get().getTinymce().getLink();
+        CmsDebugLog.consoleLog("editorUrl = " + CmsCoreProvider.get().getContentEditorUrl());
+        CmsDebugLog.consoleLog("about = " + CmsCoreProvider.get().getAboutLink());
+        if (tinyMCE == null) {
+            CmsDebugLog.consoleLog("tinyMCE link is null");
+        } else {
+            ResourceLoader.get().loadScript(tinyMCE, new ResourceLoadListener() {
+
+                public void onError(ResourceLoadEvent event) {
+
+                    CmsDebugLog.consoleLog("eror");
+                }
+
+                public void onLoad(ResourceLoadEvent event) {
+
+                    CmsDebugLog.consoleLog("load");
+
+                }
+            });
+        }
     }
 
     /**
@@ -128,6 +149,14 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
                 @org.opencms.gwt.client.util.CmsDomUtil::ensureStyleSheetIncluded(Ljava/lang/String;)(cssURIs[i]);
             }
         }
+    }-*/;
+
+    /**
+     *
+     */
+    private native void foo() /*-{
+        $wnd.console.log("foo");
+        $wnd.console.log("bar");
     }-*/;
 
 }

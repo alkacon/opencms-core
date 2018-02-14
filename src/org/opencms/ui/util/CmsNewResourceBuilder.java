@@ -96,6 +96,7 @@ public class CmsNewResourceBuilder {
          * @param cms the CMS cntext
          */
         public PropertyEditorHelper(CmsObject cms) {
+
             super(cms);
         }
 
@@ -141,6 +142,7 @@ public class CmsNewResourceBuilder {
             propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
                 propertyConfig,
                 CmsMacroResolver.newWorkplaceLocaleResolver(cms));
+            CmsPropertyEditorHelper.updateWysiwygConfig(propertyConfig, cms, null);
 
             result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
             try {
@@ -228,6 +230,7 @@ public class CmsNewResourceBuilder {
      */
     public CmsNewResourceBuilder(CmsObject cms)
     throws CmsException {
+
         m_cms = OpenCms.initCmsObject(cms);
     }
 

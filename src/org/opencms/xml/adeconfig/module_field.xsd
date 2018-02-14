@@ -33,7 +33,7 @@
 		        <layouts>
 		           	<layout element="PreferFolder" widget="BooleanWidget" />
 		           	<layout element="Widget" widget="SelectorWidget" configuration="string|select|template" />
-		           	<layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)" />
+		           	<layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)|wysiwyg:%(key.label.wysiwyg)" />
 		        </layouts>
         </xsd:appinfo>
     </xsd:annotation>

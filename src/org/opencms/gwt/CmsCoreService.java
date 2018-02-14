@@ -45,6 +45,7 @@ import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsTinyMCEData;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -149,43 +150,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return result;
-    }
-
-    /**
-     * FInds a category in the given tree.<p>
-     *
-     * @param tree the the tree to search in
-     * @param path the path to search for
-     *
-     * @return the category with the given path or <code>null</code> if not found
-     */
-    private static CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
-
-        if (path == null) {
-            return null;
-        }
-        // we assume that the category to find is descendant of tree
-        List<CmsCategoryTreeEntry> children = tree;
-        boolean found = true;
-        while (found) {
-            if (children == null) {
-                return null;
-            }
-            // since the categories are sorted it is faster to go backwards
-            found = false;
-            for (int i = children.size() - 1; i >= 0; i--) {
-                CmsCategoryTreeEntry child = children.get(i);
-                if (path.equals(child.getPath())) {
-                    return child;
-                }
-                if (path.startsWith(child.getPath())) {
-                    children = child.getChildren();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -655,6 +619,43 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * FInds a category in the given tree.<p>
+     *
+     * @param tree the the tree to search in
+     * @param path the path to search for
+     *
+     * @return the category with the given path or <code>null</code> if not found
+     */
+    private static CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
+
+        if (path == null) {
+            return null;
+        }
+        // we assume that the category to find is descendant of tree
+        List<CmsCategoryTreeEntry> children = tree;
+        boolean found = true;
+        while (found) {
+            if (children == null) {
+                return null;
+            }
+            // since the categories are sorted it is faster to go backwards
+            found = false;
+            for (int i = children.size() - 1; i >= 0; i--) {
+                CmsCategoryTreeEntry child = children.get(i);
+                if (path.equals(child.getPath())) {
+                    return child;
+                }
+                if (path.startsWith(child.getPath())) {
+                    children = child.getChildren();
+                    found = true;
+                    break;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#changePassword(java.lang.String, java.lang.String, java.lang.String)
      */
     public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
@@ -727,24 +728,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         // no message pending, return null
         return null;
-    }
-
-    /**
-     * Collect GWT build ids from the different ADE modules.<p>
-     *
-     * @return the map of GWT build ids
-     */
-    protected Map<String, String> getBuildIds() {
-
-        List<CmsModule> modules = OpenCms.getModuleManager().getAllInstalledModules();
-        Map<String, String> result = new HashMap<String, String>();
-        for (CmsModule module : modules) {
-            String buildid = module.getParameter(CmsCoreData.KEY_GWT_BUILDID);
-            if (buildid != null) {
-                result.put(module.getName(), buildid);
-            }
-        }
-        return result;
     }
 
     /**
@@ -851,46 +834,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             return null;
 
         }
-    }
-
-    /**
-     * Helper method for locking a resource which returns some information on whether the locking
-     * failed, and why.<p>
-     *
-     * @param structureId the structure id of the resource
-     * @return the locking information
-     *
-     * @throws CmsException if something went wrong
-     */
-    protected CmsLockInfo getLock(CmsUUID structureId) throws CmsException {
-
-        CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-        return getLock(getCmsObject().getSitePath(res));
-    }
-
-    /**
-     * Helper method for locking a resource which returns some information on whether the locking
-     * failed, and why.<p>
-     *
-     * @param sitepath the site path of the resource to lock
-     * @return the locking information
-     *
-     * @throws CmsException if something went wrong
-     */
-    protected CmsLockInfo getLock(String sitepath) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        CmsLock lock = cms.getLock(sitepath);
-        if (lock.isOwnedBy(user)) {
-            return CmsLockInfo.forSuccess();
-        }
-        if (lock.getUserId().isNullUUID()) {
-            cms.lockResourceTemporary(sitepath);
-            return CmsLockInfo.forSuccess();
-        }
-        CmsUser owner = cms.readUser(lock.getUserId());
-        return CmsLockInfo.forLockedResource(owner.getName());
     }
 
     /**
@@ -1094,6 +1037,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         String aboutLink = OpenCms.getLinkManager().substituteLink(
             getCmsObject(),
             "/system/workplace/commons/about.jsp");
+        String tinyMCE = CmsWorkplace.getStaticResourceUri("/editors/tinymce/jscripts/tinymce/tinymce.min.js");
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -1119,6 +1063,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject()),
             OpenCms.getWorkplaceManager().isKeepAlive(),
             OpenCms.getADEManager().getParameters(getCmsObject()));
+        CmsTinyMCEData tinyMCEData = new CmsTinyMCEData();
+        tinyMCEData.setLink(tinyMCE);
+        data.setTinymce(tinyMCEData);
         return data;
     }
 
@@ -1267,6 +1214,64 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * Collect GWT build ids from the different ADE modules.<p>
+     *
+     * @return the map of GWT build ids
+     */
+    protected Map<String, String> getBuildIds() {
+
+        List<CmsModule> modules = OpenCms.getModuleManager().getAllInstalledModules();
+        Map<String, String> result = new HashMap<String, String>();
+        for (CmsModule module : modules) {
+            String buildid = module.getParameter(CmsCoreData.KEY_GWT_BUILDID);
+            if (buildid != null) {
+                result.put(module.getName(), buildid);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper method for locking a resource which returns some information on whether the locking
+     * failed, and why.<p>
+     *
+     * @param structureId the structure id of the resource
+     * @return the locking information
+     *
+     * @throws CmsException if something went wrong
+     */
+    protected CmsLockInfo getLock(CmsUUID structureId) throws CmsException {
+
+        CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        return getLock(getCmsObject().getSitePath(res));
+    }
+
+    /**
+     * Helper method for locking a resource which returns some information on whether the locking
+     * failed, and why.<p>
+     *
+     * @param sitepath the site path of the resource to lock
+     * @return the locking information
+     *
+     * @throws CmsException if something went wrong
+     */
+    protected CmsLockInfo getLock(String sitepath) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsLock lock = cms.getLock(sitepath);
+        if (lock.isOwnedBy(user)) {
+            return CmsLockInfo.forSuccess();
+        }
+        if (lock.getUserId().isNullUUID()) {
+            cms.lockResourceTemporary(sitepath);
+            return CmsLockInfo.forSuccess();
+        }
+        CmsUser owner = cms.readUser(lock.getUserId());
+        return CmsLockInfo.forLockedResource(owner.getName());
     }
 
     /**

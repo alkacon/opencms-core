@@ -43,20 +43,20 @@ public class CmsCoreData implements IsSerializable {
     /** A enumeration for the ADE context. */
     public enum AdeContext {
 
-        /** Context for container page. */
-        pageeditor,
-
         /** Context for classic direct edit provider. */
         editprovider,
+
+        /** Context for gallery dialog. */
+        gallery,
+
+        /** Context for container page. */
+        pageeditor,
 
         /** Context for publish dialog. */
         publish,
 
         /** Context for resource info dialog. */
         resourceinfo,
-
-        /** Context for gallery dialog. */
-        gallery,
 
         /** Context for sitemap. */
         sitemapeditor
@@ -296,6 +296,9 @@ public class CmsCoreData implements IsSerializable {
     /** The structure id of the resource. */
     private CmsUUID m_structureId;
 
+    /** The data for the TinyMCE editor. */
+    private CmsTinyMCEData m_tinymce;
+
     /** A flag which indicates whether the toolbar should be shown initially. */
     private boolean m_toolbarVisible;
 
@@ -354,6 +357,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getUploadFileSizeLimit(),
             clone.isKeepAlive(),
             clone.m_adeParameters);
+        setTinymce(clone.getTinymce());
     }
 
     /**
@@ -577,6 +581,17 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
+     * Gets the data for the TinyMCE editor.<p>
+     *
+     * @return the data for TinyMCE
+     */
+    public CmsTinyMCEData getTinymce() {
+
+        // TODO Auto-generated method stub
+        return m_tinymce;
+    }
+
+    /**
      * Returns the file upload size limit.<p>
      *
      * @return the file upload size limit
@@ -664,6 +679,16 @@ public class CmsCoreData implements IsSerializable {
     public boolean isToolbarVisible() {
 
         return m_toolbarVisible;
+    }
+
+    /**
+     * Sets the data for the TinyMCE editor.<p>
+     *
+     * @param tinyMceData the data for TinyMCE
+     */
+    public void setTinymce(CmsTinyMCEData tinyMceData) {
+
+        m_tinymce = tinyMceData;
     }
 
     /**

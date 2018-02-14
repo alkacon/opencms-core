@@ -114,6 +114,118 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
+     * Returns the WYSIWYG editor configuration as a JSON object.<p>
+     *
+     * @param widgetOptions the options for the wysiwyg widget
+     * @param cms the OpenCms context
+     * @param resource the edited resource
+     * @param contentLocale the edited content locale
+     *
+     * @return the configuration
+     */
+    public static JSONObject getJSONConfiguration(
+        CmsHtmlWidgetOption widgetOptions,
+        CmsObject cms,
+        CmsResource resource,
+        Locale contentLocale) {
+
+        JSONObject result = new JSONObject();
+
+        CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
+        Properties displayOptions = options.getDisplayOptions(cms);
+        try {
+            if (options.showElement("gallery.enhancedoptions", displayOptions)) {
+                result.put("cmsGalleryEnhancedOptions", true);
+            }
+            if (options.showElement("gallery.usethickbox", displayOptions)) {
+                result.put("cmsGalleryUseThickbox", true);
+            }
+            if (widgetOptions.isAllowScripts()) {
+                result.put("allowscripts", Boolean.TRUE);
+            }
+            result.put("fullpage", widgetOptions.isFullPage());
+            List<String> toolbarItems = widgetOptions.getButtonBarShownItems();
+            result.put("toolbar_items", toolbarItems);
+            Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            result.put("language", workplaceLocale.getLanguage());
+            String editorHeight = widgetOptions.getEditorHeight();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
+                editorHeight = editorHeight.replaceAll("px", "");
+                result.put("height", editorHeight);
+            }
+            // set CSS style sheet for current editor widget if configured
+            boolean cssConfigured = false;
+            String cssPath = "";
+            if (widgetOptions.useCss()) {
+                cssPath = widgetOptions.getCssPath();
+                // set the CSS path to null (the created configuration String passed to JS will not include this path then)
+                widgetOptions.setCssPath(null);
+                cssConfigured = true;
+            } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
+                Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+                try {
+                    String editedResourceSitePath = resource == null ? null : cms.getSitePath(resource);
+                    while (i.hasNext()) {
+                        I_CmsEditorCssHandler handler = i.next();
+                        if (handler.matches(cms, editedResourceSitePath)) {
+                            cssPath = handler.getUriStyleSheet(cms, editedResourceSitePath);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
+                                cssConfigured = true;
+                            }
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    // ignore, CSS could not be set
+                }
+            }
+            if (cssConfigured) {
+                result.put("content_css", OpenCms.getLinkManager().substituteLink(cms, cssPath));
+            }
+
+            if (widgetOptions.showStylesFormat()) {
+                try {
+                    CmsFile file = cms.readFile(widgetOptions.getStylesFormatPath());
+                    String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                    result.put("style_formats", new String(file.getContents(), characterEncoding));
+                } catch (CmsException cmsException) {
+                    LOG.error("Can not open file:" + widgetOptions.getStylesFormatPath(), cmsException);
+                } catch (UnsupportedEncodingException ex) {
+                    LOG.error(ex);
+                }
+            }
+            if (widgetOptions.isImportCss()) {
+                result.put("importCss", true);
+            }
+            String formatSelectOptions = widgetOptions.getFormatSelectOptions();
+            if (!CmsStringUtil.isEmpty(formatSelectOptions)
+                && !widgetOptions.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
+                result.put("block_formats", getTinyMceBlockFormats(formatSelectOptions));
+            }
+            CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
+                "tinymce");
+            Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
+            JSONObject directOptions = new JSONObject();
+            directOptions.put("paste_text_sticky_default", pasteText);
+            directOptions.put("paste_text_sticky", pasteText);
+            result.put("tinyMceOptions", directOptions);
+            // if spell checking is enabled, add the spell handler URL
+            if (OpenCmsSpellcheckHandler.isSpellcheckingEnabled()) {
+                result.put(
+                    "spellcheck_url",
+                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        cms,
+                        OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
+
+                result.put("spellcheck_language", contentLocale.getLanguage());
+            }
+        } catch (JSONException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
+    }
+
+    /**
      * Gets the block format configuration string for TinyMCE from the configured format select options.<p>
      *
      * @param formatSelectOptions the format select options
@@ -326,101 +438,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
      */
     protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource, Locale contentLocale) {
 
-        JSONObject result = new JSONObject();
-
-        CmsHtmlWidgetOption widgetOptions = getHtmlWidgetOption();
-        CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
-        Properties displayOptions = options.getDisplayOptions(cms);
-        try {
-            if (options.showElement("gallery.enhancedoptions", displayOptions)) {
-                result.put("cmsGalleryEnhancedOptions", true);
-            }
-            if (options.showElement("gallery.usethickbox", displayOptions)) {
-                result.put("cmsGalleryUseThickbox", true);
-            }
-            if (widgetOptions.isAllowScripts()) {
-                result.put("allowscripts", Boolean.TRUE);
-            }
-            result.put("fullpage", widgetOptions.isFullPage());
-            List<String> toolbarItems = widgetOptions.getButtonBarShownItems();
-            result.put("toolbar_items", toolbarItems);
-            Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            result.put("language", workplaceLocale.getLanguage());
-            String editorHeight = widgetOptions.getEditorHeight();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
-                editorHeight = editorHeight.replaceAll("px", "");
-                result.put("height", editorHeight);
-            }
-            // set CSS style sheet for current editor widget if configured
-            boolean cssConfigured = false;
-            String cssPath = "";
-            if (widgetOptions.useCss()) {
-                cssPath = widgetOptions.getCssPath();
-                // set the CSS path to null (the created configuration String passed to JS will not include this path then)
-                widgetOptions.setCssPath(null);
-                cssConfigured = true;
-            } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
-                Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
-                try {
-                    String editedResourceSitePath = resource == null ? null : cms.getSitePath(resource);
-                    while (i.hasNext()) {
-                        I_CmsEditorCssHandler handler = i.next();
-                        if (handler.matches(cms, editedResourceSitePath)) {
-                            cssPath = handler.getUriStyleSheet(cms, editedResourceSitePath);
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
-                                cssConfigured = true;
-                            }
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    // ignore, CSS could not be set
-                }
-            }
-            if (cssConfigured) {
-                result.put("content_css", OpenCms.getLinkManager().substituteLink(cms, cssPath));
-            }
-
-            if (widgetOptions.showStylesFormat()) {
-                try {
-                    CmsFile file = cms.readFile(widgetOptions.getStylesFormatPath());
-                    String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                    result.put("style_formats", new String(file.getContents(), characterEncoding));
-                } catch (CmsException cmsException) {
-                    LOG.error("Can not open file:" + widgetOptions.getStylesFormatPath(), cmsException);
-                } catch (UnsupportedEncodingException ex) {
-                    LOG.error(ex);
-                }
-            }
-            if (widgetOptions.isImportCss()) {
-                result.put("importCss", true);
-            }
-            String formatSelectOptions = widgetOptions.getFormatSelectOptions();
-            if (!CmsStringUtil.isEmpty(formatSelectOptions)
-                && !widgetOptions.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
-                result.put("block_formats", getTinyMceBlockFormats(formatSelectOptions));
-            }
-            CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
-                "tinymce");
-            Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
-            JSONObject directOptions = new JSONObject();
-            directOptions.put("paste_text_sticky_default", pasteText);
-            directOptions.put("paste_text_sticky", pasteText);
-            result.put("tinyMceOptions", directOptions);
-            // if spell checking is enabled, add the spell handler URL
-            if (OpenCmsSpellcheckHandler.isSpellcheckingEnabled()) {
-                result.put(
-                    "spellcheck_url",
-                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                        cms,
-                        OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
-
-                result.put("spellcheck_language", contentLocale.getLanguage());
-            }
-        } catch (JSONException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return result;
+        return getJSONConfiguration(getHtmlWidgetOption(), cms, resource, contentLocale);
     }
 
     /**

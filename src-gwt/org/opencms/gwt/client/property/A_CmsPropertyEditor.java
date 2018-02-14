@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -113,6 +114,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      */
     public static void checkWidgetRequirements(String key, I_CmsFormWidget widget) {
 
+        if (widget instanceof CmsTinyMCEWidget) {
+            return;
+        }
         if (!((widget instanceof I_CmsHasGhostValue) && (widget instanceof HasValueChangeHandlers<?>))) {
             throw new CmsWidgetNotSupportedException(key);
         }

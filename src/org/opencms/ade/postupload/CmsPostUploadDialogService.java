@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.CmsPropertyEditorHelper;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -196,6 +197,8 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             propertyDefinitions = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
                 propertyDefinitions,
                 CmsMacroResolver.newWorkplaceLocaleResolver(getCmsObject()));
+
+            CmsPropertyEditorHelper.updateWysiwygConfig(propertyDefinitions, getCmsObject(), res);
 
             result.setPropertyDefinitions(propertyDefinitions);
             result.setProperties(clientProperties);

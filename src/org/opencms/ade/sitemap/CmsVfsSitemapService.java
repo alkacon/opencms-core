@@ -75,6 +75,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
+import org.opencms.gwt.CmsPropertyEditorHelper;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
@@ -797,6 +798,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 cms.getRequestContext().addSiteRoot(openPath));
             Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
                 configData.getPropertyConfigurationAsMap());
+
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(configData.getBasePath());
             String siteRoot = cms.getRequestContext().getSiteRoot();
             String exportRfsPrefix = OpenCms.getStaticExportManager().getDefaultRfsPrefix();
@@ -835,6 +837,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryFolderProp.getValue())) {
                     defaultGalleryFolder = galleryFolderProp.getValue();
                 }
+                CmsPropertyEditorHelper.updateWysiwygConfig(propertyConfig, cms, baseDir);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }

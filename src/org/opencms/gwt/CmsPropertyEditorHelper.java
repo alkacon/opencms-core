@@ -27,6 +27,8 @@
 
 package org.opencms.gwt;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -42,30 +44,42 @@ import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.CmsHtmlWidget;
+import org.opencms.widgets.CmsHtmlWidgetOption;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
  * Helper class responsible for loading / saving properties when using the property dialog.<p>
  */
 public class CmsPropertyEditorHelper {
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyEditorHelper.class);
 
     /** The CMS context. */
     private CmsObject m_cms;
@@ -79,8 +93,74 @@ public class CmsPropertyEditorHelper {
      * @param cms the CMS context
      */
     public CmsPropertyEditorHelper(CmsObject cms) {
+
         m_cms = cms;
 
+    }
+
+    /**
+     * Updates the property configuration for properties using WYSIWYG widgets.<p>
+     *
+     * @param propertyConfig the property configuration
+     * @param cms the CMS context
+     * @param resource the current resource (may be null)
+     */
+    public static void updateWysiwygConfig(
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        CmsObject cms,
+        CmsResource resource) {
+
+        Map<String, CmsXmlContentProperty> wysiwygUpdates = Maps.newHashMap();
+        String wysiwygConfig = null;
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+            CmsXmlContentProperty prop = entry.getValue();
+            if (prop.getWidget().equals("wysiwyg")) {
+                if (wysiwygConfig == null) {
+                    String configStr = "";
+                    try {
+                        String configFromVfs = (String)CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().loadVfsObject(
+                            cms,
+                            "/system/config/wysiwyg/property-widget",
+                            new Transformer() {
+
+                                public Object transform(Object rootPath) {
+
+                                    try {
+                                        CmsFile file = cms.readFile(
+                                            (String)rootPath,
+                                            CmsResourceFilter.IGNORE_EXPIRATION);
+                                        return new String(file.getContents(), "UTF-8");
+                                    } catch (Exception e) {
+                                        return "";
+                                    }
+                                }
+                            });
+                        configStr = configFromVfs;
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+
+                    CmsHtmlWidgetOption opt = new CmsHtmlWidgetOption(configStr);
+                    Locale locale = resource != null
+                    ? OpenCms.getLocaleManager().getDefaultLocale(cms, resource)
+                    : Locale.ENGLISH;
+                    String json = CmsHtmlWidget.getJSONConfiguration(opt, cms, resource, locale).toString();
+                    List<String> nums = Lists.newArrayList();
+                    try {
+                        for (byte b : json.getBytes("UTF-8")) {
+                            nums.add("" + b);
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    wysiwygConfig = "v:" + CmsStringUtil.listAsString(nums, ",");
+                }
+                CmsXmlContentProperty prop2 = prop.withConfig(wysiwygConfig);
+                wysiwygUpdates.put(entry.getKey(), prop2);
+            }
+        }
+        propertyConfig.putAll(wysiwygUpdates);
     }
 
     /**
@@ -93,7 +173,8 @@ public class CmsPropertyEditorHelper {
      */
     public Map<CmsUUID, Map<String, CmsXmlContentProperty>> getDefaultProperties(
 
-        List<CmsUUID> structureIds) throws CmsException {
+        List<CmsUUID> structureIds)
+    throws CmsException {
 
         CmsObject cms = m_cms;
 
@@ -140,6 +221,7 @@ public class CmsPropertyEditorHelper {
         propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
             propertyConfig,
             CmsMacroResolver.newWorkplaceLocaleResolver(cms));
+        updateWysiwygConfig(propertyConfig, cms, resource);
 
         result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
         try {

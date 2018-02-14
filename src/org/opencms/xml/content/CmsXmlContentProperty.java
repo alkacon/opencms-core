@@ -396,6 +396,29 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Returns a modified copy of this bean with a different widget configuration.<p>
+     *
+     * @param config the new widget configuration
+     * @return the copy with the modified widget configuration
+     */
+    public CmsXmlContentProperty withConfig(String config) {
+
+        return new CmsXmlContentProperty(
+            m_name,
+            m_type,
+            m_visibility,
+            m_widget,
+            config,
+            m_ruleRegex,
+            m_ruleType,
+            m_default,
+            m_niceName,
+            m_description,
+            m_error,
+            m_preferFolder);
+    }
+
+    /**
      * Copies a property definition, but replaces an empty widget with a given widget.<p>
      *
      * @param defaultWidget the widget to use if the set widget is empty

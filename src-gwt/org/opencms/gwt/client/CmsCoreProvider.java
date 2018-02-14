@@ -668,4 +668,5 @@ public final class CmsCoreProvider extends CmsCoreData {
         };
         return unlockAction.executeSync() == null;
     }
+
 }

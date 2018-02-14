@@ -337,6 +337,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             boolean enableAdeTemplateSelect,
             PropertyEditingContext editContext,
             CmsActiveFieldData prevFieldData) {
+
             m_structureId = structureId;
             m_contextMenuHandler = contextMenuHandler;
             m_editName = editName;
@@ -577,6 +578,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
          * @param handler the handler
          */
         public PropertyEditorHandler(I_CmsContextMenuHandler handler) {
+
             super(handler);
         }
 
@@ -651,6 +653,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
          * @param form the form
          */
         public PropertiesFormDialog(String title, CmsForm form) {
+
             super(title, form);
             setMainContent(m_content);
         }
@@ -894,7 +897,6 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
         formHandler.setSubmitHandler(submitHandler);
         editor.getForm().setFormHandler(formHandler);
-
         editor.initializeWidgets(dialog);
 
         dialog.centerHorizontally(50);
