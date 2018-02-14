@@ -31,6 +31,8 @@
 
 package org.opencms.search.solr;
 
+import com.google.common.collect.Sets;
+import org.apache.commons.logging.Log;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -44,6 +46,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.CmsIndexNoContentException;
 import org.opencms.search.documents.Messages;
@@ -59,23 +62,12 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-
-import com.google.common.collect.Sets;
+import java.util.*;
 
 /**
  * Special document text extraction factory for Solr index.<p>
@@ -307,10 +299,15 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 String extracted = null;
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
                 try {
-                    extracted = value.getPlainText(cms);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted) && value.isSimpleType()) {
-                        // no text value for simple type, so take the string value as item
-                        extracted = value.getStringValue(cms);
+                    //the new DatePointField.createField dose not support milliseconds
+                    if(value instanceof CmsXmlDateTimeValue) {
+                        extracted = CmsSearchUtil.getDateAsIso8601(((CmsXmlDateTimeValue)value).getDateTimeValue());
+                    } else {
+                        extracted = value.getPlainText(cms);
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted) && value.isSimpleType()) {
+                            // no text value for simple type, so take the string value as item
+                            extracted = value.getStringValue(cms);
+                        }
                     }
                 } catch (Exception e) {
                     // it can happen that a exception is thrown while extracting a single value

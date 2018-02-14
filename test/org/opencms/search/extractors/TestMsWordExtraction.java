@@ -61,7 +61,7 @@ public class TestMsWordExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(10, items.size());
+        assertEquals(11, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
@@ -108,7 +108,7 @@ public class TestMsWordExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(9, items.size());
+        assertEquals(10, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();

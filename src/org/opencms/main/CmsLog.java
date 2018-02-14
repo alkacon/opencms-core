@@ -28,16 +28,24 @@
 package org.opencms.main;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.helpers.Loader;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.util.Loader;
 
 /**
  * Provides the OpenCms logging mechanism.<p>
@@ -82,7 +90,7 @@ public final class CmsLog {
         //
         try {
             // look for the log4j.properties that shipped with OpenCms
-            URL url = Loader.getResource("log4j.properties");
+            URL url = Loader.getResource("log4j.properties", null);
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
                 File log4jProps = new File(URLDecoder.decode(url.getPath(), Charset.defaultCharset().name()));
@@ -109,7 +117,8 @@ public final class CmsLog {
                         System.setProperty("opencms.logfile", m_logFileRfsPath);
                         System.setProperty("opencms.logfolder", m_logFileRfsFolder);
                         // re-read the configuration with the new environment variable available
-                        PropertyConfigurator.configure(path);
+                        ConfigurationSource source = ConfigurationSource.fromUri(Loader.getResource("/log4j2.xml", null).toURI());
+                        Configurator.initialize(null, source);
                     }
                 }
                 // can't localize this message since this would end in an endless logger init loop
@@ -186,4 +195,36 @@ public final class CmsLog {
         return result;
     }
 
+    /**
+     * Render throwable using Throwable.printStackTrace.
+     * <p>This code copy from "org.apache.log4j.DefaultThrowableRenderer.render(Throwable throwable)"</p>
+     * @param throwable throwable, may not be null.
+     * @return string representation.
+     */
+    public static String[] render(final Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        try {
+            throwable.printStackTrace(pw);
+        } catch(RuntimeException ex) {
+        }
+        pw.flush();
+        LineNumberReader reader = new LineNumberReader(
+                new StringReader(sw.toString()));
+        ArrayList<String> lines = new ArrayList<>();
+        try {
+          String line = reader.readLine();
+          while(line != null) {
+            lines.add(line);
+            line = reader.readLine();
+          }
+        } catch(IOException ex) {
+            if (ex instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            lines.add(ex.toString());
+        }
+        //String[] tempRep = new String[lines.size()];
+        return lines.toArray(new String[0]);
+    }
 }

@@ -657,6 +657,8 @@ public class OpenCmsTestCase extends TestCase {
         List<String> classNames = new ArrayList<String>();
 
         for (String path : classpaths) {
+            if(path.startsWith(File.separator))
+                continue;
             File baseFile = new File(path);
             String basePath = baseFile.getPath();
             List<File> classFiles = CmsFileUtil.getFiles(path, filter, true);

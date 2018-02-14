@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
-    version="2.0">
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
 
     <description><![CDATA[
         <h1>The OpenCms / JSP integration tag library</h1>
@@ -13,7 +13,7 @@
         For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.</p>
     ]]></description>
     <display-name>OpenCms JSP standard taglib</display-name>
-    <tlib-version>1.0</tlib-version>
+    <tlib-version>1.1</tlib-version>
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
 
@@ -2980,7 +2980,7 @@
         <name>isSubSitemap</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
-            java.lang.String isSubSitemap(org.opencms.file.CmsResource)
+            boolean isSubSitemap(org.opencms.file.CmsResource)
         </function-signature>
     </function>
 
@@ -3004,7 +3004,7 @@
         <name>changeFileNameSuffixToo</name>
         <function-class>org.opencms.util.CmsStringUtil</function-class>
         <function-signature>
-            java.lang.String changeFileNameSuffixToo(java.lang.String, java.lang.String)
+            java.lang.String changeFileNameSuffixTo(java.lang.String,java.lang.String)
         </function-signature>
     </function>
 

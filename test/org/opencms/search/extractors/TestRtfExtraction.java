@@ -50,7 +50,7 @@ public class TestRtfExtraction extends OpenCmsTestCase {
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorRtf.getExtractor().extractText(in);
         Map<String, String> items = extractionResult.getContentItems();
-        assertEquals(5, items.size());
+        assertEquals(6, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));

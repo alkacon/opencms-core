@@ -27,19 +27,12 @@
 
 package org.opencms.search.fields;
 
-import org.opencms.file.CmsPropertyDefinition;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.opencms.file.CmsPropertyDefinition;
+
+import java.util.*;
 
 /**
  * Describes a configuration of fields that are used in building a search index.<p>
@@ -106,7 +99,6 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
             true,
             true,
             null,
-            CmsSearchField.BOOST_DEFAULT,
             null);
         field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null, true));
         result.addField(field);
@@ -119,7 +111,6 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
             true,
             false,
             false,
-            0.0f,
             null);
         field.addMapping(
             new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE, true));

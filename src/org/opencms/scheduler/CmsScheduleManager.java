@@ -37,7 +37,6 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -47,15 +46,18 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 
-import org.quartz.CronTrigger;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
+import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.TriggerKey;
+import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.triggers.CronTriggerImpl;
 
 /**
  * Manages the OpenCms scheduled jobs.<p>
@@ -139,7 +141,7 @@ public class CmsScheduleManager implements Job {
         CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(SCHEDULER_JOB_INFO);
 
         if (jobInfo == null) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_JOB_1, context.getJobDetail().getFullName()));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_JOB_1, ((JobDetailImpl)context.getJobDetail()).getFullName()));
             // can not continue
             return;
         }
@@ -354,11 +356,12 @@ public class CmsScheduleManager implements Job {
         }
 
         // generate Quartz job trigger
-        CronTrigger trigger = new CronTrigger(jobId, Scheduler.DEFAULT_GROUP);
-
+        CronTriggerImpl trigger ;
         try {
-            trigger.setCronExpression(jobInfo.getCronExpression());
-        } catch (ParseException e) {
+            trigger = (CronTriggerImpl)CronScheduleBuilder.cronSchedule(jobInfo.getCronExpression()).build();
+            trigger.setName(jobId);
+            trigger.setGroup(Scheduler.DEFAULT_GROUP);
+        } catch (Exception e) {
             if (idCreated) {
                 jobInfo.setId(null);
             }
@@ -393,7 +396,9 @@ public class CmsScheduleManager implements Job {
         if (jobInfo.isActive()) {
 
             // generate Quartz job detail
-            JobDetail jobDetail = new JobDetail(jobInfo.getId(), Scheduler.DEFAULT_GROUP, CmsScheduleManager.class);
+            JobDetailImpl jobDetail = (JobDetailImpl)JobBuilder.newJob(CmsScheduleManager.class).build();
+            jobDetail.setName(jobInfo.getId());
+            jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
 
             // add the trigger to the job info
             jobInfo.setTrigger(trigger);
@@ -437,7 +442,10 @@ public class CmsScheduleManager implements Job {
                     jobInfo.getClassName());
                 if (oldJob != null) {
                     // make sure an old job is re-scheduled
-                    jobDetail = new JobDetail(oldJob.getId(), Scheduler.DEFAULT_GROUP, CmsScheduleManager.class);
+
+                    jobDetail = (JobDetailImpl)JobBuilder.newJob(CmsScheduleManager.class).build();
+                    jobDetail.setName(oldJob.getId());
+                    jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
                     jobDetail.setJobDataMap(jobData);
                     try {
                         m_scheduler.scheduleJob(jobDetail, oldJob.getTrigger());
@@ -528,7 +536,7 @@ public class CmsScheduleManager implements Job {
             // job currently active, remove it from the Quartz scheduler
             try {
                 // try to remove the job from Quartz
-                m_scheduler.unscheduleJob(jobId, Scheduler.DEFAULT_GROUP);
+                m_scheduler.unscheduleJob(new TriggerKey(jobId, Scheduler.DEFAULT_GROUP));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNSCHEDULED_JOB_1, jobId));
                 }

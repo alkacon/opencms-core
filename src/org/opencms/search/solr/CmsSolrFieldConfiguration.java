@@ -31,12 +31,10 @@
 
 package org.opencms.search.solr;
 
+import org.apache.commons.logging.Log;
+import org.apache.solr.common.SolrInputDocument;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
+import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -49,12 +47,7 @@ import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsLuceneField;
-import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.search.fields.CmsSearchFieldMapping;
-import org.opencms.search.fields.CmsSearchFieldMappingType;
-import org.opencms.search.fields.I_CmsSearchFieldMapping;
+import org.opencms.search.fields.*;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -63,18 +56,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.solr.common.SolrInputDocument;
+import java.util.*;
 
 /**
  * The search field implementation for Solr.<p>
@@ -351,7 +333,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             Map<String, String> fieldMappings = extractionResult.getFieldMappings();
             for (String fieldName : fieldMappings.keySet()) {
                 String value = fieldMappings.get(fieldName);
-                CmsSolrField f = new CmsSolrField(fieldName, null, null, null, 0);
+                CmsSolrField f = new CmsSolrField(fieldName, null, null, null);
                 document.addSearchField(f, value);
                 systemFields.add(fieldName);
             }
@@ -513,7 +495,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                                 CmsSearchField.FIELD_TITLE_UNSTORED,
                                 locale) + "_s";
 
-                            final CmsSolrField f = new CmsSolrField(effFieldName, null, null, null, 0);
+                            final CmsSolrField f = new CmsSolrField(effFieldName, null, null, null);
                             document.addSearchField(f, value);
                         }
                     }
@@ -552,8 +534,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
                         null,
                         null,
-                        null,
-                        CmsSearchField.BOOST_DEFAULT),
+                        null),
                     prop.getValue());
 
                 // Also write the property using the dynamic field '_s' in order to prevent tokenization
@@ -563,8 +544,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES + "_s",
                         null,
                         null,
-                        null,
-                        CmsSearchField.BOOST_DEFAULT),
+                        null),
                     prop.getValue());
             }
         }
@@ -576,8 +556,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT,
                         null,
                         null,
-                        null,
-                        CmsSearchField.BOOST_DEFAULT),
+                        null),
                     prop.getValue());
 
                 // Also write the property using the dynamic field '_s' in order to prevent tokenization
@@ -587,8 +566,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT + "_s",
                         null,
                         null,
-                        null,
-                        CmsSearchField.BOOST_DEFAULT),
+                        null),
                     prop.getValue());
             }
         }
@@ -708,8 +686,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             CmsSearchField.FIELD_CONTENT,
             null,
             null,
-            null,
-            CmsSearchField.BOOST_DEFAULT);
+            null);
         solrField.addMapping(
             new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
         m_solrFields.put(solrField.getName(), solrField);
@@ -718,8 +695,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
                 Collections.singletonList(locale.toString() + CmsSearchField.FIELD_EXCERPT),
                 locale,
-                null,
-                CmsSearchField.BOOST_DEFAULT);
+                null);
             solrField.addMapping(
                 new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
             m_solrFields.put(solrField.getName(), solrField);
@@ -728,39 +704,39 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         /*
          * Fields filled within appendFields
          */
-        CmsSolrField sfield = new CmsSolrField(CmsSearchField.FIELD_MIMETYPE, null, null, null, 0);
+        CmsSolrField sfield = new CmsSolrField(CmsSearchField.FIELD_MIMETYPE, null, null, null);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_FILENAME, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_FILENAME, null, null, null);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_VERSION, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_VERSION, null, null, null);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_CHANNEL, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_CHANNEL, null, null, null);
         m_solrFields.put(sfield.getName(), sfield);
 
         /*
          * Fields with mapping
          */
-        sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null);
         CmsSearchFieldMapping map = new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.ATTRIBUTE,
             CmsSearchField.FIELD_STATE);
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_LAST_MODIFIED, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_LAST_MODIFIED, null, null, null);
         map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_LAST_MODIFIED);
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_CREATED, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_CREATED, null, null, null);
         map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_CREATED);
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_META, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_META, null, null, null);
         map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE);
         sfield.addMapping(map);
         map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_DESCRIPTION);
@@ -769,14 +745,14 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_EXCLUDE, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_EXCLUDE, null, null, null);
         map = new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY_SEARCH,
             CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE);
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_CONTAINER_TYPES, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_CONTAINER_TYPES, null, null, null);
         map = new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.DYNAMIC,
             "org.opencms.search.galleries.CmsGallerySearchFieldMapping");
@@ -784,7 +760,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_ADDITIONAL_INFO, null, null, null, 0);
+        sfield = new CmsSolrField(CmsSearchField.FIELD_ADDITIONAL_INFO, null, null, null);
         map = new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.DYNAMIC,
             "org.opencms.search.galleries.CmsGallerySearchFieldMapping");

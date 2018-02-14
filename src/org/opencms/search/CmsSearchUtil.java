@@ -27,6 +27,11 @@
 
 package org.opencms.search;
 
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.SolrInputField;
+import org.apache.solr.common.util.ContentStream;
+import org.apache.solr.common.util.ContentStreamBase;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
@@ -35,11 +40,9 @@ import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 
@@ -58,6 +61,9 @@ public final class CmsSearchUtil {
 
     /** Variable to hold an UTC timezone object. */
     private static final TimeZone TIMEZONE_UTC = TimeZone.getTimeZone("UTC");
+
+    /** Variable to hold an UTC timezone object. */
+    private static final TimeZone TIMEZONE_GMT = TimeZone.getTimeZone("GMT");
 
     /**
      * Private constructor of utitlity class.<p>
@@ -220,4 +226,179 @@ public final class CmsSearchUtil {
 
         return String.format("[%s TO %s]", from, to);
     }
+
+    /**
+     * Take a string and make it an iterable ContentStream
+     */
+    public static Collection<ContentStream> toContentStreams(final String str, final String contentType) {
+
+        if (str == null)
+            return null;
+
+        ArrayList<ContentStream> streams = new ArrayList<>(1);
+        ContentStreamBase ccc = new ContentStreamBase.StringStream(str);
+        ccc.setContentType(contentType);
+        streams.add(ccc);
+        return streams;
+    }
+
+    /**
+     * @param d SolrDocument to convert
+     * @return a SolrInputDocument with the same fields and values as the
+     *   SolrDocument.
+     * @deprecated This method will be removed in Solr 6.0
+     */
+    @Deprecated
+    public static SolrInputDocument toSolrInputDocument(SolrDocument d) {
+
+        SolrInputDocument doc = new SolrInputDocument();
+        d.getFieldNames().forEach(name -> doc.addField(name, d.getFieldValue(name)));
+        return doc;
+    }
+
+    /**
+     * @param d SolrInputDocument to convert
+     * @return a SolrDocument with the same fields and values as the SolrInputDocument
+     * @deprecated This method will be removed in Solr 6.0
+     */
+    @Deprecated
+    public static SolrDocument toSolrDocument(SolrInputDocument d) {
+
+        SolrDocument doc = new SolrDocument();
+        for (SolrInputField field : d) {
+            doc.setField(field.getName(), field.getValue());
+        }
+        if (d.getChildDocuments() != null) {
+            for (SolrInputDocument in : d.getChildDocuments()) {
+                doc.addChildDocument(toSolrDocument(in));
+            }
+
+        }
+        return doc;
+    }
+
+
+
+
+
+    //start HttpClient
+    /**
+     * Date format pattern used to parse HTTP date headers in RFC 1123 format.
+     */
+    public static final String PATTERN_RFC1123 = "EEE, dd MMM yyyy HH:mm:ss zzz";
+
+    /**
+     * Date format pattern used to parse HTTP date headers in RFC 1036 format.
+     */
+    public static final String PATTERN_RFC1036 = "EEEE, dd-MMM-yy HH:mm:ss zzz";
+
+    /**
+     * Date format pattern used to parse HTTP date headers in ANSI C
+     * <code>asctime()</code> format.
+     */
+    public static final String PATTERN_ASCTIME = "EEE MMM d HH:mm:ss yyyy";
+    //These are included for back compat
+    private static final Collection<String> DEFAULT_HTTP_CLIENT_PATTERNS = Arrays.asList(
+            PATTERN_ASCTIME, PATTERN_RFC1036, PATTERN_RFC1123);
+    //---------------------------------------------------------------------------------------
+
+    /**
+     * A suite of default date formats that can be parsed, and thus transformed to the Solr specific format
+     */
+    public static final Collection<String> DEFAULT_DATE_FORMATS = new ArrayList<>();
+
+    private static final Date DEFAULT_TWO_DIGIT_YEAR_START;
+
+    static {
+        DEFAULT_DATE_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DEFAULT_DATE_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss");
+        DEFAULT_DATE_FORMATS.add("yyyy-MM-dd");
+        DEFAULT_DATE_FORMATS.add("yyyy-MM-dd hh:mm:ss");
+        DEFAULT_DATE_FORMATS.add("yyyy-MM-dd HH:mm:ss");
+        DEFAULT_DATE_FORMATS.add("EEE MMM d hh:mm:ss z yyyy");
+        DEFAULT_DATE_FORMATS.addAll(DEFAULT_HTTP_CLIENT_PATTERNS);
+
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.ROOT);
+        calendar.set(2000, Calendar.JANUARY, 1, 0, 0);
+        DEFAULT_TWO_DIGIT_YEAR_START = calendar.getTime();
+    }
+
+    /**
+     * Returns a formatter that can be use by the current thread if needed to
+     * convert Date objects to the Internal representation.
+     *
+     * @param d The input date to parse
+     * @return The parsed {@link java.util.Date}
+     * @throws java.text.ParseException If the input can't be parsed
+     */
+    public static Date parseDate(String d) throws ParseException {
+        return parseDate(d, DEFAULT_DATE_FORMATS);
+    }
+
+    public static Date parseDate(String d, Collection<String> fmts) throws ParseException {
+        // 2007-04-26T08:05:04Z
+        if (d.endsWith("Z") && d.length() > 20) {
+            return DATEFORMAT_ISO_8601.parse(d);
+        }
+        return parseDate(d, fmts, null);
+    }
+
+    /**
+     * Slightly modified from org.apache.commons.httpclient.util.DateUtil.parseDate
+     * <p>
+     * Parses the date value using the given date formats.
+     *
+     * @param dateValue   the date value to parse
+     * @param dateFormats the date formats to use
+     * @param startDate   During parsing, two digit years will be placed in the range
+     *                    <code>startDate</code> to <code>startDate + 100 years</code>. This value may
+     *                    be <code>null</code>. When <code>null</code> is given as a parameter, year
+     *                    <code>2000</code> will be used.
+     * @return the parsed date
+     * @throws ParseException if none of the dataFormats could parse the dateValue
+     */
+    public static Date parseDate(String dateValue, Collection<String> dateFormats, Date startDate) throws ParseException {
+
+        if (dateValue == null) {
+            throw new IllegalArgumentException("dateValue is null");
+        }
+        if (dateFormats == null) {
+            dateFormats = DEFAULT_HTTP_CLIENT_PATTERNS;
+        }
+        if (startDate == null) {
+            startDate = DEFAULT_TWO_DIGIT_YEAR_START;
+        }
+        // trim single quotes around date if present
+        // see issue #5279
+        if (dateValue.length() > 1
+                && dateValue.startsWith("'")
+                && dateValue.endsWith("'")
+                ) {
+            dateValue = dateValue.substring(1, dateValue.length() - 1);
+        }
+
+        SimpleDateFormat dateParser = null;
+        Iterator formatIter = dateFormats.iterator();
+
+        while (formatIter.hasNext()) {
+            String format = (String) formatIter.next();
+            if (dateParser == null) {
+                dateParser = new SimpleDateFormat(format, Locale.ENGLISH);
+                dateParser.setTimeZone(TIMEZONE_GMT);
+                dateParser.set2DigitYearStart(startDate);
+            } else {
+                dateParser.applyPattern(format);
+            }
+            try {
+                return dateParser.parse(dateValue);
+            } catch (ParseException pe) {
+                // ignore this exception, we will try the next format
+            }
+        }
+
+        // we were unable to parse the date
+        throw new ParseException("Unable to parse the date " + dateValue, 0);
+    }
+
 }

@@ -68,8 +68,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -157,7 +157,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         /**
          * @see org.opencms.test.I_CmsLogHandler#handleLogEvent(org.apache.log4j.spi.LoggingEvent)
          */
-        public void handleLogEvent(LoggingEvent event) {
+        public void handleLogEvent(LogEvent event) {
 
             String message = event.getMessage().toString();
             if (event.getLevel().equals(Level.TRACE)) {
@@ -400,7 +400,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
         } finally {
             publish();
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
         }
     }
 
@@ -443,7 +443,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE, "key=c", "key=a", "key=b");
 
         } finally {
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
         }
 
     }
@@ -540,7 +540,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a");
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
             deleteConfiguration("/system/dummy.config");
             deleteConfiguration("/system/level1/level2/baz.config");
             publish();
@@ -948,7 +948,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         } finally {
             publish();
             OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCmsTestLogAppender.setHandler(null);
+            OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
         }
     }
 

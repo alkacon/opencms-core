@@ -747,7 +747,7 @@ public class CmsShell {
         try {
             if (m_additionalShellCommands != null) {
                 m_additionalShellCommands.shellExit();
-            } else {
+            } else if(null != m_shellCommands) {
                 m_shellCommands.shellExit();
             }
         } catch (Throwable t) {

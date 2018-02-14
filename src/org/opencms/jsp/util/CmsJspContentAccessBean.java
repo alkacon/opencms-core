@@ -1066,4 +1066,13 @@ public class CmsJspContentAccessBean {
 
         return new CmsJspCategoryAccessBean(getCmsObject(), m_resource);
     }
+
+    /**
+     * Get the current resource
+     * @return the resource current access
+     */
+    public CmsResource getResource() {
+
+        return m_resource;
+    }
 }

@@ -44,7 +44,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Oracle/OCI implementation of the project driver methods.<p>
@@ -150,7 +149,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
 
             // update the file content in the contents table
             stmt.setString(1, publishJobHistoryId.toString());
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
+            res = stmt.executeQuery();
             if (!res.next()) {
                 throw new CmsDbEntryNotFoundException(
                     Messages.get().container(Messages.ERR_READ_PUBLISH_JOB_1, publishJobHistoryId));

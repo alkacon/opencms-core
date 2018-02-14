@@ -61,7 +61,8 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(10, items.size());
+        //it should be 11,Add 10 in A_CmsTextExtractor.extractText,and add 1 when new CmsExtractionResult
+        assertEquals(11, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
@@ -108,7 +109,8 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(9, items.size());
+        //it should be 11,Add 10 in A_CmsTextExtractor.extractText,and add 1 when new CmsExtractionResult
+        assertEquals(10, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();

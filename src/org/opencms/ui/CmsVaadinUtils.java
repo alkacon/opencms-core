@@ -38,6 +38,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -60,8 +61,8 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.ClassUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.logging.Log;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -219,7 +220,7 @@ public final class CmsVaadinUtils {
         + "    });";
 
     /** The logger of this class. */
-    private static final Logger LOG = Logger.getLogger(CmsVaadinUtils.class);
+    private static final Log LOG = CmsLog.getLog(CmsVaadinUtils.class);
 
     /**
      * Hidden default constructor for utility class.<p>

@@ -150,7 +150,10 @@ public class CmsContentFolderDescriptor {
                 return m_folder.getRootPath();
             }
         } else if (m_basePath != null) {
-            return CmsStringUtil.joinPaths(m_basePath, m_folderName);
+            String destPath = CmsStringUtil.joinPaths(m_basePath, m_folderName);
+            if(pageFolderPath != null && pageFolderPath.startsWith(destPath))
+                return pageFolderPath;
+            return destPath;
         } else if (m_isPageRelative) {
             if (pageFolderPath == null) {
                 throw new IllegalArgumentException(
@@ -158,6 +161,12 @@ public class CmsContentFolderDescriptor {
             }
             return CmsStringUtil.joinPaths(pageFolderPath, ELEMENTS_FOLDER_NAME);
         } else {
+            String stdBasePath = CmsStringUtil.joinPaths(
+                "/", CmsADEManager.CONTENT_FOLDER_NAME, m_folderName, "/");
+            if(null!=pageFolderPath && pageFolderPath.startsWith(stdBasePath)) {
+                stdBasePath = CmsResource.getFolderPath(pageFolderPath);
+                return cms.getRequestContext().getSiteRoot() + stdBasePath;
+            }
             return CmsStringUtil.joinPaths(
                 cms.getRequestContext().getSiteRoot(),
                 CmsADEManager.CONTENT_FOLDER_NAME,

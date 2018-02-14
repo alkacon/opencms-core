@@ -2550,7 +2550,42 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long releasedBefore,
         long expiredAfter,
         long expiredBefore,
-        int mode) throws CmsDataAccessException {
+        int mode)
+    throws CmsDataAccessException {
+
+        return readResourceTree(
+            dbc,
+            projectId,
+            parentPath,
+            type,
+            state,
+            lastModifiedAfter,
+            lastModifiedBefore,
+            releasedAfter,
+            releasedBefore,
+            expiredAfter,
+            expiredBefore,
+            mode,
+            -1);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(CmsDbContext, CmsUUID, String, int, CmsResourceState, long, long, long, long, long, long, int, int)
+     */
+    public List<CmsResource> readResourceTree(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        String parentPath,
+        int type,
+        CmsResourceState state,
+        long lastModifiedAfter,
+        long lastModifiedBefore,
+        long releasedAfter,
+        long releasedBefore,
+        long expiredAfter,
+        long expiredBefore,
+        int mode,
+        int limit) throws CmsDataAccessException {
 
         List<CmsResource> result = new ArrayList<CmsResource>();
 
@@ -2580,6 +2615,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 q.setParameter(i + 1, params.get(i));
             }
 
+            if (limit > 0)
+                q.setMaxResults(limit);
             @SuppressWarnings("unchecked")
             List<Object[]> res = q.getResultList();
             for (Object[] o : res) {

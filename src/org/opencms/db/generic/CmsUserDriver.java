@@ -977,7 +977,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String poolUrl = config.get("db.user.pool");
         String classname = config.get("db.user.sqlmanager");
         m_sqlManager = initSqlManager(classname);
-        m_sqlManager.init(I_CmsUserDriver.DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsUserDriver.DRIVER_TYPE_ID, poolUrl, driverManager);
 
         m_driverManager = driverManager;
 

@@ -185,12 +185,6 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         fieldValue = res.getField("ahomepage_en");
         assertTrue(fieldValue.contains("/sites/default/index.html"));
 
-        // Test the boost to have a complete set of test cases
-        // the boost for a field can only be set for "SolrInputDocument"s
-        // fields of documents that are returned as query result "SolrDocument"s
-        // never have a boost
-        float boost = ((SolrInputDocument)res.getDocument().getDocument()).getField("ahtml_en").getBoost();
-        assertTrue(1.0F == boost);
 
         //////////////////
         // MAPPING TEST //

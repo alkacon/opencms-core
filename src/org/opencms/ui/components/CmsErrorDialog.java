@@ -34,7 +34,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.Messages;
 import org.opencms.util.CmsUUID;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -103,7 +103,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_icon.setValue(FontOpenCms.ERROR.getHtml());
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         final String labelId = "label" + new CmsUUID().toString();
-        String stacktrace = message + "\n\n" + ExceptionUtils.getFullStackTrace(t);
+        String stacktrace = message + "\n\n" + ExceptionUtils.getStackTrace(t);
         m_hiddenStack.setId(labelId);
         m_hiddenStack.setValue(stacktrace);
         m_errorLabel.setValue(stacktrace);

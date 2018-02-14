@@ -65,9 +65,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.digester.CallMethodRule;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.Rule;
+import org.apache.commons.digester3.CallMethodRule;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 
 import org.dom4j.Element;
 import org.xml.sax.Attributes;
@@ -910,7 +910,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
+     * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
 
@@ -970,19 +970,19 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add rules for dialog handlers
         digester.addObjectCreate(
             "*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER, "addDialogHandler");
         digester.addCallMethod(
             "*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
 
         // add rules for editor handler
-        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, A_CLASS, CmsConfigurationException.class);
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, CmsConfigurationException.class.getName(), A_CLASS);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, "setEditorHandler");
 
         // add rules for editor action handler
-        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, CmsConfigurationException.class.getName(), A_CLASS);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
 
         // add rules for editor css handler classes
@@ -995,8 +995,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add rules for pre editor action classes
         digester.addObjectCreate(
             "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext(
             "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
             "addPreEditorConditionDefinition");
@@ -1014,8 +1014,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add rules for direct edit provider
         digester.addObjectCreate(
             "*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addCallMethod(
             "*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
@@ -1048,8 +1048,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // set the gallery upload folder handler
         digester.addObjectCreate(
             "*/" + N_WORKPLACE + "/" + N_REPOSITORY_FOLDER,
-            A_CLASS,
-            CmsConfigurationException.class);
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_REPOSITORY_FOLDER, "setRepositoryFolderHandler");
 
         // add localized folders rule

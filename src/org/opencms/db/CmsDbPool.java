@@ -31,20 +31,13 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsCredentialsResolver;
-import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDriver;
-import org.apache.commons.pool.impl.GenericKeyedObjectPool;
-import org.apache.commons.pool.impl.GenericKeyedObjectPoolFactory;
-import org.apache.commons.pool.impl.GenericObjectPool;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Various methods to create DBCP pools.<p>
@@ -59,9 +52,6 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * @since 6.0.0
  */
 public final class CmsDbPool {
-
-    /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections. */
-    public static final String DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
 
     /** Key for number of connection attempts. */
     public static final String KEY_CONNECT_ATTEMTS = "connects";
@@ -177,162 +167,60 @@ public final class CmsDbPool {
      * @return String the URL to access the created DBCP pool
      * @throws Exception if the pool could not be initialized
      */
-    public static PoolingDriver createDriverManagerConnectionPool(CmsParameterConfiguration config, String key)
+    public static HikariDataSource createDriverManagerConnectionPool(CmsParameterConfiguration config, String key)
     throws Exception {
+        
+        final String dbPoolName = KEY_DATABASE_POOL + '.' + key + '.';
 
         // read the values of the pool configuration specified by the given key
-        String jdbcDriver = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_DRIVER);
-        String jdbcUrl = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL);
-        String jdbcUrlParams = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL_PARAMS);
-        int maxActive = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_ACTIVE, 10);
-        int maxWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_WAIT, 2000);
-        int maxIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_IDLE, 5);
-        int minEvictableIdleTime = config.getInteger(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME,
-            1800000);
-        int minIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_IDLE, 0);
-        int numTestsPerEvictionRun = config.getInteger(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_NUM_TESTS_PER_EVICTION_RUN,
-            3);
-        int timeBetweenEvictionRuns = config.getInteger(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_TIME_BETWEEN_EVICTION_RUNS,
-            3600000);
-        String testQuery = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
-        String username = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
+        String jdbcDriver = config.get(dbPoolName + KEY_JDBC_DRIVER);
+        String jdbcUrl = config.get(dbPoolName + KEY_JDBC_URL);
+        String jdbcUrlParams = config.get(dbPoolName + KEY_JDBC_URL_PARAMS);
+        String username = config.get(dbPoolName + KEY_USERNAME);
         username = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_USER, username);
-        String password = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
+        String password = config.get(dbPoolName + KEY_PASSWORD);
         password = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_PASSWORD, password);
-        String poolUrl = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
-        String whenExhaustedActionValue = config.get(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
-        byte whenExhaustedAction = 0;
-        boolean testOnBorrow = Boolean.valueOf(
-            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW, "false").trim()).booleanValue();
-        boolean testWhileIdle = Boolean.valueOf(
-            config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_WHILE_IDLE, "false").trim()).booleanValue();
-
-        if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
-            whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
-        } else if ("fail".equalsIgnoreCase(whenExhaustedActionValue)) {
-            whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_FAIL;
-        } else if ("grow".equalsIgnoreCase(whenExhaustedActionValue)) {
-            whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_GROW;
-        } else {
-            whenExhaustedAction = GenericObjectPool.DEFAULT_WHEN_EXHAUSTED_ACTION;
-        }
-
-        if ("".equals(testQuery)) {
-            testQuery = null;
-        }
-
         if (username == null) {
             username = "";
         }
-
         if (password == null) {
             password = "";
         }
-
-        // read the values of the statement pool configuration specified by the given key
-        boolean poolingStmts = Boolean.valueOf(
-            config.getString(
-                KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_POOLING,
-                CmsStringUtil.TRUE).trim()).booleanValue();
-        int maxActiveStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_ACTIVE, 25);
-        int maxWaitStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_WAIT, 250);
-        int maxIdleStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_IDLE, 15);
-        String whenStmtsExhaustedActionValue = config.get(
-            KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION);
-        byte whenStmtsExhaustedAction = GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
-        if (whenStmtsExhaustedActionValue != null) {
-            whenStmtsExhaustedActionValue = whenStmtsExhaustedActionValue.trim();
-            whenStmtsExhaustedAction = ("block".equalsIgnoreCase(whenStmtsExhaustedActionValue))
-            ? GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK
-            : ("fail".equalsIgnoreCase(whenStmtsExhaustedActionValue))
-            ? GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL
-            : GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
-        }
-
-        int connectionAttempts = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECT_ATTEMTS, 10);
-        int connetionsWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECT_WAITS, 5000);
-
-        // create an instance of the JDBC driver
-        Class.forName(jdbcDriver).newInstance();
-
-        // initialize a keyed object pool to store connections
-        GenericObjectPool connectionPool = new GenericObjectPool(null);
-
-        /* Abandoned pool configuration:
-         *
-         * In case the systems encounters "pool exhaustion" (runs out of connections),
-         * comment the above line with "new GenericObjectPool(null)" and uncomment the
-         * 5 lines below. This will generate an "abandoned pool" configuration that logs
-         * abandoned connections to the System.out. Unfortunatly this code is deprecated,
-         * so to avoid code warnings it's also disabled here.
-         * Tested with commons-pool v 1.2.
-         */
-
-        //        AbandonedConfig abandonedConfig = new AbandonedConfig();
-        //        abandonedConfig.setLogAbandoned(true);
-        //        abandonedConfig.setRemoveAbandoned(true);
-        //        abandonedConfig.setRemoveAbandonedTimeout(5);
-        //        GenericObjectPool connectionPool = new AbandonedObjectPool(null, abandonedConfig);
-        // initialize an object pool to store connections
-        connectionPool.setMaxActive(maxActive);
-        connectionPool.setMaxIdle(maxIdle);
-        connectionPool.setMinIdle(minIdle);
-        connectionPool.setMaxWait(maxWait);
-        connectionPool.setWhenExhaustedAction(whenExhaustedAction);
-
-        if (testQuery != null) {
-            connectionPool.setTestOnBorrow(testOnBorrow);
-            connectionPool.setTestWhileIdle(testWhileIdle);
-            connectionPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRuns);
-            connectionPool.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
-            connectionPool.setMinEvictableIdleTimeMillis(minEvictableIdleTime);
-        }
-
+        
+        String poolUrl = config.get(dbPoolName + KEY_POOL_URL);
         // initialize a connection factory to make the DriverManager taking connections from the pool
         if (jdbcUrlParams != null) {
             jdbcUrl += jdbcUrlParams;
         }
+        int maxActive = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_ACTIVE, 50);
+        
+        // create an instance of the JDBC driver
+        Class.forName(jdbcDriver).newInstance();
 
-        Properties connectionProperties = config.getPrefixedProperties(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECTION_PROPERTIES);
-        connectionProperties.put(KEY_USERNAME, username);
-        connectionProperties.put(KEY_PASSWORD, password);
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, connectionProperties);
 
-        // Set up statement pool, if desired
-        GenericKeyedObjectPoolFactory statementFactory = null;
-        if (poolingStmts) {
-            statementFactory = new GenericKeyedObjectPoolFactory(
-                null,
-                maxActiveStmts,
-                whenStmtsExhaustedAction,
-                maxWaitStmts,
-                maxIdleStmts);
-        }
-
-        // initialize a factory to obtain pooled connections and prepared statements
-        new PoolableConnectionFactory(connectionFactory, connectionPool, statementFactory, testQuery, false, true);
-
+        
+        HikariConfig cfg = new HikariConfig();
+        cfg.setDriverClassName(jdbcDriver);
+        cfg.setJdbcUrl(jdbcUrl);
+        cfg.setUsername(username);
+        cfg.setPassword(password);
+        cfg.setPoolName(dbPoolName);
+        cfg.setMaximumPoolSize(maxActive);
+        
         // initialize a new pooling driver using the pool
-        PoolingDriver driver = new PoolingDriver();
-        driver.registerPool(poolUrl, connectionPool);
+        HikariDataSource datasource = new HikariDataSource(cfg);
 
-        Connection con = null;
         boolean connect = false;
         int connectionTests = 0;
 
         // try to connect once to the database to ensure it can be connected to at all
         // if the conection cannot be established, multiple attempts will be done to connect
         // just in cast the database was not fast enough to start before OpenCms was started
-
         do {
+            Connection con = null;
             try {
                 // try to connect
-                con = connectionFactory.createConnection();
+                con = datasource.getConnection();
                 connect = true;
             } catch (Exception e) {
                 // connection failed, increase attempts, sleept for some seconds and log a message
@@ -345,20 +233,20 @@ public final class CmsDbPool {
                                 poolUrl,
                                 jdbcUrl,
                                 new Integer(connectionTests),
-                                new Integer(connetionsWait)}));
+                                new Integer(5000)}));
                 }
-                Thread.sleep(connetionsWait);
+                Thread.sleep(5000);
             } finally {
                 if (con != null) {
                     con.close();
                 }
             }
-        } while (!connect && (connectionTests < connectionAttempts));
+        } while (!connect && (connectionTests < 10));
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
         }
-        return driver;
+        return datasource;
     }
 
     /**

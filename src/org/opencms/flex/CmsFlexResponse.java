@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -171,6 +172,23 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             if (m_servletStream != null) {
                 m_servletStream.write(b);
             }
+        }
+
+        /**
+         * @see javax.servlet.ServletOutputStream#isReady()
+         */
+        @Override
+        public boolean isReady() {
+
+            return null != m_stream;
+        }
+
+        /**
+         * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
+         */
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+
         }
     }
 

@@ -51,10 +51,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.pool.ObjectPool;
-import org.apache.commons.pool.impl.StackObjectPool;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.impl.SoftReferenceObjectPool;
 
 /**
  * JPA database server implementation of the SQL manager interface.<p>
@@ -136,7 +136,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     public static final String KEY_VALIDATION_QUERY = "validationQuery";
 
     /** Poll of EntityManager instances for OpenCms. */
-    protected static ObjectPool m_openCmsEmPool;
+    protected static ObjectPool<EntityManager> m_openCmsEmPool;
 
     /** The value to be replaced with for online project. */
     protected static final String OFFLINE_PROJECT = "Offline";
@@ -255,7 +255,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
         EntityManager em = null;
         try {
-            em = (EntityManager)m_openCmsEmPool.borrowObject();
+            em = m_openCmsEmPool.borrowObject();
             if (CmsLog.INIT.isDebugEnabled()) {
                 m_trackOn.put(em, Thread.currentThread().getStackTrace());
             }
@@ -327,14 +327,16 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
             m_factoryTable.put(JPA_PERSISTENCE_UNIT, m_persistenceFactory);
             CmsPoolEntityManagerFactory entityMan = new CmsPoolEntityManagerFactory(m_persistenceFactory);
-            int entityManagerPoolSize = config.getInteger(
-                CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + CmsDbPool.OPENCMS_DEFAULT_POOL_NAME
-                    + "."
-                    + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE,
-                DEFAULT_ENTITY_MANAGER_POOL_SIZE);
-            m_openCmsEmPool = new StackObjectPool(entityMan, entityManagerPoolSize, 0);
+//            int entityManagerPoolSize = config.getInteger(
+//                CmsDbPool.KEY_DATABASE_POOL
+//                    + "."
+//                    + CmsDbPool.OPENCMS_DEFAULT_POOL_NAME
+//                    + "."
+//                    + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE,
+//                DEFAULT_ENTITY_MANAGER_POOL_SIZE);
+//            new GenericObjectPool<>(entityMan).setMaxTotal(entityManagerPoolSize);
+            m_openCmsEmPool = new SoftReferenceObjectPool<EntityManager>(entityMan);
+            //m_openCmsEmPool = new StackObjectPool(entityMan, entityManagerPoolSize, 0);
         }
     }
 

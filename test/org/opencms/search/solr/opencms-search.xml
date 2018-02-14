@@ -309,7 +309,7 @@
           <field name="content" store="compress" index="true" excerpt="true">
             <mapping type="content"/>
           </field>
-          <field name="title-key" store="true" index="untokenized" boost="0.0">
+          <field name="title-key" store="true" index="untokenized">
             <mapping type="property">Title</mapping>
           </field>
           <field name="title" store="false" index="true">
