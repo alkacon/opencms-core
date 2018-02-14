@@ -136,7 +136,7 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
      */
     public CmsAttributeHandler getChildHandler(String attributeName, int index) {
 
-        CmsDebugLog.consoleLog("getChildHandler " + attributeName);
+        // CmsDebugLog.consoleLog("getChildHandler " + attributeName);
         CmsAttributeHandler result = null;
         if (m_handlers.size() > index) {
             result = m_handlers.get(index).get(attributeName);
