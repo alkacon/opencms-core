@@ -163,10 +163,12 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
      * Shows or hides the widget depending on the current view and whether the parent element has width or height.<p>
+     *
+     * @param editableContainer true if this list element is part of an element in an editable container
      */
-    public void updateVisibility() {
+    public void updateVisibility(boolean editableContainer) {
 
-        boolean visible = m_parentHasDimensions && isVisibleInCurrentView();
+        boolean visible = m_parentHasDimensions && isVisibleInCurrentView() && editableContainer;
         setDisplayNone(!visible);
 
     }
@@ -187,7 +189,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
         Map<Integer, CmsPushButton> result = Maps.newHashMap();
         // only show add to favorites and info button, in case there actually is a resource and not in case of create new only
-        if (m_editableData.hasDelete() || m_editableData.hasEdit()) {
+        if (m_editableData.hasResource()) {
             result.put(Integer.valueOf(130), createFavButton());
             result.put(Integer.valueOf(160), createInfoButton());
         }

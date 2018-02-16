@@ -41,12 +41,17 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /** The edit id. */
     private String m_editId;
-
     /** The element language. */
     private String m_elementLanguage;
 
     /** The element name. */
     private String m_elementName;
+
+    /** Indicates the availability of an edit handler for the content resource type. */
+    private boolean m_hasEditHandler;
+
+    /** True if there is a resource for the editable element. */
+    private boolean m_hasResource;
 
     /** The main language to copy in case the element language node does not exist yet. */
     private String m_mainLanguage;
@@ -71,9 +76,6 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /** The unreleased or expired flag. */
     private boolean m_unreleaseOrExpired;
-
-    /** Indicates the availability of an edit handler for the content resource type. */
-    private boolean m_hasEditHandler;
 
     /**
      * Default constructor.<p>
@@ -102,6 +104,7 @@ public class CmsEditableData implements I_CmsEditableData {
         m_sitePath = source.getSitePath();
         m_structureId = source.getStructureId();
         m_unreleaseOrExpired = source.isUnreleasedOrExpired();
+        m_hasResource = source.hasResource();
     }
 
     /**
@@ -203,6 +206,14 @@ public class CmsEditableData implements I_CmsEditableData {
     }
 
     /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#hasResource()
+     */
+    public boolean hasResource() {
+
+        return m_hasResource;
+    }
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#isUnreleasedOrExpired()
      */
     public boolean isUnreleasedOrExpired() {
@@ -259,6 +270,16 @@ public class CmsEditableData implements I_CmsEditableData {
     public void setHasEditHandler(boolean hasEditHandler) {
 
         m_hasEditHandler = hasEditHandler;
+    }
+
+    /**
+     * Sets the 'has resource' property.<p>
+     *
+     * @param hasResource the value for the 'has resource' property
+     */
+    public void setHasResource(boolean hasResource) {
+
+        m_hasResource = hasResource;
     }
 
     /**

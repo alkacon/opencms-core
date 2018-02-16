@@ -144,6 +144,11 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 return false;
             }
 
+            public boolean hasResource() {
+
+                return true;
+            }
+
             public boolean isUnreleasedOrExpired() {
 
                 return false;

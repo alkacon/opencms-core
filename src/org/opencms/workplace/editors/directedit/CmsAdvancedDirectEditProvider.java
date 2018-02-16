@@ -30,6 +30,8 @@ package org.opencms.workplace.editors.directedit;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -39,9 +41,11 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.Messages;
@@ -113,6 +117,64 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
+     * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#getResourceInfo(java.lang.String)
+     *
+     * Similar to the method in the superclass, but removes the write permission check, as this is handled differently.
+     */
+    @Override
+    public CmsDirectEditResourceInfo getResourceInfo(String resourceName) {
+
+        try {
+            // first check some simple preconditions for direct edit
+            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                // don't show direct edit button in online project
+                return CmsDirectEditResourceInfo.INACTIVE;
+            }
+            if (CmsResource.isTemporaryFileName(resourceName)) {
+                // don't show direct edit button on a temporary file
+                return CmsDirectEditResourceInfo.INACTIVE;
+            }
+            if (!m_cms.isInsideCurrentProject(resourceName)) {
+                // don't show direct edit button on files not belonging to the current project
+                return CmsDirectEditResourceInfo.INACTIVE;
+            }
+            // read the target resource
+            CmsResource resource = m_cms.readResource(resourceName, CmsResourceFilter.ALL);
+            if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()
+                && !resource.isFolder()) {
+                // don't show direct edit button for non-editable resources
+                return CmsDirectEditResourceInfo.INACTIVE;
+            }
+            // check the resource lock
+            CmsLock lock = m_cms.getLock(resource);
+            boolean locked = !(lock.isUnlocked()
+                || lock.isOwnedInProjectBy(
+                    m_cms.getRequestContext().getCurrentUser(),
+                    m_cms.getRequestContext().getCurrentProject()));
+            // check the users permissions on the resource
+            // only if write permissions are granted the resource may be direct editable
+            if (locked) {
+                // a locked resource must be shown as "disabled"
+                return new CmsDirectEditResourceInfo(CmsDirectEditPermissions.DISABLED, resource, lock);
+            }
+            // if we have write permission and the resource is not locked then direct edit is enabled
+            return new CmsDirectEditResourceInfo(CmsDirectEditPermissions.ENABLED, resource, lock);
+
+        } catch (Exception e) {
+            // all exceptions: don't mix up the result HTML, always return INACTIVE mode
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(
+                    org.opencms.workplace.editors.Messages.get().getBundle().key(
+                        org.opencms.workplace.editors.Messages.LOG_CALC_EDIT_MODE_FAILED_1,
+                        resourceName),
+                    e);
+            }
+        }
+        // otherwise the resource is not direct editable
+        return CmsDirectEditResourceInfo.INACTIVE;
+    }
+
+    /**
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEnd(javax.servlet.jsp.PageContext)
      */
     public void insertDirectEditEnd(PageContext context) throws JspException {
@@ -174,6 +236,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         String content;
         // check the direct edit permissions of the current user
         CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params.getResourceName());
+
         // check the permission mode
         m_lastPermissionMode = resourceInfo.getPermissions().getPermission();
         switch (m_lastPermissionMode) {
@@ -262,14 +325,28 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         String editNewLink = CmsEncoder.encode(params.getLinkForNew());
         // putting together all needed data
         JSONObject editableData = new JSONObject();
+        CmsResource resource = resourceInfo.getResource();
+        boolean writable = false;
+        if (resource != null) {
+            try {
+                writable = m_cms.hasPermissions(
+                    resource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         editableData.put("editId", editId);
         editableData.put("structureId", resourceInfo.getResource().getStructureId());
         editableData.put("sitePath", params.getResourceName());
         editableData.put("elementlanguage", editLocale);
         editableData.put("elementname", params.getElement());
         editableData.put("newlink", editNewLink);
-        editableData.put("hasEdit", params.getButtonSelection().isShowEdit());
-        editableData.put("hasDelete", params.getButtonSelection().isShowDelete());
+        editableData.put("hasResource", resource != null);
+        editableData.put("hasEdit", params.getButtonSelection().isShowEdit() && writable);
+        editableData.put("hasDelete", params.getButtonSelection().isShowDelete() && writable);
         editableData.put("hasNew", params.getButtonSelection().isShowNew());
         editableData.put("newtitle", m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0));
         editableData.put(

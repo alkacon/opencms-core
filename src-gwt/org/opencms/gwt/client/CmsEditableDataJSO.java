@@ -185,6 +185,13 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     }-*/;
 
     /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#hasResource()
+     */
+    public native boolean hasResource() /*-{
+        return this.hasResource;
+    }-*/;
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#isUnreleasedOrExpired()
      */
     public native boolean isUnreleasedOrExpired() /*-{

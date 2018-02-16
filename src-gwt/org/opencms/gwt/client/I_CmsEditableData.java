@@ -114,6 +114,13 @@ public interface I_CmsEditableData {
     boolean hasEditHandler();
 
     /**
+     * Returns true if there is an actual resource behind the editable element.<p>
+     *
+     * @return true if the editable element represents an actual resource
+     */
+    boolean hasResource();
+
+    /**
      * Returns if the given resource is unreleased or expired.<p>
      *
      * @return <code>true</code> if the given resource is unreleased or expired

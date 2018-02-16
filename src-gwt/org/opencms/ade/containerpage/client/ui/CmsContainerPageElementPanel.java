@@ -216,6 +216,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The overlay for expired elements. */
     private Element m_expiredOverlay;
 
+    /** Indicates an edit handler is configured for the element resource type. */
+    private boolean m_hasEditHandler;
+
     /** Indicates whether this element has settings to edit. */
     private boolean m_hasSettings;
 
@@ -236,6 +239,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The parent drop target. */
     private I_CmsDropContainer m_parent;
+
+    /** Parser for point positioning isntructions. */
+    private PointPositioningParser m_positioningInstructionParser = new PointPositioningParser();
 
     /** The drag and drop parent div. */
     private Element m_provisionalParent;
@@ -263,17 +269,11 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The former copy model status. */
     private boolean m_wasModelGroup;
-
     /**
      * Indicates if the current user has write permissions on the element resource.
      * Without write permissions, the element can not be edited.
      **/
     private boolean m_writePermission;
-
-    /** Parser for point positioning isntructions. */
-    private PointPositioningParser m_positioningInstructionParser = new PointPositioningParser();
-    /** Indicates an edit handler is configured for the element resource type. */
-    private boolean m_hasEditHandler;
 
     /**
      * Constructor.<p>
@@ -520,7 +520,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the element resource type name.<p>
-     * 
+     *
      * @return the resource type name
      */
     public String getResourceType() {
@@ -950,17 +950,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             List<Element> editables = getEditableElements();
             if ((editables != null) && (editables.size() > 0)) {
                 for (Element editable : editables) {
-                    CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                    add(editor, editable.getParentElement());
-                    if (CmsDomUtil.hasDimension(editable.getParentElement())) {
-                        editor.setParentHasDimensions(true);
-                        editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
-                    } else {
-                        editor.setParentHasDimensions(false);
-                    }
-                    m_editables.put(editable, editor);
+                    addListCollectorEditorButtons(editable);
                 }
-
             }
         } else {
 
@@ -971,33 +962,34 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                 if (!editor.isValid()) {
                     editor.removeFromParent();
                     it.remove();
-                } else if (CmsDomUtil.hasDimension(editor.getElement().getParentElement())) {
-                    editor.setParentHasDimensions(true);
-                    editor.setPosition(CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()), getElement());
                 } else {
-                    editor.setParentHasDimensions(false);
+                    if (CmsDomUtil.hasDimension(editor.getElement().getParentElement())) {
+                        editor.setParentHasDimensions(true);
+                        editor.setPosition(
+                            CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()),
+                            getElement());
+                    } else {
+                        editor.setParentHasDimensions(false);
+                    }
                 }
             }
             List<Element> editables = getEditableElements();
             if (editables.size() > m_editables.size()) {
                 for (Element editable : editables) {
                     if (!m_editables.containsKey(editable)) {
-                        CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                        add(editor, editable.getParentElement());
-                        if (CmsDomUtil.hasDimension(editable.getParentElement())) {
-                            editor.setParentHasDimensions(true);
-                            editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
-                        } else {
-                            editor.setParentHasDimensions(false);
-                        }
-                        m_editables.put(editable, editor);
-
+                        addListCollectorEditorButtons(editable);
                     }
                 }
             }
         }
+
+        boolean editableContainer = true;
+        if (m_parent instanceof CmsContainerPageContainer) {
+            CmsDebugLog.consoleLog("is container page container!");
+            editableContainer = ((CmsContainerPageContainer)m_parent).isEditable();
+        }
         for (CmsListCollectorEditor editor : m_editables.values()) {
-            editor.updateVisibility();
+            editor.updateVisibility(editableContainer);
         }
 
         m_checkingEditables = false;
@@ -1180,6 +1172,24 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     void setCheckedHeight(boolean checked) {
 
         m_checkedHeight = checked;
+    }
+
+    /**
+     * Adds the collector edit buttons.<p>
+     *
+     * @param editable the marker element for an editable list element
+     */
+    private void addListCollectorEditorButtons(Element editable) {
+
+        CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
+        add(editor, editable.getParentElement());
+        if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+            editor.setParentHasDimensions(true);
+            editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
+        } else {
+            editor.setParentHasDimensions(false);
+        }
+        m_editables.put(editable, editor);
     }
 
     /**
