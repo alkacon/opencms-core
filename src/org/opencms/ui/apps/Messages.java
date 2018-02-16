@@ -60,6 +60,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_SCRIPT_APP_NAME_0 = "GUI_SHELL_SCRIPT_APP_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_SCRIPT_APP_NAME_HELP_0 = "GUI_SHELL_SCRIPT_APP_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_SCRIPT_APP_INI_COMMENT_0 = "GUI_SHELL_SCRIPT_APP_INI_COMMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_SCRIPT_APP_PANEL_0 = "GUI_SHELL_SCRIPT_APP_PANEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_SCRIPT_APP_OUTPUT_0 = "GUI_SHELL_SCRIPT_APP_OUTPUT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */

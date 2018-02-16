@@ -227,6 +227,21 @@ public final class OpenCmsTheme {
     /** The cache icon CSS class. */
     public static final String ICON_SITE = "oc-icon-24-site";
 
+    /** CSS style name.*/
+    public static final String ICON_TOOL_1 = "oc-icon-32-tool1";
+
+    /** CSS style name.*/
+    public static final String ICON_TOOL_2 = "oc-icon-32-tool2";
+
+    /** CSS style name.*/
+    public static final String ICON_TOOL_3 = "oc-icon-32-tool3";
+
+    /** CSS style name.*/
+    public static final String ICON_TOOL_4 = "oc-icon-32-tool4";
+
+    /** CSS style name.*/
+    public static final String ICON_TOOL_5 = "oc-icon-32-tool5";
+
     /** The user icon CSS class.*/
     public static final String ICON_USER = "oc-icon-24-user";
 

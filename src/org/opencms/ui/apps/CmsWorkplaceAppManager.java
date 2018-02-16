@@ -73,6 +73,7 @@ import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
 import org.opencms.ui.apps.searchindex.CmsSearchindexAppConfiguration;
 import org.opencms.ui.apps.sessions.CmsBroadCastConfigurtion;
+import org.opencms.ui.apps.shell.CmsShellAppConfiguration;
 import org.opencms.ui.apps.sitemanager.CmsSiteManagerConfiguration;
 import org.opencms.ui.apps.user.CmsAccountsAppConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
@@ -281,6 +282,7 @@ public class CmsWorkplaceAppManager {
      */
     public CmsWorkplaceAppManager(CmsObject adminCms)
     throws CmsException {
+
         m_adminCms = adminCms;
         m_iconHelper = new CmsUserIconHelper(OpenCms.initCmsObject(m_adminCms));
         m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
@@ -788,7 +790,8 @@ public class CmsWorkplaceAppManager {
                 new CmsGitAppConfiguration(),
                 new CmsBroadCastConfigurtion(),
                 new CmsModuleAppConfiguration(),
-                new CmsAccountsAppConfiguration()));
+                new CmsAccountsAppConfiguration(),
+                new CmsShellAppConfiguration()));
 
         return result;
     }

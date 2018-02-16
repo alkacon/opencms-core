@@ -694,17 +694,22 @@ public class CmsShell {
             SHELL_INSTANCE.set(this);
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
+                String line = lnr.readLine();
                 if (m_interactive || m_echo) {
                     // print the prompt in front of the commands to process only when 'interactive'
-                    printPrompt();
+                    if ((line != null) | m_interactive) {
+                        printPrompt();
+                    }
                 }
-                String line = lnr.readLine();
+
                 if (line == null) {
                     // if null the file has been read to the end
-                    try {
-                        Thread.sleep(500);
-                    } catch (Throwable t) {
-                        // noop
+                    if (m_interactive) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (Throwable t) {
+                            // noop
+                        }
                     }
                     // end the while loop
                     break;

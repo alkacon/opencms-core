@@ -105,14 +105,15 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The window resize listener. */
     private BrowserWindowResizeListener m_windowResizeListener;
-    
-    /** Maximum recorded height. */ 
+
+    /** Maximum recorded height. */
     private int m_maxRecordedHeight = Integer.MIN_VALUE;
 
     /**
      * Creates new instance.<p>
      */
     public CmsBasicDialog() {
+
         addStyleName(OpenCmsTheme.DIALOG);
         setMargin(true);
         setSpacing(true);
@@ -422,6 +423,16 @@ public class CmsBasicDialog extends VerticalLayout {
     protected Button createButtonCancel() {
 
         return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
+    }
+
+    /**
+     * Creates an 'Cancel' button.<p>
+     *
+     * @return the button
+     */
+    protected Button createButtonClose() {
+
+        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
     }
 
     /**
