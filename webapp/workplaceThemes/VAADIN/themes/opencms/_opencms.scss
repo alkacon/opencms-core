@@ -39,6 +39,7 @@
 		.v-formlayout-row .v-formlayout-contentcell {
 			width: 80% !important;   
 		}
+	
 	}
 }
 
@@ -376,6 +377,10 @@
 		.o-dialog-content, .v-window-contents > .v-scrollable > .o-dialog {
 			padding: $o-layout-window-margin;
 		}
+	
+		.o-sroll-x{
+			overflow-x:auto;
+		}
 	}
 	
 	/* In case the window height is set explicitly, force dialog content height to 100% */
@@ -564,6 +569,16 @@
 			right: 0;
 		}
 	}
+
+	textarea.o-shell-terminal, .o-shell-terminal.o-report{
+		
+		    display: block;
+    		font-family: monospace;
+    		background: #300a24;
+    		color: white;
+		
+		}
+
 	.o-app-info{
 		display: block;
 		width: 100%;

@@ -280,6 +280,18 @@
  		}
  	
  	}
+ 
+  .o-formlayout-full-height-last-expand{
+		
+			table{
+				height:100%;
+			}
+		
+			.v-formlayout-lastrow{
+				height:100%;	
+			}
+			
+		}
 
   .o-no-padding div.v-table-cell-wrapper{
   		padding:0px !important;
