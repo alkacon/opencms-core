@@ -217,6 +217,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
          * @param valueName the value path name
          */
         protected NullValueInfo(I_CmsXmlContentValue parentValue, String valueName) {
+
             m_parentValue = parentValue;
             m_valueName = valueName;
         }
@@ -227,6 +228,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
          * @param locale the content locale
          */
         protected NullValueInfo(I_CmsXmlDocument content, String valueName, Locale locale) {
+
             m_content = content;
             m_valueName = valueName;
             m_locale = locale;
@@ -277,8 +279,82 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /** Constant for the null (non existing) value. */
     protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
 
-    /** The wrapped OpenCms user context. */
-    private CmsObject m_cms;
+    /**
+     * Factory method to create a new XML content value wrapper.<p>
+     *
+     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param value the value to warp
+     * @param parentValue the parent value, required to set the null value info
+     * @param valueName the value path name
+     *
+     * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
+     */
+    public static CmsJspContentAccessValueWrapper createWrapper(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        I_CmsXmlContentValue parentValue,
+        String valueName) {
+
+        if ((value != null) && (cms != null)) {
+            return new CmsJspContentAccessValueWrapper(cms, value);
+        }
+        if ((parentValue != null) && (valueName != null) && (cms != null)) {
+            CmsJspContentAccessValueWrapper wrapper = new CmsJspContentAccessValueWrapper();
+            wrapper.m_nullValueInfo = new NullValueInfo(parentValue, valueName);
+            wrapper.m_cms = cms;
+            return wrapper;
+        }
+        // if no value is available,
+        return NULL_VALUE_WRAPPER;
+    }
+
+    /**
+     * Factory method to create a new XML content value wrapper.<p>
+     *
+     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param value the value to warp
+     * @param content the content document, required to set the null value info
+     * @param valueName the value path name
+     * @param locale the selected locale
+     *
+     * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
+     */
+    public static CmsJspContentAccessValueWrapper createWrapper(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        I_CmsXmlDocument content,
+        String valueName,
+        Locale locale) {
+
+        if ((value != null) && (cms != null)) {
+            return new CmsJspContentAccessValueWrapper(cms, value);
+        }
+        if ((content != null) && (valueName != null) && (locale != null) && (cms != null)) {
+            CmsJspContentAccessValueWrapper wrapper = new CmsJspContentAccessValueWrapper();
+            wrapper.m_nullValueInfo = new NullValueInfo(content, valueName, locale);
+            wrapper.m_cms = cms;
+            return wrapper;
+        }
+        // if no value is available,
+        return NULL_VALUE_WRAPPER;
+    }
+
+    /**
+     * Returns if direct edit is enabled.<p>
+     *
+     * @param cms the current cms context
+     *
+     * @return <code>true</code> if direct edit is enabled
+     */
+    static boolean isDirectEditEnabled(CmsObject cms) {
+
+        return !cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
+    }
 
     /** The wrapped XML content value. */
     private I_CmsXmlContentValue m_contentValue;
@@ -377,105 +453,17 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
-     * Factory method to create a new XML content value wrapper.<p>
+     * Returns the path to the XML content based on the current element path.<p>
      *
-     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
+     * This is used to create xpath information for sub-elements in the transformers.<p>
      *
-     * @param cms the current users OpenCms context
-     * @param value the value to warp
-     * @param parentValue the parent value, required to set the null value info
-     * @param valueName the value path name
+     * @param input the additional path that is appended to the current path
      *
-     * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
+     * @return the path to the XML content based on the current element path
      */
-    public static CmsJspContentAccessValueWrapper createWrapper(
-        CmsObject cms,
-        I_CmsXmlContentValue value,
-        I_CmsXmlContentValue parentValue,
-        String valueName) {
+    protected String createPath(Object input) {
 
-        if ((value != null) && (cms != null)) {
-            return new CmsJspContentAccessValueWrapper(cms, value);
-        }
-        if ((parentValue != null) && (valueName != null) && (cms != null)) {
-            CmsJspContentAccessValueWrapper wrapper = new CmsJspContentAccessValueWrapper();
-            wrapper.m_nullValueInfo = new NullValueInfo(parentValue, valueName);
-            wrapper.m_cms = cms;
-            return wrapper;
-        }
-        // if no value is available,
-        return NULL_VALUE_WRAPPER;
-    }
-
-    /**
-     * Factory method to create a new XML content value wrapper.<p>
-     *
-     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
-     *
-     * @param cms the current users OpenCms context
-     * @param value the value to warp
-     * @param content the content document, required to set the null value info
-     * @param valueName the value path name
-     * @param locale the selected locale
-     *
-     * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
-     */
-    public static CmsJspContentAccessValueWrapper createWrapper(
-        CmsObject cms,
-        I_CmsXmlContentValue value,
-        I_CmsXmlDocument content,
-        String valueName,
-        Locale locale) {
-
-        if ((value != null) && (cms != null)) {
-            return new CmsJspContentAccessValueWrapper(cms, value);
-        }
-        if ((content != null) && (valueName != null) && (locale != null) && (cms != null)) {
-            CmsJspContentAccessValueWrapper wrapper = new CmsJspContentAccessValueWrapper();
-            wrapper.m_nullValueInfo = new NullValueInfo(content, valueName, locale);
-            wrapper.m_cms = cms;
-            return wrapper;
-        }
-        // if no value is available,
-        return NULL_VALUE_WRAPPER;
-    }
-
-    /**
-     * Returns if direct edit is enabled.<p>
-     *
-     * @param cms the current cms context
-     *
-     * @return <code>true</code> if direct edit is enabled
-     */
-    static boolean isDirectEditEnabled(CmsObject cms) {
-
-        return !cms.getRequestContext().getCurrentProject().isOnlineProject()
-            && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof CmsJspContentAccessValueWrapper) {
-            // rely on hash code implementation for equals method
-            return hashCode() == ((CmsJspContentAccessValueWrapper)obj).hashCode();
-        }
-        return false;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getCmsObject()
-     */
-    @Override
-    public CmsObject getCmsObject() {
-
-        return m_cms;
+        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
     }
 
     /**
@@ -741,6 +729,15 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
+     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getObjectValue()
+     */
+    @Override
+    public Object getObjectValue() {
+
+        return m_contentValue;
+    }
+
+    /**
      * Returns the path to the current XML content value.<p>
      *
      * In case the XML content value does not exist, an empty String <code>""</code> is returned.<p>
@@ -855,20 +852,6 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         }
         // macro resolving is already turned on
         return this;
-    }
-
-    /**
-     * Returns the String value of the wrapped content value.<p>
-     *
-     * Note that this will return the empty String <code>""</code> when {@link #getExists()} returns <code>false</code><p>.
-     *
-     * @return the String value of the wrapped content value
-     *
-     * @see #toString()
-     */
-    public String getStringValue() {
-
-        return toString();
     }
 
     /**
@@ -1065,6 +1048,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
+     * The hash code is created from the file structure id of the underlying XML content,
+     * the selected locale and the path to the node in the XML content.
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -1090,8 +1076,11 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      *
      * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>.
      *
+     * @deprecated use {@link #getCmsObject()} instead
+     *
      * @return the wrapped OpenCms user context
      */
+    @Deprecated
     public CmsObject obtainCmsObject() {
 
         return m_cms;
@@ -1116,7 +1105,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
     /**
      * @see java.lang.Object#toString()
-     * @see #getStringValue()
+     * @see #getToString()
      */
     @Override
     public String toString() {
@@ -1139,19 +1128,5 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             // nested types should not be called this way by the user
             return "";
         }
-    }
-
-    /**
-     * Returns the path to the XML content based on the current element path.<p>
-     *
-     * This is used to create xpath information for sub-elements in the transformers.<p>
-     *
-     * @param input the additional path that is appended to the current path
-     *
-     * @return the path to the XML content based on the current element path
-     */
-    protected String createPath(Object input) {
-
-        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
     }
 }

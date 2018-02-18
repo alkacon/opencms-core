@@ -184,13 +184,13 @@ public class CmsStringTemplateRenderer {
      *
      * @return the element settings wrapped in access wrappers
      */
-    public static Map<String, CmsJspObjectAccessWrapper> wrapSettings(CmsObject cms, Map<String, String> settings) {
+    public static Map<String, CmsJspObjectValueWrapper> wrapSettings(CmsObject cms, Map<String, String> settings) {
 
-        Map<String, CmsJspObjectAccessWrapper> wrappedSettings = null;
+        Map<String, CmsJspObjectValueWrapper> wrappedSettings = null;
         if (settings != null) {
-            wrappedSettings = new HashMap<String, CmsJspObjectAccessWrapper>(settings.size());
+            wrappedSettings = new HashMap<String, CmsJspObjectValueWrapper>(settings.size());
             for (Entry<String, String> setting : settings.entrySet()) {
-                wrappedSettings.put(setting.getKey(), CmsJspObjectAccessWrapper.createWrapper(cms, setting.getValue()));
+                wrappedSettings.put(setting.getKey(), CmsJspObjectValueWrapper.createWrapper(cms, setting.getValue()));
             }
         }
         return wrappedSettings;

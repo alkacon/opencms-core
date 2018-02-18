@@ -53,6 +53,6 @@ public class CmsObjectFunctionTransformer implements Transformer {
      */
     public Object transform(Object input) {
 
-        return CmsJspObjectAccessWrapper.createWrapper(m_cms, input);
+        return CmsJspObjectValueWrapper.createWrapper(m_cms, input);
     }
 }

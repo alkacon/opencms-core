@@ -2783,17 +2783,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             Allows the JSP programmer to dynamically add request parameters (using the <cms.param> tag) inside the body of this tag.
-            The original request parameters will be restored after the body of this tag.  
+            The original request parameters will be restored after the body of this tag.
         ]]></description>
         <name>addparams</name>
         <tag-class>org.opencms.jsp.CmsJspTagAddParams</tag-class>
         <body-content>JSP</body-content>
     </tag>
-    
+
     <function>
         <description><![CDATA[
             <p>Extends the given list by adding the provided object.</p>
@@ -2901,6 +2901,39 @@
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
             java.lang.String stripHtml(java.lang.Object)
+        </function-signature>
+    </function>
+
+    <function>
+        <description><![CDATA[
+            Calculates the next smallest integer for the given number parameter.
+        ]]></description>
+        <name>mathFloor</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.Long mathFloor(java.lang.Object)
+        </function-signature>
+    </function>
+
+    <function>
+        <description><![CDATA[
+            Calculates the next largest integer for the given number parameter.
+        ]]></description>
+        <name>mathCeil</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.Long mathCeil(java.lang.Object)
+        </function-signature>
+    </function>
+
+    <function>
+        <description><![CDATA[
+            Calculates the next integer for the given number parameter by rounding.
+        ]]></description>
+        <name>mathRound</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.Long mathRound(java.lang.Object)
         </function-signature>
     </function>
 

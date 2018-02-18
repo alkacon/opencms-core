@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app 
-     xmlns="http://java.sun.com/xml/ns/javaee"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-     version="3.0">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+  http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  version="3.1">
 
     <display-name>OpenCms</display-name>
 
     <description><![CDATA[
-        OpenCms, the Open Source Content Management System. 
+        OpenCms, the Open Source Content Management System.
         (c) Alkacon Software GmbH & Co. KG.
         For more details about OpenCms, please see http://www.opencms.org/.
-        For more details about Alkacon Software GmbH & Co. KG, please see http://www.alkacon.com/.    
+        For more details about Alkacon Software GmbH & Co. KG, please see http://www.alkacon.com/.
     ]]></description>
 
-    <!-- Changing the servlet name from "opencms" to something else requires 
-        2 changes in this file. For example, to change the servlet name to "mycms" 
-        you must: 1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" 
-        to "/mycms/*" 2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" 
+    <!-- Changing the servlet name from "opencms" to something else requires
+        2 changes in this file. For example, to change the servlet name to "mycms"
+        you must: 1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*"
+        to "/mycms/*" 2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*"
         to "/mycms/*" -->
 
-    <!-- Changing the errorhandler servlet name from "opencms-errorhandler" 
-        to something else requires 3 changes in this file. For example, to change 
-        the servlet name to "mycms-errorhandler" you must: 1. Change the <servlet-mapping> 
-        for "OpenCmsServletErrorHandler" from "/opencms-errorhandler/*" to "/mycms-errorhandler/*" 
-        2. Change the <error-page> setting for the 404 error from "/opencms-errorhandler/handle404" 
-        to "/mycms-errorhandler/handle404" 3. Change the <error-page> setting for 
-        the 500 error from "/opencms-errorhandler/system/handler/handle500.html" 
+    <!-- Changing the errorhandler servlet name from "opencms-errorhandler"
+        to something else requires 3 changes in this file. For example, to change
+        the servlet name to "mycms-errorhandler" you must: 1. Change the <servlet-mapping>
+        for "OpenCmsServletErrorHandler" from "/opencms-errorhandler/*" to "/mycms-errorhandler/*"
+        2. Change the <error-page> setting for the 404 error from "/opencms-errorhandler/handle404"
+        to "/mycms-errorhandler/handle404" 3. Change the <error-page> setting for
+        the 500 error from "/opencms-errorhandler/system/handler/handle500.html"
         to "/mycms-errorhandler/system/handler/handle500.html" -->
-        
+
     <!-- Use the protected export feature to statically export resources
-		while still ensuring resource permissions are not violated.
-		This will work for static resources like images and binaries only.    
+	    while still ensuring resource permissions are not violated.
+	    This will work for static resources like images and binaries only.
     <filter>
         <filter-name>OpenCmsProtectedExportFilter</filter-name>
         <filter-class>org.opencms.main.OpenCmsProtectedExportFilter</filter-class>
-    </filter> 
-    -->  
-        
+    </filter>
+    -->
+
     <!-- Use the OpenCmsUrlServletFilter to remove the OpenCms servlet name from URLs.
-        When using the filter make sure to also adjust the file /WEB-INF/config/opencms-importexport.xml setting 
+        When using the filter make sure to also adjust the file /WEB-INF/config/opencms-importexport.xml setting
         opencms/importexport/staticexport/rendersettings/vfs-prefix to ${CONTEXT_NAME}. -->
     <filter>
         <filter-name>OpenCmsUrlServletFilter</filter-name>
@@ -51,15 +51,15 @@
             <param-value>/my-servlet-1|/my-servlet-2</param-value>
         </init-param>
          -->
-    </filter> 
-    
+    </filter>
+
     <filter>
         <filter-name>CmsJsonPartFilter</filter-name>
         <filter-class>org.opencms.jsp.jsonpart.CmsJsonPartFilter</filter-class>
     </filter>
 
 <!--
-	<filter-mapping>
+  <filter-mapping>
         <filter-name>OpenCmsProtectedExportFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping> -->
@@ -67,7 +67,7 @@
    <filter-mapping>
         <filter-name>OpenCmsUrlServletFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping> 
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>CmsJsonPartFilter</filter-name>
@@ -94,11 +94,11 @@
         <param-value>true</param-value>
     </context-param>
 
-    <!-- Uncomment this parameter in case you change the web application context 
-        using an application server specific deployment descriptor. E.g. in Jboss, 
-        you could use the jboss-web.xml file to deploy opencms under the context 
-        'myopencms' but still keep the files in the folder 'opencms.war' <context-param> 
-        <param-name>WebApplicationContext</param-name> <param-value>myopencms</param-value> 
+    <!-- Uncomment this parameter in case you change the web application context
+        using an application server specific deployment descriptor. E.g. in Jboss,
+        you could use the jboss-web.xml file to deploy opencms under the context
+        'myopencms' but still keep the files in the folder 'opencms.war' <context-param>
+        <param-name>WebApplicationContext</param-name> <param-value>myopencms</param-value>
         </context-param> -->
 
     <!-- *********************** Main OpenCms configuration ****************************** -->
@@ -109,7 +109,7 @@
 
     <servlet>
         <description>
-            The error handling servlet, also serves as trigger for static export requests.  
+            The error handling servlet, also serves as trigger for static export requests.
         </description>
         <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
@@ -118,7 +118,7 @@
 
     <servlet>
         <description>
-            The main servlet that handles all requests to the OpenCms VFS.  
+            The main servlet that handles all requests to the OpenCms VFS.
         </description>
         <servlet-name>OpenCmsServlet</servlet-name>
         <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
@@ -127,7 +127,7 @@
 
     <servlet>
         <description>
-            The servlet that handles all workplace UI requests.  
+            The servlet that handles all workplace UI requests.
         </description>
         <servlet-name>CmsUIServlet</servlet-name>
         <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
@@ -145,10 +145,10 @@
             <param-value>60</param-value>
         </init-param>
     </servlet>
-    
+
     <servlet>
         <description>
-            The servlet that handles sitemap UI requests.  
+            The servlet that handles sitemap UI requests.
         </description>
         <servlet-name>CmsSitemapServlet</servlet-name>
         <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
@@ -166,10 +166,10 @@
             <param-value>60</param-value>
         </init-param>
     </servlet>
-    
+
     <servlet>
         <description>
-            The servlet that handles all workplace UI requests.  
+            The servlet that handles all workplace UI requests.
         </description>
         <servlet-name>CmsDialogServlet</servlet-name>
         <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
@@ -213,12 +213,12 @@
         <servlet-name>CmsErrorServlet</servlet-name>
         <url-pattern>/workplace/errorpage/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>CmsSitemapServlet</servlet-name>
         <url-pattern>/workplace/sitemap/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>CmsDialogServlet</servlet-name>
         <url-pattern>/workplace/dialogs/*</url-pattern>

@@ -200,6 +200,42 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Returns a Double created from an Object.<p>
+     *
+     * <ul>
+     * <li>If the input already is a {@link java.lang.Number}, this number is returned as Double.
+     * <li>If the input is of type {@link A_CmsJspValueWrapper}, the wrapper is converted to a Double using {@link A_CmsJspValueWrapper#getToDouble()}.
+     * <li>If the input is a String, it is converted to a Double.
+     * <li>Otherwise <code>null</code> is returned.
+     * </li>
+     *
+     * @param input the Object to create a Double from
+     *
+     * @return a Double created from the given Object
+     */
+    public static Double convertDouble(Object input) {
+
+        Double result = null;
+        if (input instanceof Double) {
+            result = (Double)input;
+        } else if (input instanceof Number) {
+            result = Double.valueOf(((Number)input).doubleValue());
+        } else if (input instanceof A_CmsJspValueWrapper) {
+            result = ((A_CmsJspValueWrapper)input).getToDouble();
+        } else {
+            if (input != null) {
+                String str = String.valueOf(input);
+                try {
+                    result = Double.valueOf(str);
+                } catch (NumberFormatException e) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns a list of attribute values specified by the attribute name of the items of the given list.<p>
      *
      * @param input the list of objects to obtain the attribute values from
@@ -575,6 +611,78 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Calculates the next largest integer for the given number parameter.<p>
+     *
+     * Note that the result is an Object of type {@link java.lang.Long},
+     * so in case the parameter can not be converted to a number, <code>null</code> is returned.<p>
+     *
+     * @param param an Object that will be converted to a number
+     *
+     * @return the next largest integer for the given number parameter
+     */
+    public static Long mathCeil(Object param) {
+
+        Long result = null;
+        if ((param instanceof Long) || (param instanceof Integer)) {
+            result = Long.valueOf(((Number)param).longValue());
+        } else {
+            Double d = convertDouble(param);
+            if (d != null) {
+                result = Long.valueOf((long)Math.ceil(d.doubleValue()));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calculates the next smallest integer for the given number parameter.<p>
+     *
+     * Note that the result is an Object of type {@link java.lang.Long},
+     * so in case the parameter can not be converted to a number, <code>null</code> is returned.<p>
+     *
+     * @param param an Object that will be converted to a number
+     *
+     * @return the next smallest integer for the given number parameter
+     */
+    public static Long mathFloor(Object param) {
+
+        Long result = null;
+        if ((param instanceof Long) || (param instanceof Integer)) {
+            result = Long.valueOf(((Number)param).longValue());
+        } else {
+            Double d = convertDouble(param);
+            if (d != null) {
+                result = Long.valueOf((long)Math.floor(d.doubleValue()));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calculates the next integer for the given number parameter by rounding.<p>
+     *
+     * Note that the result is an Object of type {@link java.lang.Long},
+     * so in case the parameter can not be converted to a number, <code>null</code> is returned.<p>
+     *
+     * @param param an Object that will be converted to a number
+     *
+     * @return the next integer for the given number parameter calculated by rounding
+     */
+    public static Long mathRound(Object param) {
+
+        Long result = null;
+        if ((param instanceof Long) || (param instanceof Integer)) {
+            result = Long.valueOf(((Number)param).longValue());
+        } else {
+            Double d = convertDouble(param);
+            if (d != null) {
+                result = Long.valueOf(Math.round(d.doubleValue()));
+            }
+        }
+        return result;
+    }
+
+    /**
      * Repairs the given HTML input by adding potentially missing closing tags.<p>
      *
      * @param input the HTML input
@@ -606,7 +714,7 @@ public final class CmsJspElFunctions {
         if (input instanceof CmsJspContentAccessValueWrapper) {
             CmsJspContentAccessValueWrapper wrapper = (CmsJspContentAccessValueWrapper)input;
             if (wrapper.getExists()) {
-                return wrapper.getContentValue().getPlainText(wrapper.obtainCmsObject());
+                return wrapper.getContentValue().getPlainText(wrapper.getCmsObject());
             } else {
                 return "";
             }

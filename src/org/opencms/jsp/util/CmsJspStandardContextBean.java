@@ -243,7 +243,7 @@ public final class CmsJspStandardContextBean {
          *
          * @return the wrapped settings
          */
-        public Map<String, ElementSettingWrapper> getSetting() {
+        public Map<String, CmsJspElementSettingValueWrapper> getSetting() {
 
             return CmsCollectionsGenericWrapper.createLazyMap(new SettingsTransformer(m_wrappedElement));
         }
@@ -454,102 +454,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Element setting value wrapper.<p>
-     */
-    public class ElementSettingWrapper extends A_CmsJspValueWrapper {
-
-        /** Flag indicating the setting has been configured. */
-        private boolean m_exists;
-
-        /** The wrapped value. */
-        private String m_value;
-
-        /**
-         * Constructor.<p>
-         *
-         * @param value the wrapped value
-         * @param exists flag indicating the setting has been configured
-         */
-        ElementSettingWrapper(String value, boolean exists) {
-
-            m_value = value;
-            m_exists = exists;
-        }
-
-        /**
-         * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getCmsObject()
-         */
-        @Override
-        public CmsObject getCmsObject() {
-
-            return m_cms;
-        }
-
-        /**
-         * Returns if the setting has been configured.<p>
-         *
-         * @return <code>true</code> if the setting has been configured
-         */
-        @Override
-        public boolean getExists() {
-
-            return m_exists;
-        }
-
-        /**
-         * Returns if the setting value is null or empty.<p>
-         *
-         * @return <code>true</code> if the setting value is null or empty
-         */
-        @Override
-        public boolean getIsEmpty() {
-
-            return CmsStringUtil.isEmpty(m_value);
-        }
-
-        /**
-         * Returns if the setting value is null or white space only.<p>
-         *
-         * @return <code>true</code> if the setting value is null or white space only
-         */
-        @Override
-        public boolean getIsEmptyOrWhitespaceOnly() {
-
-            return CmsStringUtil.isEmptyOrWhitespaceOnly(m_value);
-        }
-
-        /**
-         * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getIsSet()
-         */
-        @Override
-        public boolean getIsSet() {
-
-            return getExists() && !getIsEmpty();
-        }
-
-        /**
-         * Returns the value.<p>
-         *
-         * @return the value
-         */
-        public String getValue() {
-
-            return m_value;
-        }
-
-        /**
-         * Returns the string value.<p>
-         *
-         * @return the string value
-         */
-        @Override
-        public String toString() {
-
-            return m_value != null ? m_value : "";
-        }
-    }
-
-    /**
      * The element setting transformer.<p>
      */
     public class SettingsTransformer implements Transformer {
@@ -578,7 +482,7 @@ public final class CmsJspStandardContextBean {
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
         @Override
-        public Object transform(Object arg0) {
+        public Object transform(Object settingName) {
 
             boolean exists;
             if (m_formatter != null) {
@@ -590,11 +494,11 @@ public final class CmsJspStandardContextBean {
                         getLocale(),
                         m_request);
                 }
-                exists = m_formatterSettingsConfig.get(arg0) != null;
+                exists = m_formatterSettingsConfig.get(settingName) != null;
             } else {
-                exists = m_transformElement.getSettings().get(arg0) != null;
+                exists = m_transformElement.getSettings().get(settingName) != null;
             }
-            return new ElementSettingWrapper(m_transformElement.getSettings().get(arg0), exists);
+            return new CmsJspElementSettingValueWrapper(CmsJspStandardContextBean.this, m_transformElement.getSettings().get(settingName), exists);
         }
     }
 

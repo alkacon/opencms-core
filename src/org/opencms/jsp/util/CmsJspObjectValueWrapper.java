@@ -29,108 +29,21 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.Transformer;
-
 /**
  * Provides access to common object types through wrappers.<p>
  *
  * @since 11.0
  */
-public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
-
-    /**
-     * Provides a Map with Booleans that
-     * indicate if a given Object is equal to the wrapped object.<p>
-     */
-    public class CmsIsEqualTransformer implements Transformer {
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        @Override
-        public Object transform(Object input) {
-
-            Object o = getObjectValue();
-            if ((o instanceof A_CmsJspValueWrapper) && (input instanceof String)) {
-                return Boolean.valueOf(((A_CmsJspValueWrapper)o).getToString().equals(input));
-            }
-            if (o == null) {
-                return Boolean.valueOf(input == null);
-            }
-            return Boolean.valueOf(o.equals(input));
-        }
-    }
-
-    /**
-     * Provides trimmed to size string values.<p>
-     */
-    public class CmsTrimToSizeTransformer implements Transformer {
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        @Override
-        public Object transform(Object input) {
-
-            try {
-                int lenght = Integer.parseInt(String.valueOf(input));
-                return CmsJspElFunctions.trimToSize(getToString(), lenght);
-
-            } catch (Exception e) {
-                return getToString();
-            }
-        }
-    }
+public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
 
     /** Constant for the null (non existing) value. */
-    protected static final CmsJspObjectAccessWrapper NULL_VALUE_WRAPPER = new CmsJspObjectAccessWrapper();
-
-    /** The wrapped OpenCms user context. */
-    private CmsObject m_cms;
-
-    /** Calculated hash code. */
-    private int m_hashCode;
-
-    /** The lazy initialized Map that checks if a Object is equal. */
-    private Map<Object, Boolean> m_isEqual;
-
-    /** The wrapped XML content value. */
-    private Object m_object;
-
-    /** The lazy initialized trim to size map. */
-    private Map<Object, String> m_trimToSize;
-
-    /**
-     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
-     *
-     * @see #createWrapper(CmsObject, Object)
-     */
-    private CmsJspObjectAccessWrapper() {
-
-        // cast needed to avoid compiler confusion with constructors
-        this((CmsObject)null, (I_CmsXmlContentValue)null);
-    }
-
-    /**
-     * Private constructor, use factory method to create instances.<p>
-     *
-     * @param cms the current users OpenCms context
-     * @param value the object to warp
-     */
-    private CmsJspObjectAccessWrapper(CmsObject cms, Object value) {
-
-        // a null value is used for constant generation
-        m_cms = cms;
-        m_object = value;
-    }
+    protected static final CmsJspObjectValueWrapper NULL_VALUE_WRAPPER = new CmsJspObjectValueWrapper();
 
     /**
      * Factory method to create a new XML content value wrapper.<p>
@@ -142,10 +55,10 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
      *
      * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
      */
-    public static CmsJspObjectAccessWrapper createWrapper(CmsObject cms, Object value) {
+    public static CmsJspObjectValueWrapper createWrapper(CmsObject cms, Object value) {
 
         if ((value != null) && (cms != null)) {
-            return new CmsJspObjectAccessWrapper(cms, value);
+            return new CmsJspObjectValueWrapper(cms, value);
         }
         // if no value is available,
         return NULL_VALUE_WRAPPER;
@@ -164,29 +77,34 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
             && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
+    /** Calculated hash code. */
+    private int m_hashCode;
 
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof CmsJspObjectAccessWrapper) {
-            // rely on hash code implementation for equals method
-            return hashCode() == ((CmsJspObjectAccessWrapper)obj).hashCode();
-        }
-        return false;
+    /** The wrapped XML content value. */
+    private Object m_object;
+
+    /**
+     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
+     *
+     * @see #createWrapper(CmsObject, Object)
+     */
+    private CmsJspObjectValueWrapper() {
+
+        // cast needed to avoid compiler confusion with constructors
+        this((CmsObject)null, (I_CmsXmlContentValue)null);
     }
 
     /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getCmsObject()
+     * Private constructor, use factory method to create instances.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param value the object to warp
      */
-    @Override
-    public CmsObject getCmsObject() {
+    private CmsJspObjectValueWrapper(CmsObject cms, Object value) {
 
-        return m_cms;
+        // a null value is used for constant generation
+        m_cms = cms;
+        m_object = value;
     }
 
     /**
@@ -249,24 +167,6 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
     }
 
     /**
-     * Returns a lazy initialized Map that provides Booleans which
-     * indicate if an Object is equal to the wrapped object.<p>
-     *
-     * In case the current,
-     * the {@link CmsConstantMap#CONSTANT_BOOLEAN_FALSE_MAP} is returned.<p>
-     *
-     * @return a lazy initialized Map that provides Booleans which
-     *    indicate if an Object is equal to the wrapped object
-     */
-    public Map<Object, Boolean> getIsEqual() {
-
-        if (m_isEqual == null) {
-            m_isEqual = CmsCollectionsGenericWrapper.createLazyMap(new CmsIsEqualTransformer());
-        }
-        return m_isEqual;
-    }
-
-    /**
      * Returns <code>true</code> in case
      * the object exists and is not empty or whitespace only.<p>
      *
@@ -283,23 +183,10 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
      *
      * @return the wrapped object value
      */
+    @Override
     public Object getObjectValue() {
 
         return m_object;
-    }
-
-    /**
-     * Returns a lazy initialized map that provides trimmed to size strings of the wrapped object string value.
-     * The size being the integer value of the key object.<p>
-     *
-     * @return a map that provides trimmed to size strings of the wrapped object string value
-     */
-    public Map<Object, String> getTrimToSize() {
-
-        if (m_trimToSize == null) {
-            m_trimToSize = CmsCollectionsGenericWrapper.createLazyMap(new CmsTrimToSizeTransformer());
-        }
-        return m_trimToSize;
     }
 
     /**
@@ -315,18 +202,6 @@ public final class CmsJspObjectAccessWrapper extends A_CmsJspValueWrapper {
             m_hashCode = m_object.toString().hashCode();
         }
         return m_hashCode;
-    }
-
-    /**
-     * Returns the wrapped OpenCms user context.<p>
-     *
-     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>.
-     *
-     * @return the wrapped OpenCms user context
-     */
-    public CmsObject obtainCmsObject() {
-
-        return m_cms;
     }
 
     /**

@@ -428,7 +428,7 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
         Date settingDate = new Date();
         settings.put("settingKey", "settingValue");
         settings.put("dateKey", DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(settingDate));
-        Map<String, CmsJspObjectAccessWrapper> wrappedSettings = CmsStringTemplateRenderer.wrapSettings(cms, settings);
+        Map<String, CmsJspObjectValueWrapper> wrappedSettings = CmsStringTemplateRenderer.wrapSettings(cms, settings);
         Map<String, Object> objects = Collections.<String, Object> singletonMap("settings", wrappedSettings);
 
         assertEquals(
