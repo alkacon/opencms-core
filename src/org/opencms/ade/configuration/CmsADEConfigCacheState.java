@@ -445,6 +445,9 @@ public class CmsADEConfigCacheState {
         String normalizedFolderRootPath = CmsStringUtil.joinPaths(folder.getRootPath(), "/");
         for (CmsDetailPageInfo info : allDetailPages) {
             String parentPath = CmsResource.getParentFolder(info.getUri());
+            if (null == parentPath) {
+                continue;
+            }
             String normalizedParentPath = CmsStringUtil.joinPaths(parentPath, "/");
             if (normalizedParentPath.equals(normalizedFolderRootPath)) {
                 try {
