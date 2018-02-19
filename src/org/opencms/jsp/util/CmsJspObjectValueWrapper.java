@@ -32,8 +32,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
 /**
  * Provides access to common object types through wrappers.<p>
@@ -44,6 +43,36 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
 
     /** Constant for the null (non existing) value. */
     protected static final CmsJspObjectValueWrapper NULL_VALUE_WRAPPER = new CmsJspObjectValueWrapper();
+
+    /** Calculated hash code. */
+    private int m_hashCode;
+
+    /** The wrapped XML content value. */
+    private Object m_object;
+
+    /**
+     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
+     *
+     * @see #createWrapper(CmsObject, Object)
+     */
+    private CmsJspObjectValueWrapper() {
+
+        // cast needed to avoid compiler confusion with constructors
+        this((CmsObject)null, (I_CmsXmlContentValue)null);
+    }
+
+    /**
+     * Private constructor, use factory method to create instances.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param value the object to warp
+     */
+    private CmsJspObjectValueWrapper(CmsObject cms, Object value) {
+
+        // a null value is used for constant generation
+        m_cms = cms;
+        m_object = value;
+    }
 
     /**
      * Factory method to create a new XML content value wrapper.<p>
@@ -77,36 +106,6 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
             && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
     }
 
-    /** Calculated hash code. */
-    private int m_hashCode;
-
-    /** The wrapped XML content value. */
-    private Object m_object;
-
-    /**
-     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
-     *
-     * @see #createWrapper(CmsObject, Object)
-     */
-    private CmsJspObjectValueWrapper() {
-
-        // cast needed to avoid compiler confusion with constructors
-        this((CmsObject)null, (I_CmsXmlContentValue)null);
-    }
-
-    /**
-     * Private constructor, use factory method to create instances.<p>
-     *
-     * @param cms the current users OpenCms context
-     * @param value the object to warp
-     */
-    private CmsJspObjectValueWrapper(CmsObject cms, Object value) {
-
-        // a null value is used for constant generation
-        m_cms = cms;
-        m_object = value;
-    }
-
     /**
      * Returns <code>true</code> in case there was an object wrapped.<p>
      *
@@ -135,12 +134,9 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
         } else if (m_object instanceof String) {
             // return values for String
             return CmsStringUtil.isEmpty((String)m_object);
-        } else if (m_object instanceof Map) {
-            // if map has any entries it is not emtpy
-            return !((Map)m_object).isEmpty();
-        } else if (m_object instanceof List) {
-            // if map has any entries it is not emtpy
-            return !((List)m_object).isEmpty();
+        } else if (m_object instanceof Collection) {
+            // if a collection has any entries it is not emtpy
+            return !((Collection)m_object).isEmpty();
         } else {
             // assume all other non-null objects are not empty
             return false;

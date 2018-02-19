@@ -41,11 +41,11 @@ public class CmsJspElementSettingValueWrapper extends A_CmsJspValueWrapper {
     /** Flag indicating the setting has been configured. */
     private boolean m_exists;
 
-    /** The wrapped setting value, which always is a String. */
-    private String m_value;
-
     /** Calculated hash code. */
     private int m_hashCode;
+
+    /** The wrapped setting value, which always is a String. */
+    private String m_value;
 
     /**
      * Constructor.<p>

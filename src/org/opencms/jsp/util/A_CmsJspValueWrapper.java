@@ -96,6 +96,39 @@ abstract class A_CmsJspValueWrapper {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsJspValueWrapper.class);
 
+    /** The wrapped OpenCms user context. */
+    protected CmsObject m_cms;
+
+    /** Boolean representation of the wrapped value. */
+    private Boolean m_boolean;
+
+    /** Date created from the wrapped value. */
+    private Date m_date;
+
+    /** Double created from the wrapped value. */
+    private Double m_double;
+
+    /** Image bean instance created from the wrapped value. */
+    private CmsJspImageBean m_imageBean;
+
+    /** The lazy initialized Map that checks if a Object is equal. */
+    private Map<Object, Boolean> m_isEqual;
+
+    /** Link created from the wrapped value. */
+    private String m_link;
+
+    /** Long created from the wrapped value. */
+    private Long m_long;
+
+    /** String representation of the wrapped value. */
+    private String m_string;
+
+    /** String representation of the wrapped value with HTML stripped off. */
+    private String m_stripHtml;
+
+    /** The lazy initialized trim to size map. */
+    private Map<Object, String> m_trimToSize;
+
     /**
      * Returns the substituted link to the given target.<p>
      *
@@ -114,39 +147,6 @@ abstract class A_CmsJspValueWrapper {
             return "";
         }
     }
-
-    /** The wrapped OpenCms user context. */
-    protected CmsObject m_cms;
-
-    /** Image bean instance created from the wrapped value. */
-    private CmsJspImageBean m_imageBean;
-
-    /** String representation of the wrapped value with HTML stripped off. */
-    private String m_stripHtml;
-
-    /** Boolean representation of the wrapped value. */
-    private Boolean m_boolean;
-
-    /** Date created from the wrapped value. */
-    private Date m_date;
-
-    /** Double created from the wrapped value. */
-    private Double m_double;
-
-    /** Long created from the wrapped value. */
-    private Long m_long;
-
-    /** Link created from the wrapped value. */
-    private String m_link;
-
-    /** String representation of the wrapped value. */
-    private String m_string;
-
-    /** The lazy initialized Map that checks if a Object is equal. */
-    private Map<Object, Boolean> m_isEqual;
-
-    /** The lazy initialized trim to size map. */
-    private Map<Object, String> m_trimToSize;
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)

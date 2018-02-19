@@ -279,6 +279,102 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /** Constant for the null (non existing) value. */
     protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
 
+    /** The wrapped XML content value. */
+    private I_CmsXmlContentValue m_contentValue;
+
+    /** Date series information generated from the wrapped data. */
+    private CmsJspDateSeriesBean m_dateSeries;
+
+    /** Calculated hash code. */
+    private int m_hashCode;
+
+    /** The lazy initialized Map that checks if a value is available. */
+    private Map<String, Boolean> m_hasValue;
+
+    /** Date information as instance date bean. */
+    private CmsJspInstanceDateBean m_instanceDate;
+
+    /** The macro resolver used to resolve macros for this value. */
+    private CmsMacroResolver m_macroResolver;
+
+    /** The names of the sub elements. */
+    private List<String> m_names;
+
+    /** The null value info, used to generate RDFA and DND annotations for null values. */
+    private NullValueInfo m_nullValueInfo;
+
+    /** The current value transformed into a parameter map.*/
+    private Map<String, String> m_parameters;
+
+    /** The lazy initialized map of RDFA for nested sub values. */
+    private Map<String, String> m_rdfa;
+
+    /** The lazy initialized sub value list Map. */
+    private Map<String, List<CmsJspContentAccessValueWrapper>> m_subValueList;
+
+    /** The lazy initialized value Map. */
+    private Map<String, CmsJspContentAccessValueWrapper> m_value;
+
+    /** The lazy initialized value list Map. */
+    private Map<String, List<CmsJspContentAccessValueWrapper>> m_valueList;
+
+    /** The lazy initialized XML element Map. */
+    private Map<String, String> m_xml;
+
+    /**
+     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
+     *
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
+     */
+    private CmsJspContentAccessValueWrapper() {
+
+        // cast needed to avoid compiler confusion with constructors
+        this((CmsObject)null, (I_CmsXmlContentValue)null);
+    }
+
+    /**
+     * Private constructor, use factory method to create instances.<p>
+     *
+     * Used to create a copy with macro resolving enabled.<p>
+     *
+     * @param base the wrapper base
+     * @param macroResolver the macro resolver to use
+     *
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
+     */
+    private CmsJspContentAccessValueWrapper(CmsJspContentAccessValueWrapper base, CmsMacroResolver macroResolver) {
+
+        m_cms = base.m_cms;
+        m_contentValue = base.m_contentValue;
+        m_hashCode = base.m_hashCode;
+        m_hasValue = base.m_hasValue;
+        m_macroResolver = macroResolver;
+        m_value = base.m_value;
+        m_valueList = base.m_valueList;
+    }
+
+    /**
+     * Private constructor, use factory method to create instances.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param value the value to warp
+     *
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
+     */
+    private CmsJspContentAccessValueWrapper(CmsObject cms, I_CmsXmlContentValue value) {
+
+        // a null value is used for constant generation
+        m_cms = cms;
+        m_contentValue = value;
+
+        if ((m_contentValue == null) || m_contentValue.isSimpleType()) {
+            // maps must all be static
+            m_hasValue = CmsConstantMap.CONSTANT_BOOLEAN_FALSE_MAP;
+            m_value = CmsJspContentAccessBean.CONSTANT_NULL_VALUE_WRAPPER_MAP;
+            m_valueList = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
+        }
+    }
+
     /**
      * Factory method to create a new XML content value wrapper.<p>
      *
@@ -354,116 +450,6 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
         return !cms.getRequestContext().getCurrentProject().isOnlineProject()
             && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
-    }
-
-    /** The wrapped XML content value. */
-    private I_CmsXmlContentValue m_contentValue;
-
-    /** Calculated hash code. */
-    private int m_hashCode;
-
-    /** The lazy initialized Map that checks if a value is available. */
-    private Map<String, Boolean> m_hasValue;
-
-    /** The macro resolver used to resolve macros for this value. */
-    private CmsMacroResolver m_macroResolver;
-
-    /** The names of the sub elements. */
-    private List<String> m_names;
-
-    /** The null value info, used to generate RDFA and DND annotations for null values. */
-    private NullValueInfo m_nullValueInfo;
-
-    /** The lazy initialized map of RDFA for nested sub values. */
-    private Map<String, String> m_rdfa;
-
-    /** The lazy initialized sub value list Map. */
-    private Map<String, List<CmsJspContentAccessValueWrapper>> m_subValueList;
-
-    /** The lazy initialized value Map. */
-    private Map<String, CmsJspContentAccessValueWrapper> m_value;
-
-    /** The lazy initialized value list Map. */
-    private Map<String, List<CmsJspContentAccessValueWrapper>> m_valueList;
-
-    /** The lazy initialized XML element Map. */
-    private Map<String, String> m_xml;
-
-    /** The current value transformed into a parameter map.*/
-    private Map<String, String> m_parameters;
-
-    /** Date series information generated from the wrapped data. */
-    private CmsJspDateSeriesBean m_dateSeries;
-
-    /** Date information as instance date bean. */
-    private CmsJspInstanceDateBean m_instanceDate;
-
-    /**
-     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
-     *
-     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
-     */
-    private CmsJspContentAccessValueWrapper() {
-
-        // cast needed to avoid compiler confusion with constructors
-        this((CmsObject)null, (I_CmsXmlContentValue)null);
-    }
-
-    /**
-     * Private constructor, use factory method to create instances.<p>
-     *
-     * Used to create a copy with macro resolving enabled.<p>
-     *
-     * @param base the wrapper base
-     * @param macroResolver the macro resolver to use
-     *
-     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
-     */
-    private CmsJspContentAccessValueWrapper(CmsJspContentAccessValueWrapper base, CmsMacroResolver macroResolver) {
-
-        m_cms = base.m_cms;
-        m_contentValue = base.m_contentValue;
-        m_hashCode = base.m_hashCode;
-        m_hasValue = base.m_hasValue;
-        m_macroResolver = macroResolver;
-        m_value = base.m_value;
-        m_valueList = base.m_valueList;
-    }
-
-    /**
-     * Private constructor, use factory method to create instances.<p>
-     *
-     * @param cms the current users OpenCms context
-     * @param value the value to warp
-     *
-     * @see #createWrapper(CmsObject, I_CmsXmlContentValue,I_CmsXmlContentValue,String)
-     */
-    private CmsJspContentAccessValueWrapper(CmsObject cms, I_CmsXmlContentValue value) {
-
-        // a null value is used for constant generation
-        m_cms = cms;
-        m_contentValue = value;
-
-        if ((m_contentValue == null) || m_contentValue.isSimpleType()) {
-            // maps must all be static
-            m_hasValue = CmsConstantMap.CONSTANT_BOOLEAN_FALSE_MAP;
-            m_value = CmsJspContentAccessBean.CONSTANT_NULL_VALUE_WRAPPER_MAP;
-            m_valueList = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
-        }
-    }
-
-    /**
-     * Returns the path to the XML content based on the current element path.<p>
-     *
-     * This is used to create xpath information for sub-elements in the transformers.<p>
-     *
-     * @param input the additional path that is appended to the current path
-     *
-     * @return the path to the XML content based on the current element path
-     */
-    protected String createPath(Object input) {
-
-        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
     }
 
     /**
@@ -1128,5 +1114,19 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             // nested types should not be called this way by the user
             return "";
         }
+    }
+
+    /**
+     * Returns the path to the XML content based on the current element path.<p>
+     *
+     * This is used to create xpath information for sub-elements in the transformers.<p>
+     *
+     * @param input the additional path that is appended to the current path
+     *
+     * @return the path to the XML content based on the current element path
+     */
+    protected String createPath(Object input) {
+
+        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
     }
 }
