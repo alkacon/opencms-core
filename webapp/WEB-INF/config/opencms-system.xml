@@ -45,6 +45,10 @@
 			<param name="scrypt.settings">16384,8,1</param>
 		</passwordhandler>
 		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
+		<loginmanager>
+			<disableMinutes>15</disableMinutes>
+			<maxBadAttempts>5</maxBadAttempts>
+		</loginmanager>
 		<sax-impl-system-properties>false</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

@@ -454,7 +454,7 @@ public class CmsLoginController {
 
         try {
             try {
-                userObj = currentCms.readUser(realUser, password);
+                userObj = currentCms.readUser(realUser);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 message = org.opencms.workplace.Messages.get().container(
@@ -629,6 +629,8 @@ public class CmsLoginController {
                     // any other error - display default message
                     message = org.opencms.workplace.Messages.get().container(
                         org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
+                    displayError(message.key(m_params.getLocale()), true, true);
+                    return;
                 }
             }
 
