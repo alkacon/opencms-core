@@ -301,7 +301,7 @@ div.tinymceToolbarContainer > div{
 .attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child{
 	position: absolute;
     right: -1px;
-    top: -2px;
+    top: -4px;
     width :90%;
     display: none;
 }
