@@ -501,6 +501,7 @@ public class CmsLoginUI extends A_CmsUI {
     public void showLoginError(String messageHtml) {
 
         m_loginForm.displayError(messageHtml);
+        m_loginForm.resetPassword();
     }
 
     /**

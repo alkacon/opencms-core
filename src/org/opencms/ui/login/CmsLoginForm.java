@@ -214,6 +214,15 @@ public class CmsLoginForm extends VerticalLayout {
     }
 
     /**
+     * Resets the password field.<p>
+     */
+    public void resetPassword() {
+
+        m_passwordField.clear();
+
+    }
+
+    /**
      * Selects a specific org unit.<p>
      *
      * @param preselectedOu the OU to select
