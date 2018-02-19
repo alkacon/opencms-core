@@ -31,7 +31,9 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsCopyToClipboardButton;
 import org.opencms.ui.report.CmsReportWidget;
+import org.opencms.util.CmsUUID;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -60,6 +62,8 @@ public class CmsShellScriptReportDialog extends CmsBasicDialog {
         CmsReportWidget reportWidget = new CmsReportWidget(thread);
         reportWidget.addStyleName(" o-shell-terminal");
         reportWidget.setHeight("100%");
+        String id = "label" + new CmsUUID().getStringValue();
+        reportWidget.setId(id);
         reportWidget.setWidth("100%");
         reportWidget.addStyleName("o-sroll-x");
         setContent(reportWidget);
@@ -74,6 +78,12 @@ public class CmsShellScriptReportDialog extends CmsBasicDialog {
                 window.close();
             }
         });
+
+        Button copy = new CmsCopyToClipboardButton(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_COPY_TO_CLIPBOARD_0),
+            "#" + id);
+
+        addButton(copy, false);
 
     }
 
