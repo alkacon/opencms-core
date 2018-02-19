@@ -2939,6 +2939,17 @@
 
     <function>
         <description><![CDATA[
+             Converts the given Object to a (Double) number, falling back to a default if this is not possible.
+        ]]></description>
+        <name>toNumber</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.Double toNumber(java.lang.Object, java.lang.Object)
+        </function-signature>
+    </function>
+
+    <function>
+        <description><![CDATA[
             Returns a prefix of the String argument, that is not longer then the given int value.
         ]]></description>
         <name>trimToSize</name>

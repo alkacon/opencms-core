@@ -225,6 +225,8 @@ public final class CmsJspElFunctions {
         } else {
             if (input != null) {
                 String str = String.valueOf(input);
+                // support both "10,0" and "10.0" comma style
+                str = str.replace(',', '.');
                 try {
                     result = Double.valueOf(str);
                 } catch (NumberFormatException e) {
@@ -724,6 +726,28 @@ public final class CmsJspElFunctions {
         } catch (Exception e) {
             return CmsMessages.formatUnknownKey(e.getMessage());
         }
+    }
+
+    /**
+     * Converts the given Object to a (Double) number, falling back to a default if this is not possible.<p>
+     *
+     * In case even the default can not be converted to a number, <code>-1.0</code> is returned.<p>
+     *
+     * @param input the Object to convert to a (Double) number
+     * @param def the fall back default value in case the conversion is not possible
+     *
+     * @return the given Object converted to a (Double) number
+     */
+    public static Double toNumber(Object input, Object def) {
+
+        Double result = convertDouble(input);
+        if (result == null) {
+            result = convertDouble(def);
+        }
+        if (result == null) {
+            result = new Double(-1.0);
+        }
+        return result;
     }
 
     /**
