@@ -47,6 +47,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
+import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -130,6 +131,54 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /** The current users workplace locale. */
     private Locale m_workplaceLocale;
+
+    /**
+     * Creates a new resource to edit.<p>
+     *
+     * @param cms The CmsObject of the current request context.
+     * @param newLink A string, specifying where which new content should be created.
+     * @param locale The locale for which the
+     * @param sitePath site path of the currently edited content.
+     * @param modelFile not used.
+     * @param mode optional creation mode
+     * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
+     *
+     * @return The site-path of the newly created resource.
+     * @throws CmsException if something goes wrong
+     */
+    public static String createResourceToEdit(
+        CmsObject cms,
+        String newLink,
+        Locale locale,
+        String sitePath,
+        String modelFile,
+        String mode,
+        String postCreateHandler)
+    throws CmsException {
+
+        String newFileName = null;
+        if (newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
+
+            newFileName = CmsJspTagEdit.createResource(
+                cms,
+                newLink,
+                locale,
+                sitePath,
+                modelFile,
+                mode,
+                postCreateHandler);
+        } else {
+            newFileName = A_CmsResourceCollector.createResourceForCollector(
+                cms,
+                newLink,
+                locale,
+                sitePath,
+                modelFile,
+                mode,
+                postCreateHandler);
+        }
+        return newFileName;
+    }
 
     /**
      * Returns the entity attribute name representing the given content value.<p>
@@ -444,7 +493,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             getSessionCache().clearDynamicValues();
             getSessionCache().uncacheXmlContent(structureId);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
-                result = readContentDefnitionForNew(
+                result = readContentDefinitionForNew(
                     newLink,
                     resource,
                     modelFileId,
@@ -543,7 +592,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         String mode = getRequest().getParameter(CmsEditorConstants.PARAM_MODE);
                         String postCreateHandler = getRequest().getParameter(
                             CmsEditorConstants.PARAM_POST_CREATE_HANDLER);
-                        result = readContentDefnitionForNew(
+                        result = readContentDefinitionForNew(
                             paramNewLink,
                             resource,
                             modelFileId,
@@ -1602,7 +1651,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      *
      * @throws CmsException if creating the resource failed
      */
-    private CmsContentDefinition readContentDefnitionForNew(
+    private CmsContentDefinition readContentDefinitionForNew(
         String newLink,
         CmsResource referenceResource,
         CmsUUID modelFileId,
@@ -1640,27 +1689,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             modelFile = getCmsObject().getSitePath(
                 getCmsObject().readResource(modelFileId, CmsResourceFilter.IGNORE_EXPIRATION));
         }
-        String newFileName = null;
-        if (newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
-
-            newFileName = CmsJspTagEdit.createResource(
-                getCmsObject(),
-                newLink,
-                locale,
-                sitePath,
-                modelFile,
-                mode,
-                postCreateHandler);
-        } else {
-            newFileName = A_CmsResourceCollector.createResourceForCollector(
-                getCmsObject(),
-                newLink,
-                locale,
-                sitePath,
-                modelFile,
-                mode,
-                postCreateHandler);
-        }
+        String newFileName = createResourceToEdit(
+            getCmsObject(),
+            newLink,
+            locale,
+            sitePath,
+            modelFile,
+            mode,
+            postCreateHandler);
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile file = getCmsObject().readFile(resource);
         CmsXmlContent content = getContentDocument(file, false);
