@@ -985,7 +985,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         boolean editableContainer = true;
         if (m_parent instanceof CmsContainerPageContainer) {
-            CmsDebugLog.consoleLog("is container page container!");
             editableContainer = ((CmsContainerPageContainer)m_parent).isEditable();
         }
         for (CmsListCollectorEditor editor : m_editables.values()) {
