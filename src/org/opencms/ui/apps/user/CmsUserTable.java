@@ -280,6 +280,80 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     *Entry to kill Session.<p>
+     */
+    class EntryEnable implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            final Window window = CmsBasicDialog.prepareWindow();
+            try {
+                final CmsUser user = m_cms.readUser(new CmsUUID(context.iterator().next()));
+
+                CmsConfirmationDialog dialog = new CmsConfirmationDialog(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_LABEL_0),
+                    new Runnable() {
+
+                        public void run() {
+
+                            OpenCms.getLoginManager().resetUserTempDisable(user.getName());
+                            window.close();
+                            A_CmsUI.get().reload();
+                        }
+
+                    },
+                    new Runnable() {
+
+                        public void run() {
+
+                            window.close();
+
+                        }
+
+                    });
+                window.setCaption(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_CAPTION_1, user.getName()));
+                window.setContent(dialog);
+                A_CmsUI.get().addWindow(window);
+            } catch (CmsException e) {
+                LOG.error("Unable to read user", e);
+            }
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_CONTEXT_MENU_TITLE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            try {
+                CmsUser user = m_cms.readUser(new CmsUUID(context.iterator().next()));
+                if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                } else {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                }
+
+            } catch (CmsException e) {
+                LOG.error("Can not read user.", e);
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
+    }
+
+    /**
      *Entry to info dialog.<p>
      */
     class EntryInfo implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
@@ -948,6 +1022,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             m_menuEntries.add(new EntryRemoveFromGroup());
             m_menuEntries.add(new EntryDelete());
             m_menuEntries.add(new EntryKillSession());
+            m_menuEntries.add(new EntryEnable());
         }
         return m_menuEntries;
     }
@@ -967,6 +1042,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
         }
         if (newUser) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
+        }
+        if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_STATUS_0);
         }
         if (isUserPasswordReset(user)) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_0);
@@ -1213,6 +1291,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
                 if (((Boolean)item.getItemProperty(TableProperty.NEWUSER).getValue()).booleanValue()) {
                     return OpenCmsTheme.TABLE_COLUMN_BOX_BLUE;
+                }
+
+                if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
+                    return OpenCmsTheme.TABLE_COLUMN_BOX_RED;
                 }
 
                 if (isUserPasswordReset(user)) {

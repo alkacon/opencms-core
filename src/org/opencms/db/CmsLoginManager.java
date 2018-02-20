@@ -135,6 +135,15 @@ public class CmsLoginManager {
             }
             return m_disableTimeStart > 0;
         }
+
+        /**
+         * Reset disable time.<p>
+         */
+        protected void reset() {
+
+            m_disableTimeStart = 0;
+            m_invalidLoginCount = 0;
+        }
     }
 
     /** Default token lifetime. */
@@ -154,6 +163,9 @@ public class CmsLoginManager {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLoginManager.class);
+
+    /**Map holding usernames and userdata for user which are currently locked.*/
+    protected static Map<String, Set<CmsUserData>> TEMP_DISABLED_USER;
 
     /** The milliseconds to disable an account if the threshold is reached. */
     protected int m_disableMillis;
@@ -206,11 +218,15 @@ public class CmsLoginManager {
         String userDataCheckInterval) {
 
         m_maxBadAttempts = maxBadAttempts;
+        if (TEMP_DISABLED_USER == null) {
+            TEMP_DISABLED_USER = new Hashtable<String, Set<CmsUserData>>();
+        }
         if (m_maxBadAttempts >= 0) {
             // otherwise the invalid login storage is sisabled
             m_disableMinutes = disableMinutes;
             m_disableMillis = disableMinutes * 60 * 1000;
             m_storage = new Hashtable<String, CmsUserData>();
+
         }
         m_enableSecurity = enableSecurity;
         m_tokenLifetimeStr = tokenLifetime;
@@ -296,6 +312,12 @@ public class CmsLoginManager {
         CmsUserData userData = m_storage.get(key);
         if ((userData != null) && (userData.isDisabled())) {
             // threshold of invalid logins is reached
+            Set<CmsUserData> data = TEMP_DISABLED_USER.get(userName);
+            if (data == null) {
+                data = new HashSet<CmsUserData>();
+            }
+            data.add(userData);
+            TEMP_DISABLED_USER.put(userName, data);
             throw new CmsUserDisabledException(
                 Messages.get().container(
                     Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4,
@@ -304,6 +326,15 @@ public class CmsLoginManager {
                         remoteAddress,
                         userData.getReleaseDate(),
                         userData.getInvalidLoginCount()}));
+        }
+        if (TEMP_DISABLED_USER.containsKey(userName) & (userData != null)) {
+            //User war disabled, but time is over -> remove from list
+            if (TEMP_DISABLED_USER.get(userName).contains(userData)) {
+                TEMP_DISABLED_USER.get(userName).remove(userData);
+                if (TEMP_DISABLED_USER.get(userName).isEmpty()) {
+                    TEMP_DISABLED_USER.remove(userName);
+                }
+            }
         }
     }
 
@@ -484,6 +515,32 @@ public class CmsLoginManager {
     }
 
     /**
+     * Checks if given user it temporarily locked.<p>
+     *
+     * @param username to check
+     * @return true if user is locked
+     */
+    public boolean isUserTempDisabled(String username) {
+
+        Set<CmsUserData> data = TEMP_DISABLED_USER.get(username);
+        if (data == null) {
+            return false;
+        }
+        for (CmsUserData userData : data) {
+            if (!userData.isDisabled()) {
+                data.remove(userData);
+            }
+        }
+        if (data.size() > 0) {
+            TEMP_DISABLED_USER.put(username, data);
+            return true;
+        } else {
+            TEMP_DISABLED_USER.remove(username);
+            return false;
+        }
+    }
+
+    /**
      * Removes the current login message.<p>
      *
      * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
@@ -552,6 +609,23 @@ public class CmsLoginManager {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Resets lock from user.<p>
+     *
+     * @param username to reset lock for
+     */
+    public void resetUserTempDisable(String username) {
+
+        Set<CmsUserData> data = TEMP_DISABLED_USER.get(username);
+        if (data == null) {
+            return;
+        }
+        for (CmsUserData userData : data) {
+            userData.reset();
+        }
+        TEMP_DISABLED_USER.remove(username);
     }
 
     /**

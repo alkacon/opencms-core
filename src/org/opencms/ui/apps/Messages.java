@@ -54,6 +54,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_UNLOCK_USER_LABEL_0 = "GUI_USERMANAGEMENT_UNLOCK_USER_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_UNLOCK_USER_CAPTION_1 = "GUI_USERMANAGEMENT_UNLOCK_USER_CAPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_UNLOCK_USER_STATUS_0 = "GUI_USERMANAGEMENT_UNLOCK_USER_STATUS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_UNLOCK_USER_CONTEXT_MENU_TITLE_0 = "GUI_USERMANAGEMENT_UNLOCK_USER_CONTEXT_MENU_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_INFO_LAST_LOGIN_YESTERDAY_0 = "GUI_USER_INFO_LAST_LOGIN_YESTERDAY_0";
 
     /** Message constant for key in the resource bundle. */
