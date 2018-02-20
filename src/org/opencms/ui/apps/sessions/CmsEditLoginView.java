@@ -115,6 +115,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
      * @param window to be closed
      */
     public CmsEditLoginView(final Window window) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         iniUI(OpenCms.getLoginManager().getLoginMessage());
@@ -158,10 +159,21 @@ public class CmsEditLoginView extends CmsBasicDialog {
 
         };
         m_enabled.addValueChangeListener(vChange);
+        m_enabled.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = -7752947666984756614L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setFieldsEnabled();
+
+            }
+        });
         m_endTime.addValueChangeListener(vChange);
         m_startTime.addValueChangeListener(vChange);
         m_message.addValueChangeListener(vChange);
         m_logout.addValueChangeListener(vChange);
+        setFieldsEnabled();
     }
 
     /**
@@ -223,6 +235,18 @@ public class CmsEditLoginView extends CmsBasicDialog {
     protected boolean isFormValid() {
 
         return m_startTime.isValid() & m_endTime.isValid() & m_message.isValid();
+    }
+
+    /**
+     * Set the enable status of fields.<p>
+     */
+    protected void setFieldsEnabled() {
+
+        boolean enabled = m_enabled.getValue().booleanValue();
+        m_startTime.setEnabled(enabled);
+        m_endTime.setEnabled(enabled);
+        m_logout.setEnabled(enabled);
+        m_message.setEnabled(enabled);
     }
 
     /**
