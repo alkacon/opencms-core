@@ -905,7 +905,7 @@ public class CmsModelGroupHelper {
         boolean allowCopyModel) {
 
         boolean resetSettings = false;
-        if (!baseElement.isCopyModel() && !element.getFormatterId().equals(baseElement.getFormatterId())) {
+        if (!baseElement.isCopyModel() && !baseElement.getFormatterId().equals(element.getFormatterId())) {
             I_CmsFormatterBean formatter = m_configData.getCachedFormatters().getFormatters().get(
                 element.getFormatterId());
             resetSettings = (formatter == null)
