@@ -138,7 +138,6 @@ dependencies {
     distribution group: 'org.apache.lucene', name: 'lucene-join', version: '7.2.1'
     distribution group: 'org.apache.lucene', name: 'lucene-backward-codecs', version: '7.2.1'
     distribution group: 'org.apache.neethi', name: 'neethi', version: '3.1.0'
-    distribution group: 'org.apache.openjpa', name: 'openjpa', version:'2.4.2'
     distribution group: 'org.apache.solr', name: 'solr-core', version:'7.2.1'
     distribution group: 'org.apache.solr', name: 'solr-solrj', version:'7.2.1'
     distribution group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.8'

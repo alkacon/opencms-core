@@ -212,8 +212,6 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'Alkacon OpenCms',
         'Implementation-Version': version,
-        'JPA-PersistenceUnits': 'DATA_OPENJPA,DATA_OPENJPA_JTA',
-        'Meta-Persistence': 'META-INF/persistence.xml',
         'OpenCms-Localization': 'en'
     }
     baseName 'opencms-core'
@@ -251,6 +249,7 @@ jar {
 }
 
 javadoc {
+	classpath += sourceSets.gwt.compileClasspath
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
