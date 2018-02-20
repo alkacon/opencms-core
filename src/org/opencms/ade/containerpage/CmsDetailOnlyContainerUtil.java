@@ -71,14 +71,14 @@ import com.google.common.base.Optional;
  */
 public final class CmsDetailOnlyContainerUtil {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDetailOnlyContainerUtil.class);
-
     /** The detail containers folder name. */
     public static final String DETAIL_CONTAINERS_FOLDER_NAME = ".detailContainers";
 
     /** Use this locale string for locale independent detail only container resources. */
     public static final String LOCALE_ALL = "ALL";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDetailOnlyContainerUtil.class);
 
     /**
      * Private constructor.<p>
@@ -411,10 +411,15 @@ public final class CmsDetailOnlyContainerUtil {
      * @param content the content for which to save the detail-only page
      * @param locale the locale
      * @param page the container page data to save in the detail-only page
-    
+
      * @throws CmsException if something goes wrong
+     * @return the container page that was saved
      */
-    public static void saveDetailOnlyPage(CmsObject cms, CmsResource content, String locale, CmsContainerPageBean page)
+    public static CmsXmlContainerPage saveDetailOnlyPage(
+        CmsObject cms,
+        CmsResource content,
+        String locale,
+        CmsContainerPageBean page)
 
     throws CmsException {
 
@@ -422,6 +427,7 @@ public final class CmsDetailOnlyContainerUtil {
         CmsResource resource = readOrCreateDetailOnlyPage(cms, content.getStructureId(), detailOnlyPath);
         CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(resource));
         xmlCntPage.save(cms, page);
+        return xmlCntPage;
     }
 
     /**

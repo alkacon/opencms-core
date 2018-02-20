@@ -34,14 +34,12 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
-import org.opencms.ade.containerpage.shared.CmsDialogOptions;
+import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -173,10 +171,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsPair<CmsDialogOptions, CmsListInfoBean> getDeleteOptions(
-        String clientId,
-        CmsUUID pageStructureId,
-        String requestParams)
+    CmsDialogOptionsAndInfo getDeleteOptions(String clientId, CmsUUID pageStructureId, String requestParams)
     throws CmsRpcException;
 
     /**
@@ -191,7 +186,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @throws CmsRpcException in case something goes wrong
      */
-    CmsPair<CmsDialogOptions, CmsListInfoBean> getEditOptions(
+    CmsDialogOptionsAndInfo getEditOptions(
         String clientId,
         CmsUUID pageStructureId,
         String requestParams,
@@ -347,6 +342,19 @@ public interface I_CmsContainerpageService extends RemoteService {
         Collection<CmsContainer> containers,
         boolean allowNested,
         String locale)
+    throws CmsRpcException;
+
+    /**
+     * Gets the edit handler options for creating a new element.<p>
+     *
+     * @param clientId the client id of the selected element
+     * @param pageStructureId the container page structure id
+     * @param requestParams the request parameter string
+     *
+     * @return the dialog option data from the edit handler
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsDialogOptionsAndInfo getNewOptions(String clientId, CmsUUID pageStructureId, String requestParams)
     throws CmsRpcException;
 
     /**

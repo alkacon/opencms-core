@@ -30,17 +30,20 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
+import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
+import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -174,6 +177,26 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     }
 
     /**
+     * Handles the 'default case' when using the new function on an editable element.<p>
+     */
+    protected void defaultNew() {
+
+        CmsUUID referenceId = m_editableData.getStructureId();
+        CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
+
+            public void onFailure(Throwable caught) {
+                // is never called
+            }
+
+            public void onSuccess(String result) {
+
+                openEditDialog(true, result, null);
+                removeHighlighting();
+            }
+        });
+    }
+
+    /**
      * Delete the editable element from page and VFS.<p>
      */
     protected void deleteElement() {
@@ -205,10 +228,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         removeHighlighting();
         CmsDomUtil.ensureMouseOut(getElement());
         if (m_editableData.hasEditHandler()) {
-            final String elementId = ((m_editableData.getElementName() != null)
-                && m_editableData.getElementName().startsWith(m_editableData.getStructureId().toString()))
-                ? m_editableData.getElementName()
-                : m_editableData.getStructureId().toString();
+            final String elementId = CmsContentEditor.getClientIdForEditable(m_editableData);
             final I_CmsSimpleCallback<String> deleteCallback = new I_CmsSimpleCallback<String>() {
 
                 public void execute(String arg) {
@@ -226,24 +246,23 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
                     }
                 }
             };
-
             CmsContainerpageController.get().getDeleteOptions(
                 elementId,
-                new I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
+                new I_CmsSimpleCallback<CmsDialogOptionsAndInfo>() {
 
-                    public void execute(CmsPair<CmsDialogOptions, CmsListInfoBean> arg) {
+                    public void execute(CmsDialogOptionsAndInfo arg) {
 
                         if (arg == null) {
                             deleteCallback.execute(CmsDialogOptions.REGULAR_DELETE);
-                        } else if (arg.getFirst().getOptions().size() == 1) {
-                            String deleteOpt = arg.getFirst().getOptions().get(0).getValue();
+                        } else if (arg.getOptions().getOptions().size() == 1) {
+                            String deleteOpt = arg.getOptions().getOptions().get(0).getValue();
                             deleteCallback.execute(deleteOpt);
 
                         } else {
                             CmsOptionDialog dialog = new CmsOptionDialog(
                                 Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0),
-                                arg.getFirst(),
-                                arg.getSecond(),
+                                arg.getOptions(),
+                                arg.getInfo(),
                                 deleteCallback);
                             dialog.center();
                         }
@@ -261,7 +280,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     @Override
     protected void onClickEdit() {
 
-        openEditDialog(false, null);
+        openEditDialog(false, null, null);
         removeHighlighting();
     }
 
@@ -271,26 +290,53 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     @Override
     protected void onClickNew(boolean askCreateMode) {
 
+        CmsDebugLog.consoleLog("onClickNew");
         if (!askCreateMode) {
-            openEditDialog(true, null);
+            CmsDebugLog.consoleLog("askCreateMode = " + askCreateMode);
+            openEditDialog(true, null, null);
             removeHighlighting();
         } else {
+            if (m_editableData.hasEditHandler()) {
+                CmsDebugLog.consoleLog("has edit handler");
+                final String elementId = CmsContentEditor.getClientIdForEditable(m_editableData);
+                CmsCntPageData cntPageData = CmsContainerpageController.get().getData();
+                final CmsUUID pageId = cntPageData.getRpcContext().getPageStructureId();
+                final String requestParamStr = cntPageData.getRequestParams();
 
-            CmsUUID referenceId = m_editableData.getStructureId();
-            CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
+                final I_CmsSimpleCallback<String> newCallback = new I_CmsSimpleCallback<String>() {
 
-                public void onFailure(Throwable caught) {
+                    public void execute(String choice) {
 
-                    // is never called
+                        CmsEditHandlerData data = new CmsEditHandlerData(elementId, choice, pageId, requestParamStr);
+                        openEditDialog(true, null, data);
+                        removeHighlighting();
 
-                }
+                    }
+                };
 
-                public void onSuccess(String result) {
+                CmsContainerpageController.get().getNewOptions(
+                    elementId,
+                    new I_CmsSimpleCallback<CmsDialogOptionsAndInfo>() {
 
-                    openEditDialog(true, result);
-                    removeHighlighting();
-                }
-            });
+                        public void execute(CmsDialogOptionsAndInfo arg) {
+
+                            if (arg == null) {
+                                CmsDebugLog.consoleLog("dialog options null, using default behavior");
+                                defaultNew();
+                            } else {
+                                CmsOptionDialog dialog = new CmsOptionDialog(
+                                    null,
+                                    arg.getOptions(),
+                                    arg.getInfo(),
+                                    newCallback);
+                                dialog.center();
+                            }
+
+                        }
+                    });
+            } else {
+                defaultNew();
+            }
         }
 
     }
@@ -300,14 +346,16 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
      *
      * @param isNew <code>true</code> to create and edit a new resource
      * @param mode the content creation mode
+     * @param handlerDataForNew the data for the edit handler if it is used for the 'new' function
      */
-    protected void openEditDialog(boolean isNew, String mode) {
+    protected void openEditDialog(boolean isNew, String mode, CmsEditHandlerData handlerDataForNew) {
 
         CmsContainerpageController.get().getContentEditorHandler().openDialog(
             m_editableData,
             isNew,
             m_parentResourceId,
-            mode);
+            mode,
+            handlerDataForNew);
     }
 
     /**

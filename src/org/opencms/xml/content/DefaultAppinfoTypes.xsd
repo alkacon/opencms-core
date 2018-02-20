@@ -256,7 +256,11 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoEditHandler">
+		<xsd:sequence>
+			<xsd:element name="parameters" type="OpenCmsDefaultAppinfoParameters" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
 		<xsd:attribute name="class" type="xsd:string" />
+		
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoTemplates">

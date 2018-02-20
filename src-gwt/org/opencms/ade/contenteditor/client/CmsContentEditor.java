@@ -44,12 +44,14 @@ import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
@@ -400,6 +402,21 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /**
+     * Gets the client id for the editable element.<p>
+     *
+     * @param editableData the editable element
+     *
+     * @return the client id for the editable element
+     */
+    public static String getClientIdForEditable(final I_CmsEditableData editableData) {
+
+        return ((editableData.getElementName() != null)
+            && editableData.getElementName().startsWith(editableData.getStructureId().toString()))
+            ? editableData.getElementName()
+            : editableData.getStructureId().toString();
+    }
+
+    /**
      * Returns the currently edited entity.<p>
      *
      * @return the currently edited entity
@@ -659,6 +676,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param postCreateHandler the post-create handler class name (optional)
      * @param mode the content creation mode
      * @param mainLocale the main language to copy in case the element language node does not exist yet
+     * @param editHandlerData the data for the edit handler, if one is used to create a new content; null otherwise
      * @param callback the callback
      */
     public void loadInitialDefinition(
@@ -668,6 +686,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final String postCreateHandler,
         final String mode,
         final String mainLocale,
+        final CmsEditHandlerData editHandlerData,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -684,6 +703,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     mainLocale,
                     postCreateHandler,
                     mode,
+                    editHandlerData,
                     this);
             }
 
@@ -762,6 +782,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param postCreateHandler the post-create handler class (optional)
      * @param mode the content creation mode
      * @param mainLocale the main language to copy in case the element language node does not exist yet
+     * @param editHandlerData the edit handler data, if we are using an edit handler to create a new element; null otherwise
      * @param onClose the command executed on dialog close
      */
     public void openFormEditor(
@@ -773,6 +794,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final String postCreateHandler,
         final String mode,
         final String mainLocale,
+        final CmsEditHandlerData editHandlerData,
         final Command onClose) {
 
         m_onClose = onClose;
@@ -791,6 +813,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         mode,
                         postCreateHandler,
                         mainLocale,
+                        editHandlerData,
                         new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                             public void execute(CmsContentDefinition contentDefinition) {
@@ -850,6 +873,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         null,
                         null,
                         mainLocale,
+                        null,
                         new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                             public void execute(CmsContentDefinition contentDefinition) {
@@ -1637,6 +1661,8 @@ public final class CmsContentEditor extends CmsEditorBase {
                     modelStructureId,
                     null,
                     null,
+                    null,
+
                     null,
                     m_onClose);
             }

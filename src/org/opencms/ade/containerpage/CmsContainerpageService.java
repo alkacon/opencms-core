@@ -46,6 +46,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
+import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
@@ -701,6 +702,42 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Reads the cached element-bean for the given client-side-id from cache.<p>
+     *
+     * @param clientId the client-side-id
+     * @param pageRootPath the container page root path
+     *
+     * @return the cached container element bean
+     *
+     * @throws CmsException in case reading the element resource fails
+     */
+    public CmsContainerElementBean getCachedElement(String clientId, String pageRootPath) throws CmsException {
+
+        String id = clientId;
+        CmsContainerElementBean element = null;
+        element = getSessionCache().getCacheContainerElement(id);
+        if (element != null) {
+            return element;
+        }
+        if (id.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+            throw new CmsException(Messages.get().container(Messages.ERR_MISSING_CACHED_ELEMENT_0));
+        }
+
+        // this is necessary if the element has not been cached yet
+        CmsResource resource = getCmsObject().readResource(convertToServerId(id), CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsADEConfigData configData = getConfigData(pageRootPath);
+        CmsResourceTypeConfig typeConfig = configData.getResourceType(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName());
+        element = new CmsContainerElementBean(
+            convertToServerId(id),
+            null,
+            null,
+            (typeConfig != null) && typeConfig.isCopyInModels());
+        getSessionCache().setCacheContainerElement(element.editorHash(), element);
+        return element;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getContainerInfo()
      */
     public CmsContainer getContainerInfo() {
@@ -711,10 +748,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getDeleteOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsPair<CmsDialogOptions, CmsListInfoBean> getDeleteOptions(
-        String clientId,
-        CmsUUID pageId,
-        String requestParams)
+    public CmsDialogOptionsAndInfo getDeleteOptions(String clientId, CmsUUID pageId, String requestParams)
     throws CmsRpcException {
 
         try {
@@ -730,7 +764,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsEncoder.ENCODING_UTF_8);
                 CmsDialogOptions options = handler.getDeleteOptions(getCmsObject(), element, pageId, params);
                 if (options != null) {
-                    return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
+                    return new CmsDialogOptionsAndInfo(
                         options,
                         CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
                 }
@@ -744,7 +778,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getEditOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, boolean)
      */
-    public CmsPair<CmsDialogOptions, CmsListInfoBean> getEditOptions(
+    public CmsDialogOptionsAndInfo getEditOptions(
         String clientId,
         CmsUUID pageId,
         String requestParams,
@@ -769,7 +803,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     params,
                     isListElement);
                 if (options != null) {
-                    return new CmsPair<CmsDialogOptions, CmsListInfoBean>(
+                    return new CmsDialogOptionsAndInfo(
                         options,
                         CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
                 }
@@ -1065,6 +1099,37 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewOptions(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public CmsDialogOptionsAndInfo getNewOptions(String clientId, CmsUUID pageStructureId, String requestParams)
+    throws CmsRpcException {
+
+        try {
+            CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+            CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
+            element.initResource(getCmsObject());
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
+            if (type instanceof CmsResourceTypeXmlContent) {
+                I_CmsEditHandler handler = ((CmsResourceTypeXmlContent)type).getEditHandler(getCmsObject());
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(
+                    CmsEncoder.decode(requestParams),
+                    true,
+                    CmsEncoder.ENCODING_UTF_8);
+                CmsDialogOptions options = handler.getNewOptions(getCmsObject(), element, pageStructureId, params);
+                if (options != null) {
+                    return new CmsDialogOptionsAndInfo(
+                        options,
+                        CmsVfsService.getPageInfo(getCmsObject(), element.getResource()));
+                }
+            }
+        } catch (CmsException e) {
+            error(e);
+        }
+        return null;
+
     }
 
     /**
@@ -1940,42 +2005,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         CmsContainerPageBean page = new CmsContainerPageBean(containerBeans);
         return page;
-    }
-
-    /**
-     * Reads the cached element-bean for the given client-side-id from cache.<p>
-     *
-     * @param clientId the client-side-id
-     * @param pageRootPath the container page root path
-     *
-     * @return the cached container element bean
-     *
-     * @throws CmsException in case reading the element resource fails
-     */
-    private CmsContainerElementBean getCachedElement(String clientId, String pageRootPath) throws CmsException {
-
-        String id = clientId;
-        CmsContainerElementBean element = null;
-        element = getSessionCache().getCacheContainerElement(id);
-        if (element != null) {
-            return element;
-        }
-        if (id.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
-            throw new CmsException(Messages.get().container(Messages.ERR_MISSING_CACHED_ELEMENT_0));
-        }
-
-        // this is necessary if the element has not been cached yet
-        CmsResource resource = getCmsObject().readResource(convertToServerId(id), CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsADEConfigData configData = getConfigData(pageRootPath);
-        CmsResourceTypeConfig typeConfig = configData.getResourceType(
-            OpenCms.getResourceManager().getResourceType(resource).getTypeName());
-        element = new CmsContainerElementBean(
-            convertToServerId(id),
-            null,
-            null,
-            (typeConfig != null) && typeConfig.isCopyInModels());
-        getSessionCache().setCacheContainerElement(element.editorHash(), element);
-        return element;
     }
 
     /**

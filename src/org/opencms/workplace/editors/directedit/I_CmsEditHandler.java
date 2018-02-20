@@ -29,10 +29,12 @@ package org.opencms.workplace.editors.directedit;
 
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.file.CmsObject;
+import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -77,6 +79,24 @@ public interface I_CmsEditHandler {
         boolean isListElement);
 
     /**
+     * Gets the options for the 'New' (plus) operation in the page editor.<p>
+     *
+     * If this returns null, the default behavior for the 'New' operation will be used instead.
+     *
+     * @param cms the cms context
+     * @param elementBean the container element bean from which the 'New' operation was initiated
+     * @param pageContextId the structure id of the container page
+     * @param requestParam the request parameters
+     *
+     * @return the available options, or null if the default behavior should be used
+     */
+    CmsDialogOptions getNewOptions(
+        CmsObject cms,
+        CmsContainerElementBean elementBean,
+        CmsUUID pageContextId,
+        Map<String, String[]> requestParam);
+
+    /**
      * Executes the actual delete.<p>
      *
      * @param cms the cms context
@@ -93,6 +113,36 @@ public interface I_CmsEditHandler {
         String deleteOption,
         CmsUUID pageContextId,
         Map<String, String[]> requestParams)
+    throws CmsException;
+
+    /**
+     * Creates a new resource to edit.<p>
+     *
+     * @param cms The CmsObject of the current request
+     * @param newLink A string, specifying where which new content should be created.
+     * @param locale The locale
+     * @param referenceSitePath site path of the currently edited content.
+     * @param modelFileSitePath site path of the model file
+     * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
+     * @param element the container element bean
+     * @param pageId the page id
+     * @param requestParams the request parameters
+     * @param choice the option chosen by the user
+     *
+     * @return The site-path of the newly created resource.
+     * @throws CmsException if something goes wrong
+     */
+    String handleNew(
+        CmsObject cms,
+        String newLink,
+        Locale locale,
+        String referenceSitePath,
+        String modelFileSitePath,
+        String postCreateHandler,
+        CmsContainerElementBean element,
+        CmsUUID pageId,
+        Map<String, String[]> requestParams,
+        String choice)
     throws CmsException;
 
     /**
@@ -115,5 +165,12 @@ public interface I_CmsEditHandler {
         CmsUUID pageContextId,
         Map<String, String[]> requestParams)
     throws CmsException;
+
+    /**
+     * Sets parameters for the edit handler.<p>
+     *
+     * @param params the parameters
+     */
+    void setParameters(Map<String, String> params);
 
 }

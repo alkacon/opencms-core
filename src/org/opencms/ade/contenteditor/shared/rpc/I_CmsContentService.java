@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.shared.rpc;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -100,6 +101,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
+     * @param editHandlerData the edit handler data, if an edit handler is used for creating a new element; null otherwise
      *
      * @return the content definition
      *
@@ -112,7 +114,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String editContext,
         String mainLocale,
         String mode,
-        String postCreateHandler)
+        String postCreateHandler,
+        CmsEditHandlerData editHandlerData)
     throws CmsRpcException;
 
     /**

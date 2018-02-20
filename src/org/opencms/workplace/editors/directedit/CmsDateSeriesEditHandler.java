@@ -76,17 +76,8 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
         /** Edit option: Edit the whole series. */
         private static final String OPTION_SERIES = "series";
 
-        /** The definition of the date series from the content. */
-        private CmsSerialDateValue m_value;
-
-        /** The date series as defined in the content. */
-        private I_CmsSerialDateBean m_series;
-
-        /** The date of the current instance of the series. */
-        private Date m_instanceDate;
-
-        /** The file of the content that should be edited/deleted. */
-        private CmsFile m_file;
+        /** The cms object with the current context. */
+        private CmsObject m_cms;
 
         /** The content that should be edited/deleted. */
         private CmsXmlContent m_content;
@@ -94,17 +85,26 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
         /** The content value that holds the definition of the date series. */
         private I_CmsXmlContentValue m_contentValue;
 
-        /** The cms object with the current context. */
-        private CmsObject m_cms;
+        /** The edited container page element. */
+        private CmsContainerElementBean m_elementBean;
+
+        /** The file of the content that should be edited/deleted. */
+        private CmsFile m_file;
+
+        /** The date of the current instance of the series. */
+        private Date m_instanceDate;
 
         /** UUID of the container page we currently act on. */
         private CmsUUID m_pageContextId;
 
-        /** The edited container page element. */
-        private CmsContainerElementBean m_elementBean;
-
         /** The current request parameters. */
         private Map<String, String[]> m_requestParameters;
+
+        /** The date series as defined in the content. */
+        private I_CmsSerialDateBean m_series;
+
+        /** The definition of the date series from the content. */
+        private CmsSerialDateValue m_value;
 
         /**
          * Constructor for the internal handler, basically taking the information that is provided in all methods of {@link I_CmsEditHandler} to do the common initialization.
@@ -118,6 +118,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
             CmsContainerElementBean elementBean,
             Map<String, String[]> requestParams,
             CmsUUID pageContextId) {
+
             try {
                 m_cms = cms;
                 m_elementBean = elementBean;
@@ -472,6 +473,18 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
     }
 
     /**
+     * @see org.opencms.workplace.editors.directedit.I_CmsEditHandler#getNewOptions(org.opencms.file.CmsObject, org.opencms.xml.containerpage.CmsContainerElementBean, org.opencms.util.CmsUUID, java.util.Map)
+     */
+    public CmsDialogOptions getNewOptions(
+        CmsObject cms,
+        CmsContainerElementBean elementBean,
+        CmsUUID pageContextId,
+        Map<String, String[]> requestParam) {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.workplace.editors.directedit.I_CmsEditHandler#handleDelete(org.opencms.file.CmsObject, org.opencms.xml.containerpage.CmsContainerElementBean, java.lang.String, org.opencms.util.CmsUUID, java.util.Map)
      */
     @Override
@@ -487,6 +500,24 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
 
         internalHandler.handleDelete(deleteOption);
 
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.directedit.I_CmsEditHandler#handleNew(org.opencms.file.CmsObject, java.lang.String, java.util.Locale, java.lang.String, java.lang.String, java.lang.String, org.opencms.xml.containerpage.CmsContainerElementBean, org.opencms.util.CmsUUID, java.util.Map, java.lang.String)
+     */
+    public String handleNew(
+        CmsObject cms,
+        String newLink,
+        Locale locale,
+        String referenceSitePath,
+        String modelFileSitePath,
+        String postCreateHandler,
+        CmsContainerElementBean element,
+        CmsUUID pageId,
+        Map<String, String[]> requestParams,
+        String choice) {
+
+        return null;
     }
 
     /**
@@ -506,5 +537,12 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
         }
         InternalHandler internalHandler = new InternalHandler(cms, elementBean, requestParams, pageContextId);
         return internalHandler.prepareForEdit(editOption);
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.directedit.I_CmsEditHandler#setParameters(java.util.Map)
+     */
+    public void setParameters(Map<String, String> params) {
+        // this handler doesn't need parameters
     }
 }

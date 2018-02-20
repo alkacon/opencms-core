@@ -39,6 +39,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
@@ -49,6 +50,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
@@ -65,6 +67,7 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCategoryWidget;
@@ -73,12 +76,14 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
+import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsADESessionCache;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -133,38 +138,38 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     private Locale m_workplaceLocale;
 
     /**
-     * Creates a new resource to edit.<p>
+     * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
      *
      * @param cms The CmsObject of the current request context.
      * @param newLink A string, specifying where which new content should be created.
      * @param locale The locale for which the
-     * @param sitePath site path of the currently edited content.
-     * @param modelFile not used.
+     * @param referenceSitePath site path of the currently edited content.
+     * @param modelFileSitePath site path of the model file
      * @param mode optional creation mode
      * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
      *
      * @return The site-path of the newly created resource.
      * @throws CmsException if something goes wrong
      */
-    public static String createResourceToEdit(
+    public static String defaultCreateResourceToEdit(
         CmsObject cms,
         String newLink,
         Locale locale,
-        String sitePath,
-        String modelFile,
+        String referenceSitePath,
+        String modelFileSitePath,
         String mode,
         String postCreateHandler)
     throws CmsException {
 
-        String newFileName = null;
+        String newFileName;
         if (newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
 
             newFileName = CmsJspTagEdit.createResource(
                 cms,
                 newLink,
                 locale,
-                sitePath,
-                modelFile,
+                referenceSitePath,
+                modelFileSitePath,
                 mode,
                 postCreateHandler);
         } else {
@@ -172,8 +177,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 cms,
                 newLink,
                 locale,
-                sitePath,
-                modelFile,
+                referenceSitePath,
+                modelFileSitePath,
                 mode,
                 postCreateHandler);
         }
@@ -472,7 +477,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.opencms.ade.contenteditor.shared.CmsEditHandlerData)
      */
     public CmsContentDefinition loadInitialDefinition(
         String entityId,
@@ -481,7 +486,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String editContext,
         String mainLocale,
         String mode,
-        String postCreateHandler)
+        String postCreateHandler,
+        CmsEditHandlerData editHandlerDataForNew)
     throws CmsRpcException {
 
         CmsContentDefinition result = null;
@@ -499,7 +505,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     modelFileId,
                     contentLocale,
                     mode,
-                    postCreateHandler);
+                    postCreateHandler,
+                    editHandlerDataForNew);
             } else {
                 CmsFile file = getCmsObject().readFile(resource);
                 CmsXmlContent content = getContentDocument(file, false);
@@ -598,7 +605,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             modelFileId,
                             locale,
                             mode,
-                            postCreateHandler);
+                            postCreateHandler,
+                            null);
                     } else {
 
                         CmsFile file = cms.readFile(resource);
@@ -1205,6 +1213,82 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
+     *
+     * @param newLink A string, specifying where which new content should be created.
+     * @param locale The locale for which the
+     * @param referenceSitePath site path of the currently edited content.
+     * @param modelFileSitePath site path of the model file
+     * @param mode optional creation mode
+     * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
+     * @param editHandlerData edit handler data (will be null if no edit handler is configured or the edit handler does not handle 'new')
+     *
+     * @return The site-path of the newly created resource.
+     * @throws CmsException if something goes wrong
+     */
+    private String createResourceToEdit(
+        String newLink,
+        Locale locale,
+        String referenceSitePath,
+        String modelFileSitePath,
+        String mode,
+        String postCreateHandler,
+        CmsEditHandlerData editHandlerData)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        HttpServletRequest request = getRequest();
+        if (editHandlerData != null) {
+            CmsContainerpageService containerpageService = new CmsContainerpageService();
+            containerpageService.setCms(cms);
+            containerpageService.setRequest(request);
+            CmsResource page = cms.readResource(editHandlerData.getPageContextId(), CmsResourceFilter.ALL);
+            CmsContainerElementBean elementBean = containerpageService.getCachedElement(
+                editHandlerData.getClientId(),
+                page.getRootPath());
+            Map<String, String[]> params = CmsRequestUtil.createParameterMap(
+                CmsEncoder.decode(editHandlerData.getRequestParams()),
+                true,
+                CmsEncoder.ENCODING_UTF_8);
+            elementBean.initResource(cms);
+            CmsResource elementResource = elementBean.getResource();
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(elementResource);
+            if (type instanceof CmsResourceTypeXmlContent) {
+                CmsResourceTypeXmlContent xmlType = (CmsResourceTypeXmlContent)type;
+                I_CmsEditHandler handler = xmlType.getEditHandler(cms);
+                if (handler != null) {
+                    return handler.handleNew(
+                        cms,
+                        newLink,
+                        locale,
+                        referenceSitePath,
+                        modelFileSitePath,
+                        postCreateHandler,
+                        elementBean,
+                        editHandlerData.getPageContextId(),
+                        params,
+                        editHandlerData.getOption());
+
+                } else {
+                    LOG.warn(
+                        "Invalid state: edit handler data passed in, but edit handler is undefined. type = "
+                            + type.getTypeName());
+                }
+            } else {
+                LOG.warn("Invalid state: edit handler data passed in for non-XML content type.");
+            }
+        }
+        return defaultCreateResourceToEdit(
+            cms,
+            newLink,
+            locale,
+            referenceSitePath,
+            modelFileSitePath,
+            mode,
+            postCreateHandler);
+    }
+
+    /**
      * Evaluates any wildcards in the given scope and returns all allowed permutations of it.<p>
      *
      * a path like Paragraph* /Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
@@ -1646,6 +1730,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param locale the content locale
      * @param mode the content creation mode
      * @param postCreateHandler the class name for the post-create handler
+     * @param editHandlerData the edit handler data, in case the 'new' function is handled by an edit handler
      *
      * @return the content definition
      *
@@ -1657,7 +1742,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsUUID modelFileId,
         Locale locale,
         String mode,
-        String postCreateHandler)
+        String postCreateHandler,
+        CmsEditHandlerData editHandlerData)
     throws CmsException {
 
         String sitePath = getCmsObject().getSitePath(referenceResource);
@@ -1690,13 +1776,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 getCmsObject().readResource(modelFileId, CmsResourceFilter.IGNORE_EXPIRATION));
         }
         String newFileName = createResourceToEdit(
-            getCmsObject(),
             newLink,
             locale,
             sitePath,
             modelFile,
             mode,
-            postCreateHandler);
+            postCreateHandler,
+            editHandlerData);
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile file = getCmsObject().readFile(resource);
         CmsXmlContent content = getContentDocument(file, false);

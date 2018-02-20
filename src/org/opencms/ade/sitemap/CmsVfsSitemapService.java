@@ -139,7 +139,6 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.io.Closeable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1052,7 +1051,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsObject cms = getCmsObject();
             CmsResource ownRes = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsResource defaultFileRes = cms.readDefaultFile("" + id);
-            try (Closeable c = CmsLockUtil.withLockedResources(cms, ownRes)) {
+            try (AutoCloseable c = CmsLockUtil.withLockedResources(cms, ownRes)) {
                 updateProperties(cms, ownRes, defaultFileRes, propertyChanges);
                 if (editedName) {
                     String parent = CmsResource.getParentFolder(ownRes.getRootPath());

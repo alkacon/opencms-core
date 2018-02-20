@@ -31,10 +31,11 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsOptionDialog;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
-import org.opencms.ade.containerpage.shared.CmsDialogOptions;
+import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.CmsEditorContext;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
@@ -45,8 +46,6 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -69,20 +68,20 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     /** Content editor hash key used for history management. */
     private static final String EDITOR_HASH_KEY = "cE:";
 
+    /** The container-page handler. */
+    CmsContainerpageHandler m_handler;
+
+    /** The content element to be replaced by the edited content. */
+    CmsContainerPageElementPanel m_replaceElement;
+
     /** The currently edited element's id. */
     private String m_currentElementId;
 
     /** The depending element's id. */
     private String m_dependingElementId;
 
-    /** The container-page handler. */
-    CmsContainerpageHandler m_handler;
-
     /** Flag indicating the content editor is currently opened. */
     private boolean m_editorOpened;
-
-    /** The content element to be replaced by the edited content. */
-    CmsContainerPageElementPanel m_replaceElement;
 
     /**
      * Constructor.<p>
@@ -157,9 +156,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             m_handler.m_controller.getEditOptions(
                 element.getId(),
                 false,
-                new I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
+                new I_CmsSimpleCallback<CmsDialogOptionsAndInfo>() {
 
-                    public void execute(CmsPair<CmsDialogOptions, CmsListInfoBean> editOptions) {
+                    public void execute(CmsDialogOptionsAndInfo editOptions) {
 
                         final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
 
@@ -176,16 +175,16 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         };
                         if (editOptions == null) {
                             internalOpenDialog(element, element.getId(), inline);
-                        } else if (editOptions.getFirst().getOptions().size() == 1) {
+                        } else if (editOptions.getOptions().getOptions().size() == 1) {
                             m_handler.m_controller.prepareForEdit(
                                 element.getId(),
-                                editOptions.getFirst().getOptions().get(0).getValue(),
+                                editOptions.getOptions().getOptions().get(0).getValue(),
                                 editCallBack);
                         } else {
                             CmsOptionDialog dialog = new CmsOptionDialog(
                                 Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
-                                editOptions.getFirst(),
-                                editOptions.getSecond(),
+                                editOptions.getOptions(),
+                                editOptions.getInfo(),
                                 new I_CmsSimpleCallback<String>() {
 
                                     public void execute(String arg) {
@@ -216,12 +215,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param isNew <code>true</code> if a new resource should be created
      * @param dependingElementId the id of a depending element
      * @param mode the element creation mode
+     * @param handlerDataForNew the edit handler data, if we are using an edit handler to create a new element; null otherwise
      */
     public void openDialog(
         final I_CmsEditableData editableData,
         final boolean isNew,
         final String dependingElementId,
-        final String mode) {
+        final String mode,
+        final CmsEditHandlerData handlerDataForNew) {
 
         if (!m_editorOpened) {
             m_editorOpened = true;
@@ -229,16 +230,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             m_handler.deactivateCurrentButton();
 
             if (!isNew && (editableData.getStructureId() != null) && editableData.hasEditHandler()) {
-                final String elementId = ((editableData.getElementName() != null)
-                    && editableData.getElementName().startsWith(editableData.getStructureId().toString()))
-                    ? editableData.getElementName()
-                    : editableData.getStructureId().toString();
+                final String elementId = CmsContentEditor.getClientIdForEditable(editableData);
                 m_handler.m_controller.getEditOptions(
                     elementId,
                     true,
-                    new I_CmsSimpleCallback<CmsPair<CmsDialogOptions, CmsListInfoBean>>() {
+                    new I_CmsSimpleCallback<CmsDialogOptionsAndInfo>() {
 
-                        public void execute(CmsPair<CmsDialogOptions, CmsListInfoBean> editOptions) {
+                        public void execute(CmsDialogOptionsAndInfo editOptions) {
 
                             final I_CmsSimpleCallback<CmsUUID> editCallBack = new I_CmsSimpleCallback<CmsUUID>() {
 
@@ -250,21 +248,21 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                                         data = new CmsEditableData(data);
                                         ((CmsEditableData)data).setStructureId(arg);
                                     }
-                                    internalOpenDialog(data, isNew, dependingElementId, mode);
+                                    internalOpenDialog(data, isNew, dependingElementId, mode, null);
                                 }
                             };
                             if (editOptions == null) {
-                                internalOpenDialog(editableData, isNew, dependingElementId, mode);
-                            } else if (editOptions.getFirst().getOptions().size() == 1) {
+                                internalOpenDialog(editableData, isNew, dependingElementId, mode, null);
+                            } else if (editOptions.getOptions().getOptions().size() == 1) {
                                 m_handler.m_controller.prepareForEdit(
                                     elementId,
-                                    editOptions.getFirst().getOptions().get(0).getValue(),
+                                    editOptions.getOptions().getOptions().get(0).getValue(),
                                     editCallBack);
                             } else {
                                 CmsOptionDialog dialog = new CmsOptionDialog(
                                     Messages.get().key(Messages.GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0),
-                                    editOptions.getFirst(),
-                                    editOptions.getSecond(),
+                                    editOptions.getOptions(),
+                                    editOptions.getInfo(),
                                     new I_CmsSimpleCallback<String>() {
 
                                         public void execute(String arg) {
@@ -284,7 +282,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         }
                     });
             } else {
-                internalOpenDialog(editableData, isNew, dependingElementId, mode);
+                internalOpenDialog(editableData, isNew, dependingElementId, mode, handlerDataForNew);
             }
 
         } else {
@@ -331,6 +329,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     null,
                     null,
                     m_handler.m_controller.getData().getMainLocale(),
+                    null,
                     onClose);
             }
         } else {
@@ -468,6 +467,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         null,
                         null,
                         mainLocale,
+                        null,
                         onClose);
                 }
             }
@@ -483,12 +483,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param isNew <code>true</code> if a new resource should be created
      * @param dependingElementId the id of a depending element
      * @param mode the element creation mode
+     * @param editHandlerData the edit handler data, if we are using an edit handler to create a new element; null otherwise
      */
     void internalOpenDialog(
         final I_CmsEditableData editableData,
         final boolean isNew,
         String dependingElementId,
-        String mode) {
+        String mode,
+        CmsEditHandlerData editHandlerData) {
 
         if ((editableData.getStructureId() != null) && !isNew) {
             m_currentElementId = editableData.getStructureId().toString();
@@ -516,6 +518,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 editableData.getPostCreateHandler(),
                 mode,
                 m_handler.m_controller.getData().getMainLocale(),
+                editHandlerData,
                 new Command() {
 
                     public void execute() {

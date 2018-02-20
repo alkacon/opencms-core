@@ -56,14 +56,14 @@ public final class CmsLockUtil {
 
         /** The cms object used for locking, unlocking and encoding determination. */
         private CmsObject m_cms;
-        /** The resource that was locked. */
-        private CmsResource m_res;
         /** The file that was read (cached file for getFile). */
         private CmsFile m_file;
         /** The lock action record from locking the file. */
         private CmsLockActionRecord m_lockRecord;
         /** Flag, indicating if the file was newly created. */
         private boolean m_new;
+        /** The resource that was locked. */
+        private CmsResource m_res;
 
         /** Private constructor.
          * @param cms the cms user context.
@@ -72,6 +72,7 @@ public final class CmsLockUtil {
          */
         private LockedFile(CmsObject cms, CmsResource resource)
         throws CmsException {
+
             m_lockRecord = CmsLockUtil.ensureLock(cms, resource);
             m_res = resource;
             m_new = false;
@@ -247,7 +248,7 @@ public final class CmsLockUtil {
      * @return the Closeable used to unlock the resources
      * @throws Exception if something goes wrong
      */
-    public static Closeable withLockedResources(final CmsObject cms, CmsResource... resources) throws Exception {
+    public static AutoCloseable withLockedResources(final CmsObject cms, CmsResource... resources) throws Exception {
 
         final Map<CmsResource, CmsLockActionRecord> lockMap = Maps.newHashMap();
         Closeable result = new Closeable() {

@@ -67,6 +67,7 @@ public class CmsOptionDialog extends CmsPopup {
         CmsDialogOptions options,
         CmsListInfoBean resourceInfo,
         final I_CmsSimpleCallback<String> onSelect) {
+
         super(CmsStringUtil.isNotEmptyOrWhitespaceOnly(options.getTitle()) ? options.getTitle() : caption);
         setModal(true);
         setGlassEnabled(true);
@@ -117,7 +118,6 @@ public class CmsOptionDialog extends CmsPopup {
                 close();
             }
         });
-        addButton(ok);
         CmsPushButton cancel = new CmsPushButton();
         cancel.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
         cancel.addClickHandler(new ClickHandler() {
@@ -128,6 +128,7 @@ public class CmsOptionDialog extends CmsPopup {
             }
         });
         addButton(cancel);
+        addButton(ok);
         addDialogClose(null);
     }
 

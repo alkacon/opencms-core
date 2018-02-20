@@ -206,9 +206,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "default" appinfo attribute name. */
     public static final String APPINFO_ATTR_DEFAULT = "default";
 
-    /** Constant for the "param" appinfo attribute name. */
-    public static final String APPINFO_PARAM = "param";
-
     /** Constant for the "description" appinfo attribute name. */
     public static final String APPINFO_ATTR_DESCRIPTION = "description";
 
@@ -362,9 +359,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "mappings" appinfo element name. */
     public static final String APPINFO_MAPPINGS = "mappings";
 
-    /** Constant for the "parameters" appinfo element name. */
-    public static final String APPINFO_PARAMETERS = "parameters";
-
     /** Constant for the 'messagekeyhandler' node. */
     public static final String APPINFO_MESSAGEKEYHANDLER = "messagekeyhandler";
 
@@ -376,6 +370,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "nestedformatters" appinfo element name. */
     public static final String APPINFO_NESTED_FORMATTERS = "nestedformatters";
+
+    /** Constant for the "param" appinfo attribute name. */
+    public static final String APPINFO_PARAM = "param";
+
+    /** Constant for the "parameters" appinfo element name. */
+    public static final String APPINFO_PARAMETERS = "parameters";
 
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
@@ -648,11 +648,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The paths of values for which no macros should be resolved when getting the default value. */
     private Set<String> m_nonMacroResolvableDefaults = new HashSet<String>();
 
-    /** The visibility configurations by element path. */
-    private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
-
     /** The parameters. */
     private CmsParameterConfiguration m_parameters = new CmsParameterConfiguration();
+
+    /** The visibility configurations by element path. */
+    private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -660,40 +660,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
-    }
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -2263,8 +2229,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void initEditHandler(Element handlerElement) {
 
         String editHandlerClass = handlerElement.attributeValue(APPINFO_ATTR_CLASS);
+        Map<String, String> params = Maps.newHashMap();
+        Element paramsElement = handlerElement.element(APPINFO_PARAMETERS);
+        if (paramsElement != null) {
+            for (Element paramElement : paramsElement.elements(APPINFO_PARAM)) {
+                String name = paramElement.attributeValue(APPINFO_ATTR_NAME);
+                String value = paramElement.getText();
+                params.put(name, value);
+            }
+        }
         try {
             m_editHandler = (I_CmsEditHandler)Class.forName(editHandlerClass).newInstance();
+            m_editHandler.setParameters(params);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
