@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< Upstream, based on branch_11_0_x
 
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
   http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-  version="3.1">
-=======
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         id="WebApp_ID" version="3.1">
->>>>>>> 4852976 Basic library updates. The project depends on a large number of libraries updated to a new version; As the upgrade to Servlet3.1, so upgrade the Java version from 1.7 to 1.8.
+         version="3.1">
 
     <display-name>OpenCms</display-name>
 
