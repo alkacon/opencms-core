@@ -289,6 +289,12 @@ div.tinymceToolbarContainer > div{
 	position: absolute;
 	bottom: 0px;
 }
+
+.tinymceToolbarContainer div.mce-tinymce.mce-tinymce-inline{
+	width: auto !important;
+	height: auto !important;
+}
+
 .tinymceToolbarContainer .mce-tinymce-inline .mce-flow-layout{
 	white-space: normal;
 }
@@ -576,7 +582,6 @@ div.overlayButtonBar{
 	position: absolute;
 	background: #E1E4E8;
 	width: 27px;
-	border-radius: 0px value("constants.css.borderRadius") value("constants.css.borderRadius") 0px;
 	top: 0px;
 	left: 0px;
 	bottom:0px;

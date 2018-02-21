@@ -461,7 +461,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
         m_overlayLeftStyle.setWidth(posX - m_offset, Unit.PX);
         m_overlayLeftStyle.setHeight(useHeight, Unit.PX);
 
-        m_borderLeftStyle.setHeight(height + (2 * m_offset), Unit.PX);
+        m_borderLeftStyle.setHeight(height + (4 * m_offset), Unit.PX);
         m_borderLeftStyle.setTop(posY - (2 * m_offset), Unit.PX);
         m_borderLeftStyle.setLeft(posX - (2 * m_offset), Unit.PX);
 
@@ -494,7 +494,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
         m_overlayRightStyle.setWidth(useWidth - posX - width - m_offset, Unit.PX);
         m_overlayRightStyle.setHeight(useHeight, Unit.PX);
 
-        m_borderRightStyle.setHeight(height + (2 * m_offset), Unit.PX);
+        m_borderRightStyle.setHeight(height + (4 * m_offset), Unit.PX);
         m_borderRightStyle.setTop(posY - (2 * m_offset), Unit.PX);
         if (m_hasButtonBar) {
             m_borderRightStyle.setLeft(posX + width + m_offset + BUTTON_BAR_WIDTH, Unit.PX);

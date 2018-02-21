@@ -616,7 +616,7 @@ div.formDescriptionLabel {
 	display: none !important; 
 }
 
-.mce-toolbar-grp {
+.formWidgetContainer .mce-toolbar-grp {
 	background-color: white !important;
 	border-radius: 4px !important; 
 }
