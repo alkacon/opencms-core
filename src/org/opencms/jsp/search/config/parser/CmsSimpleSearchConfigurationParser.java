@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.config.parser;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
@@ -187,6 +188,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         CmsListManager.ListConfigurationBean config,
         String additionalParamJSON)
     throws JSONException {
+
         super(CmsStringUtil.isEmptyOrWhitespaceOnly(additionalParamJSON) ? "{}" : additionalParamJSON);
         m_cms = cms;
         m_config = config;
@@ -407,7 +409,22 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String modifier = super.getQueryModifier();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(modifier)) {
-            modifier = "{!type=edismax qf=\"content_" + getSearchLocale().toString() + " Title_prop spell\"}%(query)";
+            modifier = "{!type=edismax qf=\""
+                + CmsSearchField.FIELD_CONTENT
+                + "_"
+                + getSearchLocale().toString()
+                + " "
+                + CmsPropertyDefinition.PROPERTY_TITLE
+                + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+                + " "
+                + CmsPropertyDefinition.PROPERTY_DESCRIPTION
+                + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
+                + " "
+                + CmsPropertyDefinition.PROPERTY_DESCRIPTION_HTML
+                + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
+                + " "
+                + CmsSearchField.FIELD_SPELL
+                + "\"}%(query)";
         }
         return modifier;
     }
