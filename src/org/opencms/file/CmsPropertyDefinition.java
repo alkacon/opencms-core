@@ -122,6 +122,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the description. */
     public static final String PROPERTY_DESCRIPTION = "Description";
 
+    /** Property for the description in HTML format. */
+    public static final String PROPERTY_DESCRIPTION_HTML = "Description.html";
+
     /** Property to set the display order of a content in lists. */
     public static final String PROPERTY_DISPLAY_ORDER = "display-order";
 

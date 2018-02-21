@@ -46,6 +46,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndexSource;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -508,23 +509,25 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         for (CmsProperty prop : propertiesSearched) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
+                String value = CmsSearchUtil.stripHtmlFromPropertyIfNecessary(prop.getName(), prop.getValue());
                 document.addSearchField(
                     new CmsSolrField(prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES, null, null, null),
-                    prop.getValue());
+                    value);
 
                 // Also write the property using the dynamic field '_s' in order to prevent tokenization
                 // of the property. The resulting field is named '<property>_prop_s'.
                 document.addSearchField(
                     new CmsSolrField(prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES + "_s", null, null, null),
-                    prop.getValue());
+                    value);
             }
         }
 
         for (CmsProperty prop : properties) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
+                String value = CmsSearchUtil.stripHtmlFromPropertyIfNecessary(prop.getName(), prop.getValue());
                 document.addSearchField(
                     new CmsSolrField(prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT, null, null, null),
-                    prop.getValue());
+                    value);
 
                 // Also write the property using the dynamic field '_s' in order to prevent tokenization
                 // of the property. The resulting field is named '<property>_prop_nosearch_s'.
@@ -534,7 +537,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         null,
                         null,
                         null),
-                    prop.getValue());
+                    value);
             }
         }
         return document;

@@ -35,8 +35,10 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -47,6 +49,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
 import org.apache.lucene.document.DateTools;
 
 /**
@@ -55,6 +58,9 @@ import org.apache.lucene.document.DateTools;
  * @since 7.0.0
  */
 public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchFieldMapping.class);
 
     /** Default for expiration date since Long.MAX_VALUE is to big. */
     private static final String DATE_EXPIRED_DEFAULT_STR = "21000101";
@@ -195,11 +201,13 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
             case 1: // property
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
                     content = CmsProperty.get(getParam(), properties).getValue();
+                    CmsSearchUtil.stripHtmlFromPropertyIfNecessary(getParam(), content);
                 }
                 break;
             case 2: // property-search
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
                     content = CmsProperty.get(getParam(), propertiesSearched).getValue();
+                    CmsSearchUtil.stripHtmlFromPropertyIfNecessary(getParam(), content);
                 }
                 break;
             case 3: // item (retrieve value for the given XPath from the content items)
