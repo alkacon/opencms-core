@@ -642,7 +642,7 @@ tlddoc {
 
 
 task tlddocZip (type: Zip, dependsOn: tlddoc) {
-  archiveName = 'tlddoc.zip'
+  archiveName = 'tld.zip'
   from ("${project.docsDir}/tlddoc/") {
     include '**/*'
   }
