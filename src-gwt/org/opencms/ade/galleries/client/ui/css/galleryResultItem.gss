@@ -28,8 +28,8 @@
 	line-height: 1px;
 }
 
-@sprite .tilingList div.imageTile{
-	gwt-image: "coreImages.brokenImage";
+.tilingList div.imageTile{
+	gwt-sprite: "coreImages.brokenImage";
 	background-position: center;
 	display: block;
 	width: value("galleryResultItemCss.bigImageWidth","px");

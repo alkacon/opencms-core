@@ -27,8 +27,8 @@
 
 package org.opencms.ui.components;
 
-import com.vaadin.data.Validator;
-import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 
 /**
  * File table inline edit handler.<p>

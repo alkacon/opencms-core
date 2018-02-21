@@ -40,8 +40,8 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Dialog to generate a random password.<p>

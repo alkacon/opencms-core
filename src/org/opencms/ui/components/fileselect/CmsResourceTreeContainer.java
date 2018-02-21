@@ -56,9 +56,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.HierarchicalContainer;
 
 /**
  * The data container for the sitmeap folder selection tree.<p>
@@ -86,6 +86,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
      * @param filter the resource filter to use
      */
     public CmsResourceTreeContainer(CmsResourceFilter filter) {
+
         m_filter = filter;
         defineProperties();
     }
@@ -124,7 +125,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
     }
 
     /**
-     * @see com.vaadin.data.util.IndexedContainer#getSortableContainerPropertyIds()
+     * @see com.vaadin.v7.data.util.IndexedContainer#getSortableContainerPropertyIds()
      */
     @Override
     public Collection<?> getSortableContainerPropertyIds() {

@@ -82,7 +82,7 @@ public class CmsImportResultList extends Composite {
          *
          * @return the CSS bundle for this widget
          */
-        @Source("resultlabel.css")
+        @Source("resultlabel.gss")
         I_Css css();
     }
 
@@ -90,6 +90,10 @@ public class CmsImportResultList extends Composite {
      * Static instance of the resource bundle for this widget.<p>
      */
     public static final I_Resources RESOURCES = GWT.create(I_Resources.class);
+
+    static {
+        RESOURCES.css().ensureInjected();
+    }
 
     /** A label which is displayed before any alias files are imported. */
     protected Label m_emptyLabel;
@@ -108,10 +112,6 @@ public class CmsImportResultList extends Composite {
         m_root.add(m_table);
         initWidget(m_root);
         ensureEmptyLabel();
-    }
-
-    static {
-        RESOURCES.css().ensureInjected();
     }
 
     /**

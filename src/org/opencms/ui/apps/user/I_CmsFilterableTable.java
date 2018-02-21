@@ -28,7 +28,7 @@
 package org.opencms.ui.apps.user;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Interface for tables which support a filter function.<p>

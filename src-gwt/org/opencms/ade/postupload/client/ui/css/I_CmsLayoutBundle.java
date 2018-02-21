@@ -116,6 +116,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("dialog.css")
+    @Source("dialog.gss")
     I_CmsDialogCss dialogCss();
 }

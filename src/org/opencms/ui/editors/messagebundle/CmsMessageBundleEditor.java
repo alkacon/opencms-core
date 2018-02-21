@@ -69,9 +69,6 @@ import org.apache.commons.logging.Log;
 import org.tepi.filtertable.FilterTable;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.ContextClickEvent.ContextClickListener;
@@ -83,12 +80,14 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.Focusable;
-import com.vaadin.ui.CustomTable;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Controller for the VAADIN UI of the Message Bundle Editor.
@@ -174,6 +173,7 @@ I_OptionListener, I_CmsHasShortcutActions {
      * Default constructor.
      */
     public CmsMessageBundleEditor() {
+
         m_shortcutActions = new HashMap<Action, Runnable>();
         m_shortcutActions.put(ACTION_SAVE, new Runnable() {
 
@@ -929,7 +929,7 @@ I_OptionListener, I_CmsHasShortcutActions {
      * @param table table instance passed to the option column generator
      * @return the options column
      */
-    private CmsMessageBundleEditorTypes.OptionColumnGenerator generateOptionsColumn(CustomTable table) {
+    private CmsMessageBundleEditorTypes.OptionColumnGenerator generateOptionsColumn(FilterTable table) {
 
         return new CmsMessageBundleEditorTypes.OptionColumnGenerator(table);
     }

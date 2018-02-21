@@ -186,7 +186,6 @@ div.menuArrowBottom:after {
     font-weight: bold;
     cursor: move;
     padding: 0px 4px 5px 4px;
-    height: auto; 
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

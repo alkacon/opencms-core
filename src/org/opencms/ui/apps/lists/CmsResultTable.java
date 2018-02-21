@@ -47,9 +47,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.converter.StringToDateConverter;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.converter.StringToDateConverter;
+import com.vaadin.v7.ui.AbstractSelect.ItemDescriptionGenerator;
 
 /**
  * Table to display the list manager search results.<p>

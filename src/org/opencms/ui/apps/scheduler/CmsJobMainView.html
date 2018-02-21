@@ -6,19 +6,19 @@
   	<meta name="package-mapping" content="s:org.opencms.ui.apps.scheduler" />
 </head>
 <body>
-	<v-vertical-layout margin spacing>
+	<vaadin7-vertical-layout margin spacing>
 		<v-panel caption="">
-			<v-vertical-layout margin spacing>
+			<vaadin7-vertical-layout margin spacing>
 				<v-button _id="m_buttonAddJob">%(key.GUI_NEWJOB_ADMIN_TOOL_NAME_0)</v-button>
-			</v-vertical-layout>
+			</vaadin7-vertical-layout>
 		</v-panel>
 		
 		<v-panel caption="%(key.GUI_JOBS_LIST_NAME_0)">
-			<v-vertical-layout  spacing>
+			<vaadin7-vertical-layout  spacing>
 				<s-cms-job-table _id="m_jobTable" width="100%"/>
-			</v-vertical-layout>
+			</vaadin7-vertical-layout>
 		</v-panel>
-		<v-vertical-layout _id="m_editorContainer" />
-	</v-vertical-layout>
+		<vaadin7-vertical-layout _id="m_editorContainer" />
+	</vaadin7-vertical-layout>
 </body>
 </html>

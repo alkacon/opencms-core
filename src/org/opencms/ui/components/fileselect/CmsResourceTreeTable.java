@@ -50,20 +50,20 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.DefaultItemSorter;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Tree.CollapseEvent;
-import com.vaadin.ui.Tree.CollapseListener;
-import com.vaadin.ui.Tree.ExpandEvent;
-import com.vaadin.ui.Tree.ExpandListener;
-import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.DefaultItemSorter;
+import com.vaadin.v7.event.ItemClickEvent;
+import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Tree.CollapseEvent;
+import com.vaadin.v7.ui.Tree.CollapseListener;
+import com.vaadin.v7.ui.Tree.ExpandEvent;
+import com.vaadin.v7.ui.Tree.ExpandListener;
+import com.vaadin.v7.ui.TreeTable;
 
 /**
  * Tree subclass used to display VFS resource trees.<p>
@@ -80,7 +80,7 @@ public class CmsResourceTreeTable extends TreeTable {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see org.opencms.ui.util.I_CmsItemSorter#getSortableContainerPropertyIds(com.vaadin.data.Container)
+         * @see org.opencms.ui.util.I_CmsItemSorter#getSortableContainerPropertyIds(com.vaadin.v7.data.Container)
          */
         public Collection<?> getSortableContainerPropertyIds(Container container) {
 
@@ -91,7 +91,7 @@ public class CmsResourceTreeTable extends TreeTable {
         }
 
         /**
-         * @see com.vaadin.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.data.Item, com.vaadin.data.Item)
+         * @see com.vaadin.v7.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.v7.data.Item, com.vaadin.v7.data.Item)
          */
         @Override
         protected int compareProperty(Object propertyId, boolean sortDirection, Item item1, Item item2) {
@@ -209,6 +209,7 @@ public class CmsResourceTreeTable extends TreeTable {
      * @param container the data container for the tree
      */
     public CmsResourceTreeTable(CmsObject cms, CmsResource root, CmsResourceTreeContainer container) {
+
         m_cms = cms;
         m_root = root;
         FileSorter sorter = new FileSorter();

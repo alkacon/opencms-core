@@ -118,7 +118,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the XML content widget CSS
      */
-    @Source("widget.css")
+    @Source("widget.gss")
     @Import(value = {
         I_CmsFieldsetCss.class,
         org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle.I_CmsWidgetCss.class,

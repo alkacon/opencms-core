@@ -37,7 +37,7 @@ import java.util.Set;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.TextArea;
+import com.vaadin.v7.ui.TextArea;
 
 /**
  * Class for the dialiog to send broadcasts.<p>

@@ -44,10 +44,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TreeTable;
+import com.vaadin.v7.data.util.HierarchicalContainer;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.TreeTable;
 
 /**
  * The category tree.<p>

@@ -93,10 +93,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.DefaultItemSorter;
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.util.DefaultItemSorter;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.UI;
 
 /**

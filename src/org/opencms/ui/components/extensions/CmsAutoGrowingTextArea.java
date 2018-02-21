@@ -30,7 +30,7 @@ package org.opencms.ui.components.extensions;
 import org.opencms.ui.shared.components.CmsAutoGrowingTextAreaState;
 
 import com.vaadin.server.AbstractExtension;
-import com.vaadin.ui.TextArea;
+import com.vaadin.v7.ui.TextArea;
 
 /**
  * Extension to add a CSS class to any component depending on it's scroll position.<p>

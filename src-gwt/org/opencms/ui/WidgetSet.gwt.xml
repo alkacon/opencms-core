@@ -1,13 +1,13 @@
 <module>
 	<!-- Inherit the default widget set -->
-	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+	<inherits name="com.vaadin.DefaultWidgetSet" />
 	<inherits name="com.google.gwt.logging.Logging"/>
 	<set-property name="gwt.logging.logLevel" value="INFO"/>   
 
 	<inherits name="org.opencms.GwtBaseCommon" />
 	<inherits name="org.opencms.ade.publish.PublishDialogCommon" />
 	<inherits name="org.opencms.ade.galleries.GalleryCommon" />
-	<inherits name="org.tepi.filtertable.gwt.FilterTableWidgetset" />
+	<inherits name="org.tepi.filtertable.WidgetSet" />
 	<entry-point class="org.opencms.ui.client.CmsWidgetSetEntryPoint" />
 	<set-property name="vaadin.profiler" value="true" />
 	<source path="client" />

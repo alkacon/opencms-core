@@ -5,24 +5,24 @@
   	<meta name="package-mapping" content="o:org.opencms.ui.components" />
   </head>
   <body>
-  	<v-vertical-layout style-name="o-login-form" spacing>
-  		<v-label primary-style-name="o-login-logo" height="64px"><span></span></v-label>
+  	<vaadin7-vertical-layout style-name="o-login-form" spacing>
+  		<vaadin7-label primary-style-name="o-login-logo" height="64px"><span></span></vaadin7-label>
   		<o-cms-fake-window width="600px" window-title="%(key.GUI_LOGIN_HEADLINE_0)">
 	  		<o-cms-basic-dialog :location="content" >
 	  			<above>
-	  				<v-label _id="m_error" style-name="failure" visible="false"/>
+	  				<vaadin7-label _id="m_error" style-name="failure" visible="false"/>
 	  			</above>
 		  		<content>
-		  			<v-vertical-layout margin spacing>
-		  				<v-option-group _id="m_securityField" caption="%(key.GUI_LOGIN_SECURITY_0)" visible="%(showSecure)" />
-		  				<v-label>%(key.GUI_LOGIN_MESSAGE_0)</v-label> 
+		  			<vaadin7-vertical-layout margin spacing>
+		  				<vaadin7-option-group _id="m_securityField" caption="%(key.GUI_LOGIN_SECURITY_0)" visible="%(showSecure)" />
+		  				<vaadin7-label>%(key.GUI_LOGIN_MESSAGE_0)</vaadin7-label> 
 		  				<v-form-layout>
 					    	<w-cms-login-user-field _id="m_userField" caption="%(key.GUI_LOGIN_USERNAME_0)" />
 					    	<w-cms-login-password-field _id="m_passwordField" caption="%(key.GUI_LOGIN_PASSWORD_0)" />
 					    	<w-cms-login-ou-selector _id="m_ouSelect" caption="%(key.GUI_LOGIN_ORGUNIT_0)"/>
 					    	<v-button _id="m_forgotPasswordButton">%(key.GUI_PWCHANGE_FORGOT_PASSWORD_0)</v-button>
 			  		  	</v-form-layout>
-		  		  	</v-vertical-layout>
+		  		  	</vaadin7-vertical-layout>
 				</content>
 				<buttons>
 					<v-button _id="m_optionsButton"></v-button>
@@ -30,7 +30,7 @@
 				</buttons>
 			</o-cms-basic-dialog>
 		 </o-cms-fake-window>
-	    <v-label _id="m_copyright" />
-    </v-vertical-layout>
+	    <vaadin7-label _id="m_copyright" />
+    </vaadin7-vertical-layout>
   </body>
 </html>

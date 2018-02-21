@@ -7,24 +7,24 @@
   	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
 </head>
 <body>
-	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
 		<v-panel caption="Import module" height="275px">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-				<v-horizontal-layout spacing caption="Module to import*">
-					<v-upload _id="m_upload" button-caption="Select file*" ></v-upload>
-					<v-label  _id="m_uploadLabel"></v-label>
-				</v-horizontal-layout>
-				<v-combo-box _id="m_siteSelect" caption="Target site" width="100%"></v-combo-box> 
+				<vaadin7-horizontal-layout spacing caption="Module to import*">
+					<vaadin7-upload _id="m_upload" button-caption="Select file*" ></vaadin7-upload>
+					<vaadin7-label  _id="m_uploadLabel"></vaadin7-label>
+				</vaadin7-horizontal-layout>
+				<vaadin7-combo-box _id="m_siteSelect" caption="Target site" width="100%"></vaadin7-combo-box> 
 			</v-form-layout>
 		</v-panel>
 		<v-panel>
-			<v-horizontal-layout width="100%">
-				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+			<vaadin7-horizontal-layout width="100%">
+				<vaadin7-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
 					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
 					<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-				</v-horizontal-layout>
-			</v-horizontal-layout>
+				</vaadin7-horizontal-layout>
+			</vaadin7-horizontal-layout>
 		</v-panel>
-	</v-vertical-layout>
+	</vaadin7-vertical-layout>
 </body>
 </html>

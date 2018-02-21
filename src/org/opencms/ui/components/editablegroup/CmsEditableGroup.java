@@ -40,7 +40,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.ErrorEvent;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Component.Listener;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Layout;
 
 /**

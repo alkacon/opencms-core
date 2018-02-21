@@ -37,9 +37,9 @@ import java.util.Locale;
 
 import com.vaadin.server.UserError;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.PasswordField;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * The change password form.<p>

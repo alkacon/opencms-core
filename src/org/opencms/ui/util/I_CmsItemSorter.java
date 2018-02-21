@@ -29,8 +29,8 @@ package org.opencms.ui.util;
 
 import java.util.Collection;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.ItemSorter;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.util.ItemSorter;
 
 /**
  * Interface for item sorters that evaluate the sortable container properties.<p>

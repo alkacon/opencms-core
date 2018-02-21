@@ -44,14 +44,14 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.BeanUtil;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.Align;
-import com.vaadin.ui.Table.CellStyleGenerator;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.BeanItemContainer;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.Align;
+import com.vaadin.v7.ui.Table.CellStyleGenerator;
 
 /**
  * Builds a table based on a given bean class.<p>
@@ -80,6 +80,7 @@ public class CmsBeanTableBuilder<T> {
          * @param info the annotation for the getter
          */
         public ColumnBean(PropertyDescriptor property, Column info) {
+
             super();
             m_property = property;
             m_info = info;
@@ -131,10 +132,11 @@ public class CmsBeanTableBuilder<T> {
      *
      */
     public CmsBeanTableBuilder(Class<T> cls, String view) {
+
         m_class = cls;
         m_view = view;
         try {
-            List<PropertyDescriptor> descriptors = BeanUtil.getBeanPropertyDescriptor(m_class);
+            List<PropertyDescriptor> descriptors = BeanUtil.getBeanPropertyDescriptors(m_class);
             for (PropertyDescriptor desc : descriptors) {
                 Method getter = desc.getReadMethod();
                 if (getter != null) {

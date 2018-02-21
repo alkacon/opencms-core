@@ -39,7 +39,7 @@ div.textAreaBoxPanel{
 }
 
 
-.openerNoHover, .openerHover, .selectBoxSelected {};
+.openerNoHover, .openerHover, .selectBoxSelected {}
 
 
 

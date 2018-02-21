@@ -80,14 +80,8 @@
 	display: inline-block;
 }
 
-@if user.agent safari {
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before {
-		height: 110%;
-	}
-} @else {
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before {
-		height: 107%;
-	}
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before {
+	height: 109%;
 }
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:after {

@@ -32,7 +32,7 @@ import org.opencms.util.CmsFileUtil;
 
 import java.util.Arrays;
 
-import com.vaadin.data.Container;
+import com.vaadin.v7.data.Container;
 
 /**
  * Helper class used when new options are automatically added to a site selector combo box.<p>
@@ -48,11 +48,12 @@ public class CmsSiteSelectorNewValueHandler implements CmsAutoItemCreatingComboB
      * @param captionPropertyId the item property containing the caption
      */
     public CmsSiteSelectorNewValueHandler(String captionPropertyId) {
+
         m_captionPropertyId = captionPropertyId;
     }
 
     /**
-     * @see org.opencms.ui.components.CmsAutoItemCreatingComboBox.I_NewValueHandler#ensureItem(com.vaadin.data.Container, java.lang.Object)
+     * @see org.opencms.ui.components.CmsAutoItemCreatingComboBox.I_NewValueHandler#ensureItem(com.vaadin.v7.data.Container, java.lang.Object)
      */
     public Object ensureItem(Container cnt, Object id) {
 

@@ -36,11 +36,11 @@ import org.opencms.ui.components.CmsBasicDialog;
 import java.util.Iterator;
 import java.util.List;
 
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Class for the dialog to show source information of a given index.<p>

@@ -3,9 +3,9 @@
  */
 
 /** The font family for everything. */
-@def fontFamily literal("Open Sans, sans-serif");
+@def fontFamily Open Sans, sans-serif;
 
-@def fontFamilyMono literal("monospace");
+@def fontFamilyMono monospace;
 /** The normal font size. */
 @def fontSize 14px;
 /** The small font size. */
@@ -146,7 +146,7 @@
 /**
  * The shadow definitions.
  */
-@def boxShadow literal("0 2px 10px rgba(0, 0, 0, 0.1), 0 16px 80px -6px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.09)");
+@def boxShadow 0 2px 10px rgba(0, 0, 0, 0.1), 0 16px 80px -6px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.09);
 
 /**
  * Overlay opacity.
@@ -157,18 +157,18 @@
  * Background gradients.
  */
  
- @def gradientListItem literal("linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 48%, #F0F0F2 52%, #F0F0F2 100%)");
+ @def gradientListItem linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 48%, #F0F0F2 52%, #F0F0F2 100%);
  
- @def gradientInvalid literal("repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px)");
+ @def gradientInvalid repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 240, 242, 1) 10px, rgba(240, 240, 242, 1) 20px);
  
- @def gradientPlaceholder literal("repeating-linear-gradient(45deg, #000000, #000000 10px, #FCFFFF 10px, #FFFFFF 20px)");
+ @def gradientPlaceholder repeating-linear-gradient(45deg, #000000, #000000 10px, #FCFFFF 10px, #FFFFFF 20px);
 /**
  * The dialog header background. 
  */
-@def gradientDialogHeader literal("linear-gradient(to bottom, #3E4654 2%, #1F232A 98%, #1F232A)");
+@def gradientDialogHeader linear-gradient(to bottom, #3E4654 2%, #1F232A 98%, #1F232A);
 /** The form dialog background gradient. */
-@def gradientFormDialog literal("linear-gradient(to right, #FFFFFF 0%, #FAFAFD 80%, #F0F0F2 100%)");  
-@def gradientFormDialogFocus literal("linear-gradient(to right,  #F0F0F2 0%, #F0F0F2 80%, #FAFAFD 100%)");  
+@def gradientFormDialog linear-gradient(to right, #FFFFFF 0%, #FAFAFD 80%, #F0F0F2 100%);  
+@def gradientFormDialogFocus linear-gradient(to right,  #F0F0F2 0%, #F0F0F2 80%, #FAFAFD 100%);  
 @def gradientFormDialogColor #F0F0F2;
 @def gradientFormDialogFocusColor #E0E0E2;
 

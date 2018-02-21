@@ -27,7 +27,7 @@
 
 package org.opencms.ui.login;
 
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Widget for the user name field of the login dialog.<p>

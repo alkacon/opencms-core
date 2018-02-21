@@ -87,15 +87,15 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.dd.DropHandler;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.RowHeaderMode;
-import com.vaadin.ui.Table.TableDragMode;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.RowHeaderMode;
+import com.vaadin.v7.ui.Table.TableDragMode;
 
 /**
  * Generic table for displaying lists of resources.<p>
@@ -269,7 +269,7 @@ public class CmsResourceTable extends CustomComponent {
         private static final long serialVersionUID = -2033722658471550506L;
 
         /**
-         * @see com.vaadin.data.util.IndexedContainer#getSortableContainerPropertyIds()
+         * @see com.vaadin.v7.data.util.IndexedContainer#getSortableContainerPropertyIds()
          */
         @Override
         public Collection<?> getSortableContainerPropertyIds() {
@@ -319,6 +319,7 @@ public class CmsResourceTable extends CustomComponent {
      * This constructor does *not* set up the columns of the table; use the ColumnBuilder inner class for this.
      */
     public CmsResourceTable() {
+
         m_propertyProviders = new ArrayList<I_ResourcePropertyProvider>();
         m_fileTable.setContainerDataSource(m_container);
         setCompositionRoot(m_fileTable);

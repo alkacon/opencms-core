@@ -35,10 +35,10 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.List;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.Table;
+import com.vaadin.v7.ui.Table;
 
 /**
  * Table showing information about variations of images.<p>

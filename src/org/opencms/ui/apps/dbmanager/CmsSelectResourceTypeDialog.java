@@ -34,8 +34,8 @@ import org.opencms.ui.dialogs.A_CmsSelectResourceTypeDialog;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Class for the resource type select dialog.<p>

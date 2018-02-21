@@ -129,26 +129,26 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.CellStyleGenerator;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.CellStyleGenerator;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Manager for list configuration files.<p>
@@ -977,7 +977,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     }
 
     /**
-     * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
+     * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.v7.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
      */
     @Override
     public void addItemProperties(Item resourceItem, CmsObject cms, CmsResource resource, Locale locale) {
@@ -1190,85 +1190,83 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             @Override
             public List<I_CmsContextMenuItem> getMenuItems() {
 
-                return Arrays.<I_CmsContextMenuItem> asList(
-                    new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
+                return Arrays.<I_CmsContextMenuItem> asList(new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
 
-                        @Override
-                        public void executeAction(I_CmsDialogContext context) {
+                    @Override
+                    public void executeAction(I_CmsDialogContext context) {
 
-                            CmsUUID structureId = context.getResources().get(0).getStructureId();
-                            m_currentConfig.getBlacklist().add(structureId);
-                            saveBlacklist(m_currentConfig);
-                            context.finish(Collections.singletonList(structureId));
+                        CmsUUID structureId = context.getResources().get(0).getStructureId();
+                        m_currentConfig.getBlacklist().add(structureId);
+                        saveBlacklist(m_currentConfig);
+                        context.finish(Collections.singletonList(structureId));
+                    }
+
+                    @Override
+                    public String getId() {
+
+                        return "hideresource";
+                    }
+
+                    @Override
+                    public String getTitleKey() {
+
+                        return Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0;
+                    }
+
+                    @Override
+                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                        if ((m_currentConfig != null)
+                            && (resources != null)
+                            && (resources.size() == 1)
+                            && !m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
+                            return CmsEditDialogAction.VISIBILITY.getVisibility(
+                                cms,
+                                Collections.singletonList(m_currentResource));
+                        } else {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
                         }
+                    }
 
-                        @Override
-                        public String getId() {
+                }, null, 10, 0), new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
 
-                            return "hideresource";
+                    @Override
+                    public void executeAction(I_CmsDialogContext context) {
+
+                        CmsUUID structureId = context.getResources().get(0).getStructureId();
+                        m_currentConfig.getBlacklist().remove(structureId);
+                        saveBlacklist(m_currentConfig);
+                        context.finish(Collections.singletonList(structureId));
+                    }
+
+                    @Override
+                    public String getId() {
+
+                        return "showresource";
+                    }
+
+                    @Override
+                    public String getTitleKey() {
+
+                        return Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0;
+                    }
+
+                    @Override
+                    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+                        if ((m_currentConfig != null)
+                            && (resources != null)
+                            && (resources.size() == 1)
+                            && m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
+                            return CmsEditDialogAction.VISIBILITY.getVisibility(
+                                cms,
+                                Collections.singletonList(m_currentResource));
+                        } else {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
                         }
+                    }
 
-                        @Override
-                        public String getTitleKey() {
-
-                            return Messages.GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0;
-                        }
-
-                        @Override
-                        public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-                            if ((m_currentConfig != null)
-                                && (resources != null)
-                                && (resources.size() == 1)
-                                && !m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
-                                return CmsEditDialogAction.VISIBILITY.getVisibility(
-                                    cms,
-                                    Collections.singletonList(m_currentResource));
-                            } else {
-                                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-                            }
-                        }
-
-                    }, null, 10, 0),
-                    new CmsContextMenuActionItem(new A_CmsWorkplaceAction() {
-
-                        @Override
-                        public void executeAction(I_CmsDialogContext context) {
-
-                            CmsUUID structureId = context.getResources().get(0).getStructureId();
-                            m_currentConfig.getBlacklist().remove(structureId);
-                            saveBlacklist(m_currentConfig);
-                            context.finish(Collections.singletonList(structureId));
-                        }
-
-                        @Override
-                        public String getId() {
-
-                            return "showresource";
-                        }
-
-                        @Override
-                        public String getTitleKey() {
-
-                            return Messages.GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0;
-                        }
-
-                        @Override
-                        public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-                            if ((m_currentConfig != null)
-                                && (resources != null)
-                                && (resources.size() == 1)
-                                && m_currentConfig.getBlacklist().contains(resources.get(0).getStructureId())) {
-                                return CmsEditDialogAction.VISIBILITY.getVisibility(
-                                    cms,
-                                    Collections.singletonList(m_currentResource));
-                            } else {
-                                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-                            }
-                        }
-
-                    }, null, 10, 0),
+                }, null, 10, 0),
                     new CmsContextMenuActionItem(new EditAction(), null, 10, 1000),
                     new CmsContextMenuActionItem(new DeleteAction(), null, 10, 1000));
             }

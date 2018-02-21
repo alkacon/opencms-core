@@ -687,6 +687,6 @@ public interface I_CmsConstantsBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("constants.css")
+    @Source("constants.gss")
     I_CmsConstantsCss css();
 }

@@ -7,21 +7,21 @@
   	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
 </head>
 <body>
-	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
 		<v-panel caption="%(key.GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_0)">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-				<v-combo-box _id="m_moduleSelect" width="100%" caption="%(key.GUI_DATABASEAPP_IMPORT_IMPORTFILE_0)" description="%(key.GUI_DATABASEAPP_IMPORT_IMPORTFILE_HELP_0"></v-combo-box>
-				<v-combo-box _id="m_siteSelect" caption="%(key.GUI_DATABASEAPP_IMPORT_TARGET_SITE_0)" description="%(key.GUI_DATABASEAPP_IMPORT_TARGET_SITE_HELP_0)" width="100%"></v-combo-box> 
-				<v-check-box _id="m_keepPermissions" caption="%(key.GUI_DATABASEAPP_IMPORT_KEEP_PERMISSIONS_0)" description="%(key.GUI_DATABASEAPP_IMPORT_KEEP_PERMISSIONS_HELP_0)"\>
+				<vaadin7-combo-box _id="m_moduleSelect" width="100%" caption="%(key.GUI_DATABASEAPP_IMPORT_IMPORTFILE_0)" description="%(key.GUI_DATABASEAPP_IMPORT_IMPORTFILE_HELP_0"></vaadin7-combo-box>
+				<vaadin7-combo-box _id="m_siteSelect" caption="%(key.GUI_DATABASEAPP_IMPORT_TARGET_SITE_0)" description="%(key.GUI_DATABASEAPP_IMPORT_TARGET_SITE_HELP_0)" width="100%"></vaadin7-combo-box> 
+				<vaadin7-check-box _id="m_keepPermissions" caption="%(key.GUI_DATABASEAPP_IMPORT_KEEP_PERMISSIONS_0)" description="%(key.GUI_DATABASEAPP_IMPORT_KEEP_PERMISSIONS_HELP_0)"\>
 			</v-form-layout>
 		</v-panel>
 		<v-panel>
-			<v-horizontal-layout width="100%">
-				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+			<vaadin7-horizontal-layout width="100%">
+				<vaadin7-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
 					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
-				</v-horizontal-layout>
-			</v-horizontal-layout>
+				</vaadin7-horizontal-layout>
+			</vaadin7-horizontal-layout>
 		</v-panel>
-	</v-vertical-layout>
+	</vaadin7-vertical-layout>
 </body>
 </html>

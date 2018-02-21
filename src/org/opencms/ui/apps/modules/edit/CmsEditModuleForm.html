@@ -9,37 +9,37 @@
 <body>
 	<o-cms-basic-dialog>
 		<content>
-			<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+			<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
 				<v-tab-sheet _id="m_tabs">
 					<tab  caption="%(key.GUI_MODULES_TAB_BASIC_0)">
 						<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-							<v-text-field  width="100%" _id="m_name" caption="%(key.GUI_MODULES_LABEL_NAME_0)" description="%(key.GUI_MODULES_HELP_NAME_0)"></v-text-field>
-							<v-text-field  width="100%" _id="m_niceName"  caption="%(key.GUI_MODULES_LABEL_NICENAME_0)" description="%(key.GUI_MODULES_HELP_NICENAME_0)"></v-text-field>
-							<v-text-area  width="100%"  _id="m_description" caption="%(key.GUI_MODULES_LABEL_DESCRIPTION_0)" description="%(key.GUI_MODULES_HELP_DESCRIPTION_0)"></v-text-area>
-							<v-text-field  width="100%"  _id="m_version" caption="%(key.GUI_MODULES_LABEL_VERSION_0)" description="%(key.GUI_MODULES_HELP_VERSION_0)"></v-text-field>
-							<v-text-field  width="100%" _id="m_group" caption="%(key.GUI_MODULES_LABEL_GROUP_0)" description="%(key.GUI_MODULES_HELP_GROUP_0)"></v-text-field>
-							<v-text-field  width="100%"  _id="m_actionClass" caption="%(key.GUI_MODULES_LABEL_ACTIONCLASS_0)" description="%(key.GUI_MODULES_HELP_ACTIONCLASS_0)"></v-text-field>
-							<v-text-area width="100%" _id="m_importScript" caption="%(key.GUI_MODULES_LABEL_IMPORT_SCRIPT_0)" description="%(key.GUI_MODULES_HELP_IMPORT_SCRIPT_0)"></v-text-area>
+							<vaadin7-text-field  width="100%" _id="m_name" caption="%(key.GUI_MODULES_LABEL_NAME_0)" description="%(key.GUI_MODULES_HELP_NAME_0)"></vaadin7-text-field>
+							<vaadin7-text-field  width="100%" _id="m_niceName"  caption="%(key.GUI_MODULES_LABEL_NICENAME_0)" description="%(key.GUI_MODULES_HELP_NICENAME_0)"></vaadin7-text-field>
+							<vaadin7-text-area  width="100%"  _id="m_description" caption="%(key.GUI_MODULES_LABEL_DESCRIPTION_0)" description="%(key.GUI_MODULES_HELP_DESCRIPTION_0)"></vaadin7-text-area>
+							<vaadin7-text-field  width="100%"  _id="m_version" caption="%(key.GUI_MODULES_LABEL_VERSION_0)" description="%(key.GUI_MODULES_HELP_VERSION_0)"></vaadin7-text-field>
+							<vaadin7-text-field  width="100%" _id="m_group" caption="%(key.GUI_MODULES_LABEL_GROUP_0)" description="%(key.GUI_MODULES_HELP_GROUP_0)"></vaadin7-text-field>
+							<vaadin7-text-field  width="100%"  _id="m_actionClass" caption="%(key.GUI_MODULES_LABEL_ACTIONCLASS_0)" description="%(key.GUI_MODULES_HELP_ACTIONCLASS_0)"></vaadin7-text-field>
+							<vaadin7-text-area width="100%" _id="m_importScript" caption="%(key.GUI_MODULES_LABEL_IMPORT_SCRIPT_0)" description="%(key.GUI_MODULES_HELP_IMPORT_SCRIPT_0)"></vaadin7-text-area>
 							<o-cms-auto-item-creating-combo-box width="100%" _id="m_importSite" caption="%(key.GUI_MODULES_LABEL_SITE_0)" description="%(key.GUI_MODULES_HELP_SITE_0)"></o-cms-auto-item-creating-combo-box>
-							<v-check-box _id="m_hasImportSite" caption="%(key.GUI_MODULES_LABEL_FIXED_IMPORT_SITE_0)" description="%(key.GUI_MODULES_HELP_FIXED_IMPORT_SITE_0)"></v-check-box>
-							<v-text-field width="100%" _id="m_authorName" caption="%(key.GUI_MODULES_LABEL_AUTHORNAME_0)" description="%(key.GUI_MODULES_HELP_AUTHORNAME_0)"></v-text-field>
-							<v-text-field width="100%" _id="m_authorEmail" caption="%(key.GUI_MODULES_LABEL_AUTHOREMAIL_0)" description="%(key.GUI_MODULES_HELP_AUTHOREMAIL_0)"></v-text-field>
-							<v-check-box _id="m_reducedMetadata" caption="%(key.GUI_MODULES_LABEL_REDUCED_EXPORT_MODE_0)" description="%(key.GUI_MODULES_HELP_REDUCED_EXPORT_MODE_0)"></v-check-box>
-							<v-check-box _id="m_autoIncrement" caption="%(key.GUI_MODULES_LABEL_AUTOINCREMENT_0)" description="%(key.GUI_MODULES_HELP_AUTOINCREMENT_0)"></v-check-box>
-							<v-vertical-layout margin spacing style-name="o-newmodule-folder-checkboxes">
-								<v-check-box _id="m_folderModule" caption="%(key.GUI_MODULES_LABEL_CREATE_MODULE_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_MODULE_FOLDER_0)"></v-check-box>
-								<v-check-box _id="m_folderTemplates" caption="%(key.GUI_MODULES_LABEL_CREATE_TEMPLATES_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_TEMPLATES_FOLDER_0)"></v-check-box>
-								<v-check-box _id="m_folderElements" caption="%(key.GUI_MODULES_LABEL_CREATE_ELEMENTS_0)" description="%(key.GUI_MODULES_HELP_CREATE_ELEMENTS_0)"></v-check-box>
-								<v-check-box _id="m_folderFormatters" caption="%(key.GUI_MODULES_LABEL_CREATE_FORMATTER_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0)"></v-check-box>
-								<v-check-box _id="m_folderLib" description="%(key.GUI_MODULES_HELP_CREATE_LIB_FOLDER_0)" caption="%(key.GUI_MODULES_LABEL_CREATE_LIB_FOLDER_0)" ></v-check-box>
-								<v-check-box _id="m_folderResources" caption="%(key.GUI_MODULES_LABEL_CREATE_RESOURCES_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_RESOURCES_FOLDER_0)"></v-check-box>
-								<v-check-box _id="m_folderSchemas" caption="%(key.GUI_MODULES_LABEL_CREATE_SCHEMAS_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_SCHEMAS_FOLDER_0)"></v-check-box>
-								<v-check-box _id="m_folderClasses" caption="%(key.GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_CLASSES_FOLDER_0)"></v-check-box>
-							</v-vertical-layout>
+							<vaadin7-check-box _id="m_hasImportSite" caption="%(key.GUI_MODULES_LABEL_FIXED_IMPORT_SITE_0)" description="%(key.GUI_MODULES_HELP_FIXED_IMPORT_SITE_0)"></vaadin7-check-box>
+							<vaadin7-text-field width="100%" _id="m_authorName" caption="%(key.GUI_MODULES_LABEL_AUTHORNAME_0)" description="%(key.GUI_MODULES_HELP_AUTHORNAME_0)"></vaadin7-text-field>
+							<vaadin7-text-field width="100%" _id="m_authorEmail" caption="%(key.GUI_MODULES_LABEL_AUTHOREMAIL_0)" description="%(key.GUI_MODULES_HELP_AUTHOREMAIL_0)"></vaadin7-text-field>
+							<vaadin7-check-box _id="m_reducedMetadata" caption="%(key.GUI_MODULES_LABEL_REDUCED_EXPORT_MODE_0)" description="%(key.GUI_MODULES_HELP_REDUCED_EXPORT_MODE_0)"></vaadin7-check-box>
+							<vaadin7-check-box _id="m_autoIncrement" caption="%(key.GUI_MODULES_LABEL_AUTOINCREMENT_0)" description="%(key.GUI_MODULES_HELP_AUTOINCREMENT_0)"></vaadin7-check-box>
+							<vaadin7-vertical-layout margin spacing style-name="o-newmodule-folder-checkboxes">
+								<vaadin7-check-box _id="m_folderModule" caption="%(key.GUI_MODULES_LABEL_CREATE_MODULE_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_MODULE_FOLDER_0)"></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderTemplates" caption="%(key.GUI_MODULES_LABEL_CREATE_TEMPLATES_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_TEMPLATES_FOLDER_0)"></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderElements" caption="%(key.GUI_MODULES_LABEL_CREATE_ELEMENTS_0)" description="%(key.GUI_MODULES_HELP_CREATE_ELEMENTS_0)"></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderFormatters" caption="%(key.GUI_MODULES_LABEL_CREATE_FORMATTER_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0)"></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderLib" description="%(key.GUI_MODULES_HELP_CREATE_LIB_FOLDER_0)" caption="%(key.GUI_MODULES_LABEL_CREATE_LIB_FOLDER_0)" ></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderResources" caption="%(key.GUI_MODULES_LABEL_CREATE_RESOURCES_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_RESOURCES_FOLDER_0)"></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderSchemas" caption="%(key.GUI_MODULES_LABEL_CREATE_SCHEMAS_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_SCHEMAS_FOLDER_0)"></vaadin7-check-box>
+								<vaadin7-check-box _id="m_folderClasses" caption="%(key.GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0)" description="%(key.GUI_MODULES_HELP_CREATE_CLASSES_FOLDER_0)"></vaadin7-check-box>
+							</vaadin7-vertical-layout>
 						</v-form-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_RESOURCES_0)">
-						<v-vertical-layout margin spacing>
+						<vaadin7-vertical-layout margin spacing>
 							<v-panel caption="%(key.GUI_MODULES_INCLUDED_RESOURCES_0)">
 								<v-form-layout _id="m_moduleResources" margin spacing style-name="o-formlayout-workplace-main">
 								</v-form-layout>
@@ -48,28 +48,28 @@
 									<v-form-layout _id="m_excludedResources" margin spacing style-name="o-formlayout-workplace-main">
 									</v-form-layout>
 							</v-panel>
-						</v-vertical-layout>
+						</vaadin7-vertical-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_PARAMETERS_0)">
-						<v-vertical-layout margin>
+						<vaadin7-vertical-layout margin>
 						<v-panel caption="%(key.GUI_MODULES_TAB_PARAMETERS_0)">
-							<v-vertical-layout margin spacing>
+							<vaadin7-vertical-layout margin spacing>
 								<v-form-layout _id="m_parameters" margin spacing style-name="o-formlayout-workplace-main">
 								</v-form-layout>
-							</v-vertical-layout>
+							</vaadin7-vertical-layout>
 						</v-panel>
-						</v-vertical-layout>
+						</vaadin7-vertical-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_EXPORT_POINTS_0)">
-						<v-vertical-layout _id="m_exportPoints" margin spacing style-name="o-formlayout-workplace-main">
-						</v-vertical-layout>
+						<vaadin7-vertical-layout _id="m_exportPoints" margin spacing style-name="o-formlayout-workplace-main">
+						</vaadin7-vertical-layout>
 					</tab>
 					<tab caption="%(key.GUI_MODULES_TAB_DEPENDENCIES_0)">
 						<v-form-layout _id="m_dependencies" margin spacing style-name="o-formlayout-workplace-main">								
 						</v-form-layout>
 					</tab>
 				</v-tab-sheet>
-			</v-vertical-layout>
+			</vaadin7-vertical-layout>
 		</content>
 		<buttons>
 			<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>

@@ -47,14 +47,14 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Html5File;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.ChangeEvent;
-import com.vaadin.ui.Upload.ChangeListener;
-import com.vaadin.ui.Upload.StartedEvent;
-import com.vaadin.ui.Upload.StartedListener;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.Upload;
+import com.vaadin.v7.ui.Upload.ChangeEvent;
+import com.vaadin.v7.ui.Upload.ChangeListener;
+import com.vaadin.v7.ui.Upload.StartedEvent;
+import com.vaadin.v7.ui.Upload.StartedListener;
+import com.vaadin.v7.ui.Upload.SucceededEvent;
+import com.vaadin.v7.ui.Upload.SucceededListener;
 
 /**
  * The form for importing modules via HTTP.<p>
@@ -91,9 +91,9 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
      * @param app the module manager app instance for which this was opened
      */
     public CmsModuleImportForm(CmsModuleApp app) {
+
         super(app);
         m_upload.setImmediate(true);
-        m_dnd.setImmediate(true);
         m_dnd.setDropHandler(new DropHandler() {
 
             private static final long serialVersionUID = 1L;

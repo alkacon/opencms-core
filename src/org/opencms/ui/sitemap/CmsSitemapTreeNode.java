@@ -33,7 +33,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Widget displaying a sitemap tree node, with an openable area for its children.<p>

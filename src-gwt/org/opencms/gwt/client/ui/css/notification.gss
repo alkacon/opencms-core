@@ -167,9 +167,7 @@ div.notificationMessage b, span.notificationMessage b{
 		border-color: #ac7c00;
 		border-width: 2px;
 		border-style: solid;
-background-color: value("constants.css.notificationWarningBg");  */
-/* 	color: value("constants.css.notificationWarningColor");  */
-/* 	border-color: value("constants.css.notificationWarningBorder");  */
+		background-color: value("constants.css.notificationWarningBg");
 }
 
 .notificationWarning .notificationMessage img{

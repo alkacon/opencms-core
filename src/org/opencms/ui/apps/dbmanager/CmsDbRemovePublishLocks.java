@@ -36,8 +36,8 @@ import org.opencms.ui.report.CmsReportWidget;
 import java.util.List;
 
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Remove publish locks.<p>

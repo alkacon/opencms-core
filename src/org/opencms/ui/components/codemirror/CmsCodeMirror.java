@@ -38,7 +38,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.vaadin.annotations.JavaScript;
-import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.shared.ui.JavaScriptComponentState;
 import com.vaadin.ui.AbstractJavaScriptComponent;
@@ -46,6 +45,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.data.Property;
 
 import elemental.json.JsonArray;
 
@@ -442,17 +442,17 @@ implements Property<String>, Property.ValueChangeNotifier {
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#addListener(com.vaadin.data.Property.ValueChangeListener)
-     * @deprecated use {@link #addValueChangeListener(com.vaadin.data.Property.ValueChangeListener)}
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#addListener(com.vaadin.v7.data.Property.ValueChangeListener)
+     * @deprecated use {@link #addValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener)}
      */
     @Deprecated
-    public void addListener(com.vaadin.data.Property.ValueChangeListener listener) {
+    public void addListener(com.vaadin.v7.data.Property.ValueChangeListener listener) {
 
         addValueChangeListener(listener);
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#addValueChangeListener(com.vaadin.data.Property.ValueChangeListener)
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#addValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener)
      */
     public void addValueChangeListener(Property.ValueChangeListener listener) {
 
@@ -472,7 +472,7 @@ implements Property<String>, Property.ValueChangeNotifier {
     }
 
     /**
-     * @see com.vaadin.data.Property#getType()
+     * @see com.vaadin.v7.data.Property#getType()
      */
     public Class<? extends String> getType() {
 
@@ -517,6 +517,15 @@ implements Property<String>, Property.ValueChangeNotifier {
     public boolean isLineWrapping() {
 
         return getState().m_lineWrapping;
+    }
+
+    /**
+     * @see com.vaadin.ui.AbstractComponent#isReadOnly()
+     */
+    @Override
+    public boolean isReadOnly() {
+
+        return super.isReadOnly();
     }
 
     /**
@@ -568,7 +577,7 @@ implements Property<String>, Property.ValueChangeNotifier {
      *
      * @param listener the listener to remove
      */
-    public void removeBlurListener(FieldEvents.BlurListener listener) {
+    public void removeBlurListener(FieldEvents.BlurNotifier listener) {
 
         removeListener(FieldEvents.BlurEvent.class, listener, BLUR_METHOD);
         // ensure "automatic immediate handling" works
@@ -576,17 +585,17 @@ implements Property<String>, Property.ValueChangeNotifier {
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#removeListener(com.vaadin.data.Property.ValueChangeListener)
-     * @deprecated use {@link #removeValueChangeListener(com.vaadin.data.Property.ValueChangeListener)}
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#removeListener(com.vaadin.v7.data.Property.ValueChangeListener)
+     * @deprecated use {@link #removeValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener)}
      */
     @Deprecated
-    public void removeListener(com.vaadin.data.Property.ValueChangeListener listener) {
+    public void removeListener(com.vaadin.v7.data.Property.ValueChangeListener listener) {
 
         removeValueChangeListener(listener);
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#removeValueChangeListener(com.vaadin.data.Property.ValueChangeListener)
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#removeValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener)
      */
     public void removeValueChangeListener(Property.ValueChangeListener listener) {
 
@@ -669,6 +678,15 @@ implements Property<String>, Property.ValueChangeNotifier {
 
         getState().m_lineWrapping = lineWrapping;
         markAsDirty();
+    }
+
+    /**
+     * @see com.vaadin.ui.AbstractComponent#setReadOnly(boolean)
+     */
+    @Override
+    public void setReadOnly(boolean readOnly) {
+
+        super.setReadOnly(readOnly);
     }
 
     /**

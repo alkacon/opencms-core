@@ -38,8 +38,8 @@ import org.tepi.filtertable.FilterDecorator;
 import org.tepi.filtertable.numberfilter.NumberFilterPopupConfig;
 
 import com.vaadin.server.Resource;
-import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.shared.ui.datefield.Resolution;
 
 /** Adjust the style of the filter bar of the table. */
 class CmsMessageBundleEditorFilterDecorator implements FilterDecorator {
@@ -140,6 +140,14 @@ class CmsMessageBundleEditorFilterDecorator implements FilterDecorator {
     public NumberFilterPopupConfig getNumberFilterPopupConfig() {
 
         return null;
+    }
+
+    /**
+     * @see org.tepi.filtertable.FilterDecorator#getNumberValidationErrorMessage()
+     */
+    public String getNumberValidationErrorMessage() {
+
+        return "";
     }
 
     /**

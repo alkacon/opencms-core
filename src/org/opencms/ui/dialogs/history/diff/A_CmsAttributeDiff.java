@@ -48,8 +48,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Abstract super class for displaying differences between a set of properties / attributes.<p>

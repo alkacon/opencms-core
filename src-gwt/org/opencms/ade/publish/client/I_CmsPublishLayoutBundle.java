@@ -55,7 +55,7 @@ public interface I_CmsPublishLayoutBundle extends ClientBundle {
      *
      * @return a css bundle
      */
-    @Source("publish.css")
+    @Source("publish.gss")
     I_CmsPublishCss publishCss();
 
 }

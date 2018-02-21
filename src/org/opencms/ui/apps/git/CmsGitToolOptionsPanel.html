@@ -5,59 +5,59 @@
   	<meta name="package-mapping" content="o:org.opencms.ui.components" />
 </head>
 <body>
-	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
 			<v-panel id=m_configurationSelectionPanel" caption="%(key.GUI_GIT_CONFIGURATION_SELECTION_0)">
-				<v-vertical-layout _id="m_configurationSelectionContainer" margin spacing>
-					<v-horizontal-layout spacing>
-						<v-combo-box _id="m_configurationSelector" />
-					</v-horizontal-layout>
-				</v-vertical-layout>
+				<vaadin7-vertical-layout _id="m_configurationSelectionContainer" margin spacing>
+					<vaadin7-horizontal-layout spacing>
+						<vaadin7-combo-box _id="m_configurationSelector" />
+					</vaadin7-horizontal-layout>
+				</vaadin7-vertical-layout>
 			</v-panel>
 			<v-panel caption="%(key.GUI_GIT_MODULE_SELECTION_0)" height="100%" :expand>
-				<v-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
-					<v-horizontal-layout _id="m_moduleSelectorContainer" spacing>
-						<v-combo-box _id="m_moduleSelector" />
+				<vaadin7-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
+					<vaadin7-horizontal-layout _id="m_moduleSelectorContainer" spacing>
+						<vaadin7-combo-box _id="m_moduleSelector" />
 						<v-button _id="m_deselectAll">%(key.GUI_GIT_MODULES_DESELECT_ALL_0)</v-button>
-					</v-horizontal-layout>
-				</v-vertical-layout>
+					</vaadin7-horizontal-layout>
+				</vaadin7-vertical-layout>
 			</v-panel>
 			<v-panel caption="%(key.GUI_GIT_SETTINGS_0)">
 					<v-tab-sheet _id="m_tabs">
 					<tab caption="%(key.GUI_GIT_CHECKIN_0)">
 						<v-form-layout style-name="o-formlayout-workplace-main" margin spacing>
-							<v-text-field _id="m_userField" width="100%" caption="%(key.GUI_GIT_USER_0)" input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)" />
-							<v-text-field _id="m_emailField" width="100%" caption="%(key.GUI_GIT_EMAIL_0)"  input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)"/>
-							<v-text-area _id="m_commitMessage" width="100%" caption="%(key.GUI_GIT_COMMIT_MESSAGE_0)" />
+							<vaadin7-text-field _id="m_userField" width="100%" caption="%(key.GUI_GIT_USER_0)" input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)" />
+							<vaadin7-text-field _id="m_emailField" width="100%" caption="%(key.GUI_GIT_EMAIL_0)"  input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)"/>
+							<vaadin7-text-area _id="m_commitMessage" width="100%" caption="%(key.GUI_GIT_COMMIT_MESSAGE_0)" />
 							<v-button _id="m_toggleOptions" caption="%(key.GUI_GIT_TOGGLE_OPTIONS_0)" />
-							<v-vertical-layout _id="m_advancedLayout" spacing>
-								<v-check-box _id="m_ignoreUnclean" caption="%(key.GUI_GIT_IGNORE_UNCLEAN_0)" description="%(key.GUI_GIT_IGNORE_UNCLEAN_DESC_0)"/>
-								<v-check-box _id="m_pullFirst" caption="%(key.GUI_GIT_PULL_FIRST_0)" description="%(key.GUI_GIT_PULL_FIRST_DESC_0)" />
-								<v-check-box _id="m_copyAndUnzip" caption="%(key.GUI_GIT_COPY_UNZIP_0)" description="%(key.GUI_GIT_COPY_UNZIP_DESC_0)" />
-								<v-check-box _id="m_addAndCommit" caption="%(key.GUI_GIT_ADD_COMMIT_0)" />
-								<v-check-box _id="m_pullAfterCommit" caption="%(key.GUI_GIT_PULL_AFTER_0)" />
-								<v-check-box _id="m_pushAutomatically" caption="%(key.GUI_GIT_PUSH_AUTOMATICALLY_0)" />
-								<v-check-box _id="m_excludeLib" caption="%(key.GUI_GIT_EXCLUDE_LIB_FOLDER_0)" />
-							</v-vertical-layout>
+							<vaadin7-vertical-layout _id="m_advancedLayout" spacing>
+								<vaadin7-check-box _id="m_ignoreUnclean" caption="%(key.GUI_GIT_IGNORE_UNCLEAN_0)" description="%(key.GUI_GIT_IGNORE_UNCLEAN_DESC_0)"/>
+								<vaadin7-check-box _id="m_pullFirst" caption="%(key.GUI_GIT_PULL_FIRST_0)" description="%(key.GUI_GIT_PULL_FIRST_DESC_0)" />
+								<vaadin7-check-box _id="m_copyAndUnzip" caption="%(key.GUI_GIT_COPY_UNZIP_0)" description="%(key.GUI_GIT_COPY_UNZIP_DESC_0)" />
+								<vaadin7-check-box _id="m_addAndCommit" caption="%(key.GUI_GIT_ADD_COMMIT_0)" />
+								<vaadin7-check-box _id="m_pullAfterCommit" caption="%(key.GUI_GIT_PULL_AFTER_0)" />
+								<vaadin7-check-box _id="m_pushAutomatically" caption="%(key.GUI_GIT_PUSH_AUTOMATICALLY_0)" />
+								<vaadin7-check-box _id="m_excludeLib" caption="%(key.GUI_GIT_EXCLUDE_LIB_FOLDER_0)" />
+							</vaadin7-vertical-layout>
 						</v-form-layout>
 						</tab>
 						<tab caption="%(key.GUI_GIT_IMPORT_0)">
 							<v-form-layout _id="m_checkoutTab" margin spacing>
-								<v-text-field enabled="false" _id="m_fakeUserField" width="100%" caption="%(key.GUI_GIT_USER_0)" input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)" />
-								<v-text-field enabled="false" _id="m_fakeEmailField" width="100%" caption="%(key.GUI_GIT_EMAIL_0)"  input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)"/>
-								<v-check-box _id="m_fetchAndReset" caption="%(key.GUI_GIT_FETCH_REMOTE_0)"/>
+								<vaadin7-text-field enabled="false" _id="m_fakeUserField" width="100%" caption="%(key.GUI_GIT_USER_0)" input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)" />
+								<vaadin7-text-field enabled="false" _id="m_fakeEmailField" width="100%" caption="%(key.GUI_GIT_EMAIL_0)"  input-prompt="%(key.GUI_GIT_NOT_ADJUSTED_0)"/>
+								<vaadin7-check-box _id="m_fetchAndReset" caption="%(key.GUI_GIT_FETCH_REMOTE_0)"/>
 							</v-form-layout>	
 						</tab>
 						</v-tab-sheet>
 			</v-panel>
 			
 			<v-panel>
-				<v-horizontal-layout spacing style-name="o-dialog-button-bar" width="100%" margin> 
-					<v-horizontal-layout :center spacing>
+				<vaadin7-horizontal-layout spacing style-name="o-dialog-button-bar" width="100%" margin> 
+					<vaadin7-horizontal-layout :center spacing>
 						<v-button _id="m_okButton">%(key.GUI_GIT_BUTTON_CHECK_IN_0)</v-button>
 						<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-					</v-horizontal-layout>
-				</v-horizontal-layout>
+					</vaadin7-horizontal-layout>
+				</vaadin7-horizontal-layout>
 			</v-panel>
-		</v-vertical-layout>
+		</vaadin7-vertical-layout>
 </body>
 </html>

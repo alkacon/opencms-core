@@ -450,7 +450,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the attribute choice CSS
      */
-    @Source("attributeChoice.css")
+    @Source("attributeChoice.gss")
     I_AttributeChoice attributeChoice();
 
     /**
@@ -458,6 +458,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the style CSS
      */
-    @Source("form.css")
+    @Source("form.gss")
     I_Style form();
 }

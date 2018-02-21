@@ -40,11 +40,11 @@ import org.opencms.ui.components.CmsDateField;
 import java.util.Calendar;
 import java.util.Collections;
 
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Dialog to clean Image Cache.<p>

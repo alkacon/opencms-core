@@ -22,61 +22,31 @@
 	height: 2px
 }
 
-@if user.agent safari {
-	.animated .borderLeft{
-		-webkit-animation: moveDown 1s linear normal infinite;
-	}
+.animated .borderLeft{
+	animation: moveDown 1s linear normal infinite;
+}
 	
-	.animated .borderRight{
-		-webkit-animation: moveDown 1s linear reverse infinite;
-	}
+.animated .borderRight{
+	animation: moveDown 1s linear reverse infinite;
+}
 	
-	.animated .borderTop{
-		-webkit-animation: moveRight 1s linear reverse infinite;
-	}
+.animated .borderTop{
+	animation: moveRight 1s linear reverse infinite;
+}
 	
-	.animated .borderBottom{
-		-webkit-animation: moveRight 1s linear normal infinite;
-	}	
+.animated .borderBottom{
+	animation: moveRight 1s linear normal infinite;
+}	
 	
-	@-webkit-keyframes moveRight {
-		0% {background-position: 0px 50%;}
-		100% {background-position: 16px 50%;}
-	}
-
-	@-webkit-keyframes moveDown {
-		0% {background-position: 50% 8px;}
-		100% {background-position: 50% 24px;}
-	}
-} @else {
-	.animated .borderLeft{
-		animation: moveDown 1s linear normal infinite;
-	}
-	
-	.animated .borderRight{
-		animation: moveDown 1s linear reverse infinite;
-	}
-	
-	.animated .borderTop{
-		animation: moveRight 1s linear reverse infinite;
-	}
-	
-	.animated .borderBottom{
-		animation: moveRight 1s linear normal infinite;
-	}	
-	
-	@keyframes moveRight {
-		0% {background-position: 0px 50%;}
-		100% {background-position: 16px 50%;}
-	}
-
-	@keyframes moveDown {
-		0% {background-position: 50% 8px;}
-		100% {background-position: 50% 24px;}
-	}
+@keyframes moveRight {
+	0% {background-position: 0px 50%;}
+	100% {background-position: 16px 50%;}
 }
 
-
+@keyframes moveDown {
+	0% {background-position: 50% 8px;}
+	100% {background-position: 50% 24px;}
+}
 
 .colorSolidGrey .borderLeft, .colorSolidGrey .borderRight, .colorSolidGrey .borderTop, .colorSolidGrey .borderBottom{
 	background: rgba(181,189,200,1);

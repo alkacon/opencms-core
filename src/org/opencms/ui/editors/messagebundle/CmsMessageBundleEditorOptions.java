@@ -36,8 +36,6 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.I_Option
 import java.util.Collection;
 import java.util.Locale;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -48,15 +46,17 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.TextField;
 
 /** View of the message bundle editor options, i.e., language/mode switcher, file name display and "Add key" option. */
 public class CmsMessageBundleEditorOptions {
@@ -338,7 +338,7 @@ public class CmsMessageBundleEditorOptions {
         m_filePathLabel = new TextField();
         m_filePathLabel.setWidth("100%");
         m_filePathLabel.setEnabled(true);
-        m_filePathLabel.setReadOnly(true);
+        ((TextField)m_filePathLabel).setReadOnly(true);
         m_filePathLabel = new Label(m_messages.key(Messages.GUI_FILENAME_LABEL_0));
 
     }

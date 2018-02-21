@@ -13,7 +13,7 @@ div.patternRow > * {
 			vertical-align: middle;
 }
 
-div.patternRow > *:not\(.ordinalTextBox\) {
+div.patternRow > *:not(.ordinalTextBox) {
 	margin-right: 4px;
 }
 

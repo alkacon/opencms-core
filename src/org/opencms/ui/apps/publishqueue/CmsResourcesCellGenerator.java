@@ -32,7 +32,7 @@ import org.opencms.file.CmsResource;
 
 import java.util.List;
 
-import com.vaadin.ui.Table;
+import com.vaadin.v7.ui.Table;
 
 /**
 *   Table column generator for published-resources. Shows list as comma separated string of setted maximal length.<p>

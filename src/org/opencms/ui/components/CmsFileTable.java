@@ -87,28 +87,28 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.DefaultItemSorter;
-import com.vaadin.data.util.filter.Or;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.TableDragMode;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.DefaultItemSorter;
+import com.vaadin.v7.data.util.filter.Or;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.v7.event.ItemClickEvent;
+import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.v7.ui.AbstractTextField.TextChangeEventMode;
+import com.vaadin.v7.ui.DefaultFieldFactory;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.TableDragMode;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Table for displaying resources.<p>
@@ -141,7 +141,7 @@ public class CmsFileTable extends CmsResourceTable {
         private static final long serialVersionUID = 3079590603587933576L;
 
         /**
-         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.v7.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
          */
         @Override
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
@@ -193,7 +193,7 @@ public class CmsFileTable extends CmsResourceTable {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see org.opencms.ui.util.I_CmsItemSorter#getSortableContainerPropertyIds(com.vaadin.data.Container)
+         * @see org.opencms.ui.util.I_CmsItemSorter#getSortableContainerPropertyIds(com.vaadin.v7.data.Container)
          */
         public Collection<?> getSortableContainerPropertyIds(Container container) {
 
@@ -212,7 +212,7 @@ public class CmsFileTable extends CmsResourceTable {
         }
 
         /**
-         * @see com.vaadin.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.data.Item, com.vaadin.data.Item)
+         * @see com.vaadin.v7.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.v7.data.Item, com.vaadin.v7.data.Item)
          */
         @Override
         protected int compareProperty(Object propertyId, boolean sortDirection, Item item1, Item item2) {
@@ -349,6 +349,7 @@ public class CmsFileTable extends CmsResourceTable {
      * @param contextProvider the dialog context provider
      */
     public CmsFileTable(I_CmsContextProvider contextProvider) {
+
         this(contextProvider, DEFAULT_TABLE_PROPERTIES);
     }
 
@@ -359,6 +360,7 @@ public class CmsFileTable extends CmsResourceTable {
      * @param tableColumns the table columns to show
      */
     public CmsFileTable(I_CmsContextProvider contextProvider, Map<CmsResourceTableProperty, Integer> tableColumns) {
+
         super();
         m_additionalStyleGenerators = new ArrayList<Table.CellStyleGenerator>();
         m_actionColumnProperty = PROPERTY_RESOURCE_NAME;

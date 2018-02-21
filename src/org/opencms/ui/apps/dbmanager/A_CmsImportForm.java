@@ -38,12 +38,12 @@ import org.opencms.ui.components.CmsErrorDialog;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Abstract class for a form to import a file.<p>

@@ -39,11 +39,11 @@ import org.opencms.ui.CmsVaadinUtils.PropertyId;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Class for the database statistic view.<p>

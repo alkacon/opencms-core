@@ -62,8 +62,8 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.google.common.collect.Maps;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.data.util.converter.Converter;
 
 /**
  * Class whose instances contain the static data needed for a table column.<p>
@@ -79,19 +79,19 @@ public class CmsResourceTableProperty implements Serializable {
         private static final long serialVersionUID = -54133335743460680L;
 
         /**
-         * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
+         * @see com.vaadin.v7.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
          */
         public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale)
-        throws com.vaadin.data.util.converter.Converter.ConversionException {
+        throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 
             throw new UnsupportedOperationException();
         }
 
         /**
-         * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
+         * @see com.vaadin.v7.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
          */
         public String convertToPresentation(Long value, Class<? extends String> targetType, Locale locale)
-        throws com.vaadin.data.util.converter.Converter.ConversionException {
+        throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 
             return value != null
             ? CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(value.longValue())
@@ -99,7 +99,7 @@ public class CmsResourceTableProperty implements Serializable {
         }
 
         /**
-         * @see com.vaadin.data.util.converter.Converter#getModelType()
+         * @see com.vaadin.v7.data.util.converter.Converter#getModelType()
          */
         public Class<Long> getModelType() {
 
@@ -107,7 +107,7 @@ public class CmsResourceTableProperty implements Serializable {
         }
 
         /**
-         * @see com.vaadin.data.util.converter.Converter#getPresentationType()
+         * @see com.vaadin.v7.data.util.converter.Converter#getPresentationType()
          */
         public Class<String> getPresentationType() {
 
@@ -445,6 +445,7 @@ public class CmsResourceTableProperty implements Serializable {
         boolean collapsible,
         float expandRation,
         int columnWidth) {
+
         this(id, columnType, defaultValue, headerKey, collapsible, expandRation, columnWidth, null);
     }
 
@@ -469,6 +470,7 @@ public class CmsResourceTableProperty implements Serializable {
         float expandRation,
         int columnWidth,
         Converter<String, ?> converter) {
+
         m_id = id;
         m_columnType = columnType;
         m_defaultValue = defaultValue;
@@ -500,6 +502,7 @@ public class CmsResourceTableProperty implements Serializable {
         boolean collapsible,
         float expandRation,
         int columnWidth) {
+
         this(id, columnType, defaultValue, headerKey, collapsible, expandRation, columnWidth, null);
         m_editPropertyId = editPropertyId;
     }

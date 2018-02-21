@@ -34,7 +34,7 @@ import java.util.Locale;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 
 public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
 

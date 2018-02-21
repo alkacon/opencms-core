@@ -295,7 +295,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the container-page CSS
      */
-    @Source("containerpage.css")
+    @Source("containerpage.gss")
     I_CmsContainerpageCss containerpageCss();
 
     /**
@@ -303,7 +303,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the drag and drop CSS
      */
-    @Source("dragdrop.css")
+    @Source("dragdrop.gss")
     I_CmsDragDropExtendedCss dragdropCss();
 
     /**
@@ -311,6 +311,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the container-page CSS
      */
-    @Source("groupcontainer.css")
+    @Source("groupcontainer.gss")
     I_CmsGroupContainer groupcontainerCss();
 }

@@ -39,20 +39,20 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.data.Validator.InvalidValueException;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * The principal select widget.<p>
@@ -164,10 +164,10 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#addListener(com.vaadin.data.Property.ValueChangeListener)
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#addListener(com.vaadin.v7.data.Property.ValueChangeListener)
      */
     @SuppressWarnings({"deprecation", "javadoc"})
-    public void addListener(com.vaadin.data.Property.ValueChangeListener listener) {
+    public void addListener(com.vaadin.v7.data.Property.ValueChangeListener listener) {
 
         m_principalName.addListener(listener);
     }
@@ -181,15 +181,15 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#addValueChangeListener(com.vaadin.data.Property.ValueChangeListener)
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#addValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener)
      */
-    public void addValueChangeListener(com.vaadin.data.Property.ValueChangeListener listener) {
+    public void addValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener listener) {
 
         m_principalName.addValueChangeListener(listener);
     }
 
     /**
-     * @see com.vaadin.ui.Field#clear()
+     * @see com.vaadin.v7.ui.Field#clear()
      */
     public void clear() {
 
@@ -197,7 +197,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Buffered#commit()
+     * @see com.vaadin.v7.data.Buffered#commit()
      */
     public void commit() throws SourceException, InvalidValueException {
 
@@ -205,7 +205,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Buffered#discard()
+     * @see com.vaadin.v7.data.Buffered#discard()
      */
     public void discard() throws SourceException {
 
@@ -222,7 +222,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.Viewer#getPropertyDataSource()
+     * @see com.vaadin.v7.data.Property.Viewer#getPropertyDataSource()
      */
     public Property getPropertyDataSource() {
 
@@ -230,7 +230,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.ui.Field#getRequiredError()
+     * @see com.vaadin.v7.ui.Field#getRequiredError()
      */
     public String getRequiredError() {
 
@@ -246,7 +246,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property#getType()
+     * @see com.vaadin.v7.data.Property#getType()
      */
     public Class<? extends String> getType() {
 
@@ -262,7 +262,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property#getValue()
+     * @see com.vaadin.v7.data.Property#getValue()
      */
     public String getValue() {
 
@@ -279,7 +279,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Buffered#isBuffered()
+     * @see com.vaadin.v7.data.Buffered#isBuffered()
      */
     public boolean isBuffered() {
 
@@ -287,7 +287,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.ui.Field#isEmpty()
+     * @see com.vaadin.v7.ui.Field#isEmpty()
      */
     public boolean isEmpty() {
 
@@ -303,7 +303,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.BufferedValidatable#isInvalidCommitted()
+     * @see com.vaadin.v7.data.BufferedValidatable#isInvalidCommitted()
      */
     public boolean isInvalidCommitted() {
 
@@ -311,15 +311,20 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Buffered#isModified()
+     * @see com.vaadin.v7.data.Buffered#isModified()
      */
     public boolean isModified() {
 
         return m_principalName.isModified();
     }
 
+    public boolean isReadOnly() {
+
+        return super.isReadOnly();
+    }
+
     /**
-     * @see com.vaadin.ui.Field#isRequired()
+     * @see com.vaadin.v7.ui.Field#isRequired()
      */
     public boolean isRequired() {
 
@@ -343,10 +348,10 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#removeListener(com.vaadin.data.Property.ValueChangeListener)
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#removeListener(com.vaadin.v7.data.Property.ValueChangeListener)
      */
     @SuppressWarnings({"deprecation", "javadoc"})
-    public void removeListener(com.vaadin.data.Property.ValueChangeListener listener) {
+    public void removeListener(com.vaadin.v7.data.Property.ValueChangeListener listener) {
 
         m_principalName.removeListener(listener);
     }
@@ -360,15 +365,15 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeNotifier#removeValueChangeListener(com.vaadin.data.Property.ValueChangeListener)
+     * @see com.vaadin.v7.data.Property.ValueChangeNotifier#removeValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener)
      */
-    public void removeValueChangeListener(com.vaadin.data.Property.ValueChangeListener listener) {
+    public void removeValueChangeListener(com.vaadin.v7.data.Property.ValueChangeListener listener) {
 
         m_principalName.removeValueChangeListener(listener);
     }
 
     /**
-     * @see com.vaadin.data.Buffered#setBuffered(boolean)
+     * @see com.vaadin.v7.data.Buffered#setBuffered(boolean)
      */
     public void setBuffered(boolean buffered) {
 
@@ -425,11 +430,16 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.Viewer#setPropertyDataSource(com.vaadin.data.Property)
+     * @see com.vaadin.v7.data.Property.Viewer#setPropertyDataSource(com.vaadin.v7.data.Property)
      */
     public void setPropertyDataSource(Property newDataSource) {
 
         m_principalName.setPropertyDataSource(newDataSource);
+    }
+
+    public void setReadOnly(boolean readOnly) {
+
+        super.setReadOnly(readOnly);
     }
 
     /**
@@ -443,7 +453,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.ui.Field#setRequired(boolean)
+     * @see com.vaadin.v7.ui.Field#setRequired(boolean)
      */
     public void setRequired(boolean required) {
 
@@ -451,7 +461,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.ui.Field#setRequiredError(java.lang.String)
+     * @see com.vaadin.v7.ui.Field#setRequiredError(java.lang.String)
      */
     public void setRequiredError(String requiredMessage) {
 
@@ -504,9 +514,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property#setValue(java.lang.Object)
+     * @see com.vaadin.v7.data.Property#setValue(java.lang.Object)
      */
-    public void setValue(String newValue) throws com.vaadin.data.Property.ReadOnlyException {
+    public void setValue(String newValue) throws com.vaadin.v7.data.Property.ReadOnlyException {
 
         m_principalName.setValue(newValue);
     }
@@ -535,9 +545,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+     * @see com.vaadin.v7.data.Property.ValueChangeListener#valueChange(com.vaadin.v7.data.Property.ValueChangeEvent)
      */
-    public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+    public void valueChange(com.vaadin.v7.data.Property.ValueChangeEvent event) {
 
         m_principalName.valueChange(event);
     }

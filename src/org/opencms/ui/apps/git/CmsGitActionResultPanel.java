@@ -33,9 +33,9 @@ import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.List;
 
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 
 /** Dialog that prints the result of the execution of a git action. */

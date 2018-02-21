@@ -52,8 +52,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Predicate;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
 
 /**
  * Dialog used to select a resource which should be linked to a locale group.<p>

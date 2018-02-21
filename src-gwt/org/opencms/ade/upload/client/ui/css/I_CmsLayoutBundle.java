@@ -122,7 +122,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("upload.css")
+    @Source("upload.gss")
     I_CmsUploadCss uploadCss();
 
 }

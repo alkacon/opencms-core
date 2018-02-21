@@ -60,19 +60,19 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.filter.Or;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.filter.Or;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.v7.event.ItemClickEvent;
+import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.v7.ui.Table;
 
 /**
  * Class for Vaadin Table showing history queue elements.<p>
@@ -311,6 +311,7 @@ public class CmsQueuedTable extends Table {
      * @param manager instance of calling class
      */
     public CmsQueuedTable(CmsPublishQueue manager) {
+
         m_manager = manager;
         setSizeFull();
         setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_PQUEUE_PQUEUE_HIST_0));
@@ -606,7 +607,7 @@ public class CmsQueuedTable extends Table {
             try {
                 item.getItemProperty(PROP_RESOURCES).setValue(
                     A_CmsUI.getCmsObject().readPublishedResources(job.getPublishHistoryId()));
-            } catch (com.vaadin.data.Property.ReadOnlyException | CmsException e) {
+            } catch (com.vaadin.v7.data.Property.ReadOnlyException | CmsException e) {
                 LOG.error("Error while read published Resources", e);
             }
             item.getItemProperty(PROP_STATUS).setValue(state);

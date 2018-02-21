@@ -28,7 +28,7 @@
 package org.opencms.ui.components;
 
 import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.v7.ui.HorizontalLayout;
 
 /**
  * Wrapper for horizontal layouts to be used as a drag and drop target.<p>

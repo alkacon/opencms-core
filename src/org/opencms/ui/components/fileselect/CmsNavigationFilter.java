@@ -38,8 +38,8 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Item;
 
 /**
  * Filter used to hide folder tree items which are not either navigation items themselves or are required to navigate
@@ -77,7 +77,7 @@ public class CmsNavigationFilter implements Container.Filter {
     }
 
     /**
-     * @see com.vaadin.data.Container.Filter#appliesToProperty(java.lang.Object)
+     * @see com.vaadin.v7.data.Container.Filter#appliesToProperty(java.lang.Object)
      */
     public boolean appliesToProperty(Object propertyId) {
 
@@ -85,7 +85,7 @@ public class CmsNavigationFilter implements Container.Filter {
     }
 
     /**
-     * @see com.vaadin.data.Container.Filter#passesFilter(java.lang.Object, com.vaadin.data.Item)
+     * @see com.vaadin.v7.data.Container.Filter#passesFilter(java.lang.Object, com.vaadin.v7.data.Item)
      */
     public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
 

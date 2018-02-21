@@ -110,7 +110,7 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
      *
      * @return the root CSS
      **/
-    @Source("clipboard.css")
+    @Source("clipboard.gss")
     I_CmsClipboardCss clipboardCss();
 
     /**
@@ -125,7 +125,7 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
      *
      * @return the root CSS
      */
-    @Source("sitemap.css")
+    @Source("sitemap.gss")
     @Import(value = I_CmsLayoutBundle.I_CmsToolbarCss.class)
     I_CmsSitemapCss sitemapCss();
 
@@ -134,6 +134,6 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
      *
      * @return the root CSS
      **/
-    @Source("sitemapItem.css")
+    @Source("sitemapItem.gss")
     I_CmsSitemapItemCss sitemapItemCss();
 }

@@ -71,6 +71,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the XML content editor CSS
      */
-    @Source("editor.css")
+    @Source("editor.gss")
     I_CmsXmlEditorCss editorCss();
 }

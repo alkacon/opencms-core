@@ -7,20 +7,20 @@
 	<body>
 		<o-cms-basic-dialog>
   			<content>
-  				<v-vertical-layout _id="m_mainContent" size-full style-name="o-error-dialog">
-  					<v-horizontal-layout height="70px" width="100%">
-						<v-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
-						<v-label _id="m_label" :expand style-name="o-error-message" :middle />
-					</v-horizontal-layout>
+  				<vaadin7-vertical-layout _id="m_mainContent" size-full style-name="o-error-dialog">
+  					<vaadin7-horizontal-layout height="70px" width="100%">
+						<vaadin7-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
+						<vaadin7-label _id="m_label" :expand style-name="o-error-message" :middle />
+					</vaadin7-horizontal-layout>
 					<v-panel _id="m_dependencyPanel" caption="%(key.GUI_USERMANAGEMENT_DELETE_DEPENDENCIES_0)" width="100%">
-						<v-vertical-layout width="100%" _id="m_dependency">
-						</v-vertical-layout>
+						<vaadin7-vertical-layout width="100%" _id="m_dependency">
+						</vaadin7-vertical-layout>
 					</v-panel>
 					<v-form-layout _id="m_principalSelectLayout">
-					<v-label style-name="o-report">%(key.GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0)</v-label>
+					<vaadin7-label style-name="o-report">%(key.GUI_USERMANAGEMENT_DELETE_MOVE_PERMISSIONS_0)</vaadin7-label>
 					<p-cms-principal-select width="100%" _id="m_principalSelect" caption=""/>
 		  			</v-form-layout>
-		  		</v-vertical-layout>
+		  		</vaadin7-vertical-layout>
 			</content>
 			<buttons>
   				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>

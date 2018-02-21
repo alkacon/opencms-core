@@ -33,10 +33,10 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.workplace.threads.CmsDatabaseImportThread;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Upload;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.Upload;
 
 /**
  * HTTP import class.<p>

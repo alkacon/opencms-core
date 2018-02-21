@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 
 /**
  *Class for the Publish queue app.<p>

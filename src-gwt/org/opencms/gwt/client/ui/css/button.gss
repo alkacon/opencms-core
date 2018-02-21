@@ -212,14 +212,8 @@ div.cmsTextButton > div {
 	display: inline-block;
 }
 
-@if user.agent safari {
-	div.cmsTextButton:before {
-		height: 110%;
-	}
-} @else {
-	div.cmsTextButton:before {
-		height: 107%;
-	}
+div.cmsTextButton:before {
+		height: 109%;
 }
 
 div.cmsTextButton:after {

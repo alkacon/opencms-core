@@ -58,7 +58,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
+import com.vaadin.v7.ui.CheckBox;
 
 /**
  * Dialog used to change resource modification times.<p>

@@ -41,7 +41,7 @@ public interface I_CmsCellTableResources extends CellTable.Resources {
     /**
      * @see com.google.gwt.user.cellview.client.CellTable.Resources#cellTableStyle()
      */
-    @Source("org/opencms/gwt/client/ui/css/CellTable.css")
+    @Source("org/opencms/gwt/client/ui/css/CellTable.gss")
     I_CmsCellTableCss cellTableStyle();
 
     /**

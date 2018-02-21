@@ -2323,7 +2323,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the availability dialog CSS
      */
-    @Source("availability.css")
+    @Source("availability.gss")
     I_CmsAvailabilityCss availabilityCss();
 
     /**
@@ -2331,7 +2331,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the button CSS
      */
-    @Source("button.css")
+    @Source("button.gss")
     I_CmsButtonCss buttonCss();
 
     /**
@@ -2339,7 +2339,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the gallery dialog CSS
      */
-    @Source("categorydialog.css")
+    @Source("categorydialog.gss")
     I_CmsCategoryDialogCss categoryDialogCss();
 
     /**
@@ -2347,7 +2347,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the gallery dialog CSS
      */
-    @Source("colorSelector.css")
+    @Source("colorSelector.gss")
     I_CmsColorSelector colorSelectorCss();
 
     /**
@@ -2362,7 +2362,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the content editor dialog CSS
      */
-    @Source("contentEditor.css")
+    @Source("contentEditor.gss")
     @CssResource.NotStrict
     I_CmsContentEditorCss contentEditorCss();
 
@@ -2371,7 +2371,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("contextmenu.css")
+    @Source("contextmenu.gss")
     I_CmsContextmenuCss contextmenuCss();
 
     /**
@@ -2386,7 +2386,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("datebox.css")
+    @Source("datebox.gss")
     I_CmsDateBoxCss dateBoxCss();
 
     /**
@@ -2394,7 +2394,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the dialog CSS
      */
-    @Source("dialog.css")
+    @Source("dialog.gss")
     I_CmsDialogCss dialogCss();
 
     /**
@@ -2402,7 +2402,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the dialog CSS
      */
-    @Source("directedit.css")
+    @Source("directedit.gss")
     I_CmsDirectEditCss directEditCss();
 
     /**
@@ -2410,7 +2410,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the drag and drop CSS
      */
-    @Source("dragdrop.css")
+    @Source("dragdrop.gss")
     I_CmsDragCss dragdropCss();
 
     /**
@@ -2418,7 +2418,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the error dialog CSS
      */
-    @Source("errorDialog.css")
+    @Source("errorDialog.gss")
     I_CmsErrorDialogCss errorDialogCss();
 
     /**
@@ -2426,7 +2426,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("fieldset.css")
+    @Source("fieldset.gss")
     I_CmsFieldsetCss fieldsetCss();
 
     /**
@@ -2434,7 +2434,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the toolbar CSS
      */
-    @Source("floatDecoratedPanel.css")
+    @Source("floatDecoratedPanel.gss")
     I_CmsFloatDecoratedPanelCss floatDecoratedPanelCss();
 
     /**
@@ -2442,7 +2442,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the general CSS
      */
-    @Source("general.css")
+    @Source("general.gss")
     I_CmsGeneralCss generalCss();
 
     /**
@@ -2450,7 +2450,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the upload button CSS
      */
-    @Source("globalWidget.css")
+    @Source("globalWidget.gss")
     I_CmsGlobalWidgetCss globalWidgetCss();
 
     /**
@@ -2458,7 +2458,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the highlight CSS
      */
-    @Source("highlight.css")
+    @Source("highlight.gss")
     I_CmsHighlightCss highlightCss();
 
     /**
@@ -2466,7 +2466,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the list item CSS
      */
-    @Source("linkWarning.css")
+    @Source("linkWarning.gss")
     I_CmsLinkWarningCss linkWarningCss();
 
     /**
@@ -2474,7 +2474,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the list item CSS
      */
-    @Source("listItemWidget.css")
+    @Source("listItemWidget.gss")
     @CssResource.NotStrict
     I_CmsListItemWidgetCss listItemWidgetCss();
 
@@ -2483,7 +2483,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the list tree CSS
      */
-    @Source("listtree.css")
+    @Source("listtree.gss")
     I_CmsListTreeCss listTreeCss();
 
     /**
@@ -2491,7 +2491,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the location picker CSS
      */
-    @Source("locationPicker.css")
+    @Source("locationPicker.gss")
     I_CmsLocationPicker locationPickerCss();
 
     /**
@@ -2499,7 +2499,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the menu button CSS
      */
-    @Source("menuButton.css")
+    @Source("menuButton.gss")
     I_CmsMenuButton menuButtonCss();
 
     /**
@@ -2507,7 +2507,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the list item CSS
      */
-    @Source("notification.css")
+    @Source("notification.gss")
     I_CmsNotificationCss notificationCss();
 
     /**
@@ -2515,7 +2515,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the upload button CSS
      */
-    @Source("openerHoverWidget.css")
+    @Source("openerHoverWidget.gss")
     I_CmsOpenerHoverCss openerHoverCss();
 
     /**
@@ -2523,7 +2523,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("progressbar.css")
+    @Source("progressbar.gss")
     I_CmsProgressBarCss progressBarCss();
 
     /**
@@ -2531,7 +2531,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the page CSS
      */
-    @Source("properties.css")
+    @Source("properties.gss")
     I_CmsPropertiesCss propertiesCss();
 
     /**
@@ -2539,7 +2539,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the list item CSS
      */
-    @Source("resourceState.css")
+    @Source("resourceState.gss")
     I_CmsResourceStateCss resourceStateCss();
 
     /**
@@ -2547,7 +2547,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the constants CSS
      */
-    @Source("scrollBar.css")
+    @Source("scrollBar.gss")
     I_CmsScrollBarCss scrollBarCss();
 
     /**
@@ -2555,7 +2555,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the select area CSS
      */
-    @Source("selectArea.css")
+    @Source("selectArea.gss")
     I_CmsSelectArea selectAreaCss();
 
     /**
@@ -2563,7 +2563,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the single line list item CSS
      */
-    @Source("singleLineItem.css")
+    @Source("singleLineItem.gss")
     I_CmsSingleLineItem singleLineItemCss();
 
     /**
@@ -2572,7 +2572,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the state CSS
      */
-    @Source("state.css")
+    @Source("state.gss")
     I_CmsStateCss stateCss();
 
     /**
@@ -2580,7 +2580,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return tabbed panel CSS
      */
-    @Source("tabbedPanel.css")
+    @Source("tabbedPanel.gss")
     I_CmsTabbedPanelCss tabbedPanelCss();
 
     /**
@@ -2596,6 +2596,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the upload button CSS
      */
-    @Source("uploadButton.css")
+    @Source("uploadButton.gss")
     I_CmsUploadButtonCss uploadButton();
 }

@@ -8,7 +8,7 @@
 	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
 	<ui:style>
 	 
-	 @eval buttonColor org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().textColorDisabledButton();
+	 @def buttonColor eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().textColorDisabledButton()");
 	
 	.outerContainer { 
 		position: relative;

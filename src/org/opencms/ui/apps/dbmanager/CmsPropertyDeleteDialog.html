@@ -7,24 +7,24 @@
   <body>
   		<o-cms-basic-dialog size-full>
   			<content>
-  				<v-vertical-layout width="100%">
-  					<v-vertical-layout _id="m_start"  margin spacing size-full style-name="o-spacing-5">
-	  					<v-label _id="m_label" width="100%">%(key.GUI_DATABASEAPP_PROPERTY_CONFIRM_0)</v-label>
-	  					<v-vertical-layout _id="m_forceDeleteLayout" width="100%" style-name="o-error-dialog">
-	  						<v-horizontal-layout height="70px" width="100%">
-								<v-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
-								<v-label :expand style-name="o-error-message" :middle>%(key.GUI_DATABASEAPP_PROPERTY_CONFIRM_FORCE_0)</v-label>
-							</v-horizontal-layout>
+  				<vaadin7-vertical-layout width="100%">
+  					<vaadin7-vertical-layout _id="m_start"  margin spacing size-full style-name="o-spacing-5">
+	  					<vaadin7-label _id="m_label" width="100%">%(key.GUI_DATABASEAPP_PROPERTY_CONFIRM_0)</vaadin7-label>
+	  					<vaadin7-vertical-layout _id="m_forceDeleteLayout" width="100%" style-name="o-error-dialog">
+	  						<vaadin7-horizontal-layout height="70px" width="100%">
+								<vaadin7-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
+								<vaadin7-label :expand style-name="o-error-message" :middle>%(key.GUI_DATABASEAPP_PROPERTY_CONFIRM_FORCE_0)</vaadin7-label>
+							</vaadin7-horizontal-layout>
 							<v-form-layout width="100%">
-	  							<v-check-box _id="m_forceDelete" caption="%(key.GUI_DATABASEAPP_PROPERTY_FORCE_0)" description="%(key.GUI_DATABASEAPP_PROPERTY_FORCE_HELP_0)"/>
+	  							<vaadin7-check-box _id="m_forceDelete" caption="%(key.GUI_DATABASEAPP_PROPERTY_FORCE_0)" description="%(key.GUI_DATABASEAPP_PROPERTY_FORCE_HELP_0)"/>
 	  						</v-form-layout>	
-  						</v-vertical-layout>
-  					</v-vertical-layout>
+  						</vaadin7-vertical-layout>
+  					</vaadin7-vertical-layout>
   					<v-panel id="m_report" caption="%(key.GUI_DATABASEAPP_PROPERTY_REPORT_0)">	
 						<v-form-layout _id="m_threadReport">
 						</v-form-layout>
 					</v-panel>
-  				</v-vertical-layout>
+  				</vaadin7-vertical-layout>
   			</content>
   			<buttons>
    				<v-button _id="m_okButton">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button> 			

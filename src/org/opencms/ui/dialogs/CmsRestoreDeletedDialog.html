@@ -6,15 +6,15 @@
 	<body>
 		<o-cms-basic-dialog>
 			<content>
-					<v-vertical-layout spacing margin size-full>
-						<v-horizontal-layout width="100%" >
-							<v-check-box _id="m_includeSubfoldersField" caption="%(key.GUI_RESTOREDELETED_INCLUDE_SUBFOLDERS_0)" />
-							<v-check-box _id="m_selectAllField" caption="%(key.GUI_RESTOREDELETED_SELECT_ALL_0)" :right />
-						</v-horizontal-layout>
+					<vaadin7-vertical-layout spacing margin size-full>
+						<vaadin7-horizontal-layout width="100%" >
+							<vaadin7-check-box _id="m_includeSubfoldersField" caption="%(key.GUI_RESTOREDELETED_INCLUDE_SUBFOLDERS_0)" />
+							<vaadin7-check-box _id="m_selectAllField" caption="%(key.GUI_RESTOREDELETED_SELECT_ALL_0)" :right />
+						</vaadin7-horizontal-layout>
 						<v-panel size-full :expand scrollable="true">					
-							<v-vertical-layout _id="m_deletedResourceContainer" width="100%" margin spacing style-name="o-reduced-spacing" />
+							<vaadin7-vertical-layout _id="m_deletedResourceContainer" width="100%" margin spacing style-name="o-reduced-spacing" />
 						</v-panel>
-					</v-vertical-layout>
+					</vaadin7-vertical-layout>
 			</content>
 			<buttons>
 				<v-button _id="m_okButton">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>

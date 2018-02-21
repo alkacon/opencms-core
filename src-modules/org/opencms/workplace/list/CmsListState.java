@@ -27,8 +27,6 @@
 
 package org.opencms.workplace.list;
 
-import com.google.common.base.Objects;
-
 /**
  * Class for storing the state of a list.<p>
  *
@@ -157,17 +155,4 @@ public class CmsListState {
 
         m_page = page;
     }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        return Objects.toStringHelper(this).add("column", m_column).add("filter", m_filter).add("order", m_order).add(
-            "page",
-            "" + m_page).toString();
-
-    }
-
 }

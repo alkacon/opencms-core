@@ -1,4 +1,6 @@
-@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, mce-opencmsDialog, mce-window, mce-window-head;
+@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, 
+	cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, 
+	mce-opencmsDialog, mce-window, mce-window-head, mce-panel, mce-caret;
 
 /* TinyMCE plugin popup dialog styles, all used classes are external. */
 div.mce-opencmsDialog.mce-window{
@@ -351,9 +353,6 @@ div.inputField>div{
 	bottom:1px;
 	right:2px;
 }
-
-@external .mce-panel;
-@external .mce-caret;
 
 /**  Copied from skin.min.css in the TinyMCE editor and increased specificity. */ 
 .mce-panel.mce-panel { 

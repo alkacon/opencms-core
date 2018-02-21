@@ -658,7 +658,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the gallery dialog CSS
      */
-    @Source("croppingDialog.css")
+    @Source("croppingDialog.gss")
     I_CmsCroppingDialogCss croppingDialogCss();
 
     /**
@@ -666,7 +666,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the gallery dialog CSS
      */
-    @Source("gallerydialog.css")
+    @Source("gallerydialog.gss")
     I_CmsGalleryDialogCss galleryDialogCss();
 
     /**
@@ -674,7 +674,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the gallery field CSS
      */
-    @Source("galleryField.css")
+    @Source("galleryField.gss")
     I_CmsGalleryFieldCss galleryFieldCss();
 
     /**
@@ -682,7 +682,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the gallery result item CSS
      */
-    @Source("galleryResultItem.css")
+    @Source("galleryResultItem.gss")
     I_CmsGalleryResultItemCss galleryResultItemCss();
 
     /**
@@ -691,7 +691,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      * @return the image advanced form CSS
      */
     @Import(value = {org.opencms.gwt.client.ui.css.I_CmsInputCss.class})
-    @Source("imageAdvancedForm.css")
+    @Source("imageAdvancedForm.gss")
     I_CmsImageAdvancedFormCss imageAdvancedFormCss();
 
     /**
@@ -700,7 +700,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      * @return the image editor form CSS
      */
     @Import(value = {org.opencms.gwt.client.ui.css.I_CmsInputCss.class})
-    @Source("imageEditorForm.css")
+    @Source("imageEditorForm.gss")
     I_CmsImageEditorFormCss imageEditorFormCss();
 
     /**
@@ -708,7 +708,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the gallery dialog CSS
      */
-    @Source("previewdialog.css")
+    @Source("previewdialog.gss")
     I_CmsPreviewDialogCss previewDialogCss();
 
 }

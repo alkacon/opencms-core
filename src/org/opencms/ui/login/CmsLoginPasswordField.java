@@ -27,7 +27,7 @@
 
 package org.opencms.ui.login;
 
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Password field for the login dialog.<p>

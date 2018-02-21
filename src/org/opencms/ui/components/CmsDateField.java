@@ -30,8 +30,8 @@ package org.opencms.ui.components;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.Messages;
 
-import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.PopupDateField;
+import com.vaadin.v7.shared.ui.datefield.Resolution;
+import com.vaadin.v7.ui.PopupDateField;
 
 /**
  * Convenience subclass of PopupDateField which comes preconfigured with a resolution and validation error message.<p>

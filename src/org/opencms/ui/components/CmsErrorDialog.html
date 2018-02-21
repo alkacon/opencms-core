@@ -6,18 +6,18 @@
 	<body>
 		<o-cms-basic-dialog>
   			<content>
-  				<v-vertical-layout width="100%" _id="m_main" style-name="o-error-dialog">
-  					<v-horizontal-layout height="70px" width="100%">
-						<v-label width="60px" _id="m_icon" style-name="o-error-icon" :middle />
-						<v-label _id="m_errorMessage" :expand style-name="o-error-message" :middle/>
-					</v-horizontal-layout>
+  				<vaadin7-vertical-layout width="100%" _id="m_main" style-name="o-error-dialog">
+  					<vaadin7-horizontal-layout height="70px" width="100%">
+						<vaadin7-label width="60px" _id="m_icon" style-name="o-error-icon" :middle />
+						<vaadin7-label _id="m_errorMessage" :expand style-name="o-error-message" :middle/>
+					</vaadin7-horizontal-layout>
 					<v-css-layout _id="m_details" size-full :expand style-name="o-error-details">
 						<v-panel scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)">
-							<v-label _id="m_errorLabel" width="-1px" style-name="o-stacktrace-container" />
+							<vaadin7-label _id="m_errorLabel" width="-1px" style-name="o-stacktrace-container" />
 		  				</v-panel>
 		  			</v-css-layout>
-		  			<v-label _id="m_hiddenStack" height="0px" primary-style-name="o-hidden" />
-		  		</v-vertical-layout>
+		  			<vaadin7-label _id="m_hiddenStack" height="0px" primary-style-name="o-hidden" />
+		  		</vaadin7-vertical-layout>
 			</content>
 			<buttons>
 				<o-cms-copy-to-clipboard-button _id="m_copyText" :left description="%(key.GUI_COPY_TO_CLIPBOARD_DESCRIPTION_0)">%(key.GUI_COPY_TO_CLIPBOARD_0)</o-cms-copy-to-clipboard-button>

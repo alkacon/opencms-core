@@ -46,14 +46,14 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.ErrorMessage.ErrorLevel;
 import com.vaadin.server.UserError;
+import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.util.IndexedContainer;
 
 /**
  * A widget for selecting a module resource.<p>
@@ -70,6 +70,7 @@ public class CmsModuleResourceSelectField extends CmsPathSelectField {
      * Creates a new instance.<p>
      */
     public CmsModuleResourceSelectField() {
+
         addValueChangeListener(new ValueChangeListener() {
 
             /** Serial version id. */

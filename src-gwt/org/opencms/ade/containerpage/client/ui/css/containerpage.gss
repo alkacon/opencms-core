@@ -81,7 +81,6 @@ div.expired{
 div.expiredListElementOverlay{
 	background-image: value("constants.css.gradientInvalid");
 	box-sizing: border-box;
-	box-sizing: border-box;
 	padding: 0px;
 	margin: 0px;
 	position: absolute;
@@ -201,7 +200,7 @@ div.groupcontainerPlaceholder{
 	opacity: 1;
 }
 
-@eval enlargedMinHeight org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.getNecessaryHeight();
+@def enlargedMinHeight eval("org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.getNecessaryHeight()");
 
 .enlargeSmallElements .smallElement {
 	min-height: enlargedMinHeight; 

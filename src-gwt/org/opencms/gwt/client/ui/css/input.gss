@@ -171,7 +171,7 @@ div.textArea.textAreaGhostMode textarea {
 }
 .cmsState.cmsState-up-disabled .checkBoxImage, .cmsState-down-disabled .checkBoxImage,
 .cmsState.cmsState-up-disabled .radioButtonImage, .cmsState-down-disabled .radioButtonImage, .triState .triStateMedium  {
-	background-color: value("constants.css.backgroundColorDisabled")";
+	background-color: value("constants.css.backgroundColorDisabled");
 	border-color: value("constants.css.borderColor");
 }
 
@@ -183,7 +183,7 @@ div.textArea.textAreaGhostMode textarea {
 }
 
 .cmsState.cmsState-down-disabled .checkBoxImage:before, .cmsState.cmsState-down-disabled .radioButtonImage:before {
-	color: value("constants.css.textColorDisabled")";
+	color: value("constants.css.textColorDisabled");
 }
 
 .cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before,.checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before {
@@ -542,10 +542,10 @@ div.formRow {
 	min-height: value("constants.css.inputHeight");
 }
 
-@eval formLabelWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth();
-@eval openerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth();
-@eval widgetContainerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth();
-@eval widgetContainerMargin org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin();  
+@def formLabelWidth eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth()");
+@def openerWidth eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth()");
+@def widgetContainerWidth eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth()");
+@def widgetContainerMargin eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin()");  
 
 div.formOpener {
 	width: openerWidth;

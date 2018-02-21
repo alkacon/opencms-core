@@ -31,7 +31,7 @@ import java.util.Locale;
 
 import org.restlet.engine.util.StringUtils;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 /**
  * Converts null values to an empty string for the input widgets.<p>
@@ -45,7 +45,7 @@ public class CmsNullToEmptyConverter implements Converter<String, String> {
      * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
      */
     public String convertToModel(String value, Class<? extends String> targetType, Locale locale)
-    throws com.vaadin.data.util.converter.Converter.ConversionException {
+    throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 
         return value;
     }
@@ -54,7 +54,7 @@ public class CmsNullToEmptyConverter implements Converter<String, String> {
      * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
      */
     public String convertToPresentation(String value, Class<? extends String> targetType, Locale locale)
-    throws com.vaadin.data.util.converter.Converter.ConversionException {
+    throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 
         return StringUtils.nullToEmpty(value);
     }

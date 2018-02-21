@@ -58,6 +58,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the button CSS
      */
-    @Source("button.css")
+    @Source("button.gss")
     I_CmsButtonCss buttonCss();
 }

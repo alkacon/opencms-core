@@ -27,8 +27,7 @@
   
 }
 
-@sprite .cellTableFooter {
-  gwt-image: 'cellTableFooterBackground' !important ;
+.cellTableFooter {
   background-color: #b4d0f8 !important ;
   border-top: 1px solid #88b0f2 !important ;
   border-left: 1px solid #88b0f2 !important ;
@@ -40,8 +39,7 @@
   overflow: hidden !important ;
 }
 
-@sprite .cellTableHeader {
-  gwt-image: 'cellTableHeaderBackground' !important ;
+.cellTableHeader {
   background-color: #b4d0f8 !important ;
   border-bottom: 1px solid #88b0f2 !important ;
   border-left: 1px solid #88b0f2 !important ;
@@ -136,8 +134,7 @@
   
 }
 
-@sprite .cellTableSelectedRow {
-  gwt-image: 'cellTableSelectedBackground' !important ;
+.cellTableSelectedRow {
   background-color: #628cd5 !important ;
   color: white !important ;
   height: auto !important ;

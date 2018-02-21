@@ -51,12 +51,13 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
      * Creates a new instance.<p>
      */
     public CmsPathSelectField() {
+
         m_textField.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
 
             @SuppressWarnings("synthetic-access")
-            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+            public void valueChange(com.vaadin.v7.data.Property.ValueChangeEvent event) {
 
                 String value = (String)(event.getProperty().getValue());
                 if (!m_settingInternalValue) {

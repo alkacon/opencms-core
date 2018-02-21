@@ -85,6 +85,7 @@ public class CmsClientEditableGroupButtons extends Composite {
      * @param connector the connector for which the widget should be created
      */
     public CmsClientEditableGroupButtons(CmsEditableGroupButtonsConnector connector) {
+
         FlowPanel panel = uiBinder.createAndBindUi(this);
         if (!flushedStyle) {
             StyleInjector.flush(); // make sure UiBinder CSS is loaded synchronously, otherwise Vaadin width calculation will go wrong

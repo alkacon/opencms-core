@@ -52,10 +52,10 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.UserError;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Handles inline editing within the file table.<p>

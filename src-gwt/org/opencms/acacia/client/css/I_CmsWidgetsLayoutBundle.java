@@ -180,7 +180,7 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
      *
      * @return the gallery widgets CSS
      */
-    @Source("galleryWidgets.css")
+    @Source("galleryWidgets.gss")
     I_CmsGalleryWidgetsCss galleryWidgetsCss();
 
     /**
@@ -188,6 +188,6 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
      *
      * @return the XML content widget CSS
      */
-    @Source("widget.css")
+    @Source("widget.gss")
     I_CmsWidgetCss widgetCss();
 }

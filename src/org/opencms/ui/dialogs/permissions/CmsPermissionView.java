@@ -44,21 +44,21 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.DefaultFieldFactory;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.TableFieldFactory;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Displays the permission settings for a single principal.<p>
@@ -124,7 +124,7 @@ public class CmsPermissionView extends CssLayout {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.v7.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
          */
         @Override
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
@@ -193,6 +193,7 @@ public class CmsPermissionView extends CssLayout {
         boolean isFolder,
         String inheritedFrom,
         PermissionChangeHandler changeHandler) {
+
         m_changeHandler = changeHandler;
         m_editable = editable;
         m_entry = entry;

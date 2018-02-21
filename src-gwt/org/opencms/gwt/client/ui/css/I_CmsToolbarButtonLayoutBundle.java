@@ -77,6 +77,6 @@ public interface I_CmsToolbarButtonLayoutBundle extends ClientBundle {
      *
      * @return the button CSS
      */
-    @Source("toolbarButton.css")
+    @Source("toolbarButton.gss")
     I_CmsToolbarButtonCss toolbarButtonCss();
 }

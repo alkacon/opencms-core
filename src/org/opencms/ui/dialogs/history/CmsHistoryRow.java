@@ -40,7 +40,7 @@ import java.util.Date;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
+import com.vaadin.v7.ui.CheckBox;
 
 /**
  * Represents a row of the file history table.<p>

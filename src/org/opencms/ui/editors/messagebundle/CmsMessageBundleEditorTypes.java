@@ -53,10 +53,6 @@ import org.apache.commons.logging.Log;
 
 import org.tepi.filtertable.FilterTable;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.validator.AbstractStringValidator;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.BlurEvent;
@@ -64,22 +60,25 @@ import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomTable;
-import com.vaadin.ui.CustomTable.CellStyleGenerator;
-import com.vaadin.ui.CustomTable.ColumnGenerator;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.validator.AbstractStringValidator;
+import com.vaadin.v7.ui.AbstractTextField;
+import com.vaadin.v7.ui.DefaultFieldFactory;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.CellStyleGenerator;
+import com.vaadin.v7.ui.TextArea;
+import com.vaadin.v7.ui.TextField;
 
 /** Types and helper classes used by the message bundle editor. */
 public final class CmsMessageBundleEditorTypes {
@@ -190,6 +189,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param lastValue the value in the field when it gets the focus, i.e., before a current edit operation.
          */
         public ComponentData(int editableId, Object itemId, String lastValue) {
+
             m_editableId = editableId;
             m_itemId = itemId;
             m_lastValue = lastValue;
@@ -257,6 +257,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param showOptions flag, indicating if the options column should be shown.
          */
         public EditorState(List<TableProperty> editableColumns, boolean showOptions) {
+
             m_editableColumns = editableColumns;
             m_showOptions = showOptions;
         }
@@ -305,6 +306,7 @@ public final class CmsMessageBundleEditorTypes {
             Object propertyId,
             String oldKey,
             String newKey) {
+
             m_source = source;
             m_itemId = itemId;
             m_propertyId = propertyId;
@@ -413,6 +415,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param itemId the id of the deleted item.
          */
         public ItemDeletionEvent(Object itemId) {
+
             m_itemId = itemId;
         }
 
@@ -435,6 +438,7 @@ public final class CmsMessageBundleEditorTypes {
 
         /** Default constructor. */
         public KeySet() {
+
             m_keyset = new HashMap<Object, Integer>();
         }
 
@@ -524,6 +528,7 @@ public final class CmsMessageBundleEditorTypes {
          * Default constructor.
          */
         public KeyValidator() {
+
             super(Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_INVALID_KEY_0));
 
         }
@@ -544,14 +549,14 @@ public final class CmsMessageBundleEditorTypes {
 
     /** A column generator that additionally adjusts the appearance of the options buttons to selection changes on the table. */
     @SuppressWarnings("serial")
-    static class OptionColumnGenerator implements ColumnGenerator {
+    static class OptionColumnGenerator implements com.vaadin.v7.ui.Table.ColumnGenerator {
 
         /** Map from itemId (row) -> option buttons in the row. */
         Map<Object, Collection<Component>> m_buttons;
         /** The id of the currently selected item (row). */
         Object m_selectedItem;
         /** The table, the column is generated for. */
-        CustomTable m_table;
+        FilterTable m_table;
         /** The key deletion listeners. */
         I_ItemDeletionListener m_listener;
 
@@ -560,7 +565,8 @@ public final class CmsMessageBundleEditorTypes {
          *
          * @param table the table, for which the column is generated for.
          */
-        public OptionColumnGenerator(final CustomTable table) {
+        public OptionColumnGenerator(final FilterTable table) {
+
             m_buttons = new HashMap<Object, Collection<Component>>();
             m_table = table;
             m_table.addValueChangeListener(new Property.ValueChangeListener() {
@@ -573,10 +579,7 @@ public final class CmsMessageBundleEditorTypes {
 
         }
 
-        /**
-         * @see com.vaadin.ui.CustomTable.ColumnGenerator#generateCell(com.vaadin.ui.CustomTable, java.lang.Object, java.lang.Object)
-         */
-        public Object generateCell(final CustomTable source, final Object itemId, final Object columnId) {
+        public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 
             CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
             HorizontalLayout options = new HorizontalLayout();
@@ -672,6 +675,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param table the table, the handler is attached to.
          */
         public TableKeyboardHandler(final FilterTable table) {
+
             m_table = table;
         }
 
@@ -792,6 +796,7 @@ public final class CmsMessageBundleEditorTypes {
          * @param editableColumns the list of editable columns.
          */
         public TranslateTableCellStyleGenerator(List<TableProperty> editableColumns) {
+
             m_editableColums = editableColumns;
             if (null == m_editableColums) {
                 m_editableColums = new ArrayList<TableProperty>();
@@ -801,7 +806,7 @@ public final class CmsMessageBundleEditorTypes {
         /**
          * @see com.vaadin.ui.CustomTable.CellStyleGenerator#getStyle(com.vaadin.ui.CustomTable, java.lang.Object, java.lang.Object)
          */
-        public String getStyle(CustomTable source, Object itemId, Object propertyId) {
+        public String getStyle(Table source, Object itemId, Object propertyId) {
 
             String result = TableProperty.KEY.equals(propertyId) ? "key-" : "";
             result += m_editableColums.contains(propertyId) ? "editable" : "fix";
@@ -819,7 +824,7 @@ public final class CmsMessageBundleEditorTypes {
         /** The editable columns. */
         private final List<TableProperty> m_editableColumns;
         /** Reference to the table, the factory is used for. */
-        final CustomTable m_table;
+        final FilterTable m_table;
         /** Registered key change listeners. */
         private final Set<I_EntryChangeListener> m_keyChangeListeners = new HashSet<I_EntryChangeListener>();
 
@@ -828,7 +833,8 @@ public final class CmsMessageBundleEditorTypes {
          * @param table The table, the factory is used for.
          * @param editableColumns the property names of the editable columns of the table.
          */
-        public TranslateTableFieldFactory(CustomTable table, List<TableProperty> editableColumns) {
+        public TranslateTableFieldFactory(FilterTable table, List<TableProperty> editableColumns) {
+
             m_table = table;
             m_valueFields = new HashMap<Integer, Map<Integer, AbstractTextField>>();
             m_editableColumns = editableColumns;

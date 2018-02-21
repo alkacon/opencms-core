@@ -28,7 +28,7 @@
 package org.opencms.ui.components.editablegroup;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.v7.ui.HorizontalLayout;
 
 /**
  * Row for multivalue field lists.<p>

@@ -48,15 +48,15 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
 
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.ui.AbstractField;
+import com.vaadin.v7.data.Validator.InvalidValueException;
+import com.vaadin.v7.data.validator.EmailValidator;
+import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.TextField;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Dialog to request a password reset link if you forgot your passsword.<p>

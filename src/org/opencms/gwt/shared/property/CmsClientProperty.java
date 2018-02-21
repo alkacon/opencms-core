@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -49,8 +48,10 @@ public class CmsClientProperty implements IsSerializable {
      */
     public enum Mode {
         /** The effective value. */
-        effective, /** The resource value. */
-        resource, /** The structure value. */
+        effective,
+        /** The resource value. */
+        resource,
+        /** The structure value. */
         structure;
     }
 
@@ -372,18 +373,6 @@ public class CmsClientProperty implements IsSerializable {
     public void setStructureValue(String structureValue) {
 
         m_structureValue = structureValue;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        return Objects.toStringHelper(this).add("name", m_name).add("structureValue", m_structureValue).add(
-            "resourceValue",
-            m_resourceValue).toString();
-
     }
 
     /**

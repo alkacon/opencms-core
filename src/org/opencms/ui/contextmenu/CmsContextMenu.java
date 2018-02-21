@@ -23,14 +23,14 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-import com.vaadin.event.ItemClickEvent;
+import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Tree;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.util.ReflectTools;
 

@@ -56,7 +56,7 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
      *
      * @return the css resource
      */
-    @Source("input.css")
+    @Source("input.gss")
     @Import(value = {I_CmsFieldsetCss.class, I_CmsPropertiesCss.class, I_CmsButtonCss.class})
     I_CmsInputCss inputCss();
 }
