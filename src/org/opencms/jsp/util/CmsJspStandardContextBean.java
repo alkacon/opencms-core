@@ -498,7 +498,10 @@ public final class CmsJspStandardContextBean {
             } else {
                 exists = m_transformElement.getSettings().get(settingName) != null;
             }
-            return new CmsJspElementSettingValueWrapper(CmsJspStandardContextBean.this, m_transformElement.getSettings().get(settingName), exists);
+            return new CmsJspElementSettingValueWrapper(
+                CmsJspStandardContextBean.this,
+                m_transformElement.getSettings().get(settingName),
+                exists);
         }
     }
 
@@ -1777,30 +1780,34 @@ public final class CmsJspStandardContextBean {
             // use the current container
             container = getContainer();
         }
-        String containerName = container.getName();
-        Map<String, String> settings = element.getSettings();
-        if (settings != null) {
-            String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
-            if (CmsUUID.isValidUUID(formatterConfigId)) {
-                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                    new CmsUUID(formatterConfigId));
-            }
-        }
-        if (formatter == null) {
-            try {
-                CmsResource resource = m_cms.readResource(m_cms.getRequestContext().getUri());
-
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, resource.getRootPath());
-                CmsFormatterConfiguration formatters = config.getFormatters(m_cms, resource);
-                int width = -2;
-                try {
-                    width = Integer.parseInt(container.getWidth());
-                } catch (Exception e) {
-                    LOG.debug(e.getLocalizedMessage(), e);
+        if (container != null) {
+            String containerName = container.getName();
+            Map<String, String> settings = element.getSettings();
+            if (settings != null) {
+                String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+                if (CmsUUID.isValidUUID(formatterConfigId)) {
+                    formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                        new CmsUUID(formatterConfigId));
                 }
-                formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
-            } catch (CmsException e1) {
-                LOG.error(e1.getLocalizedMessage(), e1);
+            }
+            if (formatter == null) {
+                try {
+                    CmsResource resource = m_cms.readResource(m_cms.getRequestContext().getUri());
+
+                    CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                        m_cms,
+                        resource.getRootPath());
+                    CmsFormatterConfiguration formatters = config.getFormatters(m_cms, resource);
+                    int width = -2;
+                    try {
+                        width = Integer.parseInt(container.getWidth());
+                    } catch (Exception e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                    formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
+                } catch (CmsException e1) {
+                    LOG.error(e1.getLocalizedMessage(), e1);
+                }
             }
         }
         return formatter;
