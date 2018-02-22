@@ -1174,8 +1174,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 A_CmsUI.get().addWindow(windowDialog);
             }
         });
-
-        m_tab.setHeight("400px");
     }
 
     /**
