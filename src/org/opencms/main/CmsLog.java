@@ -114,7 +114,7 @@ public final class CmsLog {
                         System.setProperty("opencms.logfolder", m_logFileRfsFolder);
                         // re-read the configuration with the new environment variable available
                         ConfigurationSource source = ConfigurationSource.fromUri(
-                            Loader.getResource("/log4j2.xml", null).toURI());
+                            Loader.getResource("log4j2.xml", null).toURI());
                         Configurator.initialize(null, source);
                     }
                 }
