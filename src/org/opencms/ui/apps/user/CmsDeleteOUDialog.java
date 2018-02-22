@@ -39,6 +39,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -95,6 +96,7 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
      * @param window window showing dialog
      */
     public CmsDeleteOUDialog(CmsObject cms, String ouName, Window window) {
+
         m_ouName = ouName;
         init(cms, window);
         m_dependencyPanel.setVisible(false);
@@ -138,6 +140,14 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
     private void init(CmsObject cms, final Window window) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        try {
+            displayResourceInfoDirectly(
+                Collections.singletonList(
+                    CmsAccountsApp.getOUInfo(
+                        OpenCms.getOrgUnitManager().readOrganizationalUnit(A_CmsUI.getCmsObject(), m_ouName))));
+        } catch (CmsException e) {
+            LOG.error("Unable to read OU", e);
+        }
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontOpenCms.WARNING.getHtml());
         m_cms = cms;

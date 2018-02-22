@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
@@ -283,6 +284,26 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_ouTree = new CmsOuTree(m_cms, this, m_baseOU);
         m_splitScreen.setFirstComponent(m_ouTree);
 
+    }
+
+    /**
+     * Creates info panel for OUs.<p>
+     *
+     *
+     * @param ou to get panel for
+     * @return CmsResourceInfo
+     */
+    public static CmsResourceInfo getOUInfo(CmsOrganizationalUnit ou) {
+
+        String style = OpenCmsTheme.ICON_OU;
+        if (ou.hasFlagWebuser()) {
+            style = OpenCmsTheme.ICON_OU_WEB;
+        }
+        CmsCssIcon image = new CmsCssIcon(style);
+        return new CmsResourceInfo(
+            ou.getDisplayName(A_CmsUI.get().getLocale()),
+            ou.getDescription(A_CmsUI.get().getLocale()),
+            image);
     }
 
     /**

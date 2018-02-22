@@ -31,12 +31,15 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
+
+import java.util.Collections;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -91,11 +94,17 @@ public class CmsNewElementDialog extends CmsBasicDialog {
      * @param window window holding the dialog
      */
     public CmsNewElementDialog(CmsObject cms, String ou, final Window window) {
+
         m_window = window;
         m_cms = cms;
         m_ou = ou;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
         try {
+            displayResourceInfoDirectly(
+                Collections.singletonList(
+                    CmsAccountsApp.getOUInfo(
+                        OpenCms.getOrgUnitManager().readOrganizationalUnit(A_CmsUI.getCmsObject(), ou))));
             m_ouLabel.setValue(
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou).getDisplayName(
                     m_cms.getRequestContext().getLocale()));

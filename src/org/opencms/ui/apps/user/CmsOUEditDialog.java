@@ -45,6 +45,7 @@ import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsFileUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -169,7 +170,20 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      * @param window window holding the dialog
      */
     public CmsOUEditDialog(CmsObject cms, String ou, final Window window) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        if (ou != null) {
+            try {
+                displayResourceInfoDirectly(
+                    Collections.singletonList(
+                        CmsAccountsApp.getOUInfo(
+                            OpenCms.getOrgUnitManager().readOrganizationalUnit(A_CmsUI.getCmsObject(), ou))));
+            } catch (CmsException e1) {
+                LOG.error("Unable to read OU", e1);
+            }
+        }
+
         m_cms = cms;
         Supplier<Component> fieldFactory = new Supplier<Component>() {
 
@@ -266,8 +280,20 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      * @param ou to create group in
      */
     public CmsOUEditDialog(CmsObject cms, Window window, String ou) {
+
         this(cms, null, window);
         m_parentOu.setValue(ou.equals("") ? "/" : ou);
+        try {
+            displayResourceInfoDirectly(
+                Collections.singletonList(
+                    CmsAccountsApp.getOUInfo(
+                        OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                            A_CmsUI.getCmsObject(),
+                            m_parentOu.getValue()))));
+        } catch (CmsException e1) {
+            LOG.error("Unable to read OU", e1);
+        }
+
         CmsPathSelectField field = new CmsPathSelectField();
         field.setUseRootPaths(true);
         field.setCmsObject(m_cms);
