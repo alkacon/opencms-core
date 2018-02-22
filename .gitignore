@@ -23,6 +23,7 @@
 /gwt-unitCache
 /xbuild.properties
 /hostedmode-war
+/war
 /.gradle
 **/.gradle
 Thumbs.db
