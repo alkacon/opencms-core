@@ -92,6 +92,33 @@ public class TestJSONSearchConfigurationParser {
     }
 
     /**
+     * Test if parsing multiple page sizes as hyphen separated string works.
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    @Test
+    public void testParseMultiplePageSizes() throws IOException, URISyntaxException {
+
+        String configString = new String(
+            Files.readAllBytes(Paths.get(getClass().getResource("multiplePageSizes.json").toURI())));
+        try {
+            CmsSearchConfiguration config = new CmsSearchConfiguration(
+                new CmsJSONSearchConfigurationParser(configString));
+            List<Integer> pageSizes = new ArrayList<>(2);
+            pageSizes.add(Integer.valueOf(5));
+            pageSizes.add(Integer.valueOf(8));
+            I_CmsSearchConfigurationPagination expected = new CmsSearchConfigurationPagination(
+                CmsJSONSearchConfigurationParser.DEFAULT_PAGE_PARAM,
+                pageSizes,
+                CmsJSONSearchConfigurationParser.DEFAULT_PAGENAVLENGTH);
+            ConfigurationTester.testPaginationConfiguration(expected, config.getPaginationConfig());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
      * Checks if the configuration matches the expectation.
      *
      * @param config the actual configuration.

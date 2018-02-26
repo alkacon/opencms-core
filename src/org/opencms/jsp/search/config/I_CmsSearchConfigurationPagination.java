@@ -27,8 +27,19 @@
 
 package org.opencms.jsp.search.config;
 
+import org.opencms.jsp.search.controller.I_CmsSearchControllerPagination;
+
+import java.util.List;
+
 /** The interface a pagination configuration must implement. */
 public interface I_CmsSearchConfigurationPagination {
+
+    /**
+     * Calculates the number of pages for the provided number of results.
+     * @param numFound the number of results
+     * @return the number of result pages for the provided number of results.
+     */
+    int getNumPages(long numFound);
 
     /** Returns the length of a "Google"-like navigation. Should typically be an odd number.
      * @return The length of a "Google"-like navigation.
@@ -40,9 +51,39 @@ public interface I_CmsSearchConfigurationPagination {
      */
     String getPageParam();
 
-    /** Returns the page size.
-     * @return The page size.
+    /** Returns the page size of pages that have not explicitely a size set.
+     *
+     * That means, if you specify the sizes [5,8], meaning the first page should have 5 entries, all others 8,
+     * the size 8 is returned by the method.
+     *
+     * To get the size of a specific page use {@link I_CmsSearchConfigurationPagination#getSizeOfPage(int)}.
+     *
+     * @return The page size of pages that have not explicitely a size set.
+     *
+     * @deprecated use either {@link I_CmsSearchConfigurationPagination#getSizeOfPage(int)} to get the size
+     * for a specific page or {@link I_CmsSearchControllerPagination#getCurrentPageSize()} to get the size
+     * of the current page.
      */
+    @Deprecated
     int getPageSize();
+
+    /** Returns the page sizes as configured for the first pages of the search.
+     * The last provided size is the size of all following pages.
+     * @return the configured page sizes for the first pages.
+     */
+    List<Integer> getPageSizes();
+
+    /** Returns the page size for the provided page.
+     * @param pageNum the number of the page (starting with 1) for which the size should be returned.
+     * @return The page size for the provided page.
+     */
+    int getSizeOfPage(int pageNum);
+
+    /**
+     * Returns the index of the first item to show on the given page.
+     * @param pageNum the number of the page, for which the index of the first item to show on is requested.
+     * @return the index of the first item to show on the provided page.
+     */
+    int getStartOfPage(int pageNum);
 
 }

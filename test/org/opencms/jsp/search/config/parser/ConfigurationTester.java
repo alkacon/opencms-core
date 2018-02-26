@@ -196,6 +196,7 @@ public class ConfigurationTester {
 
         assertEquals(expectedConfig.getPageParam(), actualConfig.getPageParam());
         assertEquals(expectedConfig.getPageSize(), actualConfig.getPageSize());
+        assertEquals(expectedConfig.getPageSizes(), actualConfig.getPageSizes());
         assertEquals(expectedConfig.getPageNavLength(), actualConfig.getPageNavLength());
 
     }

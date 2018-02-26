@@ -38,6 +38,17 @@ public interface I_CmsSearchControllerPagination extends I_CmsSearchController {
      */
     I_CmsSearchConfigurationPagination getConfig();
 
+    /** Returns the size of the current page.
+     * @return the size of the current page.
+     */
+    int getCurrentPageSize();
+
+    /**
+     * Returns the first item to show on the current page.
+     * @return the first item to show on the current page.
+     */
+    int getCurrentPageStart();
+
     /** Returns the state.
      * @return The state.
      */

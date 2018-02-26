@@ -70,8 +70,8 @@ public class CmsSearchControllerPagination implements I_CmsSearchControllerPagin
     @Override
     public void addQueryParts(CmsSolrQuery query) {
 
-        query.setRows(Integer.valueOf(m_config.getPageSize()));
-        final int start = (m_state.getCurrentPage() - 1) * m_config.getPageSize();
+        query.setRows(Integer.valueOf(getCurrentPageSize()));
+        final int start = getCurrentPageStart();
         query.setStart(Integer.valueOf(start));
     }
 
@@ -82,6 +82,23 @@ public class CmsSearchControllerPagination implements I_CmsSearchControllerPagin
     public I_CmsSearchConfigurationPagination getConfig() {
 
         return m_config;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerPagination#getCurrentPageSize()
+     */
+    @Override
+    public int getCurrentPageSize() {
+
+        return getConfig().getSizeOfPage(getState().getCurrentPage());
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerPagination#getCurrentPageStart()
+     */
+    public int getCurrentPageStart() {
+
+        return m_config.getStartOfPage(m_state.getCurrentPage());
     }
 
     /**

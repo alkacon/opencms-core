@@ -55,6 +55,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -214,7 +215,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** Default value. */
     private static final String DEFAULT_PAGE_PARAM = "page";
     /** Default value. */
-    private static final Integer DEFAULT_PAGE_SIZE = Integer.valueOf(10);
+    private static final List<Integer> DEFAULT_PAGE_SIZES = Collections.singletonList(Integer.valueOf(10));
     /** Default value. */
     private static final Integer DEFAULT_PAGENAVLENGTH = Integer.valueOf(5);
 
@@ -345,7 +346,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     @Override
     public I_CmsSearchConfigurationPagination parsePagination() {
 
-        return new CmsSearchConfigurationPagination(getPageParam(), getPageSize(), getPageNavLength());
+        return new CmsSearchConfigurationPagination(getPageParam(), getPageSizes(), getPageNavLength());
     }
 
     /**
@@ -753,14 +754,24 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** Returns the configured page size, or the default page size if it is not configured.
      * @return The configured page size, or the default page size if it is not configured.
      */
-    private Integer getPageSize() {
+    private List<Integer> getPageSizes() {
 
-        final Integer pageSize = parseOptionalIntValue(XML_ELEMENT_PAGESIZE);
-        if (pageSize == null) {
-            return DEFAULT_PAGE_SIZE;
-        } else {
-            return pageSize;
+        final String pageSizes = parseOptionalStringValue(XML_ELEMENT_PAGESIZE);
+        if (pageSizes != null) {
+            String[] pageSizesArray = pageSizes.split("-");
+            if (pageSizesArray.length > 0) {
+                try {
+                    List<Integer> result = new ArrayList<>(pageSizesArray.length);
+                    for (int i = 0; i < pageSizesArray.length; i++) {
+                        result.add(Integer.valueOf(pageSizesArray[i]));
+                    }
+                    return result;
+                } catch (NumberFormatException e) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_PARSING_PAGE_SIZES_FAILED_1, pageSizes), e);
+                }
+            }
         }
+        return DEFAULT_PAGE_SIZES;
     }
 
     /** Returns the optional query modifier.

@@ -27,21 +27,28 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /** Search configuration for pagination. */
 public class CmsSearchConfigurationPagination implements I_CmsSearchConfigurationPagination {
 
-    /** The request parameter used to send the current page number. */
-    private final String m_pageParam;
-    /** The page size. */
-    private final int m_pageSize;
-    /** The length of the "Google"-like page navigation. Should be an odd number. */
-    private final int m_pageNavLength;
-
     /** The default page size. */
-    private static final int DEFAULT_PAGE_SIZE = 10;
-
+    private static final List<Integer> DEFAULT_PAGE_SIZE = Collections.singletonList(Integer.valueOf(10));
     /** The default "Google"-like page navigation length. */
     private static final int DEFAULT_PAGE_NAV_LENGTH = 5;
+    /** The request parameter used to send the current page number. */
+    private final String m_pageParam;
+
+    /** The page sizes for the (i+1)th page. The last provided page size is the size of all following pages. */
+    private final List<Integer> m_pageSizes;
+
+    /** The page size for all pages, where no explicit size is specified. */
+    private final int m_pageSizeAllRemainingPages;
+
+    /** The length of the "Google"-like page navigation. Should be an odd number. */
+    private final int m_pageNavLength;
 
     /** Constructor setting all configuration options for the pagination.
      * @param pageParam The request parameter used to send the current page number.
@@ -54,8 +61,51 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
         final Integer pageNavLength) {
 
         m_pageParam = pageParam;
-        m_pageSize = pageSize == null ? DEFAULT_PAGE_SIZE : pageSize.intValue();
+        m_pageSizes = pageSize == null ? DEFAULT_PAGE_SIZE : Collections.singletonList(pageSize);
+        m_pageSizeAllRemainingPages = (m_pageSizes.get(m_pageSizes.size() - 1)).intValue();
         m_pageNavLength = pageNavLength == null ? DEFAULT_PAGE_NAV_LENGTH : pageNavLength.intValue();
+    }
+
+    /** Constructor setting all configuration options for the pagination.
+     * @param pageParam The request parameter used to send the current page number.
+     * @param pageSizes The page sizes for the first pages. The last provided size is the size of all following pages.
+     * @param pageNavLength The length of the "Google"-like page navigation. Should be an odd number.
+     */
+    public CmsSearchConfigurationPagination(
+        final String pageParam,
+        final List<Integer> pageSizes,
+        final Integer pageNavLength) {
+
+        m_pageParam = pageParam;
+        if ((pageSizes == null) || pageSizes.isEmpty()) {
+            m_pageSizes = DEFAULT_PAGE_SIZE;
+        } else {
+            m_pageSizes = new ArrayList<Integer>();
+            m_pageSizes.addAll(pageSizes);
+        }
+        m_pageSizeAllRemainingPages = (m_pageSizes.get(m_pageSizes.size() - 1)).intValue();
+
+        m_pageNavLength = pageNavLength == null ? DEFAULT_PAGE_NAV_LENGTH : pageNavLength.intValue();
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination#getNumPages(long)
+     */
+    @Override
+    public int getNumPages(long numFound) {
+
+        int result = 1;
+        for (int pageSize : m_pageSizes) {
+            numFound -= pageSize;
+            if (numFound <= 0) {
+                return result;
+            }
+            result++;
+        }
+        // calculation is save, since numFound must be > 0 at that place.
+        result += ((numFound - 1) / m_pageSizeAllRemainingPages);
+        return result;
+
     }
 
     /**
@@ -78,10 +128,70 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination#getPageSize()
+     *
+     * @deprecated see {@link org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination#getPageSize()}
      */
+    @Deprecated
     @Override
     public int getPageSize() {
 
-        return m_pageSize;
+        return m_pageSizeAllRemainingPages;
     }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination#getPageSizes()
+     */
+    @Override
+    public List<Integer> getPageSizes() {
+
+        List<Integer> pageSizes = new ArrayList<>(m_pageSizes.size());
+        for (Integer pageSize : m_pageSizes) {
+            pageSizes.add(new Integer(pageSize.intValue()));
+        }
+        return pageSizes;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination#getSizeOfPage(int)
+     */
+    @Override
+    public int getSizeOfPage(int pageNum) {
+
+        if (pageNum < 1) {
+            throw new IllegalArgumentException(
+                "You try to determine the size of page "
+                    + pageNum
+                    + ". But a valid page number must be greater than 0.");
+        } else if (pageNum <= m_pageSizes.size()) {
+            return m_pageSizes.get(pageNum - 1).intValue();
+        } else {
+            return m_pageSizeAllRemainingPages;
+        }
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination#getStartOfPage(int)
+     */
+    @Override
+    public int getStartOfPage(int pageNum) {
+
+        if (pageNum < 1) {
+            throw new IllegalArgumentException(
+                "The number of the page, you request the index of the first item for must be greater than 0, but is \""
+                    + pageNum
+                    + "\".");
+        }
+        int result = 0;
+        for (int i = 0; i < m_pageSizes.size(); i++) {
+            if (pageNum > 1) {
+                result += m_pageSizes.get(i).intValue();
+                pageNum--;
+            } else {
+                return result;
+            }
+        }
+        result += (pageNum - 1) * m_pageSizeAllRemainingPages;
+        return result;
+    }
+
 }

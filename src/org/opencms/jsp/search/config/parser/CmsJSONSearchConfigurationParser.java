@@ -55,6 +55,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
 import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -215,7 +216,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     public static final String DEFAULT_PAGE_PARAM = "page";
     /** A JSON key. */
-    public static final Integer DEFAULT_PAGE_SIZE = Integer.valueOf(10);
+    public static final List<Integer> DEFAULT_PAGE_SIZES = Collections.singletonList(Integer.valueOf(10));
     /** A JSON key. */
     public static final Integer DEFAULT_PAGENAVLENGTH = Integer.valueOf(5);
 
@@ -460,7 +461,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     @Override
     public I_CmsSearchConfigurationPagination parsePagination() {
 
-        return new CmsSearchConfigurationPagination(getPageParam(), getPageSize(), getPageNavLength());
+        return new CmsSearchConfigurationPagination(getPageParam(), getPageSizes(), getPageNavLength());
     }
 
     /**
@@ -727,21 +728,36 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         }
     }
 
-    /** Returns the configured page size, or the default page size if no core is configured.
-     * @return The configured page size, or the default page size if no core is configured.
+    /** Returns the configured page sizes, or the default page size if no core is configured.
+     * @return The configured page sizes, or the default page size if no core is configured.
      */
-    protected Integer getPageSize() {
+    protected List<Integer> getPageSizes() {
 
         try {
-            return Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE));
+            return Collections.singletonList(Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE)));
         } catch (JSONException e) {
+            List<Integer> result = null;
+            String pageSizesString = null;
+            try {
+                pageSizesString = m_configObject.getString(JSON_KEY_PAGESIZE);
+                String[] pageSizesArray = pageSizesString.split("-");
+                if (pageSizesArray.length > 0) {
+                    result = new ArrayList<>(pageSizesArray.length);
+                    for (int i = 0; i < pageSizesArray.length; i++) {
+                        result.add(Integer.valueOf(pageSizesArray[i]));
+                    }
+                }
+                return result;
+            } catch (NumberFormatException | JSONException e1) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_PARSING_PAGE_SIZES_FAILED_1, pageSizesString), e);
+            }
             if (null == m_baseConfig) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0), e);
                 }
-                return DEFAULT_PAGE_SIZE;
+                return DEFAULT_PAGE_SIZES;
             } else {
-                return Integer.valueOf(m_baseConfig.getPaginationConfig().getPageSize());
+                return m_baseConfig.getPaginationConfig().getPageSizes();
             }
         }
     }

@@ -410,7 +410,7 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
 
         return m_solrResultList == null
         ? 1
-        : (int)((m_solrResultList.getNumFound() - 1) / m_controller.getPagination().getConfig().getPageSize()) + 1;
+        : m_controller.getPagination().getConfig().getNumPages(m_solrResultList.getNumFound());
     }
 
     /**
