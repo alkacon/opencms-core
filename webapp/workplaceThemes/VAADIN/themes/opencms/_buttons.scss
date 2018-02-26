@@ -43,6 +43,7 @@
     margin: 0;
     color: inherit;
     background: transparent;
+    outline: none !important;
     
     &.o-button-pressed{
     	@include valo-menubar-menuitem-checked-style($gray-light);
