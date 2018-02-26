@@ -64,19 +64,20 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.Resource;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.v7.ui.HorizontalLayout;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -94,6 +95,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
          * @param appId the app id
          */
         protected ToolbarContext(String appId) {
+
             super(appId, ContextType.appToolbar, Collections.<CmsResource> emptyList());
         }
 
@@ -168,6 +170,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
      * Constructor.<p>
      */
     public CmsToolBar() {
+
         m_quickLaunchDropDown = createQuickLaunchDropDown();
         m_userDropDown = createUserInfoDropDown();
         m_leftButtons = new VerticalLayout();
@@ -467,7 +470,8 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
             CmsVaadinUtils.getMessageText(
                 Messages.GUI_TOOLBAR_PROJECT_SITE_INFO_2,
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName(),
-                siteName));
+                siteName),
+            ContentMode.HTML);
     }
 
     /**
