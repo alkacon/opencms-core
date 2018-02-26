@@ -613,14 +613,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             int start = query.getStart() != null ? query.getStart().intValue() : 0;
             int end = start + rows;
-            int page = 0;
-            if (rows > 0) {
-                page = Math.round(start / rows) + 1;
-            }
 
             // set the start to '0' and expand the rows before performing the query
             query.setStart(new Integer(0));
-            query.setRows(new Integer((5 * rows * page) + start));
+            query.setRows(new Integer(5 * (rows + start)));
 
             // perform the Solr query and remember the original Solr response
             QueryResponse queryResponse = m_solr.query(query);
@@ -628,13 +624,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             // initialize the counts
             long hitCount = queryResponse.getResults().getNumFound();
-            start = -1;
-            end = -1;
-            if ((rows > 0) && (page > 0) && (hitCount > 0)) {
-                // calculate the final size of the search result
-                start = rows * (page - 1);
-                end = start + rows;
-                // ensure that both i and n are inside the range of foundDocuments.size()
+            if ((rows > 0) && (hitCount > 0)) {
+                // ensure that both start and end are inside the range of foundDocuments.size()
                 start = new Long((start > hitCount) ? hitCount : start).intValue();
                 end = new Long((end > hitCount) ? hitCount : end).intValue();
             } else {
@@ -696,8 +687,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 }
             }
             // the last documents were all secret so let's take the last found docs
+            // TODO: Is this useful? For the last page?
+            // Better way to determine which resources to show in case of page sizes changing?
             if (resourceDocumentList.isEmpty() && (allDocs.size() > 0)) {
-                page = Math.round(allDocs.size() / rows) + 1;
                 int showCount = allDocs.size() % rows;
                 showCount = showCount == 0 ? rows : showCount;
                 start = allDocs.size() - new Long(showCount).intValue();
@@ -826,7 +818,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     start,
                     new Integer(rows),
                     end,
-                    page,
+                    rows > 0 ? (allDocs.size() / rows) + 1 : 0, //page - but matches only in case of equally sized pages and is zero for rows=0 (because this was this way before!?!)
                     visibleHitCount,
                     new Float(maxScore),
                     startTime,
