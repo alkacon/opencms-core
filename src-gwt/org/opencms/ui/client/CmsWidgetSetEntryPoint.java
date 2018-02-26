@@ -31,11 +31,15 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.vaadin.client.ResourceLoader;
 import com.vaadin.client.ResourceLoader.ResourceLoadEvent;
 import com.vaadin.client.ResourceLoader.ResourceLoadListener;
+import com.vaadin.client.WidgetUtil;
 
 /**
  * Entry point class for the OpenCms standard widgetset.<p>
@@ -53,7 +57,10 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
         if (dependencies.length() == 0) {
             return;
         }
-
+        final Set<String> absoluteUris = new HashSet<String>();
+        for (int i = 0; i < dependencies.length(); i++) {
+            absoluteUris.add(WidgetUtil.getAbsoluteUrl(dependencies.get(i)));
+        }
         // Listener that loads the next when one is completed
         ResourceLoadListener resourceLoadListener = new ResourceLoadListener() {
 
@@ -62,13 +69,20 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
 
                 CmsDebugLog.consoleLog(event.getResourceUrl() + " could not be loaded.");
                 // The show must go on
-                onLoad(event);
+                absoluteUris.remove(event.getResourceUrl());
+                if (absoluteUris.isEmpty()) {
+                    callNativeFunction(callback);
+                }
+
             }
 
             @Override
             public void onLoad(ResourceLoadEvent event) {
 
-                callNativeFunction(callback);
+                absoluteUris.remove(event.getResourceUrl());
+                if (absoluteUris.isEmpty()) {
+                    callNativeFunction(callback);
+                }
             }
         };
 
