@@ -40,10 +40,10 @@ import org.opencms.ui.components.CmsDateField;
 import java.util.Calendar;
 import java.util.Collections;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 
 /**
@@ -76,6 +76,7 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
      * Public constructor.<p>
      */
     public CmsImageCacheCleanDialog() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         //Setup icon
@@ -84,7 +85,7 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, -30);
-        m_dateField.setValue(cal.getTime());
+        m_dateField.setDate(cal.getTime());
         m_okButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 8281661241498918564L;
@@ -132,7 +133,7 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
      */
     void flushCache() {
 
-        float age = (System.currentTimeMillis() - m_dateField.getValue().getTime()) / (60f * 60f * 1000f);
+        float age = (System.currentTimeMillis() - m_dateField.getDate().getTime()) / (60f * 60f * 1000f);
         OpenCms.fireCmsEvent(
             new CmsEvent(
                 I_CmsEventListener.EVENT_CLEAR_CACHES,

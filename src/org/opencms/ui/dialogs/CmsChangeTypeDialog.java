@@ -47,15 +47,13 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.FontAwesome;
-
 /**
  * Dialog for changing the resource type.<p>
  */
 public class CmsChangeTypeDialog extends CmsNewDialog {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsChangeTypeDialog.class);
+    static final Log LOG = CmsLog.getLog(CmsChangeTypeDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -69,6 +67,7 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
      */
     public CmsChangeTypeDialog(I_CmsDialogContext context)
     throws CmsException {
+
         super(A_CmsUI.getCmsObject().readParentFolder(context.getResources().get(0).getStructureId()), context);
         displayResourceInfo(context.getResources());
         m_defaultLocationCheckbox.setVisible(false);
@@ -110,7 +109,6 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
 
         return new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.workplace) {
 
-            @SuppressWarnings("synthetic-access")
             @Override
             protected boolean exclude(CmsResourceTypeBean type) {
 
@@ -133,24 +131,6 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
                 }
             }
         };
-    }
-
-    /**
-     * @see org.opencms.ui.dialogs.CmsNewDialog#getActionIconHtml()
-     */
-    @Override
-    protected String getActionIconHtml() {
-
-        return FontAwesome.CHECK.getHtml();
-    }
-
-    /**
-     * @see org.opencms.ui.dialogs.CmsNewDialog#getLabelClass()
-     */
-    @Override
-    protected String getLabelClass() {
-
-        return "o-checkIcon";
     }
 
     /**

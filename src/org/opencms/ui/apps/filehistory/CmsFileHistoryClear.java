@@ -39,15 +39,15 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.v7.ui.AbstractSelect.NewItemHandler;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Panel;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.AbstractSelect.NewItemHandler;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
-import com.vaadin.ui.Panel;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -88,6 +88,7 @@ public class CmsFileHistoryClear extends VerticalLayout {
      * @param app instance of calling app
      */
     public CmsFileHistoryClear(final CmsFileHistoryClearApp app) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         //Setup ui components
@@ -236,7 +237,7 @@ public class CmsFileHistoryClear extends VerticalLayout {
             versionsDeleted = 1;
         }
 
-        long date = m_dateField.getValue() != null ? m_dateField.getValue().getTime() : 0;
+        long date = m_dateField.getValue() != null ? m_dateField.getDate().getTime() : 0;
 
         CmsHistoryClearThread thread = new CmsHistoryClearThread(
             A_CmsUI.getCmsObject(),

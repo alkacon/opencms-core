@@ -30,13 +30,18 @@ package org.opencms.ui.components;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.Messages;
 
-import com.vaadin.v7.shared.ui.datefield.Resolution;
-import com.vaadin.v7.ui.PopupDateField;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
+import com.vaadin.shared.ui.datefield.DateTimeResolution;
+import com.vaadin.ui.DateTimeField;
 
 /**
  * Convenience subclass of PopupDateField which comes preconfigured with a resolution and validation error message.<p>
  */
-public class CmsDateField extends PopupDateField {
+public class CmsDateField extends DateTimeField {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -45,10 +50,56 @@ public class CmsDateField extends PopupDateField {
      * Creates a new instance.<p<
      */
     public CmsDateField() {
+
         super();
-        setResolution(Resolution.MINUTE);
+        setResolution(DateTimeResolution.MINUTE);
         String parseError = Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_INVALID_DATE_FORMAT_0);
         setParseErrorMessage(parseError);
+    }
+
+    /**
+     * Converts a {@link Date} object to a {@link LocalDateTime} object.<p>
+     *
+     * @param date the date
+     *
+     * @return the local date time
+     */
+    public static LocalDateTime dateToLocalDateTime(Date date) {
+
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    }
+
+    /**
+     * Converts a {@link LocalDateTime} object to a {@link Date} object.<p>
+     *
+     * @param local the local date time
+     *
+     * @return the date
+     */
+    public static Date localDateTimeToDate(LocalDateTime local) {
+
+        ZonedDateTime zdt = local.atZone(ZoneId.systemDefault());
+        return Date.from(zdt.toInstant());
+    }
+
+    /**
+     * Convenience method returning the field value converted to date.<p>
+     *
+     * @return the date
+     */
+    public Date getDate() {
+
+        return localDateTimeToDate(getValue());
+    }
+
+    /**
+     * Convenience method to set the LocalDateTime field value to the given date.<p>
+     *
+     * @param date the date to set
+     */
+    public void setDate(Date date) {
+
+        setValue(dateToLocalDateTime(date));
     }
 
 }

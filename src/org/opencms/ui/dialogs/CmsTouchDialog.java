@@ -47,6 +47,7 @@ import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -58,7 +59,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.ui.CheckBox;
 
 /**
  * Dialog used to change resource modification times.<p>
@@ -95,6 +96,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsTouchDialog(I_CmsDialogContext context) {
+
         m_context = context;
         boolean hasFolders = false;
 
@@ -131,7 +133,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
                 submit();
             }
         });
-        m_dateField.setValue(new Date());
+        m_dateField.setValue(LocalDateTime.now());
         displayResourceInfo(m_context.getResources());
         setActionHandler(new CmsOkCancelActionHandler() {
 
@@ -158,7 +160,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
      */
     protected void touchFiles() throws CmsException {
 
-        Date touchDate = m_dateField.getValue();
+        Date touchDate = m_dateField.getDate();
         boolean validDate = touchDate != null;
         long touchTime = touchDate != null ? touchDate.getTime() : 0;
         boolean recursive = m_modifySubresourcesField.getValue().booleanValue();

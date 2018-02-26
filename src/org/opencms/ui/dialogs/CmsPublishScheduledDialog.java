@@ -53,6 +53,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.commons.Messages;
 
 import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -64,44 +65,16 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 
 /**
  * The publish schedule dialog.<p>
  */
 public class CmsPublishScheduledDialog extends CmsBasicDialog {
-
-    /**
-     * Validates the date input.<p>
-     */
-    class DateValidator implements Validator {
-
-        /** The serial version id. */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
-         */
-        public void validate(Object value) throws InvalidValueException {
-
-            Date date = (Date)value;
-            if (date == null) {
-                throw new InvalidValueException(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_SCHEDULED_DATEEMPTY_0));
-            }
-            if (date.getTime() < new Date().getTime()) {
-                throw new InvalidValueException(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_SCHEDULED_DATENOTFUTURE_0));
-            }
-
-        }
-
-    }
 
     /** The serial version id. */
     private static final long serialVersionUID = 7488454443783670970L;
@@ -130,6 +103,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsPublishScheduledDialog(I_CmsDialogContext context) {
+
         m_context = context;
         displayResourceInfo(context.getResources());
         FormLayout form = initForm();
@@ -175,7 +149,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
             }
         });
 
-        m_dateField.addValidator(new DateValidator());
+        m_dateField.setRangeStart(LocalDateTime.now());
 
     }
 
@@ -192,12 +166,12 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
      */
     void submit() {
 
-        if (!m_dateField.isValid()) {
-            return;
-        }
+        //        if (!m_dateField.isValid()) {
+        //            return;
+        //        }
         long current = System.currentTimeMillis();
-        Date dateValue = m_dateField.getValue();
-        long publishTime = m_dateField.getValue().getTime();
+        Date dateValue = m_dateField.getDate();
+        long publishTime = dateValue.getTime();
         if (current > publishTime) {
             m_context.error(
                 new CmsException(Messages.get().container(Messages.ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1, dateValue)));

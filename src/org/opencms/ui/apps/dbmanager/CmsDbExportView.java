@@ -50,19 +50,19 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Panel;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -185,6 +185,7 @@ public class CmsDbExportView extends VerticalLayout {
      * public constructor.<p>
      */
     public CmsDbExportView() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         try {
@@ -466,7 +467,7 @@ public class CmsDbExportView extends VerticalLayout {
         m_exportParams.setRecursive(m_recursive.getValue().booleanValue());
         m_exportParams.setResources(getResources());
         if (m_changedSince.getValue() != null) {
-            m_exportParams.setContentAge(m_changedSince.getValue().getTime());
+            m_exportParams.setContentAge(m_changedSince.getDate().getTime());
         } else {
             m_exportParams.setContentAge(0);
         }

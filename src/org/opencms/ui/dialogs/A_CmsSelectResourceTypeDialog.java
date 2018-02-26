@@ -65,21 +65,20 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.VerticalLayout;
 
 public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
 
@@ -133,6 +132,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
      * @param context the context
      */
     public A_CmsSelectResourceTypeDialog(CmsResource folderResource, I_CmsDialogContext context) {
+
         m_folderResource = folderResource;
         m_dialogContext = context;
 
@@ -309,26 +309,6 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             }
         };
 
-    }
-
-    /**
-     * Gets the HTML for the action buttons the type info boxes.<p>
-     *
-     * @return the HTML for the buttons
-     */
-    protected String getActionIconHtml() {
-
-        return FontAwesome.PLUS.getHtml();
-    }
-
-    /**
-     * Returns the class for the button label.<p>
-     *
-     * @return the CSS class for the button label
-     */
-    protected String getLabelClass() {
-
-        return "o-addIcon";
     }
 
     /**
