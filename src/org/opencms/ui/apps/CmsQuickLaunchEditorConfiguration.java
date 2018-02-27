@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
@@ -40,6 +41,58 @@ import com.vaadin.ui.Component;
  * Editor for the user quick launch configuration.<p>
  */
 public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
+
+    /**
+     * The quick launch editor app.<p>
+     */
+    protected static class QuickLaunchEditorApp extends A_CmsWorkplaceApp implements ViewChangeListener {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 5187855022780289047L;
+
+        /** The editor component. */
+        private CmsQuickLaunchEditor editor;
+
+        /**
+         * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+         */
+        public boolean beforeViewChange(ViewChangeEvent event) {
+
+            editor.saveToUser();
+            return true;
+        }
+
+        /**
+         * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
+         */
+        @Override
+        protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getComponentForState(java.lang.String)
+         */
+        @Override
+        protected Component getComponentForState(String state) {
+
+            if (editor == null) {
+                editor = new CmsQuickLaunchEditor();
+                editor.resetAppIcons();
+            }
+            return editor;
+        }
+
+        /**
+         * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
+         */
+        @Override
+        protected List<NavEntry> getSubNavEntries(String state) {
+
+            return null;
+        }
+    }
 
     /** The app id. */
     public static String APP_ID = "quicklaunch_editor";
@@ -52,28 +105,7 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new A_CmsWorkplaceApp() {
-
-            @Override
-            protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
-
-                return null;
-            }
-
-            @Override
-            protected Component getComponentForState(String state) {
-
-                CmsQuickLaunchEditor editor = new CmsQuickLaunchEditor();
-                editor.initAppIcons();
-                return editor;
-            }
-
-            @Override
-            protected List<NavEntry> getSubNavEntries(String state) {
-
-                return null;
-            }
-        };
+        return new QuickLaunchEditorApp();
     }
 
     /**

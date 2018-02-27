@@ -28,33 +28,28 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.CmsWrappedHorizontalLayout;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.event.Transferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.shared.ui.dnd.EffectAllowed;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.DragAndDropWrapper.WrapperTargetDetails;
-import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.dnd.DragSourceExtension;
+import com.vaadin.ui.dnd.DropTargetExtension;
+import com.vaadin.ui.dnd.event.DropEvent;
+import com.vaadin.ui.dnd.event.DropListener;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -63,9 +58,9 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsQuickLaunchEditor extends VerticalLayout {
 
     /**
-     * The drag and drop handler to add and sort the apps.<p>
+     * The sorting drop listener.<p>
      */
-    private static class ReorderLayoutDropHandler implements DropHandler {
+    protected class LayoutDropListener implements DropListener<CssLayout> {
 
         /** The item height. */
         private static final int ITEM_HEIGHT = 88;
@@ -77,53 +72,44 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
         private static final int LAYOUT_WIDTH = 1158;
 
         /** The serial version id. */
-        private static final long serialVersionUID = 7598829826841275823L;
+        private static final long serialVersionUID = 8420945711551716630L;
 
         /** The drag target ordered layout. */
-        private AbstractOrderedLayout m_layout;
-
-        /** Flag indicating that the layout is only sorted vertically. */
-        private boolean m_verticalOnly;
+        private CssLayout m_layout;
 
         /**
          * Constructor.<p>
          *
-         * @param layout the drag target layout
-         * @param verticalOnly <code>true</code> to only sort vertically
+         * @param layout the drop target layout
          */
-        public ReorderLayoutDropHandler(AbstractOrderedLayout layout, boolean verticalOnly) {
+        protected LayoutDropListener(CssLayout layout) {
+
             m_layout = layout;
-            m_verticalOnly = verticalOnly;
         }
 
         /**
-         * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
+         * @see com.vaadin.ui.dnd.event.DropListener#drop(com.vaadin.ui.dnd.event.DropEvent)
          */
-        @Override
-        public void drop(final DragAndDropEvent dropEvent) {
+        public void drop(DropEvent<CssLayout> event) {
 
-            WrapperTargetDetails targetDetails = (WrapperTargetDetails)dropEvent.getTargetDetails();
-            Transferable transferable = dropEvent.getTransferable();
-            Component sourceComponent = transferable.getSourceComponent();
-            int top = targetDetails.getMouseEvent().getClientY() - targetDetails.getAbsoluteTop().intValue();
-
-            // calculate the target index using the known components dimensions
-            int index;
-            if (m_verticalOnly) {
-                index = top / ITEM_HEIGHT;
-                if (((index * ITEM_HEIGHT) + (ITEM_HEIGHT / 2)) < top) {
-                    index++;
-                }
-            } else {
-                int columnCount = LAYOUT_WIDTH / ITEM_WIDTH;
-                int left = targetDetails.getMouseEvent().getClientX() - targetDetails.getAbsoluteLeft().intValue();
-                int column = left / ITEM_WIDTH;
-                int row = top / ITEM_HEIGHT;
-                index = (row * columnCount) + column;
-                if (((column * ITEM_WIDTH) + (ITEM_WIDTH / 2)) < left) {
-                    index++;
-                }
+            // depending on the browser window width, different margins and paddings apply
+            int layoutWidth = LAYOUT_WIDTH;
+            int windowWidth = UI.getCurrent().getPage().getBrowserWindowWidth();
+            if (windowWidth <= 983) {
+                layoutWidth = windowWidth - 22;
+            } else if (windowWidth <= 1220) {
+                layoutWidth = windowWidth - 62;
             }
+            int top = event.getMouseEventDetails().getRelativeY();
+            int left = event.getMouseEventDetails().getRelativeX();
+            int columnCount = layoutWidth / ITEM_WIDTH;
+            int column = left / ITEM_WIDTH;
+            int row = top / ITEM_HEIGHT;
+            int index = (row * columnCount) + column;
+            if (((column * ITEM_WIDTH) + (ITEM_WIDTH / 2)) < left) {
+                index++;
+            }
+            Component sourceComponent = event.getDragSourceComponent().get();
             int currentIndex = m_layout.getComponentIndex(sourceComponent);
             if ((currentIndex != -1) && (currentIndex < index)) {
                 index--;
@@ -141,97 +127,41 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
             }
             m_layout.addComponent(sourceComponent, index);
         }
-
-        /**
-         * @see com.vaadin.event.dd.DropHandler#getAcceptCriterion()
-         */
-        @Override
-        public AcceptCriterion getAcceptCriterion() {
-
-            return AcceptAll.get();
-        }
-    }
-
-    /**
-     * The draggable wrapper.<p>
-     */
-    private static class WrappedDraggableComponent extends DragAndDropWrapper {
-
-        /** The serial version id. */
-        private static final long serialVersionUID = 5204771630321411021L;
-
-        /** The item id. */
-        private String m_id;
-
-        /**
-         * Constructor.<p>
-         *
-         * @param content the component to wrap
-         * @param id the item id
-         */
-        public WrappedDraggableComponent(Component content, String id) {
-            super(content);
-            m_id = id;
-            setDragStartMode(DragStartMode.WRAPPER);
-            setWidth("166px");
-        }
-
-        /**
-         * Returns the item id.<p>
-         *
-         * @return the item id
-         */
-        public String getItemId() {
-
-            return m_id;
-        }
     }
 
     /** The serial version id. */
     private static final long serialVersionUID = -6608352673763873030L;
 
     /** The available apps drop target wrapper. */
-    private CmsWrappedHorizontalLayout m_availableApps;
+    private CssLayout m_availableApps;
 
     /** The cancel button. */
-    private Button m_cancel;
-
-    /** The save button. */
-    private Button m_save;
+    private Button m_reset;
 
     /** The standard apps layout. */
-    private HorizontalLayout m_standardApps;
+    private CssLayout m_standardApps;
 
     /** The user apps drop target wrapper. */
-    private CmsWrappedHorizontalLayout m_userApps;
+    private CssLayout m_userApps;
 
     /**
      * Constructor.<p>
      */
     public CmsQuickLaunchEditor() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_userApps.setDropHandler(new ReorderLayoutDropHandler(m_userApps.getWrappedLayout(), false));
-        m_userApps.getWrappedLayout().setMargin(true);
-        m_userApps.getWrappedLayout().addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-        m_availableApps.setDropHandler(new ReorderLayoutDropHandler(m_availableApps.getWrappedLayout(), false));
-        m_availableApps.getWrappedLayout().setMargin(true);
-        m_availableApps.getWrappedLayout().addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-        m_save.addClickListener(new ClickListener() {
+        DropTargetExtension<CssLayout> userDrop = new DropTargetExtension<>(m_userApps);
+        userDrop.addDropListener(new LayoutDropListener(m_userApps));
+        m_userApps.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+        DropTargetExtension<CssLayout> availablesDrop = new DropTargetExtension<>(m_availableApps);
+        availablesDrop.addDropListener(new LayoutDropListener(m_availableApps));
+        m_reset.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
             public void buttonClick(ClickEvent event) {
 
-                saveToUser();
-            }
-        });
-        m_cancel.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                close();
+                resetAppIcons();
             }
         });
     }
@@ -239,10 +169,13 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
     /**
      * Initializes the app icon items.<p>
      */
-    protected void initAppIcons() {
+    protected void resetAppIcons() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         Locale locale = UI.getCurrent().getLocale();
+        m_standardApps.removeAllComponents();
+        m_userApps.removeAllComponents();
+        m_availableApps.removeAllComponents();
         Collection<I_CmsWorkplaceAppConfiguration> allApps = OpenCms.getWorkplaceAppManager().getWorkplaceApps();
         Collection<I_CmsWorkplaceAppConfiguration> standardApps = OpenCms.getWorkplaceAppManager().getDefaultQuickLaunchConfigurations();
         Collection<I_CmsWorkplaceAppConfiguration> userApps = OpenCms.getWorkplaceAppManager().getUserQuickLauchConfigurations(
@@ -258,7 +191,12 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
             CmsAppVisibilityStatus visibility = config.getVisibility(cms);
             if (visibility.isVisible() && visibility.isActive()) {
                 Button button = CmsDefaultAppButtonProvider.createAppIconButton(config, locale);
-                m_userApps.getWrappedLayout().addComponent(new WrappedDraggableComponent(button, config.getId()));
+                //    button.setWidth("166px");
+                DragSourceExtension<Button> extButton = new DragSourceExtension<>(button);
+                button.setData(config.getId());
+                extButton.setDataTransferText(config.getId());
+                extButton.setEffectAllowed(EffectAllowed.MOVE);
+                m_userApps.addComponent(button);
             }
         }
         for (I_CmsWorkplaceAppConfiguration config : allApps) {
@@ -268,17 +206,14 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
                 && visibility.isVisible()
                 && visibility.isActive()) {
                 Button button = CmsDefaultAppButtonProvider.createAppIconButton(config, locale);
-                m_availableApps.getWrappedLayout().addComponent(new WrappedDraggableComponent(button, config.getId()));
+                //  button.setWidth("166px");
+                DragSourceExtension<Button> extButton = new DragSourceExtension<>(button);
+                button.setData(config.getId());
+                extButton.setDataTransferText(config.getId());
+                extButton.setEffectAllowed(EffectAllowed.MOVE);
+                m_availableApps.addComponent(button);
             }
         }
-    }
-
-    /**
-     * Cancels editing and restores the previous quick launch apps setting.<p>
-     */
-    void close() {
-
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(CmsAppHierarchyConfiguration.APP_ID);
     }
 
     /**
@@ -287,18 +222,16 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
     void saveToUser() {
 
         List<String> apps = new ArrayList<String>();
-        HorizontalLayout appsLayout = m_userApps.getWrappedLayout();
-        int count = appsLayout.getComponentCount();
+        int count = m_userApps.getComponentCount();
         for (int i = 0; i < count; i++) {
-            WrappedDraggableComponent wrapper = (WrappedDraggableComponent)appsLayout.getComponent(i);
-            apps.add(wrapper.getItemId());
+            Button button = (Button)m_userApps.getComponent(i);
+            apps.add((String)button.getData());
         }
 
         try {
             OpenCms.getWorkplaceAppManager().setUserQuickLaunchApps(A_CmsUI.getCmsObject(), apps);
-        } catch (CmsException e) {
+        } catch (Exception e) {
             CmsErrorDialog.showErrorDialog("Could not write user Quicklaunch apps", e);
         }
-        close();
     }
 }

@@ -650,14 +650,29 @@ public class CmsWorkplaceAppManager {
      * @param cms the cms context
      * @param apps the app ids
      *
-     * @throws CmsException in case writing the user fails
+     * @throws Exception in case writing the user fails
      */
-    protected void setUserQuickLaunchApps(CmsObject cms, List<String> apps) throws CmsException {
+    protected void setUserQuickLaunchApps(CmsObject cms, List<String> apps) throws Exception {
 
         JSONArray appIds = new JSONArray(apps);
         CmsUser user = cms.getRequestContext().getCurrentUser();
-        user.setAdditionalInfo(QUICK_LAUCH_APPS_KEY, appIds.toString());
-        cms.writeUser(user);
+        String infoValue = appIds.toString();
+        String previousApps = (String)user.getAdditionalInfo(QUICK_LAUCH_APPS_KEY);
+        // remove the additional info value to use default setting, in case the selected apps match the default apps
+        if (new JSONArray(DEFAULT_USER_APPS).toString().equals(infoValue)) {
+            infoValue = null;
+        }
+        // check if the additional info value needs to be changed
+        if ((infoValue == previousApps) || ((infoValue != null) && infoValue.equals(previousApps))) {
+
+            return;
+        }
+        if (infoValue == null) {
+            user.deleteAdditionalInfo(QUICK_LAUCH_APPS_KEY);
+        } else {
+            user.setAdditionalInfo(QUICK_LAUCH_APPS_KEY, infoValue);
+            cms.writeUser(user);
+        }
     }
 
     /**
