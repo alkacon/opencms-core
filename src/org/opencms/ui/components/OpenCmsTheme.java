@@ -228,6 +228,9 @@ public final class OpenCmsTheme {
     public static final String ICON_SITE = "oc-icon-24-site";
 
     /** CSS style name.*/
+    public static final String ICON_TERMINAL = "oc-icon-32-terminal";
+
+    /** CSS style name.*/
     public static final String ICON_TOOL_1 = "oc-icon-32-tool1";
 
     /** CSS style name.*/
@@ -369,6 +372,7 @@ public final class OpenCmsTheme {
     /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_BLACK = " o-box-black";
 
+    /** CSS style name. */
     public static final String TABLE_COLUMN_BOX_BLUE = " o-box-blue";
 
     /** CSS style name. */

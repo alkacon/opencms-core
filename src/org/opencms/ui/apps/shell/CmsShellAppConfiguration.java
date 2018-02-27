@@ -79,7 +79,7 @@ public class CmsShellAppConfiguration extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return new CmsCssIcon(OpenCmsTheme.ICON_TOOL_3);
+        return new CmsCssIcon(OpenCmsTheme.ICON_TERMINAL);
     }
 
     /**
