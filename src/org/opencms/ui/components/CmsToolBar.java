@@ -630,7 +630,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
                 HorizontalLayout layout = new HorizontalLayout();
                 layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
                 layout.addStyleName(OpenCmsTheme.QUICK_LAUNCH);
-                //    layout.setSpacing(true);
+                layout.setSpacing(false);
                 layout.setMargin(true);
                 for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(
                     cms)) {
