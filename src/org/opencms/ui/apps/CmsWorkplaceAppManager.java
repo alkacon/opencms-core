@@ -671,8 +671,8 @@ public class CmsWorkplaceAppManager {
             user.deleteAdditionalInfo(QUICK_LAUCH_APPS_KEY);
         } else {
             user.setAdditionalInfo(QUICK_LAUCH_APPS_KEY, infoValue);
-            cms.writeUser(user);
         }
+        cms.writeUser(user);
     }
 
     /**
