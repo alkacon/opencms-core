@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.shared.ui.dnd.EffectAllowed;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -182,7 +181,7 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
             cms);
         for (I_CmsWorkplaceAppConfiguration config : standardApps) {
             CmsAppVisibilityStatus visibility = config.getVisibility(cms);
-            if (visibility.isVisible() && visibility.isActive()) {
+            if (visibility.isVisible()) {
                 Button button = CmsDefaultAppButtonProvider.createAppIconButton(config, locale);
                 m_standardApps.addComponent(button);
             }
@@ -195,7 +194,6 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
                 DragSourceExtension<Button> extButton = new DragSourceExtension<>(button);
                 button.setData(config.getId());
                 extButton.setDataTransferText(config.getId());
-                extButton.setEffectAllowed(EffectAllowed.MOVE);
                 m_userApps.addComponent(button);
             }
         }
@@ -210,7 +208,6 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
                 DragSourceExtension<Button> extButton = new DragSourceExtension<>(button);
                 button.setData(config.getId());
                 extButton.setDataTransferText(config.getId());
-                extButton.setEffectAllowed(EffectAllowed.MOVE);
                 m_availableApps.addComponent(button);
             }
         }

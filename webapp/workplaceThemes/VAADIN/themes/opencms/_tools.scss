@@ -143,4 +143,12 @@
 			}
 		}
 	}
+
+	/* Drop target styles, displaying opaque overlay on drag over. */
+	.v-csslayout-drag-center {
+		@include  valo-ddwrapper-box-hint-style
+	}
+	.v-panel-content > .v-csslayout-drag-center {
+		border-radius: 0 0 $v-border-radius $v-border-radius;
+	}
 }
