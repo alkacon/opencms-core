@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
+    <schemaFactory class="ClassicIndexSchemaFactory" />
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}
 	</abortOnConfigurationError>
 	<luceneMatchVersion>LUCENE_7_0_0</luceneMatchVersion>
@@ -76,9 +77,19 @@
 		<lst name="spellchecker">
 			<str name="name">default</str>
 			<str name="field">spell</str> <!-- Replace with field name as per your scheme -->
-			<str name="spellcheckIndexDir">./spellchecker</str>
-			<str name="buildOnOptimize">true</str>
+            <str name="classname">solr.DirectSolrSpellChecker</str>
 		</lst>
+		<lst name="spellchecker">
+			<str name="name">de</str>
+			<str name="field">de_spell</str> <!-- Replace with field name as per your scheme -->
+            <str name="classname">solr.DirectSolrSpellChecker</str>
+		</lst>
+				<lst name="spellchecker">
+			<str name="name">en</str>
+			<str name="field">en_spell</str> <!-- Replace with field name as per your scheme -->
+            <str name="classname">solr.DirectSolrSpellChecker</str>
+		</lst>
+
 	</searchComponent>
 	<requestHandler name="/spell" class="solr.SearchHandler"
 		startup="lazy">
