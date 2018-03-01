@@ -188,6 +188,11 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         document = appendFieldsForListSortOptions(document);
 
+        if (resource.getRootPath().startsWith(OpenCms.getSiteManager().getSharedFolder())
+            || (null != OpenCms.getSiteManager().getSiteRoot(resource.getRootPath()))) {
+            appendSpellFields(document);
+        }
+
         return document;
     }
 
@@ -856,6 +861,31 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         }
 
         return document;
+    }
+
+    /**
+     * Copy the content and the title property of the document to a spell field / a language specific spell field.
+     * @param document the document that gets extended by the spell fields.
+     */
+    private void appendSpellFields(I_CmsSearchDocument document) {
+
+        /*
+         * Add the content fields (multiple for contents with more than one locale)
+         */
+        // add the content_<locale> fields to this configuration
+        String title = document.getFieldValueAsString(
+            CmsPropertyDefinition.PROPERTY_TITLE + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT);
+        document.addSearchField(
+            new CmsSolrField(CmsSearchField.FIELD_SPELL, null, null, null),
+            document.getFieldValueAsString(CmsSearchField.FIELD_CONTENT) + "\n" + title);
+        for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            document.addSearchField(
+                new CmsSolrField(locale + "_" + CmsSearchField.FIELD_SPELL, null, locale, null),
+                document.getFieldValueAsString(
+                    CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale))
+                    + "\n"
+                    + title);
+        }
     }
 
     /**

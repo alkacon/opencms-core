@@ -78,16 +78,40 @@
 			<str name="name">default</str>
 			<str name="field">spell</str> <!-- Replace with field name as per your scheme -->
             <str name="classname">solr.DirectSolrSpellChecker</str>
+            <str name="distanceMeasure">internal</str>
+            <float name="accuracy">0.5</float>
+            <int name="maxEdits">2</int>
+            <int name="minPrefix">1</int>
+            <int name="maxInspections">5</int>
+            <int name="minQueryLength">5</int>
+            <float name="maxQueryFrequency">0.001</float>
+            <float name="thresholdTokenFrequency">.001</float>
 		</lst>
 		<lst name="spellchecker">
 			<str name="name">de</str>
 			<str name="field">de_spell</str> <!-- Replace with field name as per your scheme -->
             <str name="classname">solr.DirectSolrSpellChecker</str>
+            <str name="distanceMeasure">internal</str>
+            <float name="accuracy">0.5</float>
+            <int name="maxEdits">2</int>
+            <int name="minPrefix">1</int>
+            <int name="maxInspections">5</int>
+            <int name="minQueryLength">5</int>
+            <float name="maxQueryFrequency">0.001</float>
+            <float name="thresholdTokenFrequency">.001</float>
 		</lst>
 				<lst name="spellchecker">
 			<str name="name">en</str>
 			<str name="field">en_spell</str> <!-- Replace with field name as per your scheme -->
             <str name="classname">solr.DirectSolrSpellChecker</str>
+            <str name="distanceMeasure">internal</str>
+            <float name="accuracy">0.5</float>
+            <int name="maxEdits">2</int>
+            <int name="minPrefix">1</int>
+            <int name="maxInspections">5</int>
+            <int name="minQueryLength">5</int>
+            <float name="maxQueryFrequency">0.001</float>
+            <float name="thresholdTokenFrequency">.001</float>
 		</lst>
 
 	</searchComponent>

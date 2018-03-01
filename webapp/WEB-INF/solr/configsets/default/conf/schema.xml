@@ -258,35 +258,35 @@
   </fieldType>
 
 
-    <!-- Spell-checking / Suggestion field, using maxShingleSize=4 -->
+    <!-- Spell-checking / Suggestion field, using maxShingleSize=2 -->
     <fieldType name="spell" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
-        <filter class="solr.ShingleFilterFactory" maxShingleSize="4" outputUnigrams="true"/>
+        <filter class="solr.ShingleFilterFactory" maxShingleSize="2" outputUnigrams="true"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
     </fieldType>
 
-        <!-- en Spell-checking / Suggestion field, using maxShingleSize=4 -->
+        <!-- en Spell-checking / Suggestion field, using maxShingleSize=2 -->
     <fieldType name="spell_en" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt"/>
-        <filter class="solr.ShingleFilterFactory" maxShingleSize="4" outputUnigrams="true"/>
+        <filter class="solr.ShingleFilterFactory" maxShingleSize="2" outputUnigrams="true"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
     </fieldType>
 
-        <!-- de Spell-checking / Suggestion field, using maxShingleSize=4 -->
+        <!-- de Spell-checking / Suggestion field, using maxShingleSize=2 -->
     <fieldType name="spell_de" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_de.txt"/>
-        <filter class="solr.ShingleFilterFactory" maxShingleSize="4" outputUnigrams="true"/>
+        <filter class="solr.ShingleFilterFactory" maxShingleSize="2" outputUnigrams="true"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
     </fieldType>
@@ -376,7 +376,7 @@
     <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_comma"      type="text_comma"   indexed="true"  stored="false" multiValued="true"/>
     <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="true" required="false" multiValued="false"/>
-
+    <dynamicField name="*_spell"      type="spell"        indexed="false"  stored="false"  multiValued="true"/>
 
     <copyField source="*_en"      dest="text_en"/>
     <copyField source="*_de"      dest="text_de"/>
@@ -393,15 +393,5 @@
     <copyField source="*_prop"    dest="*_exact" />
     <copyField source="path"      dest="path_hierarchy" />
     <copyField source="category"  dest="category_exact" />
-
-    <copyField source="Title_dprop" dest="spell" />
-    <copyField source="content_de" dest="spell" />
-    <copyField source="content_en" dest="spell" />
-
-    <copyField source="Title_dprop" dest="de_spell" />
-    <copyField source="content_de" dest="de_spell" />
-
-    <copyField source="Title_dprop" dest="en_spell" />
-    <copyField source="content_en" dest="en_spell" />
 
 </schema>
