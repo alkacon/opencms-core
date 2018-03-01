@@ -787,7 +787,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                             int[] luceneIds = new int[rows];
                             int docs = 0;
                             for (SolrDocument doc : solrDocumentList) {
-                                String idString = (String)doc.getFirstValue(CmsSearchField.FIELD_ID);
+                                String idString = (String)doc.getFirstValue(CmsSearchField.FIELD_SOLR_ID);
                                 int id = solrQueryRequest.getSearcher().getFirstMatch(
                                     new Term(idField.getName(), idField.getType().toInternal(idString)));
                                 luceneIds[docs++] = id;
