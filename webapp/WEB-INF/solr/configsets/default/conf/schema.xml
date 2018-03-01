@@ -318,17 +318,17 @@
     <field name="additional_info"     type="string"       indexed="false" stored="true" />
     <field name="dependencyType"      type="string"       indexed="true"  stored="true" />
     <field name="place"               type="location"     indexed="true"  stored="true" />
-    <field name="spell"               type="spell"        indexed="true"  stored="true"  multiValued="true"/>
-    <field name="de_spell"            type="spell_de"     indexed="true"  stored="true"  multiValued="true"/>
-    <field name="en_spell"            type="spell_en"     indexed="true"  stored="true"  multiValued="true"/>
-    <field name="text"                type="text_general" indexed="true"  stored="true" multiValued="true"/><!-- Catchall for general text fields -->
-    <field name="text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
-    <field name="text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German text fields -->
-    <field name="text_el"             type="text_el"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for Greek text fields -->
-    <field name="text_es"             type="text_es"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for Spanish text fields -->
-    <field name="text_fr"             type="text_fr"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for French text fields -->
-    <field name="text_hu"             type="text_hu"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for Hungarian text fields -->
-    <field name="text_it"             type="text_it"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for Italian text fields -->
+    <field name="spell"               type="spell"        indexed="true"  stored="false"  multiValued="true"/>
+    <field name="de_spell"            type="spell_de"     indexed="true"  stored="false"  multiValued="true"/>
+    <field name="en_spell"            type="spell_en"     indexed="true"  stored="false"  multiValued="true"/>
+    <field name="text"                type="text_general" indexed="true"  stored="false" multiValued="true"/><!-- Catchall for general text fields -->
+    <field name="text_en"             type="text_en"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for English text fields -->
+    <field name="text_de"             type="text_de"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German text fields -->
+    <field name="text_el"             type="text_el"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Greek text fields -->
+    <field name="text_es"             type="text_es"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Spanish text fields -->
+    <field name="text_fr"             type="text_fr"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for French text fields -->
+    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Hungarian text fields -->
+    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
     <field name="serial-date"         type="date"         indexed="true"  stored="true" />
     <field name="serial-date-dates"   type="date"         indexed="true"  stored="true"  multiValued="true"/>
 
