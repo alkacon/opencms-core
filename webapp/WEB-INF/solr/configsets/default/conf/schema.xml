@@ -63,16 +63,8 @@
       </analyzer>
     </fieldType>
 
-    <!-- This is an example of using the KeywordTokenizer along with various TokenFilterFactories to produce a sortable field -->
-    <fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
-      <analyzer>
-        <tokenizer class="solr.KeywordTokenizerFactory"/>
-        <filter class="solr.LowerCaseFilterFactory" />
-        <filter class="solr.TrimFilterFactory" />
-        <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all" />
-      </analyzer>
-    </fieldType>
-
+    <!-- This is a special field type for alphabetically sorting. It requires solr-analysis-extras. -->
+    <fieldType name="sort" class="solr.ICUCollationField" locale="" strength="primary" />
 
     <!-- lowercases the entire field value, keeping it as a single token.  -->
     <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
@@ -375,7 +367,7 @@
     <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
     <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_comma"      type="text_comma"   indexed="true"  stored="false" multiValued="true"/>
-    <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="true" required="false" multiValued="false"/>
+    <dynamicField name="*_sort"       type="sort"         indexed="true" stored="true" required="false" multiValued="false"/>
     <dynamicField name="*_spell"      type="spell"        indexed="false"  stored="false"  multiValued="true"/>
 
     <copyField source="*_en"      dest="text_en"/>
