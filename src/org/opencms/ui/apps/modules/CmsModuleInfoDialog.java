@@ -39,15 +39,16 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 import com.vaadin.server.Resource;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -58,6 +59,12 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The label displaying the module description. */
+    private Label m_description;
+
+    /** The Edit button. */
+    private Button m_edit;
+
     /** The list for the explorer types. */
     private VerticalLayout m_explorerTypes;
 
@@ -67,9 +74,6 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
     /** The OK button. */
     private Button m_ok;
 
-    /** The label displaying the module description. */
-    private Label m_description;
-
     /** The list for the resource types. */
     private VerticalLayout m_resourceTypes;
 
@@ -78,7 +82,8 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
      *
      * @param moduleName the module name
      */
-    public CmsModuleInfoDialog(String moduleName) {
+    public CmsModuleInfoDialog(String moduleName, Consumer<String> editAction) {
+
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsResourceInfo resInfo = new CmsResourceInfo(
@@ -96,6 +101,11 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
 
                 CmsVaadinUtils.getWindow(CmsModuleInfoDialog.this).close();
             }
+        });
+        m_edit.addClickListener(event -> {
+            CmsVaadinUtils.getWindow(CmsModuleInfoDialog.this).close();
+            editAction.accept(moduleName);
+
         });
         initialize(module);
     }

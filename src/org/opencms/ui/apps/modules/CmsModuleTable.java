@@ -61,6 +61,14 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.v7.data.util.BeanItemContainer;
@@ -68,17 +76,9 @@ import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Overview list for module information.<p>
@@ -394,7 +394,9 @@ public class CmsModuleTable extends Table {
         public void executeAction(String module) {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module);
+
+            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module, CmsModuleTable.this::editModule);
+
             window.setContent(typeList);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_0));
             A_CmsUI.get().addWindow(window);
@@ -459,6 +461,7 @@ public class CmsModuleTable extends Table {
      * @param rows the module rows
      */
     public CmsModuleTable(CmsModuleApp app, List<CmsModuleRow> rows) {
+
         m_menu.setAsTableContextMenu(this);
         m_app = app;
         addItemClickListener(new ItemClickListener() {
@@ -632,6 +635,16 @@ public class CmsModuleTable extends Table {
                 (new ModuleInfoEntry()).executeAction(row.getModule().getName());
             }
         }
+    }
+
+    /**
+     * Opens the editor for the module with the given name.<p>
+     *
+     * @param moduleName the module name
+     */
+    private void editModule(String moduleName) {
+
+        (new EditModuleEntry()).executeAction(moduleName);
     }
 
     /**
