@@ -420,7 +420,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             // also set resource filter to allow for returning unreleased/expired resources if necessary.
             CmsSolrResultList solrResultList = m_index.search(
                 m_cms,
-                query,
+                query.clone(), // use a clone of the query, since the search function manipulates the query (removes highlighting parts), but we want to keep the original one.
                 true,
                 isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null);
             return new CmsSearchResultWrapper(m_searchController, solrResultList, query, m_cms, null);
