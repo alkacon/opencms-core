@@ -54,18 +54,18 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the table containing groups of a ou.<p>
@@ -229,6 +229,46 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
     }
 
+    /**
+     * Show resources context menu entry.<p>
+     */
+    class ImExport implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
+            window.setContent(
+                CmsImportExportUserDialog.getExportUserDialogForGroup(
+                    new CmsUUID(context.iterator().next()),
+                    m_ou,
+                    window));
+
+            A_CmsUI.get().addWindow(window);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+
+        }
+
+    }
+
     /**Table properties.<p>*/
     enum TableProperty {
         /**Icon column.*/
@@ -257,6 +297,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
          * @param defaultValue value
          */
         TableProperty(String name, Class<?> type, Object defaultValue) {
+
             m_headerMessage = name;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -319,6 +360,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
     /**Vaadin component. */
     private VerticalLayout m_emptyLayout;
 
+    /**The ou. */
+    protected String m_ou;
+
     /**
      * public constructor.<p>
      *
@@ -326,7 +370,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
      * @param app calling app.
      */
     public CmsGroupTable(String ou, CmsAccountsApp app) {
+
         m_app = app;
+        m_ou = ou;
         init(ou);
         setVisibleColumns(TableProperty.Name, TableProperty.Description);
     }
@@ -405,6 +451,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
             m_menuEntries.add(new EntryOpen());
             m_menuEntries.add(new EntryEdit());
             m_menuEntries.add(new EntryShowResources());
+            m_menuEntries.add(new ImExport());
             m_menuEntries.add(new EntryDelete());
 
         }

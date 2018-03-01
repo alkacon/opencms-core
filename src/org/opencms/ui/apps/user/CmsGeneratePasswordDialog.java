@@ -36,12 +36,12 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsButtonFormRow;
 import org.opencms.ui.components.OpenCmsTheme;
 
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.TextField;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 
 /**
  * Dialog to generate a random password.<p>
@@ -65,15 +65,15 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
         layout.setSpacing(true);
         layout.setWidth("400px");
         final TextField passwordField = new TextField();
-        passwordField.setValue(getPassword());
+        passwordField.setValue(getRandomPassword());
         CmsButtonFormRow<TextField> row = new CmsButtonFormRow<TextField>(
             passwordField,
-            FontAwesome.REFRESH,
+            VaadinIcons.REFRESH,
             new Runnable() {
 
                 public void run() {
 
-                    passwordField.setValue(getPassword());
+                    passwordField.setValue(getRandomPassword());
                 }
             },
             CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_REFRESH_0));
@@ -112,7 +112,7 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
      *
      * @return String
      */
-    protected String getPassword() {
+    public static String getRandomPassword() {
 
         if (OpenCms.getPasswordHandler() instanceof I_CmsPasswordGenerator) {
             return ((I_CmsPasswordGenerator)OpenCms.getPasswordHandler()).getRandomPassword();

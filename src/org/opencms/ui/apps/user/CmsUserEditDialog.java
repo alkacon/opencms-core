@@ -72,6 +72,17 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
 
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
@@ -79,20 +90,11 @@ import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.UserError;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the dialog to edit user settings.<p>
@@ -427,7 +429,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 m_selfmanagement.setValue(new Boolean(false));
                 m_isWebOU = true;
             } else {
-                iniRole(ou);
+                iniRole(m_cms, ou, m_role, LOG);
                 m_role.select(CmsRole.EDITOR.forOrgUnit(ou));
                 m_selfmanagement.setValue(new Boolean(true));
 
@@ -459,6 +461,101 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
         });
         setButtonVisibility();
+    }
+
+    /**
+     * Initialized the role ComboBox.<p>
+     *
+     * @param cms CmsObject
+     * @param ou to load roles for
+     * @param roleComboBox ComboBox
+     * @param log LOG
+     */
+    protected static void iniRole(CmsObject cms, String ou, com.vaadin.ui.ComboBox<CmsRole> roleComboBox, Log log) {
+
+        try {
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(cms, ou, false);
+            CmsRole.applySystemRoleOrder(roles);
+
+            DataProvider provider = new ListDataProvider<CmsRole>(roles);
+
+            roleComboBox.setDataProvider(provider);
+            roleComboBox.setItemCaptionGenerator(role -> {
+                try {
+                    return role.getDisplayName(cms, A_CmsUI.get().getLocale());
+                } catch (CmsException e) {
+                    return "";
+                }
+            });
+            roleComboBox.setEmptySelectionAllowed(false);
+
+        } catch (CmsException e) {
+            if (log != null) {
+                log.error("Unable to read roles.", e);
+            }
+        }
+    }
+
+    /**
+     * Initialized the role ComboBox.<p>
+     *
+     * @param cms CmsObject
+     * @param ou to load roles for
+     * @param roleComboBox ComboBox
+     * @param log LOG
+     */
+    protected static void iniRole(CmsObject cms, String ou, ComboBox roleComboBox, Log log) {
+
+        try {
+            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(cms, ou, false);
+            CmsRole.applySystemRoleOrder(roles);
+            IndexedContainer container = new IndexedContainer();
+            container.addContainerProperty("caption", String.class, "");
+            for (CmsRole role : roles) {
+                Item item = container.addItem(role);
+                item.getItemProperty("caption").setValue(role.getDisplayName(cms, A_CmsUI.get().getLocale()));
+            }
+
+            roleComboBox.setContainerDataSource(container);
+            roleComboBox.setItemCaptionPropertyId("caption");
+            roleComboBox.setNullSelectionAllowed(false);
+            roleComboBox.setNewItemsAllowed(false);
+        } catch (CmsException e) {
+            if (log != null) {
+                log.error("Unable to read roles.", e);
+            }
+        }
+    }
+
+    /**
+     * Sends an email to the user.<p>
+     *
+     * @param newUser is the user new?
+     */
+    protected static void sendMail(CmsObject cms, String password, CmsUser user, boolean newUser) {
+
+        sendMail(cms, password, user, user.getOuFqn(), newUser);
+    }
+
+    protected static void sendMail(CmsObject cms, String password, CmsUser user, String ou, boolean newUser) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getEmail())) {
+            return;
+        }
+        CmsSendPasswordNotification notification = new CmsSendPasswordNotification(
+            cms,
+            password,
+            user,
+            ou,
+            cms.getRequestContext().getCurrentUser(),
+            OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false),
+            newUser);
+        try {
+            notification.send();
+        } catch (EmailException e) {
+            LOG.error("Unable to send email with password", e);
+        }
+
     }
 
     /**
@@ -612,7 +709,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
             saveUserSettings();
             if (m_sendEmail.getValue().booleanValue() & m_sendEmail.isEnabled()) {
-                sendMail(newUser);
+                sendMail(m_cms, m_pw.getPassword1(), m_user, newUser);
             }
         } catch (CmsException e) {
             LOG.error("Unable to save user", e);
@@ -1020,32 +1117,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
-     * Initialized the role ComboBox.<p>
-     *
-     * @param ou to load roles for
-     */
-    private void iniRole(String ou) {
-
-        try {
-            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, ou, false);
-            CmsRole.applySystemRoleOrder(roles);
-            IndexedContainer container = new IndexedContainer();
-            container.addContainerProperty("caption", String.class, "");
-            for (CmsRole role : roles) {
-                Item item = container.addItem(role);
-                item.getItemProperty("caption").setValue(role.getDisplayName(m_cms, A_CmsUI.get().getLocale()));
-            }
-
-            m_role.setContainerDataSource(container);
-            m_role.setItemCaptionPropertyId("caption");
-            m_role.setNullSelectionAllowed(false);
-            m_role.setNewItemsAllowed(false);
-        } catch (CmsException e) {
-            //
-        }
-    }
-
-    /**
      * A initialization method.<p>
      *
      * @param window to be closed
@@ -1213,27 +1284,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
         }
         settings.save(m_cms);
-    }
-
-    /**
-     * Sends an email to the user.<p>
-     *
-     * @param newUser is the user new?
-     */
-    private void sendMail(boolean newUser) {
-
-        CmsSendPasswordNotification notification = new CmsSendPasswordNotification(
-            m_cms,
-            m_pw.getPassword1(),
-            m_user,
-            m_cms.getRequestContext().getCurrentUser(),
-            OpenCms.getLinkManager().getWorkplaceLink(m_cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false),
-            newUser);
-        try {
-            notification.send();
-        } catch (EmailException e) {
-            LOG.error("Unable to send email with password", e);
-        }
     }
 
     /**

@@ -51,6 +51,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_USEEXISTING_HELP_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_USEEXISTING_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_HELP_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_USEEXISTING_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_USEEXISTING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -72,7 +84,58 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_HELP_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_EXPORT_HELP_TEXT_0 = "GUI_USERMANAGEMENT_USER_EXPORT_HELP_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_SCRIPT_APP_NAME_0 = "GUI_SHELL_SCRIPT_APP_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_BEGIN_0 = "RPT_USERIMPORT_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_FILE_CONTAINS_1 = "RPT_USERIMPORT_FILE_CONTAINS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_IMPORT_SUCCESFULL_1 = "RPT_USERIMPORT_IMPORT_SUCCESFULL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_IMPORT_ALREADY_IN_OU_1 = "RPT_USERIMPORT_IMPORT_ALREADY_IN_OU_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_END_0 = "RPT_USERIMPORT_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_IMPORT_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_IMPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_EXPORT_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_EXPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_START_IMPORT_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_START_IMPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_WRITE_FILE_0 = "GUI_USERMANAGEMENT_USER_WRITE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_DOWNLOAD_FILE_0 = "GUI_USERMANAGEMENT_USER_DOWNLOAD_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_GROUP_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_ROLE_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_ROLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_SCRIPT_APP_NAME_HELP_0 = "GUI_SHELL_SCRIPT_APP_NAME_HELP_0";

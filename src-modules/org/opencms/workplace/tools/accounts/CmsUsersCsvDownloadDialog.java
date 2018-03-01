@@ -36,6 +36,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.ui.apps.user.CmsImportExportUserDialog;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -115,10 +116,14 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
         Map<CmsUUID, CmsUser> exportUsers = new HashMap<CmsUUID, CmsUser>();
         try {
             if (((groups == null) || (groups.size() < 1)) && ((roles == null) || (roles.size() < 1))) {
-                exportUsers = getExportAllUsers(exportUsers);
+                exportUsers = CmsImportExportUserDialog.addExportAllUsers(getCms(), getParamOufqn(), exportUsers);
             } else {
-                exportUsers = getExportUsersFromGroups(groups, exportUsers);
-                exportUsers = getExportUsersFromRoles(roles, exportUsers);
+                exportUsers = CmsImportExportUserDialog.addExportUsersFromGroups(getCms(), groups, exportUsers);
+                exportUsers = CmsImportExportUserDialog.addExportUsersFromRoles(
+                    getCms(),
+                    getParamOufqn(),
+                    roles,
+                    exportUsers);
             }
         } catch (CmsException e) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_GET_EXPORT_USERS_0), e);
@@ -264,93 +269,6 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
     protected String getDownloadPath() {
 
         return "/system/workplace/admin/accounts/imexport_user_data/csvdownload.jsp";
-    }
-
-    /**
-     * Returns a map with the users to export added.<p>
-     *
-     * @param exportUsers the map to add the users
-     *
-     * @return a map with the users to export added
-     *
-     * @throws CmsException if getting users failed
-     */
-    protected Map<CmsUUID, CmsUser> getExportAllUsers(Map<CmsUUID, CmsUser> exportUsers) throws CmsException {
-
-        List<CmsUser> users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
-        if ((users != null) && (users.size() > 0)) {
-            Iterator<CmsUser> itUsers = users.iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = itUsers.next();
-                if (!exportUsers.containsKey(user.getId())) {
-                    exportUsers.put(user.getId(), user);
-                }
-            }
-        }
-        return exportUsers;
-    }
-
-    /**
-     * Returns a map with the users to export added.<p>
-     *
-     * @param groups the selected groups
-     * @param exportUsers the map to add the users
-     *
-     * @return a map with the users to export added
-     *
-     * @throws CmsException if getting groups or users of group failed
-     */
-    protected Map<CmsUUID, CmsUser> getExportUsersFromGroups(List<String> groups, Map<CmsUUID, CmsUser> exportUsers)
-    throws CmsException {
-
-        if ((groups != null) && (groups.size() > 0)) {
-            Iterator<String> itGroups = groups.iterator();
-            while (itGroups.hasNext()) {
-                List<CmsUser> groupUsers = getCms().getUsersOfGroup(itGroups.next());
-                Iterator<CmsUser> itGroupUsers = groupUsers.iterator();
-                while (itGroupUsers.hasNext()) {
-                    CmsUser groupUser = itGroupUsers.next();
-                    if (!exportUsers.containsKey(groupUser.getId())) {
-                        exportUsers.put(groupUser.getId(), groupUser);
-                    }
-                }
-            }
-        }
-        return exportUsers;
-    }
-
-    /**
-     * Returns a map with the users to export added.<p>
-     *
-     * @param roles the selected roles
-     * @param exportUsers the map to add the users
-     *
-     * @return a map with the users to export added
-     *
-     * @throws CmsException if getting roles or users of role failed
-     */
-    protected Map<CmsUUID, CmsUser> getExportUsersFromRoles(List<String> roles, Map<CmsUUID, CmsUser> exportUsers)
-    throws CmsException {
-
-        if ((roles != null) && (roles.size() > 0)) {
-            Iterator<String> itRoles = roles.iterator();
-            while (itRoles.hasNext()) {
-                List<CmsUser> roleUsers = OpenCms.getRoleManager().getUsersOfRole(
-                    getCms(),
-                    CmsRole.valueOfGroupName(itRoles.next()).forOrgUnit(getParamOufqn()),
-                    true,
-                    false);
-                Iterator<CmsUser> itRoleUsers = roleUsers.iterator();
-                while (itRoleUsers.hasNext()) {
-                    CmsUser roleUser = itRoleUsers.next();
-                    // contains
-                    if (exportUsers.get(roleUser.getId()) == null) {
-                        exportUsers.put(roleUser.getId(), roleUser);
-                    }
-                }
-            }
-        }
-        return exportUsers;
     }
 
     /**

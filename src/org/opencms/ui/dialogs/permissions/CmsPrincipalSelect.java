@@ -116,6 +116,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /**Ou. */
     private String m_ou;
 
+    /** Is ou change enabled?*/
+    private boolean m_ouChangeEnabled = true;
+
     /**
      * Constructor.<p>
      */
@@ -418,6 +421,11 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         m_ou = ou;
     }
 
+    public void setOuChangeEnabled(boolean enabled) {
+
+        m_ouChangeEnabled = enabled;
+    }
+
     /**
      * Sets the principal type and clears the name.<p>
      *
@@ -608,7 +616,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
      */
     void openPrincipalSelect() {
 
-        CmsBasicDialog dialog;
+        CmsPrincipalSelectDialog dialog;
 
         m_window = CmsBasicDialog.prepareWindow(DialogWidth.max);
         WidgetType defaultType = WidgetType.groupwidget;
@@ -623,6 +631,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
             m_widgetType,
             m_realOnly,
             defaultType);
+
+        dialog.setOuComboBoxEnabled(m_ouChangeEnabled);
 
         m_window.setCaption(
             CmsVaadinUtils.getMessageText(

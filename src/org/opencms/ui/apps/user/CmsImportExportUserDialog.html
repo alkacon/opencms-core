@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+					<v-tab-sheet _id="m_tab" height="100%">
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_IMPORT_0)">
+							<v-vertical-layout margin spacing>
+								<v-horizontal-layout width="100%" style-name="o-report">
+									<v-upload _id="m_upload" button-caption="Upload file"></v-upload>
+									<v-label _id="m_uploadname"  :expand>
+								</v-horizontal-layout>
+								<v-panel caption="%(key.GUI_USERMANAGEMENT_GROUPS_0)">
+									<v-vertical-layout _id="m_importGroups" margin spacing style-name="o-formlayout-workplace-main o-formlayout-const-capture-200">
+									</v-vertical-layout>
+								</v-panel>
+								<v-panel caption="%(key.GUI_USERMANAGEMENT_ROLES_0)">
+									<v-vertical-layout _id="m_importRoles" margin spacing style-name="o-formlayout-workplace-main o-formlayout-const-capture-200">
+									</v-vertical-layout>
+								</v-panel>
+								<v-panel caption="%(key.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0)">
+									<v-form-layout margin spacing style-name="o-formlayout-workplace-main o-formlayout-const-capture-200">
+										<v-check-box _id="m_importPasswords" caption="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_USEEXISTING_0)" description="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_USEEXISTING_HELP_0)"/>
+										<v-check-box _id="m_sendMail" caption="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_0)" description=="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_HELP_0)"/>
+										<v-button _id="m_generateButton">%(key.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0)</v-button>
+										<v-text-field _id="m_password" caption="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0)" description="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_HELP_0)" width="100%"/>
+									</v-form-layout>
+								</v-panel>
+
+							</v-vertical-layout>
+						</tab>
+						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_EXPORT_0)">
+							<v-vertical-layout margin spacing>
+								<v-panel>
+									<v-label style-name="o-report o-report-wrap">%(key.GUI_USERMANAGEMENT_USER_EXPORT_HELP_TEXT_0)</v-label>
+								</v-panel>
+								<v-panel caption="%(key.GUI_USERMANAGEMENT_GROUPS_0)">
+									<v-vertical-layout _id="m_exportGroups" margin spacing style-name="o-formlayout-workplace-main o-formlayout-const-capture-200">
+									</v-vertical-layout>
+								</v-panel>
+								<v-panel caption="%(key.GUI_USERMANAGEMENT_ROLES_0)">
+									<v-vertical-layout _id="m_exportRoles" margin spacing style-name="o-formlayout-workplace-main o-formlayout-const-capture-200">
+									</v-vertical-layout>
+								</v-panel>
+							</v-vertical-layout>
+						</tab>
+					</v-tab-sheet>
+			</content>
+			<buttons>	
+				<v-button _id="m_save" :left>%(key.GUI_USERMANAGEMENT_USER_WRITE_FILE_0)</v-button>
+				<v-button _id="m_download" :left>%(key.GUI_USERMANAGEMENT_USER_DOWNLOAD_FILE_0)</v-button>
+				<v-button _id="m_startImport">%(key.GUI_USERMANAGEMENT_USER_IMEXPORT_START_IMPORT_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

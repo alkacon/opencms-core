@@ -1166,6 +1166,9 @@
 			height: 80%;
 			width: 60%;
 		}
+		&.o-report-wrap{
+			white-space: normal;	
+		}
 		
 		.o-report-content {
 			@include user-select(text);

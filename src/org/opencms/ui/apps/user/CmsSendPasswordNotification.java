@@ -27,9 +27,13 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.notification.A_CmsNotification;
+import org.opencms.notification.CmsNotificationMacroResolver;
 
 /**
  * Class to send email to user in case of password reset or creating new user.<p>
@@ -45,6 +49,7 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
      * @param cms CmsObject
      * @param password password
      * @param receiver User
+     * @param ou
      * @param adminUser User
      * @param link to login
      * @param newUser boolean
@@ -53,6 +58,7 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         CmsObject cms,
         String password,
         CmsUser receiver,
+        String ou,
         CmsUser adminUser,
         String link,
         boolean newUser) {
@@ -60,6 +66,16 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         super(cms, receiver);
         m_new = newUser;
         addMacro("password", password);
+        addMacro(CmsNotificationMacroResolver.RECEIVER_OU_FQN, ou);
+        try {
+            addMacro(
+                CmsNotificationMacroResolver.RECEIVER_OU,
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou).getDisplayName(
+                    new CmsUserSettings(receiver).getLocale()));
+
+        } catch (CmsException e) {
+            addMacro(CmsNotificationMacroResolver.RECEIVER_OU, receiver.getOuFqn());
+        }
 
     }
 

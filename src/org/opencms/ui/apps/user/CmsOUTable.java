@@ -40,6 +40,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
@@ -54,18 +55,18 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class to show ous in table for account management.<p>
@@ -155,6 +156,45 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 
+        }
+
+    }
+
+    /**
+     * Entry for new user in the context menu.<p>
+     */
+    class EntryImportExportUser implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
+            window.setContent(CmsImportExportUserDialog.getExportUserDialogForOU(context.iterator().next(), window));
+
+            A_CmsUI.get().addWindow(window);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            if (getItem(context.iterator().next()).getItemProperty(TableProperty.Type).getValue().equals(
+                CmsOuTreeType.OU)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
 
     }
@@ -314,6 +354,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          * @param defaultValue value
          */
         TableProperty(String name, Class<?> type, Object defaultValue) {
+
             m_headerMessage = name;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -383,6 +424,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
      * @param app calling app
      */
     public CmsOUTable(String ou, CmsAccountsApp app) {
+
         m_app = app;
         init(ou);
     }
@@ -451,6 +493,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             m_menuEntries.add(new EntryEdit());
             m_menuEntries.add(new EntryNewGroup());
             m_menuEntries.add(new EntryNewUser());
+            m_menuEntries.add(new EntryImportExportUser());
             m_menuEntries.add(new EntryDelete());
         }
         return m_menuEntries;
