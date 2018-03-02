@@ -300,6 +300,7 @@ public class CmsModuleTable extends Table {
         public void executeAction(final String context) {
 
             final CmsObject cms = A_CmsUI.getCmsObject();
+            final String handlerDesc = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context);
 
             final A_CmsReportThread thread = new A_CmsReportThread(cms, "Export module " + context) {
 
@@ -321,7 +322,7 @@ public class CmsModuleTable extends Table {
                         CmsModuleImportExportHandler handler = CmsModuleImportExportHandler.getExportHandler(
                             cms,
                             OpenCms.getModuleManager().getModule(context),
-                            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+                            handlerDesc);
                         OpenCms.getImportExportManager().exportData(cms, handler, getReport());
                     } catch (Exception e) {
                         getReport().println(e);
