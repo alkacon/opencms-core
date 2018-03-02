@@ -40,6 +40,7 @@ import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.util.CmsNewResourceBuilder;
@@ -364,6 +365,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             getType(),
             null,
             new ArrayList<CmsProperty>(0));
+        if (modelResource != null) {
+            // set the model resource
+            CmsCategoryService.getInstance().copyCategories(rootCms, modelResource, creationPath);
+        }
         try {
             rootCms.unlockResource(creationPath);
         } catch (CmsLockException e) {
