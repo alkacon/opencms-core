@@ -2008,6 +2008,7 @@ public final class CmsJspStandardContextBean {
             try {
                 initPage(m_cms, (HttpServletRequest)m_request);
                 CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setKeepEmptyMacros(true);
                 resolver.setCmsObject(m_cms);
                 resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(getLocale()));
                 CmsResourceFilter filter = getIsEditMode()
