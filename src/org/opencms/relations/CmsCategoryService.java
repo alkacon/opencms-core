@@ -154,6 +154,24 @@ public class CmsCategoryService {
     }
 
     /**
+     * Adds all categories from one resource to another, skipping categories that are not available for the resource copied to.
+     *
+     * The resource where categories are copied to has to be locked.
+     *
+     * @param cms the CmsObject used for reading and writing.
+     * @param fromResource the resource to copy the categories from.
+     * @param toResourceSitePath the full site path of the resource to copy the categories to.
+     * @throws CmsException thrown if copying the resources fails.
+     */
+    public void copyCategories(CmsObject cms, CmsResource fromResource, String toResourceSitePath) throws CmsException {
+
+        List<CmsCategory> categories = readResourceCategories(cms, fromResource);
+        for (CmsCategory category : categories) {
+            addResourceToCategory(cms, toResourceSitePath, category);
+        }
+    }
+
+    /**
      * Creates a new category.<p>
      *
      * Will use the same category repository as the parent if specified,
