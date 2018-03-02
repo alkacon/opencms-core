@@ -44,9 +44,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 
+import com.vaadin.server.FileDownloader;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.server.FileDownloader;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Label;
@@ -157,7 +157,7 @@ public class CmsLogFileView extends VerticalLayout {
             });
 
             updateView();
-            m_fileContent.setHeight("700px");
+            //            m_fileContent.setHeight("700px");
             m_fileContent.addStyleName("v-scrollable");
             m_fileContent.addStyleName("o-report");
         }
@@ -186,7 +186,7 @@ public class CmsLogFileView extends VerticalLayout {
             m_logView.setFilePath((String)m_logfile.getValue());
             m_logView.setWindowSize(getSize());
             m_logView.setFileEncoding(getChar());
-            String content = "<pre>";
+            String content = "<pre style='line-height:1.1;'>";
             content += m_logView.readFilePortion();
             content += "</pre>";
             m_fileContent.setValue(content);

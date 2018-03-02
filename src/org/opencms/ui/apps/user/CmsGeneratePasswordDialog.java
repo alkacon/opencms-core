@@ -59,11 +59,12 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
      */
     public CmsGeneratePasswordDialog(final I_CmsPasswordFetcher passwordFetcher, final Runnable close) {
 
+        setWidth("500px");
         FormLayout layout = new FormLayout();
         layout.addStyleName(OpenCmsTheme.FORMLAYOUT_WORKPLACE_MAIN);
         layout.setMargin(true);
         layout.setSpacing(true);
-        layout.setWidth("400px");
+        //        layout.setWidth("400px");
         final TextField passwordField = new TextField();
         passwordField.setValue(getRandomPassword());
         CmsButtonFormRow<TextField> row = new CmsButtonFormRow<TextField>(
@@ -77,7 +78,10 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
                 }
             },
             CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_REFRESH_0));
-        layout.addComponent(new Label(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_TEXT_0)));
+        Label label = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_TEXT_0));
+        label.setWidth("100%");
+        layout.addComponent(label);
+        row.setWidth("100%");
         layout.addComponent(row);
         setContent(layout);
         Button closeButton = new Button(CmsVaadinUtils.messageCancel());
