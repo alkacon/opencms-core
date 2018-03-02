@@ -772,7 +772,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("Test", value1.getStringValue(cms));
 
         value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 0);
-        assertEquals("Default value from the XML", value1.getStringValue(cms));
+        assertEquals("Default value from the appinfos", value1.getStringValue(cms));
 
         // check exact default mappings for nested content
         value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 1);
@@ -1969,6 +1969,16 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing the validation for values in the XML content");
 
+        // since default values in content handlers for nested contents are evaluated now,
+        // we need to create this file and all folders along the path because it is a default value
+        // and if it doesn't exist, it causes the validation to fail
+
+        cms.createResource("/default", 0);
+        cms.createResource("/default/for", 0);
+        cms.createResource("/default/for/all", 0);
+        cms.createResource("/default/for/all/from", 0);
+        cms.createResource("/default/for/all/from/outer.txt", 1);
+
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         String content;
@@ -1990,6 +2000,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent.addValue(cms, "DeepCascade", Locale.ENGLISH, 1);
         xmlcontent.addLocale(cms, Locale.GERMAN);
         xmlcontent.addValue(cms, "DeepCascade", Locale.GERMAN, 0);
+
         // output the current document
         System.out.println(xmlcontent.toString());
 
@@ -2043,7 +2054,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value1.setStringValue(cms, "This HTML contains an error!");
 
         value1 = xmlcontent.addValue(cms, "DeepCascade[1]/Cascade[1]/Option", Locale.ENGLISH, 0);
-        assertEquals("Default value from the XML", value1.getStringValue(cms));
+        assertEquals("Default value from the appinfos", value1.getStringValue(cms));
 
         // output the current document
         System.out.println(xmlcontent.toString());

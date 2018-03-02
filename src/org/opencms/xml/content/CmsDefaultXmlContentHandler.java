@@ -528,6 +528,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
 
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -654,46 +688,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
+    /** The content definition for which this content handler is configured. */
+    private CmsXmlContentDefinition m_contentDefinition;
+
     /**
      * Creates a new instance of the default XML content handler.<p>
      */
     public CmsDefaultXmlContentHandler() {
 
         init();
-    }
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -780,6 +783,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         String defaultValue;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            // ( path can be empty if this is called from createValue )
             // use the "getDefault" method of the given value, will use value from standard XML schema
             defaultValue = type.getDefault(locale);
         } else {
@@ -816,6 +820,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 result = resolver.resolveMacros(defaultValue);
             }
             return result;
+        } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(path) && CmsXmlUtils.isDeepXpath(path)) {
+
+            // try to delegate to content handler of nested content
+
+            String subPath = CmsXmlUtils.removeFirstXpathElement(path);
+            I_CmsXmlSchemaType nestedType = m_contentDefinition.getSchemaType(
+                CmsXmlUtils.removeXpath(CmsXmlUtils.getFirstXpathElement(path)));
+            if (nestedType instanceof CmsXmlNestedContentDefinition) {
+                CmsXmlContentDefinition nestedDef = ((CmsXmlNestedContentDefinition)nestedType).getNestedContentDefinition();
+                if (nestedDef != null) {
+                    I_CmsXmlContentHandler subHandler = nestedDef.getContentHandler();
+                    if (subHandler != null) {
+                        return subHandler.getDefault(cms, resource, nestedType, subPath, locale);
+                    }
+                }
+            }
         }
         // no default value is available
         return null;
@@ -1309,6 +1329,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 }
             }
         }
+        m_contentDefinition = contentDefinition;
 
         // at the end, add default check rules for optional file references
         addDefaultCheckRules(contentDefinition, null, null);
