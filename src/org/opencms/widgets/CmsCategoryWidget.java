@@ -80,6 +80,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
+    /** Configuration parameter to set the collapsing state when opening the selection. */
+    private static final String CONFIGURATION_COLLAPSED = "collapsed";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryWidget.class);
 
@@ -97,6 +100,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The selection type parsed from configuration string. */
     private String m_selectiontype = "multi";
+
+    /** The 'collapsed' flag, indicating if the category tree(s) should be collapsed in the beginning. */
+    private boolean m_collapsed;
 
     /**
      * Creates a new category widget.<p>
@@ -157,6 +163,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append("=");
             result.append(m_selectiontype);
         }
+        // append 'collapsed' flag, if necessary
+        if (m_collapsed) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_COLLAPSED);
+        }
         return result.toString();
     }
 
@@ -209,6 +222,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                 result.append("|");
             }
             result.append(CONFIGURATION_PARENTSELECTION);
+        }
+        // append 'collapsed' flag, if necessary
+        if (m_collapsed) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_COLLAPSED);
         }
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<String> categoriesList = catService.getCategoryRepositories(cms, cms.getSitePath(resource));
@@ -556,6 +576,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                     selectionType = selectionType.substring(0, selectionType.indexOf('|'));
                 }
                 m_selectiontype = selectionType;
+            }
+            int openClosedState = configuration.indexOf(CONFIGURATION_COLLAPSED);
+            if (openClosedState != -1) {
+                m_collapsed = true;
             }
         }
         super.setConfiguration(configuration);

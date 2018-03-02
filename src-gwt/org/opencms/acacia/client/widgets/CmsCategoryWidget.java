@@ -109,6 +109,9 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
+    /** Configuration parameter to set the collapsing state when opening the selection. */
+    private static final String CONFIGURATION_COLLAPSED = "collapsed";
+
     /** Configuration parameter to set the default height. */
     private static final int DEFAULT_HEIGHT = 30;
 
@@ -166,11 +169,15 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /** The selection type parsed from configuration string. */
     private String m_selectiontype = "single";
 
+    /** If true, the category selection opens with collapsed category trees. */
+    private boolean m_collapsed;
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD
      */
     public CmsCategoryWidget(String config) {
+
         m_categoryField = new CmsCategoryField();
         initWidget(m_categoryField);
         m_selected = new HashSet<String>();
@@ -355,7 +362,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
         if (m_cmsPopup == null) {
 
             m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
-            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue, m_resultList);
+            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue, m_resultList, m_collapsed);
             m_cmsPopup.add(m_cmsCategoryTree);
             m_cmsPopup.setModal(false);
             m_cmsPopup.setAutoHideEnabled(true);
@@ -489,6 +496,11 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             if (parentIndex != -1) {
                 // parent selection is given
                 m_children = true;
+            }
+            int collapsedIndex = configuration.indexOf(CONFIGURATION_COLLAPSED);
+            if (collapsedIndex != -1) {
+                // parent selection is given
+                m_collapsed = true;
             }
 
             int categoryListIndex = configuration.indexOf(CONFIGURATION_CATEGORYLIST);

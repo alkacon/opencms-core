@@ -338,6 +338,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     /** The category selection enabled flag. */
     private boolean m_isEnalbled;
 
+    /** Flag, indicating if the category tree should be collapsed when shown first. */
+    private boolean m_showCollapsed;
+
     /**
      * Default Constructor.<p>
      */
@@ -362,6 +365,25 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         boolean isSingleValue,
         List<CmsCategoryTreeEntry> categories) {
 
+        this(selectedCategories, height, isSingleValue, categories, false);
+    }
+
+    /**
+     * Constructor to collect all categories and build a view tree.<p>
+     *
+     * @param selectedCategories A list of all selected categories
+     * @param height The height of this widget
+     * @param isSingleValue Sets the modes of this widget
+     * @param categories the categories
+     * @param showCollapsed if true, the category tree will be collapsed when opened.
+     **/
+    public CmsCategoryTree(
+        Collection<String> selectedCategories,
+        int height,
+        boolean isSingleValue,
+        List<CmsCategoryTreeEntry> categories,
+        boolean showCollapsed) {
+
         this();
         m_isSingleSelection = isSingleValue;
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryItem());
@@ -375,6 +397,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         m_list.setHeight(height + "px");
         m_resultList = categories;
         m_list.add(m_scrollList);
+        m_showCollapsed = showCollapsed;
         updateContentTree(categories, m_selectedCategories);
         init();
     }
@@ -605,7 +628,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
                 m_scrollList.add(treeItem);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
-                treeItem.setOpen(true);
+                treeItem.setOpen(!m_showCollapsed);
             }
         } else {
             showIsEmptyLabel();
