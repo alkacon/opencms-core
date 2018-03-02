@@ -61,6 +61,7 @@ import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsMacroResolver;
@@ -613,6 +614,7 @@ public final class CmsJspStandardContextBean {
         public Object transform(Object arg0) {
 
             String result = null;
+            CmsGalleryNameMacroResolver resolver = null;
             if (m_metaMappings.containsKey(arg0)) {
                 MetaMapping mapping = m_metaMappings.get(arg0);
                 try {
@@ -621,6 +623,7 @@ public final class CmsJspStandardContextBean {
                     : CmsResourceFilter.DEFAULT;
                     CmsResource res = m_cms.readResource(mapping.m_contentId, filter);
                     CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, res, m_request);
+                    resolver = new CmsGalleryNameMacroResolver(m_cms, content, getLocale());
                     if (content.hasLocale(getLocale())) {
                         I_CmsXmlContentValue val = content.getValue(mapping.m_elementXPath, getLocale());
                         if (val != null) {
@@ -633,6 +636,9 @@ public final class CmsJspStandardContextBean {
                 }
                 if (result == null) {
                     result = mapping.m_defaultValue;
+                }
+                if ((resolver != null) && (result != null)) {
+                    result = resolver.resolveMacros(result);
                 }
             }
             return result;
