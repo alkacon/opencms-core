@@ -72,12 +72,12 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.ComboBox.ItemStyleGenerator;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.ComboBox.ItemStyleGenerator;
 
 /**
  * The copy move dialog.<p>
@@ -167,6 +167,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
      * @param mode the dialog mode
      */
     public CmsCopyMoveDialog(final I_CmsDialogContext context, DialogMode mode) {
+
         m_dialogMode = mode;
         m_updateResources = new HashSet<CmsUUID>();
         m_context = context;
@@ -827,7 +828,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
      */
     private void showMacroResolverDialog(CmsResource resource) {
 
-        final Window window = CmsBasicDialog.prepareWindow();
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SET_MACRO_VALUES_TITLE_0));
         m_macroDialog = new CmsMacroResolverDialog(new Runnable() {
 
