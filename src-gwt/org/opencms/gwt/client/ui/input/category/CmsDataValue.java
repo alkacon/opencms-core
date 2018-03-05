@@ -145,8 +145,8 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      *
      * @param width the width of this widget.
      * @param part the part of the width that should be used for the label
-     * @param parameters the values that should be shown in this widget. The first value is used for the label
      * @param image the css string for the image that is shown in front of the label
+     * @param parameters the values that should be shown in this widget. The first value is used for the label
      */
     public CmsDataValue(int width, int part, String image, String... parameters) {
 
