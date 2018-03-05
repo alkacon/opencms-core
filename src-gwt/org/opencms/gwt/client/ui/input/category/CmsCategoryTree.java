@@ -626,8 +626,10 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
-                m_scrollList.add(treeItem);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
+                if (!category.getPath().isEmpty() || (treeItem.getChildCount() > 0)) {
+                    m_scrollList.add(treeItem);
+                }
                 treeItem.setOpen(!m_showCollapsed);
             }
         } else {
@@ -1080,12 +1082,16 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         if (!isEnabled()) {
             checkBox.disable(m_disabledReason);
         }
+        if (category.getPath().isEmpty()) {
+            checkBox.setVisible(false);
+        }
         // bild the CmsTreeItem out of the widget and the check box
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         // abb the handler to the check box
         dataValue.addClickHandler(new DataValueClickHander(treeItem));
 
         checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(treeItem));
+
         // set the right style for the small view
         treeItem.setSmallView(true);
         treeItem.setId(category.getPath());

@@ -731,22 +731,29 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.util.List)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.lang.String)
      */
-    public List<CmsCategoryTreeEntry> getCategories(String fromPath, boolean includeSubCats, List<String> refPaths)
+    public List<CmsCategoryTreeEntry> getCategories(String fromPath, boolean includeSubCats, String refPath)
+    throws CmsRpcException {
+
+        return getCategories(fromPath, includeSubCats, refPath, false);
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.util.List, boolean)
+     */
+    public List<CmsCategoryTreeEntry> getCategories(
+        String fromPath,
+        boolean includeSubCats,
+        String refPath,
+        boolean showWithRepositories)
     throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         CmsCategoryService catService = CmsCategoryService.getInstance();
 
         List<String> repositories = new ArrayList<String>();
-        if ((refPaths != null) && !refPaths.isEmpty()) {
-            for (String refPath : refPaths) {
-                repositories.addAll(catService.getCategoryRepositories(getCmsObject(), refPath));
-            }
-        } else {
-            repositories.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
-        }
+        repositories.addAll(catService.getCategoryRepositories(getCmsObject(), refPath));
 
         List<CmsCategoryTreeEntry> result = null;
         try {
@@ -755,7 +762,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 cms,
                 fromPath,
                 includeSubCats,
-                repositories);
+                repositories,
+                showWithRepositories);
             categories = catService.localizeCategories(
                 cms,
                 categories,
@@ -800,7 +808,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 structureId,
                 CmsVfsService.getPageInfoWithLock(cms, resource),
                 currentCategories,
-                getCategories(null, true, Collections.singletonList(cms.getSitePath(resource))));
+                getCategories(null, true, cms.getSitePath(resource)));
         } catch (CmsException e) {
             error(e);
         }

@@ -83,6 +83,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** Configuration parameter to set the collapsing state when opening the selection. */
     private static final String CONFIGURATION_COLLAPSED = "collapsed";
 
+    /** Configuration parameter to set flag, indicating if categories should be shown separated by repository. */
+    private static final String CONFIGURATION_SHOW_WITH_REPOSITORY = "showWithRepository";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryWidget.class);
 
@@ -103,6 +106,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The 'collapsed' flag, indicating if the category tree(s) should be collapsed in the beginning. */
     private boolean m_collapsed;
+
+    /** If true, the categories are shown separate for each repository. */
+    private boolean m_showWithRepository;
 
     /**
      * Creates a new category widget.<p>
@@ -170,6 +176,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
             result.append(CONFIGURATION_COLLAPSED);
         }
+        // append 'showWithCategory' flag, if necessary
+        if (m_showWithRepository) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_SHOW_WITH_REPOSITORY);
+        }
         return result.toString();
     }
 
@@ -230,21 +243,16 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
             result.append(CONFIGURATION_COLLAPSED);
         }
-        CmsCategoryService catService = CmsCategoryService.getInstance();
-        List<String> categoriesList = catService.getCategoryRepositories(cms, cms.getSitePath(resource));
-        Iterator<String> it = categoriesList.iterator();
-        String catList = "|CategoryList=";
-        int i = 0;
-        while (it.hasNext()) {
-            if (i > 0) {
-                catList += ",";
+        // append 'showWithCategory' flag, if necessary
+        if (m_showWithRepository) {
+            if (result.length() > 0) {
+                result.append("|");
             }
-            String rootPath = it.next();
-            catList += rootPath;
-            i++;
+            result.append(CONFIGURATION_SHOW_WITH_REPOSITORY);
         }
+        String refpath = "|refpath=" + cms.getSitePath(resource);
 
-        return result.append(catList).toString();
+        return result.append(refpath).toString();
     }
 
     /**
@@ -581,6 +589,12 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             if (openClosedState != -1) {
                 m_collapsed = true;
             }
+            int showWithRepository = configuration.indexOf(CONFIGURATION_SHOW_WITH_REPOSITORY);
+            if (showWithRepository != -1) {
+                // parent selection is given
+                m_showWithRepository = true;
+            }
+
         }
         super.setConfiguration(configuration);
     }

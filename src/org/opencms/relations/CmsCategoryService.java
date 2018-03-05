@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -465,7 +466,7 @@ public class CmsCategoryService {
     throws CmsException {
 
         List<String> repositories = getCategoryRepositories(cms, referencePath);
-        return readCategoriesForRepositories(cms, parentCategoryPath, includeSubCats, repositories);
+        return readCategoriesForRepositories(cms, parentCategoryPath, includeSubCats, repositories, false);
     }
 
     /**
@@ -485,16 +486,44 @@ public class CmsCategoryService {
         List<String> repositories)
     throws CmsException {
 
+        return readCategoriesForRepositories(cms, parentCategoryPath, includeSubCats, repositories, false);
+    }
+
+    /**
+     * Returns all categories given some search parameters.<p>
+     *
+     * @param cms the current cms context
+     * @param parentCategoryPath the path of the parent category to get the categories for
+     * @param includeSubCats if to include all categories, or first level child categories only
+     * @param repositories a list of site paths
+     * @param includeRepositories flag, indicating if the repositories itself should be returned as category.
+     * @return a list of {@link CmsCategory} objects
+     * @throws CmsException  if something goes wrong
+     */
+    public List<CmsCategory> readCategoriesForRepositories(
+        CmsObject cms,
+        String parentCategoryPath,
+        boolean includeSubCats,
+        List<String> repositories,
+        boolean includeRepositories)
+    throws CmsException {
+
         String catPath = parentCategoryPath;
         if (catPath == null) {
             catPath = "";
         }
-        Set<CmsCategory> cats = new HashSet<CmsCategory>();
+
+        Collection<CmsCategory> cats = includeRepositories ? new ArrayList<CmsCategory>() : new HashSet<CmsCategory>();
+
         // traverse in reverse order, to ensure the set will contain most global categories
         Iterator<String> it = repositories.iterator();
         while (it.hasNext()) {
             String repository = it.next();
             try {
+                if (includeRepositories) {
+                    CmsCategory repo = getCategory(cms, cms.readResource(repository));
+                    cats.add(repo);
+                }
                 cats.addAll(
                     internalReadSubCategories(cms, internalCategoryRootPath(repository, catPath), includeSubCats));
             } catch (CmsVfsResourceNotFoundException e) {
@@ -503,7 +532,9 @@ public class CmsCategoryService {
             }
         }
         List<CmsCategory> ret = new ArrayList<CmsCategory>(cats);
-        Collections.sort(ret);
+        if (!includeRepositories) {
+            Collections.sort(ret);
+        }
         return ret;
     }
 

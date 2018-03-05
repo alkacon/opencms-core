@@ -94,13 +94,31 @@ public interface I_CmsCoreServiceAsync {
      *
      * @param fromCatPath the category path to start with, can be <code>null</code> or empty to use the root
      * @param includeSubCats if to include all categories, or first level child categories only
-     * @param refVfsPaths the reference paths, can be <code>null</code> to only use the system repository
+     * @param refVfsPath the reference path (site-relative path according to which the available category repositories are determined),
+     *        can be <code>null</code> to only use the system repository
      * @param callback the async callback
      */
     void getCategories(
         String fromCatPath,
         boolean includeSubCats,
-        List<String> refVfsPaths,
+        String refVfsPath,
+        AsyncCallback<List<CmsCategoryTreeEntry>> callback);
+
+    /**
+     * Returns the categories for the given search parameters.<p>
+     *
+     * @param fromCatPath the category path to start with, can be <code>null</code> or empty to use the root
+     * @param includeSubCats if to include all categories, or first level child categories only
+     * @param refVfsPath the reference path (site-relative path according to which the available category repositories are determined),
+     *        can be <code>null</code> to only use the system repository
+     * @param withRepositories flag, indicating if also the category repositories should be returned as category
+     * @param callback the async callback
+     */
+    void getCategories(
+        String fromCatPath,
+        boolean includeSubCats,
+        String refVfsPath,
+        boolean withRepositories,
         AsyncCallback<List<CmsCategoryTreeEntry>> callback);
 
     /**
