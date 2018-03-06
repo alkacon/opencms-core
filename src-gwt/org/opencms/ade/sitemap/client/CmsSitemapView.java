@@ -337,8 +337,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         nonlocalRootInfo.setBigIconClasses(CmsCategoryBean.BIG_ICON_CLASSES);
         final CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
 
-        m_categoryTree.add(localRoot);
         m_categoryTree.add(nonlocalRoot);
+        m_categoryTree.add(localRoot);
 
         for (Boolean isLocal : Arrays.asList(Boolean.FALSE, Boolean.TRUE)) {
             for (CmsCategoryTreeEntry entry : entries.get(isLocal)) {
@@ -1681,8 +1681,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-        $wnd.initVaadin();
-    }-*/;
+                                     $wnd.initVaadin();
+                                     }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>
