@@ -86,7 +86,7 @@ public class CmsSitemapEditConfigAction extends A_CmsWorkplaceAction implements 
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("reload", Boolean.TRUE.toString());
-        params.put("filename", "%(subsite)/.content/.config, ACTION_ID");
+        params.put("filename", "%(subsite)/.content/.config");
         return params;
     }
 
