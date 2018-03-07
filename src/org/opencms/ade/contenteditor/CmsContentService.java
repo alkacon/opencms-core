@@ -1486,7 +1486,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     StringBuffer pathes = new StringBuffer();
                     for (CmsCategory category : categories) {
                         if (category.getPath().startsWith(mainCategoryPath)) {
-                            pathes.append(category.getBasePath()).append(category.getPath()).append(',');
+                            String path = category.getBasePath() + category.getPath();
+                            path = getCmsObject().getRequestContext().removeSiteRoot(path);
+                            pathes.append(path).append(',');
                         }
                     }
                     String dynamicConfigString = pathes.length() > 0 ? pathes.substring(0, pathes.length() - 1) : "";
