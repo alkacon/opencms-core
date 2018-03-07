@@ -23,8 +23,10 @@ chacc '/system/workplace/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V'
 createFolder '/system/config/' 'notification'
 writeProperty '/system/config/notification/' 'Title' 'Content Notification'
 writeProperty '/system/workplace/commons/' 'cache' 'false'
-# create folders for categories
+# create folders for categories and set title / german title
 createFolder '/system/' 'categories'
+writeProperty '/system/categories/' 'Title' 'Global categories'
+writeProperty '/system/categories/' 'Title_de' 'Globale Kategorien'
 # create folders for user images
 chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		]]></import-script>
