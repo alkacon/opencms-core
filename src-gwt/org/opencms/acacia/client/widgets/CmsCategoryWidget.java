@@ -28,6 +28,7 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
+import org.opencms.acacia.shared.CmsWidgetUtil;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -35,11 +36,11 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsCategoryField;
 import org.opencms.gwt.client.ui.input.category.CmsCategoryTree;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Element;
@@ -103,7 +104,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     private static final String CONFIGURATION_REFPATH = "refpath";
 
     /** Configuration parameter to set the 'selection type' parameter. */
-    private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
+    private static final String CONFIGURATION_PARENTSELECTION = "parentselection";
 
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
@@ -112,7 +113,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     private static final String CONFIGURATION_COLLAPSED = "collapsed";
 
     /** Configuration parameter to set flag, indicating if categories should be shown separated by repository. */
-    private static final String CONFIGURATION_SHOW_WITH_REPOSITORY = "showWithRepository";
+    private static final String CONFIGURATION_SHOW_WITH_REPOSITORY = "showwithrepository";
 
     /** Configuration parameter to set the default height. */
     private static final int DEFAULT_HEIGHT = 30;
@@ -168,9 +169,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /** Is true if only one value is set in xml. */
     private boolean m_isSingleValue;
 
-    /** The selection type parsed from configuration string. */
-    private String m_selectionType = "single";
-
     /** If true, the category selection opens with collapsed category trees. */
     private boolean m_collapsed;
 
@@ -184,15 +182,9 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     public CmsCategoryWidget(String config) {
 
         m_categoryField = new CmsCategoryField();
-        initWidget(m_categoryField);
         m_selected = new HashSet<String>();
-        //merge configuration string
+        //parse configuration string and set member variables
         parseConfiguration(config);
-        if (m_selectionType.equals("multi")) {
-            m_isSingleValue = false;
-        } else {
-            m_isSingleValue = true;
-        }
         m_categoryField.setParentSelection(m_children);
         m_categoryField.getScrollPanel().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
         m_categoryField.addDomHandler(new ClickHandler() {
@@ -207,6 +199,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
 
             }
         }, ClickEvent.getType());
+        initWidget(m_categoryField);
 
     }
 
@@ -321,17 +314,15 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
 
         String[] selectedArray = value.split(",");
         m_selected.clear();
-        if (value.indexOf(",") > -1) {
-            for (String values : selectedArray) {
-                m_selected.add(values);
-            }
-        } else {
-            m_selected.add(value);
+        for (String selectedCat : selectedArray) {
+            m_selected.add(selectedCat);
         }
+
+        displayValue();
+
         if (fireEvents) {
             fireChangeEvent();
         }
-        displayValue();
     }
 
     /**
@@ -398,7 +389,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /**
      * Generates the right height for the view.<p>
      * */
-    protected void setheight() {
+    protected void setHeight() {
 
         if (m_categoryField.getValuesSet() > 0) {
             m_height = (m_categoryField.getValuesSet() * 26) + 4;
@@ -416,6 +407,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
         }
 
         m_categoryField.setHeight(m_height);
+
     }
 
     /**
@@ -453,7 +445,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
                         m_loadingCategoryTree = false;
                         // start to generate the tree view.
                         m_categoryField.buildCategoryTree(m_resultList, m_selected);
-                        setheight();
+                        setHeight();
                     }
 
                 };
@@ -461,7 +453,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             }
         } else {
             m_categoryField.buildCategoryTree(m_resultList, m_selected);
-            setheight();
+            setHeight();
         }
     }
 
@@ -472,55 +464,15 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
      * */
     private void parseConfiguration(String configuration) {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
-            int categoryIndex = configuration.indexOf(CONFIGURATION_CATEGORY);
-            if (categoryIndex != -1) {
-                // category is given
-                String category = configuration.substring(CONFIGURATION_CATEGORY.length() + 1);
-                if (category.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    m_category = category.substring(0, category.indexOf('|'));
-                }
-            }
-            int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
-            if (selectiontypeIndex != -1) {
-                // selection type is given
-                String selectiontype = configuration.substring(
-                    selectiontypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
-                if (selectiontype.indexOf("|") != -1) {
-                    // cut eventual following configuration values
-                    selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));
-                }
-                m_selectionType = selectiontype;
-            }
-            int parentIndex = configuration.indexOf(CONFIGURATION_PARENTSELECTION);
-            if (parentIndex != -1) {
-                // parent selection is given
-                m_children = true;
-            }
-            int collapsedIndex = configuration.indexOf(CONFIGURATION_COLLAPSED);
-            if (collapsedIndex != -1) {
-                // parent selection is given
-                m_collapsed = true;
-            }
-            int showWithRepository = configuration.indexOf(CONFIGURATION_SHOW_WITH_REPOSITORY);
-            if (showWithRepository != -1) {
-                // parent selection is given
-                m_showWithRepository = true;
-            }
-
-            int categoryListIndex = configuration.indexOf(CONFIGURATION_REFPATH);
-            if (categoryListIndex != -1) {
-                // selection type is given
-                String catList = configuration.substring(categoryListIndex + CONFIGURATION_REFPATH.length() + 1);
-                if (catList.indexOf("|") != -1) {
-                    // cut eventual following configuration values
-                    catList = catList.substring(0, catList.indexOf("|"));
-                }
-                m_refPath = catList;
-            }
-
+        Map<String, String> configOptions = CmsWidgetUtil.parsePipeSeparatedConfigString(configuration);
+        if (!configOptions.isEmpty()) {
+            m_category = CmsWidgetUtil.getStringOption(configOptions, CONFIGURATION_CATEGORY, m_category);
+            m_isSingleValue = !("multi".equals(
+                CmsWidgetUtil.getStringOption(configOptions, CONFIGURATION_SELECTIONTYPE, "single")));
+            m_children = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_PARENTSELECTION);
+            m_collapsed = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_COLLAPSED);
+            m_showWithRepository = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_SHOW_WITH_REPOSITORY);
+            m_refPath = CmsWidgetUtil.getStringOption(configOptions, CONFIGURATION_REFPATH, m_refPath);
         }
     }
-
 }

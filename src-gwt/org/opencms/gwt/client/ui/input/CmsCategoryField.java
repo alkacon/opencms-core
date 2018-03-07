@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -160,7 +159,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     private boolean m_selectParent;
 
     /** The side path of the last added category. */
-    private String m_singelSidePath = "";
+    private String m_singleSidePath = "";
 
     /** Count the numbers of values shown. */
     private int m_valuesSet;
@@ -216,21 +215,23 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list
                 CmsTreeItem treeItem;
-                if (m_selectParent || !hasSelectedChildren(category.getChildren(), selectedCategories)) {
-                    treeItem = buildTreeItem(category, selectedCategories, false);
-                    if (treeItem.isOpen()) {
-                        m_allSidePath.add(category.getSitePath());
+                boolean hasSelectedChildren = hasSelectedChildren(category.getChildren(), selectedCategories);
+                if (!category.getPath().isEmpty() || hasSelectedChildren) {
+                    if (m_selectParent || !hasSelectedChildren) {
+                        treeItem = buildTreeItem(category, selectedCategories, false);
+                        if (treeItem.isOpen()) {
+                            m_allSidePath.add(category.getSitePath());
+                        }
+                    } else {
+                        treeItem = buildTreeItem(category, selectedCategories, true);
                     }
-                } else {
-                    treeItem = buildTreeItem(category, selectedCategories, true);
-                }
-                if (treeItem.isOpen()) {
-                    m_singelSidePath = category.getSitePath();
+                    if (treeItem.isOpen()) {
+                        m_singleSidePath = category.getSitePath();
 
-                    m_valuesSet++;
-                    addChildren(treeItem, category.getChildren(), selectedCategories);
+                        m_valuesSet++;
+                        addChildren(treeItem, category.getChildren(), selectedCategories);
+                    }
                 }
-
             }
         }
         m_scrollPanel.add(m_categories);
@@ -300,7 +301,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      */
     public String getSingelSitePath() {
 
-        return m_singelSidePath;
+        return m_singleSidePath;
     }
 
     /**
@@ -438,7 +439,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                     }
                 }
                 if (isPartofPath) {
-                    m_singelSidePath = child.getSitePath();
+                    m_singleSidePath = child.getSitePath();
                     m_valuesSet++;
                     if (m_selectParent || !hasSelectedChildren(child.getChildren(), selectedCategories)) {
                         m_allSidePath.add(child.getSitePath());
@@ -468,24 +469,19 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         Collection<String> selectedCategories,
         boolean inactive) {
 
-        CmsListInfoBean categoryBean = new CmsListInfoBean(
-            category.getTitle(),
-            CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
-            ? category.getDescription()
-            : category.getPath(),
-            null);
-        // set the list item widget
-
         CmsDataValue categoryTreeItem = new CmsDataValue(
             500,
             4,
             CmsCategoryBean.SMALL_ICON_CLASSES,
-            categoryBean.getTitle(),
-            categoryBean.getSubTitle());
+            category.getTitle(),
+            category.getPath());
         if (inactive) {
             categoryTreeItem.setInactive();
         }
-        categoryTreeItem.setTitle(categoryBean.getSubTitle());
+        categoryTreeItem.setTitle(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
+            ? category.getDescription()
+            : category.getPath());
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
         boolean isPartofPath = false;

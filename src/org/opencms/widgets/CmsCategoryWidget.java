@@ -27,6 +27,7 @@
 
 package org.opencms.widgets;
 
+import org.opencms.acacia.shared.CmsWidgetUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -48,6 +49,7 @@ import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -75,7 +77,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     public static final String CONFIGURATION_PROPERTY = "property";
 
     /** Configuration parameter to set the 'selection type' parameter. */
-    private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
+    private static final String CONFIGURATION_PARENTSELECTION = "parentselection";
 
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
@@ -84,7 +86,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     private static final String CONFIGURATION_COLLAPSED = "collapsed";
 
     /** Configuration parameter to set flag, indicating if categories should be shown separated by repository. */
-    private static final String CONFIGURATION_SHOW_WITH_REPOSITORY = "showWithRepository";
+    private static final String CONFIGURATION_SHOW_WITH_REPOSITORY = "showwithrepository";
+
+    /** Configuration parameter to set flag, indicating if categories should be shown separated by repository. */
+    private static final String CONFIGURATION_REFPATH = "refpath";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryWidget.class);
@@ -93,7 +98,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     private String m_category;
 
     /** The 'only leaf' flag. */
-    private String m_onlyLeafs;
+    private boolean m_onlyLeafs;
 
     /** The value if the parents should be selected with the children. */
     private boolean m_parentSelection;
@@ -135,55 +140,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     @Override
     public String getConfiguration() {
 
-        StringBuffer result = new StringBuffer(8);
+        Map<String, String> result = generateCommonConfigPart();
 
-        if (m_category != null) {
-            result.append(CONFIGURATION_CATEGORY);
-            result.append("=");
-            result.append(m_category);
-        }
-        // append 'only leafs' to configuration
-        if (m_onlyLeafs != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_ONLYLEAFS);
-            result.append("=");
-            result.append(m_onlyLeafs);
-        }
-        // append 'property' to configuration
-        if (m_property != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_PROPERTY);
-            result.append("=");
-            result.append(m_property);
-        }
-        // append 'selectionType' to configuration
-        if (m_selectiontype != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_SELECTIONTYPE);
-            result.append("=");
-            result.append(m_selectiontype);
-        }
-        // append 'collapsed' flag, if necessary
-        if (m_collapsed) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_COLLAPSED);
-        }
-        // append 'showWithCategory' flag, if necessary
-        if (m_showWithRepository) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_SHOW_WITH_REPOSITORY);
-        }
-        return result.toString();
+        return CmsWidgetUtil.generatePipeSeparatedConfigString(result);
     }
 
     /**
@@ -196,23 +155,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        StringBuffer result = new StringBuffer();
-
-        // NOTE: set starting category as "category=" - independently if it is set via "property" or "category" config option.
-        String startingCategory = this.getStartingCategory(cms, cms.getSitePath(resource));
-        if (startingCategory.length() > 1) {
-            result.append(CONFIGURATION_CATEGORY).append("=").append(startingCategory);
-        }
-        // append 'only leafs' to configuration
-        if (m_onlyLeafs != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_ONLYLEAFS);
-            result.append("=");
-            result.append(m_onlyLeafs);
-        }
-        // append 'selection type' to configuration in case of the schemaType
+        // adjust 'selection type' according to schema type.
         if (!m_selectiontype.equals("single")
             && (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)
                 || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME))) {
@@ -221,38 +164,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             m_selectiontype = "single";
         }
 
-        if (m_selectiontype != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_SELECTIONTYPE);
-            result.append("=");
-            result.append(m_selectiontype);
-        }
+        // NOTE: set starting category as "category=" - independently if it is set via "property" or "category" config option.
+        m_category = this.getStartingCategory(cms, cms.getSitePath(resource));
+        Map<String, String> result = generateCommonConfigPart();
+        if (m_parentSelection) result.put(CONFIGURATION_PARENTSELECTION, null);
+        result.put(CONFIGURATION_REFPATH, cms.getSitePath(resource));
 
-        if (m_parentSelection) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_PARENTSELECTION);
-        }
-        // append 'collapsed' flag, if necessary
-        if (m_collapsed) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_COLLAPSED);
-        }
-        // append 'showWithCategory' flag, if necessary
-        if (m_showWithRepository) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_SHOW_WITH_REPOSITORY);
-        }
-        String refpath = "|refpath=" + cms.getSitePath(resource);
-
-        return result.append(refpath).toString();
+        return CmsWidgetUtil.generatePipeSeparatedConfigString(result);
     }
 
     /**
@@ -537,64 +455,23 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     @Override
     public void setConfiguration(String configuration) {
 
+        Map<String, String> configOptions = CmsWidgetUtil.parsePipeSeparatedConfigString(configuration);
         // we have to validate later, since we do not have any cms object here
         m_category = "";
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
-            int categoryIndex = configuration.indexOf(CONFIGURATION_CATEGORY);
-            if (categoryIndex != -1) {
-                // category is given
-                String category = configuration.substring(CONFIGURATION_CATEGORY.length() + 1);
-                if (category.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    category = category.substring(0, category.indexOf('|'));
-                }
-                m_category = category;
+        if (!configOptions.isEmpty()) {
+            m_category = CmsWidgetUtil.getStringOption(configOptions, CONFIGURATION_CATEGORY, m_category);
+            m_onlyLeafs = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_ONLYLEAFS);
+            m_parentSelection = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_PARENTSELECTION);
+            m_property = CmsWidgetUtil.getStringOption(configOptions, CONFIGURATION_PROPERTY, m_property);
+            m_selectiontype = CmsWidgetUtil.getStringOption(
+                configOptions,
+                CONFIGURATION_SELECTIONTYPE,
+                m_selectiontype);
+            if (null != m_selectiontype) {
+                m_selectiontype = m_selectiontype.toLowerCase();
             }
-            int onlyLeafsIndex = configuration.indexOf(CONFIGURATION_ONLYLEAFS);
-            if (onlyLeafsIndex != -1) {
-                // only leafs is given
-                String onlyLeafs = configuration.substring(onlyLeafsIndex + CONFIGURATION_ONLYLEAFS.length() + 1);
-                if (onlyLeafs.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    onlyLeafs = onlyLeafs.substring(0, onlyLeafs.indexOf('|'));
-                }
-                m_onlyLeafs = onlyLeafs;
-            }
-            int parentSelectionIndex = configuration.indexOf(CONFIGURATION_PARENTSELECTION);
-            if (parentSelectionIndex != -1) {
-                // parent selection is given
-                m_parentSelection = true;
-            }
-            int propertyIndex = configuration.indexOf(CONFIGURATION_PROPERTY);
-            if (propertyIndex != -1) {
-                // property is given
-                String property = configuration.substring(propertyIndex + CONFIGURATION_PROPERTY.length() + 1);
-                if (property.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    property = property.substring(0, property.indexOf('|'));
-                }
-                m_property = property;
-            }
-            int selectionTypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
-            if (selectionTypeIndex != -1) {
-                String selectionType = configuration.substring(
-                    selectionTypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
-                if (selectionType.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    selectionType = selectionType.substring(0, selectionType.indexOf('|'));
-                }
-                m_selectiontype = selectionType;
-            }
-            int openClosedState = configuration.indexOf(CONFIGURATION_COLLAPSED);
-            if (openClosedState != -1) {
-                m_collapsed = true;
-            }
-            int showWithRepository = configuration.indexOf(CONFIGURATION_SHOW_WITH_REPOSITORY);
-            if (showWithRepository != -1) {
-                // parent selection is given
-                m_showWithRepository = true;
-            }
-
+            m_collapsed = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_COLLAPSED);
+            m_showWithRepository = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_SHOW_WITH_REPOSITORY);
         }
         super.setConfiguration(configuration);
     }
@@ -754,5 +631,38 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
         }
         return file;
+    }
+
+    /**
+     * Helper to generate the common configuration part for client-side and server-side widget.
+     * @return the common configuration options as map
+     */
+    private Map<String, String> generateCommonConfigPart() {
+
+        Map<String, String> result = new HashMap<>();
+        if (m_category != null) {
+            result.put(CONFIGURATION_CATEGORY, m_category);
+        }
+        // append 'only leafs' to configuration
+        if (m_onlyLeafs) {
+            result.put(CONFIGURATION_ONLYLEAFS, null);
+        }
+        // append 'property' to configuration
+        if (m_property != null) {
+            result.put(CONFIGURATION_PROPERTY, m_property);
+        }
+        // append 'selectionType' to configuration
+        if (m_selectiontype != null) {
+            result.put(CONFIGURATION_SELECTIONTYPE, m_selectiontype);
+        }
+        // append 'collapsed' flag, if necessary
+        if (m_collapsed) {
+            result.put(CONFIGURATION_COLLAPSED, null);
+        }
+        // append 'showWithCategory' flag, if necessary
+        if (m_showWithRepository) {
+            result.put(CONFIGURATION_SHOW_WITH_REPOSITORY, null);
+        }
+        return result;
     }
 }
