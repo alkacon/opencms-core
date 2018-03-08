@@ -40,8 +40,8 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Dialog to generate a random password.<p>
@@ -61,6 +61,7 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
 
         setWidth("500px");
         FormLayout layout = new FormLayout();
+        layout.setWidth("100%");
         layout.addStyleName(OpenCmsTheme.FORMLAYOUT_WORKPLACE_MAIN);
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -78,6 +79,7 @@ public class CmsGeneratePasswordDialog extends CmsBasicDialog {
                 }
             },
             CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_REFRESH_0));
+
         Label label = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GEN_PASSWORD_TEXT_0));
         label.setWidth("100%");
         layout.addComponent(label);
