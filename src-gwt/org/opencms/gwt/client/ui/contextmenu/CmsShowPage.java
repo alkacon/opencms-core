@@ -29,7 +29,6 @@ package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.util.CmsUUID;
@@ -56,13 +55,11 @@ public class CmsShowPage implements I_CmsHasContextMenuCommand, I_CmsContextMenu
      */
     public void execute(final CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-        CmsDebugLog.consoleLog("Executing show page");
         CmsRpcAction<CmsPreviewInfo> previewAction = new CmsRpcAction<CmsPreviewInfo>() {
 
             @Override
             public void execute() {
 
-                CmsDebugLog.consoleLog("Calling VFS service");
                 CmsCoreProvider.getVfsService().getPreviewInfo(structureId, CmsCoreProvider.get().getLocale(), this);
                 start(0, true);
             }
@@ -71,7 +68,6 @@ public class CmsShowPage implements I_CmsHasContextMenuCommand, I_CmsContextMenu
             protected void onResponse(CmsPreviewInfo result) {
 
                 stop(false);
-                CmsDebugLog.consoleLog("Calling preview URL: " + result.getPreviewUrl());
                 Window.Location.assign(result.getPreviewUrl());
             }
         };

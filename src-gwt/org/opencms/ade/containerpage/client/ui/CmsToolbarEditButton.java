@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsShowPage;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -60,9 +61,7 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
         button.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-        if (!CmsContainerpageController.get().getData().isModelGroup() && element.isModelGroup()) {
-            button.disable("");
-        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
             if (element.hasWritePermission()
                 && !((element instanceof CmsGroupContainerElementPanel)
                     && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
@@ -86,7 +85,11 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
-            openEditor(element);
+            if (!CmsContainerpageController.get().getData().isModelGroup() && element.isModelGroup()) {
+                new CmsShowPage().execute(element.getModelGroupId(), null, null);
+            } else {
+                openEditor(element);
+            }
         } else {
             openLockReport(element);
         }
