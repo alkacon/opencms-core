@@ -58,7 +58,6 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -105,6 +104,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
          * @param legend the legend for the fieldset
          */
         public FieldPanel(CmsListInfoBean info, String legend) {
+
             super(info, legend);
         }
 
@@ -147,6 +147,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
          * @param label the label
          */
         GroupOption(String label) {
+
             m_label = label;
         }
 
@@ -357,17 +358,21 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 contextsFieldset.add(m_contextsWidget);
                 fieldSetPanel.getMainPanel().add(contextsFieldset);
             }
-            //            if (m_elementBean.getSettingConfig(m_containerId).isEmpty()) {
-            //                // hide the settings field set, if there are no settings to edit
-            //                fieldSetPanel.getFieldSet().setVisible(false);
-            //            }
         } else {
             formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
         }
-        String id = CmsContainerpageController.getServerId(elementBean.getClientId());
-        if (CmsUUID.isValidUUID(id) && !(new CmsUUID(id).isNullUUID())) {
+        CmsUUID serverId = null;
+        if (elementBean.isModelGroup()) {
+            serverId = elementBean.getModelGroupId();
+        } else {
+            String id = CmsContainerpageController.getServerId(elementBean.getClientId());
+            if (CmsUUID.isValidUUID(id) && !(new CmsUUID(id).isNullUUID())) {
+                serverId = new CmsUUID(id);
+            }
+        }
+        if (serverId != null) {
             CmsContextMenuButton menuButton = new CmsContextMenuButton(
-                new CmsUUID(id),
+                serverId,
                 new CmsDialogContextMenuHandler(),
                 AdeContext.resourceinfo);
             menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
@@ -700,28 +705,28 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      * @param cssContent the CSS snippet
      */
     private native void ensureInlineCss(String formatterId, String cssContent)/*-{
-        var styles = $wnd.document.styleSheets;
-        for (var i = 0; i < styles.length; i++) {
-            // IE uses the owningElement property
-            var styleNode = styles[i].owningElement ? styles[i].owningElement
-                    : styles[i].ownerNode;
-            if (styleNode != null && styleNode.rel == formatterId) {
-                // inline css is present
-                return;
-            }
-        }
-        // include inline css into head
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var cssNode = $wnd.document.createElement('style');
-        cssNode.type = 'text/css';
-        cssNode.rel = formatterId;
-        if (cssNode.styleSheet) {
-            // in case of IE
-            cssNode.styleSheet.cssText = cssContent;
-        } else {
-            // otherwise
-            cssNode.appendChild(document.createTextNode(cssContent));
-        }
-        headID.appendChild(cssNode);
+		var styles = $wnd.document.styleSheets;
+		for (var i = 0; i < styles.length; i++) {
+			// IE uses the owningElement property
+			var styleNode = styles[i].owningElement ? styles[i].owningElement
+					: styles[i].ownerNode;
+			if (styleNode != null && styleNode.rel == formatterId) {
+				// inline css is present
+				return;
+			}
+		}
+		// include inline css into head
+		var headID = $wnd.document.getElementsByTagName("head")[0];
+		var cssNode = $wnd.document.createElement('style');
+		cssNode.type = 'text/css';
+		cssNode.rel = formatterId;
+		if (cssNode.styleSheet) {
+			// in case of IE
+			cssNode.styleSheet.cssText = cssContent;
+		} else {
+			// otherwise
+			cssNode.appendChild(document.createTextNode(cssContent));
+		}
+		headID.appendChild(cssNode);
     }-*/;
 }
