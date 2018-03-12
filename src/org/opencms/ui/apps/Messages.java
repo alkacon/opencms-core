@@ -57,6 +57,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_CSV_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_CSV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_FILE_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_MIMETYPE_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_MIMETYPE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_HELP_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_HELP_0";
 
     /** Message constant for key in the resource bundle. */

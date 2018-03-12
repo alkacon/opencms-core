@@ -40,6 +40,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
 import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
@@ -165,6 +166,8 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     /**Password for imported user. */
     private TextField m_password;
 
+    List<CmsUser> m_userImportList;
+
     /**Save export file button. */
     private Button m_save;
 
@@ -248,8 +251,42 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
 
             public void uploadSucceeded(SucceededEvent event) {
 
-                m_startImport.setEnabled(true);
-                m_uploadname.setValue(event.getFilename());
+                if (event.getMIMEType().startsWith("text/")) {
+                    try {
+                        m_userImportList = getUsersFromFile();
+                        m_startImport.setEnabled(true);
+                        m_uploadname.setValue(event.getFilename());
+                    } catch (Exception e) {
+                        //wrong csv columns
+                        m_startImport.setEnabled(false);
+                        m_uploadname.setValue("");
+                        CmsConfirmationDialog.show(
+                            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_FILE_0),
+                            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_CSV_0),
+                            new Runnable() {
+
+                                public void run() {
+
+                            }
+
+                            });
+
+                    }
+                } else {
+                    //Wrong mime type
+                    m_startImport.setEnabled(false);
+                    m_uploadname.setValue("");
+                    CmsConfirmationDialog.show(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_FILE_0),
+                        CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_INVALID_MIMETYPE_0),
+                        new Runnable() {
+
+                            public void run() {
+
+                        }
+
+                        });
+                }
 
             }
         });
@@ -586,11 +623,10 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
      */
     protected void importUserFromFile() {
 
-        List<CmsUser> users = getUsersFromFile();
         CmsImportUserThread thread = new CmsImportUserThread(
             m_cms,
             m_ou,
-            users,
+            m_userImportList,
             getGroupsList(m_importGroups, true),
             getRolesList(m_importRoles, true),
             m_sendMail.getValue().booleanValue());
