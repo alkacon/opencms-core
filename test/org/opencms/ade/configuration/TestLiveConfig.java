@@ -487,6 +487,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             CmsDetailPageInfo info2 = new CmsDetailPageInfo(page2.getStructureId(), page2.getRootPath(), "bar", "");
             cms.lockResource("/sites/default/.content/.config");
             manager.saveDetailPages(cms, "/sites/default/today", list(info1, info2), new CmsUUID());
+            Thread.sleep(200);
             waitForUpdate(false);
             CmsADEConfigData configData = manager.lookupConfiguration(cms, "/sites/default/today/");
             List<CmsDetailPageInfo> detailPages = configData.getAllDetailPages();
