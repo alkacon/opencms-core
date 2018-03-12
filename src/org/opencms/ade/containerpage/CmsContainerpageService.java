@@ -693,7 +693,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             element.setClientId(newClientId);
             element.setSitePath(cms.getSitePath(newResource));
             element.setResourceType(resourceType);
-            element.setIconClasses(CmsIconUtil.getIconClasses(resourceType, null, false));
+            element.setIconClasses(
+                CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, newResource), null, false));
             element.setCreateNew(newBean.isCreateNew());
         } catch (CmsException e) {
             error(e);

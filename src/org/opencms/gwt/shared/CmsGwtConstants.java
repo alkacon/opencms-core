@@ -154,7 +154,7 @@ public final class CmsGwtConstants {
     public static final String TYPE_MODELGROUP_PAGE = "modelgrouppage";
 
     /** Name for the pseudo-type 'modelgroupreuse'. */
-    public static final String TYPE_MODELGROUP_REUSE = "modelgroupreuse";
+    public static final String TYPE_MODELGROUP_COPY = "modelgroupcopy";
 
     /** Name for the type 'modelpage'. */
     public static final String TYPE_MODELPAGE = "modelpage";

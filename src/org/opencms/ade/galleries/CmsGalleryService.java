@@ -55,7 +55,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -65,7 +64,6 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -518,10 +516,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             rootPath,
             structureId,
             title,
-            CmsIconUtil.getIconClasses(
-                OpenCms.getResourceManager().getResourceType(resource).getTypeName(),
-                resource.getName(),
-                true),
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), true),
             isRoot,
             isEditable,
             children,
@@ -740,7 +735,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             }
                             result.setBigIconClasses(
                                 CmsIconUtil.getIconClasses(
-                                    OpenCms.getResourceManager().getResourceType(selectedResource).getTypeName(),
+                                    CmsIconUtil.getDisplayType(rootCms, selectedResource),
                                     path,
                                     false));
                             CmsResource resourceForType = defaultFileResource != null
@@ -750,7 +745,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             if (defaultFileResource != null) {
                                 result.setSmallIconClasses(
                                     CmsIconUtil.getIconClasses(
-                                        OpenCms.getResourceManager().getResourceType(defaultFileResource).getTypeName(),
+                                        CmsIconUtil.getDisplayType(rootCms, defaultFileResource),
                                         defaultFileResource.getName(),
                                         true));
                             }
@@ -1599,7 +1594,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setResourceType(tInfo.getResourceType().getTypeName());
                 bean.setEditable(isEditable(getCmsObject(), res));
                 bean.setBigIconClasses(
-                    CmsIconUtil.getIconClasses(tInfo.getResourceType().getTypeName(), sitePath, false));
+                    CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(getCmsObject(), res), sitePath, false));
                 list.add(bean);
             }
         }
@@ -1690,10 +1685,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setRawTitle(rawTitle);
         // resource type
         bean.setType(sResult.getResourceType());
-        bean.setBigIconClasses(CmsIconUtil.getIconClasses(sResult.getResourceType(), path, false));
         CmsResource resultResource = cms.readResource(
             new CmsUUID(sResult.getStructureId()),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+        bean.setBigIconClasses(
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resultResource), path, false));
         String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resultResource);
         if (detailType != null) {
             bean.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
@@ -1774,11 +1770,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
             }
         }
-
-        if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(cms, resultResource)) {
-            bean.setPseudoType(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
-        }
-
         bean.setResourceState(resultResource.getState());
         bean.addAdditionalInfo(
             Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
@@ -1891,10 +1882,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             rootPath,
             resource.getStructureId(),
             title,
-            CmsIconUtil.getIconClasses(
-                OpenCms.getResourceManager().getResourceType(resource).getTypeName(),
-                resource.getName(),
-                true),
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), true),
             isRoot,
             isEditable(cms, resource),
             childBeans,
@@ -2829,14 +2817,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             isRoot,
             navElement.isHiddenNavigationEntry());
         result.setSiteRoot(OpenCms.getSiteManager().getSiteRoot(ownResource.getRootPath()));
+        String displayType = CmsIconUtil.getDisplayType(
+            cms,
+            defaultFileResource != null ? defaultFileResource : ownResource);
         result.setBigIconClasses(
             CmsIconUtil.getIconClasses(
-                type,
+                displayType,
                 defaultFileResource != null ? defaultFileResource.getName() : ownResource.getName(),
                 false));
         result.setSmallIconClasses(
             CmsIconUtil.getIconClasses(
-                type,
+                displayType,
                 defaultFileResource != null ? defaultFileResource.getName() : ownResource.getName(),
                 true));
         if (checkHasChildren && noChildren) {

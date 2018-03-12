@@ -49,7 +49,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
@@ -689,7 +688,11 @@ public class CmsElementUtil {
             (resourceType instanceof CmsResourceTypeXmlContent)
                 && (((CmsResourceTypeXmlContent)resourceType).getEditHandler(m_cms) != null));
         result.setResourceType(typeName);
-        result.setIconClasses(CmsIconUtil.getIconClasses(typeName, elementBean.getResource().getName(), false));
+        result.setIconClasses(
+            CmsIconUtil.getIconClasses(
+                CmsIconUtil.getDisplayType(m_cms, resource),
+                elementBean.getResource().getName(),
+                false));
         CmsPermissionInfo permissionInfo;
         String title;
         String subTitle;
@@ -767,9 +770,6 @@ public class CmsElementUtil {
                     elementView = viewObject.getParentViewId();
                 }
                 result.setElementView(elementView);
-            }
-            if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, resource)) {
-                result.setResourceType(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
             }
         } else if (typeConfig != null) {
             CmsUUID elementView = typeConfig.getElementView();

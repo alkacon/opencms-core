@@ -148,13 +148,8 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         new CmsContainerPageBean(Collections.<CmsContainerBean> singletonList(containerBean)));
                     String encoding = response.getCharacterEncoding();
                     return (new String(
-                        OpenCms.getResourceManager().getLoader(formatterResource).dump(
-                            tempCms,
-                            formatterResource,
-                            null,
-                            locale,
-                            request,
-                            response),
+                        OpenCms.getResourceManager().getLoader(
+                            formatterResource).dump(tempCms, formatterResource, null, locale, request, response),
                         encoding)).trim();
                 }
             }
@@ -245,7 +240,8 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
         resInfo.setResourcePath(cms.getSitePath(resource));
         resInfo.setResourceType(type.getTypeName());
-        resInfo.setBigIconClasses(CmsIconUtil.getIconClasses(type.getTypeName(), resource.getName(), false));
+        resInfo.setBigIconClasses(
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), false));
         // set the default file and detail type info
         String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
         if (detailType != null) {

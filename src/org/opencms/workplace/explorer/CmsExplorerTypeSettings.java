@@ -64,10 +64,10 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public static final String ICON_STYLE_DEFAULT_SMALL = "oc-icon-16-default";
 
     /** The model group reuse big file type icon style class. */
-    public static final String ICON_STYLE_MODEL_GROUP_REUSE_BIG = "oc-icon-24-modelgroup_reuse";
+    public static final String ICON_STYLE_MODEL_GROUP_COPY_BIG = "oc-icon-24-modelgroup_copy";
 
     /** The model group reuse small file type icon style class. */
-    public static final String ICON_STYLE_MODEL_GROUP_REUSE_SMALL = "oc-icon-16-modelgroup_reuse";
+    public static final String ICON_STYLE_MODEL_GROUP_COPY_SMALL = "oc-icon-16-modelgroup_copy";
 
     /** The nav level big file type icon style class. */
     public static final String ICON_STYLE_NAV_LEVEL_BIG = "oc-icon-24-navlevel";

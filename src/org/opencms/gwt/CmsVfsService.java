@@ -77,7 +77,6 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -335,7 +334,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         listInfo.setSubTitle(cms.getSitePath(resource));
         listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
-        String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        String resTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
         Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
@@ -343,20 +342,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         listInfo.addAdditionalInfo(
             messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
             resTypeNiceName);
-        if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
-            listInfo.setResourceType(CmsGwtConstants.TYPE_NAVLEVEL);
-            listInfo.setBigIconClasses(CmsIconUtil.ICON_NAV_LEVEL_BIG);
-        } else {
-            if (CmsResourceTypeXmlContainerPage.isModelReuseGroup(cms, resource)) {
-                resTypeName = CmsGwtConstants.TYPE_MODELGROUP_REUSE;
-            }
-            listInfo.setResourceType(resTypeName);
-            listInfo.setBigIconClasses(CmsIconUtil.getIconClasses(resTypeName, resource.getName(), false));
-            // set the default file and detail type info
-            String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
-            if (detailType != null) {
-                listInfo.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
-            }
+        listInfo.setResourceType(resTypeName);
+        listInfo.setBigIconClasses(
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), false));
+        // set the default file and detail type info
+        String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
+        if (detailType != null) {
+            listInfo.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
         }
         return listInfo;
     }

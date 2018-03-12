@@ -114,6 +114,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
      *
      * @throws CmsLoaderException if the type is not configured
      */
+    @SuppressWarnings("deprecation")
     public static int getContainerPageTypeId() throws CmsLoaderException {
 
         if (containerPageTypeId == 0) {
@@ -175,6 +176,35 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     }
 
     /**
+     * Checks whether the given resource is a model reuse group.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return <code>true</code> in case the resource is a model reuse group
+     */
+    public static boolean isModelCopyGroup(CmsObject cms, CmsResource resource) {
+
+        boolean result = false;
+        if (isModelGroup(resource)) {
+            try {
+                CmsProperty tempElementsProp = cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    false);
+                if (!tempElementsProp.isNullProperty()
+                    && CmsContainerElement.USE_AS_COPY_MODEL.equals(tempElementsProp.getValue())) {
+                    result = true;
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getMessage(), e);
+            }
+
+        }
+        return result;
+    }
+
+    /**
      * Checks whether the given resource is a model group.<p>
      *
      * @param resource the resource
@@ -184,35 +214,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     public static boolean isModelGroup(CmsResource resource) {
 
         return OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(MODEL_GROUP_TYPE_NAME);
-    }
-
-    /**
-     * Checks whether the given resource is a model reuse group.<p>
-     *
-     * @param cms the cms context
-     * @param resource the resource
-     *
-     * @return <code>true</code> in case the resource is a model reuse group
-     */
-    public static boolean isModelReuseGroup(CmsObject cms, CmsResource resource) {
-
-        boolean result = false;
-        if (isModelGroup(resource)) {
-            try {
-                CmsProperty tempElementsProp = cms.readPropertyObject(
-                    resource,
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                    false);
-                if (tempElementsProp.isNullProperty()
-                    || !CmsContainerElement.USE_AS_COPY_MODEL.equals(tempElementsProp.getValue())) {
-                    result = true;
-                }
-            } catch (CmsException e) {
-                LOG.warn(e.getMessage(), e);
-            }
-
-        }
-        return result;
     }
 
     /**

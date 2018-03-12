@@ -27,10 +27,13 @@
 
 package org.opencms.gwt;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeUnknownFile;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -224,14 +227,14 @@ public final class CmsIconUtil implements I_CmsEventListener {
     public static final String ICON_MODEL_GROUP_BIG = CmsGwtConstants.TYPE_ICON_CLASS + " oc-icon-24-modelgroup_copy";
 
     /** Pseudo type icon. */
-    public static final String ICON_MODEL_GROUP_REUSE_BIG = CmsGwtConstants.TYPE_ICON_CLASS
+    public static final String ICON_MODEL_GROUP_COPY_BIG = CmsGwtConstants.TYPE_ICON_CLASS
         + " "
-        + CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_BIG;
+        + CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_COPY_BIG;
 
     /** Pseudo type icon. */
-    public static final String ICON_MODEL_GROUP_REUSE_SMALL = CmsGwtConstants.TYPE_ICON_CLASS
+    public static final String ICON_MODEL_GROUP_COPY_SMALL = CmsGwtConstants.TYPE_ICON_CLASS
         + " "
-        + CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_SMALL;
+        + CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_COPY_SMALL;
 
     /** Pseudo type icon. */
     public static final String ICON_NAV_LEVEL_BIG = CmsGwtConstants.TYPE_ICON_CLASS
@@ -285,6 +288,28 @@ public final class CmsIconUtil implements I_CmsEventListener {
             rebuildCss();
         }
         return m_cachedCss;
+    }
+
+    /**
+     * Returns the resource type name used to display the resource icon.
+     * This may differ from the actual resource type in case of navigation level folders and model groups.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return the display type name
+     */
+    public static String getDisplayType(CmsObject cms, CmsResource resource) {
+
+        String result;
+        if (CmsJspNavBuilder.isNavLevelFolder(cms, resource)) {
+            result = CmsGwtConstants.TYPE_NAVLEVEL;
+        } else if (CmsResourceTypeXmlContainerPage.isModelCopyGroup(cms, resource)) {
+            result = CmsGwtConstants.TYPE_MODELGROUP_COPY;
+        } else {
+            result = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        }
+        return result;
     }
 
     /**
@@ -375,11 +400,11 @@ public final class CmsIconUtil implements I_CmsEventListener {
             } else {
                 result = ICON_NAV_LEVEL_BIG;
             }
-        } else if (resourceType.equals(CmsGwtConstants.TYPE_MODELGROUP_REUSE)) {
+        } else if (resourceType.equals(CmsGwtConstants.TYPE_MODELGROUP_COPY)) {
             if (small) {
-                result = ICON_MODEL_GROUP_REUSE_SMALL;
+                result = ICON_MODEL_GROUP_COPY_SMALL;
             } else {
-                result = ICON_MODEL_GROUP_REUSE_BIG;
+                result = ICON_MODEL_GROUP_COPY_BIG;
             }
         } else if (resourceType.equals(TYPE_RESOURCE_NOT_FOUND)) {
             if (small) {

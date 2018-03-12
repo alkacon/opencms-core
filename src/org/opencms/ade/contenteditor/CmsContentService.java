@@ -1716,7 +1716,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             title,
             cms.getSitePath(file),
             typeName,
-            CmsIconUtil.getIconClasses(typeName, file.getName(), false),
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, file), file.getName(), false),
             performedAutoCorrection,
             autoUnlock,
             getChangeHandlerScopes(content.getContentDefinition()));

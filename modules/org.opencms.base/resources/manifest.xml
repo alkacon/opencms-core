@@ -572,7 +572,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="modelgroup" key="fileicon.modelgroup" smalliconstyle="oc-icon-16-modelgroup_copy" bigiconstyle="oc-icon-24-modelgroup_copy" reference="xmlcontent">
+			<explorertype name="modelgroup" key="fileicon.modelgroup" smalliconstyle="oc-icon-16-modelgroup_reuse" bigiconstyle="oc-icon-24-modelgroup_reuse" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=modelgroup" order="50" autosetnavigation="false" autosettitle="false" info="desc.modelgroup"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>

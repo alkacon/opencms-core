@@ -362,8 +362,8 @@ public final class CmsResourceUtil {
         if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
             return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_BIG);
         }
-        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
-            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_BIG);
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelCopyGroup(m_cms, m_resource)) {
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_COPY_BIG);
         }
         I_CmsResourceType type = getResourceType();
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
@@ -975,6 +975,7 @@ public final class CmsResourceUtil {
      *
      * @return the resource type id for the given resource
      */
+    @SuppressWarnings("deprecation")
     public int getResourceTypeId() {
 
         return getResourceType().getTypeId();
@@ -1084,8 +1085,8 @@ public final class CmsResourceUtil {
         if ((m_cms != null) && CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
             return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_NAV_LEVEL_BIG);
         }
-        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelReuseGroup(m_cms, m_resource)) {
-            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_REUSE_BIG);
+        if ((m_cms != null) && CmsResourceTypeXmlContainerPage.isModelCopyGroup(m_cms, m_resource)) {
+            return new CmsCssIcon(CmsExplorerTypeSettings.ICON_STYLE_MODEL_GROUP_COPY_BIG);
         }
         I_CmsResourceType type = getResourceType();
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());

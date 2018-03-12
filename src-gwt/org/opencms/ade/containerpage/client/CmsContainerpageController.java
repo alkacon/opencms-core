@@ -631,26 +631,6 @@ public final class CmsContainerpageController {
         }
 
         /**
-         * Returns the call-back function.<p>
-         *
-         * @return the call-back function
-         */
-        protected I_CmsSimpleCallback<CmsContainerElementData> getCallback() {
-
-            return m_callback;
-        }
-
-        /**
-         * Returns the requested elements id.<p>
-         *
-         * @return the element client id
-         */
-        protected String getClientId() {
-
-            return m_clientId;
-        }
-
-        /**
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override

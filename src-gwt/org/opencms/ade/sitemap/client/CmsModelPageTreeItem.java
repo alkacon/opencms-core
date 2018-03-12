@@ -99,7 +99,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         m_isModelGroup = isModelGroup;
         CmsListInfoBean infoBean = new CmsListInfoBean(title, subTitle, null);
         CmsListItemWidget content = new CmsListItemWidget(infoBean);
-        content.setIcon(isModelGroup ? CmsIconUtil.ICON_MODEL_GROUP_REUSE_BIG : CmsIconUtil.ICON_MODEL_GROUP_BIG);
+        content.setIcon(isModelGroup ? CmsIconUtil.ICON_MODEL_GROUP_COPY_BIG : CmsIconUtil.ICON_MODEL_GROUP_BIG);
         initContent(content);
     }
 

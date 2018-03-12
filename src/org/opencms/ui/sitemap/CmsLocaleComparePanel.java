@@ -54,13 +54,13 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.server.Resource;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Notification;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -104,6 +104,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
      * @param id the id of a sitemap entry
      */
     public CmsLocaleComparePanel(String id) {
+
         super();
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject());
         A_CmsUI.get().setLocale(locale);
@@ -456,7 +457,7 @@ public class CmsLocaleComparePanel extends VerticalLayout implements I_CmsLocale
             cms,
             cms.getRequestContext().removeSiteRoot(targetRes.getRootPath()));
         String iconClasses = CmsIconUtil.getIconClasses(
-            OpenCms.getResourceManager().getResourceType(getRoot()).getTypeName(),
+            CmsIconUtil.getDisplayType(cms, getRoot()),
             getRoot().getName(),
             false);
         ui.getSitemapExtension().showInfoHeader(title, description, path, locale, iconClasses);
