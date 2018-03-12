@@ -1552,12 +1552,23 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         createThread.start();
 
-        CmsReportWidget report = new CmsReportWidget(createThread);
+        if (m_site == null) {
 
-        report.setWidth("100%");
-        report.setHeight("350px");
+            CmsReportWidget report = new CmsReportWidget(createThread);
 
-        m_threadReport.addComponent(report);
+            report.setWidth("100%");
+            report.setHeight("350px");
+
+            m_threadReport.addComponent(report);
+        } else {
+            try {
+                createThread.join();
+            } catch (InterruptedException e) {
+                //
+            }
+
+            closeDailog(true);
+        }
 
     }
 
