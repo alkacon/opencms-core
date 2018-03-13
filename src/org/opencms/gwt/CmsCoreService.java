@@ -740,7 +740,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.util.List, boolean)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.lang.String, boolean)
      */
     public List<CmsCategoryTreeEntry> getCategories(
         String fromPath,

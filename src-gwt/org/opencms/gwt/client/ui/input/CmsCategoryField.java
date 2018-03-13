@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.ui.Panel;
  * @since 8.0.0
  *
  */
-public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_CmsHasInit, I_CmsHasResizeOnShow {
 
     /** Selection handler to handle check box click events and double clicks on the list items. */
     protected abstract class A_SelectionHandler implements ClickHandler, DoubleClickHandler {
@@ -330,6 +331,14 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_scrollPanel.onResizeDescendant();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
@@ -515,7 +524,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         }
         for (CmsCategoryTreeEntry child : children) {
             result = selectedCategories.contains(child.getSitePath());
-            if (result) {
+            if (result || hasSelectedChildren(child.getChildren(), selectedCategories)) {
                 return true;
             }
         }

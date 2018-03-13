@@ -30,6 +30,7 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.acacia.shared.CmsWidgetUtil;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -65,7 +66,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /**
  * Provides a standard HTML form category widget, for use on a widget dialog.<p>
  **/
-public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
+public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_CmsHasResizeOnShow {
 
     /**
      * Drag and drop event preview handler.<p>
@@ -273,6 +274,14 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     public boolean owns(Element element) {
 
         return getElement().isOrHasChild(element);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_categoryField.resizeOnShow();
     }
 
     /**
