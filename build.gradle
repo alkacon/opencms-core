@@ -1458,6 +1458,23 @@ if (project.hasProperty('publish_repository')){
                         dependency.setArtifactId("opencms-core")
                         dependency.setVersion(version)
                         pom.dependencies.add(dependency)
+                        // in case of the GWT JAR, add dependencies from gwtCompile
+                        if (groupName.equals('gwt')){
+		                    def dependenciesGwt=project.configurations.gwtCompile.dependencies
+		                    dependenciesGwt.each { dep ->
+	                    		if (dep.group!=null){
+		                    		dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+		                    		dependency.setGroupId(dep.group)
+				                    dependency.setArtifactId(dep.name)
+				                    dependency.setVersion(dep.version)
+				                    // these dependencies are not transitive
+				                    def exclusion = pom.model.class.classLoader.loadClass("org.apache.maven.model.Exclusion").newInstance();
+			                        exclusion.setGroupId('*')
+			                        exclusion.setArtifactId('*')
+			                        pom.dependencies.add(dependency)
+			                    }
+	                    	}
+	                    }
                     }
                 }
 
@@ -1649,6 +1666,23 @@ install {
                     dependency.setArtifactId("opencms-core")
                     dependency.setVersion(version)
                     pom.dependencies.add(dependency)
+                    // in case of the GWT JAR, add dependencies from gwtCompile
+                    if (groupName.equals('gwt')){
+	                    def dependenciesGwt=project.configurations.gwtCompile.dependencies
+	                    dependenciesGwt.each { dep ->
+                    		if (dep.group!=null){
+	                    		dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+	                    		dependency.setGroupId(dep.group)
+			                    dependency.setArtifactId(dep.name)
+			                    dependency.setVersion(dep.version)
+			                    // these dependencies are not transitive
+				                def exclusion = pom.model.class.classLoader.loadClass("org.apache.maven.model.Exclusion").newInstance();
+			                    exclusion.setGroupId('*')
+			                    exclusion.setArtifactId('*')
+			                    pom.dependencies.add(dependency)
+		                    }
+                    	}
+                    }
                 }
             }
             artifacts.each{ arch ->
