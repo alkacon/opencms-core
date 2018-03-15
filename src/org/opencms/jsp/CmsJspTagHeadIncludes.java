@@ -566,7 +566,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>(containerPage.getContainers().values());
             // add detail only containers if available
             if (standardContext.isDetailRequest()) {
-                CmsContainerPageBean detailOnly = CmsDetailOnlyContainerUtil.getDetailOnlyPage(cms, req);
+                CmsContainerPageBean detailOnly = CmsDetailOnlyContainerUtil.getDetailOnlyPage(
+                    cms,
+                    req,
+                    cms.getRequestContext().getRootUri());
                 if (detailOnly != null) {
                     containers.addAll(detailOnly.getContainers().values());
                 }

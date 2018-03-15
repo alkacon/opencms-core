@@ -52,6 +52,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.templatemapper.CmsTemplateMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -166,10 +167,11 @@ public final class CmsDetailOnlyContainerUtil {
      *
      * @param cms the cms context
      * @param req the current request
+     * @param pageRootPath the root path of the page
      *
      * @return the container page bean
      */
-    public static CmsContainerPageBean getDetailOnlyPage(CmsObject cms, ServletRequest req) {
+    public static CmsContainerPageBean getDetailOnlyPage(CmsObject cms, ServletRequest req, String pageRootPath) {
 
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
         CmsContainerPageBean detailOnlyPage = standardContext.getDetailOnlyPage();
@@ -205,6 +207,10 @@ public final class CmsDetailOnlyContainerUtil {
                 }
                 if (xmlContainerPage != null) {
                     detailOnlyPage = xmlContainerPage.getContainerPage(rootCms);
+                    detailOnlyPage = CmsTemplateMapper.get(req).transformContainerpageBean(
+                        rootCms,
+                        detailOnlyPage,
+                        pageRootPath);
                     standardContext.setDetailOnlyPage(detailOnlyPage);
                 }
             } catch (CmsException e) {
@@ -411,7 +417,7 @@ public final class CmsDetailOnlyContainerUtil {
      * @param content the content for which to save the detail-only page
      * @param locale the locale
      * @param page the container page data to save in the detail-only page
-
+    
      * @throws CmsException if something goes wrong
      * @return the container page that was saved
      */

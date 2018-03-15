@@ -81,6 +81,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.templatemapper.CmsTemplateMapper;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.lang.reflect.Constructor;
@@ -1595,6 +1596,11 @@ public final class CmsJspStandardContextBean {
                 CmsJspTagEditable.isEditableRequest(req) ? CmsADESessionCache.getCache(req, cms) : null,
                 CmsContainerpageService.isEditingModelGroups(cms, pageResource));
             m_page = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
+            m_page = CmsTemplateMapper.get(req).transformContainerpageBean(
+                cms,
+                m_page,
+                xmlContainerPage.getFile().getRootPath());
+
         }
     }
 

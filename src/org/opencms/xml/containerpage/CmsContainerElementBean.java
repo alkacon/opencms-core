@@ -115,6 +115,7 @@ public class CmsContainerElementBean implements Cloneable {
         boolean inMemoryOnly,
         String editorHash,
         boolean createNew) {
+
         this(file.getStructureId(), formatterId, individualSettings, createNew);
         m_inMemoryOnly = inMemoryOnly;
         m_editorHash = editorHash;
@@ -767,13 +768,16 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
-     * Gets the hash code for the element settings.<p>
+     * Updates the individual settings.<p>
      *
-     * @return the hash code for the element settings
+     * This causes all merged settings (from defaults etc.) to be lost.
+     *
+     * @param newSettings the new settings
      */
-    private String getSettingsHash() {
+    public void updateIndividualSettings(Map<String, String> newSettings) {
 
-        return getSettingsHash(getIndividualSettings(), m_createNew);
+        m_individualSettings = Collections.unmodifiableMap(newSettings);
+        setSettings(getIndividualSettings());
     }
 
     /**
@@ -788,5 +792,15 @@ public class CmsContainerElementBean implements Cloneable {
         } else {
             m_settings = new CmsNullIgnoringConcurrentMap<String, String>(settings);
         }
+    }
+
+    /**
+     * Gets the hash code for the element settings.<p>
+     *
+     * @return the hash code for the element settings
+     */
+    private String getSettingsHash() {
+
+        return getSettingsHash(getIndividualSettings(), m_createNew);
     }
 }

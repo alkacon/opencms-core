@@ -65,6 +65,7 @@ import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.containerpage.CmsXmlInheritGroupContainerHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.templatemapper.CmsTemplateMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -293,6 +294,10 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         List<CmsContainerElementBean> subElements;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
         CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms);
+        groupContainer = CmsTemplateMapper.get(req).transformGroupContainer(
+            cms,
+            groupContainer,
+            xmlGroupContainer.getFile().getRootPath());
         if (!CmsElementUtil.checkGroupAllowed(containerType, groupContainer)) {
             LOG.warn(
                 new CmsIllegalStateException(
@@ -469,7 +474,11 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         resetState();
                         return EVAL_PAGE;
                     } else {
-                        CmsContainerPageBean detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(cms, req);
+                        String pageRootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+                        CmsContainerPageBean detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(
+                            cms,
+                            req,
+                            pageRootPath);
                         if (detailOnlyPage != null) {
                             container = detailOnlyPage.getContainers().get(getName());
                         }
@@ -535,7 +544,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 List<CmsContainerElementBean> allElements = new ArrayList<CmsContainerElementBean>();
                 CmsContainerElementBean detailElement = null;
                 if (isUsedAsDetailView) {
-                    detailElement = generateDetailViewElement(cms, detailContent, container);
+                    detailElement = generateDetailViewElement(req, cms, detailContent, container);
                 }
                 if (detailElement != null) {
                     allElements.add(detailElement);
@@ -1018,6 +1027,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /**
      * Generates the detail view element.<p>
      *
+     * @param request the current request
      * @param cms the CMS context
      * @param detailContent the detail content resource
      * @param container the container
@@ -1025,6 +1035,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      * @return the detail view element
      */
     private CmsContainerElementBean generateDetailViewElement(
+        ServletRequest request,
         CmsObject cms,
         CmsResource detailContent,
         CmsContainerBean container) {
@@ -1061,6 +1072,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     formatter.getJspStructureId(),
                     settings,
                     false);
+                String pageRootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+                element = CmsTemplateMapper.get(request).transformDetailElement(cms, element, pageRootPath);
             }
         }
         return element;

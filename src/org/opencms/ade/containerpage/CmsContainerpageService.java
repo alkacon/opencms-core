@@ -723,7 +723,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         if (id.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
             throw new CmsException(Messages.get().container(Messages.ERR_MISSING_CACHED_ELEMENT_0));
         }
-
         // this is necessary if the element has not been cached yet
         CmsResource resource = getCmsObject().readResource(convertToServerId(id), CmsResourceFilter.IGNORE_EXPIRATION);
         CmsADEConfigData configData = getConfigData(pageRootPath);

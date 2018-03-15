@@ -251,7 +251,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         if (localeToLoad == null) {
             return null;
         } else {
-            return m_cntPages.get(localeToLoad);
+            CmsContainerPageBean result = m_cntPages.get(localeToLoad);
+            return result;
         }
     }
 
