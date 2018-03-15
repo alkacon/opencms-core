@@ -335,12 +335,25 @@ public class CmsSessionManager {
      */
     public void sendBroadcast(CmsObject cms, String message) {
 
+        sendBroadcast(cms, message, false);
+    }
+
+    /**
+     * Sends a broadcast to all sessions of all currently authenticated users.<p>
+     *
+     * @param cms the OpenCms user context of the user sending the broadcast
+     *
+     * @param message the message to broadcast
+     * @param repeat repeat this message
+     */
+    public void sendBroadcast(CmsObject cms, String message, boolean repeat) {
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             // don't broadcast empty messages
             return;
         }
         // create the broadcast
-        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message);
+        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message, repeat);
         // send the broadcast to all authenticated sessions
         Iterator<CmsSessionInfo> i = m_sessionStorageProvider.getAll().iterator();
         while (i.hasNext()) {
@@ -350,6 +363,7 @@ public class CmsSessionManager {
                 sessionInfo.getBroadcastQueue().add(broadcast);
             }
         }
+
     }
 
     /**
@@ -362,6 +376,21 @@ public class CmsSessionManager {
      */
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
+        sendBroadcast(cms, message, sessionId, false);
+
+    }
+
+    /**
+     * Sends a broadcast to the specified user session.<p>
+     *
+     * @param cms the OpenCms user context of the user sending the broadcast
+     *
+     * @param message the message to broadcast
+     * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
+     * @param repeat repeat this message
+     */
+    public void sendBroadcast(CmsObject cms, String message, String sessionId, boolean repeat) {
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             // don't broadcast empty messages
             return;
@@ -370,8 +399,10 @@ public class CmsSessionManager {
         CmsSessionInfo sessionInfo = m_sessionStorageProvider.get(new CmsUUID(sessionId));
         if (sessionInfo != null) {
             // double check for concurrent modification
-            sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message));
+            sessionInfo.getBroadcastQueue().add(
+                new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message, repeat));
         }
+
     }
 
     /**

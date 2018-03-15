@@ -54,17 +54,17 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Validator;
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Class for the broadcast app.<p>
@@ -265,7 +265,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     private void addToolbarButtons() {
 
         Button add = CmsToolBar.createButton(
-            FontOpenCms.SETTINGS,
+            FontOpenCms.LOGIN,
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_0));
         add.addClickListener(new ClickListener() {
 

@@ -37,6 +37,7 @@ import java.util.Set;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.TextArea;
 
 /**
@@ -56,6 +57,8 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     /**ok button.*/
     private Button m_ok;
 
+    private CheckBox m_repeat;
+
     /**
      * public constructor.<p>
      *
@@ -63,6 +66,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
      * @param closeRunnable called on cancel
      */
     public CmsSendBroadcastDialog(final Set<String> sessionIds, final Runnable closeRunnable) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         if (sessionIds != null) {
@@ -121,10 +125,17 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     protected void sendBroadcast(Set<String> sessionIds) {
 
         if (sessionIds == null) {
-            OpenCms.getSessionManager().sendBroadcast(A_CmsUI.getCmsObject(), m_message.getValue());
+            OpenCms.getSessionManager().sendBroadcast(
+                A_CmsUI.getCmsObject(),
+                m_message.getValue(),
+                m_repeat.getValue().booleanValue());
         } else {
             for (String id : sessionIds) {
-                OpenCms.getSessionManager().sendBroadcast(A_CmsUI.getCmsObject(), m_message.getValue(), id);
+                OpenCms.getSessionManager().sendBroadcast(
+                    A_CmsUI.getCmsObject(),
+                    m_message.getValue(),
+                    id,
+                    m_repeat.getValue().booleanValue());
             }
         }
     }

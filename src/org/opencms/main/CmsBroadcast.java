@@ -40,6 +40,8 @@ import org.opencms.file.CmsUser;
  */
 public class CmsBroadcast {
 
+    public static long DISPLAY_AGAIN_TIME = 60 * 1000;
+
     /** The broadcast content. */
     private String m_message;
 
@@ -49,6 +51,11 @@ public class CmsBroadcast {
     /** Time the broadcast was send. */
     private long m_sendTime;
 
+    /**The last display time. */
+    private long m_lastDisplay;
+
+    private boolean m_repeat;
+
     /**
      * Creates a new broadcast, with the current system time set as send time.<p>
      *
@@ -57,9 +64,40 @@ public class CmsBroadcast {
      */
     public CmsBroadcast(CmsUser sender, String message) {
 
+        this(sender, message, System.currentTimeMillis(), 0L, true);
+    }
+
+    /**
+     * Creates a new broadcast, with the current system time set as send time.<p>
+     *
+     * @param sender the sender of the broadcast
+     * @param message the message to send
+     */
+    public CmsBroadcast(CmsUser sender, String message, boolean repeat) {
+
+        this(sender, message, System.currentTimeMillis(), 0L, repeat);
+    }
+
+    /**
+     * Creates a new broadcast, with the current system time set as send time.<p>
+     *
+     * @param sender the sender of the broadcast
+     * @param message the message to send
+     * @param sendTime time when broadcast initaly was send
+     * @param lastDisplay  last display time
+     */
+    public CmsBroadcast(CmsUser sender, String message, long sendTime, long lastDisplay, boolean repeat) {
+
         m_sender = sender;
         m_message = message;
-        m_sendTime = System.currentTimeMillis();
+        m_sendTime = sendTime;
+        m_lastDisplay = lastDisplay;
+        m_repeat = repeat;
+    }
+
+    public long getLastDisplay() {
+
+        return m_lastDisplay;
     }
 
     /**
@@ -92,5 +130,10 @@ public class CmsBroadcast {
     public CmsUser getUser() {
 
         return m_sender;
+    }
+
+    public boolean isRepeat() {
+
+        return m_repeat;
     }
 }

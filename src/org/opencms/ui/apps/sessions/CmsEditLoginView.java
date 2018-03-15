@@ -125,34 +125,13 @@ public class CmsEditLoginView extends CmsBasicDialog {
 
             }
         });
-        m_ok.setEnabled(false);
-        m_enabled.addValueChangeListener(event -> {
-            enableOk();
-        });
+        m_ok.setEnabled(true);
+
         m_enabled.addValueChangeListener(event -> {
             setFieldsEnabled();
         });
-        m_endTime.addValueChangeListener(event -> {
-            enableOk();
-        });
-        m_startTime.addValueChangeListener(event -> {
-            enableOk();
-        });
-        m_message.addValueChangeListener(event -> {
-            enableOk();
-        });
-        m_logout.addValueChangeListener(event -> {
-            enableOk();
-        });
+
         setFieldsEnabled();
-    }
-
-    /**
-     * Enables the ok button.<p>
-     */
-    protected void enableOk() {
-
-        m_ok.setEnabled(isFormValid());
     }
 
     /**

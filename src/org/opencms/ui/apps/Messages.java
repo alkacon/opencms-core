@@ -96,6 +96,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_MESSAGE_0 = "GUI_MESSAGES_BROADCAST_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_MESSAGE_HELP_0 = "GUI_MESSAGES_BROADCAST_MESSAGE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_REPEAT_0 = "GUI_MESSAGES_BROADCAST_REPEAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_BROADCAST_REPEAT_HELP_0 = "GUI_MESSAGES_BROADCAST_REPEAT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_HELP_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_SENDMAIL_HELP_0";
 
     /** Message constant for key in the resource bundle. */

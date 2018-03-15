@@ -88,6 +88,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -695,6 +696,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public List<CmsBroadcastMessage> getBroadcast() {
 
+        Set<CmsBroadcast> repeatedBroadcasts = new HashSet<CmsBroadcast>();
         OpenCms.getWorkplaceManager().checkWorkplaceRequest(getRequest(), getCmsObject());
         CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());
         if (sessionInfo == null) {
@@ -710,19 +712,38 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             while (!messageQueue.isEmpty()) {
 
                 CmsBroadcast broadcastMessage = (CmsBroadcast)messageQueue.remove();
-                CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
-                String picPath = "";
-                if (broadcastMessage.getUser() != null) {
-                    picPath = helper.getSmallIconPath(getCmsObject(), broadcastMessage.getUser());
+                if ((broadcastMessage.getLastDisplay()
+                    + CmsBroadcast.DISPLAY_AGAIN_TIME) < System.currentTimeMillis()) {
+                    CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
+                    String picPath = "";
+                    if (broadcastMessage.getUser() != null) {
+                        picPath = helper.getSmallIconPath(getCmsObject(), broadcastMessage.getUser());
+                    }
+                    CmsBroadcastMessage message = new CmsBroadcastMessage(
+                        broadcastMessage.getUser() != null
+                        ? broadcastMessage.getUser().getName()
+                        : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0),
+                        picPath,
+                        messages.getDateTime(broadcastMessage.getSendTime()),
+                        broadcastMessage.getMessage());
+                    result.add(message);
+                    if (broadcastMessage.isRepeat()) {
+                        repeatedBroadcasts.add(
+                            new CmsBroadcast(
+                                broadcastMessage.getUser(),
+                                broadcastMessage.getMessage(),
+                                broadcastMessage.getSendTime(),
+                                System.currentTimeMillis(),
+                                true));
+                    }
+                } else {
+                    repeatedBroadcasts.add(broadcastMessage);
                 }
-                CmsBroadcastMessage message = new CmsBroadcastMessage(
-                    broadcastMessage.getUser() != null
-                    ? broadcastMessage.getUser().getName()
-                    : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0),
-                    picPath,
-                    messages.getDateTime(broadcastMessage.getSendTime()),
-                    broadcastMessage.getMessage());
-                result.add(message);
+            }
+            if (!repeatedBroadcasts.isEmpty()) {
+                for (CmsBroadcast broadcast : repeatedBroadcasts) {
+                    messageQueue.add(broadcast);
+                }
             }
             return result;
         }
