@@ -221,6 +221,9 @@ public enum FontOpenCms implements FontIcon {
     /** The log icon. */
     LOG(0xe637),
 
+    /** The log icon. */
+    LOGIN(0xe653),
+
     /** The help icon. */
     HELP_SMALL(0xe919),
 
@@ -347,6 +350,7 @@ public enum FontOpenCms implements FontIcon {
      * @param codepoint the icon code point
      */
     FontOpenCms(int codepoint) {
+
         m_codepoint = codepoint;
     }
 
