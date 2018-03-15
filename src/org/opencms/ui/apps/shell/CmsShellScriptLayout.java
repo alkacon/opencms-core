@@ -42,10 +42,10 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * Layout for shell script settings and input dialog.<p>
@@ -130,6 +130,7 @@ public class CmsShellScriptLayout extends VerticalLayout {
      */
     protected void setupCms(CmsObject cms) {
 
+        cms.getRequestContext().setUri("/");
         cms.getRequestContext().setSiteRoot((String)m_site.getValue());
         try {
             cms.getRequestContext().setCurrentProject(cms.readProject((CmsUUID)m_project.getValue()));
