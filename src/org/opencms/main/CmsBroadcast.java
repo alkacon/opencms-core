@@ -64,7 +64,7 @@ public class CmsBroadcast {
      */
     public CmsBroadcast(CmsUser sender, String message) {
 
-        this(sender, message, System.currentTimeMillis(), 0L, true);
+        this(sender, message, System.currentTimeMillis(), 0L, false);
     }
 
     /**
