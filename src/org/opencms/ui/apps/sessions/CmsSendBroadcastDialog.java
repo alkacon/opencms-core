@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.sessions;
 
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -57,6 +58,8 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     /**ok button.*/
     private Button m_ok;
 
+    private Button m_resetBroadcasts;
+
     private CheckBox m_repeat;
 
     /**
@@ -72,6 +75,8 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
         if (sessionIds != null) {
             displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));
         }
+
+        m_resetBroadcasts.addClickListener(event -> removeAllBroadcasts(sessionIds));
 
         m_cancel.addClickListener(new Button.ClickListener() {
 
@@ -137,6 +142,24 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
                     id,
                     m_repeat.getValue().booleanValue());
             }
+        }
+    }
+
+    /**
+     * Removes all pending broadcasts
+     *
+     * @param sessionIds to remove broadcast for (or null for all sessions)
+     */
+    private void removeAllBroadcasts(Set<String> sessionIds) {
+
+        if (sessionIds == null) {
+            for (CmsSessionInfo info : OpenCms.getSessionManager().getSessionInfos()) {
+                OpenCms.getSessionManager().getBroadcastQueue(info.getSessionId().getStringValue()).clear();
+            }
+            return;
+        }
+        for (String sessionId : sessionIds) {
+            OpenCms.getSessionManager().getBroadcastQueue(sessionId).clear();
         }
     }
 }
