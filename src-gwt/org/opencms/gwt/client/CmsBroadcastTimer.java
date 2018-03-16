@@ -31,6 +31,7 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsBroadcastMessage;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -106,7 +107,9 @@ public class CmsBroadcastTimer {
 
         StringBuffer result = new StringBuffer();
         result.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.notificationCss().messageHead()).append("\">");
-        result.append("<img src=\"").append(message.getIcon()).append("\">");
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(message.getIcon())) {
+            result.append("<img src=\"").append(message.getIcon()).append("\">");
+        }
         result.append("<em>" + message.getTime() + "</em><br/>");
         result.append(Messages.get().key(Messages.GUI_BROADCAST_SEND_BY_1, message.getUser()));
         result.append("</p>").append("<p>\n");
