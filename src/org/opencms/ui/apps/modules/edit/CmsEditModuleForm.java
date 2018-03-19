@@ -32,8 +32,10 @@ import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -73,6 +75,13 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
@@ -81,16 +90,9 @@ import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.v7.ui.AbstractField;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.Field;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -265,6 +267,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
      */
     @SuppressWarnings("unchecked")
     public CmsEditModuleForm(CmsModule module, boolean newModule, Runnable updateCallback) {
+
         m_oldModuleInstance = module;
         m_module = (CmsModule)(module.clone());
         String site = m_module.getSite();
@@ -817,7 +820,12 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType(
             CmsResourceTypeFolder.getStaticTypeName());
         if (module.isCreateModuleFolder()) {
-            cms.createResource(modulePath, folderType);
+            CmsResource resource = cms.createResource(modulePath, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
             // add the module folder to the resource list
             resources.add(modulePath);
             module.setResources(resources);
@@ -826,36 +834,66 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         // check if we have to create the template folder
         if (module.isCreateTemplateFolder()) {
             String path = modulePath + PATH_TEMPLATES;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
         }
 
         // check if we have to create the elements folder
         if (module.isCreateElementsFolder()) {
             String path = modulePath + PATH_ELEMENTS;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
         }
 
         if (module.isCreateFormattersFolder()) {
             String path = modulePath + PATH_FORMATTERS;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
         }
 
         // check if we have to create the schemas folder
         if (module.isCreateSchemasFolder()) {
             String path = modulePath + PATH_SCHEMAS;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
         }
 
         // check if we have to create the resources folder
         if (module.isCreateResourcesFolder()) {
             String path = modulePath + PATH_RESOURCES;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
         }
 
         // check if we have to create the lib folder
         if (module.isCreateLibFolder()) {
             String path = modulePath + PATH_LIB;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
             if (!exportPointPaths.contains(path)) {
                 CmsExportPoint exp = new CmsExportPoint(path, "WEB-INF/lib/");
                 exportPoints.add(exp);
@@ -866,7 +904,12 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         // check if we have to create the classes folder
         if (module.isCreateClassesFolder()) {
             String path = modulePath + PATH_CLASSES;
-            cms.createResource(path, folderType);
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
             if (!exportPointPaths.contains(path)) {
                 CmsExportPoint exp = new CmsExportPoint(path, "WEB-INF/classes/");
                 exportPoints.add(exp);
@@ -878,7 +921,12 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             while (tok.hasMoreTokens()) {
                 String folder = tok.nextToken();
                 path += folder + "/";
-                cms.createResource(path, folderType);
+                CmsResource resource2 = cms.createResource(path, folderType);
+                try {
+                    cms.unlockResource(resource2);
+                } catch (CmsLockException locke) {
+                    LOG.warn("Unbale to unlock resource", locke);
+                }
             }
         }
         return module;
