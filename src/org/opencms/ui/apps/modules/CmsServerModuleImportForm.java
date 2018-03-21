@@ -38,12 +38,13 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.vaadin.ui.Button;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.ui.Button;
 import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * The form for importing a module from the application server.<p>
@@ -70,8 +71,9 @@ public class CmsServerModuleImportForm extends A_CmsModuleImportForm {
      *
      * @param app the module manager app
      */
-    public CmsServerModuleImportForm(CmsModuleApp app) {
-        super(app);
+    public CmsServerModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report) {
+
+        super(app, start, report);
         IndexedContainer options = new IndexedContainer();
         options.addContainerProperty("label", String.class, "");
         m_moduleSelect.setContainerDataSource(options);

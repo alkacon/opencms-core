@@ -535,7 +535,7 @@ public class CmsModuleTable extends Table {
             @Override
             public void buttonClick(ClickEvent event) {
 
-                m_app.openSubView(CmsModuleApp.States.IMPORT, true);
+                importModule();
             }
         });
         buttons.add(importButton);
@@ -577,6 +577,19 @@ public class CmsModuleTable extends Table {
         });
         window.setContent(form);
         window.setCaption(caption);
+        A_CmsUI.get().addWindow(window);
+        window.center();
+    }
+
+    /**
+     * Opens the import module dialog.<p>
+     */
+    public void importModule() {
+
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsImportTabForm form = new CmsImportTabForm(m_app);
+        window.setContent(form);
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_IMPORT_TITLE_0));
         A_CmsUI.get().addWindow(window);
         window.center();
     }

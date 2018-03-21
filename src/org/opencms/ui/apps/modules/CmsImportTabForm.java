@@ -28,20 +28,21 @@
 package org.opencms.ui.apps.modules;
 
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.List;
 
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Module import dialog with two tabs, one for importing via HTTP and one for importing from the server.<p>
  */
-public class CmsImportTabForm extends VerticalLayout {
+public class CmsImportTabForm extends CmsBasicDialog {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -52,18 +53,25 @@ public class CmsImportTabForm extends VerticalLayout {
     /** The tab panel. */
     private TabSheet m_tabs;
 
+    /**layout holding tabs. */
+    private VerticalLayout m_start;
+
+    /**layout for the import report. */
+    private VerticalLayout m_report;
+
     /**
      * Creates a new instance.<p>
      *
      * @param app the module manager app instance
      */
     public CmsImportTabForm(CmsModuleApp app) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_tabs.addTab(
-            new CmsModuleImportForm(app),
+            new CmsModuleImportForm(app, m_start, m_report),
             CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_TAB_IMPORT_HTTP_0));
         m_tabs.addTab(
-            new CmsServerModuleImportForm(app),
+            new CmsServerModuleImportForm(app, m_start, m_report),
             CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_TAB_IMPORT_SERVER_0));
         updateButtons();
         m_tabs.addSelectedTabChangeListener(new SelectedTabChangeListener() {

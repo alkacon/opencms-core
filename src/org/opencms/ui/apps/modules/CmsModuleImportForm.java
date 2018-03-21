@@ -55,6 +55,7 @@ import com.vaadin.v7.ui.Upload.StartedEvent;
 import com.vaadin.v7.ui.Upload.StartedListener;
 import com.vaadin.v7.ui.Upload.SucceededEvent;
 import com.vaadin.v7.ui.Upload.SucceededListener;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * The form for importing modules via HTTP.<p>
@@ -90,9 +91,9 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
      *
      * @param app the module manager app instance for which this was opened
      */
-    public CmsModuleImportForm(CmsModuleApp app) {
+    public CmsModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report) {
 
-        super(app);
+        super(app, start, report);
         m_upload.setImmediate(true);
         m_dnd.setDropHandler(new DropHandler() {
 

@@ -37,17 +37,19 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.modules.edit.CmsSiteSelectorNewValueHandler;
 import org.opencms.ui.components.CmsAutoItemCreatingComboBox;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.report.CmsReportWidget;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Abstract superclass for the module import forms.<p>
@@ -71,7 +73,9 @@ public abstract class A_CmsModuleImportForm extends CssLayout {
      *
      * @param app the app instance for which this form is opened
      */
-    public A_CmsModuleImportForm(CmsModuleApp app) {
+    public A_CmsModuleImportForm(CmsModuleApp app, final VerticalLayout start, final VerticalLayout report) {
+
+        report.setVisible(false);
         CmsObject cms = A_CmsUI.getCmsObject();
         m_app = app;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
@@ -93,7 +97,7 @@ public abstract class A_CmsModuleImportForm extends CssLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_app.goToMainView();
+                CmsVaadinUtils.getWindow(getCancelButton()).close();
 
             }
         });
@@ -106,14 +110,21 @@ public abstract class A_CmsModuleImportForm extends CssLayout {
             public void buttonClick(ClickEvent event) {
 
                 try {
+                    start.setVisible(false);
+                    report.setVisible(true);
                     CmsObject importCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
                     importCms.getRequestContext().setSiteRoot((String)(getSiteSelector().getValue()));
                     CmsModuleImportThread thread = new CmsModuleImportThread(
                         importCms,
                         m_importFile.getModule(),
                         m_importFile.getPath());
-                    m_app.setReport(CmsModuleApp.States.IMPORT_REPORT, thread);
-                    m_app.openSubView(CmsModuleApp.States.IMPORT_REPORT, true);
+                    thread.start();
+                    CmsReportWidget reportWidget = new CmsReportWidget(thread);
+                    reportWidget.setWidth("100%");
+                    reportWidget.setHeight("100%");
+                    report.addComponent(reportWidget);
+                    getOkButton().setEnabled(false);
+                    getCancelButton().setCaption(CmsVaadinUtils.messageClose());
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                     CmsErrorDialog.showErrorDialog(e);
