@@ -77,6 +77,8 @@ public class CmsSolrQuery extends SolrQuery {
         + ","
         + CmsSearchField.FIELD_TYPE
         + ","
+        + CmsSearchField.FIELD_SOLR_ID
+        + ","
         + CmsSearchField.FIELD_ID;
 
     /** A constant to add the score field to the result documents. */
