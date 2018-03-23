@@ -34,11 +34,10 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.extractors.CmsExtractionResult;
+import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsSearchField;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,7 +48,7 @@ import org.apache.commons.logging.Log;
 /**
  * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>,
  * just requires a specialized implementation of
- * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, CmsResource, CmsSearchIndex)}</code>
+ * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, CmsResource, I_CmsSearchIndex)}</code>
  * for text extraction from the binary document content.<p>
  *
  * @since 6.0.0
@@ -102,9 +101,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
      *
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, I_CmsSearchIndex)
      */
-    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
     throws CmsException {
 
         // extract the content from the resource
@@ -128,18 +127,8 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
             if (content == null) {
                 // extraction result has not been found in the cache
-                // compare "date of last modification of content" from Lucene index and OpenCms VFS
-                // if this is identical, then the data from the Lucene index can be re-used
-                I_CmsSearchDocument oldDoc = index.getDocument(CmsSearchField.FIELD_PATH, resource.getRootPath());
-                // first check if the document is already in the index
-                if ((oldDoc != null) && (oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT) != null)) {
-                    long contentDateIndex = oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT).getTime();
-                    // now compare the date with the date stored in the resource
-                    if (contentDateIndex == resource.getDateContent()) {
-                        // extract stored content blob from index
-                        content = CmsExtractionResult.fromBytes(oldDoc.getContentBlob());
-                    }
-                }
+                // use the currently indexed content, if it is still up to date.
+                content = index.getContentIfUnchanged(resource);
             }
 
             if (content == null) {
@@ -236,7 +225,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
      * @param resource the resource to log content extraction for
      * @param index the search index to log content extraction for
      */
-    protected void logContentExtraction(CmsResource resource, CmsSearchIndex index) {
+    protected void logContentExtraction(CmsResource resource, I_CmsSearchIndex index) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(

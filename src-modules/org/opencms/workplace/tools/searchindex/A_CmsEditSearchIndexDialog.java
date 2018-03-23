@@ -34,6 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -247,7 +248,8 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     protected void initUserObject() {
 
         try {
-            m_index = m_searchManager.getIndex(getParamIndexName());
+            I_CmsSearchIndex idx = m_searchManager.getIndex(getParamIndexName());
+            m_index = idx instanceof CmsSearchIndex ? (CmsSearchIndex)idx : null;
             if (m_index == null) {
                 m_index = createDummySearchIndex();
             }

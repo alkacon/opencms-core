@@ -38,6 +38,7 @@ import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -192,7 +193,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             CmsListItem listItem;
-            CmsSearchFieldConfiguration fieldconfig;
+            I_CmsSearchFieldConfiguration fieldconfig;
             while (itItems.hasNext()) {
                 listItem = itItems.next();
                 fieldconfig = searchManager.getFieldConfiguration((String)listItem.get(LIST_COLUMN_NAME));
@@ -433,7 +434,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
         // search for the corresponding A_CmsSearchIndex:
         String idxConfigName = (String)item.get(LIST_COLUMN_NAME);
 
-        CmsSearchFieldConfiguration idxFieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(
+        I_CmsSearchFieldConfiguration idxFieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(
             idxConfigName);
         List<CmsSearchField> fields = idxFieldConfiguration.getFields();
 

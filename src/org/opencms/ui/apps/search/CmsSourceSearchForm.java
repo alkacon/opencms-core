@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.CmsVaadinUtils.PropertyId;
@@ -52,13 +53,13 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.TextField;
@@ -559,7 +560,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
             m_searchIndex.setNullSelectionAllowed(false);
             String selectIndex = null;
             for (CmsSearchIndex index : OpenCms.getSearchManager().getAllSolrIndexes()) {
-                boolean offlineMode = CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode());
+                boolean offlineMode = I_CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode());
                 // in case the current project is offline, show offline indexes, otherwise show online indexes
                 if ((!online && offlineMode) || (online && !offlineMode)) {
                     m_searchIndex.addItem(index.getName());

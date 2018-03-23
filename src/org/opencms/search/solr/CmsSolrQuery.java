@@ -317,8 +317,8 @@ public class CmsSolrQuery extends SolrQuery {
      * <li><code>+created:[* TO NOW]</code>
      * <li><code>+lastmodified:[' + date + ' TO NOW]</code>
      * </ul>
-     * whereby date is Solr formated:
-     * {@link org.opencms.search.solr.CmsSolrDocument#DF}
+     * whereby date is Solr formatted:
+     * {@link org.opencms.search.CmsSearchUtil#getDateAsIso8601(Date)}
      * <p>
      *
      * @param dateRanges the ranges map with field name as key and a CmsPair with min date as first and max date as second

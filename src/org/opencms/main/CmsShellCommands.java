@@ -59,7 +59,7 @@ import org.opencms.module.CmsModuleManager;
 import org.opencms.report.CmsShellLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsRole;
@@ -418,7 +418,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1414,7 +1414,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void setIndexRebuildMode(String searchIndex, String mode) {
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(searchIndex);
+        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(searchIndex);
         if (index != null) {
             index.setRebuildMode(mode);
             // required for this setting to take effect

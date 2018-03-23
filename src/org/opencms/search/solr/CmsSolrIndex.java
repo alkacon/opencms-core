@@ -261,6 +261,20 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * @see org.opencms.search.CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
+     */
+    @Override
+    public boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
+
+        if (resource.isFolder() || resource.isTemporaryFile()) {
+            // don't index  folders or temporary files for galleries, but pretty much everything else
+            return true;
+        }
+        return false;
+
+    }
+
+    /**
      * Performs a search with according to the gallery search parameters.<p>
      *
      * @param cms the cms context
@@ -450,7 +464,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * #################<br>
      * </code>
      *
-     * @Deprecated Use {@link #search(CmsObject, SolrQuery)} or {@link #search(CmsObject, String)} instead
+     * @deprecated Use {@link #search(CmsObject, SolrQuery)} or {@link #search(CmsObject, String)} instead
      */
     @Override
     @Deprecated
@@ -1060,20 +1074,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
         }
         return null;
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
-     */
-    @Override
-    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
-
-        if (resource.isFolder() || resource.isTemporaryFile()) {
-            // don't index  folders or temporary files for galleries, but pretty much everything else
-            return true;
-        }
-        return false;
-
     }
 
     /**

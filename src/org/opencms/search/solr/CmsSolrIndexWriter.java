@@ -34,6 +34,7 @@ package org.opencms.search.solr;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.fields.CmsSearchField;

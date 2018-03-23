@@ -133,9 +133,9 @@ public interface I_CmsSearchDocument {
 
     /**
      * Adds the resource type to this document.<p>
-     * @param paramString
+     * @param type the resource type name.
      */
-    void addTypeField(String paramString);
+    void addTypeField(String type);
 
     /**
      * Returns the content blob of this document.<p>
@@ -178,11 +178,9 @@ public interface I_CmsSearchDocument {
     String getFieldValueAsString(String fieldName);
 
     /**
-     * Returns a list of Strings representing the values of an multi valued field.<p>
-     *
-     * @param fieldName the name of the multi valued field to get the content of
-     *
-     * @return the list of Strings, or <code>null</code>
+     * Returns the values of a multi-valued field as list of strings.
+     * @param fieldName the name of the multivalued field to get the values from.
+     * @return the values of a multi-valued field as list of strings.
      */
     List<String> getMultivaluedFieldAsStringList(String fieldName);
 
@@ -213,4 +211,5 @@ public interface I_CmsSearchDocument {
      * @param score the score
      */
     void setScore(float score);
+
 }

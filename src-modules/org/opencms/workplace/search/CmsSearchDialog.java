@@ -31,8 +31,8 @@ import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
@@ -153,7 +153,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      */
     public List<CmsLuceneField> getFields() {
 
-        CmsSearchIndex index = getIndex();
+        I_CmsSearchIndex index = getIndex();
         List<CmsLuceneField> result = new ArrayList<CmsLuceneField>();
         Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
@@ -178,11 +178,12 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     protected String createDialogHtml(String dialog) {
 
         // check if the configured search index exists
-        CmsSearchIndex index = getIndex();
+        I_CmsSearchIndex index = getIndex();
         if (index == null) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_INDEX_INVALID_1,
-                getSettings().getUserSettings().getWorkplaceSearchIndexName()));
+            throw new CmsIllegalStateException(
+                Messages.get().container(
+                    Messages.ERR_INDEX_INVALID_1,
+                    getSettings().getUserSettings().getWorkplaceSearchIndexName()));
         }
 
         StringBuffer result = new StringBuffer(1024);
@@ -219,11 +220,12 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initParams();
-        addWidget(new CmsWidgetDialogParameter(
-            m_search,
-            "indexName",
-            PAGES[0],
-            new CmsSelectOnChangeReloadWidget(getSortNamesIndex())));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_search,
+                "indexName",
+                PAGES[0],
+                new CmsSelectOnChangeReloadWidget(getSortNamesIndex())));
         addWidget(new CmsWidgetDialogParameter(m_search, "query", PAGES[0], new CmsInputWidget()));
         addWidget(
             new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
@@ -284,10 +286,11 @@ public class CmsSearchDialog extends CmsWidgetDialog {
                 CmsLuceneField field = i.next();
                 if (isInitialCall()) {
                     // search form is in the initial state
-                    retVal.add(new CmsSelectWidgetOption(
-                        field.getName(),
-                        true,
-                        getMacroResolver().resolveMacros(field.getDisplayName())));
+                    retVal.add(
+                        new CmsSelectWidgetOption(
+                            field.getName(),
+                            true,
+                            getMacroResolver().resolveMacros(field.getDisplayName())));
                 } else {
                     // search form is not in the initial state
                     retVal.add(
@@ -307,9 +310,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      *
      * @return  the index to use in the search
      */
-    private CmsSearchIndex getIndex() {
+    private I_CmsSearchIndex getIndex() {
 
-        CmsSearchIndex index = null;
+        I_CmsSearchIndex index = null;
         // get the configured index or the selected index
         if (isInitialCall()) {
             // the search form is in the initial state

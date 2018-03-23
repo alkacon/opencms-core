@@ -35,7 +35,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -81,7 +81,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     protected CmsLuceneField m_field;
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
@@ -233,7 +233,8 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
 
         if (m_fieldconfiguration == null) {
             try {
-                m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
+                m_fieldconfiguration = m_searchManager.getFieldConfiguration(
+                    getParamFieldconfiguration());
                 if (m_fieldconfiguration == null) {
                     m_fieldconfiguration = new CmsLuceneFieldConfiguration();
                 }

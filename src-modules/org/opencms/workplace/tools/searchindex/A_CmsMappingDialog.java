@@ -35,8 +35,8 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -97,7 +97,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     protected CmsSearchField m_field;
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The user object that is edited on this dialog. */
     protected I_CmsSearchFieldMapping m_mapping;

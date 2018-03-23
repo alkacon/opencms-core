@@ -28,18 +28,18 @@
 package org.opencms.ui.apps.searchindex;
 
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.Iterator;
 import java.util.List;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 
 /**
@@ -62,6 +62,7 @@ public class CmsSourceDialog extends CmsBasicDialog {
      * @param cancel runnable to be started when the dialog gets closed
      */
     public CmsSourceDialog(final Runnable cancel) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_cancelButton.addClickListener(new Button.ClickListener() {
@@ -102,7 +103,7 @@ public class CmsSourceDialog extends CmsBasicDialog {
 
         StringBuffer html = new StringBuffer();
         // search for the corresponding A_CmsSearchIndex:
-        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(indexName);
+        I_CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(indexName);
 
         html.append("<ul>\n");
         // get the index sources (nice API)

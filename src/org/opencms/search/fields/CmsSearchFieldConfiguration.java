@@ -31,7 +31,6 @@
 
 package org.opencms.search.fields;
 
-import org.apache.solr.uninverting.UninvertingReader.Type;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -42,17 +41,25 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.solr.uninverting.UninvertingReader.Type;
 
 /**
  * Abstract implementation for OpenCms search field configurations.<p>
  *
  * @since 8.5.0
  */
-public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration> {
+public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
     /** A list of fields that should be lazy-loaded. */
     public static final List<String> LAZY_FIELDS = new ArrayList<String>();
@@ -65,9 +72,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
     }
 
-    /** The description of the configuration. */
-    private String m_description;
-
     /** Map to lookup the configured {@link CmsSearchField} instances by name. */
     private Map<String, CmsSearchField> m_fieldLookup;
 
@@ -79,9 +83,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /** The current index. */
     private CmsSearchIndex m_index;
-
-    /** The name of the configuration. */
-    private String m_name;
 
     /**
      * Creates a new, empty field configuration.<p>
@@ -176,24 +177,17 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         }
     }
 
-    /** To allow sorting on a field the field must be added to the map given to {@link org.apache.lucene.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
+    /** To allow sorting on a field the field must be added to the map given to {@link org.apache.solr.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
      *  The method adds the configured fields.
      * @param uninvertingMap the map to which the fields are added.
      */
+    @Override
     public void addUninvertingMappings(Map<String, Type> uninvertingMap) {
 
         for (String fieldName : getFieldNames()) {
             uninvertingMap.put(fieldName, Type.SORTED);
         }
 
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(CmsSearchFieldConfiguration obj) {
-
-        return m_name.compareTo(obj.getName());
     }
 
     /**
@@ -218,10 +212,11 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public I_CmsSearchDocument createDocument(
         CmsObject cms,
         CmsResource resource,
-        CmsSearchIndex index,
-        I_CmsExtractionResult extraction) throws CmsException {
+        I_CmsSearchIndex index,
+        I_CmsExtractionResult extraction)
+    throws CmsException {
 
-        m_index = index;
+        m_index = (CmsSearchIndex)index;
 
         I_CmsSearchDocument document = m_index.createEmptyDocument(resource);
 
@@ -246,31 +241,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             propertiesSearched);
 
         return document;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if ((obj instanceof CmsSearchFieldConfiguration)) {
-            return ((CmsSearchFieldConfiguration)obj).getName().equals(m_name);
-        }
-        return false;
-    }
-
-    /**
-     * Returns the description of this field configuration.<p>
-     *
-     * @return the description of this field configuration
-     */
-    public String getDescription() {
-
-        return m_description;
     }
 
     /**
@@ -315,6 +285,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
      *
      * @return the list of configured {@link CmsSearchField} instances
      */
+    @Override
     public List<CmsSearchField> getFields() {
 
         return m_fields;
@@ -325,46 +296,9 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
      *
      * @return the index
      */
-    public CmsSearchIndex getIndex() {
+    public I_CmsSearchIndex getIndex() {
 
         return m_index;
-    }
-
-    /**
-     * Returns the name of this field configuration.<p>
-     *
-     * @return the name of this field configuration
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return m_name.hashCode();
-    }
-
-    /**
-     * Initializes this field configuration.<p>
-     */
-    public void init() {
-
-        // nothing to do here
-    }
-
-    /**
-     * Sets the description of this field configuration.<p>
-     *
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-
-        m_description = description;
     }
 
     /**
@@ -375,16 +309,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public void setIndex(CmsSearchIndex index) {
 
         m_index = index;
-    }
-
-    /**
-     * Sets the name of this field configuration.<p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-
-        m_name = name;
     }
 
     /**
@@ -438,7 +362,8 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         CmsResource resource,
         I_CmsExtractionResult extractionResult,
         List<CmsProperty> properties,
-        List<CmsProperty> propertiesSearched) throws CmsException {
+        List<CmsProperty> propertiesSearched)
+    throws CmsException {
 
         CmsCategoryService categoryService = CmsCategoryService.getInstance();
         document.addCategoryField(categoryService.readResourceCategories(cms, resource));
@@ -694,7 +619,8 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         CmsResource resource,
         I_CmsExtractionResult extractionResult,
         List<CmsProperty> properties,
-        List<CmsProperty> propertiesSearched) throws CmsLoaderException {
+        List<CmsProperty> propertiesSearched)
+    throws CmsLoaderException {
 
         // add the resource type to the document
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());

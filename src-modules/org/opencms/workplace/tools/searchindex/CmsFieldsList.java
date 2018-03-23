@@ -35,8 +35,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -261,7 +261,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         Map<String, String[]> params = new HashMap<String, String[]>();
         String action = getParamListAction();
 
-        CmsSearchFieldConfiguration fieldConfig = OpenCms.getSearchManager().getFieldConfiguration(
+        I_CmsSearchFieldConfiguration fieldConfig = OpenCms.getSearchManager().getFieldConfiguration(
             m_paramFieldconfiguration);
         Iterator<CmsSearchField> itFields = fieldConfig.getFields().iterator();
         CmsLuceneField fieldObject = null;
@@ -720,7 +720,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchField> getFields() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchFieldConfiguration fieldConfig = manager.getFieldConfiguration(getParamFieldconfiguration());
+        I_CmsSearchFieldConfiguration fieldConfig = manager.getFieldConfiguration(getParamFieldconfiguration());
         List<CmsSearchField> result;
         if (fieldConfig != null) {
             result = fieldConfig.getFields();

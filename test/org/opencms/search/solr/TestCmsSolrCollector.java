@@ -33,7 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.collectors.CmsSolrCollector;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -84,7 +84,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
                         if (index != null) {
                             index.setEnabled(false);
                         }
@@ -101,37 +101,6 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Tests the "allInFolderPriorityDesc" resource collector.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testByQuery() throws Throwable {
-
-        echo("Testing if Solr is able to do the same as: allInFolderPriorityDateDesc resource collector");
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-
-        I_CmsResourceCollector collector = new CmsSolrCollector();
-        StringBuffer q = new StringBuffer(128);
-        q.append("&fq=parent-folders:\"/sites/default/xmlcontent/\"");
-        q.append("&fq=type:article");
-        q.append("&rows=" + 3);
-        q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
-        List<CmsResource> resources = collector.getResults(cms, "byQuery", q.toString());
-
-        // assert that 3 files are returned
-        assertEquals(3, resources.size());
-
-        CmsResource res;
-        res = resources.get(0);
-        assertEquals("/sites/default/xmlcontent/article_0004.html", res.getRootPath());
-        res = resources.get(1);
-        assertEquals("/sites/default/xmlcontent/article_0003.html", res.getRootPath());
-        res = resources.get(2);
-        assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
     }
 
     /**
@@ -169,6 +138,37 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         q.append("&rows=" + 3);
         q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
         List<CmsResource> resources = collector.getResults(cms, "byContext", q.toString());
+
+        // assert that 3 files are returned
+        assertEquals(3, resources.size());
+
+        CmsResource res;
+        res = resources.get(0);
+        assertEquals("/sites/default/xmlcontent/article_0004.html", res.getRootPath());
+        res = resources.get(1);
+        assertEquals("/sites/default/xmlcontent/article_0003.html", res.getRootPath());
+        res = resources.get(2);
+        assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
+    }
+
+    /**
+     * Tests the "allInFolderPriorityDesc" resource collector.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testByQuery() throws Throwable {
+
+        echo("Testing if Solr is able to do the same as: allInFolderPriorityDateDesc resource collector");
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+
+        I_CmsResourceCollector collector = new CmsSolrCollector();
+        StringBuffer q = new StringBuffer(128);
+        q.append("&fq=parent-folders:\"/sites/default/xmlcontent/\"");
+        q.append("&fq=type:article");
+        q.append("&rows=" + 3);
+        q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
+        List<CmsResource> resources = collector.getResults(cms, "byQuery", q.toString());
 
         // assert that 3 files are returned
         assertEquals(3, resources.size());

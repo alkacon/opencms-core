@@ -41,14 +41,14 @@ public interface I_CmsIndexWriter {
     /**
      * Close this IndexWriter.<p>
      *
-     * @throws IOException
+     * @throws IOException thrown if the close action fails.
      */
     void close() throws IOException;
 
     /**
      * Commit all previous operations.<p>
      *
-     * @throws IOException
+     * @throws IOException thrown if the commit action fails.
      */
     void commit() throws IOException;
 
@@ -68,7 +68,7 @@ public interface I_CmsIndexWriter {
      * as Lucene apparently is now able to manage the file structure so efficiently that
      * frequent optimizations are not longer required.<p>
      *
-     * @throws IOException
+     * @throws IOException thrown if the optimization fails.
      */
     void optimize() throws IOException;
 

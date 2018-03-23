@@ -30,7 +30,7 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
@@ -60,9 +60,9 @@ public class CmsDocumentGeneric extends A_CmsVfsDocument {
     /**
      * Just returns an empty extraction result since the content can't be extracted form a generic resource.<p>
      *
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, I_CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
     throws CmsIndexException {
 
         if (resource == null) {

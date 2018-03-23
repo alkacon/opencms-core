@@ -33,9 +33,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchDocumentType;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -370,9 +370,10 @@ public class CmsSearchIndexSourceList extends A_CmsEmbeddedListDialog {
 
         // test the needed parameters
         if (getParamIndexName() == null) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                A_CmsEditSearchIndexDialog.PARAM_INDEXNAME));
+            throw new CmsIllegalStateException(
+                Messages.get().container(
+                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                    A_CmsEditSearchIndexDialog.PARAM_INDEXNAME));
         }
     }
 
@@ -468,7 +469,7 @@ public class CmsSearchIndexSourceList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchIndex index = manager.getIndex(getParamIndexName());
+        I_CmsSearchIndex index = manager.getIndex(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }

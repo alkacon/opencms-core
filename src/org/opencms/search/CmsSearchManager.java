@@ -62,6 +62,7 @@ import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
@@ -663,7 +664,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected CmsObject m_adminCms;
 
     /** The list of indexes that are configured for offline index mode. */
-    protected List<CmsSearchIndex> m_offlineIndexes;
+    protected List<I_CmsSearchIndex> m_offlineIndexes;
 
     /** The thread used of offline indexing. */
     protected CmsSearchOfflineIndexThread m_offlineIndexThread;
@@ -690,7 +691,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private CmsExtractionResultCache m_extractionResultCache;
 
     /** Contains the available field configurations. */
-    private Map<String, CmsSearchFieldConfiguration> m_fieldConfigurations;
+    private Map<String, I_CmsSearchFieldConfiguration> m_fieldConfigurations;
 
     /** The force unlock type. */
     private CmsSearchForceUnlockMode m_forceUnlockMode;
@@ -699,7 +700,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private I_CmsTermHighlighter m_highlighter;
 
     /** A list of search indexes. */
-    private List<CmsSearchIndex> m_indexes;
+    private List<I_CmsSearchIndex> m_indexes;
 
     /** Seconds to wait for an index lock. */
     private int m_indexLockMaxWaitSeconds = 10;
@@ -739,7 +740,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_documentTypes = new HashMap<String, I_CmsDocumentFactory>();
         m_documentTypeConfigs = new ArrayList<CmsSearchDocumentType>();
         m_analyzers = new HashMap<Locale, CmsSearchAnalyzer>();
-        m_indexes = new ArrayList<CmsSearchIndex>();
+        m_indexes = new ArrayList<I_CmsSearchIndex>();
         m_indexSources = new TreeMap<String, CmsSearchIndexSource>();
         m_offlineHandler = new CmsSearchOfflineHandler();
         m_extractionCacheMaxAge = DEFAULT_EXTRACTION_CACHE_MAX_AGE;
@@ -748,7 +749,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_maxIndexWaitTime = DEFAULT_MAX_INDEX_WAITTIME;
         m_maxModificationsBeforeCommit = DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT;
 
-        m_fieldConfigurations = new HashMap<String, CmsSearchFieldConfiguration>();
+        m_fieldConfigurations = new HashMap<String, I_CmsSearchFieldConfiguration>();
         // make sure we have a "standard" field configuration
         addFieldConfiguration(CmsLuceneFieldConfiguration.DEFAULT_STANDARD);
 
@@ -780,7 +781,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
         if (StandardAnalyzer.class.equals(analyzerClass)) {
             // the Lucene standard analyzer is used - but without any stopwords.
-            // TODO: Is it a good idea to remove the default english stopwords used by default?
             analyzer = new StandardAnalyzer(new CharArraySet(0, false));
         } else {
             analyzer = (Analyzer)analyzerClass.newInstance();
@@ -837,11 +837,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public static boolean isLuceneIndex(String indexName) {
 
-        CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
-        if (i instanceof CmsSolrIndex) {
-            return false;
-        }
-        return true;
+        I_CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
+        return (i instanceof CmsSearchIndex) && (!(i instanceof CmsSolrIndex));
     }
 
     /**
@@ -885,7 +882,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @param fieldConfiguration the search field configuration to add
      */
-    public void addFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
+    public void addFieldConfiguration(I_CmsSearchFieldConfiguration fieldConfiguration) {
 
         m_fieldConfigurations.put(fieldConfiguration.getName(), fieldConfiguration);
         if (fieldConfiguration.getFields().isEmpty()) {
@@ -901,9 +898,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @param searchIndex the search index to add
      */
-    public void addSearchIndex(CmsSearchIndex searchIndex) {
+    public void addSearchIndex(I_CmsSearchIndex searchIndex) {
 
-        if ((searchIndex.getSources() == null) || (searchIndex.getPath() == null)) {
+        if (!searchIndex.isInitialized()) {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
                 try {
                     searchIndex.initialize();
@@ -1211,19 +1208,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @return the search field configuration with the given name
      */
-    public CmsSearchFieldConfiguration getFieldConfiguration(String name) {
+    public I_CmsSearchFieldConfiguration getFieldConfiguration(String name) {
 
         return m_fieldConfigurations.get(name);
     }
 
     /**
-     * Returns the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries.<p>
+     * Returns the unmodifieable List of configured {@link I_CmsSearchFieldConfiguration} entries.<p>
      *
-     * @return the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries
+     * @return the unmodifieable List of configured {@link I_CmsSearchFieldConfiguration} entries
      */
-    public List<CmsSearchFieldConfiguration> getFieldConfigurations() {
+    public List<I_CmsSearchFieldConfiguration> getFieldConfigurations() {
 
-        List<CmsSearchFieldConfiguration> result = new ArrayList<CmsSearchFieldConfiguration>(
+        List<I_CmsSearchFieldConfiguration> result = new ArrayList<I_CmsSearchFieldConfiguration>(
             m_fieldConfigurations.values());
         Collections.sort(result);
         return Collections.unmodifiableList(result);
@@ -1237,7 +1234,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public List<CmsLuceneFieldConfiguration> getFieldConfigurationsLucene() {
 
         List<CmsLuceneFieldConfiguration> result = new ArrayList<CmsLuceneFieldConfiguration>();
-        for (CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
+        for (I_CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
             if (conf instanceof CmsLuceneFieldConfiguration) {
                 result.add((CmsLuceneFieldConfiguration)conf);
             }
@@ -1254,7 +1251,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public List<CmsSolrFieldConfiguration> getFieldConfigurationsSolr() {
 
         List<CmsSolrFieldConfiguration> result = new ArrayList<CmsSolrFieldConfiguration>();
-        for (CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
+        for (I_CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
             if (conf instanceof CmsSolrFieldConfiguration) {
                 result.add((CmsSolrFieldConfiguration)conf);
             }
@@ -1291,9 +1288,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @return the Lucene search index configured with the given name
      */
-    public CmsSearchIndex getIndex(String indexName) {
+    public I_CmsSearchIndex getIndex(String indexName) {
 
-        for (CmsSearchIndex index : m_indexes) {
+        for (I_CmsSearchIndex index : m_indexes) {
             if (indexName.equalsIgnoreCase(index.getName())) {
                 return index;
             }
@@ -1335,7 +1332,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSolrIndex getIndexSolr(String indexName) {
 
-        CmsSearchIndex index = getIndex(indexName);
+        I_CmsSearchIndex index = getIndex(indexName);
         if (index instanceof CmsSolrIndex) {
             return (CmsSolrIndex)index;
         }
@@ -1394,34 +1391,34 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances.<p>
+     * Returns an unmodifiable list of all configured <code>{@link I_CmsSearchIndex}</code> instances.<p>
      *
-     * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
+     * @return an unmodifiable list of all configured <code>{@link I_CmsSearchIndex}</code> instances
      */
-    public List<CmsSearchIndex> getSearchIndexes() {
+    public List<I_CmsSearchIndex> getSearchIndexes() {
 
         return Collections.unmodifiableList(m_indexes);
     }
 
     /**
-     * Returns an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances.<p>
+     * Returns an unmodifiable list of all configured <code>{@link I_CmsSearchIndex}</code> instances.<p>
      *
-     * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
+     * @return an unmodifiable list of all configured <code>{@link I_CmsSearchIndex}</code> instances
      */
-    public List<CmsSearchIndex> getSearchIndexesAll() {
+    public List<I_CmsSearchIndex> getSearchIndexesAll() {
 
         return Collections.unmodifiableList(m_indexes);
     }
 
     /**
-     * Returns an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances.<p>
+     * Returns an unmodifiable list of all configured <code>{@link I_CmsSearchIndex}</code> instances.<p>
      *
-     * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
+     * @return an unmodifiable list of all configured <code>{@link I_CmsSearchIndex}</code> instances
      */
     public List<CmsSolrIndex> getSearchIndexesSolr() {
 
         List<CmsSolrIndex> indexes = new ArrayList<CmsSolrIndex>();
-        for (CmsSearchIndex index : m_indexes) {
+        for (I_CmsSearchIndex index : m_indexes) {
             if (index instanceof CmsSolrIndex) {
                 indexes.add((CmsSolrIndex)index);
             }
@@ -1537,11 +1534,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void initOfflineIndexes() {
 
         // check which indexes are configured as offline indexes
-        List<CmsSearchIndex> offlineIndexes = new ArrayList<CmsSearchIndex>();
-        Iterator<CmsSearchIndex> i = m_indexes.iterator();
+        List<I_CmsSearchIndex> offlineIndexes = new ArrayList<I_CmsSearchIndex>();
+        Iterator<I_CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
-            CmsSearchIndex index = i.next();
-            if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
+            I_CmsSearchIndex index = i.next();
+            if (I_CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
                 // this is an offline index
                 offlineIndexes.add(index);
             }
@@ -1652,7 +1649,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             CmsMessageContainer container = null;
             for (int i = 0, n = m_indexes.size(); i < n; i++) {
                 // iterate all configured search indexes
-                CmsSearchIndex searchIndex = m_indexes.get(i);
+                I_CmsSearchIndex searchIndex = m_indexes.get(i);
                 try {
                     // update the index
                     updateIndex(searchIndex, report, null);
@@ -1690,7 +1687,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         try {
             SEARCH_MANAGER_LOCK.lock();
             // get the search index by name
-            CmsSearchIndex index = getIndex(indexName);
+            I_CmsSearchIndex index = getIndex(indexName);
             // update the index
             updateIndex(index, report, null);
             // clean up the extraction result cache
@@ -1716,7 +1713,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             while (i.hasNext()) {
                 String indexName = i.next();
                 // get the search index by name
-                CmsSearchIndex index = getIndex(indexName);
+                I_CmsSearchIndex index = getIndex(indexName);
                 if (index != null) {
                     // update the index
                     updateIndex(index, report, null);
@@ -1834,10 +1831,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *         field configuration was unknown to the manager.
      *
      * @throws CmsIllegalStateException if the given field configuration is still used by at least one
-     *         <code>{@link CmsSearchIndex}</code>.
+     *         <code>{@link I_CmsSearchIndex}</code>.
      *
      */
-    public boolean removeSearchFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration)
+    public boolean removeSearchFieldConfiguration(I_CmsSearchFieldConfiguration fieldConfiguration)
     throws CmsIllegalStateException {
 
         // never remove the standard field configuration
@@ -1848,11 +1845,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     fieldConfiguration.getName()));
         }
         // validation if removal will be granted
-        Iterator<CmsSearchIndex> itIndexes = m_indexes.iterator();
-        CmsSearchIndex idx;
+        Iterator<I_CmsSearchIndex> itIndexes = m_indexes.iterator();
+        I_CmsSearchIndex idx;
         // the list for collecting indexes that use the given field configuration
-        List<CmsSearchIndex> referrers = new ArrayList<CmsSearchIndex>();
-        CmsSearchFieldConfiguration refFieldConfig;
+        List<I_CmsSearchIndex> referrers = new ArrayList<I_CmsSearchIndex>();
+        I_CmsSearchFieldConfiguration refFieldConfig;
         while (itIndexes.hasNext()) {
             idx = itIndexes.next();
             refFieldConfig = idx.getFieldConfiguration();
@@ -1885,7 +1882,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @throws CmsIllegalStateException if the given field is the last field inside the given field configuration.
      */
     public boolean removeSearchFieldConfigurationField(
-        CmsSearchFieldConfiguration fieldConfiguration,
+        I_CmsSearchFieldConfiguration fieldConfiguration,
         CmsSearchField field)
     throws CmsIllegalStateException {
 
@@ -1947,7 +1944,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @param searchIndex the search index to remove
      */
-    public void removeSearchIndex(CmsSearchIndex searchIndex) {
+    public void removeSearchIndex(I_CmsSearchIndex searchIndex) {
 
         // shut down index to remove potential config files of Solr indexes
         searchIndex.shutDown();
@@ -1978,7 +1975,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         while (i.hasNext()) {
             String indexName = i.next();
             // get the search index by name
-            CmsSearchIndex index = getIndex(indexName);
+            I_CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
                 // remove the index
                 removeSearchIndex(index);
@@ -1999,16 +1996,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *         searchindex was unknown to the manager.
      *
      * @throws CmsIllegalStateException if the given indexsource is still used by at least one
-     *         <code>{@link CmsSearchIndex}</code>.
+     *         <code>{@link I_CmsSearchIndex}</code>.
      *
      */
     public boolean removeSearchIndexSource(CmsSearchIndexSource indexsource) throws CmsIllegalStateException {
 
         // validation if removal will be granted
-        Iterator<CmsSearchIndex> itIndexes = m_indexes.iterator();
-        CmsSearchIndex idx;
+        Iterator<I_CmsSearchIndex> itIndexes = m_indexes.iterator();
+        I_CmsSearchIndex idx;
         // the list for collecting indexes that use the given index source
-        List<CmsSearchIndex> referrers = new ArrayList<CmsSearchIndex>();
+        List<I_CmsSearchIndex> referrers = new ArrayList<I_CmsSearchIndex>();
         // the current list of referred index sources of the iterated index
         List<CmsSearchIndexSource> refsources;
         while (itIndexes.hasNext()) {
@@ -2296,9 +2293,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             OpenCms.removeCmsEventListener(m_offlineHandler);
         }
 
-        Iterator<CmsSearchIndex> i = m_indexes.iterator();
+        Iterator<I_CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
-            CmsSearchIndex index = i.next();
+            I_CmsSearchIndex index = i.next();
             index.shutDown();
             index = null;
         }
@@ -2473,7 +2470,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected CmsProject getOfflineIndexProject() {
 
         CmsProject result = null;
-        for (CmsSearchIndex index : m_offlineIndexes) {
+        for (I_CmsSearchIndex index : m_offlineIndexes) {
             try {
                 result = m_adminCms.readProject(index.getProject());
 
@@ -2581,7 +2578,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected void initSearchIndexes() {
 
-        CmsSearchIndex index = null;
+        I_CmsSearchIndex index = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = m_indexes.get(i);
             // reset disabled flag
@@ -2703,10 +2700,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // sort the resource to update
                 Collections.sort(updateResources);
                 // only update the indexes if the list of remaining published resources is not empty
-                Iterator<CmsSearchIndex> i = m_indexes.iterator();
+                Iterator<I_CmsSearchIndex> i = m_indexes.iterator();
                 while (i.hasNext()) {
-                    CmsSearchIndex index = i.next();
-                    if (CmsSearchIndex.REBUILD_MODE_AUTO.equals(index.getRebuildMode())) {
+                    I_CmsSearchIndex index = i.next();
+                    if (I_CmsSearchIndex.REBUILD_MODE_AUTO.equals(index.getRebuildMode())) {
                         // only update indexes which have the rebuild mode set to "auto"
                         try {
                             updateIndex(index, report, updateResources);
@@ -2739,7 +2736,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      */
-    protected void updateIndex(CmsSearchIndex index, I_CmsReport report, List<CmsPublishedResource> resourcesToIndex)
+    protected void updateIndex(I_CmsSearchIndex index, I_CmsReport report, List<CmsPublishedResource> resourcesToIndex)
     throws CmsException {
 
         try {
@@ -2766,133 +2763,152 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
                 // rebuild the complete index
 
-                // create a new thread manager for the indexing threads
-                CmsIndexingThreadManager threadManager = getThreadManager();
-
-                boolean isOfflineIndex = false;
-                if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
-                    // disable offline indexing while the complete index is rebuild
-                    isOfflineIndex = true;
-                    index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_MANUAL);
-                    // re-initialize the offline indexes, this will disable this offline index
-                    initOfflineIndexes();
-                }
-
-                I_CmsIndexWriter writer = null;
-                try {
-                    // create a backup of the existing index
-                    String backup = index.createIndexBackup();
-                    if (backup != null) {
-                        index.indexSearcherOpen(backup);
-                    }
-
-                    // create a new index writer
-                    writer = index.getIndexWriter(report, true);
-                    if (writer instanceof CmsSolrIndexWriter) {
-                        try {
-                            ((CmsSolrIndexWriter)writer).deleteAllDocuments();
-                        } catch (IOException e) {
-                            LOG.error(e.getMessage(), e);
-                        }
-                    }
-
-                    // output start information on the report
-                    report.println(
-                        Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_BEGIN_1, index.getName()),
-                        I_CmsReport.FORMAT_HEADLINE);
-
-                    // iterate all configured index sources of this index
-                    Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
-                    while (sources.hasNext()) {
-                        // get the next index source
-                        CmsSearchIndexSource source = sources.next();
-                        // create the indexer
-                        I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
-                        // new index creation, use all resources from the index source
-                        indexer.rebuildIndex(writer, threadManager, source);
-
-                        // wait for indexing threads to finish
-                        while (threadManager.isRunning()) {
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                // just continue with the loop after interruption
-                                LOG.info(e.getLocalizedMessage(), e);
-                            }
-                        }
-
-                        // commit and optimize the index after each index source has been finished
-                        try {
-                            writer.commit();
-                        } catch (IOException e) {
-                            if (LOG.isWarnEnabled()) {
-                                LOG.warn(
-                                    Messages.get().getBundle().key(
-                                        Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                                        index.getName(),
-                                        index.getPath()),
-                                    e);
-                            }
-                        }
-                        try {
-                            writer.optimize();
-                        } catch (IOException e) {
-                            if (LOG.isWarnEnabled()) {
-                                LOG.warn(
-                                    Messages.get().getBundle().key(
-                                        Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
-                                        index.getName(),
-                                        index.getPath()),
-                                    e);
-                            }
-                        }
-                    }
-
-                    if (backup != null) {
-                        // remove the backup after the files have been re-indexed
-                        index.indexSearcherClose();
-                        index.removeIndexBackup(backup);
-                    }
-
-                    // output finish information on the report
-                    report.println(
-                        Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_END_1, index.getName()),
-                        I_CmsReport.FORMAT_HEADLINE);
-
-                } finally {
-                    if (writer != null) {
-                        try {
-                            writer.close();
-                        } catch (IOException e) {
-                            if (LOG.isWarnEnabled()) {
-                                LOG.warn(
-                                    Messages.get().getBundle().key(
-                                        Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
-                                        index.getPath(),
-                                        index.getName()),
-                                    e);
-                            }
-                        }
-                    }
-                    if (isOfflineIndex) {
-                        // reset the mode of the offline index
-                        index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
-                        // re-initialize the offline indexes, this will re-enable this index
-                        initOfflineIndexes();
-                    }
-                    // index has changed - initialize the index searcher instance
-                    index.indexSearcherOpen(index.getPath());
-                }
-
-                // show information about indexing runtime
-                threadManager.reportStatistics(report);
-
+                updateIndexCompletely(cms, index, report);
             } else {
                 updateIndexIncremental(cms, index, report, resourcesToIndex);
             }
         } finally {
             SEARCH_MANAGER_LOCK.unlock();
         }
+    }
+
+    /**
+     * The method updates all OpenCms documents that are indexed.
+     * @param cms the OpenCms user context to use for accessing the VFS
+     * @param index the index to update
+     * @param report the report to write output messages to
+     * @throws CmsIndexException thrown if indexing fails for some reason
+     */
+    @SuppressWarnings("null")
+    protected void updateIndexCompletely(CmsObject cms, I_CmsSearchIndex index, I_CmsReport report)
+    throws CmsIndexException {
+
+        // create a new thread manager for the indexing threads
+        CmsIndexingThreadManager threadManager = getThreadManager();
+
+        boolean isOfflineIndex = false;
+        if (I_CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
+            // disable offline indexing while the complete index is rebuild
+            isOfflineIndex = true;
+            index.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_MANUAL);
+            // re-initialize the offline indexes, this will disable this offline index
+            initOfflineIndexes();
+        }
+
+        I_CmsIndexWriter writer = null;
+        try {
+            // create a backup of the existing index
+            CmsSearchIndex indexInternal = null;
+            String backup = null;
+            if (index instanceof CmsSearchIndex) {
+                indexInternal = (CmsSearchIndex)index;
+                backup = indexInternal.createIndexBackup();
+                if (backup != null) {
+                    indexInternal.indexSearcherOpen(backup);
+                }
+            }
+
+            // create a new index writer
+            writer = index.getIndexWriter(report, true);
+            if (writer instanceof CmsSolrIndexWriter) {
+                try {
+                    ((CmsSolrIndexWriter)writer).deleteAllDocuments();
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+
+            // output start information on the report
+            report.println(
+                Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_BEGIN_1, index.getName()),
+                I_CmsReport.FORMAT_HEADLINE);
+
+            // iterate all configured index sources of this index
+            Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
+            while (sources.hasNext()) {
+                // get the next index source
+                CmsSearchIndexSource source = sources.next();
+                // create the indexer
+                I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
+                // new index creation, use all resources from the index source
+                indexer.rebuildIndex(writer, threadManager, source);
+
+                // wait for indexing threads to finish
+                while (threadManager.isRunning()) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        // just continue with the loop after interruption
+                        LOG.info(e.getLocalizedMessage(), e);
+                    }
+                }
+
+                // commit and optimize the index after each index source has been finished
+                try {
+                    writer.commit();
+                } catch (IOException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                                index.getName(),
+                                index.getPath()),
+                            e);
+                    }
+                }
+                try {
+                    writer.optimize();
+                } catch (IOException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
+                                index.getName(),
+                                index.getPath()),
+                            e);
+                    }
+                }
+            }
+
+            // we are sure here that indexInternal is not null
+            if (backup != null) {
+                // remove the backup after the files have been re-indexed
+                indexInternal.indexSearcherClose();
+                indexInternal.removeIndexBackup(backup);
+            }
+
+            // output finish information on the report
+            report.println(
+                Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_END_1, index.getName()),
+                I_CmsReport.FORMAT_HEADLINE);
+
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
+                                index.getPath(),
+                                index.getName()),
+                            e);
+                    }
+                }
+            }
+            if (isOfflineIndex) {
+                // reset the mode of the offline index
+                index.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_OFFLINE);
+                // re-initialize the offline indexes, this will re-enable this index
+                initOfflineIndexes();
+            }
+            // index has changed - initialize the index searcher instance
+            index.onIndexChanged(true);
+        }
+
+        // show information about indexing runtime
+        threadManager.reportStatistics(report);
     }
 
     /**
@@ -2907,7 +2923,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected void updateIndexIncremental(
         CmsObject cms,
-        CmsSearchIndex index,
+        I_CmsSearchIndex index,
         I_CmsReport report,
         List<CmsPublishedResource> resourcesToIndex)
     throws CmsException {
@@ -3003,7 +3019,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         }
                     }
                     // index has changed - initialize the index searcher instance
-                    index.indexSearcherUpdate();
+                    index.onIndexChanged(false);
                 }
 
                 // output finish information on the report
@@ -3034,9 +3050,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
-        Iterator<CmsSearchIndex> j = m_offlineIndexes.iterator();
+        Iterator<I_CmsSearchIndex> j = m_offlineIndexes.iterator();
         while (j.hasNext()) {
-            CmsSearchIndex index = j.next();
+            I_CmsSearchIndex index = j.next();
             if (index.getSources() != null) {
                 try {
                     // switch to the index project

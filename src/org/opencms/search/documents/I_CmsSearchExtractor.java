@@ -30,7 +30,7 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
@@ -57,6 +57,7 @@ public interface I_CmsSearchExtractor {
      *
      * @throws CmsException if something goes wrong
      */
-    I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException;
+    I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
+    throws CmsException;
 
 }

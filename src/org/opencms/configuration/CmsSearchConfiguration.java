@@ -35,12 +35,13 @@ import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.util.CmsStringUtil;
@@ -473,7 +474,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <indexes>
         Element indexesElement = searchElement.addElement(N_INDEXES);
-        for (CmsSearchIndex searchIndex : m_searchManager.getSearchIndexesAll()) {
+        for (I_CmsSearchIndex searchIndex : m_searchManager.getSearchIndexesAll()) {
             // add the next <index> element
             Element indexElement = indexesElement.addElement(N_INDEX);
             // add class attribute (if required)
@@ -545,7 +546,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <fieldconfigurations>
         Element fieldConfigurationsElement = searchElement.addElement(N_FIELDCONFIGURATIONS);
-        for (CmsSearchFieldConfiguration fieldConfiguration : m_searchManager.getFieldConfigurations()) {
+        for (I_CmsSearchFieldConfiguration fieldConfiguration : m_searchManager.getFieldConfigurations()) {
             Element fieldConfigurationElement = fieldConfigurationsElement.addElement(N_FIELDCONFIGURATION);
             // add class attribute (if required)
             if (!fieldConfiguration.getClass().equals(CmsLuceneFieldConfiguration.class)) {

@@ -760,7 +760,8 @@ public class CmsSearch {
         resetLastResult();
         if (CmsStringUtil.isNotEmpty(indexName)) {
             try {
-                CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                I_CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(indexName);
+                CmsSearchIndex index = idx instanceof CmsSearchIndex ? (CmsSearchIndex)idx : null;
                 if (index == null) {
                     throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
                 }

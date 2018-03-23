@@ -34,7 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -66,7 +66,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     public static final String PARAM_FIELDCONFIGURATION = "fieldconfiguration";
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;

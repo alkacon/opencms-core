@@ -31,8 +31,8 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchResource;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -85,7 +85,7 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
                         if (index != null) {
                             index.setEnabled(false);
                         }

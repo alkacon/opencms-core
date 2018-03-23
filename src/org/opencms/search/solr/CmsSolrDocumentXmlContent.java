@@ -44,8 +44,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchUtil;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.CmsIndexNoContentException;
 import org.opencms.search.documents.Messages;
@@ -261,7 +261,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
      *
      * @throws CmsException in case reading or unmarshalling the content fails
      */
-    public static CmsExtractionResult extractXmlContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public static CmsExtractionResult extractXmlContent(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
     throws CmsException {
 
         return extractXmlContent(cms, resource, index, null);
@@ -282,7 +282,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
     public static CmsExtractionResult extractXmlContent(
         CmsObject cms,
         CmsResource resource,
-        CmsSearchIndex index,
+        I_CmsSearchIndex index,
         Locale forceLocale)
     throws CmsException {
 
@@ -481,10 +481,10 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
     }
 
     /**
-     * @see org.opencms.search.documents.CmsDocumentXmlContent#extractContent(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.CmsSearchIndex)
+     * @see org.opencms.search.documents.CmsDocumentXmlContent#extractContent(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.I_CmsSearchIndex)
      */
     @Override
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);

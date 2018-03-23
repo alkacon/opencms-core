@@ -35,9 +35,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchException;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -187,7 +187,7 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             String indexSource;
-            CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
+            I_CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
             while (itItems.hasNext()) {
                 item = itItems.next();
                 indexSource = (String)item.get(LIST_COLUMN_NAME);
@@ -219,7 +219,7 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_ADDSOURCE) || action.equals(LIST_COLUMN_ADDSOURCE2)) {
 
-            CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
+            I_CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
             idx.addSourceName(indexsourceName);
             try {
                 idx.initialize();
@@ -457,9 +457,10 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
 
         // test the needed parameters
         if (getParamIndexName() == null) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                A_CmsEditSearchIndexDialog.PARAM_INDEXNAME));
+            throw new CmsIllegalStateException(
+                Messages.get().container(
+                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                    A_CmsEditSearchIndexDialog.PARAM_INDEXNAME));
         }
     }
 
@@ -555,7 +556,7 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchIndex index = manager.getIndex(getParamIndexName());
+        I_CmsSearchIndex index = manager.getIndex(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }

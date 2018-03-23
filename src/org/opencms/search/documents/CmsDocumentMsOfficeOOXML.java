@@ -32,7 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractorMsOfficeOOXML;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
@@ -61,9 +61,9 @@ public class CmsDocumentMsOfficeOOXML extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a given vfs resource containing MS Word data.<p>
      *
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, I_CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
     throws CmsIndexException, CmsException {
 
         logContentExtraction(resource, index);

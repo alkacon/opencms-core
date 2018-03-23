@@ -28,7 +28,7 @@
 package org.opencms.ui.apps.searchindex;
 
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
@@ -46,17 +46,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.MouseEvents;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the vaadin table to show the indexes.<p>
@@ -185,6 +185,7 @@ public class CmsSearchIndexTable extends Table {
          * @param collapsable should this column be collapsable?
          */
         TableProperty(String headerMessage, Class<?> type, Object defaultValue, boolean collapsable) {
+
             m_headerMessage = headerMessage;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -296,7 +297,7 @@ public class CmsSearchIndexTable extends Table {
         setItemIconPropertyId(TableProperty.Icon);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnWidth(null, 40);
-        List<CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexesAll();
+        List<I_CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexesAll();
 
         addItemClickListener(new ItemClickListener() {
 
@@ -313,7 +314,7 @@ public class CmsSearchIndexTable extends Table {
         setSelectable(true);
         setMultiSelect(true);
 
-        for (CmsSearchIndex index : indexes) {
+        for (I_CmsSearchIndex index : indexes) {
             Item item = m_container.addItem(index);
             item.getItemProperty(TableProperty.Name).setValue(index.getName());
             item.getItemProperty(TableProperty.FieldConfig).setValue(index.getFieldConfiguration().getName());
@@ -370,7 +371,7 @@ public class CmsSearchIndexTable extends Table {
                 m_menu.setEntries(getMenuEntries(), getSearchIndexNames());
                 m_menu.openForTable(event, itemId, propertyId, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.Name.equals(propertyId)) {
-                showSourcesWindow(((CmsSearchIndex)((Set<?>)getValue()).iterator().next()).getName());
+                showSourcesWindow(((I_CmsSearchIndex)((Set<?>)getValue()).iterator().next()).getName());
             }
         }
     }
@@ -424,8 +425,8 @@ public class CmsSearchIndexTable extends Table {
 
         Set<String> names = new HashSet<String>();
         @SuppressWarnings("unchecked")
-        Set<CmsSearchIndex> indexes = (Set<CmsSearchIndex>)getValue();
-        for (CmsSearchIndex index : indexes) {
+        Set<I_CmsSearchIndex> indexes = (Set<I_CmsSearchIndex>)getValue();
+        for (I_CmsSearchIndex index : indexes) {
             names.add(index.getName());
         }
         return names;

@@ -102,46 +102,6 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
     }
 
     /**
-     * Creates a new search index setup for this test.<p>
-     *
-     * @throws Exception in case the test fails
-     */
-    public void testSearchIndexSetup() throws Exception {
-
-        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
-        searchIndex.setProject("Online");
-        searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
-        // available pre-configured in the test configuration files opencms-search.xml
-        searchIndex.addSourceName("source1");
-        searchIndex.addConfigurationParameter(CmsSearchIndex.BACKUP_REINDEXING, "true");
-
-        // initialize the new index
-        searchIndex.initialize();
-
-        // add the search index to the manager
-        OpenCms.getSearchManager().addSearchIndex(searchIndex);
-
-        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        // this call does not throws the rebuild index event
-        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
-        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
-
-        // perform a search on the newly generated index
-        CmsSearch searchBean = new CmsSearch();
-        List<CmsSearchResult> searchResult;
-
-        searchBean.init(getCmsObject());
-        searchBean.setIndex(INDEX_SPECIAL);
-        searchBean.setQuery(">>SearchEgg1<<");
-
-        // assert one file is found in the default site
-        searchResult = searchBean.getSearchResult();
-        assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", (searchResult.get(0)).getPath());
-    }
-
-    /**
      * Tests incremental index updates with the new content blob feature.<p>
      *
      * @throws Exception in case the test fails
@@ -197,7 +157,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
         String fileName = "/sites/default/test/master.pdf";
 
-        CmsSearchIndex searchIndex = OpenCms.getSearchManager().getIndex(INDEX_SPECIAL);
+        CmsSearchIndex searchIndex = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_SPECIAL);
         Document doc = (Document)searchIndex.getDocument(CmsSearchField.FIELD_PATH, fileName).getDocument();
 
         assertNotNull("Document '" + fileName + "' not found", doc);
@@ -207,5 +167,45 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         // assertTrue("Content field not lazy", doc.getField(CmsSearchField.FIELD_CONTENT).isLazy());
         assertNotNull("No 'content blob' field available", doc.getField(CmsSearchField.FIELD_CONTENT_BLOB));
         // assertTrue("Content blob field not lazy", doc.getField(CmsSearchField.FIELD_CONTENT_BLOB).isLazy());
+    }
+
+    /**
+     * Creates a new search index setup for this test.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    public void testSearchIndexSetup() throws Exception {
+
+        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
+        searchIndex.setProject("Online");
+        searchIndex.setLocale(Locale.ENGLISH);
+        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
+        // available pre-configured in the test configuration files opencms-search.xml
+        searchIndex.addSourceName("source1");
+        searchIndex.addConfigurationParameter(CmsSearchIndex.BACKUP_REINDEXING, "true");
+
+        // initialize the new index
+        searchIndex.initialize();
+
+        // add the search index to the manager
+        OpenCms.getSearchManager().addSearchIndex(searchIndex);
+
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
+        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(getCmsObject());
+        searchBean.setIndex(INDEX_SPECIAL);
+        searchBean.setQuery(">>SearchEgg1<<");
+
+        // assert one file is found in the default site
+        searchResult = searchBean.getSearchResult();
+        assertEquals(1, searchResult.size());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", (searchResult.get(0)).getPath());
     }
 }

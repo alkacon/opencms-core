@@ -164,7 +164,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Initializes the user object (a <code>{@link org.opencms.search.CmsSearchIndex}</code> instance.<p>
+     * Initializes the user object (a <code>{@link org.opencms.search.I_CmsSearchIndex}</code> instance.<p>
      *
      * Implementation always have to call <code>"super.defineWidgets()"</code> first as
      * this action may only be done here (relies on filled request parameters, the next

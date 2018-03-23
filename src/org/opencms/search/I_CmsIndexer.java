@@ -83,7 +83,7 @@ public interface I_CmsIndexer {
      *
      * @return a new instance of this indexer implementation
      */
-    I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index);
+    I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, I_CmsSearchIndex index);
 
     /**
      * Rebuilds the index for the given configured index source.<p>
@@ -112,5 +112,6 @@ public interface I_CmsIndexer {
     void updateResources(
         I_CmsIndexWriter writer,
         CmsIndexingThreadManager threadManager,
-        List<CmsPublishedResource> resourcesToUpdate) throws CmsIndexException;
+        List<CmsPublishedResource> resourcesToUpdate)
+    throws CmsIndexException;
 }

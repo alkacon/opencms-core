@@ -32,8 +32,8 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
@@ -236,7 +236,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public List<CmsSearchField> getSearchFields() {
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
+        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
         List<CmsSearchField> result = new ArrayList<CmsSearchField>();
         Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
@@ -442,14 +442,15 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 new CmsSelectWidget(getSortWidgetConfiguration()),
                 0,
                 1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_searchParams.getRoots(),
-            "roots",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(),
-            1,
-            10));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_searchParams.getRoots(),
+                "roots",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(),
+                1,
+                10));
         addWidget(
             new CmsWidgetDialogParameter(
                 m_searchParams.getCategories(),
@@ -542,10 +543,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 result.append(dialogContentStart(null));
                 result.append(result.append(createWidgetTableStart()));
                 // first block "Query for index...."
-                result.append(dialogBlockStart(
-                    key(
-                        Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_CATEGORIES_1,
-                        new Object[] {m_searchParams.getQuery()})));
+                result.append(
+                    dialogBlockStart(
+                        key(
+                            Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_CATEGORIES_1,
+                            new Object[] {m_searchParams.getQuery()})));
                 result.append(createWidgetTableStart());
 
                 // categories:
@@ -580,9 +582,10 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(query) && (query.length() > 3)) {
             CmsSearchResultView resultView = new CmsSearchResultView(getJsp());
             // proprietary workplace admin link for pagelinks of search:
-            resultView.setSearchRessourceUrl(getJsp().link(
-                "/system/workplace/views/admin/admin-main.jsp?path=/searchindex/singleindex/search&indexname="
-                    + getSearchIndexIndex().getName()));
+            resultView.setSearchRessourceUrl(
+                getJsp().link(
+                    "/system/workplace/views/admin/admin-main.jsp?path=/searchindex/singleindex/search&indexname="
+                        + getSearchIndexIndex().getName()));
             m_search.init(getCms());
 
             // custom parameters (non-widget controlled)
@@ -679,10 +682,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
         CmsMessages messages = Messages.get().getBundle(getLocale());
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchParameters.SORT_NAMES[0],
-            true,
-            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_SCORE_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsSearchParameters.SORT_NAMES[0],
+                true,
+                messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_SCORE_0)));
         result.add(
             new CmsSelectWidgetOption(
                 CmsSearchParameters.SORT_NAMES[1],

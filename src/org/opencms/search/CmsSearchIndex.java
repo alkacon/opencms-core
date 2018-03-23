@@ -32,13 +32,10 @@
 package org.opencms.search;
 
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -46,6 +43,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
+import org.opencms.search.extractors.CmsExtractionResult;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
@@ -61,7 +60,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -100,7 +98,7 @@ import org.apache.solr.uninverting.UninvertingReader.Type;
 /**
  * Abstract search index implementation.<p>
  */
-public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
+public class CmsSearchIndex extends A_CmsSearchIndex {
 
     /** A constant for the full qualified name of the CmsSearchIndex class. */
     public static final String A_PARAM_PREFIX = "org.opencms.search.CmsSearchIndex";
@@ -181,29 +179,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Constant for additional parameter to set the thread priority during search. */
     public static final String PRIORITY = A_PARAM_PREFIX + ".priority";
 
-    /** Special value for the search.exclude property. */
-    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
-
-    /** Special value for the search.exclude property. */
-    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY = "gallery";
-
-    /** Automatic ("auto") index rebuild mode. */
-    public static final String REBUILD_MODE_AUTO = "auto";
-
-    /** Manual ("manual") index rebuild mode. */
-    public static final String REBUILD_MODE_MANUAL = "manual";
-
-    /** Offline ("offline") index rebuild mode. */
-    public static final String REBUILD_MODE_OFFLINE = "offline";
-
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = A_PARAM_PREFIX + ".checkTimeRange";
 
     /** The document type name for XML contents. */
     public static final String TYPE_XMLCONTENT = "xmlcontent";
-
-    /** The use all locale. */
-    public static final String USE_ALL_LOCALE = "all";
 
     /**
      * A stored field visitor, that does not return the large fields: "content" and "contentblob".<p>
@@ -241,21 +221,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Map of display query filters to use. */
     private Map<String, Query> m_displayFilters;
 
-    /** Document types of folders/channels. */
-    private Map<String, List<String>> m_documenttypes;
-
-    /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
-    private boolean m_enabled;
-
-    /** The content extraction mode for this index. */
-    private boolean m_extractContent;
-
-    /** The search field configuration of this index. */
-    private CmsSearchFieldConfiguration m_fieldConfiguration;
-
-    /** The name of the search field configuration used by this index. */
-    private String m_fieldConfigurationName;
-
     /**
      * Signals whether expiration dates should be ignored when checking permissions or not.<p>
      * @see #IGNORE_EXPIRATION
@@ -265,47 +230,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The Lucene index searcher to use. */
     private IndexSearcher m_indexSearcher;
 
-    /** The index writer to use. */
-    private I_CmsIndexWriter m_indexWriter;
-
-    /** Signals whether the language detection. */
-    private boolean m_languageDetection;
-
-    /** The locale of this index. */
-    private Locale m_locale;
-
-    /** The Lucene index RAM buffer size, see {@link IndexWriterConfig#setRAMBufferSizeMB(double)}. */
-    private Double m_luceneRAMBufferSizeMB;
-
     /** Indicates how many hits are loaded at maximum. */
     private int m_maxHits;
-
-    /** The name of this index. */
-    private String m_name;
-
-    /** The path where this index stores it's data in the "real" file system. */
-    private String m_path;
 
     /** The thread priority for a search. */
     private int m_priority;
 
-    /** The project of this index. */
-    private String m_project;
-
-    /** The rebuild mode for this index. */
-    private String m_rebuild;
-
     /** Controls if a resource requires view permission to be displayed in the result list. */
     private boolean m_requireViewPermission;
 
+    /** The Lucene index RAM buffer size, see {@link IndexWriterConfig#setRAMBufferSizeMB(double)}. */
+    private Double m_luceneRAMBufferSizeMB;
+
     /** The cms specific Similarity implementation. */
     private final Similarity m_sim = new CmsSearchSimilarity();
-
-    /** The list of configured index source names. */
-    private List<String> m_sourceNames;
-
-    /** The list of configured index sources. */
-    private List<CmsSearchIndexSource> m_sources;
 
     /**
      * Default constructor only intended to be used by the XML configuration. <p>
@@ -315,11 +253,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public CmsSearchIndex() {
 
-        m_sourceNames = new ArrayList<String>();
-        m_documenttypes = new HashMap<String, List<String>>();
-        m_enabled = true;
+        super();
         m_checkPermissions = true;
-        m_extractContent = true;
         m_priority = -1;
         m_createExcerpt = true;
         m_maxHits = MAX_HITS_DEFAULT;
@@ -489,16 +424,17 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @param value the value of the parameter
      *
      */
+    @Override
     public void addConfigurationParameter(String key, String value) {
 
         if (PERMISSIONS.equals(key)) {
             m_checkPermissions = Boolean.valueOf(value).booleanValue();
         } else if (EXTRACT_CONTENT.equals(key)) {
-            m_extractContent = Boolean.valueOf(value).booleanValue();
+            setExtractContent(Boolean.valueOf(value).booleanValue());
         } else if (BACKUP_REINDEXING.equals(key)) {
             m_backupReindexing = Boolean.valueOf(value).booleanValue();
         } else if (LANGUAGEDETECTION.equals(key)) {
-            m_languageDetection = Boolean.valueOf(value).booleanValue();
+            setLanguageDetection(Boolean.valueOf(value).booleanValue());
         } else if (IGNORE_EXPIRATION.equals(key)) {
             m_ignoreExpiration = Boolean.valueOf(value).booleanValue();
         } else if (PRIORITY.equals(key)) {
@@ -546,55 +482,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Adds am index source to this search index.<p>
-     *
-     * @param sourceName the index source name to add
-     */
-    public void addSourceName(String sourceName) {
-
-        m_sourceNames.add(sourceName);
-    }
-
-    /**
-     * Checks is this index has been configured correctly.<p>
-     *
-     * In case the check fails, the <code>enabled</code> property
-     * is set to <code>false</code>
-     *
-     * @param cms a OpenCms user context to perform the checks with (should have "Administrator" permissions)
-     *
-     * @return <code>true</code> in case the index is correctly configured and enabled after the check
-     *
-     * @see #isEnabled()
-     */
-    public boolean checkConfiguration(CmsObject cms) {
-
-        if (isEnabled()) {
-            // check if the project for the index exists
-            try {
-                cms.readProject(getProject());
-                setEnabled(true);
-            } catch (CmsException e) {
-                // the project does not exist, disable the index
-                setEnabled(false);
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2,
-                            getProject(),
-                            getName()));
-                }
-            }
-        } else {
-            if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
-            }
-        }
-
-        return isEnabled();
-    }
-
-    /**
      * Creates an empty document that can be used by this search field configuration.<p>
      *
      * @param resource the resource to create the document for
@@ -604,21 +491,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public I_CmsSearchDocument createEmptyDocument(CmsResource resource) {
 
         return new CmsLuceneDocument(new Document());
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if ((obj instanceof CmsSearchIndex)) {
-            return ((CmsSearchIndex)obj).getName().equals(m_name);
-        }
-        return false;
     }
 
     /**
@@ -634,6 +506,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
+    @Override
     public CmsParameterConfiguration getConfiguration() {
 
         CmsParameterConfiguration result = new CmsParameterConfiguration();
@@ -641,7 +514,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             result.put(PRIORITY, String.valueOf(m_priority));
         }
         if (!isExtractingContent()) {
-            result.put(EXTRACT_CONTENT, String.valueOf(m_extractContent));
+            result.put(EXTRACT_CONTENT, String.valueOf(isExtractingContent()));
         }
         if (!isCheckingPermissions()) {
             result.put(PERMISSIONS, String.valueOf(m_checkPermissions));
@@ -650,7 +523,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             result.put(BACKUP_REINDEXING, String.valueOf(m_backupReindexing));
         }
         if (isLanguageDetection()) {
-            result.put(LANGUAGEDETECTION, String.valueOf(m_languageDetection));
+            result.put(LANGUAGEDETECTION, String.valueOf(isLanguageDetection()));
         }
         if (getMaxHits() != MAX_HITS_DEFAULT) {
             result.put(MAX_HITS, String.valueOf(getMaxHits()));
@@ -664,6 +537,27 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // always write time range check parameter because of logic change in OpenCms 8.0
         result.put(TIME_RANGE, String.valueOf(m_checkTimeRange));
         return result;
+    }
+
+    /**
+     * @see org.opencms.search.I_CmsSearchIndex#getContentIfUnchanged(org.opencms.file.CmsResource)
+     */
+    @Override
+    public I_CmsExtractionResult getContentIfUnchanged(CmsResource resource) {
+
+        // compare "date of last modification of content" from Lucene index and OpenCms VFS
+        // if this is identical, then the data from the Lucene index can be re-used
+        I_CmsSearchDocument oldDoc = getDocument(CmsSearchField.FIELD_PATH, resource.getRootPath());
+        // first check if the document is already in the index
+        if ((oldDoc != null) && (oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT) != null)) {
+            long contentDateIndex = oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT).getTime();
+            // now compare the date with the date stored in the resource
+            if (contentDateIndex == resource.getDateContent()) {
+                // extract stored content blob from index
+                return CmsExtractionResult.fromBytes(oldDoc.getContentBlob());
+            }
+        }
+        return null;
     }
 
     /**
@@ -748,6 +642,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @return he document type factory used for the given resource in this index, or <code>null</code>
      * in case the resource is not indexed by this index
      */
+    @Override
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
 
         if ((res != null) && (getSources() != null)) {
@@ -769,79 +664,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns the search field configuration of this index.<p>
-     *
-     * @return the search field configuration of this index
-     */
-    public CmsSearchFieldConfiguration getFieldConfiguration() {
-
-        return m_fieldConfiguration;
-    }
-
-    /**
-     * Returns the name of the field configuration used for this index.<p>
-     *
-     * @return the name of the field configuration used for this index
-     */
-    public String getFieldConfigurationName() {
-
-        return m_fieldConfigurationName;
-    }
-
-    /**
-     * Returns a new index writer for this index.<p>
-     *
-     * @param report the report to write error messages on
-     * @param create if <code>true</code> a whole new index is created, if <code>false</code> an existing index is updated
-     *
-     * @return a new instance of IndexWriter
-     *
-     * @throws CmsIndexException if the index can not be opened
-     */
-    public I_CmsIndexWriter getIndexWriter(I_CmsReport report, boolean create) throws CmsIndexException {
-
-        // note - create will be:
-        //   true if the index is to be fully rebuild,
-        //   false if the index is to be incrementally updated
-        if (m_indexWriter != null) {
-            if (!create) {
-                // re-use existing index writer
-                return m_indexWriter;
-            }
-            // need to close the index writer if create is "true"
-            try {
-                m_indexWriter.close();
-                m_indexWriter = null;
-            } catch (IOException e) {
-                // if we can't close the index we are busted!
-                throw new CmsIndexException(
-                    Messages.get().container(Messages.LOG_IO_INDEX_WRITER_CLOSE_2, getPath(), getName()),
-                    e);
-            }
-
-        }
-
-        // now create is true of false, but the index writer is definitely null / closed
-        I_CmsIndexWriter indexWriter = createIndexWriter(create, report);
-
-        if (!create) {
-            m_indexWriter = indexWriter;
-        }
-
-        return indexWriter;
-    }
-
-    /**
-     * Returns the language locale of this index.<p>
-     *
-     * @return the language locale of this index, for example "en"
-     */
-    public Locale getLocale() {
-
-        return m_locale;
-    }
-
-    /**
      * Returns the language locale for the given resource in this index.<p>
      *
      * @param cms the current OpenCms user context
@@ -850,6 +672,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the language locale for the given resource in this index
      */
+    @Override
     public Locale getLocaleForResource(CmsObject cms, CmsResource resource, List<Locale> availableLocales) {
 
         Locale result;
@@ -893,26 +716,17 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Gets the name of this index.<p>
-     *
-     * @return the name of the index
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
      * Returns the path where this index stores it's data in the "real" file system.<p>
      *
      * @return the path where this index stores it's data in the "real" file system
      */
+    @Override
     public String getPath() {
 
-        if (m_path == null) {
-            m_path = generateIndexDirectory();
+        if (super.getPath() == null) {
+            setPath(generateIndexDirectory());
         }
-        return m_path;
+        return super.getPath();
     }
 
     /**
@@ -926,26 +740,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Gets the project of this index.<p>
-     *
-     * @return the project of the index, i.e. "online"
-     */
-    public String getProject() {
-
-        return m_project;
-    }
-
-    /**
-     * Get the rebuild mode of this index.<p>
-     *
-     * @return the current rebuild mode
-     */
-    public String getRebuildMode() {
-
-        return m_rebuild;
-    }
-
-    /**
      * Returns the Lucene index searcher used for this search index.<p>
      *
      * @return the Lucene index searcher used for this search index
@@ -956,109 +750,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns all configured sources names of this search index.<p>
-     *
-     * @return a list with all configured sources names of this search index
-     */
-    public List<String> getSourceNames() {
-
-        return m_sourceNames;
-    }
-
-    /**
-     * Returns all configured index sources of this search index.<p>
-     *
-     * @return all configured index sources of this search index
-     */
-    public List<CmsSearchIndexSource> getSources() {
-
-        return m_sources;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
+     * @see org.opencms.search.A_CmsSearchIndex#initialize()
      */
     @Override
-    public int hashCode() {
-
-        return m_name != null ? m_name.hashCode() : 0;
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
-     */
-    public void initConfiguration() {
-
-        // noting to do here
-    }
-
-    /**
-     * Initializes the search index.<p>
-     *
-     * @throws CmsSearchException if the index source association failed or a configuration error occurred
-     */
-
     public void initialize() throws CmsSearchException {
 
-        if (!isEnabled()) {
-            // index is disabled, no initialization is required
-            return;
-        }
-
-        String sourceName = null;
-        CmsSearchIndexSource indexSource = null;
-        List<String> searchIndexSourceDocumentTypes = null;
-        List<String> resourceNames = null;
-        String resourceName = null;
-        m_sources = new ArrayList<CmsSearchIndexSource>();
-
-        m_path = getPath();
-
-        for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
-
-            try {
-                sourceName = m_sourceNames.get(i);
-                indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
-                m_sources.add(indexSource);
-
-                resourceNames = indexSource.getResourcesNames();
-                searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
-                for (int j = 0, m = resourceNames.size(); j < m; j++) {
-
-                    resourceName = resourceNames.get(j);
-                    m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
-                }
-            } catch (Exception e) {
-                // mark this index as disabled
-                setEnabled(false);
-                throw new CmsSearchException(
-                    Messages.get().container(Messages.ERR_INDEX_SOURCE_ASSOCIATION_1, sourceName),
-                    e);
-            }
-        }
-
-        // initialize the search field configuration
-        if (m_fieldConfigurationName == null) {
-            // if not set, use standard field configuration
-            m_fieldConfigurationName = CmsSearchFieldConfiguration.STR_STANDARD;
-        }
-        m_fieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(m_fieldConfigurationName);
-        if (m_fieldConfiguration == null) {
-            // we must have a valid field configuration to continue
-            throw new CmsSearchException(
-                Messages.get().container(Messages.ERR_FIELD_CONFIGURATION_UNKNOWN_2, m_name, m_fieldConfigurationName));
-        }
+        super.initialize();
 
         // get the configured analyzer and apply the the field configuration analyzer wrapper
+        @SuppressWarnings("resource")
         Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
 
         if (getFieldConfiguration() instanceof CmsLuceneFieldConfiguration) {
             CmsLuceneFieldConfiguration fc = (CmsLuceneFieldConfiguration)getFieldConfiguration();
             setAnalyzer(fc.getAnalyzer(baseAnalyzer));
         }
-
-        // initialize the index searcher instance
-        indexSearcherOpen(getPath());
     }
 
     /**
@@ -1146,30 +852,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns <code>true</code> if this index is currently disabled.<p>
-     *
-     * @return <code>true</code> if this index is currently disabled
-     */
-    public boolean isEnabled() {
-
-        return m_enabled;
-    }
-
-    /**
-     * Returns <code>true</code> if full text is extracted by this index.<p>
-     *
-     * Full text content extraction can be turned off in the index search configuration parameters
-     * in <code>opencms-search.xml</code>.
-     * Not extraction the full text information will highly improve performance.<p>
-     *
-     * @return <code>true</code> if full text is extracted by this index
-     */
-    public boolean isExtractingContent() {
-
-        return m_extractContent;
-    }
-
-    /**
      * Returns the ignoreExpiration.<p>
      *
      * @return the ignoreExpiration
@@ -1180,13 +862,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns the languageDetection.<p>
-     *
-     * @return the languageDetection
+     * @see org.opencms.search.A_CmsSearchIndex#isInitialized()
      */
-    public boolean isLanguageDetection() {
+    @Override
+    public boolean isInitialized() {
 
-        return m_languageDetection;
+        return super.isInitialized() && (null != getPath());
     }
 
     /**
@@ -1200,29 +881,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns <code>true</code> in case this index is updated incremental.<p>
-     *
-     * An index is updated incremental if the index rebuild mode as defined by
-     * {@link #getRebuildMode()} is either set to {@value #REBUILD_MODE_AUTO} or
-     * {@value #REBUILD_MODE_OFFLINE}. Moreover, at least one update must have
-     * been written to the index already.
-     *
-     * @return <code>true</code> in case this index is updated incremental
+     * @see org.opencms.search.A_CmsSearchIndex#onIndexChanged(boolean)
      */
-    public boolean isUpdatedIncremental() {
+    @Override
+    public void onIndexChanged(boolean force) {
 
-        return m_indexWriter != null;
-    }
-
-    /**
-     * Removes an index source from this search index.<p>
-     *
-     * @param sourceName the index source name to remove
-     */
-    public void removeSourceName(String sourceName) {
-
-        m_sources.remove(sourceName);
-        m_sourceNames.remove(sourceName);
+        if (force) {
+            indexSearcherOpen(getPath());
+        } else {
+            indexSearcherUpdate();
+        }
     }
 
     /**
@@ -1423,8 +1091,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     end = hitCount;
                 }
 
-                Set<String> returnFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getReturnFields();
-                Set<String> excerptFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getExcerptFields();
+                Set<String> returnFields = ((CmsLuceneFieldConfiguration)getFieldConfiguration()).getReturnFields();
+                Set<String> excerptFields = ((CmsLuceneFieldConfiguration)getFieldConfiguration()).getExcerptFields();
 
                 long visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
@@ -1508,36 +1176,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Can be used to enable / disable this index.<p>
-     *
-     * @param enabled the state of the index to set
-     */
-    public void setEnabled(boolean enabled) {
-
-        m_enabled = enabled;
-    }
-
-    /**
-     * Sets the field configuration used for this index.<p>
-     *
-     * @param fieldConfiguration the field configuration to set
-     */
-    public void setFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
-
-        m_fieldConfiguration = fieldConfiguration;
-    }
-
-    /**
-     * Sets the name of the field configuration used for this index.<p>
-     *
-     * @param fieldConfigurationName the name of the field configuration to set
-     */
-    public void setFieldConfigurationName(String fieldConfigurationName) {
-
-        m_fieldConfigurationName = fieldConfigurationName;
-    }
-
-    /**
      * Sets the ignoreExpiration.<p>
      *
      * @param ignoreExpiration the ignoreExpiration to set
@@ -1545,38 +1183,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setIgnoreExpiration(boolean ignoreExpiration) {
 
         m_ignoreExpiration = ignoreExpiration;
-    }
-
-    /**
-     * Sets the languageDetection.<p>
-     *
-     * @param languageDetection the languageDetection to set
-     */
-    public void setLanguageDetection(boolean languageDetection) {
-
-        m_languageDetection = languageDetection;
-    }
-
-    /**
-     * Sets the locale to index resources.<p>
-     *
-     * @param locale the locale to index resources
-     */
-    public void setLocale(Locale locale) {
-
-        m_locale = locale;
-    }
-
-    /**
-     * Sets the locale to index resources as a String.<p>
-     *
-     * @param locale the locale to index resources
-     *
-     * @see #setLocale(Locale)
-     */
-    public void setLocaleString(String locale) {
-
-        setLocale(CmsLocaleManager.getLocale(locale));
     }
 
     /**
@@ -1598,58 +1204,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Sets the logical key/name of this search index.<p>
-     *
-     * @param name the logical key/name of this search index
-     *
-     * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index
-     */
-    public void setName(String name) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_SEARCHINDEX_CREATE_MISSING_NAME_0));
-        } else {
-            // check if already used, but only if the name was modified:
-            // this is important as unmodifiable DisplayWidgets will also invoke this...
-            if (!name.equals(m_name)) {
-                // don't mess with XML configuration
-                if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
-                    // not needed at startup and additionally getSearchManager may return null
-                    Iterator<String> itIdxNames = OpenCms.getSearchManager().getIndexNames().iterator();
-                    while (itIdxNames.hasNext()) {
-                        if (itIdxNames.next().equals(name)) {
-                            throw new CmsIllegalArgumentException(
-                                Messages.get().container(Messages.ERR_SEARCHINDEX_CREATE_INVALID_NAME_1, name));
-                        }
-                    }
-                }
-            }
-        }
-        m_name = name;
-    }
-
-    /**
-     * Sets the name of the project used to index resources.<p>
-     *
-     * @param project the name of the project used to index resources
-     */
-    public void setProject(String project) {
-
-        m_project = project;
-    }
-
-    /**
-     * Sets the rebuild mode of this search index.<p>
-     *
-     * @param rebuildMode the rebuild mode of this search index {auto|manual}
-     */
-    public void setRebuildMode(String rebuildMode) {
-
-        m_rebuild = rebuildMode;
-    }
-
-    /**
      * Controls if a resource requires view permission to be displayed in the result list.<p>
      *
      * By default this is <code>false</code>.<p>
@@ -1666,19 +1220,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * This will close the local Lucene index searcher instance.<p>
      */
+    @Override
     public void shutDown() {
 
-        // close the index writer
-        if (m_indexWriter != null) {
-            try {
-                m_indexWriter.commit();
-                m_indexWriter.close();
-            } catch (IOException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.LOG_IO_INDEX_WRITER_CLOSE_2, getPath(), getName()),
-                    e);
-            }
-        }
+        super.shutDown();
         indexSearcherClose();
         if (m_analyzer != null) {
             m_analyzer.close();
@@ -1714,7 +1259,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanQuery.Builder appendCategoryFilter(CmsObject cms, BooleanQuery.Builder filter, List<String> categories) {
+    protected BooleanQuery.Builder appendCategoryFilter(
+        CmsObject cms,
+        BooleanQuery.Builder filter,
+        List<String> categories) {
 
         if ((categories != null) && (categories.size() > 0)) {
             // add query categories (if required)
@@ -1776,7 +1324,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanQuery.Builder appendDateLastModifiedFilter(BooleanQuery.Builder filter, long startTime, long endTime) {
+    protected BooleanQuery.Builder appendDateLastModifiedFilter(
+        BooleanQuery.Builder filter,
+        long startTime,
+        long endTime) {
 
         // create special optimized sub-filter for the date last modified search
         Query dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, startTime, endTime);
@@ -1819,7 +1370,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 extendPathFilter(terms, OpenCms.getSiteManager().getSharedFolder());
             }
         }
-        
+
         // add the calculated path filter for the root path
         BooleanQuery.Builder build = new BooleanQuery.Builder();
         terms.forEach(term -> build.add(new TermQuery(term), Occur.SHOULD));
@@ -1840,7 +1391,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @return the extended filter clause
      */
-    protected BooleanQuery.Builder appendResourceTypeFilter(CmsObject cms, BooleanQuery.Builder filter, List<String> resourceTypes) {
+    protected BooleanQuery.Builder appendResourceTypeFilter(
+        CmsObject cms,
+        BooleanQuery.Builder filter,
+        List<String> resourceTypes) {
 
         if ((resourceTypes != null) && (resourceTypes.size() > 0)) {
             // add query resource types (if required)
@@ -1962,6 +1516,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      *
      * @see #getIndexWriter(I_CmsReport, boolean)
      */
+    @Override
     protected I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) throws CmsIndexException {
 
         IndexWriter indexWriter = null;
@@ -2017,56 +1572,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         return new CmsLuceneIndexWriter(indexWriter, this);
-    }
-
-    /**
-     * Checks if the provided resource should be excluded from this search index.<p>
-     *
-     * @param cms the OpenCms context used for building the search index
-     * @param resource the resource to index
-     *
-     * @return true if the resource should be excluded, false if it should be included in this index
-     */
-    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
-
-        // check if this resource should be excluded from the index, if so skip it
-        boolean excludeFromIndex = false;
-
-        if (resource.isInternal()
-            || resource.isFolder()
-            || resource.isTemporaryFile()
-            || (resource.getDateExpired() <= System.currentTimeMillis())) {
-            // don't index internal resources, folders or temporary files or resources with expire date in the past
-            return true;
-        }
-
-        try {
-            // do property lookup with folder search
-            String propValue = cms.readPropertyObject(
-                resource,
-                CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-                true).getValue();
-            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
-            if (!excludeFromIndex && (propValue != null)) {
-                // property value was neither "true" nor null, must check for "all"
-                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim());
-            }
-        } catch (CmsException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(
-                    Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
-            }
-        }
-        if (!excludeFromIndex && !USE_ALL_LOCALE.equalsIgnoreCase(getLocale().getLanguage())) {
-            // check if any resource default locale has a match with the index locale, if not skip resource
-            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
-            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
-                Collections.singletonList(getLocale()),
-                locales);
-            excludeFromIndex = (match == null);
-        }
-
-        return excludeFromIndex;
     }
 
     /**
@@ -2155,7 +1660,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             BooleanQuery.Builder build = new BooleanQuery.Builder();
             terms.forEach(term -> build.add(new TermQuery(term), Occur.SHOULD));
             Query termsQuery = build.build();//termsFilter
-            
+
             try {
                 result = termsQuery.createWeight(m_indexSearcher, false, 1).getQuery();
                 m_displayFilters.put(field + termsStr, result);
@@ -2484,15 +1989,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Sets the index writer.<p>
+     * Generates the uninverting map and adds it to the field configuration.
+     * @return the generated uninverting map
      *
-     * @param writer the index writer to set
+     * @see CmsSearchField#addUninvertingMappings(Map)
      */
-    protected void setIndexWriter(I_CmsIndexWriter writer) {
-
-        m_indexWriter = writer;
-    }
-
     private Map<String, Type> createUninvertingMap() {
 
         Map<String, UninvertingReader.Type> uninvertingMap = new HashMap<String, UninvertingReader.Type>();

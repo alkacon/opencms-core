@@ -99,55 +99,6 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
     }
 
     /**
-     * Creates a new search index setup for this test.<p>
-     *
-     * @throws Exception in case the test fails
-     */
-    public void testSearchIndexSetup() throws Exception {
-
-        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
-        searchIndex.setProject("Offline");
-        searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
-        // available pre-configured in the test configuration files opencms-search.xml
-        searchIndex.addSourceName("source1");
-
-        // initialize the new index
-        searchIndex.initialize();
-
-        // add the search index to the manager
-        OpenCms.getSearchManager().addSearchIndex(searchIndex);
-
-        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        // this call does not throws the rebuild index event
-        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
-
-        // perform a search on the newly generated index
-        CmsSearch searchBean = new CmsSearch();
-        List<CmsSearchResult> searchResult;
-
-        searchBean.init(getCmsObject());
-        searchBean.setIndex(INDEX_SPECIAL);
-        searchBean.setQuery(">>SearchEgg1<<");
-
-        // assert one file is found in the default site
-        searchResult = searchBean.getSearchResult();
-        assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
-    }
-
-    /**
-     * Delays execution.<p>
-     *
-     * @throws InterruptedException if sth. goes wrong
-     */
-    protected void waitForUpdate() throws InterruptedException {
-
-        // wait for the offline index
-        Thread.sleep(OpenCms.getSearchManager().getOfflineUpdateFrequency() * 2);
-    }
-
-    /**
      * Tests automatic index update after modification of a resource.<p>
      *
      * @throws Exception in case the test fails
@@ -221,7 +172,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         echo("Delete Test - end");
         echo("Delete New Test - start");
 
-        OpenCms.getSearchManager().getIndex(INDEX_SPECIAL).setCheckPermissions(false);
+        ((CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_SPECIAL)).setCheckPermissions(false);
         String fileName222 = "/test/test222.txt";
         String text222 = "Alkacon OpenCms is so great!";
         cms.createResource(fileName222, CmsResourceTypePlain.getStaticTypeId(), text222.getBytes(), null);
@@ -235,7 +186,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         cmsSearchBean.setQuery("+\"Alkacon OpenCms is so great!\"");
         results = cmsSearchBean.getSearchResult();
         assertEquals(0, results.size());
-        OpenCms.getSearchManager().getIndex(INDEX_SPECIAL).setCheckPermissions(true);
+        ((CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_SPECIAL)).setCheckPermissions(true);
 
         echo("Delete New Test - end");
         echo("Move Test - start");
@@ -255,5 +206,54 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals("/sites/default/test/test_moved.txt", (results.get(0)).getPath());
 
         echo("Move Test - end");
+    }
+
+    /**
+     * Creates a new search index setup for this test.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    public void testSearchIndexSetup() throws Exception {
+
+        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
+        searchIndex.setProject("Offline");
+        searchIndex.setLocale(Locale.ENGLISH);
+        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
+        // available pre-configured in the test configuration files opencms-search.xml
+        searchIndex.addSourceName("source1");
+
+        // initialize the new index
+        searchIndex.initialize();
+
+        // add the search index to the manager
+        OpenCms.getSearchManager().addSearchIndex(searchIndex);
+
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(getCmsObject());
+        searchBean.setIndex(INDEX_SPECIAL);
+        searchBean.setQuery(">>SearchEgg1<<");
+
+        // assert one file is found in the default site
+        searchResult = searchBean.getSearchResult();
+        assertEquals(1, searchResult.size());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
+    }
+
+    /**
+     * Delays execution.<p>
+     *
+     * @throws InterruptedException if sth. goes wrong
+     */
+    protected void waitForUpdate() throws InterruptedException {
+
+        // wait for the offline index
+        Thread.sleep(OpenCms.getSearchManager().getOfflineUpdateFrequency() * 2);
     }
 }

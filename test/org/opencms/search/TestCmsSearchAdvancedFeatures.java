@@ -121,7 +121,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "true");
         assertTrue("Index '" + INDEX_OFFLINE + "' not checking time range as expected", index.isCheckingTimeRange());
 
@@ -211,7 +211,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
         assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
 
@@ -299,6 +299,48 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
     }
 
     /**
+     * Tests searching with multiple search roots.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testMultipleSearchRoots() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing searching with multiple search roots");
+
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+        String query = "OpenCms";
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setMatchesPerPage(1000);
+        searchBean.setQuery(query);
+
+        String[][] roots = new String[][] {
+            new String[] {"/folder1/"},
+            new String[] {"/folder2/"},
+            new String[] {"/types/"},
+            new String[] {"/folder2/", "/types/"},
+            new String[] {"/folder1/", "/types/"},
+            new String[] {"/folder1/", "/folder2/"},
+            new String[] {"/folder1/", "/folder2/", "/types/"}};
+
+        int[] expected = new int[] {7, 4, 1, 5, 8, 11, 12};
+
+        for (int i = 0; i < expected.length; i++) {
+            int expect = expected[i];
+            String[] rootList = roots[i];
+            searchBean.setSearchRoots(rootList);
+            searchResult = searchBean.getSearchResult();
+            System.out.println(
+                "Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");
+            TestCmsSearch.printResults(searchResult, cms);
+            assertEquals(expect, searchResult.size());
+        }
+    }
+
+    /**
      * Tests searching without a query only using a filter.<p>
      *
      * @throws Exception if the test fails
@@ -308,7 +350,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching without a query only using a filter");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
         assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
 
@@ -357,48 +399,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
     }
 
     /**
-     * Tests searching with multiple search roots.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testMultipleSearchRoots() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing searching with multiple search roots");
-
-        CmsSearch searchBean = new CmsSearch();
-        List<CmsSearchResult> searchResult;
-        String query = "OpenCms";
-
-        searchBean.init(cms);
-        searchBean.setIndex(INDEX_OFFLINE);
-        searchBean.setMatchesPerPage(1000);
-        searchBean.setQuery(query);
-
-        String[][] roots = new String[][] {
-            new String[] {"/folder1/"},
-            new String[] {"/folder2/"},
-            new String[] {"/types/"},
-            new String[] {"/folder2/", "/types/"},
-            new String[] {"/folder1/", "/types/"},
-            new String[] {"/folder1/", "/folder2/"},
-            new String[] {"/folder1/", "/folder2/", "/types/"}};
-
-        int[] expected = new int[] {7, 4, 1, 5, 8, 11, 12};
-
-        for (int i = 0; i < expected.length; i++) {
-            int expect = expected[i];
-            String[] rootList = roots[i];
-            searchBean.setSearchRoots(rootList);
-            searchResult = searchBean.getSearchResult();
-            System.out.println(
-                "Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");
-            TestCmsSearch.printResults(searchResult, cms);
-            assertEquals(expect, searchResult.size());
-        }
-    }
-
-    /**
      * Tests search category grouping.<p>
      *
      * @throws Exception if the test fails
@@ -408,7 +408,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching for categories");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         assertTrue(index.getFieldConfiguration() instanceof CmsSearchFieldConfigurationOldCategories);
 
         // perform a search on the newly generated index
