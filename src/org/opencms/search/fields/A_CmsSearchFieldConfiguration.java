@@ -27,7 +27,9 @@
 
 package org.opencms.search.fields;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +46,48 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     private String m_description;
     /** Name of the field configuration. */
     private String m_name;
+    /** The list of configured {@link CmsSearchField} instances. */
+    private List<CmsSearchField> m_fields;
+
+    /** Map to lookup the configured {@link CmsSearchField} instances by name. */
+    private Map<String, CmsSearchField> m_fieldLookup;
+
+    /** The list of configured {@link CmsSearchField} names. */
+    private List<String> m_fieldNames;
+
+    /**
+     * Creates a new empty field configuration.
+     */
+    public A_CmsSearchFieldConfiguration() {
+
+        m_fields = new ArrayList<CmsSearchField>();
+    }
+
+    /**
+     * Adds a field to this search field configuration.<p>
+     *
+     * @param field the field to add
+     */
+    public void addField(CmsSearchField field) {
+
+        if (field != null) {
+            m_fields.add(field);
+        }
+    }
+
+    /**
+     * Adds fields.<p>
+     *
+     * @param fields the fields to add
+     */
+    public void addFields(Collection<CmsSearchField> fields) {
+
+        for (CmsSearchField field : fields) {
+            if (!getFieldNames().contains(field.getName())) {
+                addField(field);
+            }
+        }
+    }
 
     /**
      * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#addUninvertingMappings(java.util.Map)
@@ -85,11 +129,51 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#getFields()
+     * Returns the configured {@link CmsSearchField} instance with the given name.<p>
+     *
+     * @param name the search field name to look up
+     *
+     * @return the configured {@link CmsSearchField} instance with the given name
      */
+    public CmsSearchField getField(String name) {
+
+        if (m_fieldLookup == null) {
+            // lazy initialize the field names
+            m_fieldLookup = new HashMap<String, CmsSearchField>();
+            for (CmsSearchField field : m_fields) {
+                m_fieldLookup.put(field.getName(), field);
+            }
+        }
+        return m_fieldLookup.get(name);
+    }
+
+    /**
+     * Returns the list of configured field names (Strings).<p>
+     *
+     * @return the list of configured field names (Strings)
+     */
+    public List<String> getFieldNames() {
+
+        if (m_fieldNames == null) {
+            // lazy initialize the field names
+            m_fieldNames = new ArrayList<String>();
+            for (CmsSearchField field : m_fields) {
+                m_fieldNames.add(field.getName());
+            }
+        }
+        // create a copy of the list to prevent changes in other classes
+        return new ArrayList<String>(m_fieldNames);
+    }
+
+    /**
+     * Returns the list of configured {@link CmsSearchField} instances.<p>
+     *
+     * @return the list of configured {@link CmsSearchField} instances
+     */
+    @Override
     public List<CmsSearchField> getFields() {
 
-        return Collections.singletonList(new CmsSearchField());
+        return m_fields;
     }
 
     /**

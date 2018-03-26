@@ -46,8 +46,6 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,15 +70,6 @@ public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
         LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
     }
 
-    /** Map to lookup the configured {@link CmsSearchField} instances by name. */
-    private Map<String, CmsSearchField> m_fieldLookup;
-
-    /** The list of configured {@link CmsSearchField} names. */
-    private List<String> m_fieldNames;
-
-    /** The list of configured {@link CmsSearchField} instances. */
-    private List<CmsSearchField> m_fields;
-
     /** The current index. */
     private CmsSearchIndex m_index;
 
@@ -89,7 +78,7 @@ public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
      */
     public CmsSearchFieldConfiguration() {
 
-        m_fields = new ArrayList<CmsSearchField>();
+        super();
     }
 
     /**
@@ -149,32 +138,6 @@ public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
             }
         }
         return result.toString();
-    }
-
-    /**
-     * Adds a field to this search field configuration.<p>
-     *
-     * @param field the field to add
-     */
-    public void addField(CmsSearchField field) {
-
-        if (field != null) {
-            m_fields.add(field);
-        }
-    }
-
-    /**
-     * Adds fields.<p>
-     *
-     * @param fields the fields to add
-     */
-    public void addFields(Collection<CmsSearchField> fields) {
-
-        for (CmsSearchField field : fields) {
-            if (!getFieldNames().contains(field.getName())) {
-                addField(field);
-            }
-        }
     }
 
     /** To allow sorting on a field the field must be added to the map given to {@link org.apache.solr.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
@@ -241,54 +204,6 @@ public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
             propertiesSearched);
 
         return document;
-    }
-
-    /**
-     * Returns the configured {@link CmsSearchField} instance with the given name.<p>
-     *
-     * @param name the search field name to look up
-     *
-     * @return the configured {@link CmsSearchField} instance with the given name
-     */
-    public CmsSearchField getField(String name) {
-
-        if (m_fieldLookup == null) {
-            // lazy initialize the field names
-            m_fieldLookup = new HashMap<String, CmsSearchField>();
-            for (CmsSearchField field : m_fields) {
-                m_fieldLookup.put(field.getName(), field);
-            }
-        }
-        return m_fieldLookup.get(name);
-    }
-
-    /**
-     * Returns the list of configured field names (Strings).<p>
-     *
-     * @return the list of configured field names (Strings)
-     */
-    public List<String> getFieldNames() {
-
-        if (m_fieldNames == null) {
-            // lazy initialize the field names
-            m_fieldNames = new ArrayList<String>();
-            for (CmsSearchField field : m_fields) {
-                m_fieldNames.add(field.getName());
-            }
-        }
-        // create a copy of the list to prevent changes in other classes
-        return new ArrayList<String>(m_fieldNames);
-    }
-
-    /**
-     * Returns the list of configured {@link CmsSearchField} instances.<p>
-     *
-     * @return the list of configured {@link CmsSearchField} instances
-     */
-    @Override
-    public List<CmsSearchField> getFields() {
-
-        return m_fields;
     }
 
     /**

@@ -46,6 +46,11 @@ import org.apache.solr.uninverting.UninvertingReader.Type;
  */
 public interface I_CmsSearchFieldConfiguration extends Comparable<I_CmsSearchFieldConfiguration> {
 
+    /**
+     * Adds a field to this search field configuration.<p>
+     *
+     * @param field the field to add
+     */
     void addField(CmsSearchField field);
 
     /** To allow sorting on a field (without docvalues) the field must be added to the map
