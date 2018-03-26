@@ -885,12 +885,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void addFieldConfiguration(I_CmsSearchFieldConfiguration fieldConfiguration) {
 
         m_fieldConfigurations.put(fieldConfiguration.getName(), fieldConfiguration);
-        if (fieldConfiguration.getFields().isEmpty()) {
-            LOG.debug(
-                Messages.get().getBundle().key(
-                    Messages.LOG_FIELD_CONFIGURATION_IS_EMPTY_1,
-                    fieldConfiguration.getName()));
-        }
     }
 
     /**
@@ -1878,32 +1872,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @return true if remove was successful, false if preconditions for removal are ok but the given
      *         field was unknown.
-     *
-     * @throws CmsIllegalStateException if the given field is the last field inside the given field configuration.
      */
     public boolean removeSearchFieldConfigurationField(
         I_CmsSearchFieldConfiguration fieldConfiguration,
-        CmsSearchField field)
-    throws CmsIllegalStateException {
+        CmsSearchField field) {
 
-        if (fieldConfiguration.getFields().size() < 2) {
-            throw new CmsIllegalStateException(
-                Messages.get().container(
-                    Messages.ERR_CONFIGURATION_FIELD_DELETE_2,
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_REMOVE_FIELDCONFIGURATION_FIELD_INDEX_2,
                     field.getName(),
                     fieldConfiguration.getName()));
-        } else {
-
-            if (LOG.isInfoEnabled()) {
-                LOG.info(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_REMOVE_FIELDCONFIGURATION_FIELD_INDEX_2,
-                        field.getName(),
-                        fieldConfiguration.getName()));
-            }
-
-            return fieldConfiguration.getFields().remove(field);
         }
+
+        return fieldConfiguration.getFields().remove(field);
     }
 
     /**
