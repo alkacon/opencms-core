@@ -1,4 +1,4 @@
-<!-- 
+<!--
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
 <!ELEMENT opencms (search)>
@@ -70,7 +70,7 @@
 <!ELEMENT maxIndexWaitTime (#PCDATA)>
 
 <!--
-# The state of unlocking during the indexing threads (always|never|onlyfull), 
+# The state of unlocking during the indexing threads (always|never|onlyfull),
 # default is onlyfull.
 -->
 <!ELEMENT forceunlock (#PCDATA)>
@@ -100,8 +100,8 @@
 
 <!--
 # Document types specify which factory class is used to pull the
-# content of an OpenCms document into a Lucene index document. The factory class 
-# gets triggered for OpenCms documents matching the configured resource type 
+# content of an OpenCms document into a Lucene index document. The factory class
+# gets triggered for OpenCms documents matching the configured resource type
 # and/or mimetype combination in a document factory node.
 -->
 <!ELEMENT documenttype (
@@ -178,8 +178,8 @@
 <!ELEMENT configuration (#PCDATA)>
 
 <!--
-# The same index sources as "sources" above but linked from global search configuration 
-# (CmsSearchManager) instead from a "index" element. 
+# The same index sources as "sources" above but linked from global search configuration
+# (CmsSearchManager) instead from a "index" element.
 -->
 <!ELEMENT indexsources (indexsource*)>
 
@@ -247,13 +247,17 @@
 
 <!--
 # A field is made up as a list of mappings, plus the attributes that describe how to create the field.
+# Most of the attributes (except "name") are only of interest for non-Solr indexes, where the field is
+# added via OpenCms.
+# For Solr indexes, you can use the feature to add mappings to specific fields, which should be particularly
+# interesting for dynamic mappings.
 -->
 <!ELEMENT field (mapping+) >
-<!ATTLIST field 
+<!ATTLIST field
 	name CDATA #REQUIRED
 	display CDATA #IMPLIED
-	store (true|false|TRUE|FALSE|yes|no|YES|NO|compress|COMPRESS) #REQUIRED
-	index (true|false|TRUE|FALSE|no|NO|tokenized|untokenized) #REQUIRED
+	store (true|false|TRUE|FALSE|yes|no|YES|NO|compress|COMPRESS) "true"
+	index (true|false|TRUE|FALSE|no|NO|tokenized|untokenized) "true"
 	excerpt (true|false|TRUE|FALSE) #IMPLIED
 	analyzer CDATA #IMPLIED
 	boost CDATA #IMPLIED
@@ -265,7 +269,7 @@
 # Finally, the description of an individual mapping from a VFS resource piece of content to the current field.
 -->
 <!ELEMENT mapping (#PCDATA) >
-<!ATTLIST mapping 
+<!ATTLIST mapping
 	type (content|property|property-search|item|dynamic|attribute) #REQUIRED
 	default CDATA #IMPLIED
 	class CDATA #IMPLIED
