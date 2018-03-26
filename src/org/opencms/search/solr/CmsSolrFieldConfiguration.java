@@ -738,9 +738,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         map.setDefaultValue("additional_info");
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
-
-        getFields().clear();
-        getFields().addAll(m_solrFields.values());
     }
 
     /**

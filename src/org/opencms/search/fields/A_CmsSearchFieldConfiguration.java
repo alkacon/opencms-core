@@ -28,8 +28,7 @@
 package org.opencms.search.fields;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,21 +45,16 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     private String m_description;
     /** Name of the field configuration. */
     private String m_name;
-    /** The list of configured {@link CmsSearchField} instances. */
-    private List<CmsSearchField> m_fields;
 
     /** Map to lookup the configured {@link CmsSearchField} instances by name. */
-    private Map<String, CmsSearchField> m_fieldLookup;
-
-    /** The list of configured {@link CmsSearchField} names. */
-    private List<String> m_fieldNames;
+    private Map<String, CmsSearchField> m_fields;
 
     /**
      * Creates a new empty field configuration.
      */
     public A_CmsSearchFieldConfiguration() {
 
-        m_fields = new ArrayList<CmsSearchField>();
+        m_fields = new LinkedHashMap<String, CmsSearchField>();
     }
 
     /**
@@ -70,22 +64,8 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
      */
     public void addField(CmsSearchField field) {
 
-        if (field != null) {
-            m_fields.add(field);
-        }
-    }
-
-    /**
-     * Adds fields.<p>
-     *
-     * @param fields the fields to add
-     */
-    public void addFields(Collection<CmsSearchField> fields) {
-
-        for (CmsSearchField field : fields) {
-            if (!getFieldNames().contains(field.getName())) {
-                addField(field);
-            }
+        if ((field != null) && (field.getName() != null)) {
+            m_fields.put(field.getName(), field);
         }
     }
 
@@ -137,14 +117,7 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
      */
     public CmsSearchField getField(String name) {
 
-        if (m_fieldLookup == null) {
-            // lazy initialize the field names
-            m_fieldLookup = new HashMap<String, CmsSearchField>();
-            for (CmsSearchField field : m_fields) {
-                m_fieldLookup.put(field.getName(), field);
-            }
-        }
-        return m_fieldLookup.get(name);
+        return m_fields.get(name);
     }
 
     /**
@@ -154,15 +127,8 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
      */
     public List<String> getFieldNames() {
 
-        if (m_fieldNames == null) {
-            // lazy initialize the field names
-            m_fieldNames = new ArrayList<String>();
-            for (CmsSearchField field : m_fields) {
-                m_fieldNames.add(field.getName());
-            }
-        }
         // create a copy of the list to prevent changes in other classes
-        return new ArrayList<String>(m_fieldNames);
+        return new ArrayList<String>(m_fields.keySet());
     }
 
     /**
@@ -173,7 +139,7 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     @Override
     public List<CmsSearchField> getFields() {
 
-        return m_fields;
+        return new ArrayList<>(m_fields.values());
     }
 
     /**

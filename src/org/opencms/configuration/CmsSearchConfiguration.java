@@ -331,6 +331,11 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         xPath = xPath + "/" + N_FIELDS + "/" + N_FIELD;
         digester.addObjectCreate(xPath, CmsLuceneField.class);
+        // Node: It is important to have that rule first, since then it is called last
+        // at the closing part of the XML node where rules are executed in reverse order.
+        // Thus, use this order to have the field already completely initialized when added
+        // to the configuration
+        digester.addSetNext(xPath, "addField");
         digester.addCallMethod(xPath, "setName", 1);
         digester.addCallParam(xPath, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallMethod(xPath, "setDisplayNameForConfiguration", 1);
@@ -349,7 +354,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPath, 0, A_DEFAULT);
         digester.addCallMethod(xPath, "setType", 1);
         digester.addCallParam(xPath, 0, A_TYPE);
-        digester.addSetNext(xPath, "addField");
 
         xPath = xPath + "/" + N_MAPPING;
         digester.addObjectCreate(xPath, CmsSearchFieldMapping.class.getName(), A_CLASS);
