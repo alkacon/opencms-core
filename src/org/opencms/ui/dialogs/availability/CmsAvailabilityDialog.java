@@ -48,6 +48,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
@@ -64,15 +65,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.DateField;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
 
@@ -97,7 +97,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     private I_CmsDialogContext m_dialogContext;
 
     /** Date field. */
-    private DateField m_expiredField;
+    private CmsDateField m_expiredField;
 
     /** Initial value for 'notification enabled. */
     private Boolean m_initialNotificationEnabled = Boolean.FALSE;
@@ -121,7 +121,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     private Button m_okButton;
 
     /** Date field. */
-    private DateField m_releasedField;
+    private CmsDateField m_releasedField;
 
     /** Option to reset the expiration. */
     private CheckBox m_resetExpired;
@@ -182,10 +182,10 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         if (resources.size() == 1) {
             CmsResource onlyResource = resources.get(0);
             if (onlyResource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-                m_releasedField.setValue(new Date(onlyResource.getDateReleased()));
+                m_releasedField.setDate(new Date(onlyResource.getDateReleased()));
             }
             if (onlyResource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                m_expiredField.setValue(new Date(onlyResource.getDateExpired()));
+                m_expiredField.setDate(new Date(onlyResource.getDateExpired()));
             }
             initNotification();
             Map<CmsPrincipalBean, String> responsibles = m_availabilityInfo.getResponsibles();
@@ -303,8 +303,8 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
      */
     protected List<CmsUUID> changeAvailability() throws CmsException {
 
-        Date released = m_releasedField.getValue();
-        Date expired = m_expiredField.getValue();
+        Date released = m_releasedField.getDate();
+        Date expired = m_expiredField.getDate();
         boolean resetReleased = m_resetReleased.getValue().booleanValue();
         boolean resetExpired = m_resetExpired.getValue().booleanValue();
         boolean modifySubresources = m_subresourceModificationField.getValue().booleanValue();
@@ -454,12 +454,10 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
      */
     void submit() {
 
-        if (validate()) {
-            try {
-                m_dialogContext.finish(changeAvailability());
-            } catch (Throwable t) {
-                m_dialogContext.error(t);
-            }
+        try {
+            m_dialogContext.finish(changeAvailability());
+        } catch (Throwable t) {
+            m_dialogContext.error(t);
         }
     }
 
@@ -515,7 +513,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
      * @param box the check box
      * @param field the date field
      */
-    private void initResetCheckbox(CheckBox box, final DateField field) {
+    private void initResetCheckbox(CheckBox box, final CmsDateField field) {
 
         box.addValueChangeListener(new ValueChangeListener() {
 
@@ -584,16 +582,6 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                 }
             }
         }
-    }
-
-    /**
-     * Validates release / expiration.<p>
-     *
-     * @return true if the fields are valid.
-     */
-    private boolean validate() {
-
-        return m_releasedField.isValid() && m_expiredField.isValid();
     }
 
     /**
