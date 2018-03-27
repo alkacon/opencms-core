@@ -438,7 +438,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void initialize() throws CmsSearchException {
 
         super.initialize();
-        getFieldConfiguration().init();
         try {
             OpenCms.getSearchManager().registerSolrIndex(this);
         } catch (CmsConfigurationException ex) {

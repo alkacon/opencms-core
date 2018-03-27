@@ -1499,6 +1499,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_extractionResultCache = new CmsExtractionResultCache(
             OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(getDirectory()),
             "/extractCache");
+        initializeFieldConfigurations();
         initializeIndexes();
         initOfflineIndexes();
 
@@ -1509,6 +1510,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT,
                 I_CmsEventListener.EVENT_REBUILD_SEARCHINDEXES});
+    }
+
+    /**
+     * Calls {@link I_CmsSearchFieldConfiguration#init()} for all registered field configurations.
+     */
+    public void initializeFieldConfigurations() {
+
+        for (I_CmsSearchFieldConfiguration config : m_fieldConfigurations.values()) {
+            config.init();
+        }
+
     }
 
     /**
