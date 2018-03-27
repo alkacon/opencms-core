@@ -9,7 +9,7 @@
 			filePattern="${sys:opencms.logfile}.%i.log.gz">
 			<PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
 			<Policies>
-				<SizeBasedTriggeringPolicy size="20 MB"/>
+				<SizeBasedTriggeringPolicy size="5 MB"/>
 			</Policies>	
 			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
@@ -27,7 +27,6 @@
 	<Loggers>
 	    <Logger level="error" name="com.opencms"/>
 	    <Logger level="error" name="com.vaadin"/>
-	    <Logger level="error" name="openjpa"/>
 	    <Logger level="error" name="org.opencms"/>
 	    <Logger level="info" name="org.opencms.db.log"/>
 	    <Logger level="info" name="org.opencms.db.mysql.CmsProjectDriver"/>
@@ -51,8 +50,6 @@
 	    <Logger level="warn" name="org.opencms.search.solr" additivity="false">
 	        <AppenderRef ref="OCSearch"/>
 	    </Logger>
-	    <Logger level="warn" name="org.opencms.staticexport"/>
-	    <Logger level="warn" name="org.opencms.workplace.tools"/>
 	    <Root level="error">
 	        <AppenderRef ref="OC"/>
 	    </Root>
