@@ -84,6 +84,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,11 +163,11 @@ public class CmsADEManager {
     /** The name of the element view configuration file type. */
     public static final String ELEMENT_VIEW_TYPE = "elementview";
 
-    /** The aADE configuration module name. */
-    public static final String MODULE_NAME_ADE_CONFIG = "org.opencms.base";
-
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
+
+    /** The aADE configuration module name. */
+    public static final String MODULE_NAME_ADE_CONFIG = "org.opencms.base";
 
     /** Node name for the nav level link value. */
     public static final String N_LINK = "Link";
@@ -956,14 +957,20 @@ public class CmsADEManager {
                 errorCode = Integer.valueOf(HttpServletResponse.SC_NOT_FOUND);
             }
         } else {
-            String linkValue = content.getValue(N_LINK, contentLocale).getStringValue(cms);
-            lnkUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, linkValue);
-            try {
-                errorCode = Integer.valueOf(typeValue);
-            } catch (NumberFormatException e) {
-                LOG.error(e.getMessage(), e);
-                // fall back to default
-                errorCode = Integer.valueOf(307);
+            I_CmsXmlContentValue contentValue = content.getValue(N_LINK, contentLocale);
+            if (contentValue != null) {
+                String linkValue = contentValue.getStringValue(cms);
+                lnkUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, linkValue);
+                try {
+                    errorCode = Integer.valueOf(typeValue);
+                } catch (NumberFormatException e) {
+                    LOG.error(e.getMessage(), e);
+                    // fall back to default
+                    errorCode = Integer.valueOf(307);
+                }
+            } else {
+                // send error 404 if no link value is set
+                errorCode = Integer.valueOf(HttpServletResponse.SC_NOT_FOUND);
             }
         }
         request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, errorCode);
