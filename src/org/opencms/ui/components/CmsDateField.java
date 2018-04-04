@@ -66,6 +66,9 @@ public class CmsDateField extends DateTimeField {
      */
     public static LocalDateTime dateToLocalDateTime(Date date) {
 
+        if (date == null) {
+            return null;
+        }
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
@@ -78,6 +81,9 @@ public class CmsDateField extends DateTimeField {
      */
     public static Date localDateTimeToDate(LocalDateTime local) {
 
+        if (local == null) {
+            return null;
+        }
         ZonedDateTime zdt = local.atZone(ZoneId.systemDefault());
         return Date.from(zdt.toInstant());
     }
