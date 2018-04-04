@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.logfile;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -40,6 +41,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -56,6 +58,9 @@ import com.vaadin.v7.ui.VerticalLayout;
  * Class for the view of log files.<p>
  */
 public class CmsLogFileView extends VerticalLayout {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLogFileView.class);
 
     /**Session attribute to store charset setting.*/
     protected static String ATTR_FILE_VIEW_CHARSET = "log-file-char";
@@ -113,7 +118,7 @@ public class CmsLogFileView extends VerticalLayout {
                 }
             }
 
-            for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
+            for (File file : CmsLogFileOptionProvider.getLogFiles()) {
                 if (!file.getAbsolutePath().endsWith(".zip")) {
                     m_logfile.addItem(file.getAbsolutePath());
                 }
@@ -122,6 +127,7 @@ public class CmsLogFileView extends VerticalLayout {
             m_logfile.setFilteringMode(FilteringMode.CONTAINS);
 
             m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
+            m_logView.setAdditionalRoots(CmsLogFileOptionProvider.getAdditionalLogDirectories());
 
             m_logView.setWindowSize(WINDOW_SIZE);
 
@@ -191,7 +197,7 @@ public class CmsLogFileView extends VerticalLayout {
             content += "</pre>";
             m_fileContent.setValue(content);
         } catch (CmsRfsException e) {
-            //
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
     }

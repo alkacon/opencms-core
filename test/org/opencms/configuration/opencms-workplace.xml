@@ -1296,5 +1296,6 @@
 				</root>
 			</roots>
 		</tool-manager>
+		<additional-log-folders />
 	</workplace>
 </opencms>

@@ -43,7 +43,8 @@
 	synchronization?,
 	keep-alive?,
 	gallery-default-scope?,
-	element-delete-mode?
+	element-delete-mode?,
+	additional-log-folders?
 	)>
 
 <!--
@@ -895,6 +896,12 @@
 <!ATTLIST user-lists mode CDATA #REQUIRED>
 
 <!ELEMENT keep-alive (#PCDATA)>
+
+<!-- 
+# Configure additional folders in addition to WEB-INF/logs from which log files can be viewed in the log file viewer.
+-->
+<!ELEMENT additional-log-folders (log-folder*)>
+<!ELEMENT log-folder (#PCDATA)>
 
 <!--
 # The default search scope for gallery dialogs. Values allowed: [everything|shared|site|siteShared|subSite|subSiteShared]

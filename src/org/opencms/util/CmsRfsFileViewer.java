@@ -45,6 +45,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.logging.Log;
@@ -65,17 +66,26 @@ public class CmsRfsFileViewer implements Cloneable {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsRfsFileViewer.class);
 
-    /** Decides whether the view onto the underlying file via readFilePortion is enabled. */
-    private boolean m_enabled;
-
-    /** The character encoding of the underlying file. */
-    private Charset m_fileEncoding;
-
     /** The path to the underlying file. */
     protected String m_filePath;
 
     /** The path to the root for all accessible files. */
     protected String m_rootPath;
+
+    /** The current window (numbered from zero to amount of possible different windows).  */
+    protected int m_windowPos;
+
+    /** The amount of lines to show. */
+    protected int m_windowSize;
+
+    /** The additional allowed RFS roots for viewing files. */
+    private List<String> m_additionalRoots;
+
+    /** Decides whether the view onto the underlying file via readFilePortion is enabled. */
+    private boolean m_enabled;
+
+    /** The character encoding of the underlying file. */
+    private Charset m_fileEncoding;
 
     /**
      * If value is <code>true</code>, all setter methods will throw a
@@ -91,12 +101,6 @@ public class CmsRfsFileViewer implements Cloneable {
      * in more convenient ways (in future versions) because the format is known.
      */
     private boolean m_isLogfile;
-
-    /** The current window (numbered from zero to amount of possible different windows).  */
-    protected int m_windowPos;
-
-    /** The amount of lines to show. */
-    protected int m_windowSize;
 
     /**
      * Creates an instance with default settings that tries to use the log file path obtained
@@ -333,6 +337,16 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
+     * Sets the additional root folders from which files can be viewed.<p>
+     *
+     * @param roots the list of additional root folders
+     */
+    public void setAdditionalRoots(List<String> roots) {
+
+        m_additionalRoots = roots;
+    }
+
+    /**
      * Set the boolean that decides if the view to the underlying file via
      * <code>{@link #readFilePortion()}</code> is enabled.<p>
      *
@@ -437,7 +451,7 @@ public class CmsRfsFileViewer implements Cloneable {
                             Messages.ERR_FILE_ARG_NOT_READ_1,
                             new Object[] {String.valueOf(path)}));
                 }
-            } else if ((m_rootPath != null) && !file.getCanonicalPath().startsWith(m_rootPath)) {
+            } else if ((m_rootPath != null) && !isInRoots(file.getCanonicalPath())) {
                 // if wrong configuration perform self healing:
                 if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_2_INITIALIZING) {
                     // this deletes the illegal entry and will default to the log file path
@@ -620,6 +634,29 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
+     * Check if the given path is below any of the configured roots.<p>
+     *
+     * @param canonicalPath the path to check
+     * @return true if the path is below any of the configured roots
+     */
+    private boolean isInRoots(String canonicalPath) {
+
+        if (CmsStringUtil.isPrefixPath(m_rootPath, canonicalPath)) {
+            return true;
+        }
+        if (m_additionalRoots != null) {
+            for (String root : m_additionalRoots) {
+                if (CmsStringUtil.isPrefixPath(root, canonicalPath)) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+
+    }
+
+    /**
      * Internally sets the member <code>m_windowPos</code> to the last available
      * window of <code>m_windowSize</code> windows to let further calls to
      * <code>{@link #readFilePortion()}</code> display the end of the file. <p>
@@ -665,4 +702,5 @@ public class CmsRfsFileViewer implements Cloneable {
         }
         return lines;
     }
+
 }

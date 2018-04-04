@@ -1808,5 +1808,6 @@
 			</roots>
 		</tool-manager>
 		<user-lists mode="lazy" />
+		<additional-log-folders />
 	</workplace>
 </opencms>

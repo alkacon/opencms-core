@@ -30,6 +30,7 @@ package org.opencms.workplace;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+import org.opencms.configuration.CmsAdditionalLogFolderConfig;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsUserSettings;
@@ -143,6 +144,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
          * @param rules an array of strings of the form 'foo,bar,baz:view1', where foo, ... are type names and view1 is a view name (explorertype)
          */
         public ViewRules(String... rules) {
+
             for (String rule : rules) {
                 int colIndex = rule.indexOf(':');
                 if (colIndex != -1) {
@@ -356,6 +358,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
+
+    /** The additional log folder configuration. */
+    private CmsAdditionalLogFolderConfig m_logFolderConfig = new CmsAdditionalLogFolderConfig();
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -862,6 +867,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         } else {
             return Collections.unmodifiableList(m_accountInfos);
         }
+    }
+
+    /**
+     * Gets the additional log folder configuration.<p>
+     *
+     * @return the additional log folder configuration
+     */
+    public CmsAdditionalLogFolderConfig getAdditionalLogFolderConfiguration() {
+
+        return m_logFolderConfig;
     }
 
     /**
@@ -1857,6 +1872,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         m_acaciaUnlock = value;
 
+    }
+
+    /**
+     * Sets the additional log folder configuration.<p>
+     *
+     * @param logConfig the additional log folder configuration
+     */
+    public void setAdditionalLogFolderConfiguration(CmsAdditionalLogFolderConfig logConfig) {
+
+        m_logFolderConfig = logConfig;
     }
 
     /**

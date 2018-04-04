@@ -1003,7 +1003,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
 
         // add rules for editor handler
-        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, CmsConfigurationException.class.getName(), A_CLASS);
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_EDITORHANDLER,
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, "setEditorHandler");
 
         // add rules for editor handler
@@ -1014,7 +1017,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_POSTUPLOADHANDLER, "setPostUploadHandler");
 
         // add rules for editor action handler
-        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, CmsConfigurationException.class.getName(), A_CLASS);
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_EDITORACTION,
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
 
         // add rules for editor css handler classes
@@ -1124,6 +1130,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext(xPathPrefix, "setCustomFoot");
 
         addToolManagerRules(digester);
+        CmsAdditionalLogFolderConfig.ADD_LOG_FOLDER_HELPER.addRules(digester);
+        digester.addSetNext(
+            CmsAdditionalLogFolderConfig.ADD_LOG_FOLDER_HELPER.getBasePath(),
+            "setAdditionalLogFolderConfiguration");
 
     }
 
@@ -1457,6 +1467,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             workplaceElement.addElement(N_ELEMENT_DELETE_MODE).setText(deleteMode.name());
         }
 
+        CmsAdditionalLogFolderConfig.ADD_LOG_FOLDER_HELPER.generateXml(
+            workplaceElement,
+            m_workplaceManager.getAdditionalLogFolderConfiguration());
+
         // return the configured node
         return workplaceElement;
     }
@@ -1565,36 +1579,45 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL,
             "setDefaultAccess");
 
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL
-            + "/"
-            + N_ACCESSENTRY, "addAccessEntry", 2);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL
-            + "/"
-            + N_ACCESSENTRY, 0, A_PRINCIPAL);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL
-            + "/"
-            + N_ACCESSENTRY, 1, A_PERMISSIONS);
+        digester.addCallMethod(
+            "*/"
+                + N_WORKPLACE
+                + "/"
+                + N_EXPLORERTYPES
+                + "/"
+                + N_DEFAULTACCESSCONTROL
+                + "/"
+                + N_ACCESSCONTROL
+                + "/"
+                + N_ACCESSENTRY,
+            "addAccessEntry",
+            2);
+        digester.addCallParam(
+            "*/"
+                + N_WORKPLACE
+                + "/"
+                + N_EXPLORERTYPES
+                + "/"
+                + N_DEFAULTACCESSCONTROL
+                + "/"
+                + N_ACCESSCONTROL
+                + "/"
+                + N_ACCESSENTRY,
+            0,
+            A_PRINCIPAL);
+        digester.addCallParam(
+            "*/"
+                + N_WORKPLACE
+                + "/"
+                + N_EXPLORERTYPES
+                + "/"
+                + N_DEFAULTACCESSCONTROL
+                + "/"
+                + N_ACCESSCONTROL
+                + "/"
+                + N_ACCESSENTRY,
+            1,
+            A_PERMISSIONS);
     }
 
     /**

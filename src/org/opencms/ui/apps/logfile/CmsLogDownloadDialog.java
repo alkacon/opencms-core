@@ -42,18 +42,18 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
-import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the Download dialog.<p>
@@ -94,10 +94,11 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
      * @param filePath path of currently shown file
      */
     public CmsLogDownloadDialog(final Window window, String filePath) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_totalSize = 0;
-        for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
+        for (File file : CmsLogFileOptionProvider.getLogFiles()) {
             if (!file.getAbsolutePath().endsWith(".zip")) {
                 m_file.addItem(file.getAbsolutePath());
                 m_totalSize += file.length() / (1024 * 1024);
@@ -218,7 +219,7 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
             FileOutputStream fos = new FileOutputStream(ZIP_PATH);
             ZipOutputStream zos = new ZipOutputStream(fos);
 
-            for (File file : new File(CmsLogFileApp.LOG_FOLDER).listFiles()) {
+            for (File file : CmsLogFileOptionProvider.getLogFiles()) {
                 if (!file.isDirectory() & !ZIP_PATH.equals(file.getAbsolutePath())) {
                     addToZip(new File(CmsLogFileApp.LOG_FOLDER), file, zos);
                 }
