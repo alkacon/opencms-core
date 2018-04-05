@@ -57,17 +57,8 @@ public class CmsParameterEscaper {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsParameterEscaper.class);
 
-    /** The names of parameters which shouldn't be escaped. */
-    private Set<String> m_exceptions = new HashSet<String>();
-
-    /** The names of parameters which need to be HTML-cleaned. */
-    private Set<String> m_cleanHtml = new HashSet<String>();
-
     /** The file name of the default policy. */
     public static final String DEFAULT_POLICY = "antisamy-opencms.xml";
-
-    /** The AntiSamy instance for cleaning HTML. */
-    private AntiSamy m_antiSamy;
 
     /** The default policy, which is used when no policy path is given. */
     protected static Policy defaultPolicy;
@@ -78,13 +69,21 @@ public class CmsParameterEscaper {
             String packageName = CmsParameterEscaper.class.getPackage().getName();
             String resourceName = packageName.replace(".", "/") + "/" + DEFAULT_POLICY;
             InputStream stream = CmsParameterEscaper.class.getClassLoader().getResourceAsStream(resourceName);
-            @SuppressWarnings("deprecation")
             Policy policy = Policy.getInstance(stream);
             defaultPolicy = policy;
         } catch (PolicyException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
     }
+
+    /** The names of parameters which shouldn't be escaped. */
+    private Set<String> m_exceptions = new HashSet<String>();
+
+    /** The names of parameters which need to be HTML-cleaned. */
+    private Set<String> m_cleanHtml = new HashSet<String>();
+
+    /** The AntiSamy instance for cleaning HTML. */
+    private AntiSamy m_antiSamy;
 
     /**
      * Helper method for reading an AntiSamy policy file from the VFS.<p>
@@ -102,7 +101,6 @@ public class CmsParameterEscaper {
 
             // we use the deprecated method here because it is the only way to load
             // a policy directly from the VFS.
-            @SuppressWarnings("deprecation")
             Policy policy = Policy.getInstance(input);
             return policy;
         } catch (CmsException e) {
