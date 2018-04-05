@@ -77,7 +77,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
      * @param result The search result, according to which the parameters are manipulated.
      * @param params The original parameter set.
      */
-    CmsSearchStateParameters(final I_CmsSearchResultWrapper result, final Map<String, String[]> params) {
+    public CmsSearchStateParameters(final I_CmsSearchResultWrapper result, final Map<String, String[]> params) {
 
         m_params = params;
         m_result = result;
