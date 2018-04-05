@@ -177,6 +177,7 @@ dependencies {
     distribution group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.1'
     distribution group: 'org.apache.xbean', name: 'xbean-asm5-shaded', version: '4.5'
     distribution group: 'org.apache.xmlbeans', name: 'xmlbeans', version:'2.6.0'
+    distribution group: 'org.apache.xmlgraphics', name: 'batik-constants', version: '1.9.1'
     distribution group: 'org.apache.xmlgraphics', name: 'batik-css', version:'1.9.1'
     distribution group: 'org.apache.xmlgraphics', name: 'batik-util', version:'1.9.1'
     distribution group: 'org.apache.zookeeper', name: 'zookeeper', version:'3.4.11'
