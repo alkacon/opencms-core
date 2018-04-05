@@ -30,6 +30,7 @@ package org.opencms.ui.apps.logfile;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,6 +38,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -60,20 +66,102 @@ import com.vaadin.v7.ui.ComboBox;
  */
 public class CmsLogDownloadDialog extends CmsBasicDialog {
 
+    /**
+     * Helper class for generating the zip file for the log download.<p>
+     */
+    class ZipGenerator {
+
+        /** The set of generated parent directories. */
+        private Set<String> m_directories = new HashSet<>();
+
+        /** The zip output. */
+        private ZipOutputStream m_zos;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param output the output stream to write to
+         */
+        public ZipGenerator(OutputStream output) {
+
+            m_zos = new ZipOutputStream(output);
+        }
+
+        /**
+         * Adds a file to a zip-stream.<p>
+         *
+         * @param directory to be zipped
+         * @param file to be added zo zip
+         * @throws IOException exception
+         */
+        public void addToZip(File directory, File file) throws IOException {
+
+            FileInputStream fis = new FileInputStream(file);
+            String dirPath = directory.getCanonicalPath();
+            String filePath = file.getCanonicalPath();
+            String zipFilePath;
+            if (CmsStringUtil.isPrefixPath(dirPath, filePath)) {
+                zipFilePath = filePath.substring(dirPath.length() + 1, filePath.length());
+            } else {
+                String parentName = generateParentName(file);
+                if (!m_directories.contains(parentName)) {
+                    m_zos.putNextEntry(new ZipEntry(parentName));
+                }
+                m_directories.add(parentName);
+                zipFilePath = CmsStringUtil.joinPaths(parentName, file.getName());
+            }
+            ZipEntry zipEntry = new ZipEntry(zipFilePath);
+            m_zos.putNextEntry(zipEntry);
+
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                m_zos.write(bytes, 0, length);
+            }
+            m_zos.closeEntry();
+            fis.close();
+        }
+
+        /**
+         * Closes the zip stream.<p>
+         *
+         * @throws IOException if something goes wrong
+         */
+        public void close() throws IOException {
+
+            m_zos.close();
+        }
+
+        /**
+         * Generates the name of the parent directory in the zip file for a non-standard log file location.<p>
+         *
+         * @param file the log file
+         * @return the generated parent directory name
+         */
+        String generateParentName(File file) {
+
+            // we might be on Windows, so we can't just assume path is /foo/bar/baz
+            List<String> pathComponents = new ArrayList<>();
+            for (int i = 0; i < (file.toPath().getNameCount() - 1); i++) {
+                pathComponents.add(file.toPath().getName(i).toString());
+            }
+            // need trailing slash when writing directory entries to ZipOutputStream
+            return CmsStringUtil.listAsString(pathComponents, "_") + "/";
+        }
+
+    }
+
+    /** Logger.*/
+    private static Log LOG = CmsLog.getLog(CmsLogDownloadDialog.class.getName());
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = -7447640082260176245L;
 
-    /**Path to zip file.*/
+    /** Path to zip file.*/
     private static final String ZIP_PATH = CmsLogFileApp.LOG_FOLDER + "logs.zip";
 
-    /**Logger.*/
-    private static Log LOG = CmsLog.getLog(CmsLogDownloadDialog.class.getName());
-
-    /**Vaadin component.*/
-    private ComboBox m_file;
-
-    /**Vaadin component.*/
-    private Button m_ok;
+    /**File downloader. */
+    protected FileDownloader m_downloader;
 
     /**Vaadin component.*/
     private Button m_cancel;
@@ -81,8 +169,11 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
     /**Vaadin component.**/
     private CheckBox m_donwloadAll;
 
-    /**File downloader. */
-    protected FileDownloader m_downloader;
+    /**Vaadin component.*/
+    private ComboBox m_file;
+
+    /**Vaadin component.*/
+    private Button m_ok;
 
     /**total size of log files in MB.*/
     private double m_totalSize;
@@ -185,46 +276,19 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
     }
 
     /**
-     * Adds a file to a zip-stream.<p>
-     *
-     * @param directory to be zipped
-     * @param file to be added zo zip
-     * @param zos zip-stream
-     * @throws IOException exception
-     */
-    private void addToZip(File directory, File file, ZipOutputStream zos) throws IOException {
-
-        FileInputStream fis = new FileInputStream(file);
-        String zipFilePath = file.getCanonicalPath().substring(
-            directory.getCanonicalPath().length() + 1,
-            file.getCanonicalPath().length());
-        ZipEntry zipEntry = new ZipEntry(zipFilePath);
-        zos.putNextEntry(zipEntry);
-
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = fis.read(bytes)) >= 0) {
-            zos.write(bytes, 0, length);
-        }
-        zos.closeEntry();
-        fis.close();
-    }
-
-    /**
      * Writes the zip file with all logs.<p>
      */
     private void writeZipFile() {
 
         try {
             FileOutputStream fos = new FileOutputStream(ZIP_PATH);
-            ZipOutputStream zos = new ZipOutputStream(fos);
-
+            ZipGenerator zipGen = new ZipGenerator(fos);
             for (File file : CmsLogFileOptionProvider.getLogFiles()) {
                 if (!file.isDirectory() & !ZIP_PATH.equals(file.getAbsolutePath())) {
-                    addToZip(new File(CmsLogFileApp.LOG_FOLDER), file, zos);
+                    zipGen.addToZip(new File(CmsLogFileApp.LOG_FOLDER), file);
                 }
             }
-            zos.close();
+            zipGen.close();
             fos.close();
 
         } catch (IOException e) {
