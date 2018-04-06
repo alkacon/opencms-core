@@ -218,6 +218,17 @@ public interface I_CmsSitemapService extends RemoteService {
     List<CmsNewResourceInfo> getNewElementInfo(String entryPointUri) throws CmsRpcException;
 
     /**
+     * Fetches the link for a resource selected in the sitemap editor.<p>
+     *
+     * @param baseId the structure id of the current sitemap root entry
+     * @param sitePath the site path of a resource
+     * @return the link to the resource
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getResourceLink(CmsUUID baseId, String sitePath) throws CmsRpcException;
+
+    /**
      * Loads the data needed by the property editor in the locale comparison view.<p>
      *
      * @param id the id of the resource for which the property editor should be opened

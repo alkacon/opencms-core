@@ -691,6 +691,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getResourceLink(org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public String getResourceLink(CmsUUID baseId, String sitePath) throws CmsRpcException {
+
+        try {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            CmsResource baseResource = cms.readResource(baseId, CmsResourceFilter.IGNORE_EXPIRATION);
+            String contextPath = cms.getSitePath(baseResource);
+            cms.getRequestContext().setUri(contextPath);
+            String result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, sitePath);
+            return result;
+        } catch (Exception e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#loadPropertyDataForLocaleCompareView(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public CmsLocaleComparePropertyData loadPropertyDataForLocaleCompareView(CmsUUID id, CmsUUID rootId)

@@ -194,6 +194,15 @@ public interface I_CmsSitemapServiceAsync {
     void getNewElementInfo(String entryPointUri, AsyncCallback<List<CmsNewResourceInfo>> resultCallback);
 
     /**
+     * Fetches the link for a resource selected in the sitemap editor.<p>
+     *
+     * @param baseId the structure id of the current sitemap root entry
+     * @param sitePath the site path of a resource
+     * @param callback the callback to call with the result
+     */
+    void getResourceLink(CmsUUID baseId, String sitePath, AsyncCallback<String> callback);
+
+    /**
      * Loads the data needed by the property editor in the locale comparison view.<p>
      *
      * @param id the id of the resource for which the property editor should be opened
@@ -324,6 +333,6 @@ public interface I_CmsSitemapServiceAsync {
     */
     void validateRewriteAliases(
         CmsRewriteAliasValidationRequest validationRequest,
-        AsyncCallback<CmsRewriteAliasValidationReply> callback);
 
+        AsyncCallback<CmsRewriteAliasValidationReply> callback);
 }

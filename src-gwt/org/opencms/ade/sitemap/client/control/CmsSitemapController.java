@@ -1422,7 +1422,24 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void leaveEditor(String target) {
 
-        Window.Location.assign(CmsCoreProvider.get().link(target));
+        CmsUUID baseId = getData().getRoot().getId();
+        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getService().getResourceLink(baseId, target, this);
+            }
+
+            @Override
+            protected void onResponse(String link) {
+
+                Window.Location.assign(link);
+            }
+
+        };
+        action.execute();
     }
 
     /**
@@ -1735,11 +1752,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void openSiteMap(String sitePath, boolean siteChange) {
 
-        String uri = CmsCoreProvider.get().link(CmsCoreProvider.get().getUri())
-            + "?"
-            + CmsCoreData.PARAM_PATH
-            + "="
-            + sitePath;
+        String uri = CmsCoreProvider.get().link(
+            CmsCoreProvider.get().getUri()) + "?" + CmsCoreData.PARAM_PATH + "=" + sitePath;
         if (!siteChange) {
             uri += "&" + CmsCoreData.PARAM_RETURNCODE + "=" + getData().getReturnCode();
         }

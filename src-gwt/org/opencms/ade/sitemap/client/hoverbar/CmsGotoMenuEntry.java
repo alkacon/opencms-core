@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 
 /**
  * Sitemap context menu got page entry.<p>
@@ -55,7 +56,8 @@ public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        getHoverbar().getController().leaveEditor(getHoverbar().getEntry().getSitePath());
+        CmsSitemapController controller = getHoverbar().getController();
+        controller.leaveEditor(getHoverbar().getEntry().getSitePath());
     }
 
     /**
