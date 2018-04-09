@@ -303,6 +303,9 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_PATH_0 = "GUI_ADDINFO_FORMATTER_PATH_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 
