@@ -239,7 +239,17 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     public void setTargetForlder(CmsResource resource) {
 
         if (resource.isFolder()) {
-            m_targetPath.setValue(getCms().getSitePath(resource));
+            if (m_context.getResources().size() == 1) {
+                try {
+                    m_targetPath.setValue(
+                        getCms().getSitePath(resource) + getTargetName(m_context.getResources().get(0), resource));
+                } catch (CmsException e) {
+                    m_targetPath.setValue(getCms().getSitePath(resource));
+                }
+            } else {
+                m_targetPath.setValue(getCms().getSitePath(resource));
+            }
+
             updateDefaultActions(resource.getRootPath());
         } else {
             throw new CmsIllegalArgumentException(
@@ -278,20 +288,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         Map<String, String> makroMap)
     throws CmsException {
 
-        String name;
-        String folderRootPath = target.getRootPath();
-        if (!folderRootPath.endsWith("/")) {
-            folderRootPath += "/";
-        }
-        if (folderRootPath.equals(CmsResource.getParentFolder(source.getRootPath()))) {
-            name = OpenCms.getResourceManager().getNameGenerator().getCopyFileName(
-                getRootCms(),
-                folderRootPath,
-                source.getName());
-        } else {
-            name = source.getName();
-        }
-        performSingleOperation(source, target, name, action, overwrite, makroMap);
+        performSingleOperation(source, target, getTargetName(source, target), action, overwrite, makroMap);
     }
 
     /**
@@ -620,6 +617,32 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             m_rootCms.getRequestContext().setSiteRoot("/");
         }
         return m_rootCms;
+    }
+
+    /**
+     * Gets a name for the target resource.<p>
+     *
+     * @param source Source
+     * @param target Target
+     * @return Name
+     * @throws CmsException exception
+     */
+    private String getTargetName(CmsResource source, CmsResource target) throws CmsException {
+
+        String name;
+        String folderRootPath = target.getRootPath();
+        if (!folderRootPath.endsWith("/")) {
+            folderRootPath += "/";
+        }
+        if (folderRootPath.equals(CmsResource.getParentFolder(source.getRootPath()))) {
+            name = OpenCms.getResourceManager().getNameGenerator().getCopyFileName(
+                getRootCms(),
+                folderRootPath,
+                source.getName());
+        } else {
+            name = source.getName();
+        }
+        return name;
     }
 
     /**
