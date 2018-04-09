@@ -58,6 +58,7 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -226,9 +227,21 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         infoBean.setTitle(elementBean.getTitle());
         infoBean.setSubTitle(elementBean.getSitePath());
         infoBean.setResourceType(elementBean.getResourceType());
+        m_elementBean.getFormatters();
         infoBean.setBigIconClasses(elementBean.getBigIconClasses());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
+
+        String formatterPath;
+        try {
+            CmsFormatterConfig currentFormatterConfig = m_elementBean.getFormatterConfig(m_containerId);
+            formatterPath = currentFormatterConfig.getJspRootPath();
+        } catch (Exception e) {
+            CmsDebugLog.consoleLog("Could not read formatter");
+            formatterPath = "[error: could not get formatter]";
+        }
+        CmsDebugLog.consoleLog(formatterPath);
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_PATH_0), formatterPath);
 
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()
             && m_controller.getData().isModelGroup()
@@ -361,6 +374,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         } else {
             formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
         }
+
         CmsUUID serverId = null;
         if (elementBean.isModelGroup()) {
             serverId = elementBean.getModelGroupId();
@@ -378,6 +392,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             formFieldPanel.getInfoWidget().addButton(menuButton);
         }
+
         getForm().setWidget(formFieldPanel);
         formFieldPanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
@@ -705,28 +720,28 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      * @param cssContent the CSS snippet
      */
     private native void ensureInlineCss(String formatterId, String cssContent)/*-{
-		var styles = $wnd.document.styleSheets;
-		for (var i = 0; i < styles.length; i++) {
-			// IE uses the owningElement property
-			var styleNode = styles[i].owningElement ? styles[i].owningElement
-					: styles[i].ownerNode;
-			if (styleNode != null && styleNode.rel == formatterId) {
-				// inline css is present
-				return;
-			}
-		}
-		// include inline css into head
-		var headID = $wnd.document.getElementsByTagName("head")[0];
-		var cssNode = $wnd.document.createElement('style');
-		cssNode.type = 'text/css';
-		cssNode.rel = formatterId;
-		if (cssNode.styleSheet) {
-			// in case of IE
-			cssNode.styleSheet.cssText = cssContent;
-		} else {
-			// otherwise
-			cssNode.appendChild(document.createTextNode(cssContent));
-		}
-		headID.appendChild(cssNode);
+        var styles = $wnd.document.styleSheets;
+        for (var i = 0; i < styles.length; i++) {
+            // IE uses the owningElement property
+            var styleNode = styles[i].owningElement ? styles[i].owningElement
+                    : styles[i].ownerNode;
+            if (styleNode != null && styleNode.rel == formatterId) {
+                // inline css is present
+                return;
+            }
+        }
+        // include inline css into head
+        var headID = $wnd.document.getElementsByTagName("head")[0];
+        var cssNode = $wnd.document.createElement('style');
+        cssNode.type = 'text/css';
+        cssNode.rel = formatterId;
+        if (cssNode.styleSheet) {
+            // in case of IE
+            cssNode.styleSheet.cssText = cssContent;
+        } else {
+            // otherwise
+            cssNode.appendChild(document.createTextNode(cssContent));
+        }
+        headID.appendChild(cssNode);
     }-*/;
 }
