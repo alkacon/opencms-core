@@ -93,7 +93,7 @@ public final class CmsDebugLog {
      */
     public static native void consoleLog(String message) /*-{
         if ($wnd.console && $wnd.console.log) {
-            $wnd.console.log(message);
+            $wnd.top.console.log(message);
         }
     }-*/;
 
