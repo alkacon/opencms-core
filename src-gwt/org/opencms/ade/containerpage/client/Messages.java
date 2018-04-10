@@ -52,6 +52,15 @@ public final class Messages {
     public static final String ERR_READING_CONTAINER_PAGE_DATA_0 = "ERR_READING_CONTAINER_PAGE_DATA_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_CONTAINER_0 = "GUI_ADDINFO_FORMATTER_CONTAINER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0 = "GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_PATH_0 = "GUI_ADDINFO_FORMATTER_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ASK_DELETE_REMOVED_ELEMENT_0 = "GUI_ASK_DELETE_REMOVED_ELEMENT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -143,6 +152,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_SAVE_QUESTION_0 = "GUI_DIALOG_SAVE_QUESTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_SMALL_ELEMENTS_0 = "GUI_EDIT_SMALL_ELEMENTS_0";
@@ -250,13 +265,13 @@ public final class Messages {
     public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_ONLINE_0 = "GUI_VIEW_ONLINE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_FORMATTER_LABEL_0 = "GUI_SELECT_FORMATTER_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SETTINGS_LEGEND_0 = "GUI_SETTINGS_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_LOCALE_0 = "GUI_SHOW_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SWITCH_EDIT_LEVEL_1 = "GUI_SWITCH_EDIT_LEVEL_1";
@@ -291,20 +306,11 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USE_AS_MODEL_GROUP_LABEL_0 = "GUI_USE_AS_MODEL_GROUP_LABEL_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_ONLINE_0 = "GUI_VIEW_ONLINE_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SHOW_LOCALE_0 = "GUI_SHOW_LOCALE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_DELETE_OPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0 = "GUI_EDIT_HANDLER_SELECT_EDIT_OPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADDINFO_FORMATTER_PATH_0 = "GUI_ADDINFO_FORMATTER_PATH_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

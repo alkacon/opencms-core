@@ -240,8 +240,17 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             CmsDebugLog.consoleLog("Could not read formatter");
             formatterPath = "[error: could not get formatter]";
         }
-        CmsDebugLog.consoleLog(formatterPath);
+
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_PATH_0), formatterPath);
+
+        I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
+        if (dropContainer instanceof CmsContainerPageContainer) {
+            CmsContainerPageContainer cpc = (CmsContainerPageContainer)dropContainer;
+            String type = cpc.getContainerType();
+            String name = cpc.getContainerId();
+            infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_CONTAINER_0), name);
+            infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0), type);
+        }
 
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()
             && m_controller.getData().isModelGroup()
