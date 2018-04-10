@@ -46,7 +46,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
-import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 
@@ -295,27 +294,12 @@ public class CmsRfsFileViewer implements Cloneable {
                 StringBuffer result = new StringBuffer();
                 String read = reader.readLine();
 
-                // logfile treatment is different
-                // we invert the lines: latest come first
-                if (m_isLogfile) {
-                    // stack is java hall of shame member... but standard
-                    Stack<String> inverter = new Stack<String>();
-                    for (int i = m_windowSize; (i > 0) && (read != null); i--) {
-                        inverter.push(read);
-                        read = reader.readLine();
-                    }
-                    // pop-off:
-                    while (!inverter.isEmpty()) {
-                        result.append(inverter.pop());
-                        result.append('\n');
-                    }
-                } else {
-                    for (int i = m_windowSize; (i > 0) && (read != null); i--) {
-                        result.append(read);
-                        result.append('\n');
-                        read = reader.readLine();
-                    }
+                for (int i = m_windowSize; (i > 0) && (read != null); i--) {
+                    result.append(read);
+                    result.append('\n');
+                    read = reader.readLine();
                 }
+
                 return CmsEncoder.escapeXml(result.toString());
             } catch (IOException ioex) {
                 CmsRfsException ex = new CmsRfsException(

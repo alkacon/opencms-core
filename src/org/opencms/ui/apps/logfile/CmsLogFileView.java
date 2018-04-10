@@ -47,6 +47,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 
 import com.vaadin.server.FileDownloader;
+import com.vaadin.ui.Panel;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
@@ -82,6 +83,8 @@ public class CmsLogFileView extends VerticalLayout {
 
     /**Vaadin component. */
     private Label m_fileContent;
+
+    private Panel m_panelComp;
 
     /**Vaadin component. */
     private ComboBox m_logfile;
@@ -196,6 +199,7 @@ public class CmsLogFileView extends VerticalLayout {
             content += m_logView.readFilePortion();
             content += "</pre>";
             m_fileContent.setValue(content);
+            m_panelComp.setScrollTop(100000000);
         } catch (CmsRfsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
