@@ -116,7 +116,7 @@ import com.vaadin.ui.Window;
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** The editor back-link URI. */
-    private static final String EDITOR_BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
+    private static final String EDITOR_BACKLINK_URI = "/system/workplace/commons/editor-backlink.html";
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";

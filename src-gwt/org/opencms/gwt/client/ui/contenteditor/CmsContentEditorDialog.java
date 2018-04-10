@@ -436,7 +436,8 @@ public final class CmsContentEditorDialog {
                 var editorFrame = editFrame.frames["editform"];
                 if (editorFrame != null) {
                     var editForm = editorFrame.$("#EDITOR");
-                    editForm.find("input[name='action']").attr("value", "saveexit");
+                    editForm.find("input[name='action']").attr("value",
+                            "saveexit");
                     if (editForm != null) {
                         var data = editForm.serializeArray(editForm);
                         editorFrame.$.ajax({

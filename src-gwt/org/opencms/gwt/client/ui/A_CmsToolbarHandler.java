@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsValidatingContextMenuCommand;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -83,6 +84,12 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
         }
         if ((command == null) && !bean.hasSubMenu()) {
             return null;
+        }
+        if (command instanceof I_CmsValidatingContextMenuCommand) {
+            boolean ok = ((I_CmsValidatingContextMenuCommand)command).validate(bean);
+            if (!ok) {
+                return null;
+            }
         }
         CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
         entry.setBean(bean);

@@ -214,6 +214,12 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
             command = getContextMenuCommands().get(name);
         }
+        if (command instanceof I_CmsValidatingContextMenuCommand) {
+            boolean ok = ((I_CmsValidatingContextMenuCommand)command).validate(bean);
+            if (!ok) {
+                return null;
+            }
+        }
         CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
         entry.setBean(bean);
         if (bean.hasSubMenu()) {

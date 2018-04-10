@@ -43,13 +43,12 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A context menu command for editing an XML content. <p>
  */
-public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
+public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsValidatingContextMenuCommand {
 
     /** The context menu handler for this command instance. */
     protected I_CmsContextMenuHandler m_menuHandler;
@@ -59,6 +58,9 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
     /** A flag indicating if the editor should open in the same window, not using any overlays and iFrames. */
     private boolean m_useSelf;
+
+    /** Flag controlling whether window should be immediately reloaded after finishing. */
+    private boolean m_immediateReload;
 
     /**
      * Hidden utility class constructor.<p>
@@ -167,10 +169,15 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
             I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
 
+                @SuppressWarnings("synthetic-access")
                 public void onClose(String sitePath, CmsUUID id, boolean isNew) {
 
                     if (!m_reload) {
                         return;
+                    }
+
+                    if (m_immediateReload) {
+                        reloadTop();
                     }
 
                     // defer the window.location.reload until after the editor window has closed
@@ -180,9 +187,10 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                         @Override
                         public void run() {
 
-                            String url = Window.Location.getHref();
-                            m_menuHandler.leavePage(url);
+                            reloadTop();
+
                         }
+
                     };
                     timer.schedule(10);
                 }
@@ -209,6 +217,8 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
         m_reload = Boolean.parseBoolean(reloadStr);
         String useSelfStr = params.get(CmsMenuCommandParameters.PARAM_USE_SELF);
         m_useSelf = Boolean.parseBoolean(useSelfStr);
+
+        m_immediateReload = Boolean.parseBoolean(params.get("immediateReload"));
 
         if (handler instanceof I_CmsToolbarHandler) {
             ((I_CmsToolbarHandler)handler).deactivateCurrentButton();
@@ -250,4 +260,71 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
         return false;
     }
+
+    /**
+     * Checks if we currently have an editor open somewhere.<p>
+     *
+     * @return true if there is an open editor
+     */
+    public native boolean isEditorOpen() /*-{
+        var windowStack = [ $wnd.top ];
+        var allWindows = [];
+        while (windowStack.length > 0) {
+            var current = windowStack.pop();
+            allWindows.push(current);
+            try {
+                for (var i = 0; i < current.frames.length; i++) {
+                    try {
+                        var frameWindow = current.frames[i];
+                        windowStack.push(frameWindow);
+                    } catch (e) {
+                        // ignore
+                    }
+                }
+            } catch (e2) {
+                // ignore
+            }
+
+        }
+        for (var i = 0; i < allWindows.length; i++) {
+            try {
+                var currentWindow = allWindows[i];
+                if (currentWindow.location.href.indexOf("acacia/editor.jsp") >= 0) {
+                    return true;
+                }
+                if (currentWindow.document
+                        .querySelector(".org-opencms-ade-contenteditor-client-css-I_CmsLayoutBundle-I_CmsXmlEditorCss-basePanel") != null) {
+                    return true;
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        return false;
+
+    }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsValidatingContextMenuCommand#validate(org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public boolean validate(CmsContextMenuEntryBean entry) {
+
+        try {
+            if (isEditorOpen()) {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Reloads top frame.<p>
+     */
+    private native void reloadTop() /*-{
+        $wnd.top.location.reload();
+    }-*/;
 }

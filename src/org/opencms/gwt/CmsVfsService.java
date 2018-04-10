@@ -302,6 +302,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         if (subsite != null) {
             resolver.addMacro("subsite", cms.getRequestContext().removeSiteRoot(subsite));
         }
+        resolver.addMacro("file", cms.getSitePath(res));
         String path = resolver.resolveMacros(pathWithMacros).replaceAll("/+", "/");
         return path;
     }

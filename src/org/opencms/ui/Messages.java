@@ -36,6 +36,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_EDIT_CONTENT_0 = "GUI_ACTION_EDIT_CONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PAGECOPY_INVALID_PAGE_0 = "ERR_PAGECOPY_INVALID_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
