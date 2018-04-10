@@ -33,8 +33,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
-import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
+import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
+import org.opencms.loader.I_CmsTemplateContextProvider;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -63,14 +64,14 @@ import org.dom4j.io.SAXReader;
  */
 public final class CmsTemplateMapper {
 
-    /** The configuration file path. */
-    private static final String CONFIG_PATH = "/system/config/template-mapping.xml";
-
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTemplateMapper.class);
+    static final Log LOG = CmsLog.getLog(CmsTemplateMapper.class);
 
     /** Flag which controls whether this is enabled. */
-    private boolean m_enabled;
+    protected boolean m_enabled;
+
+    /** The path to the mapper configuration. */
+    protected String m_configPath;
 
     /**
      * Hidden default constructor, because this is a singleton.<p>
@@ -78,16 +79,22 @@ public final class CmsTemplateMapper {
     private CmsTemplateMapper() {
 
         m_enabled = true;
+        m_configPath = "/system/config/template-mapping.xml";
     }
 
     /**
      * Creates a new instance.<p>
      *
-     * @param enabled true if the mapper should be enabled
+     * @param configPath the template mapper configuration VFS path
      */
-    private CmsTemplateMapper(boolean enabled) {
+    private CmsTemplateMapper(String configPath) {
 
-        m_enabled = enabled;
+        if (configPath != null) {
+            m_enabled = true;
+            m_configPath = configPath;
+        } else {
+            m_enabled = false;
+        }
     }
 
     /**
@@ -109,7 +116,7 @@ public final class CmsTemplateMapper {
      */
     public static CmsTemplateMapper get(ServletRequest request) {
 
-        return new CmsTemplateMapper(isTemplateMapperContext(request));
+        return new CmsTemplateMapper(getTemplateMapperConfig(request));
     }
 
     /**
@@ -118,11 +125,19 @@ public final class CmsTemplateMapper {
      * @param request the current request
      * @return true if the selected template context is "templatemapper"
      */
-    public static boolean isTemplateMapperContext(ServletRequest request) {
+    public static String getTemplateMapperConfig(ServletRequest request) {
 
-        TemplateBean ctx = (TemplateBean)request.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
-        boolean enabled = (ctx != null) && "templatemapper".equals(ctx.getName());
-        return enabled;
+        String result = null;
+        CmsTemplateContext templateContext = (CmsTemplateContext)request.getAttribute(
+            CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT);
+        if (templateContext != null) {
+            I_CmsTemplateContextProvider provider = templateContext.getProvider();
+            if (provider instanceof I_CmsTemplateMappingContextProvider) {
+                result = ((I_CmsTemplateMappingContextProvider)provider).getMappingConfigurationPath(
+                    templateContext.getKey());
+            }
+        }
+        return result;
     }
 
     /**
@@ -277,14 +292,14 @@ public final class CmsTemplateMapper {
 
         return (CmsTemplateMapperConfiguration)(CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().loadVfsObject(
             cms,
-            CONFIG_PATH,
+            m_configPath,
             new Transformer() {
 
                 @Override
                 public Object transform(Object input) {
 
                     try {
-                        CmsFile file = cms.readFile(CONFIG_PATH, CmsResourceFilter.IGNORE_EXPIRATION);
+                        CmsFile file = cms.readFile(m_configPath, CmsResourceFilter.IGNORE_EXPIRATION);
                         SAXReader saxBuilder = new SAXReader();
                         try (ByteArrayInputStream stream = new ByteArrayInputStream(file.getContents())) {
                             Document document = saxBuilder.read(stream);

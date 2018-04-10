@@ -30,7 +30,6 @@ package org.opencms.loader;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
@@ -105,13 +104,7 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
             req,
             resource,
             getTemplatePropertyDefinition());
-        CmsTemplateContext context = loaderFacade.getTemplateContext();
-        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
-        TemplateBean templateBean = new TemplateBean(
-            context != null ? context.getKey() : loaderFacade.getTemplateName(),
-            loaderFacade.getTemplate());
-        templateBean.setForced((context != null) && context.isForced());
-        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
+        setTemplateRequestAttributes(loaderFacade, req);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 

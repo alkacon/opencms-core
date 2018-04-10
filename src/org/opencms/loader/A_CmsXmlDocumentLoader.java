@@ -79,7 +79,8 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         String element,
         Locale selectedLocale,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException, IOException {
+        HttpServletResponse res)
+    throws CmsException, IOException {
 
         if ((element == null) || (selectedLocale == null)) {
             // element and locale to display must be specified
@@ -108,7 +109,8 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         String element,
         Locale selectedLocale,
         ServletRequest req,
-        ServletResponse res) throws CmsException {
+        ServletResponse res)
+    throws CmsException {
 
         // extract the XML document from the current request
         I_CmsXmlDocument doc = unmarshalXmlDocument(cms, resource, req);
@@ -214,13 +216,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         unmarshalXmlDocument(cms, resource, req);
 
         CmsTemplateLoaderFacade loaderFacade = getTemplateLoaderFacade(cms, resource, req);
-        CmsTemplateContext context = loaderFacade.getTemplateContext();
-        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
-        TemplateBean templateBean = new TemplateBean(
-            context != null ? context.getKey() : loaderFacade.getTemplateName(),
-            loaderFacade.getTemplate());
-        templateBean.setForced((context != null) && context.isForced());
-        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
+        setTemplateRequestAttributes(loaderFacade, req);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 
@@ -259,7 +255,8 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     protected CmsTemplateLoaderFacade getTemplateLoaderFacade(
         CmsObject cms,
         CmsResource resource,
-        HttpServletRequest req) throws CmsException {
+        HttpServletRequest req)
+    throws CmsException {
 
         return OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
@@ -274,6 +271,23 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
      * @return the property definition name used to selecte the template for this XML document resource loader
      */
     protected abstract String getTemplatePropertyDefinition();
+
+    /**
+     * Sets request attributes that provide access to the template configuration.<p>
+     *
+     * @param loaderFacade the template loader facade
+     * @param req the servlet request
+     */
+    protected void setTemplateRequestAttributes(CmsTemplateLoaderFacade loaderFacade, HttpServletRequest req) {
+
+        CmsTemplateContext context = loaderFacade.getTemplateContext();
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
+        TemplateBean templateBean = new TemplateBean(
+            context != null ? context.getKey() : loaderFacade.getTemplateName(),
+            loaderFacade.getTemplate());
+        templateBean.setForced((context != null) && context.isForced());
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
+    }
 
     /**
      * Returns the unmarshalled XML document.<p>
