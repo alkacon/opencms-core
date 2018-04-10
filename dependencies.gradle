@@ -155,7 +155,7 @@ dependencies {
     distribution group: 'org.apache.lucene', name: 'lucene-misc', version: '7.2.1'
     distribution group: 'org.apache.lucene', name: 'lucene-queries', version: '7.2.1'
     distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '7.2.1'
-    distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '7.2.1'
+    distribution group: 'org.apache.lucene', name: 'lucene-sandbox', version: '7.2.1'
     distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '7.2.1'
     distribution group: 'org.apache.lucene', name: 'lucene-spatial-extras', version: '7.2.1'
     distribution group: 'org.apache.lucene', name: 'lucene-suggest', version: '7.2.1'
