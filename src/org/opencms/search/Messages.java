@@ -412,6 +412,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SEARCHING_FAILED_0 = "LOG_SEARCHING_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SKIP_REBUILD_FOR_MODE_NEVER_1 = "LOG_SKIP_REBUILD_FOR_MODE_NEVER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SKIPPED_1 = "LOG_SKIPPED_1";
 
     /** Message constant for key in the resource bundle. */

@@ -2606,6 +2606,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Checks, if the index should be rebuilt/updated at all by the search manager.
+     * @param index the index to check.
+     * @return a flag, indicating if the index should be rebuilt/updated at all.
+     */
+    protected boolean shouldUpdateAtAll(I_CmsSearchIndex index) {
+
+        if (I_CmsSearchIndex.REBUILD_MODE_NEVER.equals(index.getRebuildMode())) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SKIP_REBUILD_FOR_MODE_NEVER_1, index.getName()));
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    /**
      * Incrementally updates all indexes that have their rebuild mode set to <code>"auto"</code>
      * after resources have been published.<p>
      *
@@ -2733,36 +2749,38 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected void updateIndex(I_CmsSearchIndex index, I_CmsReport report, List<CmsPublishedResource> resourcesToIndex)
     throws CmsException {
 
-        try {
-            SEARCH_MANAGER_LOCK.lock();
+        if (shouldUpdateAtAll(index)) {
+            try {
+                SEARCH_MANAGER_LOCK.lock();
 
-            // copy the stored admin context for the indexing
-            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
-            // make sure a report is available
-            if (report == null) {
-                report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
+                // copy the stored admin context for the indexing
+                CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+                // make sure a report is available
+                if (report == null) {
+                    report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
+                }
+
+                // check if the index has been configured correctly
+                if (!index.checkConfiguration(cms)) {
+                    // the index is disabled
+                    return;
+                }
+
+                // set site root and project for this index
+                cms.getRequestContext().setSiteRoot("/");
+                // switch to the index project
+                cms.getRequestContext().setCurrentProject(cms.readProject(index.getProject()));
+
+                if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
+                    // rebuild the complete index
+
+                    updateIndexCompletely(cms, index, report);
+                } else {
+                    updateIndexIncremental(cms, index, report, resourcesToIndex);
+                }
+            } finally {
+                SEARCH_MANAGER_LOCK.unlock();
             }
-
-            // check if the index has been configured correctly
-            if (!index.checkConfiguration(cms)) {
-                // the index is disabled
-                return;
-            }
-
-            // set site root and project for this index
-            cms.getRequestContext().setSiteRoot("/");
-            // switch to the index project
-            cms.getRequestContext().setCurrentProject(cms.readProject(index.getProject()));
-
-            if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
-                // rebuild the complete index
-
-                updateIndexCompletely(cms, index, report);
-            } else {
-                updateIndexIncremental(cms, index, report, resourcesToIndex);
-            }
-        } finally {
-            SEARCH_MANAGER_LOCK.unlock();
         }
     }
 

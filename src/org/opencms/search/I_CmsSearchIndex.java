@@ -53,6 +53,9 @@ public interface I_CmsSearchIndex extends I_CmsConfigurationParameterHandler {
     /** Offline ("offline") index rebuild mode. */
     static final String REBUILD_MODE_OFFLINE = "offline";
 
+    /** Never ("never") index rebuild mode for indexes that should never be updated via OpenCms. */
+    static final String REBUILD_MODE_NEVER = "never";
+
     /**
      * The method should return the extraction result of a content from the index, if sure the
      * content has not changed since last indexing. This will prevent re-extraction of the content.
