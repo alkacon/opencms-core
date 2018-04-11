@@ -66,7 +66,7 @@ import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
-import org.opencms.search.solr.CmsSolrIndexWriter;
+import org.opencms.search.solr.I_CmsSolrIndexWriter;
 import org.opencms.search.solr.spellchecking.CmsSolrSpellchecker;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -2822,9 +2822,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             // create a new index writer
             writer = index.getIndexWriter(report, true);
-            if (writer instanceof CmsSolrIndexWriter) {
+            if (writer instanceof I_CmsSolrIndexWriter) {
                 try {
-                    ((CmsSolrIndexWriter)writer).deleteAllDocuments();
+                    ((I_CmsSolrIndexWriter)writer).deleteAllDocuments();
                 } catch (IOException e) {
                     LOG.error(e.getMessage(), e);
                 }

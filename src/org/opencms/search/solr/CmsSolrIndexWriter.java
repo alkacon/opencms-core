@@ -35,8 +35,6 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.I_CmsIndexWriter;
-import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
@@ -53,7 +51,7 @@ import org.apache.solr.common.SolrInputDocument;
  *
  * @since 8.5.0
  */
-public class CmsSolrIndexWriter implements I_CmsIndexWriter {
+public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSolrIndexWriter.class);
@@ -129,9 +127,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * Deletes all documents of the index belonging to this index writer.<p>
-     *
-     * @throws IOException if something goes wrong
+     * @see org.opencms.search.solr.I_CmsSolrIndexWriter#deleteAllDocuments()
      */
     public void deleteAllDocuments() throws IOException {
 
