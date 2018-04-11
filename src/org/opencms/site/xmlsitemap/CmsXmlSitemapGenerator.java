@@ -795,7 +795,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @return true if this is a valid detail page combination
      */
-    private boolean isValidDetailPageCombination(CmsResource page, Locale locale, CmsResource detailRes) {
+    protected boolean isValidDetailPageCombination(CmsResource page, Locale locale, CmsResource detailRes) {
 
         return true;
     }
