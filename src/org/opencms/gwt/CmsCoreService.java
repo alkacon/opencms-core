@@ -211,18 +211,23 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @param cms the cms context
      * @param structureId the currently requested structure id
      * @param context the ade context (sitemap or containerpage)
+     * @param subContext an additional string which more specifically describes the context in which the context menu occurs
      *
      * @return the context menu entries
      */
     public static List<CmsContextMenuEntryBean> getContextMenuEntries(
         CmsObject cms,
         CmsUUID structureId,
-        AdeContext context) {
+        AdeContext context,
+        String subContext) {
 
         List<CmsContextMenuEntryBean> result = Collections.<CmsContextMenuEntryBean> emptyList();
         try {
             if (context != null) {
                 cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
+            }
+            if (subContext != null) {
+                cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_SUB_CONTEXT, subContext);
             }
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
             resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ALL));
@@ -880,14 +885,17 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getContextMenuEntries(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getContextMenuEntries(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext, java.lang.String)
      */
-    public List<CmsContextMenuEntryBean> getContextMenuEntries(CmsUUID structureId, AdeContext context)
+    public List<CmsContextMenuEntryBean> getContextMenuEntries(
+        CmsUUID structureId,
+        AdeContext context,
+        String subcontext)
     throws CmsRpcException {
 
         List<CmsContextMenuEntryBean> result = null;
         try {
-            result = getContextMenuEntries(getCmsObject(), structureId, context);
+            result = getContextMenuEntries(getCmsObject(), structureId, context, subcontext);
         } catch (Throwable e) {
             error(e);
         }

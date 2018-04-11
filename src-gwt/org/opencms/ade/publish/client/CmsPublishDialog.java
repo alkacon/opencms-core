@@ -250,6 +250,12 @@ public class CmsPublishDialog extends CmsPopup {
         m_menuHandler = new CmsResourceInfoView.ContextMenuHandler() {
 
             @Override
+            public String getSubContext() {
+
+                return CmsGwtConstants.SUBCONTEXT_PUBLISH;
+            }
+
+            @Override
             public void refreshResource(CmsUUID structureId) {
 
                 CmsPublishDialog.this.hide();

@@ -1117,6 +1117,7 @@
 								rule="standard" />
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
 								rule="standard" />
+							 <entry key="GUI_EXPLORER_CONTEXT_ADE_PUBLISHSCHEDULED_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishScheduledDialogAction" rule="ade-publishscheduled" />
 							<separator />
 							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
 								rule="standard" />
@@ -1555,6 +1556,16 @@
 						class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
+				</menurule>
+				<menurule name="ade-publishscheduled">
+					<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />								
+					<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPublishDialogInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
 				</menurule>

@@ -53,6 +53,9 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     /** the content editor handler. */
     private I_CmsContentEditorHandler m_editorHandler;
 
+    /** Sub-context to pass to the server. */
+    private String m_subContext;
+
     /**
      * Constructor.<p>
      */
@@ -106,6 +109,19 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     }
 
     /**
+     * Gets the sub-context which should be passed to the server.<p>
+     *
+     * This is an additional string, apart from the context, which more closely specifies where the context menu
+     * is used, and can be used on the server side to determine menu item visibility.
+     *
+     * @return the sub-context
+     */
+    public String getSubContext() {
+
+        return m_subContext;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
      */
     public void leavePage(String targetUri) {
@@ -130,7 +146,7 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getService().getContextMenuEntries(structureId, context, this);
+                CmsCoreProvider.getService().getContextMenuEntries(structureId, context, getSubContext(), this);
             }
 
             @Override
@@ -166,6 +182,16 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     public void setEditorHandler(I_CmsContentEditorHandler editorHandler) {
 
         m_editorHandler = editorHandler;
+    }
+
+    /**
+     * Sets the sub-context.<p>
+     *
+     * @param subContext the sub-context
+     */
+    public void setSubContext(String subContext) {
+
+        m_subContext = subContext;
     }
 
     /**

@@ -2160,7 +2160,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getCoreService().getContextMenuEntries(structureId, context, this);
+                getCoreService().getContextMenuEntries(structureId, context, null, this);
             }
 
             /**

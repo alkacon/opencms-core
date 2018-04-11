@@ -125,11 +125,13 @@ public interface I_CmsCoreServiceAsync {
      *
      * @param structureId the structure id of the resource for which to get the context menu
      * @param context the ade context (sitemap or containerpage)
+     * @param subContext an additional string which more specifically describes the context in which the context menu occurs
      * @param callback the asynchronous callback
      */
     void getContextMenuEntries(
         CmsUUID structureId,
         AdeContext context,
+        String subContext,
         AsyncCallback<List<CmsContextMenuEntryBean>> callback);
 
     /**

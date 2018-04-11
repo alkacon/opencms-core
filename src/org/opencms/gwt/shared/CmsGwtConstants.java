@@ -129,6 +129,9 @@ public final class CmsGwtConstants {
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
 
+    /** Sub-context for context menus in the publish dialog. */
+    public static final String SUBCONTEXT_PUBLISH = "publish";
+
     /** Tab id for the preference dialog. */
     public static final String TAB_BASIC = "basic";
 

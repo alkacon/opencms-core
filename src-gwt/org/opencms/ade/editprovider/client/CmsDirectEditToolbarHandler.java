@@ -191,7 +191,7 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getService().getContextMenuEntries(structureId, context, this);
+                CmsCoreProvider.getService().getContextMenuEntries(structureId, context, null, this);
             }
 
             /**

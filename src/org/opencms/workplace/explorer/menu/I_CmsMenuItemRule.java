@@ -41,6 +41,9 @@ public interface I_CmsMenuItemRule {
     /** The request attribute name for the context information. */
     String ATTR_CONTEXT_INFO = "__contextInfo";
 
+    /** The request attribute name for the subcontext information. */
+    String ATTR_SUB_CONTEXT = "__subcontext";
+
     /** A constant that signals that we are in the container page context. */
     String CONTEXT_CONTAINERPAGE = AdeContext.containerpage.toString();
 
