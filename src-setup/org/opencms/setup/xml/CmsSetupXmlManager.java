@@ -230,6 +230,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlChangeExplorerTypeAccess());
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateAvailabilityMenuEntries());
         m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdatePreferences());
+        m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateContextMenuEntries());
 
         setup();
     }

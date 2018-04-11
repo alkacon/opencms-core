@@ -190,9 +190,12 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                                 "containerpage",
                                 "org.opencms.workplace.explorer.menu.CmsMirContainerPageActive"),
                             "");
-                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule(
-                            "containerpage",
-                            "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"), "");
+                        CmsSetupXmlHelper.setValue(
+                            doc,
+                            xpathForMenuItemRule(
+                                "containerpage",
+                                "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
+                            "");
                     }
                     return false;
                 }
@@ -212,9 +215,12 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                                 "adecheckfile",
                                 "org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable"),
                             "");
-                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule(
-                            "adecheckfile",
-                            "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"), "");
+                        CmsSetupXmlHelper.setValue(
+                            doc,
+                            xpathForMenuItemRule(
+                                "adecheckfile",
+                                "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
+                            "");
                         return true;
                     }
                     return false;
@@ -240,6 +246,33 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                         for (String className : classes) {
                             CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("ade-undochanges", className), "");
+                        }
+                        return true;
+                    }
+                    return false;
+
+                }
+            });
+
+            m_updateActions.put(xpathForMenuRule("ade-publishscheduled"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element elem = (Element)doc.selectSingleNode(xpath);
+                    if (elem == null) {
+                        String[] classes = {
+                            "org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirPublishDialogInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirDirectPublish"};
+
+                        for (String className : classes) {
+                            CmsSetupXmlHelper.setValue(
+                                doc,
+                                xpathForMenuItemRule("ade-publishscheduled", className),
+                                "");
                         }
                         return true;
                     }
