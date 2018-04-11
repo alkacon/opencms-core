@@ -154,6 +154,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The target path select field. */
     private CmsPathSelectField m_targetPath;
 
+    /**Path for the target. Used if only target name is displayed. */
+    private String m_preTargetPath = "";
+
     /** The resources to update after dialog close. */
     private Set<CmsUUID> m_updateResources;
 
@@ -241,8 +244,17 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         if (resource.isFolder()) {
             if (m_context.getResources().size() == 1) {
                 try {
-                    m_targetPath.setValue(
-                        getCms().getSitePath(resource) + getTargetName(m_context.getResources().get(0), resource));
+                    if (m_dialogMode.equals(DialogMode.copy)
+                        | (m_dialogMode.equals(DialogMode.copy_and_move)
+                            && CmsResource.getParentFolder(m_context.getResources().get(0).getRootPath()).equals(
+                                resource.getRootPath()))) {
+                        m_targetPath.setValue(getTargetName(m_context.getResources().get(0), resource));
+                        m_preTargetPath = getCms().getSitePath(resource);
+                    } else {
+
+                        m_targetPath.setValue(
+                            getCms().getSitePath(resource) + getTargetName(m_context.getResources().get(0), resource));
+                    }
                 } catch (CmsException e) {
                     m_targetPath.setValue(getCms().getSitePath(resource));
                 }
@@ -424,7 +436,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         try {
             CmsResource targetFolder = null;
             String targetName = null;
-            String target = m_targetPath.getValue();
+            String target = m_preTargetPath + m_targetPath.getValue();
             boolean isSingleResource = m_context.getResources().size() == 1;
             // resolve relative paths
             target = CmsLinkManager.getAbsoluteUri(
@@ -680,6 +692,10 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0));
         m_targetPath.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
         m_targetPath.setWidth("100%");
+        if ((m_dialogMode.equals(DialogMode.copy) | m_dialogMode.equals(DialogMode.copy_and_move))
+            && (m_context.getResources().size() == 1)) {
+            m_targetPath.setFileSelectButtonVisible(false);
+        }
         form.addComponent(m_targetPath);
 
         if (m_dialogMode != DialogMode.move) {

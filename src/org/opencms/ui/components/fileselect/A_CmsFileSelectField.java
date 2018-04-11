@@ -36,6 +36,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.editablegroup.I_CmsEditableGroup;
@@ -44,15 +45,15 @@ import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.CustomField;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.Window;
 
 /**
  * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
@@ -78,6 +79,12 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
 
     /** The text field containing the selected path. */
     protected TextField m_textField;
+
+    /**Button for open file select dialog. */
+    Button m_fileSelectButton;
+
+    /**Indicates if file select button should be visible. */
+    private boolean m_fileselectVisible = true;
 
     /**CmsObject instance, doesn't have to be set. In normal case this is null.*/
     protected CmsObject m_cms;
@@ -174,6 +181,19 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     }
 
     /**
+     * Sets the visibility of the file select button.<p>
+     *
+     * @param visible boolean
+     */
+    public void setFileSelectButtonVisible(boolean visible) {
+
+        m_fileselectVisible = visible;
+        if (m_fileSelectButton != null) {
+            m_fileSelectButton.setVisible(visible);
+        }
+    }
+
+    /**
      * Sets the caption of the file select dialog.<p>
      *
      * @param caption the caption
@@ -222,22 +242,28 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     protected CssLayout initContent() {
 
         CssLayout layout = new CssLayout();
-        layout.addStyleName("o-fileselect");
+        if (m_fileselectVisible) {
+            layout.addStyleName("o-fileselect");
+        }
         layout.setWidth("100%");
         // layout.setSpacing(true);
         layout.addComponent(m_textField);
-        Label spacer = new Label("");
-        spacer.addStyleName("o-fileselect-spacer");
-        spacer.setContentMode(ContentMode.HTML);
-        spacer.setValue("<div></div>");
-        layout.addComponent(spacer);
-        Button fileSelectButton = new Button("");
-        fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
-        fileSelectButton.setIcon(FontOpenCms.GALLERY);
-        fileSelectButton.addStyleName("o-fileselect-button");
-        layout.addComponent(fileSelectButton);
-
-        fileSelectButton.addClickListener(new ClickListener() {
+        if (m_fileselectVisible) {
+            Label spacer = new Label("");
+            spacer.addStyleName("o-fileselect-spacer");
+            spacer.setContentMode(ContentMode.HTML);
+            spacer.setValue("<div></div>");
+            layout.addComponent(spacer);
+        }
+        m_fileSelectButton = new Button("");
+        m_fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_ICON);
+        m_fileSelectButton.setIcon(FontOpenCms.GALLERY);
+        m_fileSelectButton.addStyleName("o-fileselect-button");
+        m_fileSelectButton.setEnabled(m_fileselectVisible);
+        if (m_fileselectVisible) {
+            layout.addComponent(m_fileSelectButton);
+        }
+        m_fileSelectButton.addClickListener(new ClickListener() {
 
             /** Serial version id. */
             private static final long serialVersionUID = 1L;
@@ -257,7 +283,7 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
 
         try {
 
-            final Window window = CmsBasicDialog.prepareWindow();
+            final Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
             window.setCaption(m_fileSelectCaption != null ? m_fileSelectCaption : getWindowCaption());
             A_CmsUI.get().addWindow(window);
             CmsResourceSelectDialog fileSelect;
