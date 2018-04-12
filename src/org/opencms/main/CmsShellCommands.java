@@ -703,6 +703,21 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Deletes a module. Will ignore any modules depending on the module to delete.<p>
+     *
+     * @param moduleName the name of the module
+     * @throws Exception if something goes wrong
+     */
+    public void forceDeleteModule(String moduleName) throws Exception {
+
+        OpenCms.getModuleManager().deleteModule(
+            m_cms,
+            moduleName,
+            true,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
      * Displays the access control list of a given resource.<p>
      *
      * @param resourceName the name of the resource
