@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -96,7 +97,8 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * @param referenceResource the reference resource
      * @param modelFile the model file
      * @param mode the optional creation mode (can be null)
-     * @param postCreateHandlerClass optional class name of class which is invoked after the content has been created (can be null)
+     * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
+     *      The fully qualified class name can be followed by a "|" symbol and a handler specific configuration string.
      * @return the new file name
      *
      * @throws CmsException if something goes wrong
@@ -108,7 +110,8 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         String referenceResource,
         String modelFile,
         String mode,
-        String postCreateHandlerClass) throws CmsException {
+        String postCreateHandler)
+    throws CmsException {
 
         // get the collector used to create the new content
         int pos = newLink.indexOf('|');
@@ -173,8 +176,10 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
             // write the file with the updated content
             cloneCms.writeFile(newFile);
         }
-        I_CmsCollectorPostCreateHandler handler = getPostCreateHandler(postCreateHandlerClass);
-        handler.onCreate(cms, newFile, isCopy);
+        CmsPair<String, String> handlerParameter = I_CmsCollectorPostCreateHandler.splitClassAndConfig(
+            postCreateHandler);
+        I_CmsCollectorPostCreateHandler handler = getPostCreateHandler(handlerParameter.getFirst());
+        handler.onCreate(cms, newFile, isCopy, handlerParameter.getSecond());
         return newFileName;
 
     }
@@ -185,26 +190,26 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * If the given name is null or does not refer to a valid post-create handler class, a default implementation
      * will be returned.<p>
      *
-     * @param name the class name of the post-create handler class
+     * @param className the class name of the post-create handler class
      *
      * @return a post-create handler instance
      */
-    public static I_CmsCollectorPostCreateHandler getPostCreateHandler(String name) {
+    public static I_CmsCollectorPostCreateHandler getPostCreateHandler(String className) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(className)) {
             return new CmsDefaultPostCreateHandler();
         }
         try {
-            Class<?> handlerClass = Class.forName(name);
+            Class<?> handlerClass = Class.forName(className);
             if (I_CmsCollectorPostCreateHandler.class.isAssignableFrom(handlerClass)) {
                 I_CmsCollectorPostCreateHandler handler = (I_CmsCollectorPostCreateHandler)handlerClass.newInstance();
                 return handler;
             } else {
-                LOG.error("Post-create handler class does not implement I_CmsPostCreateHandler: '" + name + "'");
+                LOG.error("Post-create handler class does not implement I_CmsPostCreateHandler: '" + className + "'");
                 return new CmsDefaultPostCreateHandler();
             }
         } catch (Exception e) {
-            LOG.error("Problem using post-create handler: '" + name + "'," + e.getLocalizedMessage(), e);
+            LOG.error("Problem using post-create handler: '" + className + "'," + e.getLocalizedMessage(), e);
             return new CmsDefaultPostCreateHandler();
         }
     }

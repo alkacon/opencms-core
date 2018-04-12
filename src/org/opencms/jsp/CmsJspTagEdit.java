@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsDirectEditButtonSelection;
@@ -97,6 +98,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
      * @param modelFileName not used.
      * @param mode optional creation mode
      * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
+     *      The fully qualified class name can be followed by a "|" symbol and a handler specific configuration string.
      * @return The site-path of the newly created resource.
      */
     public static String createResource(
@@ -126,8 +128,15 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         CmsResource newElement = null;
         try {
             newElement = typeConfig.createNewElement(cmsObject, modelFile, rootPath);
-            I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(postCreateHandler);
-            handler.onCreate(cmsObject, cmsObject.readFile(newElement), modelFile != null);
+            CmsPair<String, String> handlerParameter = I_CmsCollectorPostCreateHandler.splitClassAndConfig(
+                postCreateHandler);
+            I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(
+                handlerParameter.getFirst());
+            handler.onCreate(
+                cmsObject,
+                cmsObject.readFile(newElement),
+                modelFile != null,
+                handlerParameter.getSecond());
         } catch (CmsException e) {
             LOG.error("Could not create resource.", e);
         }

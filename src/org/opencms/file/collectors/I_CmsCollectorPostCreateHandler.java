@@ -29,12 +29,35 @@ package org.opencms.file.collectors;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsPair;
 
 /**
  * Interface which can be used to add custom code to execute after a user has created a new content
  * via a collector list.<p>
+ * Post create handlers can also be specified when using the tags
+ * {@link org.opencms.jsp.CmsJspTagDisplay} or {@link org.opencms.jsp.CmsJspTagEdit}.<p>
  */
 public interface I_CmsCollectorPostCreateHandler {
+
+    /**
+     * Splits the string that configures the handler into the handler class and the configuration part.
+     * @param handlerConfig string that configures the handler
+     * @return pair with the handler class and the configuration
+     */
+    static CmsPair<String, String> splitClassAndConfig(String handlerConfig) {
+
+        if (null != handlerConfig) {
+            int separatorIdx = handlerConfig.indexOf('|');
+            if (separatorIdx > -1) {
+                String className = handlerConfig.substring(0, separatorIdx);
+                String config = handlerConfig.substring(separatorIdx + 1);
+                return CmsPair.create(className, config);
+            } else {
+                return CmsPair.create(handlerConfig, null);
+            }
+        }
+        return CmsPair.create(null, null);
+    }
 
     /**
      * This is called after the new content has been created (and possibly already been filled with content).<p>
@@ -44,4 +67,17 @@ public interface I_CmsCollectorPostCreateHandler {
      * @param copyMode true if the user chose one of the elements in the collector list as a model
      */
     void onCreate(CmsObject cms, CmsResource createdResource, boolean copyMode);
+
+    /**
+     * This is called after the new content has been created (and possibly already been filled with content).<p>
+     *
+     * @param cms the current user's CMS context
+     * @param createdResource the resource which has been created
+     * @param copyMode true if the user chose one of the elements in the collector list as a model
+     * @param config an optional configuration string that can be handled specific by each implementation
+     */
+    default void onCreate(CmsObject cms, CmsResource createdResource, boolean copyMode, String config) {
+
+        onCreate(cms, createdResource, copyMode);
+    }
 }
