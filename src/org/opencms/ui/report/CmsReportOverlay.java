@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.vaadin.server.Page;
@@ -67,6 +67,7 @@ public class CmsReportOverlay extends CustomLayout {
      * @param thread the report thread
      */
     public CmsReportOverlay(A_CmsReportThread thread) {
+
         setId(RandomStringUtils.randomAlphabetic(8));
 
         try {

@@ -57,8 +57,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Provides a widget for a category based dependent select boxes.<p>

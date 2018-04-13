@@ -33,8 +33,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import java.io.InputStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
