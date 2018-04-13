@@ -109,12 +109,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** The selection type parsed from configuration string. */
     private String m_selectiontype = "multi";
 
-    /** The 'collapsed' flag, indicating if the category tree(s) should be collapsed in the beginning. */
-    private boolean m_collapsed;
-
-    /** If true, the categories are shown separate for each repository. */
-    private boolean m_showWithRepository;
-
     /**
      * Creates a new category widget.<p>
      */
@@ -167,7 +161,17 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         // NOTE: set starting category as "category=" - independently if it is set via "property" or "category" config option.
         m_category = this.getStartingCategory(cms, cms.getSitePath(resource));
         Map<String, String> result = generateCommonConfigPart();
-        if (m_parentSelection) result.put(CONFIGURATION_PARENTSELECTION, null);
+        // append 'collapsed' flag, if necessary
+        if (OpenCms.getWorkplaceManager().isDisplayCategorySelectionCollapsed()) {
+            result.put(CONFIGURATION_COLLAPSED, null);
+        }
+        // append 'showWithCategory' flag, if necessary
+        if (OpenCms.getWorkplaceManager().isDisplayCategorySelectionCollapsed()) {
+            result.put(CONFIGURATION_SHOW_WITH_REPOSITORY, null);
+        }
+        if (m_parentSelection) {
+            result.put(CONFIGURATION_PARENTSELECTION, null);
+        }
         result.put(CONFIGURATION_REFPATH, cms.getSitePath(resource));
 
         return CmsWidgetUtil.generatePipeSeparatedConfigString(result);
@@ -470,8 +474,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             if (null != m_selectiontype) {
                 m_selectiontype = m_selectiontype.toLowerCase();
             }
-            m_collapsed = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_COLLAPSED);
-            m_showWithRepository = CmsWidgetUtil.getBooleanOption(configOptions, CONFIGURATION_SHOW_WITH_REPOSITORY);
         }
         super.setConfiguration(configuration);
     }
@@ -654,14 +656,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         // append 'selectionType' to configuration
         if (m_selectiontype != null) {
             result.put(CONFIGURATION_SELECTIONTYPE, m_selectiontype);
-        }
-        // append 'collapsed' flag, if necessary
-        if (m_collapsed) {
-            result.put(CONFIGURATION_COLLAPSED, null);
-        }
-        // append 'showWithCategory' flag, if necessary
-        if (m_showWithRepository) {
-            result.put(CONFIGURATION_SHOW_WITH_REPOSITORY, null);
         }
         return result;
     }

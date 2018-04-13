@@ -41,6 +41,7 @@ import org.opencms.gwt.shared.CmsHistoryVersion.OfflineOnline;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsUpdateListener;
@@ -84,6 +85,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      * @param updateListener the update listener
      */
     public CmsGwtDialogExtension(UI ui, I_CmsUpdateListener<String> updateListener) {
+
         extend(ui);
         m_updateListener = updateListener;
         registerRpc(this, I_CmsGwtDialogServerRpc.class);
@@ -157,7 +159,9 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      */
     public void openCategories(CmsResource resource) {
 
-        getRpcProxy(I_CmsGwtDialogClientRpc.class).openCategoriesDialog(resource.getStructureId().toString());
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openCategoriesDialog(
+            resource.getStructureId().toString(),
+            OpenCms.getWorkplaceManager().isDisplayCategorySelectionCollapsed());
     }
 
     /**

@@ -38,6 +38,9 @@ import com.google.gwt.user.client.Command;
  */
 public final class CmsCategories implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
+    /** Parameter specifying if the category tree should be collapsed when shown first. */
+    private static final String PARAM_COLLAPSED = "displayCollapsed";
+
     /**
      * Hidden utility class constructor.<p>
      */
@@ -71,7 +74,7 @@ public final class CmsCategories implements I_CmsHasContextMenuCommand, I_CmsCon
 
                 handler.refreshResource(structureId);
             }
-        });
+        }, (bean.getParams() != null) && Boolean.parseBoolean(bean.getParams().get(PARAM_COLLAPSED)));
         dialog.center();
     }
 

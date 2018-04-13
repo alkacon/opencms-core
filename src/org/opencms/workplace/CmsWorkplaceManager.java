@@ -362,6 +362,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The additional log folder configuration. */
     private CmsAdditionalLogFolderConfig m_logFolderConfig = new CmsAdditionalLogFolderConfig();
 
+    /** A flag, indicating if the categories should be displayed separated by repository in the category selection dialog. */
+    private boolean m_displayCategoriesByRepository;
+
+    /** A flag, indicating if the categories should be displayed separated by repository in the category selection dialog. */
+    private boolean m_displayCategorySelectionCollapsed;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -1777,6 +1783,26 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns a flag, indicating if the categories should be displayed separated by repository in the category selection dialog.
+     *
+     * @return a flag, indicating if the categories should be displayed separated by repository in the category selection dialog.
+     */
+    public boolean isDisplayCategoriesByRepository() {
+
+        return m_displayCategoriesByRepository;
+    }
+
+    /**
+     * Returns a flag, indicating if the category selection dialog should have all entries completely collapsed when opened.
+     *
+     * @return a flag, indicating if the category selection dialog should have all entries completely collapsed when opened.
+     */
+    public boolean isDisplayCategorySelectionCollapsed() {
+
+        return m_displayCategorySelectionCollapsed;
+    }
+
+    /**
      * Returns if tabs in the advanced property dialog are enabled.<p>
      *
      * @return <code>true</code> if tabs should be enabled, otherwise <code>false</code>
@@ -1897,6 +1923,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 Messages.get().getBundle().key(
                     m_autoLockResources ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
         }
+    }
+
+    /**
+     * Sets the category display options that affect how the category selection dialog is shown.
+     *
+     * @param displayCategoriesByRepository if true, the categories are shown separated by repository.
+     * @param displayCategorySelectionCollapsed if true, the selection dialog opens showing only the top-level categories
+     *              (or the various repositories) in collapsed state.
+     */
+    public void setCategoryDisplayOptions(
+        String displayCategoriesByRepository,
+        String displayCategorySelectionCollapsed) {
+
+        m_displayCategoriesByRepository = Boolean.parseBoolean(displayCategoriesByRepository);
+        m_displayCategorySelectionCollapsed = Boolean.parseBoolean(displayCategorySelectionCollapsed);
     }
 
     /**

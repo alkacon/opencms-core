@@ -101,6 +101,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The 'description' attribute. */
     public static final String A_DESCRIPTION = "description";
 
+    /** The "displayByRepository" attribute. */
+    public static final String A_DISPLAY_BY_REPOSITORY = "displayByRepository";
+
+    /** The "displayCollapsed" attribute. */
+    public static final String A_DISPLAY_COLLAPSED = "displayCollapsed";
+
     /** The name of the attribute editable for account infos. */
     public static final String A_EDITABLE = "editable";
 
@@ -217,6 +223,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the category folder node. */
     public static final String N_CATEGORYFOLDER = "categoryfolder";
+
+    /** The name of the category display options node. */
+    public static final String N_CATEGORYDISPLAYOPTIONS = "categorydisplayoptions";
 
     /** The name of the color node. */
     public static final String N_COLOR = "color";
@@ -989,6 +998,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add category folder rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_CATEGORYFOLDER, "setCategoryFolder", 0);
 
+        // add category display options
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_CATEGORYDISPLAYOPTIONS, "setCategoryDisplayOptions", 2);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_CATEGORYDISPLAYOPTIONS, 0, A_DISPLAY_BY_REPOSITORY);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_CATEGORYDISPLAYOPTIONS, 1, A_DISPLAY_COLLAPSED);
+
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, "setGroupTranslationClass", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, 0, A_CLASS);
 
@@ -1254,6 +1268,18 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             && !CmsCategoryService.REPOSITORY_BASE_FOLDER.equals(m_workplaceManager.getCategoryFolder())) {
             workplaceElement.addElement(N_CATEGORYFOLDER).setText(
                 String.valueOf(m_workplaceManager.getCategoryFolder()));
+        }
+
+        // add <categorydisplayoptions> node
+        if (m_workplaceManager.isDisplayCategoriesByRepository()
+            || m_workplaceManager.isDisplayCategorySelectionCollapsed()) {
+            Element categoryDisplayOptions = workplaceElement.addElement(N_CATEGORYDISPLAYOPTIONS);
+            if (m_workplaceManager.isDisplayCategoriesByRepository()) {
+                categoryDisplayOptions.addAttribute(A_DISPLAY_BY_REPOSITORY, "true");
+            }
+            if (m_workplaceManager.isDisplayCategorySelectionCollapsed()) {
+                categoryDisplayOptions.addAttribute(A_DISPLAY_COLLAPSED, "true");
+            }
         }
 
         String groupTranslationClass = m_workplaceManager.getGroupTranslationClass();

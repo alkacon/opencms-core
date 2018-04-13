@@ -249,9 +249,9 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     }
 
     /**
-     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openCategoriesDialog(java.lang.String)
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openCategoriesDialog(java.lang.String, boolean)
      */
-    public void openCategoriesDialog(final String structureId) {
+    public void openCategoriesDialog(final String structureId, boolean collapsed) {
 
         CmsCategoryDialog dialog = new CmsCategoryDialog(new CmsUUID(structureId), new Command() {
 
@@ -260,7 +260,7 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
                 m_changed.add(structureId);
                 close(0);
             }
-        });
+        }, collapsed);
         dialog.center();
     }
 

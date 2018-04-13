@@ -53,8 +53,9 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
      * Opens the categories dialog.<p>
      *
      * @param structureId the structure id of the resource to open the dialog for
+     * @param collapsed flag, indicating if all categories should be collapsed when the dialog opens
      */
-    void openCategoriesDialog(String structureId);
+    void openCategoriesDialog(String structureId, boolean collapsed);
 
     /**
      * Opens the gallery dialog with the given JSON configuration.<p>

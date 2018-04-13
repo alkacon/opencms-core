@@ -65,6 +65,9 @@ public class CmsCategoryDialog extends CmsPopup {
     /** The cancel button. */
     private CmsPushButton m_cancelButton;
 
+    /** Flag, indicating if the category tree should be collapsed when the dialog opens. */
+    private boolean m_collapsed;
+
     /** The is initialized flag. */
     private boolean m_initialized;
 
@@ -82,10 +85,12 @@ public class CmsCategoryDialog extends CmsPopup {
      *
      * @param structureId the resource structure id
      * @param onSave the on save command, called when categories have been changed
+     * @param collapsed flag, indicating if the categories tree should be displayed collapsed when the dialog is opened
      */
-    public CmsCategoryDialog(CmsUUID structureId, Command onSave) {
+    public CmsCategoryDialog(CmsUUID structureId, Command onSave, boolean collapsed) {
 
         super(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
+        m_collapsed = collapsed;
         m_structureId = structureId;
         m_onSave = onSave;
         setGlassEnabled(true);
@@ -140,7 +145,8 @@ public class CmsCategoryDialog extends CmsPopup {
             categoryInfo.getCurrentCategories(),
             300,
             false,
-            categoryInfo.getCategoryTree());
+            categoryInfo.getCategoryTree(),
+            m_collapsed);
         m_categoryTree.addValueChangeHandler(new ValueChangeHandler<List<String>>() {
 
             public void onValueChange(ValueChangeEvent<List<String>> event) {

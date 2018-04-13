@@ -41,6 +41,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,9 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction implements I
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
         CmsStandardVisibilityCheck.DEFAULT);
+
+    /** Parameter specifying if the category tree should be collapsed when shown first. */
+    private static final String PARAM_COLLAPSED = "displayCollapsed";
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -106,11 +110,16 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction implements I
     }
 
     /**
+     * Add the option specifying if the categories should be displayed collapsed
+     * when the dialog opens.
+     * 
      * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
      */
     public Map<String, String> getParams() {
 
-        return null;
+        Map<String, String> params = new HashMap<>(1);
+        params.put(PARAM_COLLAPSED, Boolean.TRUE.toString());
+        return params;
     }
 
     /**

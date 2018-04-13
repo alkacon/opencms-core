@@ -829,7 +829,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 structureId,
                 CmsVfsService.getPageInfoWithLock(cms, resource),
                 currentCategories,
-                getCategories(null, true, cms.getSitePath(resource)));
+                getCategories(
+                    null,
+                    true,
+                    cms.getSitePath(resource),
+                    OpenCms.getWorkplaceManager().isDisplayCategoriesByRepository()));
         } catch (CmsException e) {
             error(e);
         }
