@@ -29,19 +29,23 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsPublishScheduledDialog;
 import org.opencms.workplace.commons.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The delete dialog action.<p>
  */
-public class CmsPublishScheduledDialogAction extends A_CmsWorkplaceAction {
+public class CmsPublishScheduledDialogAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "publishscheduled";
@@ -60,6 +64,14 @@ public class CmsPublishScheduledDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction";
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -68,11 +80,52 @@ public class CmsPublishScheduledDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
+     */
+    public String getJspPath() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("dialogId", CmsPublishScheduledDialogAction.class.getName());
+        return result;
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        if (context instanceof I_CmsDialogContextWithAdeContext) {
+            AdeContext adeContext = ((I_CmsDialogContextWithAdeContext)context).getAdeContext();
+            if ((adeContext == AdeContext.publish) || (adeContext == AdeContext.sitemapeditor)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+        }
+        return super.getVisibility(context);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
     }
 
     /**

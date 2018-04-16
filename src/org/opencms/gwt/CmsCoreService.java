@@ -70,6 +70,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.actions.I_CmsADEAction;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -232,7 +233,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             final List<CmsResource> resources = Collections.singletonList(resource);
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             // context to check item visibility
-            I_CmsDialogContext dcontext = new I_CmsDialogContext() {
+            I_CmsDialogContext dcontext = new I_CmsDialogContextWithAdeContext() {
 
                 public void error(Throwable error) {
                     // not supported
@@ -248,6 +249,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
                 public void focus(CmsUUID id) {
                     // not supported
+                }
+
+                public AdeContext getAdeContext() {
+
+                    return context;
                 }
 
                 public List<CmsUUID> getAllStructureIdsInView() {
