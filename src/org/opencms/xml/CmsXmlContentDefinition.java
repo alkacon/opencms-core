@@ -385,8 +385,13 @@ public class CmsXmlContentDefinition implements Cloneable {
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
-            InputSource source = resolver.resolveEntity(null, schemaLocation);
-            result = unmarshalInternal(CmsXmlUtils.unmarshalHelper(source, resolver), schemaLocation, resolver);
+            InputSource source = null;
+            try {
+                source = resolver.resolveEntity(null, schemaLocation);
+                result = unmarshalInternal(CmsXmlUtils.unmarshalHelper(source, resolver), schemaLocation, resolver);
+            } catch (IOException e) {
+                throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_SCHEMA_NOT_FOUND_2,resourcename, schemaLocation));
+            }
         }
         return result;
     }
