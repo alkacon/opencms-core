@@ -170,8 +170,17 @@ public class CmsEventManager {
                 I_CmsEventListener[] list = listeners.toArray(EVENT_LIST);
                 // loop through all registered event listeners
                 for (int i = 0; i < list.length; i++) {
-                    // fire the event
-                    list[i].cmsEvent(event);
+                    try {
+                        // fire the event
+                        list[i].cmsEvent(event);
+                    } catch (Throwable t) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_CALLING_EVENT_LISTENER_FAILED_2,
+                                list[i].getClass().getName(),
+                                event.toString()),
+                            t);
+                    }
                 }
             }
         } else {
@@ -214,8 +223,17 @@ public class CmsEventManager {
                             list[i],
                             new Integer(i),
                             event.toString()));
-                    // fire the event
-                    list[i].cmsEvent(event);
+                    try {
+                        // fire the event
+                        list[i].cmsEvent(event);
+                    } catch (Throwable t) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_CALLING_EVENT_LISTENER_FAILED_2,
+                                list[i].getClass().getName(),
+                                event.toString()),
+                            t);
+                    }
                     LOG.debug(
                         Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
