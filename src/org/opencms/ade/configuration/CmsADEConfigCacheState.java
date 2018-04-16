@@ -445,15 +445,17 @@ public class CmsADEConfigCacheState {
         String normalizedFolderRootPath = CmsStringUtil.joinPaths(folder.getRootPath(), "/");
         for (CmsDetailPageInfo info : allDetailPages) {
             String parentPath = CmsResource.getParentFolder(info.getUri());
-            String normalizedParentPath = CmsStringUtil.joinPaths(parentPath, "/");
-            if (normalizedParentPath.equals(normalizedFolderRootPath)) {
-                try {
-                    CmsResource infoResource = getCms().readResource(info.getId());
-                    if (infoResource.isFile()) {
-                        return true;
+            if (parentPath != null) {
+                String normalizedParentPath = CmsStringUtil.joinPaths(parentPath, "/");
+                if (normalizedParentPath.equals(normalizedFolderRootPath)) {
+                    try {
+                        CmsResource infoResource = getCms().readResource(info.getId());
+                        if (infoResource.isFile()) {
+                            return true;
+                        }
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
                     }
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
                 }
             }
         }
