@@ -140,12 +140,15 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
      */
     public static String getResourceTypeDescription(Locale locale, String name) {
 
-        // try to find the localized key
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getInfo();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(key)) {
-            return "";
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name);
+        if (settings != null) {
+            // try to find the localized key
+            String key = settings.getInfo();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key)) {
+                return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(key, name);
+            }
         }
-        return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(key, name);
+        return "";
     }
 
     /**
