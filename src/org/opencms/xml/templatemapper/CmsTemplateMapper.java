@@ -241,7 +241,7 @@ public final class CmsTemplateMapper {
         if (settings == null) {
             settings = new HashMap<>();
         }
-        Map<String, String> newSettings = new HashMap<>(settings);
+        Map<String, String> newSettings = new HashMap<>();
         for (Map.Entry<String, String> entry : settings.entrySet()) {
             String key = entry.getKey();
             if (CmsTemplateContextInfo.SETTING.equals(key)) {
