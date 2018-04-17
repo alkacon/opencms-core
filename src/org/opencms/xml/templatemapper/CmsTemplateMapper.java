@@ -263,6 +263,9 @@ public final class CmsTemplateMapper {
                 continue;
             }
             String value = entry.getValue();
+            if (value == null) {
+                continue;
+            }
             String newValue = value;
             if (key.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
                 if (CmsUUID.isValidUUID(value)) {
