@@ -185,7 +185,6 @@ dependencies {
     distribution group: 'org.apache.xmlgraphics', name: 'batik-util', version:'1.9.1'
     distribution group: 'org.apache.zookeeper', name: 'zookeeper', version:'3.4.11'
     distribution group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.58'
-    distribution group: 'org.bouncycastle', name: 'bcprov-jdk15', version: '1.46'
     distribution group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.58'
     distribution group: 'org.codehaus.mojo', name: 'animal-sniffer-annotations', version: '1.14'
     distribution group: 'org.codehaus.woodstox', name: 'wstx-asl', version:'3.2.7'
