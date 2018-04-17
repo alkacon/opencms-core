@@ -46,8 +46,10 @@ import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -217,11 +219,24 @@ public final class CmsTemplateMapper {
             CmsContainerElementBean newElement = transformContainerElement(config, element);
             newElements.add(newElement);
         }
+        Set<String> transformedTypes = new HashSet<>();
+        Set<String> oldTypes = input.getTypes();
+        if (oldTypes == null) {
+            oldTypes = new HashSet<>();
+        }
+        for (String type : oldTypes) {
+            String newType = config.getMappedElementGroupType(type);
+            if (newType == null) {
+                newType = type;
+            }
+            transformedTypes.add(newType);
+        }
+
         CmsGroupContainerBean result = new CmsGroupContainerBean(
             input.getTitle(),
             input.getDescription(),
             newElements,
-            input.getTypes());
+            transformedTypes);
         return result;
     }
 
