@@ -15,6 +15,20 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.5.4 - XXXX, 2018
+! Added 'publish scheduled' option to page editor context menu.
+* Fixing potential memory leak during PDF extraction.
+* Fixed issue #513 where XML contents with content locales not configured in the system configuration would jeopardize the overall locale handling.
+* Fixed issue #547 where selecting a date with the date picker failed.
+* Fixed issue #548 where missing detail pages would lead to null pointer exceptions.
+* Fixed issue #553 where adding a model group to a page failed, PR by koronchik.
+* Fixed issue #558 where flying saucer PDF library was updated to improve security, PR by andreasrosdal.
+* Fixed issue #564 with improved handling of invalid formatter configurations, PR provided by gallardo.
+* Fixed issue #565 with improved logging in XML entity resolver, PR provided by gallardo.
+* Fixed issue #570 with improved logging when creating of SOLR containers fails, PR provided by gallardo.
+* Fixed issue #573 where displaying gallery dialog failed due to missing explorer types.
+
+
 OpenCms 10.5.3 - October 18, 2017
 * Fixed issue #535 with UI element positioning in Chrome 61.
 * Fixed performance issue with relations in PostgreSQL DB.
