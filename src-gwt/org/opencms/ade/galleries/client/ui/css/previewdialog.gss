@@ -47,6 +47,10 @@ div.previewDialog div.previewTitle{
 	height:100%;
 }
 
+.previewHolder .previewPanel img{
+	vertical-align: middle;
+}
+
 .imagePanel {
 	text-align: center;
 	line-height: inherit;
