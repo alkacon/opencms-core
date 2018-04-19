@@ -47,8 +47,6 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 
 import org.quartz.CronExpression;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
 import org.quartz.Trigger;
 
 /**
@@ -374,8 +372,14 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /** The name of the job (for information purposes). */
     private String m_jobName;
 
+    /** Stores the next execution time. */
+    private Date m_nextFireTime;
+
     /** The parameters used for this job entry. */
     private SortedMap<String, String> m_parameters;
+
+    /** Stores the last job execution time. */
+    private Date m_previousFireTime;
 
     /** Indicates if the job instance should be re-used if the job is run. */
     private boolean m_reuseInstance;
@@ -579,8 +583,14 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             // if the job is not active, no time can be calculated
             return null;
         }
-
-        return m_trigger.getNextFireTime();
+        if (m_nextFireTime == null) {
+            // in case next time is not set, check if the trigger supplies a valid next fire time
+            Date next = m_trigger.getNextFireTime();
+            if (System.currentTimeMillis() < next.getTime()) {
+                m_nextFireTime = next;
+            }
+        }
+        return m_nextFireTime;
     }
 
     /**
@@ -597,7 +607,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             return null;
         }
 
-        return m_trigger.getPreviousFireTime();
+        return m_previousFireTime;
     }
 
     /**
@@ -933,6 +943,26 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         checkFrozen();
         m_id = id;
+    }
+
+    /**
+     * Sets the next execution time.<p>
+     *
+     * @param nextFire the next execution time
+     */
+    protected void setNextFireTime(Date nextFire) {
+
+        m_nextFireTime = nextFire;
+    }
+
+    /**
+     * Sets the previous execution time.<p>
+     *
+     * @param fireTime the previous execution time
+     */
+    protected void setPreviousFireTime(Date fireTime) {
+
+        m_previousFireTime = fireTime;
     }
 
     /**
