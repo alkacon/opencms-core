@@ -48,6 +48,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.DateTools;
@@ -427,13 +429,19 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
         if (contentItems.get(xpath) != null) { // content item found for XPath
             return contentItems.get(xpath);
-        } else { // try a multiple value mapping
-            StringBuffer result = new StringBuffer();
+        } else { // try a multiple value mapping and ensure that the values are in correct order.
+            SortedMap<Integer, String> valueMap = new TreeMap<>();
             for (Map.Entry<String, String> entry : contentItems.entrySet()) {
                 if (CmsXmlUtils.removeXpath(entry.getKey()).equals(xpath)) { // the removed path refers an item
-                    result.append(entry.getValue());
-                    result.append("\n");
+
+                    Integer i = Integer.valueOf(CmsXmlUtils.getXpathIndexInt(entry.getKey()));
+                    valueMap.put(i, entry.getValue());
                 }
+            }
+            StringBuffer result = new StringBuffer();
+            for (String value : valueMap.values()) {
+                result.append(value);
+                result.append("\n");
             }
             return result.length() > 1 ? result.toString().substring(0, result.length() - 1) : null;
         }
