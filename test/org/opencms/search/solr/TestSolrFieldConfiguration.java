@@ -244,8 +244,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         // test multi nested elements
         List<String> teaser = res.getMultivaluedField("mteaser");
         assertTrue(
-            teaser.contains("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
-        assertTrue(teaser.contains("This is teaser 2 in sample article 2."));
+            teaser.get(0).equals("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
+        assertTrue(teaser.get(1).equals("This is teaser 2 in sample article 2."));
         squery = new CmsSolrQuery(
             null,
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/flower/flower-0001.html\""));
@@ -255,17 +255,17 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         assertEquals("/sites/default/flower/flower-0001.html", res.getRootPath());
         List<String> desc = res.getMultivaluedField("desc_en");
         assertEquals(3, desc.size());
-        assertTrue(desc.contains("This is the first paragraph of the test flower."));
-        assertTrue(desc.contains("This is the second paragraph of the test flower."));
-        assertTrue(desc.contains("This is the third paragraph of the test flower."));
+        assertTrue(desc.get(0).equals("This is the first paragraph of the test flower."));
+        assertTrue(desc.get(1).equals("This is the second paragraph of the test flower."));
+        assertTrue(desc.get(2).equals("This is the third paragraph of the test flower."));
         desc = res.getMultivaluedField("desc_de");
         assertEquals(2, desc.size());
-        assertTrue(desc.contains("Dies ist der erste Absatz der neuen Testblume ..."));
-        assertTrue(desc.contains("Dies ist der sweite Absatz der neuen Testblume ..."));
+        assertTrue(desc.get(0).equals("Dies ist der erste Absatz der neuen Testblume ..."));
+        assertTrue(desc.get(1).equals("Dies ist der sweite Absatz der neuen Testblume ..."));
         desc = res.getMultivaluedField("mteaser");
-        assertTrue(desc.contains("First ocurence of a nested content"));
-        assertTrue(desc.contains("Second ocurence of a nested content"));
-        assertTrue(desc.contains("Third ocurence of a nested content"));
+        assertTrue(desc.get(0).equals("First ocurence of a nested content"));
+        assertTrue(desc.get(1).equals("Second ocurence of a nested content"));
+        assertTrue(desc.get(2).equals("Third ocurence of a nested content"));
 
     }
 
