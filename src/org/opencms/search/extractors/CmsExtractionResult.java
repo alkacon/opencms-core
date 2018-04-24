@@ -286,8 +286,10 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         for (Locale locale : m_locales) {
             Map<String, String> localeValues = contentItems.get(locale);
             for (I_CmsExtractionResult result : extractionResults) {
-                if (result.getLocales().contains(locale)) {
-                    Map<String, String> resultLocaleValues = result.getContentItems(locale);
+                if (result.getLocales().contains(locale) || result.getLocales().isEmpty()) {
+                    Map<String, String> resultLocaleValues = result.getLocales().isEmpty()
+                    ? result.getContentItems()
+                    : result.getContentItems(locale);
                     for (String item : Arrays.asList(ITEMS_TO_MERGE)) {
                         localeValues = mergeItem(item, localeValues, resultLocaleValues);
                     }
