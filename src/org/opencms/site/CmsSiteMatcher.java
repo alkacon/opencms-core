@@ -77,6 +77,9 @@ public final class CmsSiteMatcher implements Cloneable {
     /** The time offset. */
     private long m_timeOffset;
 
+    /**Redirect (only for aliase). */
+    private boolean m_redirect = false;
+
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
      *
@@ -307,6 +310,26 @@ public final class CmsSiteMatcher implements Cloneable {
             m_hashCode = new Integer(toString().hashCode());
         }
         return m_hashCode.intValue();
+    }
+
+    /**
+     * Is alias to be redirected?
+     *
+     * @return boolean
+     */
+    public boolean isRedirect() {
+
+        return m_redirect;
+    }
+
+    /**
+     * Set redirect.<p>
+     *
+     * @param redirect boolean
+     */
+    public void setRedirect(boolean redirect) {
+
+        m_redirect = redirect;
     }
 
     /**

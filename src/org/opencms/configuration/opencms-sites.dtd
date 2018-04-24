@@ -67,4 +67,5 @@
 <!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED
+	redirect (true|false|True|False) "true"
 	offset CDATA #IMPLIED>

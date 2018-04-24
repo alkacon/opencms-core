@@ -355,8 +355,9 @@ public final class OpenCmsCore {
             throw new CmsInitException(m_errorCondition, false);
         }
 
-        if (m_instance != null)
+        if (m_instance != null) {
             return m_instance;
+        }
         synchronized (LOCK) {
             if (m_instance == null) {
                 try {
@@ -1254,10 +1255,11 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(". "
-                + Messages.get().getBundle().key(
-                    Messages.GUI_SHELL_VERSION_1,
-                    OpenCms.getSystemInfo().getVersionNumber()));
+            CmsLog.INIT.info(
+                ". "
+                    + Messages.get().getBundle().key(
+                        Messages.GUI_SHELL_VERSION_1,
+                        OpenCms.getSystemInfo().getVersionNumber()));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
@@ -1984,7 +1986,10 @@ public final class OpenCmsCore {
                     return;
                 }
             }
-
+            if (m_siteManager.isSiteMatcherRedirect(cms.getRequestContext().getRequestMatcher())) {
+                res.sendRedirect(m_siteManager.getCurrentSite(cms).getUrl() + req.getServletPath() + req.getPathInfo());
+                return;
+            }
             // user is initialized, now deliver the requested resource
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
             if (resource != null) {

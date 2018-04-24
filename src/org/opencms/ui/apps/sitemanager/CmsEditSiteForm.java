@@ -51,6 +51,8 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.editablegroup.CmsEditableGroup;
+import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsFileUtil;
@@ -79,6 +81,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Supplier;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.server.StreamResource;
@@ -107,6 +110,7 @@ import com.vaadin.v7.ui.Upload;
 import com.vaadin.v7.ui.Upload.Receiver;
 import com.vaadin.v7.ui.Upload.SucceededEvent;
 import com.vaadin.v7.ui.Upload.SucceededListener;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Class for the Form to edit or add a site.<p>
@@ -563,6 +567,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**List of all urls already used for sites.*/
     Set<CmsSiteMatcher> m_alreadyUsedURL = new HashSet<CmsSiteMatcher>();
 
+    /**Edit group for workplace servers.*/
+    private CmsEditableGroup m_aliasGroup;
+
     /**cloned cms obejct.*/
     CmsObject m_clonedCms;
 
@@ -581,14 +588,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin component.*/
     TabSheet m_tab;
 
-    /**button to add aliases.*/
-    private Button m_addAlias;
-
     /**button to add parameter.*/
     private Button m_addParameter;
 
     /**vaadin component.*/
-    private FormLayout m_aliases;
+    private VerticalLayout m_aliases;
 
     /**automatic setted folder name.*/
     private String m_autoSetFolderName;
@@ -749,18 +753,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             }
         });
 
-        m_addAlias.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = -276802394623141951L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addAlias(null);
-
-            }
-
-        });
-
         m_okClickListener = new ClickListener() {
 
             private static final long serialVersionUID = 6814134727761004218L;
@@ -889,6 +881,18 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         m_report.setVisible(false);
         m_blockChange = false;
+
+        m_aliasGroup = new CmsEditableGroup(m_aliases, new Supplier<Component>() {
+
+            public Component get() {
+
+                return createAliasComponent("", true);
+
+            }
+
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_ALIAS_0));
+        m_aliasGroup.init();
+
     }
 
     /**
@@ -965,7 +969,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         List<CmsSiteMatcher> siteAliases = m_site.getAliases();
         for (CmsSiteMatcher siteMatcher : siteAliases) {
-            addAlias(siteMatcher.getUrl());
+            m_aliasGroup.addRow(createAliasComponent(siteMatcher.getUrl(), siteMatcher.isRedirect()));
         }
         setTemplateField();
 
@@ -1050,6 +1054,27 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
         m_ok.setEnabled(true);
         m_infoSiteRoot.setVisible(false);
+    }
+
+    /**
+     * Creates field for aliases.<p>
+     *
+     * @param alias url
+     * @param red redirect
+     * @return component
+     */
+    protected FormLayout createAliasComponent(String alias, boolean red) {
+
+        FormLayout layout = new FormLayout();
+        TextField field = new TextField(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_0));
+        field.setWidth("100%");
+        field.setValue(alias);
+        field.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_HELP_0));
+        CheckBox redirect = new CheckBox(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_0), red);
+        redirect.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_HELP_0));
+        layout.addComponent(field);
+        layout.addComponent(redirect);
+        return layout;
     }
 
     /**
@@ -1634,14 +1659,13 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private List<CmsSiteMatcher> getAliases() {
 
         List<CmsSiteMatcher> ret = new ArrayList<CmsSiteMatcher>();
-
-        for (Component c : m_aliases) {
-            if (c instanceof CmsRemovableFormRow<?>) {
-                String url = ((String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue());
-                if (!url.isEmpty()) {
-                    ret.add(new CmsSiteMatcher(url));
-                }
-            }
+        for (CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            CheckBox box = (CheckBox)(layout.getComponent(1));
+            TextField field = (TextField)layout.getComponent(0);
+            CmsSiteMatcher matcher = new CmsSiteMatcher(field.getValue());
+            matcher.setRedirect(box.getValue().booleanValue());
+            ret.add(matcher);
         }
         return ret;
     }

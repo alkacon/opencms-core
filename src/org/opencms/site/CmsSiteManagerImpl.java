@@ -146,6 +146,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
+    /** Maps site matchers to sites. */
+    private Map<CmsSiteMatcher, Boolean> m_siteMatcherRedirect;
+
     /** Temporary store for site parameter values. */
     private SortedMap<String, String> m_siteParams;
 
@@ -199,7 +202,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * @param alias the URL of the alias server
      * @param offset the optional time offset for this alias
      */
-    public void addAliasToConfigSite(String alias, String offset) {
+    public void addAliasToConfigSite(String alias, String redirect, String offset) {
 
         long timeOffset = 0;
         try {
@@ -208,6 +211,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             // ignore
         }
         CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias, timeOffset);
+        boolean redirectVal = new Boolean(redirect).booleanValue();
+        siteMatcher.setRedirect(redirectVal);
         m_aliases.add(siteMatcher);
     }
 
@@ -1255,6 +1260,11 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         return (m_sharedFolder != null) && m_sharedFolder.equals(CmsStringUtil.joinPaths("/", name, "/"));
     }
 
+    public boolean isSiteMatcherRedirect(CmsSiteMatcher matcher) {
+
+        return m_siteMatcherRedirect.containsKey(matcher) ? m_siteMatcherRedirect.get(matcher).booleanValue() : false;
+    }
+
     /**
      * Checks whether a given root path is a site root.<p>
      *
@@ -1616,7 +1626,12 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     private void addServer(CmsSiteMatcher matcher, CmsSite site) {
 
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
+        if (m_siteMatcherRedirect == null) {
+            m_siteMatcherRedirect = new HashMap<CmsSiteMatcher, Boolean>();
+        }
+        Map<CmsSiteMatcher, Boolean> siteMatcherRedirect = new HashMap<CmsSiteMatcher, Boolean>(m_siteMatcherRedirect);
         siteMatcherSites.put(matcher, site);
+        m_siteMatcherRedirect.put(matcher, new Boolean(matcher.isRedirect()));
         setSiteMatcherSites(siteMatcherSites);
     }
 

@@ -57,6 +57,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_DEFAULT_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_NAME_0 = "GUI_RESOURCETYPE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_SHORT_NAME_0 = "GUI_RESOURCETYPE_SHORT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_ID_0 = "GUI_RESOURCETYPE_ID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_MODULE_0 = "GUI_RESOURCETYPE_MODULE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_BROADCAST_RESET_0 = "GUI_MESSAGES_BROADCAST_RESET_0";
 
     /** Message constant for key in the resource bundle. */
@@ -136,6 +148,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_USERIMPORT_END_0 = "RPT_USERIMPORT_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ADD_ALIAS_0 = "GUI_SITE_ADD_ALIAS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_IMEXPORT_IMPORT_0 = "GUI_USERMANAGEMENT_USER_IMEXPORT_IMPORT_0";
@@ -2013,7 +2028,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_ADD_0 = "GUI_SITE_ADD_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITE_ADD_ALIAS_0 = "GUI_SITE_ADD_ALIAS_0";
+    public static final String GUI_SITE_ALIAS_REDIRECT_0 = "GUI_SITE_ALIAS_REDIRECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALIAS_REDIRECT_HELP_0 = "GUI_SITE_ALIAS_REDIRECT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_ADD_DESCRIPTION_0 = "GUI_SITE_ADD_DESCRIPTION_0";
