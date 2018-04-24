@@ -45,6 +45,9 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -430,12 +433,32 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         if (contentItems.get(xpath) != null) { // content item found for XPath
             return contentItems.get(xpath);
         } else { // try a multiple value mapping and ensure that the values are in correct order.
-            SortedMap<Integer, String> valueMap = new TreeMap<>();
+            SortedMap<List<Integer>, String> valueMap = new TreeMap<>(new Comparator<List<Integer>>() {
+
+                // expects lists of the same length that contain only non-null values. This is given for the use case.
+                @SuppressWarnings("boxing")
+                public int compare(List<Integer> l1, List<Integer> l2) {
+
+                    for (int i = 0; i < l1.size(); i++) {
+                        int numCompare = Integer.compare(l1.get(i), l2.get(i));
+                        if (0 != numCompare) {
+                            return numCompare;
+                        }
+                    }
+                    return 0;
+                }
+            });
             for (Map.Entry<String, String> entry : contentItems.entrySet()) {
                 if (CmsXmlUtils.removeXpath(entry.getKey()).equals(xpath)) { // the removed path refers an item
 
-                    Integer i = Integer.valueOf(CmsXmlUtils.getXpathIndexInt(entry.getKey()));
-                    valueMap.put(i, entry.getValue());
+                    String[] xPathParts = entry.getKey().split("/");
+                    List<Integer> indexes = new ArrayList<>(xPathParts.length);
+                    for (String xPathPart : Arrays.asList(xPathParts)) {
+                        if (!xPathPart.isEmpty()) {
+                            indexes.add(Integer.valueOf(CmsXmlUtils.getXpathIndexInt(xPathPart)));
+                        }
+                    }
+                    valueMap.put(indexes, entry.getValue());
                 }
             }
             StringBuffer result = new StringBuffer();
