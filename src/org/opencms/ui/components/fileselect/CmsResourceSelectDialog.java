@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -47,14 +48,14 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
 
 /**
  * Dialog with a site selector and file tree which can be used to select resources.<p>
@@ -109,6 +110,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
          * @param useSitePaths true if we want changes as site paths
          */
         public PathSelectionAdapter(I_CmsSelectionHandler<String> pathHandler, boolean useSitePaths) {
+
             m_pathHandler = pathHandler;
             m_useSitePaths = useSitePaths;
         }
@@ -173,6 +175,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public CmsResourceSelectDialog(CmsResourceFilter filter)
     throws CmsException {
+
         this(filter, A_CmsUI.getCmsObject());
     }
 
@@ -185,6 +188,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms)
     throws CmsException {
+
         this(filter, cms, new Options());
     }
 
@@ -198,6 +202,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms, Options options)
     throws CmsException {
+
         m_filter = filter;
         setCompositionRoot(new CmsResourceSelectDialogContents());
         IndexedContainer container = options.getSiteSelectionContainer() != null
@@ -230,6 +235,8 @@ public class CmsResourceSelectDialog extends CustomComponent {
 
         CmsResource root = cms.readResource("/");
         m_fileTree = createTree(cms, root);
+        m_fileTree.setColumnExpandRatio(CmsResourceTreeTable.CAPTION_FOLDERS, 5);
+        m_fileTree.setColumnExpandRatio(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT, 1);
         m_treeData = m_fileTree.getTreeContainer();
         updateRoot(cms, root);
 
