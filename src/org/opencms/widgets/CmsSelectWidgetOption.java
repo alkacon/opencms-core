@@ -200,7 +200,7 @@ public class CmsSelectWidgetOption {
             } else {
                 first = false;
             }
-            result.append(o.toString());
+            result.append(o.toString().replace("|", "\\|"));
         }
         return result.toString();
     }
@@ -281,8 +281,8 @@ public class CmsSelectWidgetOption {
         }
 
         // cut along the delimiter
-        String[] parts = CmsStringUtil.splitAsArray(input, INPUT_DELIMITER);
-        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        String[] parts = splitOptions(input);
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>(parts.length);
 
         // indicates if a default of 'true' was already set in this result list
         boolean foundDefault = false;
@@ -296,7 +296,7 @@ public class CmsSelectWidgetOption {
             }
 
             try {
-
+                part = part.replace("\\|", "|");
                 String value = null;
                 String option = null;
                 String help = null;
@@ -432,6 +432,19 @@ public class CmsSelectWidgetOption {
         }
 
         return result;
+    }
+
+    /**
+     * Splits the options string at every unescaped input delimiter, i.e., every unescaped "|".
+     * @param input the options string
+     * @return the array with the various options
+     */
+    public static String[] splitOptions(String input) {
+
+        //Note that we use a regex matching all "|" characters not prefixed by "\"
+        //Since we define a regex for matching, the input delimiter "|" needs to be escaped, as well as "\",
+        //which is even double-escaped - one escaping is due to the String, one due to the regex.
+        return input.split("(?<!\\\\)\\" + INPUT_DELIMITER);
     }
 
     /**
