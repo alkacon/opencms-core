@@ -403,6 +403,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String smallThumbnails();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String svg();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */

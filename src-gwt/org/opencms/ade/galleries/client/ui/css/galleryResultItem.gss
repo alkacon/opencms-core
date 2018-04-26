@@ -41,6 +41,10 @@
 	height: value("galleryResultItemCss.bigImageHeight","px");
 }
 
+.tilingList div.imageTile.svg img {
+	background-color: white;
+}
+
 .expiredImageOverlay {
 	display: none; 
 }
