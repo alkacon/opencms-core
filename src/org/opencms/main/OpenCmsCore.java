@@ -1987,7 +1987,7 @@ public final class OpenCmsCore {
                 }
             }
             if (m_siteManager.isSiteMatcherRedirect(cms.getRequestContext().getRequestMatcher())) {
-                res.sendRedirect(m_siteManager.getCurrentSite(cms).getUrl() + req.getServletPath() + req.getPathInfo());
+                res.sendRedirect(m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
                 return;
             }
             // user is initialized, now deliver the requested resource
