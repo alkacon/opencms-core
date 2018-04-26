@@ -29,6 +29,7 @@ package org.opencms.ade.galleries;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
+import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.file.CmsFile;
@@ -72,6 +73,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,6 +87,9 @@ import org.apache.commons.logging.Log;
  * @since 8.0.0
  */
 public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewService {
+
+    /** Regex used to parse the image.focalpoint property. */
+    public static final Pattern PATTERN_FOCAL_POINT = Pattern.compile(" *([0-9]+) *, *([0-9]+) *");
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPreviewService.class);
@@ -187,6 +193,20 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                 height = scaler.getHeight();
                 width = scaler.getWidth();
             }
+            CmsProperty focalPointProp = cms.readPropertyObject(
+                resource,
+                CmsPropertyDefinition.PROPERTY_IMAGE_FOCAL_POINT,
+                false);
+            if (!focalPointProp.isNullProperty()) {
+                String focalPointVal = focalPointProp.getValue();
+                Matcher matcher = PATTERN_FOCAL_POINT.matcher(focalPointVal);
+                if (matcher.matches()) {
+                    int fx = Integer.parseInt(matcher.group(1));
+                    int fy = Integer.parseInt(matcher.group(2));
+                    resInfo.setFocalPoint(new CmsPoint(fx, fy));
+                }
+            }
+
             resInfo.setHeight(height);
             resInfo.setWidth(width);
             CmsProperty property = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_COPYRIGHT, false);

@@ -36,6 +36,9 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsCroppingParamBean {
 
+    /** Format parameter name. */
+    private static final String SCALE_FORMAT_NAME_PARAM = "format";
+
     /** The scale parameter colon. */
     private static final String SCALE_PARAM_COLON = ":";
 
@@ -65,9 +68,6 @@ public class CmsCroppingParamBean {
 
     /** Scale parameter name. */
     private static final String SCALE_PARAM_TARGETWIDTH = "w";
-
-    /** Format parameter name. */
-    private static final String SCALE_FORMAT_NAME_PARAM = "format";
 
     /** The cropping height parameter. */
     private int m_cropHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
@@ -225,13 +225,13 @@ public class CmsCroppingParamBean {
      * @return the value
      */
     private static native int parseValue(String paramName, String param)/*-{
-                                                                        param = param.substr(paramName.length + 1);
-                                                                        var result = parseInt(param);
-                                                                        if (isNaN(result)) {
-                                                                        return I_CmsFormatRestriction.DIMENSION_NOT_SET;
-                                                                        }
-                                                                        return result;
-                                                                        }-*/;
+        param = param.substr(paramName.length + 1);
+        var result = parseInt(param);
+        if (isNaN(result)) {
+            return I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        }
+        return result;
+    }-*/;
 
     /**
      * Returns the cropping height parameter.<p>
@@ -366,7 +366,9 @@ public class CmsCroppingParamBean {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
             return getRestrictedSizeParam(maxHeight, maxWidth).toString();
         }
-
+        if ((getOrgWidth() < maxWidth) && (getOrgHeight() < maxHeight)) {
+            return "";
+        }
         CmsCroppingParamBean restricted = new CmsCroppingParamBean();
         restricted.setTargetHeight(maxHeight);
         restricted.setTargetWidth(maxWidth);

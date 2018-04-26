@@ -102,6 +102,9 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     /** The image format handler. */
     private CmsImageFormatHandler m_formatHandler;
 
+    /** The focal point controller. */
+    private CmsFocalPointController m_pointController;
+
     /** The preview dialog. */
     private CmsImagePreviewDialog m_previewDialog;
 
@@ -114,6 +117,8 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
 
         super(resourcePreview);
         m_previewDialog = resourcePreview.getPreviewDialog();
+        m_pointController = new CmsFocalPointController(() -> m_croppingParam, () -> getImageInfo());
+
     }
 
     /**
@@ -164,6 +169,26 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
+     * Gets the image information.<p>
+     *
+     * @return the image information
+     */
+    public CmsImageInfoBean getImageInfo() {
+
+        return m_resourceInfo;
+    }
+
+    /**
+     * Gets the focal point controller.<p>
+     *
+     * @return the focal point controller
+     */
+    public CmsFocalPointController getImagePointController() {
+
+        return m_pointController;
+    }
+
+    /**
      * Returns the cropping parameter.<p>
      *
      * @param imageHeight the original image height
@@ -177,6 +202,9 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         int maxWidth = m_previewDialog.getDialogWidth() - 10;
         if (m_croppingParam != null) {
             return m_croppingParam.getRestrictedSizeScaleParam(maxHeight, maxWidth);
+        }
+        if ((imageHeight <= maxHeight) && (imageWidth <= maxWidth)) {
+            return ""; // dummy parameter, doesn't actually do anything
         }
         CmsCroppingParamBean restricted = new CmsCroppingParamBean();
         restricted.setTargetHeight(imageHeight > maxHeight ? maxHeight : imageHeight);

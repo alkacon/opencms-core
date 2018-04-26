@@ -25,46 +25,67 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.preview;
+package org.opencms.ade.galleries.shared;
 
-import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Preview dialog handler interface.<p>
- *
- * Delegates the actions of the preview controller to the preview dialog.<p>
- *
- * @param <T> the resource info bean type
- *
- * @since 8.0.0
+ * A point in 2D space.<p>
  */
-public interface I_CmsPreviewHandler<T extends CmsResourceInfoBean> extends I_CmsPropertiesHandler {
+public class CmsPoint implements IsSerializable {
+
+    /** x coordinate. */
+    private double m_x;
+
+    /** y coordinate. */
+    private double m_y;
 
     /**
-     * Closes the preview.<p>
-     */
-    void closePreview();
-
-    /**
-     * Returns the gallery dialog.<p>
+     * Creates a new instance.<p>
      *
-     * @return the gallery dialog
+     * @param x the x coordinate
+     * @param y the y coordinate
      */
-    CmsGalleryDialog getGalleryDialog();
+    public CmsPoint(double x, double y) {
+
+        m_x = x;
+        m_y = y;
+    }
 
     /**
-     * Returns false, if the dialog may not be closed due to unsaved properties.<p>
-     *
-     * @return <code>true</code> if the dialog may be closed
+     * Empty default constructor for serialization.<p>
      */
-    boolean setDataInEditor();
+    protected CmsPoint() {
+        // empty default constructor for serialization
+    }
 
     /**
-     * Displays the given resource info data.<p>
+     * Gets the x coordinate.<p>
      *
-     * @param resourceInfo the resource info data
+     * @return the x coordinate
      */
-    void showData(T resourceInfo);
+    public double getX() {
+
+        return m_x;
+    }
+
+    /**
+     * Gets the y coordinate.<p>
+     *
+     * @return the y coordinate
+     */
+    public double getY() {
+
+        return m_y;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "(" + m_x + "," + m_y + ")";
+    }
 
 }

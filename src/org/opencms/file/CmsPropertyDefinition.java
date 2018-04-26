@@ -155,6 +155,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property containing the maps API key. */
     public static final String PROPERTY_GOOGLE_API_KEY = "google.apikey";
 
+    /** Name of the property in which the focal point is stored. */
+    public static final String PROPERTY_IMAGE_FOCAL_POINT = "image.focalpoint";
+
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
 
@@ -167,11 +170,11 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
 
-    /** Property for the 'do not translate' marking in the sitemap editor. */
-    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
-
     /** Property to mark detail pages to have locale independent detail only containers. */
     public static final String PROPERTY_LOCALE_INDEPENDENT_DETAILS = "locale.independent-details";
+
+    /** Property for the 'do not translate' marking in the sitemap editor. */
+    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
 
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";

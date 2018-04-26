@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	
+	<ui:style gss="true">
+	
+		@external propertiesTabActive; 
+		
+		.imagepoint {
+			z-index: 999999;
+			border: 1px solid ;
+			display: none;   
+			position: absolute;
+			box-sizing: border-box;
+			cursor: pointer; 
+			animation-name: colorchange; 
+  			animation-duration: 0.5s; 
+  			animation-iteration-count: infinite;
+		}
+		
+		.propertiesTabActive .imagepoint {
+			display: inline-block;
+		}
+		
+		@-webkit-keyframes colorchange {
+			0% { border-color: #b31b34; }
+			80% { border-color: #b31b34; }
+			100% { border-color: white; }
+		}
+		
+		@keyframes colorchange {
+			0% { border-color: #b31b34; }
+			80% { border-color: #b31b34; }
+			100% { border-color: white; }
+		}
+		
+	</ui:style>
+	<g:FlowPanel ui:field="m_content" addStyleNames="{style.imagepoint}">
+	
+	</g:FlowPanel>
+	
+</ui:UiBinder> 

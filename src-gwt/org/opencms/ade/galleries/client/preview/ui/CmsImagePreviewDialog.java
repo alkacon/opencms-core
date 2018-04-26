@@ -29,7 +29,6 @@ package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
-import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -38,11 +37,16 @@ import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a widget for the image preview dialog .<p>
@@ -56,6 +60,9 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /** The default min width of the image. */
     public static final int IMAGE_WIDTH_MAX = 640;
+
+    /** Style name for distinguishing whether the properties tab is currently active or not. */
+    public static final String STYLE_PROPERTIES_TAB_ACTIVE = "propertiesTabActive";
 
     /** The preview handler. */
     private CmsImagePreviewHandler m_handler;
@@ -106,6 +113,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
         // properties tab
         m_propertiesTab.fillProperties(infoBean.getProperties(), infoBean.getNoEditReason());
+
         m_imageInfosTab.fillContent(infoBean);
         if (m_initialFill) {
             if (getGalleryMode() == GalleryMode.widget) {
@@ -135,11 +143,13 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         String src = infoBean.getViewLink() != null
         ? infoBean.getViewLink()
         : CmsCoreProvider.get().link(infoBean.getResourcePath());
-        urlScaled.append(src).append("?").append(
-            m_handler.getPreviewScaleParam(infoBean.getHeight(), infoBean.getWidth()));
+        urlScaled.append(src);
+        String scalingParams = m_handler.getPreviewScaleParam(infoBean.getHeight(), infoBean.getWidth());
+        urlScaled.append("?").append(scalingParams);
         // add time stamp to override image caching
         urlScaled.append("&time=").append(System.currentTimeMillis());
         m_previewImage.setUrl(urlScaled.toString());
+        getHandler().getImagePointController().updateImage(panel, m_previewImage);
         panel.add(m_previewImage);
         m_previewPanel.setWidget(panel);
     }
@@ -219,6 +229,21 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         }
         m_imageInfosTab = new CmsImageInfoTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
         m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEINFOS_0));
+        m_tabbedPanel.addSelectionHandler(new SelectionHandler<Integer>() {
+
+            public void onSelection(SelectionEvent<Integer> event) {
+
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    @SuppressWarnings("synthetic-access")
+                    public void execute() {
+
+                        updateClassForTab(event.getSelectedItem().intValue());
+                    }
+                });
+
+            }
+        });
     }
 
     /**
@@ -246,8 +271,35 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#getHandler()
      */
     @Override
-    protected I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
+    protected CmsImagePreviewHandler getHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        updateClassForTab(m_tabbedPanel.getSelectedIndex());
+
+    }
+
+    /**
+     * Updates the CSS classes of the preview dialog depending on selected tab.<p>
+     *
+     * @param index the tab index
+     */
+    private void updateClassForTab(int index) {
+
+        Widget widget = m_tabbedPanel.getWidget(index);
+
+        String propertyTabStyle = STYLE_PROPERTIES_TAB_ACTIVE;
+        if (widget == m_propertiesTab) {
+            CmsImagePreviewDialog.this.addStyleName(propertyTabStyle);
+        } else {
+            CmsImagePreviewDialog.this.removeStyleName(propertyTabStyle);
+        }
     }
 }

@@ -25,46 +25,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.preview;
+package org.opencms.ade.galleries.client.preview.util;
 
-import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import org.opencms.ade.galleries.shared.CmsPoint;
 
 /**
- * Preview dialog handler interface.<p>
- *
- * Delegates the actions of the preview controller to the preview dialog.<p>
- *
- * @param <T> the resource info bean type
- *
- * @since 8.0.0
+ * Interface for (invertible) coordinate system transformations.<p>
  */
-public interface I_CmsPreviewHandler<T extends CmsResourceInfoBean> extends I_CmsPropertiesHandler {
+public interface I_CmsTransform {
 
     /**
-     * Closes the preview.<p>
-     */
-    void closePreview();
-
-    /**
-     * Returns the gallery dialog.<p>
+     * Applies the inverse of the transformation to a point.<p>
      *
-     * @return the gallery dialog
+     * @param point the point
+     * @return the transformed point
      */
-    CmsGalleryDialog getGalleryDialog();
+    CmsPoint transformBack(CmsPoint point);
 
     /**
-     * Returns false, if the dialog may not be closed due to unsaved properties.<p>
+     * Applies the transformation to a point.<p>
      *
-     * @return <code>true</code> if the dialog may be closed
+     * @param point the point
+     * @return the transformed point
      */
-    boolean setDataInEditor();
-
-    /**
-     * Displays the given resource info data.<p>
-     *
-     * @param resourceInfo the resource info data
-     */
-    void showData(T resourceInfo);
+    CmsPoint transformForward(CmsPoint point);
 
 }
