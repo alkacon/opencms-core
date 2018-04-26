@@ -331,7 +331,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
         updateUploadTarget(CmsResource.getFolderPath(path));
         if (!path.isEmpty()) {
             String imageLink = CmsCoreProvider.get().link(path);
-            setImagePreview(imageLink);
+            setImagePreview(path, imageLink);
 
         } else {
             m_imagePreview.setInnerHTML("");

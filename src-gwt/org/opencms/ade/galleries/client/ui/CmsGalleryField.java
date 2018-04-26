@@ -563,9 +563,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /**
      * Sets the image preview.<p>
      *
+     * @param realPath the actual image path
      * @param imagePath the image path
      */
-    protected void setImagePreview(String imagePath) {
+    protected void setImagePreview(String realPath, String imagePath) {
 
         if ((m_croppingParam == null) || !getFormValueAsString().contains(m_croppingParam.toString())) {
             m_croppingParam = CmsCroppingParamBean.parseImagePath(getFormValueAsString());
@@ -582,6 +583,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         Element image = DOM.createImg();
         image.setAttribute("src", imagePath);
         image.getStyle().setMarginTop(marginTop, Unit.PX);
+        if (realPath.toLowerCase().contains(".svg")) {
+            image.getStyle().setWidth(100, Unit.PCT);
+            image.getStyle().setHeight(100, Unit.PCT);
+        }
         m_imagePreview.setInnerHTML("");
         m_imagePreview.appendChild(image);
     }
@@ -666,7 +671,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     void displayResourceInfo(CmsResultItemBean info) {
 
         if (m_hasImage) {
-            setImagePreview(info.getViewLink());
+            setImagePreview(info.getPath(), info.getViewLink());
             m_resourceInfoPanel.add(new CmsImageInfo(info, info.getDimension()));
         } else {
             CmsListItemWidget widget = new CmsListItemWidget(info);
