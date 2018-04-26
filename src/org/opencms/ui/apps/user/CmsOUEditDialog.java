@@ -52,20 +52,20 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.ui.AbstractField;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the ou edit and new dialog.<p>
@@ -389,7 +389,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
         m_description.setRequired(true);
         m_description.setRequiredError("Required");
 
-        if (m_ouResources.getRows().isEmpty()) {
+        if (m_ouResources.getRows().isEmpty() & !m_webuser.getValue().booleanValue()) {
             CmsPathSelectField field = new CmsPathSelectField();
             field.setUseRootPaths(true);
             field.setCmsObject(m_cms);
@@ -425,7 +425,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                     parentOu + m_name.getValue(),
                     m_description.getValue(),
                     getFlags(),
-                    resourceNames.get(0));
+                    resourceNames.isEmpty() ? null : resourceNames.get(0));
 
                 if (!resourceNames.isEmpty()) {
                     resourceNames.remove(0);
