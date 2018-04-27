@@ -51,9 +51,6 @@ public class CmsFocalPoint extends Composite {
     /** The ui binder instance. */
     private static I_UiBinder m_uiBinder = GWT.create(I_UiBinder.class);
 
-    /** The radius. */
-    private static final int RADIUS = 10;
-
     /** The controller. */
     private CmsFocalPointController m_controller;
 
@@ -75,11 +72,6 @@ public class CmsFocalPoint extends Composite {
                 m_controller.onStartDrag();
             }
         }, MouseDownEvent.getType());
-        Style style = getElement().getStyle();
-        // set size / borders programmatically so we can change them more easily (border-radius depends on size)
-        style.setWidth(2 * RADIUS, Unit.PX);
-        style.setHeight(2 * RADIUS, Unit.PX);
-        style.setProperty("borderRadius", Math.sqrt(2 * RADIUS * RADIUS) + "px");
     }
 
     /**
@@ -91,8 +83,8 @@ public class CmsFocalPoint extends Composite {
     public void setCenterCoordsRelativeToParent(int x, int y) {
 
         Style style = getElement().getStyle();
-        style.setLeft(x - RADIUS, Unit.PX);
-        style.setTop(y - RADIUS, Unit.PX);
+        style.setLeft(x - 10, Unit.PX);
+        style.setTop(y - 10, Unit.PX);
     }
 
 }

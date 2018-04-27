@@ -8,33 +8,23 @@
 		@external propertiesTabActive; 
 		
 		.imagepoint {
+  			width: 21px;
+  			height: 21px;
+  		    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NCIgaGVpZ2h0PSI4NCIgdmlld0JveD0iMCAwIDIyLjIgMjIuMiI+ICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIC0yNzQuOCkiPiAgICA8cGF0aCBmaWxsPSIjYjMxYjM0IiBkPSJNMTYuNyAyNzYuM2ExMS4xIDExLjEgMCAwIDEgNCAxNS4yIDExLjEgMTEuMSAwIDAgMS0xNS4yIDQgMTEuMSAxMS4xIDAgMCAxLTQtMTUuMiAxMS4xIDExLjEgMCAwIDEgMTUuMi00Ii8+ICAgIDxyZWN0IHdpZHRoPSIxLjEiIGhlaWdodD0iMjIuMiIgeD0iMTAuNiIgeT0iMjc0LjgiIGZpbGw9IiNmZmYiIHJ5PSIwIi8+ICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0wIDI4NS40aDIyLjJ2MS4xSDB6Ii8+ICA8L2c+PC9zdmc+);
+		    background-size: 21px 21px;
 			z-index: 999999;
-			border: 1px solid ;
 			display: none;   
 			position: absolute;
 			box-sizing: border-box;
 			cursor: pointer; 
-			animation-name: colorchange; 
-  			animation-duration: 0.5s; 
-  			animation-iteration-count: infinite;
+			opacity: 0.5;
 		}
 		
 		.propertiesTabActive .imagepoint {
 			display: inline-block;
 		}
-		
-		@-webkit-keyframes colorchange {
-			0% { border-color: #b31b34; }
-			80% { border-color: #b31b34; }
-			100% { border-color: white; }
-		}
-		
-		@keyframes colorchange {
-			0% { border-color: #b31b34; }
-			80% { border-color: #b31b34; }
-			100% { border-color: white; }
-		}
-		
+
+
 	</ui:style>
 	<g:FlowPanel ui:field="m_content" addStyleNames="{style.imagepoint}">
 	
