@@ -62,6 +62,9 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class CmsFocalPointController {
 
+    /** Global static flag to enable / disable focal point modification. */
+    public static final boolean ENABLED = false;
+
     /** Preview handler registration for the event handler used for drag / drop. */
     private static HandlerRegistration m_previewRegistration;
 
@@ -157,7 +160,7 @@ public class CmsFocalPointController {
      */
     public void onStartDrag() {
 
-        if (isEditable()) {
+        if (ENABLED && isEditable()) {
             registerEventHandler();
         }
     }
@@ -170,6 +173,9 @@ public class CmsFocalPointController {
      */
     public void updateImage(FlowPanel container, Image previewImage) {
 
+        if (!ENABLED) {
+            return;
+        }
         m_image = previewImage;
         clearImagePoint();
         m_savedFocalPoint = m_imageInfoProvider.get().getFocalPoint();
