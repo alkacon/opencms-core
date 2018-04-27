@@ -139,6 +139,10 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         FlowPanel panel = new FlowPanel();
         panel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().imagePanel());
         m_previewImage = new Image();
+        if (infoBean.getResourcePath().contains(".svg")) {
+            m_previewImage.getElement().getStyle().setWidth(100, Unit.PCT);
+            m_previewImage.getElement().getStyle().setHeight(100, Unit.PCT);
+        }
         StringBuffer urlScaled = new StringBuffer(128);
         String src = infoBean.getViewLink() != null
         ? infoBean.getViewLink()
