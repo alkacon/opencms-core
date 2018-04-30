@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
@@ -174,6 +175,10 @@ public class CmsFocalPointController {
     public void updateImage(FlowPanel container, Image previewImage) {
 
         if (!ENABLED) {
+            return;
+        }
+        String path = m_imageInfoProvider.get().getResourcePath();
+        if (CmsClientStringUtil.checkIsPathOrLinkToSvg(path)) {
             return;
         }
         m_image = previewImage;
