@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContain
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
@@ -61,6 +62,7 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -210,14 +212,15 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      *
      * @param controller the container page controller
      * @param elementWidget the element panel
-     * @param elementBean the element data bean
+     * @param settingsConfig the element setting configuration
      */
     public CmsElementSettingsDialog(
         CmsContainerpageController controller,
         CmsContainerPageElementPanel elementWidget,
-        CmsContainerElementData elementBean) {
+        CmsElementSettingsConfig settingsConfig) {
 
         super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), 700);
+        CmsContainerElementData elementBean = settingsConfig.getElementData();
         m_elementWidget = elementWidget;
         m_controller = controller;
         m_elementBean = elementBean;
@@ -250,6 +253,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             String name = cpc.getContainerId();
             infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_CONTAINER_0), name);
             infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0), type);
+        }
+        for (CmsAdditionalInfoBean addInfo : settingsConfig.getAdditionalInfo()) {
+            infoBean.addAdditionalInfo(addInfo.getName(), addInfo.getValue(), addInfo.getStyle());
         }
 
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()

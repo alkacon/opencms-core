@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
@@ -49,6 +50,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
@@ -56,6 +58,9 @@ import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsDateUtil;
@@ -545,7 +550,7 @@ public class CmsElementUtil {
      *
      * @throws CmsException if something goes wrong
      */
-    public CmsContainerElementData getElementSettingsConfig(
+    public CmsElementSettingsConfig getElementSettingsConfig(
         CmsResource page,
         CmsContainerElementBean element,
         String containerId,
@@ -553,6 +558,7 @@ public class CmsElementUtil {
         boolean allowNested)
     throws CmsException {
 
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
@@ -642,7 +648,20 @@ public class CmsElementUtil {
         }
 
         m_cms.getRequestContext().setLocale(requestLocale);
-        return elementData;
+        ArrayList<CmsAdditionalInfoBean> infos = new ArrayList<>();
+        try {
+            CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(
+                element.getResource().getStructureId()).filterType(CmsRelationType.XSD);
+            for (CmsRelation relation : m_cms.readRelations(filter)) {
+                CmsResource target = relation.getTarget(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                String label = Messages.get().getBundle(wpLocale).key(Messages.GUI_ADDINFO_SCHEMA_0);
+                infos.add(new CmsAdditionalInfoBean(label, target.getRootPath(), null));
+                break;
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return new CmsElementSettingsConfig(elementData, infos);
     }
 
     /**

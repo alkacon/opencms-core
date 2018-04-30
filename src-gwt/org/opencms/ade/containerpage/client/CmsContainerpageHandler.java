@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.publish.client.CmsPublishDialog;
@@ -382,9 +383,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         m_controller.getElementSettingsConfig(
             elementWidget.getId(),
             elementWidget.getParentTarget().getContainerId(),
-            new I_CmsSimpleCallback<CmsContainerElementData>() {
+            new I_CmsSimpleCallback<CmsElementSettingsConfig>() {
 
-                public void execute(final CmsContainerElementData elementBean) {
+                public void execute(final CmsElementSettingsConfig settingsConfig) {
+
+                    CmsContainerElementData elementBean = settingsConfig.getElementData();
 
                     if (!elementBean.getClientId().equals(elementWidget.getId())) {
                         // the client id may have changed, update the element widget
@@ -393,7 +396,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
                         m_controller,
                         elementWidget,
-                        elementBean);
+                        settingsConfig);
                     dialog.center();
                 }
             });

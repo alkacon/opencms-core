@@ -49,6 +49,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
@@ -1523,9 +1524,9 @@ public final class CmsContainerpageController {
     public void getElementSettingsConfig(
         final String clientId,
         final String containerId,
-        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+        final I_CmsSimpleCallback<CmsElementSettingsConfig> callback) {
 
-        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+        CmsRpcAction<CmsElementSettingsConfig> action = new CmsRpcAction<CmsElementSettingsConfig>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -1549,7 +1550,7 @@ public final class CmsContainerpageController {
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(CmsContainerElementData result) {
+            protected void onResponse(CmsElementSettingsConfig result) {
 
                 if (result != null) {
                     callback.execute(result);

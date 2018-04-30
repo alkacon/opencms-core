@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerPageGalleryData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
@@ -229,7 +230,7 @@ public interface I_CmsContainerpageServiceAsync {
         Collection<CmsContainer> containers,
         boolean allowNested,
         String locale,
-        AsyncCallback<CmsContainerElementData> callback);
+        AsyncCallback<CmsElementSettingsConfig> callback);
 
     /**
      * Gets the element data for an id and a map of settings.<p>
