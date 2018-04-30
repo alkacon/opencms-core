@@ -245,6 +245,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             formatterPath = "[error: could not get formatter]";
         }
 
+        for (CmsAdditionalInfoBean addInfo : settingsConfig.getAdditionalInfo()) {
+            infoBean.addAdditionalInfo(addInfo.getName(), addInfo.getValue(), addInfo.getStyle());
+        }
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_PATH_0), formatterPath);
 
         I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
@@ -254,9 +257,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             String name = cpc.getContainerId();
             infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_CONTAINER_0), name);
             infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0), type);
-        }
-        for (CmsAdditionalInfoBean addInfo : settingsConfig.getAdditionalInfo()) {
-            infoBean.addAdditionalInfo(addInfo.getName(), addInfo.getValue(), addInfo.getStyle());
         }
 
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()

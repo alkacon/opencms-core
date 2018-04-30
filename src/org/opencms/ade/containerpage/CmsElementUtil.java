@@ -42,6 +42,7 @@ import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -53,6 +54,8 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -72,6 +75,7 @@ import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -650,6 +654,29 @@ public class CmsElementUtil {
 
         m_cms.getRequestContext().setLocale(requestLocale);
         ArrayList<CmsAdditionalInfoBean> infos = new ArrayList<>();
+
+        CmsResource resource = element.getResource();
+        String resTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        CmsExplorerTypeSettings cmsExplorerTypeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            resTypeName);
+        if (null == cmsExplorerTypeSettings) {
+            CmsMessageContainer errMsg = org.opencms.gwt.Messages.get().container(
+                org.opencms.gwt.Messages.ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3,
+                resource.getRootPath(),
+                resTypeName,
+                Integer.valueOf(resource.getTypeId()));
+            throw new CmsConfigurationException(errMsg);
+        }
+        String key = cmsExplorerTypeSettings.getKey();
+        Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+        String resTypeNiceName = messages.key(key);
+        infos.add(
+            new CmsAdditionalInfoBean(
+                messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
+                resTypeNiceName,
+                null));
+
         try {
             CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(
                 element.getResource().getStructureId()).filterType(CmsRelationType.XSD);
@@ -662,6 +689,7 @@ public class CmsElementUtil {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+
         CmsResourceState state = element.getResource().getState();
         return new CmsElementSettingsConfig(elementData, state, infos);
     }
