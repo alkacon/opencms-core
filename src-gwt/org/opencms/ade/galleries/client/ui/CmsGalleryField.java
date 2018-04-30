@@ -54,6 +54,7 @@ import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -583,7 +584,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         Element image = DOM.createImg();
         image.setAttribute("src", imagePath);
         image.getStyle().setMarginTop(marginTop, Unit.PX);
-        if (realPath.toLowerCase().contains(".svg")) {
+        if (CmsClientStringUtil.checkIsPathOrLinkToSvg(realPath)) {
             image.getStyle().setWidth(100, Unit.PCT);
             image.getStyle().setHeight(100, Unit.PCT);
         }

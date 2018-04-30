@@ -145,7 +145,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay()
                 + "' />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
-            if (infoBean.getPath().toLowerCase().endsWith(".svg")) {
+            if (CmsClientStringUtil.checkIsPathOrLinkToSvg(infoBean.getPath())) {
                 imageTile.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().svg());
             }
             m_imageTile = imageTile;

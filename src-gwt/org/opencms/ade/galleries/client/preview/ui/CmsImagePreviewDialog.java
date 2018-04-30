@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.Map;
@@ -139,7 +140,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         FlowPanel panel = new FlowPanel();
         panel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().imagePanel());
         m_previewImage = new Image();
-        if (infoBean.getResourcePath().contains(".svg")) {
+        if (CmsClientStringUtil.checkIsPathOrLinkToSvg(infoBean.getResourcePath())) {
             m_previewImage.getElement().getStyle().setWidth(100, Unit.PCT);
             m_previewImage.getElement().getStyle().setHeight(100, Unit.PCT);
         }
