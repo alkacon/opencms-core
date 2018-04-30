@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ public class CmsElementSettingsConfig implements IsSerializable {
     /** The data for the container element. */
     private CmsContainerElementData m_elementData;
 
+    /** The resource state. */
+    private CmsResourceState m_state;
+
     /** The additional infos to display. */
     private ArrayList<CmsAdditionalInfoBean> m_additionalInfo;
 
@@ -48,14 +52,17 @@ public class CmsElementSettingsConfig implements IsSerializable {
      * Creates a new instance.<p>
      *
      * @param elementData the element data
+     * @param state the resource state
      * @param additionalInfo the additional infos
      */
     public CmsElementSettingsConfig(
         CmsContainerElementData elementData,
+        CmsResourceState state,
         ArrayList<CmsAdditionalInfoBean> additionalInfo) {
 
         m_elementData = elementData;
         m_additionalInfo = additionalInfo;
+        m_state = state;
     }
 
     /**
@@ -84,6 +91,16 @@ public class CmsElementSettingsConfig implements IsSerializable {
     public CmsContainerElementData getElementData() {
 
         return m_elementData;
+    }
+
+    /**
+     * The state.<p>
+     *
+     * @return the resource state
+     */
+    public CmsResourceState getState() {
+
+        return m_state;
     }
 
 }

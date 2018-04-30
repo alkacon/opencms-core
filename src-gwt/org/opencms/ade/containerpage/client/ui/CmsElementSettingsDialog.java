@@ -227,6 +227,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         m_contextInfo = m_controller.getData().getTemplateContextInfo();
         m_containerId = m_elementWidget.getParentTarget().getContainerId();
         CmsListInfoBean infoBean = new CmsListInfoBean();
+        infoBean.setResourceState(settingsConfig.getState());
         infoBean.setTitle(elementBean.getTitle());
         infoBean.setSubTitle(elementBean.getSitePath());
         infoBean.setResourceType(elementBean.getResourceType());

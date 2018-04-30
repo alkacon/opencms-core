@@ -42,6 +42,7 @@ import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -661,7 +662,8 @@ public class CmsElementUtil {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        return new CmsElementSettingsConfig(elementData, infos);
+        CmsResourceState state = element.getResource().getState();
+        return new CmsElementSettingsConfig(elementData, state, infos);
     }
 
     /**
