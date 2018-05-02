@@ -838,6 +838,11 @@ public class CmsImageScaler {
      * <li>In this case the crop coordinates <code>x, y</code> are treated as a point in the middle of <code>width, height</code>.
      * <li>With this type, as much as possible from the source image is fitted in the target image size.</ul></dd>
      *
+     * <dt>8: Focal point mode.</dt>
+     * <p>If a focal point is set on this scaler, this mode will first crop a region defined by cx,cy,cw,ch from the original
+     * image, then select the largest region of the aspect ratio defined by w/h in the cropped image containing the focal point, and finally
+     * scale that region to size w x h.</p>
+     *
      * @return the type
      */
     public int getType() {
@@ -1157,8 +1162,31 @@ public class CmsImageScaler {
             }
 
             if (isCropping()) {
-
-                if ((getType() == 6) || (getType() == 7)) {
+                if ((getType() == 8) && (m_focalPoint != null)) {
+                    image = scaler.cropToSize(
+                        image,
+                        m_cropX,
+                        m_cropY,
+                        m_cropWidth,
+                        m_cropHeight,
+                        m_cropWidth,
+                        m_cropHeight,
+                        color);
+                    // Find the biggest scaling factor which, when applied to a rectangle of dimensions m_width x m_height,
+                    // would allow the resulting rectangle to still fit inside a rectangle of dimensions m_cropWidth x m_cropHeight
+                    // (we have to take the minimum because a rectangle that fits on the x axis might still be out of bounds on the y axis, and
+                    // vice versa).
+                    double scaling = Math.min((1.0 * m_cropWidth) / m_width, (1.0 * m_cropHeight) / m_height);
+                    int relW = (int)(scaling * m_width);
+                    int relH = (int)(scaling * m_height);
+                    // the focal point's coordinates are in the uncropped image's coordinate system, so we have to subtract cx/cy
+                    int relX = (int)(m_focalPoint.getX() - m_cropX);
+                    int relY = (int)(m_focalPoint.getY() - m_cropY);
+                    image = scaler.cropPointToSize(image, relX, relY, false, relW, relH);
+                    if ((m_width != relW) || (m_height != relH)) {
+                        image = scaler.scale(image, m_width, m_height);
+                    }
+                } else if ((getType() == 6) || (getType() == 7)) {
                     // image crop operation around point
                     image = scaler.cropPointToSize(image, m_cropX, m_cropY, getType() == 6, m_cropWidth, m_cropHeight);
                 } else {
@@ -1331,6 +1359,16 @@ public class CmsImageScaler {
     }
 
     /**
+     * Sets the focal point.<p>
+     *
+     * @param point the new value for the focal point
+     */
+    public void setFocalPoint(CmsPoint point) {
+
+        m_focalPoint = point;
+    }
+
+    /**
      * Sets the height.<p>
      *
      * @param height the height to set
@@ -1436,7 +1474,7 @@ public class CmsImageScaler {
      */
     public void setType(int type) {
 
-        if ((type < 0) || (type > 7)) {
+        if ((type < 0) || (type > 8)) {
             // invalid type, use 0
             m_type = 0;
         } else {
@@ -1623,7 +1661,7 @@ public class CmsImageScaler {
             if (m_height < 0) {
                 m_height = m_cropHeight;
             }
-            if ((getType() != 6) && (getType() != 7)) {
+            if ((getType() != 6) && (getType() != 7) && (getType() != 8)) {
                 // cropping type can only be 6 or 7 (point cropping)
                 // all other values with cropping coordinates are invalid
                 setType(0);

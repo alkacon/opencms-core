@@ -181,7 +181,9 @@ public class CmsJspImageBean {
         if (scaleParam != null) {
             // scale parameters have been set
             baseScaler = new CmsImageScaler(scaleParam);
+            baseScaler.setFocalPoint(originalScaler.getFocalPoint());
         }
+
         setBaseScaler(baseScaler);
 
         // set the current scaler to the base scaler
@@ -283,31 +285,44 @@ public class CmsJspImageBean {
 
             result.setWidth(targetWidth);
             result.setHeight(targetHeight);
-            result.setType(2);
-
-            if (baseScaler.isCropping()) {
-
-                double targetRatio = (double)baseScaler.getCropWidth() / (double)targetWidth;
-                int targetCropWidth = baseScaler.getCropWidth();
-                int targetCropHeight = (int)Math.round(targetHeight * targetRatio);
-
-                if (targetCropHeight > baseScaler.getCropHeight()) {
-                    targetRatio = (double)baseScaler.getCropHeight() / (double)targetHeight;
-                    targetCropWidth = (int)Math.round(targetWidth * targetRatio);
-                    targetCropHeight = baseScaler.getCropHeight();
+            if (baseScaler.getFocalPoint() != null) {
+                result.setType(8);
+                if (baseScaler.isCropping()) {
+                    result.setCropArea(
+                        baseScaler.getCropX(),
+                        baseScaler.getCropY(),
+                        baseScaler.getCropWidth(),
+                        baseScaler.getCropHeight());
+                } else {
+                    result.setCropArea(0, 0, originalWidth, originalHeight);
                 }
+            } else {
 
-                int targetX = baseScaler.getCropX();
-                int targetY = baseScaler.getCropY();
+                result.setType(2);
+                if (baseScaler.isCropping()) {
 
-                if (targetCropWidth != baseScaler.getCropWidth()) {
-                    targetX = targetX + (int)Math.round((baseScaler.getCropWidth() - targetCropWidth) / 2.0);
+                    double targetRatio = (double)baseScaler.getCropWidth() / (double)targetWidth;
+                    int targetCropWidth = baseScaler.getCropWidth();
+                    int targetCropHeight = (int)Math.round(targetHeight * targetRatio);
+
+                    if (targetCropHeight > baseScaler.getCropHeight()) {
+                        targetRatio = (double)baseScaler.getCropHeight() / (double)targetHeight;
+                        targetCropWidth = (int)Math.round(targetWidth * targetRatio);
+                        targetCropHeight = baseScaler.getCropHeight();
+                    }
+
+                    int targetX = baseScaler.getCropX();
+                    int targetY = baseScaler.getCropY();
+
+                    if (targetCropWidth != baseScaler.getCropWidth()) {
+                        targetX = targetX + (int)Math.round((baseScaler.getCropWidth() - targetCropWidth) / 2.0);
+                    }
+                    if (targetCropHeight != baseScaler.getCropHeight()) {
+                        targetY = targetY + (int)Math.round((baseScaler.getCropHeight() - targetCropHeight) / 2.0);
+                    }
+
+                    result.setCropArea(targetX, targetY, targetCropWidth, targetCropHeight);
                 }
-                if (targetCropHeight != baseScaler.getCropHeight()) {
-                    targetY = targetY + (int)Math.round((baseScaler.getCropHeight() - targetCropHeight) / 2.0);
-                }
-
-                result.setCropArea(targetX, targetY, targetCropWidth, targetCropHeight);
             }
         }
 
@@ -315,7 +330,6 @@ public class CmsJspImageBean {
             // apply compression quality setting
             result.setQuality(quality);
         }
-
         return result;
     }
 
@@ -464,7 +478,12 @@ public class CmsJspImageBean {
         try {
 
             double baseRatio;
-            if (getScaler().isCropping()) {
+            if (getOriginalScaler().getFocalPoint() != null) {
+                // We use scaling mode 8 if there is a focal point, and in this case,
+                // the correct aspect ratio is width x height, not cropWidth x cropHeight
+                // even if cropping is set
+                baseRatio = (double)getScaler().getWidth() / (double)getScaler().getHeight();
+            } else if (getScaler().isCropping()) {
                 // use the image crop with/height for aspect ratio calculation
                 baseRatio = (double)getScaler().getCropWidth() / (double)getScaler().getCropHeight();
             } else {
