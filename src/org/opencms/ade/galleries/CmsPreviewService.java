@@ -166,6 +166,35 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     }
 
     /**
+     * Reads the focal point from a resource.<p>
+     *
+     * @param cms  the CMS context to use
+     * @param resource the resource
+     * @return the focal point (or null, if the focal point property is not set or contains an invalid value)
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsPoint readFocalPoint(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsProperty focalPointProp = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_IMAGE_FOCAL_POINT,
+            false);
+        CmsPoint focalPoint = null;
+        if (!focalPointProp.isNullProperty()) {
+            String focalPointVal = focalPointProp.getValue();
+            Matcher matcher = PATTERN_FOCAL_POINT.matcher(focalPointVal);
+            if (matcher.matches()) {
+                int fx = Integer.parseInt(matcher.group(1));
+                int fy = Integer.parseInt(matcher.group(2));
+                focalPoint = new CmsPoint(fx, fy);
+
+            }
+        }
+        return focalPoint;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#getImageInfo(java.lang.String, java.lang.String)
      */
     public CmsImageInfoBean getImageInfo(String resourcePath, String locale) throws CmsRpcException {
@@ -193,19 +222,8 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                 height = scaler.getHeight();
                 width = scaler.getWidth();
             }
-            CmsProperty focalPointProp = cms.readPropertyObject(
-                resource,
-                CmsPropertyDefinition.PROPERTY_IMAGE_FOCAL_POINT,
-                false);
-            if (!focalPointProp.isNullProperty()) {
-                String focalPointVal = focalPointProp.getValue();
-                Matcher matcher = PATTERN_FOCAL_POINT.matcher(focalPointVal);
-                if (matcher.matches()) {
-                    int fx = Integer.parseInt(matcher.group(1));
-                    int fy = Integer.parseInt(matcher.group(2));
-                    resInfo.setFocalPoint(new CmsPoint(fx, fy));
-                }
-            }
+            CmsPoint focalPoint = readFocalPoint(cms, resource);
+            resInfo.setFocalPoint(focalPoint);
 
             resInfo.setHeight(height);
             resInfo.setWidth(width);
