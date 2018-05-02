@@ -38,6 +38,7 @@ import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
@@ -64,7 +65,7 @@ import com.google.gwt.user.client.ui.Image;
 public class CmsFocalPointController {
 
     /** Global static flag to enable / disable focal point modification. */
-    public static final boolean ENABLED = false;
+    public static final boolean ENABLED = true;
 
     /** Preview handler registration for the event handler used for drag / drop. */
     private static HandlerRegistration m_previewRegistration;
@@ -346,7 +347,7 @@ public class CmsFocalPointController {
             String val = "" + x + "," + y;
             CmsUUID sid = m_imageInfoProvider.get().getStructureId();
             List<CmsPropertyModification> propChanges = new ArrayList<>();
-            propChanges.add(new CmsPropertyModification(sid, "image.focalpoint", val, true));
+            propChanges.add(new CmsPropertyModification(sid, CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT, val, true));
             final CmsPropertyChangeSet changeSet = new CmsPropertyChangeSet(sid, propChanges);
             CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 

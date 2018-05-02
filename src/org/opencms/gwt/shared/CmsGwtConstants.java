@@ -129,6 +129,9 @@ public final class CmsGwtConstants {
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
 
+    /** Name of property containing focal point for images. */
+    public static final String PROPERTY_IMAGE_FOCALPOINT = "image.focalpoint";
+
     /** Tab id for the preference dialog. */
     public static final String TAB_BASIC = "basic";
 
@@ -150,11 +153,11 @@ public final class CmsGwtConstants {
     /** Name for the pseudo-type 'modelgroup'. */
     public static final String TYPE_MODELGROUP = "modelgroup";
 
-    /** Name for the pseudo-type 'modelgrouppage'. */
-    public static final String TYPE_MODELGROUP_PAGE = "modelgrouppage";
-
     /** Name for the pseudo-type 'modelgroupreuse'. */
     public static final String TYPE_MODELGROUP_COPY = "modelgroupcopy";
+
+    /** Name for the pseudo-type 'modelgrouppage'. */
+    public static final String TYPE_MODELGROUP_PAGE = "modelgrouppage";
 
     /** Name for the type 'modelpage'. */
     public static final String TYPE_MODELPAGE = "modelpage";

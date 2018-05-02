@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
@@ -156,7 +157,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     public static final String PROPERTY_GOOGLE_API_KEY = "google.apikey";
 
     /** Name of the property in which the focal point is stored. */
-    public static final String PROPERTY_IMAGE_FOCAL_POINT = "image.focalpoint";
+    public static final String PROPERTY_IMAGE_FOCAL_POINT = CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT;
 
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
