@@ -32,6 +32,8 @@ import com.alkacon.simapi.Simapi;
 import com.alkacon.simapi.filter.GrayscaleFilter;
 import com.alkacon.simapi.filter.ShadowFilter;
 
+import org.opencms.ade.galleries.CmsPreviewService;
+import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -138,8 +140,14 @@ public class CmsImageScaler {
     /** The list of image filter names (Strings) to apply. */
     private List<String> m_filters;
 
+    /** The focal point. */
+    private CmsPoint m_focalPoint;
+
     /** The target height (required). */
     private int m_height;
+
+    /** Indicates if this image scaler was only used to read the image properties. */
+    private boolean m_isOriginalScaler;
 
     /** The maximum image size (width * height) to apply image blurring when down scaling (setting this to high may case "out of memory" errors). */
     private int m_maxBlurSize;
@@ -167,9 +175,6 @@ public class CmsImageScaler {
 
     /** The target width (required). */
     private int m_width;
-
-    /** Indicates if this image scaler was only used to read the image properties. */
-    private boolean m_isOriginalScaler;
 
     /**
      * Creates a new, empty image scaler object.<p>
@@ -251,6 +256,11 @@ public class CmsImageScaler {
                 }
             } catch (Exception e) {
                 LOG.debug(e.getMessage(), e);
+            }
+            try {
+                m_focalPoint = CmsPreviewService.readFocalPoint(cms, res);
+            } catch (Exception e) {
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         if (CmsStringUtil.isNotEmpty(sizeValue)) {
@@ -537,6 +547,16 @@ public class CmsImageScaler {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Gets the focal point, or null if it is not set.<p>
+     *
+     * @return the focal point
+     */
+    public CmsPoint getFocalPoint() {
+
+        return m_focalPoint;
     }
 
     /**
@@ -1618,19 +1638,21 @@ public class CmsImageScaler {
      */
     private void initValuesFrom(CmsImageScaler source) {
 
-        m_width = source.m_width;
-        m_height = source.m_height;
-        m_type = source.m_type;
-        m_position = source.m_position;
-        m_renderMode = source.m_renderMode;
-        m_quality = source.m_quality;
         m_color = source.m_color;
-        m_filters = new ArrayList<String>(source.m_filters);
-        m_maxBlurSize = source.m_maxBlurSize;
         m_cropHeight = source.m_cropHeight;
         m_cropWidth = source.m_cropWidth;
         m_cropX = source.m_cropX;
         m_cropY = source.m_cropY;
+        m_filters = new ArrayList<String>(source.m_filters);
+        m_focalPoint = source.m_focalPoint;
+        m_height = source.m_height;
         m_isOriginalScaler = source.m_isOriginalScaler;
+        m_maxBlurSize = source.m_maxBlurSize;
+        m_position = source.m_position;
+        m_quality = source.m_quality;
+        m_renderMode = source.m_renderMode;
+        m_type = source.m_type;
+        m_width = source.m_width;
+
     }
 }
