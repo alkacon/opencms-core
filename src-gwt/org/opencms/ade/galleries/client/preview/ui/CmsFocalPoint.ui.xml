@@ -17,7 +17,7 @@
 			position: absolute;
 			box-sizing: border-box;
 			cursor: pointer; 
-			opacity: 0.5;
+			opacity: 0.4;
 		}
 		
 		.propertiesTabActive .imagepoint {
