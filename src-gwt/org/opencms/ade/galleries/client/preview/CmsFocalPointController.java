@@ -193,22 +193,18 @@ public class CmsFocalPointController {
             public void onLoad(LoadEvent event) {
 
                 clearImagePoint();
+                updateScaling();
+                CmsPoint nativePoint;
+                if (m_focalPoint == null) {
+                    CmsPoint cropCenter = getCropCenter();
+                    nativePoint = cropCenter;
+                } else if (!getNativeCropRegion().contains(m_focalPoint)) {
+                    return;
+                } else {
+                    nativePoint = m_focalPoint;
+                }
                 m_pointWidget = new CmsFocalPoint(CmsFocalPointController.this);
                 container.add(m_pointWidget);
-                updateScaling();
-                CmsPoint cropCenter = getCropCenter();
-                CmsPoint currentFocalPoint = m_focalPoint;
-                CmsPoint nativePoint;
-                if ((currentFocalPoint == null) || !getNativeCropRegion().contains(currentFocalPoint)) {
-                    nativePoint = cropCenter;
-                    if (m_savedFocalPoint != null) {
-                        // we already have a focal point, and
-                        m_focalPoint = cropCenter;
-                        save();
-                    }
-                } else {
-                    nativePoint = currentFocalPoint;
-                }
                 CmsPoint screenPoint = m_coordinateTransform.transformBack(nativePoint);
                 m_pointWidget.setCenterCoordsRelativeToParent((int)screenPoint.getX(), (int)screenPoint.getY());
             }
