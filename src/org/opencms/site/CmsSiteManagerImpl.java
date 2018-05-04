@@ -1260,6 +1260,12 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         return (m_sharedFolder != null) && m_sharedFolder.equals(CmsStringUtil.joinPaths("/", name, "/"));
     }
 
+    /**
+     * Checks if the given SiteMatcher should be redirected.<p>
+     *
+     * @param matcher to be checked
+     * @return boolean
+     */
     public boolean isSiteMatcherRedirect(CmsSiteMatcher matcher) {
 
         return m_siteMatcherRedirect.containsKey(matcher) ? m_siteMatcherRedirect.get(matcher).booleanValue() : false;

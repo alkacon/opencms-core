@@ -1986,7 +1986,11 @@ public final class OpenCmsCore {
                     return;
                 }
             }
-            if (m_siteManager.isSiteMatcherRedirect(cms.getRequestContext().getRequestMatcher())) {
+
+            if (m_siteManager.isSiteMatcherRedirect(
+                cms.getRequestContext().getRequestMatcher().forDifferentScheme("http"))
+                | m_siteManager.isSiteMatcherRedirect(
+                    cms.getRequestContext().getRequestMatcher().forDifferentScheme("https"))) {
                 res.sendRedirect(m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
                 return;
             }
