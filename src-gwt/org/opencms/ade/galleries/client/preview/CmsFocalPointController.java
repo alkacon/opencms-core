@@ -204,6 +204,7 @@ public class CmsFocalPointController {
                     nativePoint = m_focalPoint;
                 }
                 m_pointWidget = new CmsFocalPoint(CmsFocalPointController.this);
+                m_pointWidget.setIsDefault(m_savedFocalPoint == null);
                 container.add(m_pointWidget);
                 CmsPoint screenPoint = m_coordinateTransform.transformBack(nativePoint);
                 m_pointWidget.setCenterCoordsRelativeToParent((int)screenPoint.getX(), (int)screenPoint.getY());
@@ -338,6 +339,9 @@ public class CmsFocalPointController {
 
         if ((m_focalPoint != null) && isEditable()) {
             m_savedFocalPoint = m_focalPoint;
+            if (m_pointWidget != null) {
+                m_pointWidget.setIsDefault(false);
+            }
             int x = (int)m_focalPoint.getX();
             int y = (int)m_focalPoint.getY();
             String val = "" + x + "," + y;

@@ -87,4 +87,19 @@ public class CmsFocalPoint extends Composite {
         style.setTop(y - 10, Unit.PX);
     }
 
+    /**
+     * Sets or clears the 'is default' style on the focal point.<p>
+     *
+     * @param isDefault true if the 'is default' style should be set, false if it should be cleared
+     */
+    public void setIsDefault(boolean isDefault) {
+
+        String style = "imagepointdefault";
+        if (isDefault) {
+            addStyleName(style);
+        } else {
+            removeStyleName(style);
+        }
+    }
+
 }
