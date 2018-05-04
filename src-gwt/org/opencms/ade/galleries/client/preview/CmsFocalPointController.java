@@ -380,30 +380,17 @@ public class CmsFocalPointController {
             transforms.add(
                 new CmsBoxFit(CmsBoxFit.Mode.scaleOnlyIfNecessary, wv, hv, info.getWidth(), info.getHeight()));
         } else {
-            transforms.add(
-                new CmsBoxFit(
-                    CmsBoxFit.Mode.scaleOnlyIfNecessary,
-                    wv,
-                    hv,
-                    crop.getTargetWidth(),
-                    crop.getTargetHeight()));
+            int wt, ht;
+            wt = crop.getTargetWidth() >= 0 ? crop.getTargetWidth() : info.getWidth();
+            ht = crop.getTargetHeight() >= 0 ? crop.getTargetHeight() : info.getHeight();
+            transforms.add(new CmsBoxFit(CmsBoxFit.Mode.scaleOnlyIfNecessary, wv, hv, wt, ht));
             if (crop.isCropped()) {
                 transforms.add(
-                    new CmsBoxFit(
-                        CmsBoxFit.Mode.scaleAlways,
-                        crop.getTargetWidth(),
-                        crop.getTargetHeight(),
-                        crop.getCropWidth(),
-                        crop.getCropHeight()));
+                    new CmsBoxFit(CmsBoxFit.Mode.scaleAlways, wt, ht, crop.getCropWidth(), crop.getCropHeight()));
                 transforms.add(new CmsTranslate(crop.getCropX(), crop.getCropY()));
             } else {
                 transforms.add(
-                    new CmsBoxFit(
-                        CmsBoxFit.Mode.scaleAlways,
-                        crop.getTargetWidth(),
-                        crop.getTargetHeight(),
-                        crop.getOrgWidth(),
-                        crop.getOrgHeight()));
+                    new CmsBoxFit(CmsBoxFit.Mode.scaleAlways, wt, ht, crop.getOrgWidth(), crop.getOrgHeight()));
             }
         }
         CmsCompositeTransform chain = new CmsCompositeTransform(transforms);
