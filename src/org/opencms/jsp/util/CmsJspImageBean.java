@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.loader.CmsImageScaler;
@@ -285,7 +286,9 @@ public class CmsJspImageBean {
 
             result.setWidth(targetWidth);
             result.setHeight(targetHeight);
-            if (baseScaler.getFocalPoint() != null) {
+
+            if ((baseScaler.getFocalPoint() != null)
+                && checkCropRegionContainsFocalPoint(baseScaler, baseScaler.getFocalPoint())) {
                 result.setType(8);
                 if (baseScaler.isCropping()) {
                     result.setCropArea(
@@ -331,6 +334,27 @@ public class CmsJspImageBean {
             result.setQuality(quality);
         }
         return result;
+    }
+
+    /**
+     * Helper method to check whether the focal point in the scaler is contained in the scaler's crop region.<p>
+     *
+     * If the scaler has no crop region, true is returned.
+     *
+     * @param scaler the scaler
+     * @return true if the scaler's crop region contains the focal point
+     */
+    private static boolean checkCropRegionContainsFocalPoint(CmsImageScaler scaler, CmsPoint focalPoint) {
+
+        if (!scaler.isCropping()) {
+            return true;
+        }
+        double x = focalPoint.getX();
+        double y = focalPoint.getY();
+        return (scaler.getCropX() <= x)
+            && (x < (scaler.getCropX() + scaler.getCropWidth()))
+            && (scaler.getCropY() <= y)
+            && (y < (scaler.getCropY() + scaler.getCropHeight()));
     }
 
     /**
@@ -478,7 +502,8 @@ public class CmsJspImageBean {
         try {
 
             double baseRatio;
-            if (getOriginalScaler().getFocalPoint() != null) {
+            if ((getOriginalScaler().getFocalPoint() != null)
+                && checkCropRegionContainsFocalPoint(getScaler(), getOriginalScaler().getFocalPoint())) {
                 // We use scaling mode 8 if there is a focal point, and in this case,
                 // the correct aspect ratio is width x height, not cropWidth x cropHeight
                 // even if cropping is set
