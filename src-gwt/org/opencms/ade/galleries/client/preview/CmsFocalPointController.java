@@ -37,6 +37,9 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -50,6 +53,8 @@ import java.util.function.Supplier;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -58,6 +63,7 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Handles manipulation of the focal point in the gallery dialog.<p>
@@ -94,6 +100,12 @@ public class CmsFocalPointController {
     /** The focal point location which was last saved. */
     private CmsPoint m_savedFocalPoint;
 
+    /** The reset button. */
+    private CmsPushButton m_reset;
+
+    /** The container. */
+    private FlowPanel m_container;
+
     /**
      * Creates a new instance.<p>
      *
@@ -106,6 +118,18 @@ public class CmsFocalPointController {
 
         m_croppingProvider = croppingProvider;
         m_imageInfoProvider = infoProvider;
+        m_reset = new CmsPushButton();
+        m_reset.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
+        String label = org.opencms.ade.galleries.client.Messages.get().key(
+            org.opencms.ade.galleries.client.Messages.GUI_GALLERY_RESET_FOCAL_POINT_0);
+        m_reset.setText(label);
+        m_reset.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                reset();
+            }
+        });
     }
 
     /**
@@ -156,6 +180,17 @@ public class CmsFocalPointController {
     }
 
     /**
+     * Gets the reset controls.<p>
+     *
+     * @return the reset controls
+     */
+    public Widget getResetControls() {
+
+        return m_reset;
+
+    }
+
+    /**
      * Called when the user clicks on the focal point widget.<p>
      *
      * This starts drag and drop.
@@ -164,6 +199,41 @@ public class CmsFocalPointController {
 
         if (ENABLED && isEditable()) {
             registerEventHandler();
+        }
+    }
+
+    /**
+     * Saves the focal point to a property on the image.<p>
+     */
+    public void reset() {
+
+        if (isEditable()) {
+
+            String val = "";
+            CmsUUID sid = m_imageInfoProvider.get().getStructureId();
+            List<CmsPropertyModification> propChanges = new ArrayList<>();
+            propChanges.add(new CmsPropertyModification(sid, CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT, val, false));
+            propChanges.add(new CmsPropertyModification(sid, CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT, val, true));
+            final CmsPropertyChangeSet changeSet = new CmsPropertyChangeSet(sid, propChanges);
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                @Override
+                public void execute() {
+
+                    CmsCoreProvider.getVfsService().saveProperties(changeSet, this);
+
+                }
+
+                @SuppressWarnings("synthetic-access")
+                @Override
+                protected void onResponse(Void result) {
+
+                    m_focalPoint = null;
+                    m_savedFocalPoint = null;
+                    updatePoint();
+                }
+            };
+            action.execute();
         }
     }
 
@@ -186,28 +256,15 @@ public class CmsFocalPointController {
         clearImagePoint();
         m_savedFocalPoint = m_imageInfoProvider.get().getFocalPoint();
         m_focalPoint = m_savedFocalPoint;
+        m_container = container;
 
         previewImage.addLoadHandler(new LoadHandler() {
 
             @SuppressWarnings("synthetic-access")
             public void onLoad(LoadEvent event) {
 
-                clearImagePoint();
                 updateScaling();
-                CmsPoint nativePoint;
-                if (m_focalPoint == null) {
-                    CmsPoint cropCenter = getCropCenter();
-                    nativePoint = cropCenter;
-                } else if (!getNativeCropRegion().contains(m_focalPoint)) {
-                    return;
-                } else {
-                    nativePoint = m_focalPoint;
-                }
-                m_pointWidget = new CmsFocalPoint(CmsFocalPointController.this);
-                m_pointWidget.setIsDefault(m_savedFocalPoint == null);
-                container.add(m_pointWidget);
-                CmsPoint screenPoint = m_coordinateTransform.transformBack(nativePoint);
-                m_pointWidget.setCenterCoordsRelativeToParent((int)screenPoint.getX(), (int)screenPoint.getY());
+                updatePoint();
             }
 
         });
@@ -240,7 +297,6 @@ public class CmsFocalPointController {
                 crop.getCropX() + (crop.getCropWidth() / 2),
                 crop.getCropY() + (crop.getCropHeight() / 2));
         }
-
     }
 
     /**
@@ -338,16 +394,12 @@ public class CmsFocalPointController {
     private void save() {
 
         if ((m_focalPoint != null) && isEditable()) {
-            m_savedFocalPoint = m_focalPoint;
-            if (m_pointWidget != null) {
-                m_pointWidget.setIsDefault(false);
-            }
             int x = (int)m_focalPoint.getX();
             int y = (int)m_focalPoint.getY();
             String val = "" + x + "," + y;
             CmsUUID sid = m_imageInfoProvider.get().getStructureId();
             List<CmsPropertyModification> propChanges = new ArrayList<>();
-            propChanges.add(new CmsPropertyModification(sid, CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT, val, true));
+            propChanges.add(new CmsPropertyModification(sid, CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT, val, false));
             final CmsPropertyChangeSet changeSet = new CmsPropertyChangeSet(sid, propChanges);
             CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
@@ -358,14 +410,46 @@ public class CmsFocalPointController {
 
                 }
 
+                @SuppressWarnings("synthetic-access")
                 @Override
                 protected void onResponse(Void result) {
-                    // do nothing
+
+                    m_savedFocalPoint = m_focalPoint;
+
+                    if (m_pointWidget != null) {
+                        m_pointWidget.setIsDefault(false);
+                    }
+
+                    m_reset.setEnabled(true);
                 }
             };
             action.execute();
 
         }
+    }
+
+    /**
+     * Updates the focal point widget.<p>
+     */
+    private void updatePoint() {
+
+        clearImagePoint();
+        CmsPoint nativePoint;
+        if (m_focalPoint == null) {
+            CmsPoint cropCenter = getCropCenter();
+            nativePoint = cropCenter;
+        } else if (!getNativeCropRegion().contains(m_focalPoint)) {
+            return;
+        } else {
+            nativePoint = m_focalPoint;
+        }
+        m_pointWidget = new CmsFocalPoint(CmsFocalPointController.this);
+        boolean isDefault = m_savedFocalPoint == null;
+        m_pointWidget.setIsDefault(isDefault);
+        m_reset.setEnabled(!isDefault);
+        m_container.add(m_pointWidget);
+        CmsPoint screenPoint = m_coordinateTransform.transformBack(nativePoint);
+        m_pointWidget.setCenterCoordsRelativeToParent((int)screenPoint.getX(), (int)screenPoint.getY());
     }
 
     /**

@@ -37,6 +37,8 @@ import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Image preview dialog controller handler.<p>
@@ -108,6 +110,9 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     /** The preview dialog. */
     private CmsImagePreviewDialog m_previewDialog;
 
+    /** Widget for additional data to show in properties dialog. */
+    private FlowPanel m_additionalPropWidget = new FlowPanel();
+
     /**
      * Constructor.<p>
      *
@@ -118,7 +123,17 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         super(resourcePreview);
         m_previewDialog = resourcePreview.getPreviewDialog();
         m_pointController = new CmsFocalPointController(() -> m_croppingParam, () -> getImageInfo());
+        Widget resetControls = m_pointController.getResetControls();
+        m_additionalPropWidget.add(resetControls);
+    }
 
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getAdditionalWidgetForPropertyTab()
+     */
+    @Override
+    public Widget getAdditionalWidgetForPropertyTab() {
+
+        return m_additionalPropWidget;
     }
 
     /**

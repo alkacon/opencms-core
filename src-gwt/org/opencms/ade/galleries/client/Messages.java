@@ -94,6 +94,9 @@ public final class Messages {
     public static final String GUI_GALLERY_NO_PARAMS_0 = "GUI_GALLERY_NO_PARAMS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_RESET_FOCAL_POINT_0 = "GUI_GALLERY_RESET_FOCAL_POINT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0 = "GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0";
 
     /** Message constant for key in the resource bundle. */
@@ -277,10 +280,10 @@ public final class Messages {
     public static final String GUI_PRIVIEW_BUTTON_RATIO_FIXED_0 = "GUI_PRIVIEW_BUTTON_RATIO_FIXED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
+    public static final String GUI_QUICK_FINDER_FILTER_0 = "GUI_QUICK_FINDER_FILTER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_QUICK_FINDER_FILTER_0 = "GUI_QUICK_FINDER_FILTER_0";
+    public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";

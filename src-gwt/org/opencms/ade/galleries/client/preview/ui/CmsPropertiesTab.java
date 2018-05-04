@@ -75,6 +75,10 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
             org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
         m_propertiesPanel.addStyleName(
             org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
+        Widget additional = handler.getAdditionalWidgetForPropertyTab();
+        if (additional != null) {
+            m_main.insert(additional, 0);
+        }
         m_main.insert(m_propertiesPanel, 0);
     }
 
