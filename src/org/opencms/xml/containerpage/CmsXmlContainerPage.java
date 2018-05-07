@@ -456,10 +456,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     }
 
     /**
-     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.xml.content.CmsXmlContent#initDocument(org.opencms.file.CmsObject, org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
     @Override
-    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
+    protected void initDocument(CmsObject cms, Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_document = document;
         m_contentDefinition = definition;
@@ -540,7 +540,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             // this can happen when adding the elements node to the xml content
                             // it is not dangerous since the link has to be set before saving
                         } else {
-                            elementId = new CmsLink(uriLink).getStructureId();
+                            CmsLink link = new CmsLink(uriLink);
+                            if (cms != null) {
+                                link.checkConsistency(cms);
+                            }
+                            elementId = link.getStructureId();
                         }
                         Element createNewElement = element.element(XmlNode.CreateNew.name());
                         boolean createNew = (createNewElement != null)
@@ -555,7 +559,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             // this can happen when adding the elements node to the xml content
                             // it is not dangerous since the link has to be set before saving
                         } else {
-                            formatterId = new CmsLink(formatterLink).getStructureId();
+                            CmsLink link = new CmsLink(formatterLink);
+                            if (cms != null) {
+                                link.checkConsistency(cms);
+                            }
+                            formatterId = link.getStructureId();
                         }
 
                         // the properties
@@ -587,6 +595,20 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     e);
             }
         }
+
+        if (cms != null) {
+            // this will remove all invalid links
+            getHandler().invalidateBrokenLinks(cms, this);
+        }
+    }
+
+    /**
+     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
+     */
+    @Override
+    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
+
+        initDocument(null, document, encoding, definition);
     }
 
     /**
