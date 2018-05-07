@@ -476,6 +476,13 @@ public class CmsLoginController {
                     passwordDialog);
                 return;
             }
+            // make sure we have a new session after login for security reasons
+            HttpSession session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(true);
+
             currentCms.loginUser(realUser, password);
             if (LOG.isInfoEnabled()) {
                 CmsRequestContext context = currentCms.getRequestContext();
