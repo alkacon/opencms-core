@@ -1255,6 +1255,12 @@ public final class OpenCmsCore {
             }
             return null;
         }
+        if (!getSessionManager().hasValidClientToken(req)) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Client token in session invalid.");
+            }
+            return null;
+        }
 
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
