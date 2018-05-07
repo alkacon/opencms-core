@@ -130,6 +130,7 @@ public class CmsFocalPointController {
                 reset();
             }
         });
+        m_reset.setVisible(false);
     }
 
     /**
@@ -265,6 +266,7 @@ public class CmsFocalPointController {
 
                 updateScaling();
                 updatePoint();
+                m_reset.setVisible(isEditable());
             }
 
         });
