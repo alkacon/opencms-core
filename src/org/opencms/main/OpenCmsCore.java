@@ -1039,6 +1039,12 @@ public final class OpenCmsCore {
             }
             return null;
         }
+        if (!getSessionManager().hasValidClientToken(req)) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Client token in session invalid.");
+            }
+            return null;
+        }
 
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
@@ -1095,10 +1101,11 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(". "
-                + Messages.get().getBundle().key(
-                    Messages.GUI_SHELL_VERSION_1,
-                    OpenCms.getSystemInfo().getVersionNumber()));
+            CmsLog.INIT.info(
+                ". "
+                    + Messages.get().getBundle().key(
+                        Messages.GUI_SHELL_VERSION_1,
+                        OpenCms.getSystemInfo().getVersionNumber()));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }

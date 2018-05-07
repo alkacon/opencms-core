@@ -78,6 +78,18 @@ import org.apache.commons.logging.Log;
  */
 public class CmsSessionManager {
 
+    /** Header key 'true-client-ip' used by akamai proxies. */
+    public static final String HEADER_TRUE_CLIENT_IP = "true-clinet-ip";
+
+    /** Header key 'user-agent'. */
+    public static final String HEADER_USER_AGENT = "user-agent";
+
+    /** Request header containing the real client IP address. */
+    public static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
+
+    /** Session attribute key for client token. */
+    private static final String CLIENT_TOKEN = "client-token";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSessionManager.class);
 
@@ -291,6 +303,25 @@ public class CmsSessionManager {
     public UserSessionMode getUserSessionMode() {
 
         return m_userSessionMode;
+    }
+
+    /**
+     * Returns whether the current request has a valid client token.<p>
+     * Used to prevent session hijacking.<p>
+     *
+     * @param req the current request
+     *
+     * @return <code>true</code> in case the request has a valid token
+     */
+    public boolean hasValidClientToken(HttpServletRequest req) {
+
+        String requestToken = generateClientToken(req);
+        String sessionToken = null;
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            sessionToken = (String)session.getAttribute(CLIENT_TOKEN);
+        }
+        return requestToken.equals(sessionToken);
     }
 
     /**
@@ -535,6 +566,8 @@ public class CmsSessionManager {
                         session.getMaxInactiveInterval());
                     // append the session info to the http session
                     session.setAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID, sessionInfo.getSessionId().clone());
+                    // store a client token to prevent session hijacking
+                    session.setAttribute(CLIENT_TOKEN, generateClientToken(req));
                     // update the session info user data
                     addSessionInfo(sessionInfo);
                 }
@@ -679,11 +712,12 @@ public class CmsSessionManager {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
             m_sessionCountTotal++;
             if (LOG.isInfoEnabled()) {
-                LOG.info(tid
-                    + Messages.get().getBundle().key(
-                        Messages.LOG_SESSION_CREATED_2,
-                        new Integer(m_sessionCountTotal),
-                        new Integer(m_sessionCountCurrent)));
+                LOG.info(
+                    tid
+                        + Messages.get().getBundle().key(
+                            Messages.LOG_SESSION_CREATED_2,
+                            new Integer(m_sessionCountTotal),
+                            new Integer(m_sessionCountCurrent)));
             }
         }
 
@@ -785,5 +819,30 @@ public class CmsSessionManager {
             return;
         }
         m_sessionStorageProvider.validate();
+    }
+
+    /**
+     * Generates a token based on hashed client ip and user agent.<p>
+     * Used to prevent session hijacking.<p>
+     *
+     * @param request the current request
+     *
+     * @return the client token
+     */
+    private String generateClientToken(HttpServletRequest request) {
+
+        String userAgent = request.getHeader(HEADER_USER_AGENT);
+
+        String ip = request.getHeader(HEADER_TRUE_CLIENT_IP);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ip)) {
+            ip = request.getHeader(HEADER_X_FORWARDED_FOR);
+            if ((ip != null) && ip.contains(",")) {
+                ip = ip.split(",")[0];
+            }
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return String.valueOf((userAgent + ip).hashCode());
     }
 }
