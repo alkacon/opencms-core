@@ -467,9 +467,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
      */
     public static String getTitle(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_TITLE_0)
-            + "OpenCms "
-            + OpenCms.getSystemInfo().getVersionNumber();
+        return Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_TITLE_0);
     }
 
     /**
