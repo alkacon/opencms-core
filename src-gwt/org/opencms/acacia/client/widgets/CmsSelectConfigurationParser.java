@@ -34,78 +34,30 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+
 /**
  * Parses the configuration for various select widgets, including multi-select and combo-box.<p>
  *
- * Use following syntax for the configuration:<p>
- *
- * <code>value='{text}' default='{true|false}' option='{text}' help='{text}|{more option definitions}</code><p>
- *
- * For example:<p>
- *
- * <code>value='value1' default='true' option='option1' help='help1'|value='value2' option='option2' help='help2'</code><p>
- *
- * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a
- * <code>value</code> must be present in the input.
- * There should be only one <code>default</code> set to <code>true</code>
- * in the input, if more than one is detected, only the first <code>default</code> found is actually used.
- * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>.
- * If no <code>help</code> is given, the default is <code>null</code>.<p>
- *
- * Shortcut syntax options:<p>
- *
- * If you don't specify the <code>value</code> key, the value is assumed to start at the first position of an
- * option definition. In this case the value must not be surrounded by the <code>'</code> chars.
- * Example: <code>value='some value' default='true'</code> can also be written as <code>some value default='true'</code>.<p>
- *
- * Only if you use the short value definition as described above, a default value can be marked with a <code>*</code>
- * at the end of the value definition.
- * Example: <code>value='some value' default='true'</code> can also be written as <code>some value*</code>.<p>
- *
- * Only if you use the short value definition as described above, you can also append the <code>option</code>
- * to the <code>value</code> using a <code>:</code>. In this case no <code>'</code> must surround the <code>option</code>.
- * Please keep in mind that in this case the value
- * itself can not longer contain a <code>:</code> char, since it would then be interpreted as a delimiter.
- * Example: <code>value='some value' option='some option'</code> can also be written as <code>some value:some option</code>.<p>
- *
- * Any combinations of the above described shortcuts are allowed in the configuration option String.
- * Here are some more examples of valid configuration option Strings:<p>
- *
- * <code>1*|2|3|4|5|6|7</code><br>
- * <code>1 default='true'|2|3|4|5|6|7</code><br>
- * <code>value='1' default='true'|value='2'|value='3'</code><br>
- * <code>value='1'|2*|value='3'</code><br>
- * <code>1*:option text|2|3|4</code><br>
- * <code>1* option='option text' help='some'|2|3|4</code><p>
+ * It expects the canonical format of the configuration options as it is produced
+ * by {@link org.opencms.widgets.CmsSelectWidgetOption#createConfigurationString(List)}
  */
 public class CmsSelectConfigurationParser {
 
-    /** Optional shortcut default marker. */
-    private static final String DEFAULT_MARKER = "*";
-
     /** Delimiter between option sets. */
-    private static final String INPUT_DELIMITER = "|";
+    private static final char INPUT_DELIMITER = '|';
+    /** Delimiter at the end of a value. */
+    private static final char VALUE_DELIMITER = '\'';
 
     /** Key prefix for the 'default'. */
-    private static final String KEY_DEFAULT = "default='true'";
-
-    /** Empty String to replaces unnecessary keys. */
-    private static final String KEY_EMPTY = "";
+    private static final String KEY_DEFAULT = "default='";
 
     /** Key prefix for the 'help' text. */
     private static final String KEY_HELP = "help='";
 
     /** Key prefix for the 'option' text. */
     private static final String KEY_OPTION = "option='";
-
-    /** Short key prefix for the 'option' text. */
-    private static final String KEY_SHORT_OPTION = ":";
-
-    /** Key suffix for the 'default' , 'help', 'option' text with following entrances.*/
-    private static final String KEY_SUFFIX = "' ";
-
-    /** Key suffix for the 'default' , 'help', 'option' text without following entrances.*/
-    private static final String KEY_SUFFIX_SHORT = "'";
 
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
@@ -134,6 +86,34 @@ public class CmsSelectConfigurationParser {
         m_helpTexts = new LinkedHashMap<String, String>();
         m_defaultValues = new ArrayList<String>();
         parseConfiguration();
+    }
+
+    /**
+     * Splits the options string at every unescaped input delimiter, i.e., every unescaped "|".
+     * @param input the options string
+     * @return the array with the various options
+     */
+    public static int findNextUnescapedSingleQuote(String input) {
+
+        //Note that we use a regex matching all "|" characters not prefixed by "\"
+        //Since we define a regex for matching, the input delimiter "|" needs to be escaped, as well as "\",
+        //which is even double-escaped - one escaping is due to the String, one due to the regex.
+        RegExp regex = RegExp.compile("(?<!\\\\)\\" + VALUE_DELIMITER);
+        MatchResult match = regex.exec(input);
+        return match.getIndex();
+    }
+
+    /**
+     * Splits the options string at every unescaped input delimiter, i.e., every unescaped "|".
+     * @param input the options string
+     * @return the array with the various options
+     */
+    public static String[] splitOptions(String input) {
+
+        //Note that we use a regex matching all "|" characters not prefixed by "\"
+        //Since we define a regex for matching, the input delimiter "|" needs to be escaped, as well as "\",
+        //which is even double-escaped - one escaping is due to the String, one due to the regex.
+        return input.split("(?<!\\\\)\\" + INPUT_DELIMITER);
     }
 
     /**
@@ -181,123 +161,55 @@ public class CmsSelectConfigurationParser {
     }
 
     /**
-     * Parses the configuration string.<p>
+     * Parses the configuration string if provided in canonical format.<p>
+     *
+     * At the client side, the string has always to be in the canonical format "value='...' default='...' option='...' help='...'|..."
+     * where only value is mandatory, the other things are optional.
+     *
+     * The format is produced by {@link org.opencms.widgets.CmsSelectWidgetOption#createConfigurationString(List)}.
      */
     private void parseConfiguration() {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration)) {
             //split the configuration in single strings to handle every string single.
-            String[] selectOptions = m_configuration.split("\\" + INPUT_DELIMITER);
+            String[] selectOptions = splitOptions(m_configuration);
 
             for (int i = 0; i < selectOptions.length; i++) {
-                //check if there are one or more parameters set in this substring.
-                boolean test_default = (selectOptions[i].indexOf(KEY_DEFAULT) >= 0);
-                boolean test_value = selectOptions[i].indexOf(KEY_VALUE) >= 0;
-                boolean test_option = selectOptions[i].indexOf(KEY_OPTION) >= 0;
-                boolean test_short_option = selectOptions[i].indexOf(KEY_SHORT_OPTION) >= 0;
-                boolean test_help = selectOptions[i].indexOf(KEY_HELP) >= 0;
-                boolean isDefault = false;
-                String value = null;
-                String label = null;
-                String help = null;
                 try {
-                    //check if there is a default value set.
-                    if ((selectOptions[i].indexOf(DEFAULT_MARKER) >= 0) || test_default) {
-                        //remember the position in the array.
-                        isDefault = true;
-                        //remove the declaration parameters.
-                        selectOptions[i] = selectOptions[i].replace(DEFAULT_MARKER, KEY_EMPTY);
-                        selectOptions[i] = selectOptions[i].replace(KEY_DEFAULT, KEY_EMPTY);
+                    String value;
+                    String label = "";
+                    boolean isDefault = false;
+                    String help = "";
+                    String option = selectOptions[i];
+                    option = option.replace("\\|", "|");
+
+                    int valuePos = option.indexOf(KEY_VALUE);
+                    int defaultPos = option.indexOf(KEY_DEFAULT);
+                    int optionPos = option.indexOf(KEY_OPTION);
+                    int helpPos = option.indexOf(KEY_HELP);
+                    if (valuePos != 0) {
+                        throw new Exception("Invalid select widget configuration \"" + option + "\" is ignored.");
                     }
-                    //check for values (e.g.:"value='XvalueX' ") set in configuration.
-                    if (test_value) {
-                        String sub = KEY_EMPTY;
-                        //check there are more parameters set, separated with space.
-                        if (selectOptions[i].indexOf(KEY_SUFFIX) >= 0) {
-                            //create substring e.g.:"value='XvalueX".
-                            sub = selectOptions[i].substring(
-                                selectOptions[i].indexOf(KEY_VALUE),
-                                selectOptions[i].indexOf(KEY_SUFFIX));
-                        }
-                        //if there are no more parameters set.
-                        else {
-                            //create substring e.g.:"value='XvalueX".
-                            sub = selectOptions[i].substring(
-                                selectOptions[i].indexOf(KEY_VALUE),
-                                selectOptions[i].length() - 1);
-                        }
-                        //transfer the extracted value to the value array.
-                        value = sub.replace(KEY_VALUE, KEY_EMPTY);
-                        //remove the parameter within the value.
-                        selectOptions[i] = selectOptions[i].replace(KEY_VALUE + value + KEY_SUFFIX_SHORT, KEY_EMPTY);
-                    }
-                    //no value parameter is set.
-                    else {
-                        //check there are more parameters set.
-                        if (test_short_option) {
-                            //transfer the separated value to the value array.
-                            value = selectOptions[i].substring(0, selectOptions[i].indexOf(KEY_SHORT_OPTION));
-                        }
-                        //no parameters set.
-                        else {
-                            //transfer the value set in configuration untreated to the value array.
-                            value = selectOptions[i];
-                        }
-                    }
-                    //check for options(e.g.:"option='XvalueX' ") set in configuration.
-                    if (test_option) {
-                        String sub = KEY_EMPTY;
-                        //check there are more parameters set, separated with space.
-                        if (selectOptions[i].indexOf(KEY_SUFFIX) >= 0) {
-                            //create substring e.g.:"option='XvalueX".
-                            sub = selectOptions[i].substring(
-                                selectOptions[i].indexOf(KEY_OPTION),
-                                selectOptions[i].indexOf(KEY_SUFFIX));
-                        }
-                        //if there are no more parameters set.
-                        else {
-                            //create substring e.g.:"option='XvalueX".
-                            sub = selectOptions[i].substring(
-                                selectOptions[i].indexOf(KEY_OPTION),
-                                selectOptions[i].lastIndexOf(KEY_SUFFIX_SHORT));
-                        }
-                        //transfer the extracted value to the option array.
-                        label = sub.replace(KEY_OPTION, KEY_EMPTY);
-                        //remove the parameter within the value.
-                        selectOptions[i] = selectOptions[i].replace(KEY_OPTION + label + KEY_SUFFIX_SHORT, KEY_EMPTY);
-                    }
-                    //check if there is a short form (e.g.:":XvalueX") of the option set in configuration.
-                    else if (test_short_option) {
-                        //transfer the extracted value to the option array.
-                        label = selectOptions[i].substring(selectOptions[i].indexOf(KEY_SHORT_OPTION) + 1);
-                    }
-                    //there are no options set in configuration.
-                    else {
-                        //option value is the same like the name value so the name value is transfered to the option array.
+                    int end = defaultPos >= 0
+                    ? defaultPos
+                    : optionPos >= 0 ? optionPos : helpPos >= 0 ? helpPos : option.length();
+                    value = option.substring((valuePos + KEY_VALUE.length()) - 1, end).trim();
+                    value = value.substring(1, value.length() - 1);
+
+                    isDefault = (defaultPos >= 0)
+                        && option.substring(defaultPos + KEY_DEFAULT.length()).startsWith("true");
+
+                    if (optionPos >= 0) {
+                        end = helpPos >= 0 ? helpPos : option.length();
+                        label = option.substring((optionPos + KEY_OPTION.length()) - 1, end).trim();
+                        label = label.substring(1, label.length() - 1);
+                    } else {
                         label = value;
                     }
-                    //check for help set in configuration.
-                    if (test_help) {
-                        String sub = KEY_EMPTY;
-                        //check there are more parameters set, separated with space.
-                        if (selectOptions[i].indexOf(KEY_SUFFIX) >= 0) {
-                            sub = selectOptions[i].substring(
-                                selectOptions[i].indexOf(KEY_HELP),
-                                selectOptions[i].indexOf(KEY_SUFFIX));
-                        }
-                        //if there are no more parameters set.
-                        else {
-                            sub = selectOptions[i].substring(
-                                selectOptions[i].indexOf(KEY_HELP),
-                                selectOptions[i].indexOf(KEY_SUFFIX_SHORT));
-                        }
-                        //transfer the extracted value to the help array.
-                        help = sub.replace(KEY_HELP, KEY_EMPTY);
-                        //remove the parameter within the value.
-                        selectOptions[i] = selectOptions[i].replace(KEY_HELP + help + KEY_SUFFIX_SHORT, KEY_EMPTY);
-
+                    if (helpPos >= 0) {
+                        help = option.substring((helpPos + KEY_HELP.length()) - 1, option.length()).trim();
+                        help = help.substring(1, help.length() - 1);
                     }
-                    //copy value and option to the Map.
                     m_options.put(value, label);
                     m_helpTexts.put(value, help);
                     if (isDefault) {

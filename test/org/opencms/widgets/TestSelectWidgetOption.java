@@ -224,6 +224,16 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
         expected4.add(new CmsSelectWidgetOption("c|"));
         expected4.add(new CmsSelectWidgetOption("|d"));
         assertEquals(expected4, result4);
+
+        // check for options/values starting with spaces
+        String options5 = "value=' a ' option=' b ' help=' '";
+        List<CmsSelectWidgetOption> result5 = CmsSelectWidgetOption.parseOptions(options5);
+        assertEquals(1, result5.size());
+        CmsSelectWidgetOption option = result5.get(0);
+        assertEquals(" a ", option.getValue());
+        assertEquals(" b ", option.getOption());
+        assertEquals(" ", option.getHelp());
+
     }
 
     /**
