@@ -70,6 +70,9 @@ import com.google.common.base.Optional;
  */
 public final class CmsSiteManagerImpl {
 
+    /** The default shared folder name. */
+    public static final String DEFAULT_SHARED_FOLDER = "shared";
+
     /** A placeholder for the title of the shared folder. */
     public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
 
@@ -843,6 +846,10 @@ public final class CmsSiteManagerImpl {
                 if (!root.startsWith(SITES_FOLDER)) {
                     m_additionalSiteRoots.add(root);
                 }
+            }
+
+            if (m_sharedFolder == null) {
+                m_sharedFolder = DEFAULT_SHARED_FOLDER;
             }
 
             // initialization is done, set the frozen flag to true
