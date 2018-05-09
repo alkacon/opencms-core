@@ -79,6 +79,10 @@ div.previewDialog div.previewTitle{
 	margin:2px;
 }
 
+.previewButtonBar > * {
+	margin-right: 10px !important; 
+}
+
 .savePropertiesButton{
 	position: absolute;
 	bottom: 1px;
@@ -139,14 +143,13 @@ table.infoTable tr, table.infoTable td{
 .propertyForm {
 	display: flex; 
 	align-items: center;
-	margin: 2px;
-	margin-left: 6px;
+	margin: 0 3px 3px 9px !important;
 } 
 
 .labelField{
 	font-weight:bold;
 	white-space: nowrap;
-	width: 125px;
+	width: 122px;
 }
 
 .inputField{

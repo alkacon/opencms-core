@@ -11,7 +11,6 @@
 	.value {}
 	 
 	.infoTable.infoTable {
-  		width: 100%;
   		background-color: #f0f0f6;
   		font-family: Open Sans;
   		font-size: 12px;
@@ -19,8 +18,9 @@
   		border: 1px solid #c9c9c9;
   		padding: 2px 5px;
   		border-radius: 4px;
-  		margin-bottom: 5px;
   		table-layout: fixed; 
+  		margin: 3px 1px 3px 2px !important;
+    	width: calc(100% - 5px) !important;
 	}
 	
 	.infoTable.infoTable td > * { 
@@ -55,8 +55,17 @@
 	
 	.removeButton {
 		width: 100px; 
-		margin-right: 200px;
-		float: right; 
+		float: right;
+		
+		 height: 16px !important;
+	     margin-right: 116px; 
+	}
+	
+	@external html-face ; 
+	
+	.removeButton .html-face {
+		line-height: 15px;
+	   	vertical-align: top;
 	}
 		
 	</ui:style>
