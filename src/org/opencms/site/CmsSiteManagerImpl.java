@@ -80,6 +80,9 @@ import com.google.common.collect.Maps;
  */
 public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
+    /** The default shared folder name. */
+    public static final String DEFAULT_SHARED_FOLDER = "shared";
+
     /** A placeholder for the title of the shared folder. */
     public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
 
@@ -1173,6 +1176,10 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 if (!root.startsWith(SITES_FOLDER) || (root.split("/").length >= 4)) {
                     m_additionalSiteRoots.add(root);
                 }
+            }
+
+            if (m_sharedFolder == null) {
+                m_sharedFolder = DEFAULT_SHARED_FOLDER;
             }
 
             // initialization is done, set the frozen flag to true
