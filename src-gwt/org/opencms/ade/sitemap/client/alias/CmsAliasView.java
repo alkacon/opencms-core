@@ -195,7 +195,7 @@ public class CmsAliasView extends Composite {
                 m_countLabel.setText(message);
             }
         });
-        setWidth("1150px"); //$NON-NLS-1$
+        setWidth("100%"); //$NON-NLS-1$
     }
 
     /**
