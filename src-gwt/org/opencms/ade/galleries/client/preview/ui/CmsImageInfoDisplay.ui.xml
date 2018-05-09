@@ -1,21 +1,95 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" 	
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	>
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+	
+	.infoTable {}
+	.value {}
+	 
+	.infoTable.infoTable {
+  		width: 100%;
+  		background-color: #f0f0f6;
+  		font-family: Open Sans;
+  		font-size: 12px;
+  		line-height: 14px;
+  		border: 1px solid #c9c9c9;
+  		padding: 2px 5px;
+  		border-radius: 4px;
+  		margin-bottom: 5px;
+  		table-layout: fixed; 
+	}
+	
+	.infoTable.infoTable td > * { 
+		display: inline-block; 
+	}
+	
+	
+	.infoTable.infoTable .label {
+		display: inline-block;
+		font-weight: bold;
+		font-size: 12px; 
+		line-height: 14px; 
+	}
+	
+	.infoTable.infoTable .value {
+		font-size: 12px; 
+		line-height: 14px; 
+	}
+	
+	
+	.infoTable.infoTable col:nth-child(1) {
+		width: 125px; 
+	}
+	
+	.infoTable.infoTable col:nth-child(2) {
+		width: 280px; 
+	}
+	
+	.infoTable.infoTable col:nth-child(3) {
+		width: 125px; 
+	}
+	
+	.removeButton {
+		width: 100px; 
+		margin-right: 200px;
+		float: right; 
+	}
+		
+	</ui:style>
 	<g:HTMLPanel>
-		<table class="{galleryResources.previewDialogCss.infoTable}">
+		<table class="{style.infoTable}">
 			<colgroup>
-    			<col width="15%" />
-    			<col width="35%" />
-	  			<col width="15%" />
-	  			<col width="35%" />
-			</colgroup>
-			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelPath" /></td><td colspan="3"><g:Label ui:field="m_displayPath" styleName="{resources.generalCss.textMedium}"/></td></tr>
-			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelName" /></td><td><g:Label ui:field="m_displayName" styleName="{resources.generalCss.textMedium}" /></td><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelFormat" /></td><td><g:Label ui:field="m_displayFormat" styleName="{resources.generalCss.textMedium}" /></td></tr>
-			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTitle" /></td><td><g:Label ui:field="m_displayTitle" styleName="{resources.generalCss.textMedium}" /></td><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelModified" /></td><td><g:Label ui:field="m_displayModified" styleName="{resources.generalCss.textMedium}" /></td></tr>
-			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelType" /></td><td><g:Label ui:field="m_displayType" styleName="{resources.generalCss.textMedium}" /></td><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelSize" /></td><td><g:Label ui:field="m_displaySize" styleName="{resources.generalCss.textMedium}" /></td></tr>
+  				<col width="125px"></col> 
+  				<col width="280px"></col>
+  				<col width="125px"></col>
+  				<col width="*"></col>
+			</colgroup> 
+			<tr>
+				<td><g:Label styleName="{style.label}"  ui:field="m_labelPath" /></td>
+				<td colspan="3"><g:Label ui:field="m_displayPath" styleName="{style.value}"/></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{style.label}"  ui:field="m_labelFormat" /></td>
+				<td><g:Label ui:field="m_displayFormat" styleName="{style.value}" /></td>
+				<td><g:Label styleName="{style.label}"  ui:field="m_labelCropFormat" /></td>
+				<td>
+					<g:Label ui:field="m_displayCropFormat" styleName="{style.value}" />
+					<cms:CmsPushButton ui:field="m_removeCrop" addStyleNames="{style.removeButton}"/>
+				</td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{style.label}"  ui:field="m_labelType" /></td>
+				<td><g:Label ui:field="m_displayType" styleName="{style.value}" /></td>
+				<td><g:Label styleName="{style.label}"  ui:field="m_labelPoint" /></td>
+				<td>
+					<g:Label ui:field="m_displayPoint" styleName="{style.value}" />
+					<cms:CmsPushButton ui:field="m_removePoint" addStyleNames="{style.removeButton}" />
+				</td>
+			</tr>
 		</table>
 	</g:HTMLPanel>	
 </ui:UiBinder> 

@@ -27,8 +27,13 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
+import org.opencms.ade.galleries.client.preview.CmsFocalPointController;
+import org.opencms.ade.galleries.client.preview.CmsImageFormatHandler;
+import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
-import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsPoint;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
 import java.util.HashMap;
@@ -49,11 +54,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChangeHandler<String> {
 
-    /** Text metrics key. */
-    private static final String TM_PREVIEW_TAB_PROPERTIES = "PropertiesTab";
-
     /** The tab handler. */
     private I_CmsPreviewHandler<?> m_handler;
+
+    /** The image info widget. */
+    private CmsImageInfoDisplay m_imageInfoDisplay = new CmsImageInfoDisplay(this::removeCrop, this::removePoint);
+
+    /** The resource info. */
+    private CmsResourceInfoBean m_info;
 
     /** The panel for the properties. */
     private FlowPanel m_propertiesPanel;
@@ -76,48 +84,45 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
         m_propertiesPanel.addStyleName(
             org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
         Widget additional = handler.getAdditionalWidgetForPropertyTab();
-        if (additional != null) {
-            m_main.insert(additional, 0);
+        if (handler instanceof CmsImagePreviewHandler) {
+            m_main.add(m_imageInfoDisplay);
+            ((CmsImagePreviewHandler)handler).addImagePointChangeHandler(this::updateImageInfo);
+            ((CmsImagePreviewHandler)handler).addCroppingChangeHandler(this::updateImageInfo);
         }
-        m_main.insert(m_propertiesPanel, 0);
+        m_main.add(m_propertiesPanel);
+        if (additional != null) {
+            m_main.add(additional);
+        }
+
     }
 
     /**
      * The generic function to display the resource properties.<p>
      *
-     * @param properties the properties values
-     * @param noEditReason the reason why the properties are not editable
+     * @param info the information
      */
-    public void fillProperties(Map<String, String> properties, String noEditReason) {
+    public void fillContent(CmsResourceInfoBean info) {
 
+        m_info = info;
         // width of a property form
-        int pannelWidth = calculateWidth(m_tabWidth);
         m_propertiesPanel.clear();
+        Map<String, String> properties = info.getProperties();
+        String noEditReason = info.getNoEditReason();
         if (properties != null) {
             Iterator<Entry<String, String>> it = properties.entrySet().iterator();
-            boolean isLeft = true;
             while (it.hasNext()) {
 
                 Entry<String, String> entry = it.next();
                 CmsPropertyForm property = new CmsPropertyForm(
                     entry.getKey(),
-                    pannelWidth,
+
                     entry.getValue(),
-                    noEditReason,
-                    TM_PREVIEW_TAB_PROPERTIES);
-                if (isLeft) {
-                    property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());
-                    isLeft = false;
-                } else {
-                    property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
-                    isLeft = true;
-                }
+                    noEditReason);
                 property.addValueChangeHandler(this);
                 m_propertiesPanel.add(property);
-
-                // TODO: set the calculated height of the scrolled panel with properties
             }
         }
+        updateImageInfo();
         setChanged(false);
     }
 
@@ -147,19 +152,6 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     }
 
     /**
-     * Updates the size of the dialog after the window was resized.<p>
-     *
-     * @param width the new width
-     * @param height the new height
-     */
-    public void updateSize(int width, int height) {
-
-        m_tabHeight = height;
-        m_tabWidth = width;
-        // TODO: implement
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDetailTab#getHandler()
      */
     @Override
@@ -169,17 +161,88 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     }
 
     /**
-     * Calculates the width of the properties panel without border, margin and padding.<p>
+     * Gets the current cropping as a string.<p>
      *
-     * '- 13px:'  2px - border, 2px - outer margin, 2px - inner margin, 2px border, 5px padding
-     * '/ 2': two colums
-     * '-18': some offset (The input field needs more place because of the border)
-     *
-     * @param width the width of the preview dialog containing all decorations
-     * @return the width of the properties panel
+     * @return the string representing the currently selected cropping
      */
-    private int calculateWidth(int width) {
+    private String getCrop() {
 
-        return ((width - 13) / 2) - 18;
+        CmsImagePreviewHandler handler = getImagePreviewHandler();
+        if (handler != null) {
+            CmsCroppingParamBean crop = handler.getCroppingParam();
+            if ((crop != null) && crop.isCropped()) {
+                return "" + crop.getCropWidth() + " x " + crop.getCropHeight();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the image preview handler, or null if there is no image preview handler.<p>
+     *
+     * @return the image preview handler or null
+     */
+    private CmsImagePreviewHandler getImagePreviewHandler() {
+
+        if (m_handler == null) {
+            return null;
+        }
+        if (m_handler instanceof CmsImagePreviewHandler) {
+            return (CmsImagePreviewHandler)m_handler;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the currently selected focal point as a string.<p>
+     *
+     * @return the focal point string
+     */
+    private String getPoint() {
+
+        CmsImagePreviewHandler handler = getImagePreviewHandler();
+        if (handler == null) {
+            return null;
+        }
+
+        CmsPoint point = handler.getImageInfo().getFocalPoint();
+        if (point == null) {
+            return null;
+        }
+        int x = (int)point.getX();
+        int y = (int)point.getY();
+        return "" + x + " , " + y;
+    }
+
+    /**
+     * Removes the cropping.
+     */
+    private void removeCrop() {
+
+        CmsImageFormatHandler formatHandler = getImagePreviewHandler().getFormatHandler();
+        formatHandler.onRemoveCropping();
+        updateImageInfo();
+    }
+
+    /**
+     * Removes the focal point.
+     */
+    private void removePoint() {
+
+        CmsFocalPointController controller = getImagePreviewHandler().getFocalPointController();
+        controller.reset();
+    }
+
+    /**
+     * Updates the image information.
+     */
+    private void updateImageInfo() {
+
+        String crop = getCrop();
+        String point = getPoint();
+        m_imageInfoDisplay.fillContent(m_info, crop, point);
     }
 }

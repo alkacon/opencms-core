@@ -32,13 +32,13 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Image preview dialog controller handler.<p>
@@ -98,20 +98,23 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         width
     }
 
+    /** List of handlers for cropping changes. */
+    private List<Runnable> m_croppingHandlers = new ArrayList<>();
+
     /** The cropping parameter. */
     private CmsCroppingParamBean m_croppingParam;
 
     /** The image format handler. */
     private CmsImageFormatHandler m_formatHandler;
 
+    /** List of handlers for focal point changes. */
+    private List<Runnable> m_imagePointHandlers = new ArrayList<>();
+
     /** The focal point controller. */
     private CmsFocalPointController m_pointController;
 
     /** The preview dialog. */
     private CmsImagePreviewDialog m_previewDialog;
-
-    /** Widget for additional data to show in properties dialog. */
-    private FlowPanel m_additionalPropWidget = new FlowPanel();
 
     /**
      * Constructor.<p>
@@ -122,18 +125,30 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
 
         super(resourcePreview);
         m_previewDialog = resourcePreview.getPreviewDialog();
-        m_pointController = new CmsFocalPointController(() -> m_croppingParam, () -> getImageInfo());
-        Widget resetControls = m_pointController.getResetControls();
-        m_additionalPropWidget.add(resetControls);
+        m_pointController = new CmsFocalPointController(
+            () -> m_croppingParam,
+            this::getImageInfo,
+            this::onImagePointChanged);
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getAdditionalWidgetForPropertyTab()
+     * Adds a handler for cropping changes.<p>
+     *
+     * @param action the handler to add
      */
-    @Override
-    public Widget getAdditionalWidgetForPropertyTab() {
+    public void addCroppingChangeHandler(Runnable action) {
 
-        return m_additionalPropWidget;
+        m_croppingHandlers.add(action);
+    }
+
+    /**
+     * Adds a handler for focal point changes.<p>
+     *
+     * @param onImagePointChanged the handler to add
+     */
+    public void addImagePointChangeHandler(Runnable onImagePointChanged) {
+
+        m_imagePointHandlers.add(onImagePointChanged);
     }
 
     /**
@@ -144,6 +159,27 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     public CmsCroppingParamBean getCroppingParam() {
 
         return m_croppingParam;
+    }
+
+    /**
+     * Gets the focal point controller.<p>
+     *
+     * @return the focal point controller
+     */
+    public CmsFocalPointController getFocalPointController() {
+
+        return m_pointController;
+    }
+
+    /**
+     * Gets the format handler.<p>
+     *
+     * @return the format handler
+     */
+    public CmsImageFormatHandler getFormatHandler() {
+
+        return m_formatHandler;
+
     }
 
     /**
@@ -194,16 +230,6 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
-     * Gets the focal point controller.<p>
-     *
-     * @return the focal point controller
-     */
-    public CmsFocalPointController getImagePointController() {
-
-        return m_pointController;
-    }
-
-    /**
      * Returns the cropping parameter.<p>
      *
      * @param imageHeight the original image height
@@ -239,6 +265,7 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         }
         m_previewDialog.resetPreviewImage(
             viewLink + "?" + getPreviewScaleParam(m_croppingParam.getOrgHeight(), m_croppingParam.getOrgWidth()));
+        onCroppingChanged();
     }
 
     /**
@@ -251,6 +278,28 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         m_formatHandler = formatHandler;
         m_croppingParam = m_formatHandler.getCroppingParam();
         m_formatHandler.addValueChangeHandler(this);
+        onCroppingChanged();
+    }
+
+    /**
+     * Calls all cropping change handlers.
+     */
+    private void onCroppingChanged() {
+
+        for (Runnable action : m_croppingHandlers) {
+            action.run();
+        }
+    }
+
+    /**
+     * Calls all focal point change handlers.<p>
+     */
+    private void onImagePointChanged() {
+
+        for (Runnable handler : m_imagePointHandlers) {
+            handler.run();
+        }
+
     }
 
 }

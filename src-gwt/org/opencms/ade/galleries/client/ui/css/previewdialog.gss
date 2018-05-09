@@ -136,15 +136,22 @@ table.infoTable tr, table.infoTable td{
 	float:right;
 }
 
+.propertyForm {
+	display: flex; 
+	align-items: center;
+	margin: 2px;
+	margin-left: 6px;
+} 
+
 .labelField{
-	float:left;
 	font-weight:bold;
 	white-space: nowrap;
+	width: 125px;
 }
 
 .inputField{
-	float:right;
-	margin-left:2px;
+	-ms-flex: 1; 
+	flex: 1; 
 }
 
 /* Image format tab. */
@@ -177,6 +184,8 @@ table.infoTable tr, table.infoTable td{
 .formatLabel{
 	font-weight:bold;
 }
+
+
 
 .formatLabel, .formatText, .formatSelectBox{
 	display: inline-block;

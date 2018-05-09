@@ -77,9 +77,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     /** The format tab. */
     private CmsImageFormatsTab m_imageFormatTab;
 
-    /** The infos tab. */
-    private CmsImageInfoTab m_imageInfosTab;
-
     /** The initial fill flag. */
     private boolean m_initialFill = true;
 
@@ -113,9 +110,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public void fillContent(CmsImageInfoBean infoBean) {
 
         // properties tab
-        m_propertiesTab.fillProperties(infoBean.getProperties(), infoBean.getNoEditReason());
-
-        m_imageInfosTab.fillContent(infoBean);
+        m_propertiesTab.fillContent(infoBean);
         if (m_initialFill) {
             if (getGalleryMode() == GalleryMode.widget) {
                 m_imageFormatTab.fillContent(infoBean);
@@ -154,7 +149,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         // add time stamp to override image caching
         urlScaled.append("&time=").append(System.currentTimeMillis());
         m_previewImage.setUrl(urlScaled.toString());
-        getHandler().getImagePointController().updateImage(panel, m_previewImage);
+        getHandler().getFocalPointController().updateImage(panel, m_previewImage);
         panel.add(m_previewImage);
         m_previewPanel.setWidget(panel);
     }
@@ -232,8 +227,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
                 m_tabbedPanel.add(m_imageAdvancedTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEADVANCED_0));
             }
         }
-        m_imageInfosTab = new CmsImageInfoTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
-        m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEINFOS_0));
         m_tabbedPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {

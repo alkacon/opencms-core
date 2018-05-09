@@ -641,6 +641,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          *
          * @return the CSS class name
          */
+        String propertyForm();
+
+        /** Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String propertyLeft();
 
         /** Access method.<p>

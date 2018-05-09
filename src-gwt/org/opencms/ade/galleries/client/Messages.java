@@ -211,6 +211,9 @@ public final class Messages {
     public static final String GUI_PREVIEW_BUTTON_DIS_CROPPED_0 = "GUI_PREVIEW_BUTTON_DIS_CROPPED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_REMOVE_0 = "GUI_PREVIEW_BUTTON_REMOVE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -235,10 +238,16 @@ public final class Messages {
     public static final String GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0 = "GUI_PREVIEW_CONFIRM_LEAVE_SAVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_CROPFORMAT_0 = "GUI_PREVIEW_LABEL_CROPFORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_DATEMODIFIED_0 = "GUI_PREVIEW_LABEL_DATEMODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_DESCRIPTION_0 = "GUI_PREVIEW_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_FOCALPOINT_0 = "GUI_PREVIEW_LABEL_FOCALPOINT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_FORMAT_0 = "GUI_PREVIEW_LABEL_FORMAT_0";
@@ -251,6 +260,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_SIZE_0 = "GUI_PREVIEW_LABEL_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_TYPE_0 = "GUI_PREVIEW_LABEL_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_WIDTH_0 = "GUI_PREVIEW_LABEL_WIDTH_0";
@@ -272,6 +284,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_TITLE_0 = "GUI_PREVIEW_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_VALUE_TYPE_1 = "GUI_PREVIEW_VALUE_TYPE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0 = "GUI_PRIVIEW_BUTTON_NOT_EDITABLE_0";

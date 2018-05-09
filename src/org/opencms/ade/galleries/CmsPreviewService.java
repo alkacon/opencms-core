@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
@@ -80,6 +81,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * Handles all RPC services related to the gallery preview dialog.<p>
@@ -290,15 +293,22 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         resInfo.setNoEditReason(new CmsResourceUtil(cms, resource).getNoEditReason(wpLocale, true));
         // reading default explorer-type properties
         CmsExplorerTypeSettings setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        List<String> properties = setting.getProperties();
-        String reference = setting.getReference();
-
-        // looking up properties from referenced explorer types if properties list is empty
-
-        while ((properties.size() == 0) && !CmsStringUtil.isEmptyOrWhitespaceOnly(reference)) {
-            setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(reference);
+        List<String> properties;
+        if (OpenCms.getResourceManager().matchResourceType(
+            CmsResourceTypeImage.getStaticTypeName(),
+            resource.getTypeId())) {
+            properties = Lists.newArrayList(
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                CmsPropertyDefinition.PROPERTY_COPYRIGHT);
+        } else {
             properties = setting.getProperties();
-            reference = setting.getReference();
+            String reference = setting.getReference();
+            while ((properties.size() == 0) && !CmsStringUtil.isEmptyOrWhitespaceOnly(reference)) {
+                // looking up properties from referenced explorer types if properties list is empty
+                setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(reference);
+                properties = setting.getProperties();
+                reference = setting.getReference();
+            }
         }
         Map<String, String> props = new LinkedHashMap<String, String>();
         Iterator<String> propIt = properties.iterator();

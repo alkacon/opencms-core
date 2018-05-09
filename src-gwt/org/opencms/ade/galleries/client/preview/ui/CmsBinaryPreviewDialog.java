@@ -70,7 +70,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     public void fillContent(CmsResourceInfoBean infoBean) {
 
         fillPreviewPanel(infoBean);
-        m_propertiesTab.fillProperties(infoBean.getProperties(), infoBean.getNoEditReason());
+        m_propertiesTab.fillContent(infoBean);
     }
 
     /**
