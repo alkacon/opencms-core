@@ -1,4 +1,4 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, mce-branding-powered-by, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -293,12 +293,12 @@ div.tinymceToolbarContainer > div{
 	white-space: normal;
 }
 
-.mce-branding-powered-by{
+.mce-branding{
 	display: none !important;
 }
 
 /* this styles the tinymce toolbar */
-.attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child{
+.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part{
 	position: absolute;
     right: -1px;
     top: -2px;
@@ -306,9 +306,9 @@ div.tinymceToolbarContainer > div{
     display: none;
 }
 
-.attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child > .mce-container-body{
+.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part > .mce-container-body{
 	background: inherit;
-    bottom: 0;
+    bottom: -2px;
     max-width: 100%;
     position: absolute;
     right: 0;
@@ -316,6 +316,10 @@ div.tinymceToolbarContainer > div{
     border-right: 1px solid value("constants.css.borderColorEditor");
     border-left: 1px solid value("constants.css.borderColorEditor");
     border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
+}
+
+.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part > .mce-container-body > div{
+	border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
 }
 
 div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
@@ -346,7 +350,7 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	background: transparent;
 }
 
-.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-panel:first-child, 
+.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-top-part, 
 .attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
 	display: block;	
 }
