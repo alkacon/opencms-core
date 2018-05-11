@@ -61,6 +61,7 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspTagLink;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -769,31 +770,39 @@ public class CmsADEManager {
             CmsResourceFilter.ALL.addRequireVisible());
         boolean hasWrite = false;
         if (hasView) {
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            hasView = (settings == null) || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
-            if (hasView
-                && CmsResourceTypeXmlContent.isXmlContent(resource)
-                && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-                if (contextPath == null) {
-                    contextPath = resource.getRootPath();
-                }
-                CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());
-                if (localConfigData != null) {
-                    Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
-                    hasView = elmenetViews.containsKey(localConfigData.getElementView())
-                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
+                hasView = (settings == null)
+                    || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
+                if (hasView
+                    && CmsResourceTypeXmlContent.isXmlContent(resource)
+                    && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                    if (contextPath == null) {
+                        contextPath = resource.getRootPath();
+                    }
+                    CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+                        type.getTypeName());
+                    if (localConfigData != null) {
+                        Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
+                        hasView = elmenetViews.containsKey(localConfigData.getElementView())
+                            && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
+                    }
                 }
+                // the user may only have write permissions if he is allowed to view the resource
+                hasWrite = hasView
+                    && cms.hasPermissions(
+                        resource,
+                        CmsPermissionSet.ACCESS_WRITE,
+                        false,
+                        CmsResourceFilter.IGNORE_EXPIRATION)
+                    && ((settings == null)
+                        || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
+            } catch (CmsLoaderException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                hasWrite = false;
             }
-            // the user may only have write permissions if he is allowed to view the resource
-            hasWrite = hasView
-                && cms.hasPermissions(
-                    resource,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION)
-                && ((settings == null) || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
         }
 
         String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
