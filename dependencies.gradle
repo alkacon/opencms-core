@@ -1,4 +1,17 @@
 dependencies {
+
+	// internal source set dependencies
+	modulesCompile sourceSets.main.output
+    setupCompile sourceSets.main.output
+	gwtCompile sourceSets.main.output
+	gwtCompile sourceSets.modules.output
+	testCompile fileTree('webapp/setup/database'){ include '**/*.jar' }
+	testCompile sourceSets.setup.output
+	testCompile sourceSets.modules.output
+	testCompile sourceSets.gwt.output
+	testGwtCompile sourceSets.main.output
+	testGwtCompile sourceSets.modules.output
+
     compile group: 'javax.servlet', name: 'jsp-api', version: '2.0'
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 

@@ -132,9 +132,6 @@ configurations.all {
     transitive = false;
 }
 
-// import dependencies
-apply from: 'dependencies.gradle'
-
 sourceSets{
     main {
         java.srcDirs=['src']
@@ -163,17 +160,8 @@ sourceSets{
     }
 }
 
-// adding generated dependencies during configuration phase to avoid build path problems in IDE
-sourceSets.modules.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.setup.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.gwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-sourceSets.test.compileClasspath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-sourceSets.test.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-sourceSets.test.compileClasspath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
-sourceSets.testGwt.compileClasspath += files(sourceSets.main.output.classesDir) { builtBy 'compileJava' }
-sourceSets.testGwt.compileClasspath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
+// import dependencies
+apply from: 'dependencies.gradle'
 
 task wrapper(type: Wrapper){
 	gradleVersion = '4.4'
@@ -198,7 +186,7 @@ task enhance {
 	    )
 
 	    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
-	        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
+	        fileset(dir: "${sourceSets.main.java.outputDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
 	        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
 	    }
     }
@@ -453,7 +441,7 @@ task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
             // Generated resources
             sourceSets.gwt.output.resourcesDir,
             // Generated classes
-            sourceSets.gwt.output.classesDir,
+	        sourceSets.gwt.java.outputDir,
             // Dependecies
             sourceSets.gwt.compileClasspath,
         ]
@@ -806,14 +794,14 @@ allModuleNames.split(',').each{ moduleName ->
                     // Generated resources
                     sourceSets.gwt.output.resourcesDir,
                     // Generated classes
-                    sourceSets.gwt.output.classesDir,
+                    sourceSets.gwt.java.outputDir,
                     // Dependecies
                     sourceSets.gwt.compileClasspath,
 
                     // Souceset folders of the current module
                     sourceSets[moduleName+'_gwt'].java.srcDirs,
                     sourceSets[moduleName+'_gwt'].output.resourcesDir,
-                    sourceSets[moduleName+'_gwt'].output.classesDir
+                    sourceSets[moduleName+'_gwt'].java.outputDir
                 ]
             }
 
@@ -850,9 +838,9 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
         dist_task.dependencies.each{ dep ->
             def depCompileName = 'compile'+dep.replaceAll('\\.','')+'java'
             tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals(depCompileName)}.each {comp_task ->
-                sourceSets[dist_task.moduleName].compileClasspath += files(sourceSets[dep].output.classesDir) { builtBy comp_task.name }
+                sourceSets[dist_task.moduleName].compileClasspath += files(sourceSets[dep].java.outputDir) { builtBy comp_task.name }
                 // we need to manipulate the classpath of the java doc task specifically
-                tasks['javadoc_'+dist_task.moduleName].classpath += files(sourceSets[dep].output.classesDir) { builtBy comp_task.name }
+                tasks['javadoc_'+dist_task.moduleName].classpath += files(sourceSets[dep].java.outputDir) { builtBy comp_task.name }
             }
         }
         tasks['jar_'+dist_task.moduleName].dependsOn{
@@ -1064,16 +1052,12 @@ task bindist (dependsOn: war, type: Zip){
 
 
 test {
-    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-    classpath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-    classpath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-    classpath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.output.classesDir
+    testClassesDirs = files(sourceSets.test.java.outputDir)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
@@ -1085,10 +1069,7 @@ test {
 
 task testSingle(type: Test, dependsOn: [compileTestJava]) {
     description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
-    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
-    classpath += files(sourceSets.setup.output.classesDir) { builtBy 'setupClasses' }
-    classpath += files(sourceSets.modules.output.classesDir) { builtBy 'modulesClasses' }
-    classpath += files(sourceSets.gwt.output.classesDir) { builtBy 'gwtClasses' }
+    classpath +=sourceSets.test.compileClasspath
     useJUnit()
     if (!project.hasProperty('testCaseToRun')){
         ext {
@@ -1102,7 +1083,7 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.test.output.classesDir
+    testClassesDirs = files(sourceSets.test.java.outputDir)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
@@ -1148,7 +1129,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    testClassesDir = sourceSets.testGwt.output.classesDir
+    testClassesDirs = files(sourceSets.testGwt.java.outputDir)
     systemProperties['gwt.args'] = "-logLevel WARN"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
@@ -1590,7 +1571,7 @@ install {
 
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ["-sourcepath", ""]
+    options.sourcepath=files()
     options.encoding='UTF-8'
 }
 tasks.withType(Javadoc) {
