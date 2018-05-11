@@ -12,8 +12,8 @@
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
-                              <p>The version of TinyMCE is 4.6.2</p>]]></description>
-		<version>10.5.3</version>
+                              <p>The version of TinyMCE is 4.7.12</p>]]></description>
+		<version>10.5.4</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
 		<datecreated/>
