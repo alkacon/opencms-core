@@ -27,7 +27,7 @@ OpenCms 10.5.4 - XXXX, 2018
 * Fixed issue #565 with improved logging in XML entity resolver, PR provided by gallardo.
 * Fixed issue #570 with improved logging when creating of SOLR containers fails, PR provided by gallardo.
 * Fixed issue #573 where displaying gallery dialog failed due to missing explorer types.
-
+* Fixed issue #590 where additional request parameters configured in the jsp-search configuration content where not taken into account.
 
 OpenCms 10.5.3 - October 18, 2017
 * Fixed issue #535 with UI element positioning in Chrome 61.
