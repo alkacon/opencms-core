@@ -11,7 +11,6 @@
  	<extend-property name="locale" values="en,de,it"/>
 	<set-property-fallback name="locale" value="en"/>
 	<set-property name="locale" value="en,de,it"/>
-	<collapse-property name="locale" values="*" />
 	<set-property name="user.agent" value="ie10,gecko1_8,safari" />
 
 	<define-property name="fileapi.support" values="formdata,no" />
@@ -85,6 +84,9 @@
 	<set-configuration-property name="CssResource.enableGss" value="true" />
 	<set-configuration-property name="CssResource.legacy" value="true" />
 <!--  	<set-configuration-property name="CssResource.conversionMode" value="strict" /> -->
+
+	<!-- Building only a single permutation to speed up build. -->
+	<collapse-all-properties />
 
 	<!-- down here only debugging stuff, should be commented out for release building -->   
 
