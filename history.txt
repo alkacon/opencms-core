@@ -15,8 +15,13 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 10.5.4 - XXXX, 2018
+OpenCms 10.5.4 - May 16, 2018
+! Updated CodeMirror to version 5.37.0.
+! Updated TinyMCE to version 4.7.12.
 ! Added 'publish scheduled' option to page editor context menu.
+! Improved security by always starting a new HttpSession on login.
+! Improved security by using a client id token to prevent session hijacking.
+* Fixing issue where sitemap modified  and deleted lists could exceed additional info size limit. 
 * Fixing potential memory leak during PDF extraction.
 * Fixed issue #513 where XML contents with content locales not configured in the system configuration would jeopardize the overall locale handling.
 * Fixed issue #547 where selecting a date with the date picker failed.
