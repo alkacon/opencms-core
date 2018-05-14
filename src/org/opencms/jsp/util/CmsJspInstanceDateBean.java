@@ -85,6 +85,7 @@ public class CmsJspInstanceDateBean {
          */
         public CmsDateFormatOption(String configString, Locale locale)
         throws IllegalArgumentException {
+
             if (null != configString) {
                 String[] config = configString.split("\\|");
                 String datePattern = config[0];
@@ -205,8 +206,22 @@ public class CmsJspInstanceDateBean {
      * @param series the series, the event is part of.
      */
     public CmsJspInstanceDateBean(Date start, CmsJspDateSeriesBean series) {
+
         m_start = start;
         m_series = series;
+    }
+
+    /** 
+     * Constructor to wrap a single date as instance date.
+     * This will allow to use the format options.
+     * 
+     * @param date the date to wrap
+     * @param locale the locale to use for formatting the date.
+     * 
+     */
+    public CmsJspInstanceDateBean(Date date, Locale locale) {
+
+        this(date, new CmsJspDateSeriesBean(Long.toString(date.getTime()), locale));
     }
 
     /**
