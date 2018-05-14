@@ -58,20 +58,21 @@ import org.opencms.ui.components.codemirror.CmsCodeMirror.CodeMirrorLanguage;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.event.Action;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.ui.ComboBox;
 
 /**
  * The plain text editor.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsSourceEditor
 implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasShortcutActions {
 
@@ -210,6 +211,7 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
      * Constructor.<p>
      */
     public CmsSourceEditor() {
+
         m_shortcutActions = new HashMap<Action, Runnable>();
         m_shortcutActions.put(ACTION_SAVE, new Runnable() {
 
