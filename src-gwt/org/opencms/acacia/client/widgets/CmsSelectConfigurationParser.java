@@ -27,6 +27,7 @@
 
 package org.opencms.acacia.client.widgets;
 
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class CmsSelectConfigurationParser {
 
     /** Delimiter between option sets. */
     private static final char INPUT_DELIMITER = '|';
+
     /** Delimiter at the end of a value. */
     private static final char VALUE_DELIMITER = '\'';
 
@@ -111,9 +113,32 @@ public class CmsSelectConfigurationParser {
     public static String[] splitOptions(String input) {
 
         //Note that we use a regex matching all "|" characters not prefixed by "\"
+
         //Since we define a regex for matching, the input delimiter "|" needs to be escaped, as well as "\",
         //which is even double-escaped - one escaping is due to the String, one due to the regex.
-        return input.split("(?<!\\\\)\\" + INPUT_DELIMITER);
+
+        // emulate missing lookbehinds in JS regexes by first reversing the input,
+        // then using a split with lookaheads, and finally reversing the parts resulting
+        // from the split
+        String reverse = reverse(input);
+        String[] parts = reverse.split("\\|(?!\\\\)");
+
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = reverse(parts[i]);
+        }
+        return parts;
+
+    }
+
+    /**
+     * Reverses a string.<p>
+     *
+     * @param input the input string
+     * @return the reversed string
+     */
+    private static String reverse(String input) {
+
+        return new StringBuilder(input).reverse().toString();
     }
 
     /**
