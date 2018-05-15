@@ -77,7 +77,8 @@ public class CmsTypeComboWidget extends CmsComboWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        return createConfiguration();
+        return CmsSelectWidgetOption.createConfigurationString(
+            CmsSelectWidgetOption.parseOptions(createConfiguration()));
     }
 
     /**
