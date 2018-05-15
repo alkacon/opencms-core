@@ -89,12 +89,14 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
      */
     protected CmsObject registerSession(HttpServletRequest request, CmsObject cms) throws CmsException {
 
-        // make sure we have a new session after login for security reasons
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
+        if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            // make sure we have a new session after login for security reasons
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            session = request.getSession(true);
         }
-        session = request.getSession(true);
 
         // update the request context
         cms = OpenCmsCore.getInstance().updateContext(request, cms);
