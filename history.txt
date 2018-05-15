@@ -21,18 +21,18 @@ OpenCms 10.5.4 - May 16, 2018
 ! Added 'publish scheduled' option to page editor context menu.
 ! Improved security by always starting a new HttpSession on login.
 ! Improved security by using a client id token to prevent session hijacking.
-* Fixing issue where sitemap modified  and deleted lists could exceed additional info size limit. 
+* Fixed issue where sitemap modified and deleted lists could exceed the user "additional info" DB size limit. 
 * Fixing potential memory leak during PDF extraction.
-* Fixed issue #513 where XML contents with content locales not configured in the system configuration would jeopardize the overall locale handling.
+* Fixed issue #513 where XML contents with locales not configured in opencms-system.xml would jeopardize the locale handling.
 * Fixed issue #547 where selecting a date with the date picker failed.
 * Fixed issue #548 where missing detail pages would lead to null pointer exceptions.
 * Fixed issue #553 where adding a model group to a page failed, PR by koronchik.
 * Fixed issue #558 where flying saucer PDF library was updated to improve security, PR by andreasrosdal.
-* Fixed issue #564 with improved handling of invalid formatter configurations, PR provided by gallardo.
-* Fixed issue #565 with improved logging in XML entity resolver, PR provided by gallardo.
-* Fixed issue #570 with improved logging when creating of SOLR containers fails, PR provided by gallardo.
-* Fixed issue #573 where displaying gallery dialog failed due to missing explorer types.
-* Fixed issue #590 where additional request parameters configured in the jsp-search configuration content where not taken into account.
+* Fixed issue #564 with improved handling of invalid formatter configurations, PR by gallardo.
+* Fixed issue #565 with improved logging in XML entity resolver, PR by gallardo.
+* Fixed issue #570 with improved logging when creating of SOLR containers failed, PR by gallardo.
+* Fixed issue #573 where displaying the gallery dialog failed due to missing explorer types.
+* Fixed issue #590 where request parameters configured in the jsp-search configuration where not taken into account.
 
 OpenCms 10.5.3 - October 18, 2017
 * Fixed issue #535 with UI element positioning in Chrome 61.
