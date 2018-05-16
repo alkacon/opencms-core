@@ -57,15 +57,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.ui.TextField;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * The source search app.<p>
@@ -185,8 +185,9 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             settings.setType(type);
             settings.setIgnoreSubSites(
                 Boolean.parseBoolean(A_CmsWorkplaceApp.getParamFromState(state, IGNORE_SUBSITES)));
-            settings.setSiteRoot(A_CmsWorkplaceApp.getParamFromState(state, SITE_ROOT));
-            settings.setPaths(Collections.singletonList(A_CmsWorkplaceApp.getParamFromState(state, FOLDER)));
+            settings.setSiteRoot(A_CmsWorkplaceApp.getParamFromState(state, SITE_ROOT).replace("%2F", "/"));
+            settings.setPaths(
+                Collections.singletonList(A_CmsWorkplaceApp.getParamFromState(state, FOLDER).replace("%2F", "/")));
             String resType = A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_TYPE);
             if (resType != null) {
                 settings.setTypes(resType);
@@ -195,17 +196,17 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             if (project != null) {
                 settings.setProject(project);
             }
-            settings.setSearchpattern(A_CmsWorkplaceApp.getParamFromState(state, SEARCH_PATTERN));
+            settings.setSearchpattern(A_CmsWorkplaceApp.getParamFromState(state, SEARCH_PATTERN).replace("%2F", "/"));
             if (type.isContentValuesOnly()) {
                 settings.setOnlyContentValues(true);
                 String locale = A_CmsWorkplaceApp.getParamFromState(state, LOCALE);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)) {
                     settings.setLocale(locale);
                 }
-                settings.setXpath(A_CmsWorkplaceApp.getParamFromState(state, XPATH));
+                settings.setXpath(A_CmsWorkplaceApp.getParamFromState(state, XPATH).replace("%2F", "/"));
             }
             if (type.isSolrSearch()) {
-                settings.setQuery(A_CmsWorkplaceApp.getParamFromState(state, QUERY));
+                settings.setQuery(A_CmsWorkplaceApp.getParamFromState(state, QUERY).replace("%2F", "/"));
                 settings.setSource(A_CmsWorkplaceApp.getParamFromState(state, INDEX));
             }
             if (type.isPropertySearch()) {
@@ -330,23 +331,25 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             }
         });
         m_resultTable.setSizeFull();
-        m_resultTableFilter = new TextField();
-        m_resultTableFilter.setIcon(FontOpenCms.FILTER);
-        m_resultTableFilter.setInputPrompt(
-            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-        m_resultTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-        m_resultTableFilter.setWidth("200px");
-        m_resultTableFilter.addTextChangeListener(new TextChangeListener() {
+        if (m_resultTableFilter == null) {
+            m_resultTableFilter = new TextField();
+            m_resultTableFilter.setIcon(FontOpenCms.FILTER);
+            m_resultTableFilter.setInputPrompt(
+                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+            m_resultTableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+            m_resultTableFilter.setWidth("200px");
+            m_resultTableFilter.addTextChangeListener(new TextChangeListener() {
 
-            private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-            public void textChange(TextChangeEvent event) {
+                public void textChange(TextChangeEvent event) {
 
-                m_resultTable.filterTable(event.getText());
+                    m_resultTable.filterTable(event.getText());
 
-            }
-        });
-        m_infoLayout.addComponent(m_resultTableFilter);
+                }
+            });
+            m_infoLayout.addComponent(m_resultTableFilter);
+        }
 
         sp.setSecondComponent(result);
         sp.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
