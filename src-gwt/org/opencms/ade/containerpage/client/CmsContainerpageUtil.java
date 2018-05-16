@@ -74,6 +74,9 @@ import com.google.gwt.user.client.Window;
  */
 public class CmsContainerpageUtil {
 
+    /** The container data attribute name. */
+    private static final String DATA_ATTRIBUTE_NAME = "data";
+
     /** The container page controller. */
     private CmsContainerpageController m_controller;
 
@@ -290,7 +293,7 @@ public class CmsContainerpageUtil {
         Map<String, CmsContainerPageContainer> result = new HashMap<String, CmsContainerPageContainer>();
         List<Element> containerElements = CmsDomUtil.getElementsByClass(CmsContainerElement.CLASS_CONTAINER, context);
         for (Element containerElement : containerElements) {
-            String data = containerElement.getAttribute("rel");
+            String data = containerElement.getAttribute(DATA_ATTRIBUTE_NAME);
             try {
                 CmsContainer container = m_controller.getSerializedContainer(data);
                 containers.put(container.getName(), container);
@@ -313,6 +316,7 @@ public class CmsContainerpageUtil {
                         "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
                         e));
             }
+            containerElement.removeAttribute(DATA_ATTRIBUTE_NAME);
         }
         return result;
     }
