@@ -1117,7 +1117,6 @@
 								rule="standard" />
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
 								rule="standard" />
-							 <entry key="GUI_EXPLORER_CONTEXT_ADE_PUBLISHSCHEDULED_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishScheduledDialogAction" rule="ade-publishscheduled" />
 							<separator />
 							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
 								rule="standard" />
@@ -1153,6 +1152,8 @@
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction"
 							rule="containerpage-no-different-site-and-has-editor-role" />
+							<entry key="GUI_EXPLORER_CONTEXT_ADE_PUBLISHSCHEDULED_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction"
+							params="dialogId=org.opencms.ui.actions.CmsPublishScheduledDialogAction" rule="ade-publishscheduled" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
