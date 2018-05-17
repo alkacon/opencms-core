@@ -2074,13 +2074,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String hideButtonShowSmallElements();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String notification();
 
         /**
@@ -2133,6 +2126,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-toolbar")
         String toolbar();
 
         /**
@@ -2141,13 +2135,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarBackground();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String toolbarButtonShowSmallElements();
 
         /**
          * Access method.<p>
@@ -2204,13 +2191,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarShow();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String toolbarToggle();
 
         /**
          * Access method.<p>

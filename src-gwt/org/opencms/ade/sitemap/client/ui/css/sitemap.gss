@@ -10,7 +10,7 @@ body div.pageCenter {
 	height: 100%;
 }
 
-.toolbar-toolbar + div {
+.toolbar-oc-toolbar + div {
 	margin-top: 72px;
 }
 

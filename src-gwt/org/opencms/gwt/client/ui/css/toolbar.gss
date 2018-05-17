@@ -1,4 +1,4 @@
-@external cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-button, v-button-wrap, v-disabled, v-icon, v-button-caption;
+@external oc-toolbar, cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-button, v-button-wrap, v-disabled, v-icon, v-button-caption;
 
 @def TOOLBAR_HEIGHT 52px;
 
@@ -125,7 +125,7 @@
 	}
 }
 
-.toolbarHide.toolbar .toolbarBackground{
+.toolbarHide.oc-toolbar .toolbarBackground{
 	animation-name: toolbarfadeaway;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -136,14 +136,14 @@
 	height: 0;
 }
 
-.toolbarHide.toolbar .toolbarButtonsRight, .toolbarHide.toolbar .toolbarButtonsLeft{
+.toolbarHide.oc-toolbar .toolbarButtonsRight, .toolbarHide.oc-toolbar .toolbarButtonsLeft{
 	height: 0;
 	border: 0;
 	background: transparent;
 	overflow: visible;
 }
 
-.toolbarHide.toolbar .toolbarCenter{
+.toolbarHide.oc-toolbar .toolbarCenter{
 	display: none;
 	animation-name: logofadeaway;
 	animation-duration: 1s;
@@ -151,7 +151,7 @@
 	animation-timing-function: ease;
 }
 
-.toolbar .toolbarButtonsRight > div, .toolbar .toolbarButtonsLeft > div{
+.oc-toolbar .toolbarButtonsRight > div, .oc-toolbar .toolbarButtonsLeft > div{
 	animation-name: buttonfadein;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -160,7 +160,7 @@
 	vertical-align: middle;
 }
 
-.toolbarHide.toolbar .toolbarButtonsRight > div, .toolbarHide.toolbar .toolbarButtonsLeft > div {
+.toolbarHide.oc-toolbar .toolbarButtonsRight > div, .toolbarHide.oc-toolbar .toolbarButtonsLeft > div {
 	animation-name: buttonfadeaway;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -170,11 +170,11 @@
 	visibility: hidden;
 }
 
-.toolbar .toolbarButtonsRight > div.toolbarShow, .toolbar .toolbarButtonsLeft > div.toolbarShow {
+.oc-toolbar .toolbarButtonsRight > div.toolbarShow, .oc-toolbar .toolbarButtonsLeft > div.toolbarShow {
 	animation: none;
 }
 
-.toolbarHide.toolbar .toolbarButtonsRight > div.toolbarShow, .toolbarHide.toolbar .toolbarButtonsLeft > div.toolbarShow {
+.toolbarHide.oc-toolbar .toolbarButtonsRight > div.toolbarShow, .toolbarHide.oc-toolbar .toolbarButtonsLeft > div.toolbarShow {
 	animation: none;
 	height: 40px;
 	overflow: show;
@@ -185,7 +185,7 @@
 
 .simpleToolbarShow{}
 
-.toolbar, .toolbar *, .toolbar table tr td {
+.oc-toolbar, .oc-toolbar *, .oc-toolbar table tr td {
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -205,7 +205,7 @@
 	-moz-box-sizing: border-box;
 }
 
-.toolbar{
+.oc-toolbar{
 	left: 0px;
 	top: 0px;
 	right: 0px;
@@ -213,7 +213,7 @@
 	z-index: value("constants.css.zIndexPopup"); 
 }
 
-.opencms .toolbar { 
+.opencms .oc-toolbar { 
 	z-index: 9000;
 }
 
@@ -383,42 +383,6 @@ div.userInfoDialog .cms-user-image img{
 	/** Must have the value as the .toolbarBackground class. */
 	top: 35px;
 	width:100%;
-}
-
-
-div.toolbarToggle{
-	position: fixed;
-	left: 97%;
-	top: -3px;
-	padding: 3px 3px 1px 3px;
-	z-index: value("constants.css.zIndexDND");
-}
-
-
-.toolbarToggle, .toolbarToggle * {
-	margin: 0;
-	padding: 0;
-	border: none;
-	color: value("constants.css.textColor");
-	font-family: value("constants.css.fontFamily");
-	font-size: value("constants.css.fontSize");
-	line-height: value("constants.css.lineHeight");
-	background: transparent;
-	text-align: left;
-	height: auto;
-	width: auto;
-	min-height: 0;
-	max-height: none;
-	min-width: 0;
-	max-width: none;
-}
-
-.toolbarButtonShowSmallElements { 
-	
-}
-
-.hideButtonShowSmallElements .toolbarButtonShowSmallElements {
-	display: none; 
 }
 
 .toolbarFontButton { 
