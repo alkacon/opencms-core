@@ -35,13 +35,14 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.util.CmsUUID;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
 
@@ -68,6 +69,7 @@ public abstract class A_CmsImportForm extends VerticalLayout {
      * @param app calling instance of app
      * */
     public A_CmsImportForm(I_CmsReportApp app) {
+
         CmsObject cms = A_CmsUI.getCmsObject();
         m_app = app;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
@@ -81,6 +83,14 @@ public abstract class A_CmsImportForm extends VerticalLayout {
         }
         getSiteSelector().setNullSelectionAllowed(false);
         getSiteSelector().setItemCaptionPropertyId("caption");
+
+        getProjectSelector().setContainerDataSource(
+            CmsVaadinUtils.getProjectsContainer(A_CmsUI.getCmsObject(), "caption"));
+        getProjectSelector().setItemCaptionPropertyId("caption");
+        getProjectSelector().select(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid());
+        getProjectSelector().setNewItemsAllowed(false);
+        getProjectSelector().setNullSelectionAllowed(false);
+        getProjectSelector().setTextInputAllowed(false);
 
         if (getCancelButton() != null) {
             getCancelButton().addClickListener(new ClickListener() {
@@ -122,6 +132,7 @@ public abstract class A_CmsImportForm extends VerticalLayout {
         try {
             CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
             cms.getRequestContext().setSiteRoot((String)getSiteSelector().getValue());
+            cms.getRequestContext().setCurrentProject(cms.readProject((CmsUUID)getProjectSelector().getValue()));
             return cms;
         } catch (CmsException e) {
             LOG.error("Unable to get CmsObject", e);
@@ -136,6 +147,13 @@ public abstract class A_CmsImportForm extends VerticalLayout {
      * @return a vaadin button
      */
     protected abstract Button getOkButton();
+
+    /**
+     * Gets a combobox used for the site selector.<p>
+     *
+     * @return a vaadin combobox
+     */
+    protected abstract ComboBox getProjectSelector();
 
     /**
      * Get the path (state) for the app to show the report for the import thread.<p>

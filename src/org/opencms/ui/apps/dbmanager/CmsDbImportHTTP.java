@@ -55,6 +55,9 @@ public class CmsDbImportHTTP extends A_CmsHTTPImportForm {
     /**The site select combo box.*/
     private ComboBox m_siteSelect;
 
+    /**vaadin component.*/
+    private ComboBox m_projectSelect;
+
     /** The upload widget. */
     private Upload m_upload;
 
@@ -87,6 +90,12 @@ public class CmsDbImportHTTP extends A_CmsHTTPImportForm {
     protected Button getOkButton() {
 
         return m_ok;
+    }
+
+    @Override
+    protected ComboBox getProjectSelector() {
+
+        return m_projectSelect;
     }
 
     /**

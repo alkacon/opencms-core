@@ -37,25 +37,28 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsDateField;
-import org.opencms.ui.components.CmsRemovableFormRow;
+import org.opencms.ui.components.editablegroup.CmsEditableGroup;
+import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
-import org.opencms.ui.report.CmsReportWidget;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.threads.CmsExportThread;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Supplier;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
@@ -131,9 +134,6 @@ public class CmsDbExportView extends VerticalLayout {
     protected CmsObject m_cms;
 
     /**vaadin component.*/
-    private Button m_addResource;
-
-    /**vaadin component.*/
     private CheckBox m_asFiles;
 
     /**vaadin component.*/
@@ -167,13 +167,9 @@ public class CmsDbExportView extends VerticalLayout {
     private CheckBox m_recursive;
 
     /**vaadin component.*/
-    private FormLayout m_reportLayout;
+    private VerticalLayout m_resources;
 
-    /**vaadin component.*/
-    private Panel m_reportPanel;
-
-    /**vaadin component.*/
-    private FormLayout m_resources;
+    private CmsEditableGroup m_resourcesGroup;
 
     /**vaadin component.*/
     private ComboBox m_site;
@@ -181,35 +177,36 @@ public class CmsDbExportView extends VerticalLayout {
     /**vaadin component.*/
     private ComboBox m_target;
 
+    private ComboBox m_project;
+
     /**
      * public constructor.<p>
      */
     public CmsDbExportView() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
         } catch (CmsException e) {
             LOG.error("Failed to clone CmsObject", e);
         }
 
+        m_resourcesGroup = new CmsEditableGroup(m_resources, new Supplier<Component>() {
+
+            public Component get() {
+
+                return getResourceRow("");
+
+            }
+
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_ADD_RESOURCE_0));
+        m_resourcesGroup.init();
+        m_resourcesGroup.addRow(getResourceRow(""));
         m_exportParams = new CmsExportParameters();
 
         setupCheckBoxes();
         setupComboBoxFile();
         setupComboBoxSite();
-        addEmptyResourceField();
-
-        m_addResource.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 626273854790729686L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addEmptyResourceField();
-            }
-        });
 
         m_ok.addClickListener(new ClickListener() {
 
@@ -217,38 +214,20 @@ public class CmsDbExportView extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
+                addResourceIfEmpty();
                 addValidators();
                 if (isFormValid()) {
                     startThread();
                 }
             }
         });
-        m_reportPanel.setVisible(false);
     }
 
-    /**
-     * Adds a removable row for a resource.<p>
-     */
-    protected void addEmptyResourceField() {
+    protected void addResourceIfEmpty() {
 
-        CmsPathSelectField newResource = new CmsPathSelectField();
-        newResource.setUseRootPaths(false);
-        newResource.setCmsObject(m_cms);
-        CmsRemovableFormRow<CmsPathSelectField> row = new CmsRemovableFormRow<CmsPathSelectField>(
-            newResource,
-            CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_0));
-        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_0));
-        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_HELP_0));
-        row.setRemoveRunnable(new Runnable() {
-
-            public void run() {
-
-                setRemoveResourceOption();
-            }
-
-        });
-        m_resources.addComponent(row);
-        setRemoveResourceOption();
+        if (m_resourcesGroup.getRows().size() == 0) {
+            m_resourcesGroup.addRow(getResourceRow(""));
+        }
     }
 
     /**
@@ -260,16 +239,11 @@ public class CmsDbExportView extends VerticalLayout {
         m_target.removeAllValidators();
         m_target.addValidator(new TargetValidator());
 
-        //Resource fields
-        Iterator<Component> iterator = m_resources.iterator();
-        iterator.next(); //Button
-
-        while (iterator.hasNext()) {
-            @SuppressWarnings("unchecked")
-            CmsPathSelectField resource = (CmsPathSelectField)((CmsRemovableFormRow<CmsPathSelectField>)iterator.next()).getComponent(
-                0);
-            resource.removeAllValidators();
-            resource.addValidator(new ResourceValidator());
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
+            field.removeAllValidators();
+            field.addValidator(new ResourceValidator());
         }
     }
 
@@ -279,6 +253,17 @@ public class CmsDbExportView extends VerticalLayout {
     protected void changeSite() {
 
         m_cms.getRequestContext().setSiteRoot((String)m_site.getValue());
+    }
+
+    protected Component getResourceRow(String path) {
+
+        FormLayout res = new FormLayout();
+        CmsPathSelectField field = new CmsPathSelectField();
+        field.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_0));
+        field.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_HELP_0));
+        field.setCmsObject(m_cms);
+        res.addComponent(field);
+        return res;
     }
 
     /**
@@ -296,41 +281,18 @@ public class CmsDbExportView extends VerticalLayout {
      */
     protected void removeUnvalidPathFields() {
 
-        Iterator<Component> iterator = m_resources.iterator();
-        iterator.next(); //Button
-
         int counter = 0;
-        List<Component> rowsToRemove = new ArrayList<Component>();
-        while (iterator.hasNext()) {
-            counter++;
-            @SuppressWarnings("unchecked")
-            CmsPathSelectField resource = (CmsPathSelectField)((CmsRemovableFormRow<CmsPathSelectField>)iterator.next()).getComponent(
-                0);
-            if (!m_cms.existsResource(resource.getValue())) {
-                rowsToRemove.add(m_resources.getComponent(counter));
+        List<CmsEditableGroupRow> rowsToRemove = new ArrayList<CmsEditableGroupRow>();
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
+            if (!m_cms.existsResource(field.getValue())) {
+                rowsToRemove.add(row);
             }
         }
-        for (Component row : rowsToRemove) {
-            m_resources.removeComponent(row);
-        }
-        setRemoveResourceOption();
-    }
 
-    /**
-     * En/disables the remove buttons.<p>
-     */
-    @SuppressWarnings("unchecked")
-    protected void setRemoveResourceOption() {
-
-        Iterator<Component> iterator = m_resources.iterator();
-        iterator.next(); //This is the button
-        int count = 0;
-        while (iterator.hasNext()) {
-            count++;
-            ((CmsRemovableFormRow<CmsPathSelectField>)iterator.next()).setEnabledRemoveOption(true);
-        }
-        if (count == 1) {
-            ((CmsRemovableFormRow<CmsPathSelectField>)m_resources.getComponent(1)).setEnabledRemoveOption(false);
+        for (CmsEditableGroupRow row : rowsToRemove) {
+            m_resourcesGroup.remove(row);
         }
     }
 
@@ -339,20 +301,21 @@ public class CmsDbExportView extends VerticalLayout {
      */
     protected void startThread() {
 
+        try {
+            m_cms.getRequestContext().setCurrentProject(m_cms.readProject((CmsUUID)m_project.getValue()));
+        } catch (CmsException e) {
+            LOG.error("Unable to set project", e);
+        }
         updateExportParams();
 
         CmsVfsImportExportHandler handler = new CmsVfsImportExportHandler();
         handler.setExportParams(m_exportParams);
         A_CmsReportThread exportThread = new CmsExportThread(m_cms, handler, false);
 
-        CmsReportWidget report = new CmsReportWidget(exportThread);
-        report.setHeight("500px");
-        report.setWidth("100%");
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+        window.setContent(new CmsExportThreadDialog(exportThread, window));
+        A_CmsUI.get().addWindow(window);
         exportThread.start();
-
-        m_reportPanel.setVisible(true);
-        m_reportLayout.removeAllComponents();
-        m_reportLayout.addComponent(report);
     }
 
     /**
@@ -364,17 +327,14 @@ public class CmsDbExportView extends VerticalLayout {
 
         boolean valid = true;
 
-        Iterator<Component> iterator = m_resources.iterator();
-        iterator.next();
-
-        while (iterator.hasNext()) {
-            @SuppressWarnings("unchecked")
-            CmsPathSelectField resource = (CmsPathSelectField)((CmsRemovableFormRow<CmsPathSelectField>)iterator.next()).getComponent(
-                0);
-            if (!resource.isValid()) {
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
+            if (!field.isValid()) {
                 valid = false;
             }
         }
+
         return valid;
     }
 
@@ -387,17 +347,14 @@ public class CmsDbExportView extends VerticalLayout {
 
         List<String> res = new ArrayList<String>();
 
-        Iterator<Component> iterator = m_resources.iterator();
-        iterator.next(); //Button
-
-        while (iterator.hasNext()) {
-            @SuppressWarnings("unchecked")
-            CmsPathSelectField resource = (CmsPathSelectField)((CmsRemovableFormRow<CmsPathSelectField>)iterator.next()).getComponent(
-                0);
-            if (!resource.getValue().isEmpty() & !res.contains(resource.getValue())) {
-                res.add(resource.getValue());
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
+            if (!field.getValue().isEmpty() & !res.contains(field.getValue())) {
+                res.add(field.getValue());
             }
         }
+
         return res;
     }
 
@@ -447,6 +404,13 @@ public class CmsDbExportView extends VerticalLayout {
                 removeUnvalidPathFields();
             }
         });
+
+        m_project.setContainerDataSource(CmsVaadinUtils.getProjectsContainer(A_CmsUI.getCmsObject(), "caption"));
+        m_project.setItemCaptionPropertyId("caption");
+        m_project.select(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid());
+        m_project.setNewItemsAllowed(false);
+        m_project.setNullSelectionAllowed(false);
+        m_project.setTextInputAllowed(false);
     }
 
     /**
@@ -472,4 +436,5 @@ public class CmsDbExportView extends VerticalLayout {
             m_exportParams.setContentAge(0);
         }
     }
+
 }
