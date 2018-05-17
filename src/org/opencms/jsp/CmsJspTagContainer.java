@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagAddParams.ParamState;
@@ -392,7 +393,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             buffer.append(" id=\"").append(containerName).append("\" ");
         }
         if (containerData != null) {
-            buffer.append(" data=\"").append(containerData).append("\" ");
+            buffer.append(" " + CmsGwtConstants.ATTR_DATA_CONTAINER + "=\"").append(containerData).append("\" ");
             // set the marker CSS class
             tagClass = tagClass == null
             ? CmsContainerElement.CLASS_CONTAINER

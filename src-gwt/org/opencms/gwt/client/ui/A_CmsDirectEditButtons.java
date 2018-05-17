@@ -36,6 +36,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
@@ -174,7 +175,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
             m_markerTag = editable;
             m_parentResourceId = parentId;
 
-            String jsonText = editable.getAttribute("rel");
+            String jsonText = editable.getAttribute(CmsGwtConstants.ATTR_DATA_EDITABLE);
             m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
             CmsNewLinkFunctionTable.INSTANCE.setHandler(m_editableData.getContextId(), new Runnable() {
 

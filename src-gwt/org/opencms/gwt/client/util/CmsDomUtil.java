@@ -1119,7 +1119,7 @@ public final class CmsDomUtil {
         List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div);
         List<CmsEditableDataJSO> result = Lists.newArrayList();
         for (Element elem : elems) {
-            String jsonData = elem.getAttribute("rel");
+            String jsonData = elem.getAttribute(CmsGwtConstants.ATTR_DATA_EDITABLE);
             CmsEditableDataJSO data = CmsEditableDataJSO.parseEditableData(jsonData);
             result.add(data);
         }

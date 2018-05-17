@@ -30,6 +30,7 @@ package org.opencms.acacia.client.entity;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
 import org.opencms.acacia.shared.CmsType;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.List;
 
@@ -248,7 +249,7 @@ public class EntityBackendTest extends GWTTestCase {
         assertTrue("Document should be available", Document.get() != null);
         assertTrue("Document body should be available", Document.get().getBody() != null);
         Element div = Document.get().createDivElement();
-        div.setAttribute("about", "http://testEntity");
+        div.setAttribute(CmsGwtConstants.ATTR_DATA_ID, "http://testEntity");
         Element innerDiv = Document.get().createDivElement();
         innerDiv.setInnerText("my value");
         innerDiv.setAttribute("property", ATTRIBUTE_NAME);

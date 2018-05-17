@@ -81,6 +81,21 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_VIEW_ONLINE = "viewonline";
 
+    /** Collector data attribute name. */
+    public static final String ATTR_DATA_COLLECTOR = "data-oc-collector";
+
+    /** Container data attribute name. */
+    public static final String ATTR_DATA_CONTAINER = "data-oc-container";
+
+    /** Editable data attribute name. */
+    public static final String ATTR_DATA_EDITABLE = "data-oc-editable";
+
+    /** Content field data attribute name. */
+    public static final String ATTR_DATA_FIELD = "data-oc-field";
+
+    /** Entity id data attribute name. */
+    public static final String ATTR_DATA_ID = "data-oc-id";
+
     /** Name of the Javascript callback used to handle property changes triggered from the locale compare view. */
     public static final String CALLBACK_HANDLE_CHANGED_PROPERTIES = "cmsHandleChangedProperties";
 

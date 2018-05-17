@@ -55,6 +55,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -126,7 +127,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
 
     /** The RDFA attributes string. */
-    private static final String RDFA_ATTRIBUTES = "about=\"%1$s\" property=\"%2$s\"";
+    private static final String RDFA_ATTRIBUTES = CmsGwtConstants.ATTR_DATA_ID
+        + "=\"%1$s\" "
+        + CmsGwtConstants.ATTR_DATA_FIELD
+        + "=\"%2$s\"";
 
     /** The serial version id. */
     private static final long serialVersionUID = 7873052619331296648L;

@@ -46,6 +46,7 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -427,9 +428,11 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 String editorLocale = CmsCoreProvider.get().getLocale();
                 String mainLocale = m_handler.m_controller.getData().getMainLocale();
                 if (mainLocale == null) {
-                    Element htmlEl = CmsDomUtil.querySelector("[about*='" + serverId + "']", element.getElement());
+                    Element htmlEl = CmsDomUtil.querySelector(
+                        "[" + CmsGwtConstants.ATTR_DATA_ID + "*='" + serverId + "']",
+                        element.getElement());
                     if (htmlEl != null) {
-                        String entityId = htmlEl.getAttribute("about");
+                        String entityId = htmlEl.getAttribute(CmsGwtConstants.ATTR_DATA_ID);
                         mainLocale = CmsContentDefinition.getLocaleFromId(entityId);
                     }
                 }

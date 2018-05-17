@@ -222,7 +222,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
         String marker = "<div class='"
             + CmsGwtConstants.CLASS_COLLECTOR_INFO
-            + "' style='display: none !important;' rel='"
+            + "' style='display: none !important;' "
+            + CmsGwtConstants.ATTR_DATA_COLLECTOR
+            + "='"
             + CmsEncoder.escapeXml(serializedCollectorInfo)
             + "'></div>";
         print(context, marker);
@@ -390,11 +392,20 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {
             result.append(
-                "<div id=\"" + getRandomId() + "\" class='" + CmsGwtConstants.CLASS_EDITABLE + "' rel='").append(
-                    editableData.toString()).append("'></div>\n");
+                "<div id=\""
+                    + getRandomId()
+                    + "\" class='"
+                    + CmsGwtConstants.CLASS_EDITABLE
+                    + "' "
+                    + CmsGwtConstants.ATTR_DATA_EDITABLE
+                    + "='").append(editableData.toString()).append("'></div>\n");
         } else {
-            result.append("<div class='" + CmsGwtConstants.CLASS_EDITABLE + "' rel='").append(
-                editableData.toString()).append("'></div>\n");
+            result.append(
+                "<div class='"
+                    + CmsGwtConstants.CLASS_EDITABLE
+                    + "' "
+                    + CmsGwtConstants.ATTR_DATA_EDITABLE
+                    + "='").append(editableData.toString()).append("'></div>\n");
         }
         return result.toString();
     }
