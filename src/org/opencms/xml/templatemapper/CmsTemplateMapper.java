@@ -89,7 +89,7 @@ public final class CmsTemplateMapper {
      *
      * @param configPath the template mapper configuration VFS path
      */
-    private CmsTemplateMapper(String configPath) {
+    public CmsTemplateMapper(String configPath) {
 
         if (configPath != null) {
             m_enabled = true;

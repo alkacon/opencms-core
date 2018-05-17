@@ -36,9 +36,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ACTION_EDIT_CONTENT_0 = "GUI_ACTION_EDIT_CONTENT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_PAGECOPY_INVALID_PAGE_0 = "ERR_PAGECOPY_INVALID_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -46,9 +43,11 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_NOT_SELF_MANAGED_1 = "ERR_USER_NOT_SELF_MANAGED_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_DISPLAY_0 = "GUI_ACTION_DISPLAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_EDIT_CONTENT_0 = "GUI_ACTION_EDIT_CONTENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_OPEN_FORM_EDITOR_0 = "GUI_ACTION_OPEN_FORM_EDITOR_0";
@@ -489,6 +488,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TARGET_FOLDER_0 = "GUI_TARGET_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATEMAPPER_DIALOG_TITLE_0 = "GUI_TEMPLATEMAPPER_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATEMAPPER_MENU_TITLE_0 = "GUI_TEMPLATEMAPPER_MENU_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATEMAPPER_START_0 = "GUI_TEMPLATEMAPPER_START_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TIME_1 = "GUI_TIME_1";
 
     /** Message constant for key in the resource bundle. */
@@ -541,6 +549,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TEMPLATEMAPPER_DONE_0 = "RPT_TEMPLATEMAPPER_DONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TEMPLATEMAPPER_PROCESSING_GROUP_2 = "RPT_TEMPLATEMAPPER_PROCESSING_GROUP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TEMPLATEMAPPER_PROCESSING_PAGE_2 = "RPT_TEMPLATEMAPPER_PROCESSING_PAGE_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";

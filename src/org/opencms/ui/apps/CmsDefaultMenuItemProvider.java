@@ -86,6 +86,7 @@ import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.xml.templatemapper.CmsTemplateMapperAction;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -168,6 +169,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsWorkplaceAction(), advanced.getId(), 1300, 0),
             new CmsContextMenuActionItem(new CmsSitemapAliasAction(), advanced.getId(), 1500, 0),
             new CmsContextMenuActionItem(new CmsSitemapEditConfigAction(), advanced.getId(), 1600, 0),
+            new CmsContextMenuActionItem(new CmsTemplateMapperAction(), advanced.getId(), 1700, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),
