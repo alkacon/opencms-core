@@ -75,7 +75,7 @@ button#opencms-leave-preview:after {
 }
 
 /* Defining the edit cursor style within the 'static' CSS to be able to support SVG cursor images */
-.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
+.oc-inline-editable, .oc-inline-editable:hover, .oc-inline-editable:focus{
 	cursor: url(img/editCursor.svg), url(img/editCursor.ico), url(img/editCursor.gif), crosshair;
 	outline: none;
 }

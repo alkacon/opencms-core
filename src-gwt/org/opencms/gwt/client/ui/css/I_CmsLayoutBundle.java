@@ -1094,6 +1094,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return a CSS class
          **/
+        @ClassName("oc-inline-editable")
         String inlineEditable();
 
         /**

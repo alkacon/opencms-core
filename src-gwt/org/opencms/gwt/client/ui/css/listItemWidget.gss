@@ -1,4 +1,4 @@
-@external cms_type_icon, inlineEditable, navMode, html-face;
+@external cms_type_icon, oc-inline-editable, navMode, html-face;
 .itemContainer .itemAdditional{
 	display: none;
 }

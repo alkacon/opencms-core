@@ -87,8 +87,17 @@ public final class CmsGwtConstants {
     /** Javascript function name for showing the locale compare view. */
     public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
 
-    /** CSS class name used for the DOM elements containing collector information. */
-    public static final String CLASS_COLLECTOR_INFO = "cms-collector-info";
+    /** The CSS class name used for the DOM elements containing collector information. */
+    public static final String CLASS_COLLECTOR_INFO = "oc-collector-info";
+
+    /** The CSS class name for data elements which precede the direct editable elements. */
+    public static final String CLASS_EDITABLE = "oc-editable";
+
+    /** The CSS class name for elements which end the direct editable elements. */
+    public static final String CLASS_EDITABLE_END = CLASS_EDITABLE + "-end";
+
+    /** The CSS class name for elements which mark elements to be skipped during direct edit. */
+    public static final String CLASS_EDITABLE_SKIP = CLASS_EDITABLE + "-skip";
 
     /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
     public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";

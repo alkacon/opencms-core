@@ -1,4 +1,4 @@
-@external inlineEditable;
+@external oc-inline-editable;
 
 body.standAloneEditor{
 	background: value("constants.css.backgroundColorMenu");
