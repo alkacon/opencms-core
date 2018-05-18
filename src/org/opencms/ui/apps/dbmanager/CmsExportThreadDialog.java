@@ -38,7 +38,13 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Window;
 
+/**
+ * The export thread report.<p>
+ */
 public class CmsExportThreadDialog extends CmsBasicDialog {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 660736768361578208L;
 
     /**
      * Public constructor.<p>
