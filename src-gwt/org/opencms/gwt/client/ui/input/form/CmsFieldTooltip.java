@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsJsUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -74,6 +73,7 @@ public class CmsFieldTooltip extends Composite {
          * @param isHtml true if the content is HTML
          */
         public Data(Panel reference, String info, boolean isHtml) {
+
             m_info = info;
             m_isHtml = isHtml;
             m_reference = reference;
@@ -154,7 +154,6 @@ public class CmsFieldTooltip extends Composite {
          */
         public void buttonHover(Data data) {
 
-            CmsDebugLog.consoleLog("over " + data);
             if (data != getData()) {
                 closeTooltip();
                 CmsFieldTooltip tooltip = new CmsFieldTooltip(data);
@@ -176,7 +175,6 @@ public class CmsFieldTooltip extends Composite {
          */
         public void buttonOut(Data data) {
 
-            CmsDebugLog.consoleLog("out " + data);
             closeTooltip(false);
         }
 
@@ -308,6 +306,7 @@ public class CmsFieldTooltip extends Composite {
      * @param data the tooltip data
      */
     public CmsFieldTooltip(Data data) {
+
         I_UiBinder uiBinder = GWT.create(I_UiBinder.class);
         initWidget(uiBinder.createAndBindUi(this));
         // force synchronous injection of styles
