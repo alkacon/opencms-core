@@ -41,6 +41,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.ui.Messages;
+import org.opencms.util.CmsExpiringValue;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
@@ -58,6 +59,9 @@ import org.apache.commons.logging.Log;
  * Report thread for rewriting pages in a folder according to a given template mapper configuration.<p>
  */
 public class CmsTemplateMappingContentRewriter extends A_CmsReportThread {
+
+    /** Cache for the status. */
+    private static CmsExpiringValue<Boolean> m_moduleCheckCache = new CmsExpiringValue<>(2000);
 
     /** The logger instance for the class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateMappingContentRewriter.class);
@@ -85,6 +89,21 @@ public class CmsTemplateMappingContentRewriter extends A_CmsReportThread {
         m_folder = cms.getSitePath(folder);
         m_folderRes = folder;
         initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+    }
+
+    /**
+     * Checks if template mapper is configured in modules.
+     *
+     * @return true if the template mapper is configured in modules
+     */
+    public static boolean checkConfiguredInModules() {
+
+        Boolean result = m_moduleCheckCache.get();
+        if (result == null) {
+            result = Boolean.valueOf(getConfiguredTemplateMapping() != null);
+            m_moduleCheckCache.set(result);
+        }
+        return result.booleanValue();
     }
 
     /**

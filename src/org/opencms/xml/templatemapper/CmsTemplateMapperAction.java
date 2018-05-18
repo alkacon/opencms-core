@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
@@ -84,7 +86,7 @@ public class CmsTemplateMapperAction extends A_CmsWorkplaceAction {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         CmsMenuItemVisibilityMode invisible = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        if (CmsTemplateMappingContentRewriter.getConfiguredTemplateMapping() == null) {
+        if (!CmsTemplateMappingContentRewriter.checkConfiguredInModules()) {
             return invisible;
         }
 
@@ -96,6 +98,10 @@ public class CmsTemplateMapperAction extends A_CmsWorkplaceAction {
         }
 
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            return invisible;
+        }
+
+        if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
             return invisible;
         }
 
