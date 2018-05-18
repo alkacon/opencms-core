@@ -252,7 +252,7 @@ public class EntityBackendTest extends GWTTestCase {
         div.setAttribute(CmsGwtConstants.ATTR_DATA_ID, "http://testEntity");
         Element innerDiv = Document.get().createDivElement();
         innerDiv.setInnerText("my value");
-        innerDiv.setAttribute("property", ATTRIBUTE_NAME);
+        innerDiv.setAttribute(CmsGwtConstants.ATTR_DATA_FIELD, ATTRIBUTE_NAME);
         div.appendChild(innerDiv);
         Document.get().getBody().appendChild(div);
         List<com.google.gwt.dom.client.Element> elements = getBackendInstance().getAttributeElements(
