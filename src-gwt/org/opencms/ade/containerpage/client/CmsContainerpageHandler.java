@@ -28,10 +28,13 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsElementSettingsDialog;
+import org.opencms.ade.containerpage.client.ui.CmsElementSettingsDialog.NoFormatterException;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
+import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
@@ -393,11 +396,34 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         // the client id may have changed, update the element widget
                         elementWidget.setId(elementBean.getClientId());
                     }
-                    CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
-                        m_controller,
-                        elementWidget,
-                        settingsConfig);
-                    dialog.center();
+
+                    try {
+                        CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
+                            m_controller,
+                            elementWidget,
+                            settingsConfig);
+                        dialog.center();
+                    } catch (NoFormatterException e) {
+                        String ctype = "???";
+                        String cname = "???";
+
+                        try {
+                            I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
+                            if (dropContainer instanceof CmsContainerPageContainer) {
+                                CmsContainerPageContainer cpc = (CmsContainerPageContainer)dropContainer;
+                                ctype = cpc.getContainerType();
+                                cname = cpc.getContainerId();
+                            }
+                        } catch (Exception e2) { /*ignore*/ }
+                        String path = "???";
+                        try {
+                            path = elementBean.getSitePath();
+                        } catch (Exception e2) { /*ignore*/ }
+                        CmsAlertDialog alert = new CmsAlertDialog(
+                            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0),
+                            Messages.get().key(Messages.GUI_NO_FORMATTER_3, path, cname, ctype));
+                        alert.center();
+                    }
                 }
             });
     }
