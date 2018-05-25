@@ -145,6 +145,7 @@ public class CmsTemplateMappingContentRewriter extends A_CmsReportThread {
             cms.readResource(file);
             CmsLockUtil.ensureLock(cms, m_folderRes);
             CmsTemplateMapper mapper = new CmsTemplateMapper(file);
+            mapper.setForSave(true);
             List<CmsResource> pages = resourcesForType(m_folder, CmsResourceTypeXmlContainerPage.getStaticTypeName());
             int j = 0;
             for (CmsResource page : pages) {
