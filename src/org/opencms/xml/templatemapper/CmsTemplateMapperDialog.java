@@ -33,9 +33,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.report.CmsReportWidget;
-import org.opencms.util.CmsUUID;
-
-import java.util.Arrays;
 
 import com.vaadin.ui.Button;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -72,9 +69,6 @@ public class CmsTemplateMapperDialog extends CmsBasicDialog {
             CmsReportWidget reportWidget = new CmsReportWidget(m_report);
             reportWidget.setWidth("100%");
             reportWidget.setHeight("100%");
-            reportWidget.addReportFinishedHandler(() -> {
-                context.finish(Arrays.asList(CmsUUID.getNullUUID()));
-            });
             content.addComponent(reportWidget);
             m_okButton.setEnabled(false);
             m_report.start();
