@@ -468,6 +468,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                 super.finish(ids);
             } else {
                 refreshResult();
+                closeWindow();
             }
         }
 
