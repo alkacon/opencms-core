@@ -83,15 +83,16 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                 String advancedPath = xpathForType(type)
                     + "/editoptions/contextmenu/entry[@key='GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0']";
                 Element advancedElem = (Element)(document.selectSingleNode(advancedPath));
-
-                for (String advanced : advancedEntries) {
-                    Map<String, String> entryMap = CmsStringUtil.splitAsMap(advanced, "|", ":");
-                    Element existingElem = (Element)(advancedElem.selectSingleNode(
-                        "entry[@key='" + entryMap.get("key") + "']"));
-                    if (existingElem == null) {
-                        Element newElem = advancedElem.addElement("entry");
-                        for (Map.Entry<String, String> entry : entryMap.entrySet()) {
-                            newElem.addAttribute(entry.getKey(), entry.getValue());
+                if (advancedElem != null) {
+                    for (String advanced : advancedEntries) {
+                        Map<String, String> entryMap = CmsStringUtil.splitAsMap(advanced, "|", ":");
+                        Element existingElem = (Element)(advancedElem.selectSingleNode(
+                            "entry[@key='" + entryMap.get("key") + "']"));
+                        if (existingElem == null) {
+                            Element newElem = advancedElem.addElement("entry");
+                            for (Map.Entry<String, String> entry : entryMap.entrySet()) {
+                                newElem.addAttribute(entry.getKey(), entry.getValue());
+                            }
                         }
                     }
                 }
