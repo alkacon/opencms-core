@@ -1015,7 +1015,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             }
             String serializedElement = getElementInfo(cms, elementBean, page);
             result.append("'");
-            result.append(" rel='").append(serializedElement);
+            result.append(" " + CmsGwtConstants.ATTR_DATA_ELEMENT + "='").append(serializedElement);
             if (isGroupContainer) {
                 result.append("'>");
             } else {

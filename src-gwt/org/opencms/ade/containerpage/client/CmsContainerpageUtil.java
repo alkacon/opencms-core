@@ -130,7 +130,8 @@ public class CmsContainerpageUtil {
                 child);
             if (isContainerElement || isGroupcontainerElement) {
                 containsElements = true;
-                String serializedData = child.getAttribute("rel");
+                String serializedData = child.getAttribute(CmsGwtConstants.ATTR_DATA_ELEMENT);
+                child.removeAttribute(CmsGwtConstants.ATTR_DATA_ELEMENT);
                 CmsContainerElement elementData = null;
                 try {
                     elementData = m_controller.getSerializedElement(serializedData);

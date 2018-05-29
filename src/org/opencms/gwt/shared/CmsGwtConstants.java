@@ -90,6 +90,9 @@ public final class CmsGwtConstants {
     /** Editable data attribute name. */
     public static final String ATTR_DATA_EDITABLE = "data-oc-editable";
 
+    /** Element data attribute name. */
+    public static final String ATTR_DATA_ELEMENT = "data-oc-element";
+
     /** Content field data attribute name. */
     public static final String ATTR_DATA_FIELD = "data-oc-field";
 
