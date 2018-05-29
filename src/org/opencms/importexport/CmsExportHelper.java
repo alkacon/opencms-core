@@ -95,6 +95,9 @@ public class CmsExportHelper {
             rfsFile.createNewFile();
             writer = new FileWriter(rfsFile);
         } else {
+            // make sure parent folders exist
+            File rfsFile = new File(m_exportPath);
+            rfsFile.getParentFile().mkdirs();
             // create the export ZIP stream
             m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportPath));
             // delegate writing to a String writer

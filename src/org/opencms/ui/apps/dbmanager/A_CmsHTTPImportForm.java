@@ -30,6 +30,7 @@ package org.opencms.ui.apps.dbmanager;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -58,6 +59,7 @@ public abstract class A_CmsHTTPImportForm extends A_CmsImportForm {
      * @param pathToServer path to server to save uploaded file
      * @param validate indicates if import should be validated (only possible for modules)
      */
+    @SuppressWarnings("deprecation")
     public A_CmsHTTPImportForm(I_CmsReportApp app, final String pathToServer, final boolean validate) {
 
         super(app);
@@ -102,6 +104,9 @@ public abstract class A_CmsHTTPImportForm extends A_CmsImportForm {
                     OpenCms.getSystemInfo().getWebInfRfsPath(),
                     pathToServer,
                     processFileName(filename));
+                // make sure parent folders exist
+                File rfsFile = new File(path);
+                rfsFile.getParentFile().mkdirs();
                 m_importFile = new CmsImportFile(path);
                 try {
                     return new FileOutputStream(m_importFile.getPath());
@@ -130,6 +135,7 @@ public abstract class A_CmsHTTPImportForm extends A_CmsImportForm {
      *
      * @return a vaadin upload button
      */
+    @SuppressWarnings("deprecation")
     protected abstract Upload getUpload();
 
     /**
@@ -137,5 +143,6 @@ public abstract class A_CmsHTTPImportForm extends A_CmsImportForm {
      *
      * @return a vaadin label
      */
+    @SuppressWarnings("deprecation")
     protected abstract Label getUploadLabel();
 }

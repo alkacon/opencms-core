@@ -67,17 +67,19 @@ public class CmsDbManager extends A_CmsAttributeAwareApp {
 
         // get a list of all files of the packages folder
         String[] files = folder.list();
-        for (int i = 0; i < files.length; i++) {
-            File diskFile = new File(exportpath, files[i]);
-            // check this is a file and ends with zip -> this is a database upload file
-            if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
-                result.add(diskFile.getName());
-            } else if (diskFile.isDirectory()
-                && includeFolders
-                && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES))
-                && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
-                // this is an unpacked package, add it to uploadable files
-                result.add(diskFile.getName());
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                File diskFile = new File(exportpath, files[i]);
+                // check this is a file and ends with zip -> this is a database upload file
+                if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
+                    result.add(diskFile.getName());
+                } else if (diskFile.isDirectory()
+                    && includeFolders
+                    && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES))
+                    && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
+                    // this is an unpacked package, add it to uploadable files
+                    result.add(diskFile.getName());
+                }
             }
         }
         return result;
