@@ -2067,7 +2067,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** Toolbar CSS. */
     @Shared
-    @ImportedWithPrefix("toolbar")
     interface I_CmsToolbarCss extends CssResource {
 
         /**

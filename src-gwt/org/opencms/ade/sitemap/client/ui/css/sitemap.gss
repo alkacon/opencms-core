@@ -1,3 +1,5 @@
+@external oc-toolbar;
+
 body div.pageCenter {
 	padding: 10px;
 }
@@ -10,7 +12,7 @@ body div.pageCenter {
 	height: 100%;
 }
 
-.toolbar-oc-toolbar + div {
+.oc-toolbar + div {
 	margin-top: 72px;
 }
 
