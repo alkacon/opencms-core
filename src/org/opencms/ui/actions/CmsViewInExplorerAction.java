@@ -29,44 +29,44 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
+import org.opencms.ui.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * The edit page action. Available for container pages.<p>
+ * Opens the file explorer for the selected resource switching to the appropriate site.<p>
  */
-public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEAction {
+public class CmsViewInExplorerAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
-    @SuppressWarnings("hiding")
-    public static final String ACTION_ID = "editpage";
+    public static final String ACTION_ID = "viewinexplorer";
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     */
+    public void executeAction(I_CmsDialogContext context) {
+
+        // not supported
+    }
 
     /**
      * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
      */
     public String getCommandClassName() {
 
-        return "org.opencms.gwt.client.ui.contextmenu.CmsShowPage";
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsDefaultAction#getDefaultActionRank(org.opencms.ui.I_CmsDialogContext)
-     */
-    @Override
-    public int getDefaultActionRank(I_CmsDialogContext context) {
-
-        return 30;
+        return "org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace";
     }
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
-    @Override
     public String getId() {
 
         return ACTION_ID;
@@ -91,14 +91,9 @@ public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEActio
     /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
-    @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if ((resources.size() == 1) && CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        } else {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
+        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 
     /**
@@ -107,9 +102,14 @@ public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEActio
     @Override
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        return context.getContextType().equals(ContextType.containerpageToolbar)
-        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
-        : super.getVisibility(context);
+        CmsMenuItemVisibilityMode mode = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        if ((context instanceof I_CmsDialogContextWithAdeContext)
+            && AdeContext.resourceinfo.equals(((I_CmsDialogContextWithAdeContext)context).getAdeContext())
+            && (context.getResources().size() == 1)
+            && OpenCms.getRoleManager().hasRole(context.getCms(), CmsRole.WORKPLACE_USER)) {
+            mode = CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        }
+        return mode;
     }
 
     /**
@@ -126,6 +126,7 @@ public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEActio
     @Override
     protected String getTitleKey() {
 
-        return org.opencms.ui.Messages.GUI_ACTION_OPEN_PAGE_0;
+        return Messages.GUI_ACTION_VIEW_IN_EXPLORER_0;
     }
+
 }

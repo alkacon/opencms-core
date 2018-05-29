@@ -55,7 +55,6 @@ public class CmsDialogContextMenuHandler extends CmsContextMenuHandler {
         for (Class<?> cls : new Class[] {
             CmsEditUserSettings.class,
             CmsAbout.class,
-            CmsShowWorkplace.class,
             CmsOpenSeoDialog.class,
             CmsLogout.class}) {
             m_filteredActions.add(cls.getName());

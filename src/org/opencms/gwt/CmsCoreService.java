@@ -479,7 +479,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
         ? OpenCms.getSiteManager().getSharedFolder()
         : "";
-        String link = getFileExplorerLink(cms, siteRoot) + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
+        String sitePath = resourceRootFolder.substring(siteRoot.length());
+        String link = getFileExplorerLink(cms, siteRoot) + sitePath;
         return link;
     }
 
