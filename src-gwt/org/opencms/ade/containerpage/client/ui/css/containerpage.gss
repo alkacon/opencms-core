@@ -200,10 +200,8 @@ div.groupcontainerPlaceholder{
 	opacity: 1;
 }
 
-@def enlargedMinHeight eval("org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.getNecessaryHeight()");
-
 .oc-enlarge-small-elements .oc-small-element {
-	min-height: enlargedMinHeight; 
+	min-height: eval("org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.NECESSARY_HEIGHT_RULE");
 }
 
 .oc-ignore-small-elements .oc-small-element .oc-option-bar {
