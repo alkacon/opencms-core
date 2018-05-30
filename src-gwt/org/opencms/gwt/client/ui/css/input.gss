@@ -246,6 +246,7 @@ div.textArea.textAreaGhostMode textarea {
 .selectBoxRoot *, .selectBoxSelector * {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 }
 
 
@@ -357,6 +358,7 @@ div.selectorPopup, .selectorPopup * {
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
@@ -379,6 +381,7 @@ div.selectBoxCell, div.selectorPopup div.selectBoxSelector div.selectBoxCell{
 	cursor: pointer;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 }
 
 div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHover, div.gwt-SuggestBoxPopup .item-selected{
@@ -419,6 +422,7 @@ div.selectBoxOpener {
     cursor: pointer;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
     height: value("constants.css.inputInnerHeight");
     padding: 0px 15px 0px 0px;
     box-shadow: none;

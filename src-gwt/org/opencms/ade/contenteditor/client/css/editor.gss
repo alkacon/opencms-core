@@ -26,6 +26,7 @@ body.integratedEditor{
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	fon-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
@@ -43,6 +44,7 @@ body.integratedEditor{
 	background: value("constants.css.backgroundColorMenu");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	position: fixed;
 	margin: 0;
 	bottom: 0;

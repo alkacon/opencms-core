@@ -192,6 +192,7 @@
 	color: value("constants.css.textColor"); 
 	font-family: value("constants.css.fontFamily"); 
  	font-size: value("constants.css.fontSize");
+ 	font-weight: normal;
 	line-height: value("constants.css.lineHeight"); 
 	background: transparent;
 	text-align: left;

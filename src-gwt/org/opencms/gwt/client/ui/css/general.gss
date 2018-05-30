@@ -22,6 +22,7 @@
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
@@ -40,6 +41,7 @@ div.toolTip.cornerAll, div.toolTip {
 	padding: 4px;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
+	font-weight: normal;
 	color: value("constants.css.textColor");
 }
 
@@ -183,6 +185,7 @@ div.disablingOverlay{
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;

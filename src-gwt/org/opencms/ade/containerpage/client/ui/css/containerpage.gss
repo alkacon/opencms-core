@@ -34,15 +34,16 @@
 
 .oc-drag-element div.oc-option-bar{
 	border: 1px solid transparent;
-	position: absolute;
+	position: absolute !important;
 	top: 2px;
 	right: 2px;
 	z-index: value("constants.css.zIndexInline");
-	margin: 0 0 2px 0;
+	margin: 0 0 2px 0 !important;
 	padding: 0;
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: right;

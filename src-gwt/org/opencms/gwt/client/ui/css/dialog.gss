@@ -11,6 +11,7 @@
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
@@ -89,6 +90,7 @@ div.popup.popupContent, div.popupContent{
     padding: 6px 5px 5px 5px;
     position: relative;
     font-family: value("constants.css.fontFamily");
+    font-weight: normal;
     overflow: visible;
     box-sizing: content-box !important;
     -moz-box-sizing: content-box !important;
