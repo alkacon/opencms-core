@@ -373,8 +373,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_startfolder.disableSiteSwitch();
             m_user = m_cms.readUser(userId);
             if (m_user.isWebuser()) {
-                m_tab.removeTab(m_tab.getTab(3));
-                m_selfmanagement.setValue(new Boolean(false));
+                m_sendEmail.setVisible(false);
+                m_sendEmail.setValue(Boolean.FALSE);
+                m_forceResetPassword.setVisible(false);
+                m_forceResetPassword.setValue(Boolean.FALSE);
+                m_selfmanagement.setVisible(false);
+                m_selfmanagement.setValue(Boolean.FALSE);
                 m_isWebOU = true;
             } else {
                 m_selfmanagement.setValue(new Boolean(true));
@@ -423,10 +427,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             myOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou);
 
             m_isWebOU = false;
+            m_sendEmail.setValue(Boolean.TRUE);
+            m_forceResetPassword.setValue(Boolean.TRUE);
             if (myOu.hasFlagWebuser()) {
-                m_tab.removeTab(m_tab.getTab(2));
                 m_role.setVisible(false);
-                m_selfmanagement.setValue(new Boolean(false));
+                m_sendEmail.setVisible(false);
+                m_sendEmail.setValue(Boolean.FALSE);
+                m_forceResetPassword.setVisible(false);
+                m_forceResetPassword.setValue(Boolean.FALSE);
+                m_selfmanagement.setVisible(false);
+                m_selfmanagement.setValue(Boolean.FALSE);
                 m_isWebOU = true;
             } else {
                 iniRole(m_cms, ou, m_role, LOG);
@@ -448,8 +458,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         init(window, null);
         setupStartFolder(null);
-        m_sendEmail.setValue(Boolean.TRUE);
-        m_forceResetPassword.setValue(Boolean.TRUE);
+
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
             private static final long serialVersionUID = -2579639520410382246L;
