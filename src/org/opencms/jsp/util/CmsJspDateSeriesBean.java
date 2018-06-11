@@ -137,9 +137,10 @@ public class CmsJspDateSeriesBean {
      *          on a German page a content that is only present in English is rendered.
      */
     public CmsJspDateSeriesBean(CmsJspContentAccessValueWrapper value, Locale locale) {
+
         m_value = value;
         m_locale = null == locale ? m_value.getLocale() : locale;
-        initFromSeriesDefinition(value.getStringValue());
+        initFromSeriesDefinition(value.toString());
     }
 
     /**
@@ -152,6 +153,7 @@ public class CmsJspDateSeriesBean {
      *          on a German page a content that is only present in English is rendered.
      */
     CmsJspDateSeriesBean(String seriesDefinition, Locale locale) {
+
         m_locale = locale;
         initFromSeriesDefinition(seriesDefinition);
     }
@@ -316,8 +318,14 @@ public class CmsJspDateSeriesBean {
         if (m_isMultiDay != null) {
             return m_isMultiDay.booleanValue();
         }
-        if ((null == getInstanceDuration())
-            || (getInstanceDuration().longValue() > I_CmsSerialDateValue.DAY_IN_MILLIS)) {
+
+        Long instanceDuration = getInstanceDuration();
+
+        if ((null == instanceDuration) || (instanceDuration.longValue() == 0)) {
+            m_isMultiDay = Boolean.FALSE;
+            return false;
+        }
+        if (getInstanceDuration().longValue() > I_CmsSerialDateValue.DAY_IN_MILLIS) {
             m_isMultiDay = Boolean.TRUE;
             return true;
         }
