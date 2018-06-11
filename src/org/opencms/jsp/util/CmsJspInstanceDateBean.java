@@ -33,7 +33,9 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
 
@@ -189,6 +191,12 @@ public class CmsJspInstanceDateBean {
     /** End of the event. */
     private Date m_end;
 
+    /** Explicitely set end of the single event. */
+    private Date m_explicitEnd;
+
+    /** Flag, indicating if the single event explicitely lasts the whole day. */
+    private Boolean m_explicitWholeDay;
+
     /** The series the event is part of. */
     private CmsJspDateSeriesBean m_series;
 
@@ -211,13 +219,13 @@ public class CmsJspInstanceDateBean {
         m_series = series;
     }
 
-    /** 
+    /**
      * Constructor to wrap a single date as instance date.
      * This will allow to use the format options.
-     * 
+     *
      * @param date the date to wrap
      * @param locale the locale to use for formatting the date.
-     * 
+     *
      */
     public CmsJspInstanceDateBean(Date date, Locale locale) {
 
@@ -230,10 +238,13 @@ public class CmsJspInstanceDateBean {
      */
     public Date getEnd() {
 
+        if (null != m_explicitEnd) {
+            return isWholeDay() ? adjustForWholeDay(m_explicitEnd, true) : m_explicitEnd;
+        }
         if ((null == m_end) && (m_series.getInstanceDuration() != null)) {
             m_end = new Date(m_start.getTime() + m_series.getInstanceDuration().longValue());
         }
-        return m_end;
+        return isWholeDay() && !m_series.isWholeDay() ? adjustForWholeDay(m_end, true) : m_end;
     }
 
     /**
@@ -298,7 +309,8 @@ public class CmsJspInstanceDateBean {
      */
     public Date getStart() {
 
-        return m_start;
+        // Adjust the start time for an explicitely whole day option that overwrites the series' whole day option.
+        return isWholeDay() && !m_series.isWholeDay() ? adjustForWholeDay(m_start, false) : m_start;
     }
 
     /**
@@ -307,7 +319,11 @@ public class CmsJspInstanceDateBean {
      */
     public boolean isMultiDay() {
 
-        return m_series.isMultiDay();
+        if ((null != m_explicitEnd) || (null != m_explicitWholeDay)) {
+            return isSingleMultiDay();
+        } else {
+            return m_series.isMultiDay();
+        }
     }
 
     /**
@@ -316,7 +332,34 @@ public class CmsJspInstanceDateBean {
      */
     public boolean isWholeDay() {
 
-        return m_series.isWholeDay();
+        return null == m_explicitWholeDay ? m_series.isWholeDay() : m_explicitWholeDay.booleanValue();
+    }
+
+    /**
+     * Explicitly set the end time of the event.
+     *
+     * If the provided date is <code>null</code> or a date before the start date, the end date defaults to the start date.
+     *
+     * @param endDate the end time of the event.
+     */
+    public void setEnd(Date endDate) {
+
+        if ((null == endDate) || getStart().after(endDate)) {
+            m_explicitEnd = null;
+        } else {
+            m_explicitEnd = endDate;
+        }
+    }
+
+    /**
+     * Explicitly set if the single event is whole day.
+     *
+     * @param isWholeDay flag, indicating if the single event lasts the whole day.
+     *          If <code>null</code> the value defaults to the setting from the underlying date series.
+     */
+    public void setWholeDay(Boolean isWholeDay) {
+
+        m_explicitWholeDay = isWholeDay;
     }
 
     /**
@@ -357,6 +400,29 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
+     * Adjust the date according to the whole day options.
+     *
+     * @param date the date to adjust.
+     * @param isEnd flag, indicating if the date is the end of the event (in contrast to the beginning)
+     *
+     * @return the adjusted date, which will be exactly the beginning or the end of the provide date's day.
+     */
+    private Date adjustForWholeDay(Date date, boolean isEnd) {
+
+        Calendar result = new GregorianCalendar();
+        result.setTime(date);
+        result.set(Calendar.HOUR_OF_DAY, 0);
+        result.set(Calendar.MINUTE, 0);
+        result.set(Calendar.SECOND, 0);
+        result.set(Calendar.MILLISECOND, 0);
+        if (isEnd) {
+            result.add(Calendar.DATE, 1);
+        }
+
+        return result.getTime();
+    }
+
+    /**
      * Returns the start and end dates/times as "start - end" in the provided date/time format specific for the request locale.
      * @param dateTimeFormat the format to use for date (time is always short).
      * @return the formatted date/time string.
@@ -385,5 +451,32 @@ public class CmsJspInstanceDateBean {
         }
 
         return result;
+    }
+
+    /**
+     * Returns a flag, indicating if the current event is a multi-day event.
+     * The method is only called if the single event has an explicitely set end date
+     * or an explicitely changed whole day option.
+     *
+     * @return a flag, indicating if the current event takes lasts over more than one day.
+     */
+    private boolean isSingleMultiDay() {
+
+        long duration = getEnd().getTime() - getStart().getTime();
+        if (duration > I_CmsSerialDateValue.DAY_IN_MILLIS) {
+            return true;
+        }
+        if (isWholeDay() && (duration <= I_CmsSerialDateValue.DAY_IN_MILLIS)) {
+            return false;
+        }
+        Calendar start = new GregorianCalendar();
+        start.setTime(getStart());
+        Calendar end = new GregorianCalendar();
+        end.setTime(getEnd());
+        if (start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
+            return false;
+        }
+        return true;
+
     }
 }

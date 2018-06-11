@@ -32,10 +32,13 @@ import org.opencms.test.OpenCmsTestCase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+/** Test cases for teh CmsJspInstanceDate bean. */
 public class TestCmsJspInstanceDateBean extends OpenCmsTestCase {
 
     /**
@@ -59,6 +62,7 @@ public class TestCmsJspInstanceDateBean extends OpenCmsTestCase {
         suite.setName(TestCmsJspInstanceDateBean.class.getName());
 
         suite.addTest(new TestCmsJspInstanceDateBean("testDateFormatting"));
+        suite.addTest(new TestCmsJspInstanceDateBean("testExplicitDateChanges"));
 
         return suite;
     }
@@ -122,6 +126,67 @@ public class TestCmsJspInstanceDateBean extends OpenCmsTestCase {
         assertEquals(
             (new SimpleDateFormat("dd/MM/yy - hh:mm")).format(d1) + " - " + (new SimpleDateFormat("hh:mm")).format(d3),
             actual);
+    }
+
+    /**
+     * Test if explictely setting the end date and/or setting the whole day option behaves as expected.
+     */
+    public void testExplicitDateChanges() {
+
+        TimeZone currentTimeZone = TimeZone.getDefault();
+        // Set a defined time zone such that the times we use for testing really fit for start/end of day.
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        try {
+            Date d1 = new Date(1506948000000L); // Mon Oct 02 2017 00:00:00
+            Date ds1 = new Date(1506902400000L); // Mon Oct 02 2017 12:40:00
+            Date de1 = new Date(1506988800000L); // Mon Oct 03 2017 00:00:00
+            Date d2 = new Date(1506961200000L); // Mon Oct 02 2017 16:20:00
+            Date d3 = new Date(1507008000000L); // Tue Oct 03 2017 05:20:00
+            Date de3 = new Date(1507075200000L); // Tue Oct 04 2017 00:00:00
+
+            CmsJspInstanceDateBean bean = new CmsJspInstanceDateBean(d1, Locale.ENGLISH);
+            // Check expected default behavior
+            assertFalse(bean.isWholeDay());
+            assertFalse(bean.isMultiDay());
+            assertEquals(d1, bean.getStart());
+            assertEquals(d1, bean.getEnd());
+
+            //set explicitely wholeday
+            bean.setWholeDay(Boolean.TRUE);
+            // Check expected changed behavior
+            assertTrue(bean.isWholeDay());
+            assertFalse(bean.isMultiDay());
+            assertEquals(ds1, bean.getStart());
+            assertEquals(de1, bean.getEnd());
+
+            //reset wholeday
+            bean.setWholeDay(null);
+            //explicitely set end date
+            bean.setEnd(d2);
+            // Check expected changed behavior
+            assertFalse(bean.isWholeDay());
+            assertFalse(bean.isMultiDay());
+            assertEquals(d1, bean.getStart());
+            assertEquals(d2, bean.getEnd());
+
+            //explicitely set end date
+            bean.setEnd(d3);
+            // Check expected changed behavior
+            assertFalse(bean.isWholeDay());
+            assertTrue(bean.isMultiDay());
+            assertEquals(d1, bean.getStart());
+            assertEquals(d3, bean.getEnd());
+
+            //set explicitely wholeday
+            bean.setWholeDay(Boolean.TRUE);
+            // Check expected changed behavior
+            assertTrue(bean.isWholeDay());
+            assertTrue(bean.isMultiDay());
+            assertEquals(ds1, bean.getStart());
+            assertEquals(de3, bean.getEnd());
+        } finally {
+            TimeZone.setDefault(currentTimeZone);
+        }
     }
 
 }
