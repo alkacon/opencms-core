@@ -975,6 +975,21 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Moves a resource.<p>
+     *
+     * @param source the name of the resource to move (full current site relative path)
+     * @param destination the destination resource name (full current site relative path)
+     *
+     * @throws CmsException in case moving fails
+     *
+     * @see org.opencms.file.CmsObject#moveResource(String, String)
+     */
+    public void moveResource(String source, String destination) throws CmsException {
+
+        m_cms.moveResource(source, destination);
+    }
+
+    /**
      * Does performance measurements of the OpenCms core.<p>
      *
      * @throws Exception if something goes wrong
