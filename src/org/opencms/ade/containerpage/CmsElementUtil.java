@@ -570,6 +570,14 @@ public class CmsElementUtil {
         if (element.getResource().isFolder()) {
             return null;
         }
+        String schema = null;
+        try {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
+            schema = type.getConfiguration().getString("schema", null);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         CmsContainerElementData elementData = getBaseElementData(page, element);
         if (!element.isGroupContainer(m_cms) && !element.isInheritedContainer(m_cms)) {
             CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
@@ -691,7 +699,7 @@ public class CmsElementUtil {
         }
 
         CmsResourceState state = element.getResource().getState();
-        return new CmsElementSettingsConfig(elementData, state, infos);
+        return new CmsElementSettingsConfig(elementData, state, infos, schema);
     }
 
     /**

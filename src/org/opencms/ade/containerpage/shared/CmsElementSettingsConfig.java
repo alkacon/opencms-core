@@ -39,14 +39,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsElementSettingsConfig implements IsSerializable {
 
+    /** The additional infos to display. */
+    private ArrayList<CmsAdditionalInfoBean> m_additionalInfo;
+
     /** The data for the container element. */
     private CmsContainerElementData m_elementData;
 
+    /** Schema path for element. **/
+    private String m_schema;
+
     /** The resource state. */
     private CmsResourceState m_state;
-
-    /** The additional infos to display. */
-    private ArrayList<CmsAdditionalInfoBean> m_additionalInfo;
 
     /**
      * Creates a new instance.<p>
@@ -58,11 +61,13 @@ public class CmsElementSettingsConfig implements IsSerializable {
     public CmsElementSettingsConfig(
         CmsContainerElementData elementData,
         CmsResourceState state,
-        ArrayList<CmsAdditionalInfoBean> additionalInfo) {
+        ArrayList<CmsAdditionalInfoBean> additionalInfo,
+        String schema) {
 
         m_elementData = elementData;
         m_additionalInfo = additionalInfo;
         m_state = state;
+        m_schema = schema;
     }
 
     /**
@@ -91,6 +96,16 @@ public class CmsElementSettingsConfig implements IsSerializable {
     public CmsContainerElementData getElementData() {
 
         return m_elementData;
+    }
+
+    /**
+     * Gets the schema path.
+     *
+     * @return the schema path
+     */
+    public String getSchema() {
+
+        return m_schema;
     }
 
     /**

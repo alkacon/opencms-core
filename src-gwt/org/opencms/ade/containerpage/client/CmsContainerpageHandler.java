@@ -406,7 +406,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     } catch (NoFormatterException e) {
                         String ctype = "???";
                         String cname = "???";
-
+                        String schema = "???";
+                        if (settingsConfig.getSchema() != null) {
+                            schema = settingsConfig.getSchema();
+                        }
                         try {
                             I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
                             if (dropContainer instanceof CmsContainerPageContainer) {
@@ -421,7 +424,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         } catch (Exception e2) { /*ignore*/ }
                         CmsAlertDialog alert = new CmsAlertDialog(
                             org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0),
-                            Messages.get().key(Messages.GUI_NO_FORMATTER_3, path, cname, ctype));
+                            Messages.get().key(Messages.GUI_NO_FORMATTER_4, path, cname, ctype, schema));
                         alert.center();
                     }
                 }

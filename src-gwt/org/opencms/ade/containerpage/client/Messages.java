@@ -55,7 +55,7 @@ public final class Messages {
     public static final String GUI_ADDINFO_FORMATTER_CONTAINER_0 = "GUI_ADDINFO_FORMATTER_CONTAINER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NO_FORMATTER_3 = "GUI_NO_FORMATTER_3";
+    public static final String GUI_NO_FORMATTER_4 = "GUI_NO_FORMATTER_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0 = "GUI_ADDINFO_FORMATTER_CONTAINER_TYPE_0";
