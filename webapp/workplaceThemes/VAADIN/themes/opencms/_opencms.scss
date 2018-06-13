@@ -1252,4 +1252,8 @@
 	& ~ .mce-tooltip, .mce-fullscreen {
 		z-index: 200000 !important;
 	}		
+	
+	.o-dnd-area {
+		min-height: 78px;
+	}
 }
