@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.Date;
@@ -335,7 +336,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
         login(userName, password, projectName);
         if (m_loginException == null) {
-            if (redirectUri != null) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(redirectUri)) {
                 getResponse().sendRedirect(
                     OpenCms.getLinkManager().substituteLink(getCmsObject(), redirectUri, null, true));
             } else {
