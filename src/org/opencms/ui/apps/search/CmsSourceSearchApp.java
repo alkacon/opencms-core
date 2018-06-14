@@ -57,6 +57,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.URLCodec;
+
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -177,6 +180,11 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
      */
     static CmsSearchReplaceSettings getSettingsFromState(String state) {
 
+        try {
+            state = new URLCodec().decode(state);
+        } catch (DecoderException e1) {
+            //
+        }
         CmsSearchReplaceSettings settings = null;
         String typeString = A_CmsWorkplaceApp.getParamFromState(state, SEARCH_TYPE);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(typeString)) {
