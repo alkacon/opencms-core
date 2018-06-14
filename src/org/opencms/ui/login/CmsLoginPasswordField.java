@@ -43,6 +43,7 @@ public class CmsLoginPasswordField extends TextField {
     public CmsLoginPasswordField() {
 
         super();
+        setImmediate(false);
         setWidth("100%");
     }
 }
