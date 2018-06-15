@@ -239,6 +239,22 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Gets the fist non-null value.<p>
+     *
+     * @param o1 the first value
+     * @param o2 the second value
+     *
+     * @return the first non-null value
+     */
+    private static <T> T firstNotNull(T o1, T o2) {
+
+        if (o1 != null) {
+            return o1;
+        }
+        return o2;
+    }
+
+    /**
      * Copies this property definition.<p>
      *
      * @return a new copy of the current property definition
@@ -258,6 +274,16 @@ public class CmsXmlContentProperty implements Serializable {
             m_description,
             m_error,
             m_preferFolder);
+    }
+
+    /**
+     * Gets the configured widget, without using a default if it is null.<p>
+     *
+     * @return the configured widget
+     */
+    public String getConfiguredWidget() {
+
+        return m_widget;
     }
 
     /**
@@ -367,6 +393,9 @@ public class CmsXmlContentProperty implements Serializable {
      */
     public String getWidget() {
 
+        if (m_widget == null) {
+            return "string";
+        }
         return m_widget;
     }
 
@@ -393,6 +422,37 @@ public class CmsXmlContentProperty implements Serializable {
 
         return (m_preferFolder == null) || Boolean.valueOf(m_preferFolder).booleanValue();
 
+    }
+
+    /**
+     * Merges this object with another one containing default values.<p>
+     *
+     * This method does not modify this object or the object passed as a parameter.
+     * The resulting object's fields will be filled with the values from the default if they're null in this object.
+     *
+     * @param defaults the object with the defaults
+     *
+     * @return the result of merging this object with the defaults
+     */
+    public CmsXmlContentProperty mergeDefaults(CmsXmlContentProperty defaults) {
+
+        if (defaults.getName().equals(getName())) {
+            return new CmsXmlContentProperty(
+                m_name,
+                firstNotNull(defaults.m_type, m_type),
+                firstNotNull(defaults.m_visibility, m_visibility),
+                firstNotNull(defaults.m_widget, m_widget),
+                firstNotNull(defaults.m_widgetConfiguration, m_widgetConfiguration),
+                firstNotNull(defaults.m_ruleRegex, m_ruleRegex),
+                firstNotNull(defaults.m_ruleType, m_ruleType),
+                firstNotNull(defaults.m_default, m_default),
+                firstNotNull(defaults.m_niceName, m_niceName),
+                firstNotNull(defaults.m_description, m_description),
+                firstNotNull(defaults.m_error, m_error),
+                firstNotNull(defaults.m_preferFolder, m_preferFolder));
+        } else {
+            throw new IllegalArgumentException("Cannot merge properties with different names.");
+        }
     }
 
     /**

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration.formatters;
 
+import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.I_CmsGlobalConfigurationCache;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsFile;
@@ -34,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -42,11 +44,17 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentRootLocation;
+import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -69,14 +77,17 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     /** A UUID which is used to mark the configuration cache for complete reloading. */
     public static final CmsUUID RELOAD_MARKER = CmsUUID.getNullUUID();
 
+    /** The resource type for macro formatters. */
+    public static final String TYPE_FLEX_FORMATTER = "flex_formatter";
+
     /** The resource type for formatter configurations. */
     public static final String TYPE_FORMATTER_CONFIG = "formatter_config";
 
     /** The resource type for macro formatters. */
     public static final String TYPE_MACRO_FORMATTER = "macro_formatter";
 
-    /** The resource type for macro formatters. */
-    public static final String TYPE_FLEX_FORMATTER = "flex_formatter";
+    /** Type name for setting configurations. */
+    public static final String TYPE_SETTINGS_CONFIG = "settings_config";
 
     /** The delay to use for updating the formatter cache, in seconds. */
     protected static int UPDATE_DELAY_SECONDS = 7;
@@ -95,6 +106,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
     /** Flag which indicates whether an update operation has been scheduled. */
     private boolean m_scheduledUpdate;
+
+    /** Additional setting configurations. */
+    private Map<CmsUUID, Map<String, CmsXmlContentProperty>> m_settingConfigs;
 
     /** The current data contained in the formatter cache.<p> This field is reassigned when formatters are changed, but the objects pointed to by this  field are immutable.<p> **/
     private volatile CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
@@ -174,6 +188,20 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     public synchronized void reload() {
 
         m_idsToUpdate.clear();
+        List<CmsResource> settingConfigResources = new ArrayList<>();
+        try {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_SETTINGS_CONFIG);
+            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+            settingConfigResources.addAll(m_cms.readResources("/", filter));
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        Map<CmsUUID, Map<String, CmsXmlContentProperty>> settingConfigs = new HashMap<>();
+        for (CmsResource resource : settingConfigResources) {
+            parseSettingsConfig(resource, settingConfigs);
+        }
+        m_settingConfigs = settingConfigs;
+
         List<CmsResource> formatterResources = new ArrayList<CmsResource>();
         try {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG);
@@ -266,7 +294,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         try {
             formatterRes = m_cms.readResource(structureId);
             CmsFile formatterFile = m_cms.readFile(formatterRes);
-            CmsFormatterBeanParser parser = new CmsFormatterBeanParser(m_cms);
+            CmsFormatterBeanParser parser = new CmsFormatterBeanParser(m_cms, m_settingConfigs);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, formatterFile);
             formatterBean = parser.parse(content, formatterRes.getRootPath(), "" + formatterRes.getStructureId());
         } catch (Exception e) {
@@ -298,9 +326,16 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         if (CmsResource.isTemporaryFileName(path)) {
             return;
         }
-        if (OpenCms.getResourceManager().matchResourceType(TYPE_FORMATTER_CONFIG, resourceType)
-            || OpenCms.getResourceManager().matchResourceType(TYPE_MACRO_FORMATTER, resourceType)
-            || OpenCms.getResourceManager().matchResourceType(TYPE_FLEX_FORMATTER, resourceType)) {
+        CmsResourceManager manager = OpenCms.getResourceManager();
+
+        if (manager.matchResourceType(TYPE_SETTINGS_CONFIG, resourceType)) {
+            markForUpdate(RELOAD_MARKER);
+            return;
+        }
+
+        if (manager.matchResourceType(TYPE_FORMATTER_CONFIG, resourceType)
+            || manager.matchResourceType(TYPE_MACRO_FORMATTER, resourceType)
+            || manager.matchResourceType(TYPE_FLEX_FORMATTER, resourceType)) {
             markForUpdate(structureId);
         }
     }
@@ -323,6 +358,34 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             }, UPDATE_DELAY_SECONDS, TimeUnit.SECONDS);
             m_scheduledUpdate = true;
 
+        }
+    }
+
+    /**
+     * Helper method for parsing a settings configuration file.<p>
+     *
+     * @param resource the resource to parse
+     * @param settingConfigs the map in which the result should be stored, with the structure id of the resource as the key
+     */
+    private void parseSettingsConfig(
+        CmsResource resource,
+        Map<CmsUUID, Map<String, CmsXmlContentProperty>> settingConfigs) {
+
+        Map<String, CmsXmlContentProperty> settingConfig = new LinkedHashMap<>();
+
+        try {
+            CmsFile settingFile = m_cms.readFile(resource);
+            CmsXmlContent settingContent = CmsXmlContentFactory.unmarshal(m_cms, settingFile);
+            CmsXmlContentRootLocation location = new CmsXmlContentRootLocation(settingContent, Locale.ENGLISH);
+            for (I_CmsXmlContentValueLocation settingLoc : location.getSubValues(CmsFormatterBeanParser.N_SETTING)) {
+                CmsXmlContentProperty setting = CmsConfigurationReader.parseProperty(
+                    m_cms,
+                    settingLoc).getPropertyData();
+                settingConfig.put(setting.getName(), setting);
+            }
+            settingConfigs.put(resource.getStructureId(), settingConfig);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 }

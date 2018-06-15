@@ -55,6 +55,7 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -103,9 +104,6 @@ public class CmsFormatterBeanParser {
     public static final String N_AUTO_ENABLED = "AutoEnabled";
 
     /** Content value node name. */
-    public static final String N_NESTED_FORMATTER_SETTINGS = "NestedFormatterSettings";
-
-    /** Content value node name. */
     public static final String N_CHOICE_NEW_LINK = "ChoiceNewLink";
 
     /** Content value node name. */
@@ -118,25 +116,22 @@ public class CmsFormatterBeanParser {
     public static final String N_CSS_LINK = "CssLink";
 
     /** Content value node name. */
+    public static final String N_DEFAULT = "Default";
+
+    /** Content value node name. */
+    public static final String N_DEFAULT_CONTENT = "DefaultContent";
+
+    /** Content value node name. */
+    public static final String N_DESCRIPTION = "Description";
+
+    /** Content value node name. */
     public static final String N_DETAIL = "Detail";
 
     /** Content value node name. */
     public static final String N_DISPLAY = "Display";
 
     /** Content value node name. */
-    public static final String N_META_MAPPING = "MetaMapping";
-
-    /** Content value node name. */
-    public static final String N_KEY = "Key";
-
-    /** Content value node name. */
     public static final String N_ELEMENT = "Element";
-
-    /** Content value node name. */
-    public static final String N_ORDER = "Order";
-
-    /** Content value node name. */
-    public static final String N_DEFAULT = "Default";
 
     /** Node name. */
     public static final String N_FORMATTER = "Formatter";
@@ -151,9 +146,6 @@ public class CmsFormatterBeanParser {
     public static final String N_HEAD_INCLUDE_JS = "HeadIncludeJs";
 
     /** Content value node name. */
-    public static final String N_DEFAULT_CONTENT = "DefaultContent";
-
-    /** Content value node name. */
     public static final String N_JAVASCRIPT_INLINE = "JavascriptInline";
 
     /** Content value node name. */
@@ -162,14 +154,11 @@ public class CmsFormatterBeanParser {
     /** Content value node name. */
     public static final String N_JSP = "Jsp";
 
+    /** Content value node name. */
+    public static final String N_KEY = "Key";
+
     /** Node name. */
     public static final String N_MACRO = "Macro";
-
-    /** Node name. */
-    public static final String N_STRING_TEMPLATE = "StringTemplate";
-
-    /** Node name. */
-    public static final String N_PLACEHOLDER_STRING_TEMPLATE = "PlaceholderStringTemplate";
 
     /** Node name. */
     public static final String N_MACRO_NAME = "MacroName";
@@ -181,13 +170,25 @@ public class CmsFormatterBeanParser {
     public static final String N_MAX_WIDTH = "MaxWidth";
 
     /** Content value node name. */
+    public static final String N_META_MAPPING = "MetaMapping";
+
+    /** Content value node name. */
     public static final String N_NESTED_CONTAINERS = "NestedContainers";
+
+    /** Content value node name. */
+    public static final String N_NESTED_FORMATTER_SETTINGS = "NestedFormatterSettings";
 
     /** Content value node name. */
     public static final String N_NICE_NAME = "NiceName";
 
     /** Content value node name. */
+    public static final String N_ORDER = "Order";
+
+    /** Content value node name. */
     public static final String N_PLACEHOLDER_MACRO = "PlaceholderMacro";
+
+    /** Node name. */
+    public static final String N_PLACEHOLDER_STRING_TEMPLATE = "PlaceholderStringTemplate";
 
     /** Content value node name. */
     public static final String N_PREVIEW = "Preview";
@@ -204,8 +205,8 @@ public class CmsFormatterBeanParser {
     /** Content value node name. */
     public static final String N_STRICT_CONTAINERS = "StrictContainers";
 
-    /** Content value node name. */
-    public static final String N_DESCRIPTION = "Description";
+    /** Node name. */
+    public static final String N_STRING_TEMPLATE = "StringTemplate";
 
     /** Content value node name. */
     public static final String N_TYPE = "Type";
@@ -219,8 +220,14 @@ public class CmsFormatterBeanParser {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
 
+    /** Content value node name. */
+    public static final String N_INCLUDE_SETTINGS = "IncludeSettings";
+
     /** Parsed field. */
     int m_width;
+
+    /** Additional setting configurations for includes. */
+    private Map<CmsUUID, Map<String, CmsXmlContentProperty>> m_additionalSettingConfigs = new HashMap<>();
 
     /** Parsed field. */
     private boolean m_autoEnabled;
@@ -273,10 +280,12 @@ public class CmsFormatterBeanParser {
      * A  new parser instance should be created for every formatter configuration you want to parse.<p>
      *
      * @param cms the CMS context to use for parsing
+     * @param settingConfigs the additional setting configurations used for includes
      */
-    public CmsFormatterBeanParser(CmsObject cms) {
+    public CmsFormatterBeanParser(CmsObject cms, Map<CmsUUID, Map<String, CmsXmlContentProperty>> settingConfigs) {
 
         m_cms = cms;
+        m_additionalSettingConfigs = settingConfigs;
     }
 
     /**
@@ -314,7 +323,6 @@ public class CmsFormatterBeanParser {
         I_CmsXmlContentValue niceName = content.getValue(N_NICE_NAME, en);
         m_niceName = niceName != null ? niceName.getStringValue(m_cms) : null;
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, en);
-
         I_CmsXmlContentValueLocation rankLoc = root.getSubValue(N_RANK);
         String rankStr = rankLoc.getValue().getStringValue(m_cms);
         if (rankStr != null) {
@@ -331,6 +339,31 @@ public class CmsFormatterBeanParser {
 
         m_resourceType = getStringSet(root, N_TYPE);
         parseSettings(root);
+        CmsXmlVfsFileValue includeSettingsVal = (CmsXmlVfsFileValue)content.getValue(N_INCLUDE_SETTINGS, en);
+        if (includeSettingsVal != null) {
+
+            try {
+                CmsUUID includeSettingsId = includeSettingsVal.getLink(m_cms).getStructureId();
+                Map<String, CmsXmlContentProperty> addSettings = m_additionalSettingConfigs.get(includeSettingsId);
+                if (addSettings != null) {
+                    Map<String, CmsXmlContentProperty> mergedSettings = new LinkedHashMap<>();
+                    for (Map.Entry<String, CmsXmlContentProperty> entry : m_settings.entrySet()) {
+                        CmsXmlContentProperty defaultSetting = addSettings.get(entry.getKey());
+                        CmsXmlContentProperty mergedSetting;
+                        if (defaultSetting != null) {
+                            mergedSetting = entry.getValue().mergeDefaults(defaultSetting);
+                        } else {
+                            mergedSetting = entry.getValue();
+                        }
+                        mergedSettings.put(mergedSetting.getName(), mergedSetting);
+                    }
+                    m_settings = mergedSettings;
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         String isDetailStr = getString(root, N_DETAIL, "true");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
@@ -437,9 +470,10 @@ public class CmsFormatterBeanParser {
             CmsUUID jspID = link.getStructureId();
 
             if (jspID == null) {
-                throw new CmsConfigurationException(Messages.get().container(
+                throw new CmsConfigurationException(
+                    Messages.get().container(
                         Messages.ERR_READ_FORMATTER_CONFIG_4,
-                        new Object[]{link.getUri(), m_niceName, location, "" + m_resourceType}));
+                        new Object[] {link.getUri(), m_niceName, location, "" + m_resourceType}));
             }
 
             CmsResource formatterRes = m_cms.readResource(jspID);

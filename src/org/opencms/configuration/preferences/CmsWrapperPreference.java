@@ -95,7 +95,7 @@ public class CmsWrapperPreference implements I_CmsPreference {
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             getName(), //name
             "string", //type
-            firstNotNull(configProp.getWidget(), wrappedProp.getWidget()), //widget
+            firstNotNull(configProp.getConfiguredWidget(), wrappedProp.getConfiguredWidget()), //widget
             firstNotNull(configProp.getWidgetConfiguration(), wrappedProp.getWidgetConfiguration()), //widgetconfig
             firstNotNull(configProp.getRuleRegex(), wrappedProp.getRuleRegex()), //regex
             firstNotNull(configProp.getRuleType(), wrappedProp.getRuleType()), //ruletype

@@ -290,6 +290,23 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/macro_formatter.xsd</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="settings_config" id="316">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value><![CDATA[all]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/settings_config.xsd</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="bundledescriptor" id="320">
 				<properties>
@@ -544,6 +561,12 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</explorertype>
 			<explorertype name="formatter_config" key="fileicon.formatter_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.formatter_config"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="settings_config" key="fileicon.settings_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
+				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=settings_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.settings_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
