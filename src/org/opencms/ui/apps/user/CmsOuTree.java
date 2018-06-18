@@ -365,7 +365,7 @@ public class CmsOuTree extends Tree {
             }
         }
 
-        m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID);
+        m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID, "");
         if (isExpanded(itemId) | (itemId instanceof CmsUUID)) {
             return;
         }

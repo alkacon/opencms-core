@@ -84,7 +84,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
         public void executeAction(final Set<String> context) {
 
             Window window = CmsBasicDialog.prepareWindow();
-            CmsDeleteOUDialog dialog = new CmsDeleteOUDialog(m_cms, context.iterator().next(), window);
+            CmsDeleteOUDialog dialog = new CmsDeleteOUDialog(m_cms, context.iterator().next(), window, m_app);
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_DELETE_0));
             A_CmsUI.get().addWindow(window);
@@ -128,7 +128,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow();
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_OU_EDIT_WINDOW_CAPTION_0));
-            window.setContent(new CmsOUEditDialog(m_cms, context.iterator().next(), window));
+            window.setContent(new CmsOUEditDialog(m_cms, context.iterator().next(), window, m_app));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -211,7 +211,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow();
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_GROUP_0));
-            window.setContent(new CmsGroupEditDialog(m_cms, window, m_parentOu));
+            window.setContent(new CmsGroupEditDialog(m_cms, window, m_parentOu, m_app));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -250,7 +250,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow();
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_USER_0));
-            window.setContent(new CmsUserEditDialog(m_cms, window, m_parentOu));
+            window.setContent(new CmsUserEditDialog(m_cms, window, m_parentOu, m_app));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -477,7 +477,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             m_app.update(m_parentOu, CmsOuTreeType.fromID(itemId), null);
             return;
         }
-        m_app.update(itemId, CmsOuTreeType.OU, null);
+        m_app.update(itemId, CmsOuTreeType.OU, null, "");
     }
 
     /**
@@ -508,10 +508,12 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
         if (m_app.isParentOfManagableOU(ou.getName())) {
             Item item = m_container.addItem(ou.getName());
-            item.getItemProperty(TableProperty.Name).setValue(ou.getName());
-            item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
-            if (ou.hasFlagWebuser()) {
-                item.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB));
+            if (item != null) {
+                item.getItemProperty(TableProperty.Name).setValue(ou.getName());
+                item.getItemProperty(TableProperty.Description).setValue(ou.getDisplayName(A_CmsUI.get().getLocale()));
+                if (ou.hasFlagWebuser()) {
+                    item.getItemProperty(TableProperty.Icon).setValue(new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB));
+                }
             }
         }
     }

@@ -46,12 +46,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.ui.Button;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the dialog to edit and view roles of user.<p>
@@ -85,9 +85,11 @@ public class CmsUserEditRoleDialog extends A_CmsEditUserGroupRoleDialog {
      * @param cms CmsObject
      * @param userId id of user
      * @param window window
+     * @param app
      */
-    public CmsUserEditRoleDialog(CmsObject cms, CmsUUID userId, final Window window) {
-        super(cms, userId, window);
+    public CmsUserEditRoleDialog(CmsObject cms, CmsUUID userId, final Window window, CmsAccountsApp app) {
+
+        super(cms, userId, window, app);
     }
 
     /**

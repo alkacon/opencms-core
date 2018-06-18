@@ -168,8 +168,9 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      * @param cms CmsObject
      * @param ou id of group edit, null if ou should be created
      * @param window window holding the dialog
+     * @param app
      */
-    public CmsOUEditDialog(CmsObject cms, String ou, final Window window) {
+    public CmsOUEditDialog(CmsObject cms, String ou, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
@@ -243,7 +244,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                 if (isValid()) {
                     saveOU();
                     window.close();
-                    A_CmsUI.get().reload();
+                    app.reload();
                 }
             }
         });
@@ -279,9 +280,9 @@ public class CmsOUEditDialog extends CmsBasicDialog {
      * @param window window holding dialog
      * @param ou to create group in
      */
-    public CmsOUEditDialog(CmsObject cms, Window window, String ou) {
+    public CmsOUEditDialog(CmsObject cms, Window window, String ou, CmsAccountsApp app) {
 
-        this(cms, null, window);
+        this(cms, null, window, app);
         m_parentOu.setValue(ou.equals("") ? "/" : ou);
         try {
             displayResourceInfoDirectly(

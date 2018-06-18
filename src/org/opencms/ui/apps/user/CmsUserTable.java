@@ -55,7 +55,6 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,25 +66,25 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table for user.<p>
  *
  */
-public class CmsUserTable extends Table implements I_CmsFilterableTable {
+public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsToggleTable {
 
     /**
      *Entry to addition info dialog.<p>
@@ -101,7 +100,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             CmsAdditionalInfosDialog dialog = new CmsAdditionalInfosDialog(
                 m_cms,
                 new CmsUUID(context.iterator().next()),
-                window);
+                window,
+                m_app);
             window.setContent(dialog);
             A_CmsUI.get().addWindow(window);
         }
@@ -140,7 +140,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
             Window window = CmsBasicDialog.prepareWindow();
             CmsBasicDialog dialog = null;
 
-            dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window);
+            dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window, m_app);
 
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DELETE_0));
@@ -177,7 +177,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EDIT_USER_0));
-            window.setContent(new CmsUserEditDialog(m_cms, new CmsUUID(context.iterator().next()), window));
+            window.setContent(new CmsUserEditDialog(m_cms, new CmsUUID(context.iterator().next()), window, m_app));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -215,8 +215,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
 
-            window.setContent(new CmsUserEditGroupDialog(m_cms, new CmsUUID(context.iterator().next()), window));
-
+            window.setContent(new CmsUserEditGroupDialog(m_cms, new CmsUUID(context.iterator().next()), window, m_app));
             A_CmsUI.get().addWindow(window);
         }
 
@@ -253,7 +252,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
 
-            window.setContent(new CmsUserEditRoleDialog(m_cms, new CmsUUID(context.iterator().next()), window));
+            window.setContent(new CmsUserEditRoleDialog(m_cms, new CmsUUID(context.iterator().next()), window, m_app));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -280,7 +279,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
-     *Entry to kill Session.<p>
+     *Entry to enable after password was entered wrong.<p>
      */
     class EntryEnable implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
@@ -301,7 +300,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
                             OpenCms.getLoginManager().resetUserTempDisable(user.getName());
                             window.close();
-                            A_CmsUI.get().reload();
+                            m_app.reload();
                         }
 
                     },
@@ -483,7 +482,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                                 //
                             }
                             window.close();
-                            A_CmsUI.get().reload();
+                            m_app.reload();
                         }
                     };
                 }
@@ -507,7 +506,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
                                 //
                             }
                             window.close();
-                            A_CmsUI.get().reload();
+                            m_app.reload();
                         }
                     };
                 }
@@ -779,7 +778,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**The app.*/
-    private CmsAccountsApp m_app;
+    CmsAccountsApp m_app;
 
     /**Type to be shown. */
     protected CmsOuTreeType m_type;
@@ -787,7 +786,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     /**List of user. */
     private List<CmsUser> m_user;
 
-    /**flag indicates if all indirect items (for roles) are loaded. */
+    /**flag indicates if all indirect items (for roles or sub OUs) are loaded. */
     private boolean m_fullLoaded;
 
     /**List of indirect user. */
@@ -810,18 +809,23 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      *
      * @param ou name
      * @param app the app
+     * @param showAll boolean
      */
-    public CmsUserTable(String ou, CmsAccountsApp app) {
+    public CmsUserTable(String ou, CmsAccountsApp app, boolean showAll) {
 
-        m_ou = ou;
+        m_ou = ou.equals("/") ? "" : ou;
         m_app = app;
         try {
             m_cms = getCmsObject();
             m_type = CmsOuTreeType.USER;
-            m_user = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(m_cms, ou, false);
-            m_indirects = Collections.emptyList();
-            init(false);
-            m_fullLoaded = true;
+            List<CmsUser> directs = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(m_cms, ou, false);
+            m_indirects = new ArrayList<CmsUser>();
+            if (showAll) {
+                setAllUser(directs);
+            } else {
+                m_user = directs;
+            }
+            init(showAll);
         } catch (CmsException e) {
             LOG.error("Unable to read user.", e);
         }
@@ -838,7 +842,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      */
     public CmsUserTable(String ou, CmsUUID groupID, CmsOuTreeType cmsOuTreeType, boolean showAll, CmsAccountsApp app) {
 
-        m_ou = ou;
+        m_ou = ou.equals("/") ? "" : ou;
         m_app = app;
 
         try {
@@ -886,6 +890,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
 
     }
 
+    public int getCurrentSize() {
+
+        return this.size();
+    }
+
     /**
      * Layout which gets displayed if table is empty.
      *
@@ -900,14 +909,13 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
-     * Toggles the table.<p>
-     *
-     * @param pressed boolean
+     * @see org.opencms.ui.apps.user.I_CmsToggleTable#toggle(boolean)
      */
     public void toggle(boolean pressed) {
 
         try {
-            if (pressed & !m_fullLoaded) {
+
+            if (pressed && !m_fullLoaded) {
                 setAllUser(m_user);
             }
         } catch (CmsException e) {
@@ -924,15 +932,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
      */
     protected void fillContainer(boolean showIndirect) {
 
+        m_container.removeAllContainerFilters();
         m_container.removeAllItems();
         m_checkedUserPasswordReset = new HashSet<CmsUUID>();
         for (CmsUser user : m_user) {
-            if (!m_indirects.contains(user)) {
-                addUserToContainer(m_container, user);
-            }
-        }
-        if (showIndirect) {
-            for (CmsUser user : m_indirects) {
+            if (showIndirect || !m_indirects.contains(user)) {
                 addUserToContainer(m_container, user);
             }
         }
@@ -1384,11 +1388,17 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable {
     private void setAllUser(List<CmsUser> directs) throws CmsException {
 
         m_fullLoaded = true;
-        m_user = OpenCms.getRoleManager().getUsersOfRole(
-            m_cms,
-            CmsRole.valueOfRoleName(m_group).forOrgUnit(m_ou),
-            true,
-            false);
+        boolean onlyNormalUser = false;
+        if (m_type.equals(CmsOuTreeType.ROLE)) {
+            m_user = OpenCms.getRoleManager().getUsersOfRole(
+                m_cms,
+                CmsRole.valueOfRoleName(m_group).forOrgUnit(m_ou),
+                true,
+                false);
+        } else if (m_type.equals(CmsOuTreeType.USER)) {
+            m_user = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(m_cms, m_ou, true);
+
+        }
         Iterator<CmsUser> it = m_user.iterator();
         while (it.hasNext()) {
             CmsUser u = it.next();

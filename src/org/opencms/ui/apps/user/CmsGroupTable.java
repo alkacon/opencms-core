@@ -70,7 +70,7 @@ import com.vaadin.v7.ui.VerticalLayout;
 /**
  * Class for the table containing groups of a ou.<p>
  */
-public class CmsGroupTable extends Table implements I_CmsFilterableTable {
+public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsToggleTable {
 
     /**
      * Delete context menu entry.<p>
@@ -83,7 +83,11 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
         public void executeAction(final Set<String> context) {
 
             Window window = CmsBasicDialog.prepareWindow();
-            CmsDeleteMultiplePrincipalDialog dialog = new CmsDeleteMultiplePrincipalDialog(m_cms, context, window);
+            CmsDeleteMultiplePrincipalDialog dialog = new CmsDeleteMultiplePrincipalDialog(
+                m_cms,
+                context,
+                window,
+                m_app);
             window.setContent(dialog);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DELETE_0));
             A_CmsUI.get().addWindow(window);
@@ -119,7 +123,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
             Window window = CmsBasicDialog.prepareWindow();
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EDIT_GROUP_0));
-            window.setContent(new CmsGroupEditDialog(m_cms, new CmsUUID(context.iterator().next()), window));
+            window.setContent(new CmsGroupEditDialog(m_cms, new CmsUUID(context.iterator().next()), window, m_app));
 
             A_CmsUI.get().addWindow(window);
         }
@@ -351,6 +355,15 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
     /** The context menu. */
     CmsContextMenu m_menu;
 
+    /**List of groups. */
+    List<CmsGroup> m_groups;
+
+    /**List of indirect groups. */
+    List<CmsGroup> m_indirects;
+
+    /**flag indicates if all indirect items (for sub OUs) are loaded. */
+    private boolean m_fullLoaded;
+
     /**Calling app. */
     protected CmsAccountsApp m_app;
 
@@ -368,13 +381,34 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
      *
      * @param ou ou name
      * @param app calling app.
+     * @param showAll
      */
-    public CmsGroupTable(String ou, CmsAccountsApp app) {
+    public CmsGroupTable(String ou, CmsAccountsApp app, boolean showAll) {
 
         m_app = app;
         m_ou = ou;
+        m_indirects = new ArrayList<CmsGroup>();
+        List<CmsGroup> directs;
+        try {
+            m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            m_cms.getRequestContext().setSiteRoot("");
+        } catch (CmsException e) {
+            m_cms = A_CmsUI.getCmsObject();
+        }
+        try {
+            directs = OpenCms.getOrgUnitManager().getGroups(m_cms, ou, false);
+            m_fullLoaded = false;
+            if (showAll) {
+                setAllGroups(directs);
+            } else {
+                m_groups = directs;
+            }
+        } catch (CmsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         init(ou);
-        setVisibleColumns(TableProperty.Name, TableProperty.Description);
+        setVisibleColumns(TableProperty.Name, TableProperty.Description, TableProperty.OU);
     }
 
     /**
@@ -394,6 +428,11 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
     }
 
+    public int getCurrentSize() {
+
+        return size();
+    }
+
     /**
      * @see org.opencms.ui.apps.user.I_CmsFilterableTable#getEmptyLayout()
      */
@@ -406,6 +445,42 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
     }
 
     /**
+     * @see org.opencms.ui.apps.user.I_CmsToggleTable#toggle(boolean)
+     */
+    public void toggle(boolean pressed) {
+
+        try {
+            if (pressed && !m_fullLoaded) {
+                setAllGroups(m_groups);
+            }
+        } catch (CmsException e) {
+            LOG.error("Error loading groups", e);
+        }
+        fillContainer(pressed);
+    }
+
+    /**
+     * Fills the container.<p>
+     *
+     * @param showIndirect true-> show all user, false -> only direct user
+     */
+    protected void fillContainer(boolean showIndirect) {
+
+        m_container.removeAllContainerFilters();
+        m_container.removeAllItems();
+        for (CmsGroup group : m_groups) {
+            if (!m_indirects.contains(group)) {
+                addGroupToContainer(m_container, group);
+            }
+        }
+        if (showIndirect) {
+            for (CmsGroup group : m_indirects) {
+                addGroupToContainer(m_container, group);
+            }
+        }
+    }
+
+    /**
      * Updates the app.<p>
      *
      * @param uuid of current group
@@ -414,7 +489,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
 
         try {
             CmsGroup group = m_cms.readGroup(new CmsUUID(uuid));
-            m_app.update(group.getOuFqn(), CmsOuTreeType.GROUP, group.getId());
+            m_app.update(group.getOuFqn(), CmsOuTreeType.GROUP, group.getId(), "");
         } catch (CmsException e) {
             LOG.error("unable to read group.", e);
         }
@@ -458,6 +533,14 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
         return m_menuEntries;
     }
 
+    private void addGroupToContainer(IndexedContainer container, CmsGroup group) {
+
+        Item item = container.addItem(group);
+        item.getItemProperty(TableProperty.Name).setValue(group.getName());
+        item.getItemProperty(TableProperty.Description).setValue(group.getDescription(A_CmsUI.get().getLocale()));
+        item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
+    }
+
     /**
      * Initializes the table.<p>
      *
@@ -483,23 +566,8 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
         setMultiSelect(true);
         setVisibleColumns(TableProperty.Name, TableProperty.OU);
 
-        try {
-            m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            m_cms.getRequestContext().setSiteRoot("");
-        } catch (CmsException e) {
-            m_cms = A_CmsUI.getCmsObject();
-        }
-        try {
-            for (CmsGroup group : OpenCms.getOrgUnitManager().getGroups(m_cms, ou, false)) {
-
-                Item item = m_container.addItem(group);
-                item.getItemProperty(TableProperty.Name).setValue(group.getName());
-                item.getItemProperty(TableProperty.Description).setValue(
-                    group.getDescription(A_CmsUI.get().getLocale()));
-                item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
-            }
-        } catch (CmsException e) {
-            LOG.error("Unable to read groups", e);
+        for (CmsGroup group : m_groups) {
+            addGroupToContainer(m_container, group);
         }
 
         addItemClickListener(new ItemClickListener() {
@@ -540,4 +608,18 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable {
             }
         });
     }
+
+    private void setAllGroups(List<CmsGroup> directs) throws CmsException {
+
+        m_fullLoaded = true;
+        m_groups = OpenCms.getOrgUnitManager().getGroups(m_cms, m_ou, true);
+        m_indirects.clear();
+        for (CmsGroup group : m_groups) {
+            if (!directs.contains(group)) {
+                m_indirects.add(group);
+            }
+        }
+
+    }
+
 }

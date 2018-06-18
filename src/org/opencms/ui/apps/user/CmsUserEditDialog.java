@@ -359,12 +359,14 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
     /**
      * public constructor.<p>
+     * @param callingOu
      *
      * @param cms CmsObject
      * @param userId id of user
      * @param window to be closed
+     * @param app
      */
-    public CmsUserEditDialog(CmsObject cms, CmsUUID userId, final Window window) {
+    public CmsUserEditDialog(CmsObject cms, CmsUUID userId, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         setPasswordFields();
@@ -395,7 +397,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_selfmanagement.setValue(new Boolean(!m_user.isManaged()));
             m_enabled.setValue(new Boolean(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
-            init(window, settings);
+            init(window, app, settings);
             m_sendEmail.setEnabled(false);
             m_forceResetPassword.setValue(
                 CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()) == null
@@ -418,7 +420,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * @param window Window
      * @param ou organizational unit
      */
-    public CmsUserEditDialog(CmsObject cms, final Window window, String ou) {
+    public CmsUserEditDialog(CmsObject cms, final Window window, String ou, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsOrganizationalUnit myOu = null;
@@ -456,7 +458,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         m_enabled.setValue(Boolean.TRUE);
 
-        init(window, null);
+        init(window, app, null);
         setupStartFolder(null);
 
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
@@ -1129,9 +1131,10 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * A initialization method.<p>
      *
      * @param window to be closed
+     * @param app
      * @param settings user settings, null if new user
      */
-    private void init(final Window window, final CmsUserSettings settings) {
+    private void init(final Window window, final CmsAccountsApp app, final CmsUserSettings settings) {
 
         m_userdata.initFields(m_user, true);
         if (m_user != null) {
@@ -1168,7 +1171,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 if (isValid()) {
                     save();
                     window.close();
-                    A_CmsUI.get().reload();
+                    app.reload();
                 }
             }
         });

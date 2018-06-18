@@ -44,14 +44,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Dialog for delete of principals and ous.<p>
@@ -94,11 +94,12 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
      * @param cms CmsObject
      * @param ouName name of ou to delete
      * @param window window showing dialog
+     * @param app
      */
-    public CmsDeleteOUDialog(CmsObject cms, String ouName, Window window) {
+    public CmsDeleteOUDialog(CmsObject cms, String ouName, Window window, CmsAccountsApp app) {
 
         m_ouName = ouName;
-        init(cms, window);
+        init(cms, window, app);
         m_dependencyPanel.setVisible(false);
         m_principalSelectLayout.setVisible(false);
         try {
@@ -136,8 +137,9 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
      *
      * @param cms CmsObject
      * @param window window
+     * @param app
      */
-    private void init(CmsObject cms, final Window window) {
+    private void init(CmsObject cms, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         try {
@@ -159,7 +161,7 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
 
                 deletePrincipal();
                 window.close();
-                A_CmsUI.get().reload();
+                app.reload();
 
             }
 

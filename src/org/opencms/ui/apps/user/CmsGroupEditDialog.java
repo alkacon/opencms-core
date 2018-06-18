@@ -31,7 +31,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
@@ -40,16 +39,16 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the dialog to edit or create a CmsGroup.<p>
@@ -92,8 +91,10 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
      * @param cms CmsObject
      * @param groupId id of group edit, null if groud should be created
      * @param window window holding the dialog
+     * @param app
      */
-    public CmsGroupEditDialog(CmsObject cms, CmsUUID groupId, final Window window) {
+    public CmsGroupEditDialog(CmsObject cms, CmsUUID groupId, final Window window, final CmsAccountsApp app) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_cms = cms;
 
@@ -123,7 +124,7 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
 
                 saveGroup();
                 window.close();
-                A_CmsUI.get().reload();
+                app.reload();
 
             }
         });
@@ -164,8 +165,9 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
      * @param window window holding dialog
      * @param ou to create group in
      */
-    public CmsGroupEditDialog(CmsObject cms, Window window, String ou) {
-        this(cms, null, window);
+    public CmsGroupEditDialog(CmsObject cms, Window window, String ou, CmsAccountsApp app) {
+
+        this(cms, null, window, app);
         m_ou.setValue(ou);
         m_enabled.setValue(new Boolean(true));
     }
