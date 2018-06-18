@@ -615,8 +615,8 @@ div.formDescriptionLabel {
 }
 
 
-@external mce-branding-powered-by, mce-toolbar, mce-toolbar-grp, mce-btn, mce-tinymce, mce-statusbar, mce-wordcount, mce-path; 
-.mce-branding-powered-by { 
+@external mce-branding-powered-by, mce-branding, mce-toolbar, mce-toolbar-grp, mce-btn, mce-tinymce, mce-statusbar, mce-wordcount, mce-path; 
+.mce-branding-powered-by, .mce-branding { 
 	display: none !important; 
 }
 

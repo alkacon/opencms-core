@@ -45,6 +45,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -528,6 +529,7 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
                             }, ClickEvent.getType());
                         }
                         initNative(!m_enabled);
+                        scheduleSetFloatPanelZIndex();
                     } else {
                         resetAtachedFlag();
                     }
@@ -771,8 +773,6 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
                             });
 
         };
-
-        $wnd.tinymce.ui.FloatPanel.zIndex = 200000;
         // initialize tinyMCE
         if (readonly) {
             defaults.readonly = 1;
@@ -787,6 +787,22 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
 
         m_hasBeenAttached = false;
     }
+
+    /**
+     * Sets the default zIndex for overlay panels.<p>
+     * May not work immediately as the TinyMCE initialization takes some time.<p>
+     *
+     * @return <code>true</code> in case setting the value was successful
+     */
+    native boolean setFloatPanelZIndex() /*-{
+        if ($wnd.tinymce.ui.FloatPanel) {
+            // set default z-index for overlay ui components
+            $wnd.tinymce.ui.FloatPanel.zIndex = 200000;
+            return true;
+        } else {
+            return false;
+        }
+    }-*/;
 
     /**
      * Removes the editor.<p>
@@ -859,6 +875,21 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
             m_toolbarContainer.getStyle().setTop(position.getTop() - 5, Unit.PX);
             m_toolbarContainer.getStyle().setLeft(position.getLeft(), Unit.PX);
         }
+    }
+
+    /**
+     * Schedules to set the default zIndex for overlay panels.<p>
+     */
+    private void scheduleSetFloatPanelZIndex() {
+
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                return !setFloatPanelZIndex();
+            }
+        }, 300);
+
     }
 
     /**

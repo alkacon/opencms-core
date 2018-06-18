@@ -1,4 +1,4 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+@external mce-tinymce, mce-widget, mce-tooltip, mce-btn, mce-active, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -329,13 +329,36 @@ div.tinymceToolbarContainer > div{
 	border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
 }
 
-div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
-	border: none;
-	position:fixed; 
-	top:0; 
-	left:0; 
-	right:0; 
-	bottom:0;
+div.attributeValue div.mce-tinymce.mce-fullscreen {
+	width: 100%;
+	top: 0px;
+	right: 0px;
+	left: 0px;
+	bottom: 0px;
+}
+
+
+
+div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body {
+	display: flex;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	height: 100%;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > * > .mce-top-part,
+ .attributeValue .mce-tinymce.mce-fullscreen > * > .mce-top-part > .mce-container-body, 
+ .attributeValue .mce-tinymce.mce-fullscreen > * > .mce-statusbar  {
+	position: static;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > * > .mce-edit-area {
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body > .mce-statusbar {
+	position: static !important;
 }
 
 .attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp {
@@ -344,9 +367,14 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	width: 100%;
 }
 
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp .mce-btn.mce-active {
+	background-color: lightgray !important;
+}
+
 .attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp > .mce-container-body{
 	position: static; border:none
 }
+
 
 .attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area, .attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area > iframe {
 	height: 100% !important; 
@@ -362,6 +390,10 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	display: block;	
 }
 
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body > .mce-top-part {
+	width: 100%;
+}
+
 .attributeValue > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
     border-bottom: 1px solid value("constants.css.borderColorEditor") !important;
@@ -375,6 +407,9 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
     right: -1px;
     z-index: 2;
 }
+
+
+	
 
 .mce-statusbar .mce-wordcount, .mce-statusbar .mce-path{
 	padding: 2px;
