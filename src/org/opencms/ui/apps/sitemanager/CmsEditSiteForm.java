@@ -618,6 +618,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin component.*/
     private CheckBox m_fieldExclusiveError;
 
+    /**List of templates. */
+    private List<CmsResource> m_templates;
+
     /**vaadin component.*/
     private CheckBox m_fieldExclusiveURL;
 
@@ -906,7 +909,26 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager, String siteRoot) {
 
         this(cms, manager);
-
+        try {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)) {
+                CmsProperty prop = m_clonedCms.readPropertyObject(
+                    siteRoot,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    false);
+                if (!prop.isNullProperty()) {
+                    if (!m_templates.contains(prop.getValue())) {
+                        m_simpleFieldTemplate.addItem(prop.getValue());
+                    }
+                    m_simpleFieldTemplate.select(prop.getValue());
+                } else {
+                    if (!m_templates.isEmpty()) {
+                        m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to read template property.", e);
+        }
         m_simpleFieldSiteRoot.setVisible(true);
         m_simpleFieldSiteRoot.setValue(siteRoot);
         m_simpleFieldSiteRoot.setCmsObject(m_clonedCms);
@@ -2031,15 +2053,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         try {
             I_CmsResourceType templateType = OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeJsp.getContainerPageTemplateTypeName());
-            List<CmsResource> templates = m_clonedCms.readResources(
-                "/system/",
-                CmsResourceFilter.DEFAULT.addRequireType(templateType));
-            for (CmsResource res : templates) {
+            m_templates = m_clonedCms.readResources("/system/", CmsResourceFilter.DEFAULT.addRequireType(templateType));
+            for (CmsResource res : m_templates) {
                 m_simpleFieldTemplate.addItem(res.getRootPath());
             }
-            if (!templates.isEmpty()) {
-                m_simpleFieldTemplate.setValue(templates.get(0).getRootPath());
+
+            if (!m_templates.isEmpty()) {
+                m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
             }
+
+            m_simpleFieldTemplate.setNewItemsAllowed(true);
             m_simpleFieldTemplate.setNullSelectionAllowed(true);
 
         } catch (CmsException e) {
