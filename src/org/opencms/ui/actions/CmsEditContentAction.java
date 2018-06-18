@@ -27,7 +27,6 @@
 
 package org.opencms.ui.actions;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -40,9 +39,7 @@ import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -51,26 +48,10 @@ import com.google.common.collect.Sets;
  * Action to logout.<p>
  * Used within the ADE context only.<p>
  */
-public class CmsEditContentAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
+public class CmsEditContentAction extends A_CmsEditFileAction {
 
     /** The action id. */
     public static final String ACTION_ID = "ade_editcontent";
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
-     */
-    public void executeAction(I_CmsDialogContext context) {
-
-        // not supported
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
-     */
-    public String getCommandClassName() {
-
-        return "org.opencms.gwt.client.ui.contextmenu.CmsEditFile";
-    }
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
@@ -78,34 +59,6 @@ public class CmsEditContentAction extends A_CmsWorkplaceAction implements I_CmsA
     public String getId() {
 
         return ACTION_ID;
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
-     */
-    public String getJspPath() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
-     */
-    public Map<String, String> getParams() {
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("reload", Boolean.TRUE.toString());
-        params.put("immediateReload", Boolean.TRUE.toString());
-        params.put("filename", "%(file)");
-        return params;
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
-     */
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 
     /**
@@ -132,11 +85,12 @@ public class CmsEditContentAction extends A_CmsWorkplaceAction implements I_CmsA
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     * @see org.opencms.ui.actions.A_CmsEditFileAction#getFileParam()
      */
-    public boolean isAdeSupported() {
+    @Override
+    protected String getFileParam() {
 
-        return true;
+        return "%(file)";
     }
 
     /**
