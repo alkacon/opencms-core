@@ -114,8 +114,8 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
      * @param callback the function to call
      */
     static native void callNativeFunction(JavaScriptObject callback)/*-{
-		callback.call();
-    }-*/;
+                                                                    callback.call();
+                                                                    }-*/;
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -125,22 +125,26 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
 
         super.onModuleLoad();
         exportUtitlityFunctions();
-        String tinyMCE = CmsCoreProvider.get().getTinymce().getLink();
-        if (tinyMCE == null) {
-            CmsDebugLog.consoleLog("tinyMCE link is null");
-        } else {
-            ResourceLoader.get().loadScript(tinyMCE, new ResourceLoadListener() {
+        try {
+            String tinyMCE = CmsCoreProvider.get().getTinymce().getLink();
+            if (tinyMCE == null) {
+                CmsDebugLog.consoleLog("tinyMCE link is null");
+            } else {
+                ResourceLoader.get().loadScript(tinyMCE, new ResourceLoadListener() {
 
-                public void onError(ResourceLoadEvent event) {
+                    public void onError(ResourceLoadEvent event) {
 
-                    CmsDebugLog.consoleLog("error loading TinyMCE");
-                }
+                        CmsDebugLog.consoleLog("error loading TinyMCE");
+                    }
 
-                public void onLoad(ResourceLoadEvent event) {
-                    // ignore
+                    public void onLoad(ResourceLoadEvent event) {
+                        // ignore
 
-                }
-            });
+                    }
+                });
+            }
+        } catch (Exception e) {
+            //
         }
     }
 
@@ -148,22 +152,22 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
      * Exports utility methods to the window context.<p>
      */
     private native void exportUtitlityFunctions()/*-{
-		$wnd.cmsLoadScripts = function(scriptURIs, callback) {
-			@org.opencms.ui.client.CmsWidgetSetEntryPoint::loadScriptDependencies(Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(scriptURIs, callback);
-		}
-		$wnd.cmsLoadCSS = function(cssURIs) {
-			for (i = 0; i < cssURIs.length; i++) {
-				@org.opencms.gwt.client.util.CmsDomUtil::ensureStyleSheetIncluded(Ljava/lang/String;)(cssURIs[i]);
-			}
-		}
-    }-*/;
+                                                 $wnd.cmsLoadScripts = function(scriptURIs, callback) {
+                                                 @org.opencms.ui.client.CmsWidgetSetEntryPoint::loadScriptDependencies(Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(scriptURIs, callback);
+                                                 }
+                                                 $wnd.cmsLoadCSS = function(cssURIs) {
+                                                 for (i = 0; i < cssURIs.length; i++) {
+                                                 @org.opencms.gwt.client.util.CmsDomUtil::ensureStyleSheetIncluded(Ljava/lang/String;)(cssURIs[i]);
+                                                 }
+                                                 }
+                                                 }-*/;
 
     /**
      *
      */
     private native void foo() /*-{
-		$wnd.console.log("foo");
-		$wnd.console.log("bar");
-    }-*/;
+                              $wnd.console.log("foo");
+                              $wnd.console.log("bar");
+                              }-*/;
 
 }
