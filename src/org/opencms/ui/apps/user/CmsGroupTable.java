@@ -282,7 +282,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         /**Desription column. */
         Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
         /**OU column. */
-        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, "");
+        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, ""),
+        /**IsIndirect?. */
+        INDIRECT("", Boolean.class, new Boolean(false));
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -539,6 +541,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         item.getItemProperty(TableProperty.Name).setValue(group.getName());
         item.getItemProperty(TableProperty.Description).setValue(group.getDescription(A_CmsUI.get().getLocale()));
         item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
+        if (m_indirects.contains(group)) {
+            item.getItemProperty(TableProperty.INDIRECT).setValue(Boolean.TRUE);
+        }
     }
 
     /**
@@ -600,11 +605,16 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
+                String css = "";
+                if (((Boolean)source.getItem(itemId).getItemProperty(
+                    TableProperty.INDIRECT).getValue()).booleanValue()) {
+                    css += " " + OpenCmsTheme.TABLE_CELL_DISABLED + " " + OpenCmsTheme.EXPIRED;
+                }
                 if (TableProperty.Name.equals(propertyId)) {
-                    return " " + OpenCmsTheme.HOVER_COLUMN;
+                    css += " " + OpenCmsTheme.HOVER_COLUMN;
                 }
 
-                return "";
+                return css;
             }
         });
     }

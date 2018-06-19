@@ -479,6 +479,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         updateBreadCrumb(getBreadCrumbForState(state));
     }
 
+    /**
+     * Reloads the app with current state.<p>
+     */
     public void reload() {
 
         update(m_stateBean.getPath(), m_stateBean.getType(), m_stateBean.getGroupID());
@@ -643,7 +646,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             table = m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.USER)) {
-            m_table = new CmsUserTable(m_stateBean.getPath(), this, isPressed(m_toggleButtonRole));
+            m_table = new CmsUserTable(m_stateBean.getPath(), this, isPressed(m_toggleButtonUser));
             table = m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.GROUP)) {
@@ -655,7 +658,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                     m_stateBean.getPath(),
                     m_stateBean.getGroupID(),
                     m_stateBean.getType(),
-                    isPressed(m_toggleButtonRole),
+                    false,
                     this);
                 table = m_table;
             }
@@ -817,7 +820,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
         m_toggleButtonUser = CmsToolBar.createButton(
             FontOpenCms.USERS,
-            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_TOGGLE_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_TOGGLE_0));
         m_toggleButtonUser.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 8265075332953321274L;
@@ -832,7 +835,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
         m_toggleButtonGroups = CmsToolBar.createButton(
             FontOpenCms.USERS,
-            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_TOGGLE_0));
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_TOGGLE_0));
         m_toggleButtonGroups.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 8265075332953321274L;
