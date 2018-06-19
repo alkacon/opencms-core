@@ -71,7 +71,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     public CmsSendBroadcastDialog(final Set<String> sessionIds, final Runnable closeRunnable) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
+        setHeight("100%");
         if (sessionIds != null) {
             displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));
         }

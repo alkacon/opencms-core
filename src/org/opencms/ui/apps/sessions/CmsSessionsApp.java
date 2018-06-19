@@ -177,6 +177,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     protected static void showSendBroadcastDialog(Set<String> ids, String caption, final CmsSessionsTable table) {
 
         final Window window = CmsBasicDialog.prepareWindow();
+        window.setHeight("90%");
         window.setCaption(caption);
         window.setContent(new CmsSendBroadcastDialog(ids, CmsSessionsTable.getCloseRunnable(window, table)));
         A_CmsUI.get().addWindow(window);
@@ -230,7 +231,9 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     protected void openEditLoginMessageDialog() {
 
         Window window = CmsBasicDialog.prepareWindow();
+        window.setHeight("90%");
         window.setContent(new CmsEditLoginView(window));
+
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_0));
         A_CmsUI.get().addWindow(window);
     }

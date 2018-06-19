@@ -92,7 +92,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
     public CmsEditLoginView(final Window window) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
+        setHeight("100%");
         bindFields();
 
         CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
