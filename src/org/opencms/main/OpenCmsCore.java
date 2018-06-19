@@ -1986,14 +1986,21 @@ public final class OpenCmsCore {
                     return;
                 }
             }
-
-            if (m_siteManager.isSiteMatcherRedirect(
-                cms.getRequestContext().getRequestMatcher().forDifferentScheme("http"))
-                | m_siteManager.isSiteMatcherRedirect(
-                    cms.getRequestContext().getRequestMatcher().forDifferentScheme("https"))) {
-                res.sendRedirect(m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
-                return;
+            List<CmsSiteMatcher> currentSiteAliase = m_siteManager.getCurrentSite(cms).getAliases();
+            CmsSiteMatcher currentSiteMatcher = cms.getRequestContext().getRequestMatcher();
+            if (currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("http"))
+                || currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("https"))) {
+                int pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("http"));
+                if (pos == -1) {
+                    pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("https"));
+                }
+                if (currentSiteAliase.get(pos).isRedirect()) {
+                    res.sendRedirect(
+                        m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
+                    return;
+                }
             }
+
             // user is initialized, now deliver the requested resource
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
             if (resource != null) {

@@ -149,9 +149,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
-    /** Maps site matchers to sites. */
-    private Map<CmsSiteMatcher, Boolean> m_siteMatcherRedirect;
-
     /** Temporary store for site parameter values. */
     private SortedMap<String, String> m_siteParams;
 
@@ -1268,17 +1265,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
-     * Checks if the given SiteMatcher should be redirected.<p>
-     *
-     * @param matcher to be checked
-     * @return boolean
-     */
-    public boolean isSiteMatcherRedirect(CmsSiteMatcher matcher) {
-
-        return m_siteMatcherRedirect.containsKey(matcher) ? m_siteMatcherRedirect.get(matcher).booleanValue() : false;
-    }
-
-    /**
      * Checks whether a given root path is a site root.<p>
      *
      * @param rootPath a root path
@@ -1639,12 +1625,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     private void addServer(CmsSiteMatcher matcher, CmsSite site) {
 
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
-        if (m_siteMatcherRedirect == null) {
-            m_siteMatcherRedirect = new HashMap<CmsSiteMatcher, Boolean>();
-        }
-        Map<CmsSiteMatcher, Boolean> siteMatcherRedirect = new HashMap<CmsSiteMatcher, Boolean>(m_siteMatcherRedirect);
         siteMatcherSites.put(matcher, site);
-        m_siteMatcherRedirect.put(matcher, new Boolean(matcher.isRedirect()));
         setSiteMatcherSites(siteMatcherSites);
     }
 
