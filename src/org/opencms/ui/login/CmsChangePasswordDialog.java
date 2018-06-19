@@ -53,15 +53,15 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 
 /**
  * Dialog used to change the password.<p>
@@ -103,6 +103,7 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
      * @param locale the locale
      */
     public CmsChangePasswordDialog(CmsObject cms, CmsUser user, Locale locale) {
+
         super();
         m_locale = locale;
         m_cms = cms;
@@ -184,6 +185,7 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsChangePasswordDialog(I_CmsDialogContext context) {
+
         this(context.getCms(), context.getCms().getRequestContext().getCurrentUser(), UI.getCurrent().getLocale());
         m_context = context;
         m_cancelButton.setVisible(true);
@@ -330,7 +332,11 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
                                 A_CmsUI.get().getPage().setLocation(
                                     OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                                         CmsLoginUI.m_adminCms,
-                                        CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+                                        CmsWorkplaceLoginHandler.LOGIN_HANDLER
+                                            + "?ocUname="
+                                            + m_user.getSimpleName()
+                                            + "&ocOuFqn="
+                                            + m_user.getOuFqn(),
                                         false));
                             }
 
