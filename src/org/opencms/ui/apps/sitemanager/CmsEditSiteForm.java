@@ -530,7 +530,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
          */
         public void validate(Object value) throws InvalidValueException {
 
-            if (((String)value).isEmpty()) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly((String)value)) {
                 throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TITLE_EMPTY_0));
             }
 
