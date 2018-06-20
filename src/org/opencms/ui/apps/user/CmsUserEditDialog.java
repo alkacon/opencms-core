@@ -455,6 +455,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
         m_group.setOU(m_ou.getValue());
+        try {
+            m_group.setIncludeWebOus(OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou).hasFlagWebuser());
+        } catch (CmsException e) {
+            //
+        }
 
         m_enabled.setValue(Boolean.TRUE);
 

@@ -110,6 +110,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /** The main layout. */
     private HorizontalLayout m_main;
 
+    /**Indicates if web ous should be included. */
+    private boolean m_includeWebOus = true;
+
     /** Controls whether only real users/groups or also pseudo-principals like ALL_OTHERS should be shown. */
     private boolean m_realOnly;
 
@@ -384,6 +387,16 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
+     * Set if web Ous should be included. Default behavior is true.<p>
+     *
+     * @param include boolean
+     */
+    public void setIncludeWebOus(boolean include) {
+
+        m_includeWebOus = include;
+    }
+
+    /**
      * @see com.vaadin.data.Validatable#setInvalidAllowed(boolean)
      */
     public void setInvalidAllowed(boolean invalidValueAllowed) throws UnsupportedOperationException {
@@ -630,7 +643,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
             m_window,
             m_widgetType,
             m_realOnly,
-            defaultType);
+            defaultType,
+            m_includeWebOus);
 
         dialog.setOuComboBoxEnabled(m_ouChangeEnabled);
 
