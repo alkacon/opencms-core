@@ -1072,7 +1072,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         Iterator<String> it = selectedCategories.iterator();
         while (it.hasNext()) {
             String path = it.next();
-            if (path.contains(category.getPath())) {
+            if (path.startsWith(category.getPath()) || path.contains("/" + category.getPath())) {
                 isPartofPath = true;
             }
         }
