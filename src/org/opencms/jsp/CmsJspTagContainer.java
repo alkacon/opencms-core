@@ -498,6 +498,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         maxElements,
                         Collections.<CmsContainerElementBean> emptyList());
                 } else if ((m_parentElement != null)
+                    && !m_detailOnly //ignore parent information for detail only containers to render content on different detail pages.
                     && !m_parentElement.getInstanceId().equals(container.getParentInstanceId())) {
                     // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
                     LOG.error(
