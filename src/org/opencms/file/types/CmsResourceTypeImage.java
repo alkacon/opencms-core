@@ -632,7 +632,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
                     : CmsProperty.toObjectMap(properties);
                     propsMap.put(
                         CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                        new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, propValue, null));
+                        new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, propValue));
                     newProps = new ArrayList<>(propsMap.values());
                 }
 
