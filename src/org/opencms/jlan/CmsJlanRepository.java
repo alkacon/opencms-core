@@ -37,6 +37,7 @@ import org.opencms.file.wrapper.I_CmsResourceWrapper;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsShell;
 import org.opencms.main.OpenCms;
 import org.opencms.repository.CmsRepositoryFilter;
 import org.opencms.repository.CmsRepositoryManager;
@@ -324,9 +325,13 @@ public class CmsJlanRepository implements I_CmsRepository {
     public void initializeCms(CmsObject cms) throws CmsException {
 
         m_cms = cms;
+        if (CmsShell.isJlanDisabled()) {
+            return;
+        }
         m_project = m_cms.readProject(m_projectName);
         m_device = new DiskSharedDevice(getName(), getDiskInterface(), getDeviceContext(), 0);
         m_device.addAccessControl(new CmsRepositoryAccessControl(this));
+
     }
 
     /**

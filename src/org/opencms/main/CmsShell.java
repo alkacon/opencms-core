@@ -359,6 +359,9 @@ public class CmsShell {
         }
     }
 
+    /** Boolean variable to disable JLAN. */
+    private static boolean JLAN_DISABLED;
+
     /** Thread local which stores the current shell instance while a command is executing. */
     public static final ThreadLocal<CmsShell> SHELL_INSTANCE = new ThreadLocal<CmsShell>();
 
@@ -373,6 +376,9 @@ public class CmsShell {
 
     /** Prefix for errorCode parameter. */
     public static final String SHELL_PARAM_ERROR_CODE = "-errorCode=";
+
+    /** Command line parameter to prevent disabling of JLAN. */
+    public static final String SHELL_PARAM_JLAN = "-jlan";
 
     /** Prefix for "script" parameter. */
     public static final String SHELL_PARAM_SCRIPT = "-script=";
@@ -564,12 +570,23 @@ public class CmsShell {
     }
 
     /**
+     * Check if JLAN should be disabled.<p>
+     *
+     * @return true if JLAN should be disabled
+     */
+    public static boolean isJlanDisabled() {
+
+        return JLAN_DISABLED;
+    }
+
+    /**
      * Main program entry point when started via the command line.<p>
      *
      * @param args parameters passed to the application via the command line
      */
     public static void main(String[] args) {
 
+        JLAN_DISABLED = true;
         boolean wrongUsage = false;
         String webInfPath = null;
         String script = null;
@@ -577,7 +594,6 @@ public class CmsShell {
         String defaultWebApp = null;
         String additional = null;
         int errorCode = -1;
-
         if (args.length > 4) {
             wrongUsage = true;
         } else {
@@ -595,6 +611,8 @@ public class CmsShell {
                     additional = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
                 } else if (arg.startsWith(SHELL_PARAM_ERROR_CODE)) {
                     errorCode = Integer.valueOf(arg.substring(SHELL_PARAM_ERROR_CODE.length())).intValue();
+                } else if (arg.startsWith(SHELL_PARAM_JLAN)) {
+                    JLAN_DISABLED = false;
                 } else {
                     System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
@@ -846,7 +864,7 @@ public class CmsShell {
         try {
             if (m_additionalShellCommands != null) {
                 m_additionalShellCommands.shellExit();
-            } else if(null != m_shellCommands) {
+            } else if (null != m_shellCommands) {
                 m_shellCommands.shellExit();
             }
         } catch (Throwable t) {
