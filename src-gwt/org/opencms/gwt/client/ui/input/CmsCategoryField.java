@@ -491,7 +491,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         Iterator<String> it = selectedCategories.iterator();
         while (it.hasNext()) {
             String path = it.next();
-            if (path.contains(category.getPath())) {
+            if (path.startsWith(category.getPath()) || path.contains("/" + category.getPath())) {
                 isPartofPath = true;
             }
         }
