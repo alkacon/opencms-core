@@ -439,17 +439,17 @@ public class CmsXmlContentProperty implements Serializable {
         if (defaults.getName().equals(getName())) {
             return new CmsXmlContentProperty(
                 m_name,
-                firstNotNull(defaults.m_type, m_type),
-                firstNotNull(defaults.m_visibility, m_visibility),
-                firstNotNull(defaults.m_widget, m_widget),
-                firstNotNull(defaults.m_widgetConfiguration, m_widgetConfiguration),
-                firstNotNull(defaults.m_ruleRegex, m_ruleRegex),
-                firstNotNull(defaults.m_ruleType, m_ruleType),
-                firstNotNull(defaults.m_default, m_default),
-                firstNotNull(defaults.m_niceName, m_niceName),
-                firstNotNull(defaults.m_description, m_description),
-                firstNotNull(defaults.m_error, m_error),
-                firstNotNull(defaults.m_preferFolder, m_preferFolder));
+                firstNotNull(m_type, defaults.m_type),
+                firstNotNull(m_visibility, defaults.m_visibility),
+                firstNotNull(m_widget, defaults.m_widget),
+                firstNotNull(m_widgetConfiguration, defaults.m_widgetConfiguration),
+                firstNotNull(m_ruleRegex, defaults.m_ruleRegex),
+                firstNotNull(m_ruleType, defaults.m_ruleType),
+                firstNotNull(m_default, defaults.m_default),
+                firstNotNull(m_niceName, defaults.m_niceName),
+                firstNotNull(m_description, defaults.m_description),
+                firstNotNull(m_error, defaults.m_error),
+                firstNotNull(m_preferFolder, defaults.m_preferFolder));
         } else {
             throw new IllegalArgumentException("Cannot merge properties with different names.");
         }
