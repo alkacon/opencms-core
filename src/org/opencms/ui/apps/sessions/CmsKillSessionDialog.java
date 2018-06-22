@@ -98,7 +98,6 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
                 for (String sessionId : sessionIds) {
                     try {
                         OpenCms.getSessionManager().killSession(A_CmsUI.getCmsObject(), new CmsUUID(sessionId));
-                        OpenCms.getSessionManager().addKilledRedirect(new CmsUUID(sessionId), "https://www.google.de");
                         LOG.info("Kill session of user with id '" + sessionId + "'");
                     } catch (NumberFormatException | CmsException e) {
                         //current session cannot be killed
