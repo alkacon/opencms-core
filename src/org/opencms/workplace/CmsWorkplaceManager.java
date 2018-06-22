@@ -2588,8 +2588,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
-            if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isErrorEnabled()) {
-                LOG.error(
+            if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isInfoEnabled()) {
+                LOG.info(
                     Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
                     e);
             }
