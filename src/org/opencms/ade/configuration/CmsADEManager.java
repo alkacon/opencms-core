@@ -590,9 +590,10 @@ public class CmsADEManager {
         ServletRequest req) {
 
         Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+        Visibility defaultVisibility = Visibility.both;
         if (mainFormatter != null) {
             for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings().entrySet()) {
-                if (!entry.getValue().getVisibility().equals(Visibility.parent)) {
+                if (!entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
                     result.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -601,9 +602,9 @@ public class CmsADEManager {
                 if (nestedFormatters != null) {
                     for (I_CmsFormatterBean formatter : nestedFormatters) {
                         for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
-                            if (entry.getValue().getVisibility().equals(Visibility.parent)) {
+                            if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
                                 result.put(entry.getKey(), entry.getValue());
-                            } else if (entry.getValue().getVisibility().equals(Visibility.both)) {
+                            } else if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.both)) {
                                 String settingName = formatter.getId() + "_" + entry.getKey();
                                 CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
 

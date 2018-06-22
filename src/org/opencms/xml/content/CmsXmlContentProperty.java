@@ -171,7 +171,7 @@ public class CmsXmlContentProperty implements Serializable {
         this(
             name,
             type,
-            Visibility.both,
+            null, // visibility
             widget,
             widgetConfiguration,
             ruleRegex,
@@ -277,6 +277,16 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Gets the configured visibility, without using a default value.
+     *
+     * @return the configured visibility
+     */
+    public Visibility getConfiguredVisibility() {
+
+        return m_visibility;
+    }
+
+    /**
      * Gets the configured widget, without using a default if it is null.<p>
      *
      * @return the configured widget
@@ -379,10 +389,15 @@ public class CmsXmlContentProperty implements Serializable {
     /**
      * Returns the visibility of the property, used in the container page element context.<p>
      *
+     * @param defaultValue the default value to return if the visibility is not set
+     *
      * @return the visibility of the property
      */
-    public Visibility getVisibility() {
+    public Visibility getVisibility(Visibility defaultValue) {
 
+        if (m_visibility == null) {
+            return defaultValue;
+        }
         return m_visibility;
     }
 

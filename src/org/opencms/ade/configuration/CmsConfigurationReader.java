@@ -317,7 +317,7 @@ public class CmsConfigurationReader {
         try {
             visibility = Visibility.valueOf(visibilityStr);
         } catch (Exception e) {
-            visibility = Visibility.both;
+            visibility = null;
         }
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
