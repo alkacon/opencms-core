@@ -125,13 +125,6 @@ public class CmsEditLoginView extends CmsBasicDialog {
 
             }
         });
-        m_ok.setEnabled(true);
-
-        m_enabled.addValueChangeListener(event -> {
-            setFieldsEnabled();
-        });
-
-        setFieldsEnabled();
     }
 
     /**
@@ -172,18 +165,6 @@ public class CmsEditLoginView extends CmsBasicDialog {
     }
 
     /**
-     * Set the enable status of fields.<p>
-     */
-    protected void setFieldsEnabled() {
-
-        boolean enabled = m_enabled.getValue().booleanValue();
-        m_startTime.setEnabled(enabled);
-        m_endTime.setEnabled(enabled);
-        m_logout.setEnabled(enabled);
-        m_message.setEnabled(enabled);
-    }
-
-    /**
      * Saves the settings.<p>
      */
     protected void submit() {
@@ -194,7 +175,6 @@ public class CmsEditLoginView extends CmsBasicDialog {
             OpenCms.getLoginManager().setLoginMessage(A_CmsUI.getCmsObject(), loginMessage);
             // update the system configuration
             OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
-            m_ok.setEnabled(false);
         } catch (Exception e) {
             LOG.error("Unable to save Login Message", e);
         }

@@ -9,15 +9,13 @@
 <body>
 		<o-cms-basic-dialog>
 			<content>
-				<vaadin7-vertical-layout :center margin spacing height="100%">
-						<v-form-layout _id="m_layout" margin spacing style-name="o-formlayout-workplace-main o-formlayout-full-height-last-expand" height="100%">
-							<v-button _id="m_resetBroadcasts">%(key.GUI_MESSAGES_BROADCAST_RESET_0)</v-button>
-							<vaadin7-check-box _id="m_repeat" caption="%(key.GUI_MESSAGES_BROADCAST_REPEAT_0)" description="%(key.GUI_MESSAGES_BROADCAST_REPEAT_HELP_0)" width="100%" /> 
-							<vaadin7-text-area _id="m_message" caption="%(key.GUI_MESSAGES_BROADCAST_MESSAGE_0)" description="%(key.GUI_MESSAGES_BROADCAST_MESSAGE_HELP_0)" width="100%" height="100%"></vaadin7-text-area>
-						</v-form-layout>
+				<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth" height="100%">
+					<vaadin7-check-box _id="m_repeat" caption="%(key.GUI_MESSAGES_BROADCAST_REPEAT_0)" description="%(key.GUI_MESSAGES_BROADCAST_REPEAT_HELP_0)" width="100%" /> 
+					<vaadin7-text-area _id="m_message" caption="%(key.GUI_MESSAGES_BROADCAST_MESSAGE_0)" width="100%" height="100%":expand></vaadin7-text-area>
 				</vaadin7-vertical-layout>
 			</content>
 			<buttons>	
+			<v-button _id="m_resetBroadcasts" :left>%(key.GUI_MESSAGES_BROADCAST_RESET_0)</v-button>	
 				<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
 				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
 			</buttons>
