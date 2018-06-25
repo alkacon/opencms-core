@@ -30,13 +30,13 @@ package org.opencms.ui.components;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Basic confirmation dialog.<p>
@@ -72,6 +72,7 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
      * @param cancelAction the action for the cancel case
      */
     public CmsConfirmationDialog(String message, Runnable okAction, Runnable cancelAction) {
+
         m_okAction = okAction;
 
         m_cancelAction = cancelAction;
@@ -159,6 +160,55 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
     }
 
     /**
+     * Shows the confirmation dialog in a window.<p>
+     *
+     * @param title the window title
+     * @param message the message to display in the dialog
+     * @param okAction the action to execute when the user clicks OK
+     * @param cancelAction the action for the cancel case
+     * @param hideUnused boolean
+     *
+     * @return the dialog instance
+     */
+    public static CmsConfirmationDialog show(
+        String title,
+        String message,
+        final Runnable okAction,
+        final Runnable cancelAction,
+        boolean hideUnused) {
+
+        final Window window = CmsBasicDialog.prepareWindow();
+        window.setCaption(title);
+        Runnable newOk = null;
+        Runnable newCancel = null;
+        if (okAction != null) {
+            newOk = new Runnable() {
+
+                public void run() {
+
+                    window.close();
+                    okAction.run();
+                }
+            };
+        }
+        if (cancelAction != null) {
+            newCancel = new Runnable() {
+
+                public void run() {
+
+                    window.close();
+                    cancelAction.run();
+                }
+            };
+        }
+        CmsConfirmationDialog dialog = new CmsConfirmationDialog(message, newOk, newCancel);
+        dialog.setHideUnusedButtons(hideUnused);
+        window.setContent(dialog);
+        UI.getCurrent().addWindow(window);
+        return dialog;
+    }
+
+    /**
      * Gets the label.<p>
      *
      * @return the label
@@ -166,6 +216,17 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
     public Label getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * Hides button without a runnable.<p>
+     *
+     * @param hide boolean
+     */
+    public void setHideUnusedButtons(boolean hide) {
+
+        m_okButton.setVisible(!hide || (m_okAction != null));
+        m_cancelButton.setVisible(!hide || (m_cancelAction != null));
     }
 
     /**

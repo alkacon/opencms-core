@@ -1,0 +1,43 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="SampleTypes" type="OpenCmsSampleTypes"/>
+
+	<xsd:complexType name="OpenCmsSampleTypes">
+		<xsd:sequence>
+			<xsd:element name="SampleType" type="OpenCmsSampleType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsSampleType">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+			<xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Title" mapto="urlName" />
+			</mappings>
+			<defaults>
+				<default element="Title" value="Add a new title here" />
+				<default element="Text" value="Add your text" />
+			</defaults>
+			<layouts>
+				<layout element="Text" widget="HtmlWidget" configuration="downloadgallery" />
+				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:true}" />
+			</layouts>
+			<validationrules/>
+			<relations/>
+			<searchsettings containerPageOnly="true"/>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

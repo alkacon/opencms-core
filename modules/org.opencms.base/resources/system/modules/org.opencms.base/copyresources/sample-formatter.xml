@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DynamicFunctions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function.xsd">
+  <DynamicFunction language="de">
+    <Title><![CDATA[Ursprungs-Site]]></Title>
+    <Description><![CDATA[Gibt die ursprüngliche Site (Träger) eines Detailinhalts aus.]]></Description>
+    <FunctionProvider>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.apollo/functions/sourcesite.jsp]]></target>
+        <uuid>95f93ec7-da83-11e7-b1b6-0242ac11002b</uuid>
+      </link>
+    </FunctionProvider>
+    <ContainerSettings>
+      <Type><![CDATA[element]]></Type>
+      <MinWidth/>
+    </ContainerSettings>
+  </DynamicFunction>
+  <DynamicFunction language="en">
+    <Title><![CDATA[Sample formatter configuration]]></Title>
+    <Description><![CDATA[Sample formatter configurations]]></Description>
+    <FunctionProvider>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.base/copyresources/sample-formatter.jsp]]></target>
+        <uuid>61ad6a7c-75e7-11e8-8de8-8715041bae26</uuid>
+      </link>
+    </FunctionProvider>
+    <ContainerSettings>
+      <Type><![CDATA[element]]></Type>
+      <MinWidth/>
+    </ContainerSettings>
+  </DynamicFunction>
+</DynamicFunctions>

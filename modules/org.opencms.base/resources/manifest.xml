@@ -1900,5 +1900,64 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<relations/>
 			<accesscontrol/>
 		</file>
+				<file>
+			<source>system/modules/org.opencms.base/copyresources/sample-formatter.jsp</source>
+			<destination>system/modules/org.opencms.base/copyresources/sample-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>61ad6a7c-75e7-11e8-8de8-8715041bae26</uuidstructure>
+			<uuidresource>61ad6a7d-75e7-11e8-8de8-8715041bae26</uuidresource>
+			<datecreated>Fri, 22 Jun 2018 06:42:07 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample formatter for new resource types]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/copyresources/sample-formatter.xml</source>
+			<destination>system/modules/org.opencms.base/copyresources/sample-formatter.xml</destination>
+			<type>function</type>
+			<uuidstructure>198be7c2-75f0-11e8-8736-8715041bae26</uuidstructure>
+			<uuidresource>198be7c3-75f0-11e8-8736-8715041bae26</uuidresource>
+			<datecreated>Fri, 22 Jun 2018 07:44:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Sample formatter configurations]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample formatter configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/copyresources/sample-schema.xsd</source>
+			<destination>system/modules/org.opencms.base/copyresources/sample-schema.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>8ed68af0-75e7-11e8-8de8-8715041bae26</uuidstructure>
+			<uuidresource>8ed68af1-75e7-11e8-8de8-8715041bae26</uuidresource>
+			<datecreated>Fri, 22 Jun 2018 06:43:22 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample schema for new resource types]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>

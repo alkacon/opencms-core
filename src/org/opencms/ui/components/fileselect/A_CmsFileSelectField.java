@@ -101,6 +101,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     /**Require the resource to be a file?*/
     private boolean m_requireFile;
 
+    /**Only resources under this (root)path can be selected. */
+    private String m_basePath = "/";
+
     /**
      * Creates a new instance.<p>
      */
@@ -153,6 +156,11 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
         m_requireFile = false;
         m_requireFolder = false;
 
+    }
+
+    public void setBasePath(String path) {
+
+        m_basePath = path;
     }
 
     /**
@@ -337,6 +345,9 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
      */
     protected boolean resourceIsValid(CmsResource resource) {
 
+        if (!resource.getRootPath().startsWith(m_basePath)) {
+            return false;
+        }
         if (m_requireFile & resource.isFolder()) {
             return false;
         }

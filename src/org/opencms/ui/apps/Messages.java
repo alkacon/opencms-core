@@ -57,6 +57,147 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_SHORT_NAME_HELP_0 = "GUI_RESOURCETYPE_EDIT_SHORT_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_SHORT_NAME_0 = "GUI_RESOURCETYPE_EDIT_SHORT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ID_0 = "GUI_RESOURCETYPE_EDIT_ID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ID_HELP_0 = "GUI_RESOURCETYPE_EDIT_ID_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_0 = "GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_HELP_0 = "GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_0 = "GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_HELP_0 = "GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_PARENT_FORMATTER_0 = "GUI_RESOURCETYPE_EDIT_PARENT_FORMATTER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_PARENT_FORMATTER_HELP_0 = "GUI_RESOURCETYPE_EDIT_PARENT_FORMATTER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_CSS_0 = "GUI_RESOURCETYPE_EDIT_ICON_CSS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_FILE_0 = "GUI_RESOURCETYPE_EDIT_ICON_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_CSS_SMALL_0 = "GUI_RESOURCETYPE_EDIT_ICON_CSS_SMALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_CSS_SMALL_HELP_0 = "GUI_RESOURCETYPE_EDIT_ICON_CSS_SMALL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_CSS_BIG_0 = "GUI_RESOURCETYPE_EDIT_ICON_CSS_BIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_CSS_BIG_HELP_0 = "GUI_RESOURCETYPE_EDIT_ICON_CSS_BIG_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_FILE_SMALL_0 = "GUI_RESOURCETYPE_EDIT_ICON_FILE_SMALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_FILE_SMALL_HELP_0 = "GUI_RESOURCETYPE_EDIT_ICON_FILE_SMALL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_FILE_BIG_0 = "GUI_RESOURCETYPE_EDIT_ICON_FILE_BIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_FILE_BIG_HELP_0 = "GUI_RESOURCETYPE_EDIT_ICON_FILE_BIG_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_ICON_0 = "GUI_RESOURCETYPE_EDIT_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_NO_MODULE_SELECTED_0 = "GUI_RESOURCETYPE_EDIT_NO_MODULE_SELECTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_BUTTON_MODULE_SELECT_0 = "GUI_RESOURCETYPE_EDIT_BUTTON_MODULE_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0 = "GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_MOVE_ANYWAY_0 = "GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_MOVE_ANYWAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_APP_NAME_0 = "GUI_RESOURCETYPE_APP_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_APP_NAME_HELP_0 = "GUI_RESOURCETYPE_APP_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_CREATE_NEW_TYPE_0 = "GUI_RESOURCETYPE_CREATE_NEW_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_DELETE_NOT_POSSIBLE_0 = "GUI_RESOURCETYPE_DELETE_NOT_POSSIBLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_DELETE_NOT_POSSIBLE_LONG_0 = "GUI_RESOURCETYPE_DELETE_NOT_POSSIBLE_LONG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_DELETE_CONFIRM_0 = "GUI_RESOURCETYPE_DELETE_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_DELETE_CONFIRM_LONG_0 = "GUI_RESOURCETYPE_DELETE_CONFIRM_LONG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_DELETE_0 = "GUI_RESOURCETYPE_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_0 = "GUI_RESOURCETYPE_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_WINDOW_CAPTION_0 = "GUI_RESOURCETYPE_EDIT_WINDOW_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_SEARCH_RESOURCES_0 = "GUI_RESOURCETYPE_SEARCH_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_0 = "GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_MOVE_0 = "GUI_RESOURCETYPE_MOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_INVALID_ID_0 = "GUI_RESOURCETYPE_EDIT_INVALID_ID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_INVALID_NAME_0 = "GUI_RESOURCETYPE_EDIT_INVALID_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0 = "GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_HELP_0 = "GUI_CACHE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
