@@ -1694,7 +1694,7 @@
                 <preference name="startFolder" value="/"
                     nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
    				<preference name="startView"
-					value="/system/workplace/views/explorer/explorer_fs.jsp" />
+					value="explorer" />
                 <preference name="timeWarp" value="0"
                     nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
 			</preference-tab>
