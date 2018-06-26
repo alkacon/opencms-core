@@ -245,7 +245,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * @return a clone of this instance
      */
     @Override
-    public Object clone() {
+    public CmsSite clone() {
 
         CmsSite res = new CmsSite(
             getSiteRoot(),

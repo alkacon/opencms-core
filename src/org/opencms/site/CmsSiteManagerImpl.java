@@ -83,6 +83,13 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** The default shared folder name. */
     public static final String DEFAULT_SHARED_FOLDER = "shared";
 
+    /**
+     * The VFS root path to the system shared folder, where shared content that belongs to modules,
+     * and that should not be edited by normal editors can be stored.
+     * The folder is searched in the gallery search when shared folders should be searched.
+     */
+    public static final String PATH_SYSTEM_SHARED_FOLDER = "/system/shared/";
+
     /** A placeholder for the title of the shared folder. */
     public static final String SHARED_FOLDER_TITLE = "%SHARED_FOLDER%";
 
@@ -113,13 +120,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** The length of the "/sites/" folder plus 1. */
     private static final int SITES_FOLDER_POS = SITES_FOLDER.length() + 1;
 
-    /**
-     * The VFS root path to the system shared folder, where shared content that belongs to modules,
-     * and that should not be edited by normal editors can be stored.
-     * The folder is searched in the gallery search when shared folders should be searched.
-     */
-    public static final String PATH_SYSTEM_SHARED_FOLDER = "/system/shared/";
-
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
     private List<String> m_additionalSiteRoots;
 
@@ -131,6 +131,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /**Map with webserver scripting parameter. */
     private Map<String, String> m_apacheConfig;
 
+    /**CmsObject.*/
+    private CmsObject m_clone;
+
     /** The default site root. */
     private CmsSite m_defaultSite;
 
@@ -139,6 +142,15 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
+
+    /**Is the publish listener already set? */
+    private boolean m_isListenerSet;
+
+    /**Old style secure server allowed? */
+    private boolean m_oldStyleSecureServer;
+
+    /**Site which are only available for offline project. */
+    private List<CmsSite> m_onlyOfflineSites;
 
     /** The shared folder name. */
     private String m_sharedFolder;
@@ -158,23 +170,11 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /**Map from CmsUUID to CmsSite.*/
     private Map<CmsUUID, CmsSite> m_siteUUIDs;
 
-    /**Old style secure server allowed? */
-    private boolean m_oldStyleSecureServer;
-
-    /**Site which are only available for offline project. */
-    private List<CmsSite> m_onlyOfflineSites;
-
-    /**CmsObject.*/
-    private CmsObject m_clone;
-
     /** The workplace site matchers. */
     private List<CmsSiteMatcher> m_workplaceMatchers;
 
     /** The workplace servers. */
     private Map<String, CmsSSLMode> m_workplaceServers;
-
-    /**Is the publish listener already set? */
-    private boolean m_isListenerSet;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -200,6 +200,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * Adds an alias to the currently configured site.
      *
      * @param alias the URL of the alias server
+     * @param redirect <code>true</code> to always redirect to main URL
      * @param offset the optional time offset for this alias
      */
     public void addAliasToConfigSite(String alias, String redirect, String offset) {
@@ -399,7 +400,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
      *                             if set to <code>false</code> will redirect to secure URL
      * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
-     * @throws CmsConfigurationException
+     *
+     * @throws CmsConfigurationException in case the site was not configured correctly
      *
      */
 
@@ -505,7 +507,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                         | m_onlyOfflineSites.contains(m_siteUUIDs.get(r.getStructureId()))) {
                         //Site was moved or site root was renamed.. or site was published the first time
                         CmsSite oldSite = m_siteUUIDs.get(siteRoot.getStructureId());
-                        CmsSite newSite = (CmsSite)oldSite.clone();
+                        CmsSite newSite = oldSite.clone();
                         newSite.setSiteRoot(siteRoot.getRootPath());
                         updateMap.put(oldSite, newSite);
                     }
@@ -632,25 +634,28 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             if (showShared && (shared != null) && !siteroots.contains(shared)) {
                 siteroots.add(shared);
             }
-
-            List<CmsResource> resources;
-            try {
-                resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
-            } catch (CmsException e) {
-                return Collections.emptyList();
+            // all sites are compatible for root admins, skip unnecessary tests
+            boolean compatible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+            List<CmsResource> resources = Collections.emptyList();
+            if (!compatible) {
+                try {
+                    resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
+                } catch (CmsException e) {
+                    return Collections.emptyList();
+                }
             }
-
             Collections.sort(siteroots); // sort by resource name
             Iterator<String> roots = siteroots.iterator();
             while (roots.hasNext()) {
                 String folder = roots.next();
-                boolean compatible = false;
-                Iterator<CmsResource> itResources = resources.iterator();
-                while (itResources.hasNext()) {
-                    CmsResource resource = itResources.next();
-                    if (resource.getRootPath().startsWith(folder) || folder.startsWith(resource.getRootPath())) {
-                        compatible = true;
-                        break;
+                if (!compatible) {
+                    Iterator<CmsResource> itResources = resources.iterator();
+                    while (itResources.hasNext()) {
+                        CmsResource resource = itResources.next();
+                        if (resource.getRootPath().startsWith(folder) || folder.startsWith(resource.getRootPath())) {
+                            compatible = true;
+                            break;
+                        }
                     }
                 }
                 // select only sites compatibles to the given organizational unit
@@ -696,7 +701,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                                 } catch (Throwable e) {
                                     // m_position will have Float.MAX_VALUE, so this site will appear last
                                 }
-                                CmsSite clone = (CmsSite)configuredSite.clone();
+                                CmsSite clone = configuredSite.clone();
                                 clone.setPosition(pos);
                                 clone.setTitle(title);
                                 if (filterMode == null) {
@@ -1619,8 +1624,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      *
      * @param matcher the SiteMatcher of the server
      * @param site the site to add
-     *
-     * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
     private void addServer(CmsSiteMatcher matcher, CmsSite site) {
 
@@ -1731,6 +1734,13 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         m_workplaceMatchers = matchers;
     }
 
+    /**
+     * Checks whether the given matcher is included in the currently configured and valid matchers.<p>
+     *
+     * @param matcher the matcher to check
+     *
+     * @return <code>true</code> in case the given matcher is included in the currently configured and valid matchers
+     */
     private boolean isServerValid(CmsSiteMatcher matcher) {
 
         return !m_siteMatcherSites.containsKey(matcher);
