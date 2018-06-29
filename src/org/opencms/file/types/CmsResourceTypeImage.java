@@ -320,7 +320,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
             CmsProperty fileSizeProperty = cms.readPropertyObject(
                 parentFolder,
                 CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                false);
+                true);
             if (!fileSizeProperty.isNullProperty()) {
                 // image.size property has been set
                 String value = fileSizeProperty.getValue().trim();
