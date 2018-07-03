@@ -1634,7 +1634,6 @@ public final class OpenCmsCore {
 
             // initialize ade manager
             m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
-            m_adeManager.initialize();
             m_workplaceAppManager = new CmsWorkplaceAppManager(initCmsObject(adminCms));
             m_workplaceAppManager.loadApps();
             m_workplaceAppManager.initWorkplaceCssUris(m_moduleManager);
@@ -2379,7 +2378,10 @@ public final class OpenCmsCore {
                     e);
             }
         }
-
+        // only init ADE manager in case of servlet initialization, it won't be needed in case of shell access
+        if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            m_adeManager.initialize();
+        }
         // everything is initialized, now start publishing
         m_publishManager.startPublishing();
     }

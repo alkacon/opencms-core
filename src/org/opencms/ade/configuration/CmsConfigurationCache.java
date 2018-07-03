@@ -297,7 +297,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     "/",
                     CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
                 CmsLog.INIT.info(
-                    "Read "
+                    ". Reading "
                         + configFileCandidates.size()
                         + " config resources of type: "
                         + m_configType.getTypeName()
@@ -335,12 +335,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             }
         }
         CmsLog.INIT.info(
-            "Reading "
+            ". Reading "
                 + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
                 + " module configurations.");
         List<CmsADEConfigDataInternal> moduleConfigs = loadModuleConfiguration();
         CmsLog.INIT.info(
-            "Reading "
+            ". Reading "
                 + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
                 + " element views.");
         Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
