@@ -355,6 +355,9 @@ public final class CmsVaadinUtils {
             for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, ouFqn, true)) {
                 if (!blackList.contains(group)) {
                     Item item = res.addItem(group);
+                    if (item == null) {
+                        continue;
+                    }
                     item.getItemProperty(caption).setValue(group.getSimpleName());
                     item.getItemProperty(idOu).setValue(group.getOuFqn());
                 }

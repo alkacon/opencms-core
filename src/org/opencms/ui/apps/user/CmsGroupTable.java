@@ -413,6 +413,17 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         setVisibleColumns(TableProperty.Name, TableProperty.Description, TableProperty.OU);
     }
 
+    protected static void addGroupToContainer(IndexedContainer container, CmsGroup group, List<CmsGroup> indirects) {
+
+        Item item = container.addItem(group);
+        item.getItemProperty(TableProperty.Name).setValue(group.getName());
+        item.getItemProperty(TableProperty.Description).setValue(group.getDescription(A_CmsUI.get().getLocale()));
+        item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
+        if (indirects.contains(group)) {
+            item.getItemProperty(TableProperty.INDIRECT).setValue(Boolean.TRUE);
+        }
+    }
+
     /**
      * Filters the table.<p>
      *
@@ -472,12 +483,12 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         m_container.removeAllItems();
         for (CmsGroup group : m_groups) {
             if (!m_indirects.contains(group)) {
-                addGroupToContainer(m_container, group);
+                addGroupToContainer(m_container, group, m_indirects);
             }
         }
         if (showIndirect) {
             for (CmsGroup group : m_indirects) {
-                addGroupToContainer(m_container, group);
+                addGroupToContainer(m_container, group, m_indirects);
             }
         }
     }
@@ -535,17 +546,6 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         return m_menuEntries;
     }
 
-    private void addGroupToContainer(IndexedContainer container, CmsGroup group) {
-
-        Item item = container.addItem(group);
-        item.getItemProperty(TableProperty.Name).setValue(group.getName());
-        item.getItemProperty(TableProperty.Description).setValue(group.getDescription(A_CmsUI.get().getLocale()));
-        item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
-        if (m_indirects.contains(group)) {
-            item.getItemProperty(TableProperty.INDIRECT).setValue(Boolean.TRUE);
-        }
-    }
-
     /**
      * Initializes the table.<p>
      *
@@ -572,7 +572,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         setVisibleColumns(TableProperty.Name, TableProperty.OU);
 
         for (CmsGroup group : m_groups) {
-            addGroupToContainer(m_container, group);
+            addGroupToContainer(m_container, group, m_indirects);
         }
 
         addItemClickListener(new ItemClickListener() {

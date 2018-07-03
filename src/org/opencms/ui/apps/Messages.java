@@ -174,7 +174,25 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_DELETE_0 = "GUI_RESOURCETYPE_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_REMOVE_GROUPS_HELP_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_REMOVE_GROUPS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_FOUND_GROUPS_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_FOUND_GROUPS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_SAME_OU_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_SAME_OU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_USERNAME_COLLISION_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_USERNAME_COLLISION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_REMOVE_GROUPS_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_REMOVE_GROUPS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_0 = "GUI_RESOURCETYPE_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_WINDOW_CAPTION_0 = "GUI_RESOURCETYPE_EDIT_WINDOW_CAPTION_0";

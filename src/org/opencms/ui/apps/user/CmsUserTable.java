@@ -451,6 +451,44 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     }
 
     /**
+     * Menu entry to move user to another ou.<p>
+     */
+    class EntryMoveOU implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(final Set<String> context) {
+
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+            CmsBasicDialog dialog = null;
+
+            dialog = new CmsMoveUserToOU(m_cms, new CmsUUID(context.iterator().next()), window, m_app);
+
+            window.setContent(dialog);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_MOVE_OU_0));
+            A_CmsUI.get().addWindow(window);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_MOVE_OU_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            return onlyVisibleForOU(context);
+        }
+
+    }
+
+    /**
      * Menu entry to remove user from group.<p>
      */
     class EntryRemoveFromGroup implements I_CmsSimpleContextMenuEntry<Set<String>> {
@@ -1024,6 +1062,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
             m_menuEntries.add(new EntryShowResources());
             m_menuEntries.add(new EntrySwitchUser());
             m_menuEntries.add(new EntryRemoveFromGroup());
+            m_menuEntries.add(new EntryMoveOU());
             m_menuEntries.add(new EntryDelete());
             m_menuEntries.add(new EntryKillSession());
             m_menuEntries.add(new EntryEnable());

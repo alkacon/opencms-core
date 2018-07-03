@@ -739,7 +739,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         Component tab = m_tab.getSelectedTab();
         int pos = m_tab.getTabPosition(m_tab.getTab(tab));
-        int maxPos = m_isWebOU ? 2 : 3;
+        //TODO: check if necessary (when it was finally known which tabs web ou users should see..
+        int maxPos = m_isWebOU ? 3 : 3; //has to be changed if number of tabs is changed for web OU user
         m_next.setVisible(pos < maxPos);
         m_ok.setVisible(pos == maxPos);
     }
