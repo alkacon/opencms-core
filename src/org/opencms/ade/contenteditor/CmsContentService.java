@@ -45,6 +45,7 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
@@ -954,6 +955,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         int counter = 0;
         CmsObject cms = getCmsObject();
+        cms.getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_FULLLINKS, Boolean.TRUE);
         String previousName = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentPath)) {
             parentPath += "/";
