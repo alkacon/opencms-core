@@ -390,6 +390,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
             m_previewHandlerRegistration.removeHandler();
         }
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
+        m_cmsCategoryTree.truncate("CATEGORIES", CmsPopup.WIDE_WIDTH - 20);
         m_cmsPopup.showRelativeTo(m_categoryField);
         m_xcoordspopup = m_cmsPopup.getPopupLeft();
         m_ycoordspopup = m_cmsPopup.getPopupTop();

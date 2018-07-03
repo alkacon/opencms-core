@@ -922,6 +922,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             600,
             3,
             CmsCategoryBean.SMALL_ICON_CLASSES,
+            true,
             category.getTitle(),
             category.getPath(),
             "hide:" + category.getSitePath());

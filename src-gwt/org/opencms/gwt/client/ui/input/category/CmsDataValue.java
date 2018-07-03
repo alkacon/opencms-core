@@ -140,6 +140,29 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
     /** The width of this widget. */
     private int m_width;
 
+    /** Flag indicating if the label width should be (part-1)/part instead of 1/part. */
+    private boolean m_complementPartWidth;
+
+    /**
+     * Constructor to generate the DataValueWidget with image.<p>
+     *
+     * @param width the width of this widget.
+     * @param part the part of the width that should be used for the label
+     * @param image the css string for the image that is shown in front of the label
+     * @param complementPartWidth if true, the label has width if (part-1)/part instead of 1/part.
+     * @param parameters the values that should be shown in this widget. The first value is used for the label
+     */
+    public CmsDataValue(int width, int part, String image, boolean complementPartWidth, String... parameters) {
+
+        initWidget(uiBinder.createAndBindUi(this));
+        m_part = part;
+        m_complementPartWidth = complementPartWidth;
+        m_parameters = parameters;
+        m_image = image;
+        generateDataValue();
+        setWidth(width);
+    }
+
     /**
      * Constructor to generate the DataValueWidget with image.<p>
      *
@@ -150,12 +173,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      */
     public CmsDataValue(int width, int part, String image, String... parameters) {
 
-        initWidget(uiBinder.createAndBindUi(this));
-        m_part = part;
-        m_parameters = parameters;
-        m_image = image;
-        generateDataValue();
-        setWidth(width);
+        this(width, part, image, false, parameters);
     }
 
     /**
@@ -326,6 +344,10 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
         m_width = width;
         int width_label = (m_width / m_part);
+        if (m_complementPartWidth) {
+            int complementaryWidth = m_width - width_label;
+            width_label = complementaryWidth < 30 ? 30 : complementaryWidth;
+        }
         int width_table = (m_width - 30) - width_label;
         m_table.getElement().getStyle().setWidth(width_table, Unit.PX);
     }
