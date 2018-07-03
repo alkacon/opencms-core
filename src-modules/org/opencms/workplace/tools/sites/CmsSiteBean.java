@@ -136,7 +136,8 @@ public class CmsSiteBean {
             m_originalSite = site;
             m_title = site.getTitle();
             m_server = site.getUrl();
-            CmsSiteMatcher matcher = new CmsSiteMatcher(site.getUrl(), site.getSiteMatcher().getTimeOffset());
+
+            CmsSiteMatcher matcher = site.getSiteMatcher();
             m_serverProtocol = matcher.getServerProtocol();
             m_serverName = matcher.getServerName();
             m_port = matcher.getServerPort();
