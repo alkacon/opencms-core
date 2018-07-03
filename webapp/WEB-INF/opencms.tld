@@ -2064,10 +2064,10 @@
                 This attribute defines the tag that the <code>&lt;cms:container&gt;</code>-tag is translated to.<BR>
             Values should have the the form:</P>
             <DL>
-              <DT><code><b>&lt;{tag-name}&gt;</b></code></DT>
+              <DT><code><b>{tag-name}</b></code></DT>
               <DD> <code>tag-name</code> is a name of a valid HTML tag.</DD>
             </DL>
-            Default: <code>&lt;div&gt;</code>
+            Default: <code>div</code>
             ]]></description>
             <name>tag</name>
             <required>false</required>
