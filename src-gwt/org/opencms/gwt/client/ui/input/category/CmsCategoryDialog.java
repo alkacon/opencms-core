@@ -89,7 +89,7 @@ public class CmsCategoryDialog extends CmsPopup {
      */
     public CmsCategoryDialog(CmsUUID structureId, Command onSave, boolean collapsed) {
 
-        super(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
+        super(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0), WIDE_WIDTH);
         m_collapsed = collapsed;
         m_structureId = structureId;
         m_onSave = onSave;
@@ -155,7 +155,7 @@ public class CmsCategoryDialog extends CmsPopup {
             }
         });
         m_main.add(m_categoryTree);
-        m_categoryTree.truncate("CATEGORIES", DEFAULT_WIDTH - 20);
+        m_categoryTree.truncate("CATEGORIES", WIDE_WIDTH - 20);
         LockIcon lock = categoryInfo.getResourceInfo().getLockIcon();
         if ((lock == null)
             || lock.equals(LockIcon.NONE)
@@ -166,7 +166,7 @@ public class CmsCategoryDialog extends CmsPopup {
             m_categoryTree.disable(Messages.get().key(Messages.GUI_RESOURCE_LOCKED_0));
             m_saveButton.disable(Messages.get().key(Messages.GUI_RESOURCE_LOCKED_0));
         }
-        setWidth(DEFAULT_WIDTH);
+        setWidth(WIDE_WIDTH);
         if (isShowing()) {
             center();
         }

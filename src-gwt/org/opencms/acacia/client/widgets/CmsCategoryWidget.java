@@ -365,7 +365,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
 
         if (m_cmsPopup == null) {
 
-            m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
+            m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0), CmsPopup.WIDE_WIDTH);
             m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingleValue, m_resultList, m_collapsed);
             m_cmsPopup.add(m_cmsCategoryTree);
             m_cmsPopup.setModal(false);
