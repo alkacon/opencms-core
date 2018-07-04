@@ -229,8 +229,8 @@ public class CmsTreeItem extends CmsListItem {
      * @return the path level
      */
     protected static native int getPathLevel(String path)/*-{
-		return path.match(/\//g).length - 1;
-    }-*/;
+                                                         return path.match(/\//g).length - 1;
+                                                         }-*/;
 
     /**
      * Unsupported operation.<p>
@@ -752,6 +752,18 @@ public class CmsTreeItem extends CmsListItem {
     public void showOpeners() {
 
         removeStyleName(CSS.listTreeItemNoOpeners());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    @Override
+    public void truncate(String textMetricsPrefix, int widgetWidth) {
+
+        super.truncate(textMetricsPrefix, widgetWidth);
+        for (int i = 0; i < getChildCount(); i++) {
+            getChild(i).truncate(textMetricsPrefix, widgetWidth);
+        }
     }
 
     /**
