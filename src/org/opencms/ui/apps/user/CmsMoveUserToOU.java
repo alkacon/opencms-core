@@ -31,6 +31,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
@@ -150,7 +151,7 @@ public class CmsMoveUserToOU extends CmsBasicDialog {
                     }
                 });
             }
-            m_ou.setContainerDataSource(CmsVaadinUtils.getOUComboBox(m_cms, "", LOG).getContainerDataSource());
+            m_ou.setContainerDataSource(CmsVaadinUtils.getOUComboBox(m_cms, "", LOG, false).getContainerDataSource());
             m_ou.setItemCaptionPropertyId("desc");
             m_ou.setNewItemsAllowed(false);
             m_ou.setFilteringMode(FilteringMode.CONTAINS);
@@ -183,8 +184,10 @@ public class CmsMoveUserToOU extends CmsBasicDialog {
 
         if (m_ou.isValid()) {
             try {
+                //First read out groups without removing them. Remove may change roles..
+                List<CmsGroup> userGroups = new ArrayList<CmsGroup>();
                 for (CmsGroup group : m_cms.getGroupsOfUser(m_user.getName(), true)) {
-                    m_cms.removeUserFromGroup(m_user.getName(), group.getName());
+                    userGroups.add(group);
                 }
                 List<CmsRole> directOURoles = new ArrayList<CmsRole>();
                 List<CmsRole> otherRoles = new ArrayList<CmsRole>();
@@ -208,6 +211,14 @@ public class CmsMoveUserToOU extends CmsBasicDialog {
                     }
                     //Other role from complete different OU: preserve
                     otherRoles.add(role);
+                }
+                for (CmsGroup group : userGroups) {
+                    try {
+                        m_cms.removeUserFromGroup(m_user.getName(), group.getName());
+                    } catch (CmsIllegalArgumentException e) {
+                        //Group not there.. happens if the Admin group gets removed
+                        LOG.error("User cannot be removed from group", e);
+                    }
                 }
                 OpenCms.getOrgUnitManager().setUsersOrganizationalUnit(
                     m_cms,

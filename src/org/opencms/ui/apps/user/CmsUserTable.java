@@ -483,6 +483,14 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
+            try {
+                if (OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_ou).hasFlagWebuser()) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                }
+            } catch (CmsException e) {
+                LOG.error("Unable to read OU", e);
+            }
+
             return onlyVisibleForOU(context);
         }
 
@@ -834,7 +842,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     private VerticalLayout m_emptyLayout;
 
     /**OU. */
-    private String m_ou;
+    String m_ou;
 
     /**Black list of user from higher OU than current user.*/
     private HashSet<CmsUser> m_blackList = new HashSet<CmsUser>();

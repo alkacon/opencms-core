@@ -213,6 +213,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_EDIT_INVALID_NAME_0 = "GUI_RESOURCETYPE_EDIT_INVALID_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_MOVE_OU_SELECT_OU_0 = "GUI_USERMANAGEMENT_USER_MOVE_OU_SELECT_OU_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0 = "GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0";
 
     /** Message constant for key in the resource bundle. */
