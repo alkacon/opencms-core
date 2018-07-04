@@ -924,7 +924,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             CmsCategoryBean.SMALL_ICON_CLASSES,
             true,
             category.getTitle(),
-            category.getPath(),
+            "rtl:" + category.getPath(),
             "hide:" + category.getSitePath());
 
         // create the check box for this item

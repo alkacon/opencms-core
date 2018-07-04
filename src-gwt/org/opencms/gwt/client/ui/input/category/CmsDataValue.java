@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.input.category;
 
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLabelLeftTruncating;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -89,6 +90,13 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
          * @return the CSS style name
          */
         String parameter();
+
+        /**
+         * Returns the CSS style name.<p>
+         *
+         * @return the CSS style name
+         */
+        String rtl();
 
         /**
          * Returns the CSS style name.<p>
@@ -300,7 +308,15 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        setWidth(clientWidth);
+        int tableWidth = setWidth(clientWidth);
+        for (int i = 0; i < m_table.getRowCount(); i++) {
+            for (int j = 0; j < m_table.getCellCount(i); j++) {
+                Widget w = m_table.getWidget(i, j);
+                if (w instanceof I_CmsTruncable) {
+                    ((I_CmsTruncable)w).truncate(textMetricsKey, tableWidth);
+                }
+            }
+        }
     }
 
     /**
@@ -316,14 +332,19 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
         m_table.insertRow(0);
         int i = 0;
         for (String parameter : m_parameters) {
-
             if (i > 0) {
-                if (parameter.contains("hide:")) {
-                    m_parameters[i] = parameter.replace("hide:", "");
+                boolean rtl = false;
+                if (parameter.startsWith("rtl:")) {
+                    parameter = parameter.substring(4);
+                    m_parameters[i] = parameter;
+                    rtl = true;
+                }
+                if (parameter.startsWith("hide:")) {
+                    m_parameters[i] = parameter.substring(5);
                 } else {
-
-                    Label label = new Label(parameter);
+                    Label label = rtl ? new CmsLabelLeftTruncating(parameter) : new Label(parameter);
                     label.setStyleName(m_style.parameter());
+                    label.addStyleName(m_style.rtl());
                     label.setTitle(parameter);
                     m_table.setWidget(0, i - 1, label);
                 }
@@ -339,8 +360,10 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      * Sets the widget width.<p>
      *
      * @param width the widget width
+     *
+     * @return the width set for the table that is part of the widget
      */
-    private void setWidth(int width) {
+    private int setWidth(int width) {
 
         m_width = width;
         int width_label = (m_width / m_part);
@@ -350,6 +373,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
         }
         int width_table = (m_width - 30) - width_label;
         m_table.getElement().getStyle().setWidth(width_table, Unit.PX);
+        return width_table;
     }
 
 }
