@@ -12,8 +12,6 @@
   	
   	.o-toolbar-inner{
   		margin: 0 $toolbar-padding;
-  		min-width: 700px;
-  		text-align: center;
   		display: block;
   		
   		.o-toolbar-app-indicator{
@@ -42,7 +40,6 @@
   		right:0;
   		top: 4px;
   		text-align: center;
-  		min-width: 700px;
   		
   		.o-toolbar-logo{
   			display: inline-block;
@@ -56,8 +53,10 @@
   	}
   
   	.o-toolbar-items-left{
-  		float: left;
+  		position: absolute;
   		text-align: left;
+  		z-index: 10;
+  		background: $v-app-background-color;
   	}
   
   	.o-toolbar-items-right{

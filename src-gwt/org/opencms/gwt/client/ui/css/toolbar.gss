@@ -257,22 +257,20 @@ div.toolbarBackground .toolbarLogo{
   	width: 170px;
 }
 
-@media screen and (max-width: 1024px) {
-	div.toolbarBackground div.toolbarLogo{
+@media screen and (max-width: 1000px) {
+	.oc-toolbar div.toolbarBackground span.toolbarLogo, .oc-toolbar div.toolbarBackground div.title{
 		display: none;
 	}
 }
 
 div.toolbarBackground .toolbarContent{
 	margin: 0 20px;
-  	min-width: 800px;
   	text-align: center;
   	display: block;
 }
 
 div.toolbarButtonsRight, div.toolbarButtonsLeft{
 	margin: 5px 0;
-	z-index: 10;
 	height: 40px;
 	overflow: hidden;
 }
@@ -282,13 +280,15 @@ div.toolbarButtonsRight > * {
 	margin-bottom: auto;
 }
 
-
-div.toolbarButtonsLeft{
-	float: left;
-	width: 49%;
+div.toolbarButtonsRight{
+	z-index: 10;
 }
 
-
+div.toolbarButtonsLeft{
+	position: absolute;
+	z-index: 11;
+	background-color: value("constants.css.backgroundColorDialog");
+}
 
 div.toolbarButtonsRight{
 	text-align: right;
