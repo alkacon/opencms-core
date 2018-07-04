@@ -1066,7 +1066,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                     return false;
                 }
                 List<CmsRole> groupRoles = roleFromGroup.getChildren(true);
-                groupRoles.add(CmsRole.valueOf(group));
+                groupRoles.add(roleFromGroup);
                 List<String> roleNames = new ArrayList<String>();
                 for (CmsRole gr : groupRoles) {
                     roleNames.add(gr.getRoleName());
