@@ -1,22 +1,22 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/folder_choice.xsd" />
- 
+
     <xsd:element name="ADETypes" type="OpenCmsADETypes" />
-    
+
     <xsd:complexType name="OpenCmsADETypes">
         <xsd:sequence>
             <xsd:element name="ADEType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsADEType">
-        <xsd:sequence>    
+        <xsd:sequence>
         <xsd:element name="TypeName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         <xsd:element name="Disabled" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
       	<xsd:element name="Folder" type="OpenCmsADEFolderChoice" minOccurs="0" maxOccurs="1" />
      	<xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-      	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />    	
+      	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
       	<xsd:element name="ElementView" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1" />
       	<xsd:element name="ShowInDefaultView" type="OpenCmsBoolean" minOccurs="0" />
       	<xsd:element name="CopyInModels" type="OpenCmsBoolean" minOccurs="0" />
@@ -29,9 +29,9 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
 				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  />
-				<layout element="Disabled" widget="SelectorWidget" configuration="true:%(key.disabled.true)|*false:%(key.disabled.false)|add:%(key.disabled.add)" />
+				<layout element="Disabled" widget="SelectorWidget" configuration="true:%(key.disabled.true)|false*:%(key.disabled.false)|add:%(key.disabled.add)" />
 				<layout element="ElementView" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration=""/>
-				<layout element="ElementDeleteMode" widget="SelectorWidget" configuration="alwaysKeep:%(key.deletemode.alwaysKeep)|alwaysDelete:%(key.deletemode.alwaysDelete)|*askKeep:%(key.deletemode.askKeep)|askDelete:%(key.deletemode.askDelete)" display="singleline"/>
+				<layout element="ElementDeleteMode" widget="SelectorWidget" configuration="alwaysKeep:%(key.deletemode.alwaysKeep)|alwaysDelete:%(key.deletemode.alwaysDelete)|askKeep*:%(key.deletemode.askKeep)|askDelete:%(key.deletemode.askDelete)" display="singleline"/>
 			</layouts>
 			<defaults>
 				<default element="Disabled" value="true"/>
