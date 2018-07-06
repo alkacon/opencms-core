@@ -309,8 +309,11 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
     public void setButtonPosition(CmsInlineEntityWidget widget, int absoluteTop) {
 
         if (m_buttonPanel.getWidgetIndex(widget) > -1) {
-            int positionTop = getAvailablePosition(widget, absoluteTop)
-                - CmsClientStringUtil.parseInt(m_buttonBar.getStyle().getTop());
+            int buttonBarTop = CmsClientStringUtil.parseInt(m_buttonBar.getStyle().getTop());
+            if (absoluteTop < buttonBarTop) {
+                absoluteTop = buttonBarTop;
+            }
+            int positionTop = getAvailablePosition(widget, absoluteTop) - buttonBarTop;
             widget.getElement().getStyle().setTop(positionTop, Unit.PX);
             if (CmsClientStringUtil.parseInt(m_buttonBar.getStyle().getHeight()) < (positionTop + 20)) {
                 increaseOverlayHeight(positionTop + 20);
