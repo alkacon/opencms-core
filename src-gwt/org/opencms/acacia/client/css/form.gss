@@ -371,7 +371,9 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body {
 	background-color: lightgray !important;
 }
 
-.attributeValue .mce-btn.mce-active button, .attributeValue .mce-btn.mce-active:hover button, .attributeValue .mce-btn.mce-active i, .attributeValue .mce-btn.mce-active:hover i {
+.attributeValue .mce-btn.mce-active button, .attributeValue .mce-btn.mce-active:hover button, .attributeValue .mce-btn.mce-active i, .attributeValue .mce-btn.mce-active:hover i,
+.tinymceToolbarContainer .mce-btn.mce-active button, .tinymceToolbarContainer .mce-btn.mce-active:hover button, .tinymceToolbarContainer .mce-btn.mce-active i, .tinymceToolbarContainer .mce-btn.mce-active:hover i{
+	
 	color: black !important;
 }
 .attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp > .mce-container-body{
