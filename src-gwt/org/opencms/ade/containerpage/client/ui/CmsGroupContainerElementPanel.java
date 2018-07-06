@@ -96,6 +96,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param elementView the element view of the element
+     * @param iconClasses the resource type icon CSS classes
      */
     public CmsGroupContainerElementPanel(
         Element element,
@@ -110,7 +111,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         boolean hasViewPermission,
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
-        CmsUUID elementView) {
+        CmsUUID elementView,
+        String iconClasses) {
 
         super(
             element,
@@ -129,7 +131,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             false,
             null,
             false,
-            elementView);
+            elementView,
+            iconClasses);
         m_resourceType = resourceType;
     }
 

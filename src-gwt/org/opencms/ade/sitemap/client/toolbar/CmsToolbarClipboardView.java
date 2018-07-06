@@ -185,6 +185,7 @@ public class CmsToolbarClipboardView {
             : entry.getResourceTypeName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
+        infoBean.setBigIconClasses(entry.getNavModeIcon());
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
         CmsPushButton button = new CmsPushButton();
@@ -225,6 +226,7 @@ public class CmsToolbarClipboardView {
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
             ? entry.getDefaultFileType()
             : entry.getResourceTypeName());
+        infoBean.setBigIconClasses(entry.getNavModeIcon());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
 
         final CmsListItem listItem = new CmsListItem(itemWidget);

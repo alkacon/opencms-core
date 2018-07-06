@@ -2242,6 +2242,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                                 res.isFolder()
                                 ? EntryType.folder
                                 : isRedirectType(res.getTypeId()) ? EntryType.redirect : EntryType.leaf);
+                            delEntry.setNavModeIcon(
+                                CmsIconUtil.getIconClasses(
+                                    delEntry.getResourceTypeName(),
+                                    delEntry.getVfsPath(),
+                                    false));
                             delEntry.setId(delId);
                             result.put(delId, delEntry);
                         }

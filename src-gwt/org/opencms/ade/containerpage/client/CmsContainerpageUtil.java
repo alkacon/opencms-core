@@ -509,7 +509,8 @@ public class CmsContainerpageUtil {
             elementData.hasEditHandler(),
             elementData.getModelGroupId(),
             elementData.isWasModelGroup(),
-            elementData.getElementView());
+            elementData.getElementView(),
+            elementData.getBigIconClasses());
         dragElement.setCreateNew(elementData.isCreateNew());
         if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
@@ -547,7 +548,8 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
-            elementData.getElementView());
+            elementData.getElementView(),
+            elementData.getBigIconClasses());
         return groupContainer;
     }
 }
