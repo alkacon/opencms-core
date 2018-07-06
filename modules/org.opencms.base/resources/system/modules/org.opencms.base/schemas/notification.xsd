@@ -29,6 +29,10 @@
 			</mappings>
 			<defaults/>
 			<validationrules/>
+			<layouts>
+				<layout element="Header" widget="HtmlWidget" configuration="formatselect,link,anchor,source" />
+				<layout element="Footer" widget="HtmlWidget" configuration="formatselect,link,anchor,source" />
+			</layouts>
 		</xsd:appinfo>
 
 	</xsd:annotation>  
