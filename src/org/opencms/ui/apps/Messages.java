@@ -54,6 +54,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ENCRYPTED_0 = "GUI_SITE_ENCRYPTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_UNENCRYPTED_0 = "GUI_SITE_UNENCRYPTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

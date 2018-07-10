@@ -146,4 +146,14 @@ public enum CmsSSLMode {
 
         return m_xmlValue;
     }
+
+    /**
+     * Returns if SSL Mode is secure.<p>
+     *
+     * @return true if secure
+     */
+    public boolean isSecure() {
+
+        return this.equals(MANUAL_EP_TERMINATION) || this.equals(MANUAL) || this.equals(LETS_ENCRYPT);
+    }
 }
