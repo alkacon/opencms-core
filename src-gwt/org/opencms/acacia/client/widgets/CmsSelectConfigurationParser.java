@@ -27,7 +27,6 @@
 
 package org.opencms.acacia.client.widgets;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -45,9 +44,6 @@ import com.google.gwt.regexp.shared.RegExp;
  * by {@link org.opencms.widgets.CmsSelectWidgetOption#createConfigurationString(List)}
  */
 public class CmsSelectConfigurationParser {
-
-    /** Delimiter between option sets. */
-    private static final char INPUT_DELIMITER = '|';
 
     /** Delimiter at the end of a value. */
     private static final char VALUE_DELIMITER = '\'';
@@ -122,11 +118,12 @@ public class CmsSelectConfigurationParser {
         // from the split
         String reverse = reverse(input);
         String[] parts = reverse.split("\\|(?!\\\\)");
-
+        String[] finalParts = new String[parts.length];
+        int lastIndex = parts.length - 1;
         for (int i = 0; i < parts.length; i++) {
-            parts[i] = reverse(parts[i]);
+            finalParts[lastIndex - i] = reverse(parts[i]);
         }
-        return parts;
+        return finalParts;
 
     }
 
