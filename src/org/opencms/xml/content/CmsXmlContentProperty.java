@@ -108,6 +108,9 @@ public class CmsXmlContentProperty implements Serializable {
     /** The error message. */
     private String m_error;
 
+    /** The include name. */
+    private String m_includeName;
+
     /** The name of the property. */
     private String m_name;
 
@@ -327,6 +330,24 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Gets the include name.<p>
+     *
+     * This is only used for element settings in formatters, where defaults from setting configuration files
+     * can be imported. The returned value is used to look up the setting name to look up for such an import in the
+     * setting configuration file.
+     *
+     * @param defaultValue the value that should be returned if no include name is configured
+     * @return the include name
+     */
+    public String getIncludeName(String defaultValue) {
+
+        if (m_includeName != null) {
+            return m_includeName;
+        }
+        return defaultValue;
+    }
+
+    /**
      * Returns the property name.<p>
      *
      * @return the property name
@@ -451,23 +472,19 @@ public class CmsXmlContentProperty implements Serializable {
      */
     public CmsXmlContentProperty mergeDefaults(CmsXmlContentProperty defaults) {
 
-        if (defaults.getName().equals(getName())) {
-            return new CmsXmlContentProperty(
-                m_name,
-                firstNotNull(m_type, defaults.m_type),
-                firstNotNull(m_visibility, defaults.m_visibility),
-                firstNotNull(m_widget, defaults.m_widget),
-                firstNotNull(m_widgetConfiguration, defaults.m_widgetConfiguration),
-                firstNotNull(m_ruleRegex, defaults.m_ruleRegex),
-                firstNotNull(m_ruleType, defaults.m_ruleType),
-                firstNotNull(m_default, defaults.m_default),
-                firstNotNull(m_niceName, defaults.m_niceName),
-                firstNotNull(m_description, defaults.m_description),
-                firstNotNull(m_error, defaults.m_error),
-                firstNotNull(m_preferFolder, defaults.m_preferFolder));
-        } else {
-            throw new IllegalArgumentException("Cannot merge properties with different names.");
-        }
+        return new CmsXmlContentProperty(
+            m_name,
+            firstNotNull(m_type, defaults.m_type),
+            firstNotNull(m_visibility, defaults.m_visibility),
+            firstNotNull(m_widget, defaults.m_widget),
+            firstNotNull(m_widgetConfiguration, defaults.m_widgetConfiguration),
+            firstNotNull(m_ruleRegex, defaults.m_ruleRegex),
+            firstNotNull(m_ruleType, defaults.m_ruleType),
+            firstNotNull(m_default, defaults.m_default),
+            firstNotNull(m_niceName, defaults.m_niceName),
+            firstNotNull(m_description, defaults.m_description),
+            firstNotNull(m_error, defaults.m_error),
+            firstNotNull(m_preferFolder, defaults.m_preferFolder));
     }
 
     /**
@@ -515,6 +532,23 @@ public class CmsXmlContentProperty implements Serializable {
             m_description,
             m_error,
             m_preferFolder);
+    }
+
+    /**
+     * Creates a copy of this object with its include name set to a specific value.<p>
+     *
+     * @param includeName the include name to use
+     *
+     * @return the copy with the include name set
+     */
+    public CmsXmlContentProperty withIncludeName(String includeName) {
+
+        CmsXmlContentProperty result = copy();
+        if (includeName != null) {
+            includeName = includeName.trim();
+        }
+        result.m_includeName = includeName;
+        return result;
     }
 
     /**

@@ -2,18 +2,17 @@
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
  
-    <xsd:element name="FormatterSettings" type="OpenCmsFormatterSettings" />
+    <xsd:element name="SettingsConfigSettings" type="OpenCmsSettingsConfigSettings" />
     
-    <xsd:complexType name="OpenCmsFormatterSettings">
+    <xsd:complexType name="OpenCmsSettingsConfigSettings">
         <xsd:sequence>
-            <xsd:element name="FormatterSetting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="SettingsConfigSetting" type="OpenCmsSettingsConfigSetting" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="OpenCmsFormatterSetting">
+    <xsd:complexType name="OpenCmsSettingsConfigSetting">
         <xsd:sequence>    
             <xsd:element name="PropertyName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-            <xsd:element name="IncludeName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DisplayName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Visibility" type="OpenCmsString" minOccurs="0" maxOccurs="1" />

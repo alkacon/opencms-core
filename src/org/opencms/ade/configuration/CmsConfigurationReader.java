@@ -229,6 +229,9 @@ public class CmsConfigurationReader {
     /** The ElementDeleteMode node name. */
     private static final String N_ELEMENT_DELETE_MODE = "ElementDeleteMode";
 
+    /** The IncludeName node name. */
+    private static final String N_INCLUDE_NAME = "IncludeName";
+
     /** The PageRelative node name. */
     private static final String N_PAGE_RELATIVE = "PageRelative";
 
@@ -290,6 +293,7 @@ public class CmsConfigurationReader {
     public static CmsPropertyConfig parseProperty(CmsObject cms, I_CmsXmlContentLocation field) {
 
         String name = getString(cms, field.getSubValue(N_PROPERTY_NAME));
+        String includeName = getString(cms, field.getSubValue(N_INCLUDE_NAME));
         String widget = getString(cms, field.getSubValue(N_WIDGET));
         String widgetConfig = getString(cms, field.getSubValue(N_WIDGET_CONFIG));
         String ruleRegex = getString(cms, field.getSubValue(N_RULE_REGEX));
@@ -331,7 +335,7 @@ public class CmsConfigurationReader {
             niceName,
             description,
             error,
-            preferFolder);
+            preferFolder).withIncludeName(includeName);
         // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
         CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
         return propConfig;

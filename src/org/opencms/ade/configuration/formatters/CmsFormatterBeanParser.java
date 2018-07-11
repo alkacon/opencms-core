@@ -148,6 +148,9 @@ public class CmsFormatterBeanParser {
     public static final String N_HEAD_INCLUDE_JS = "HeadIncludeJs";
 
     /** Content value node name. */
+    public static final String N_INCLUDE_SETTINGS = "IncludeSettings";
+
+    /** Content value node name. */
     public static final String N_JAVASCRIPT_INLINE = "JavascriptInline";
 
     /** Content value node name. */
@@ -221,9 +224,6 @@ public class CmsFormatterBeanParser {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
-
-    /** Content value node name. */
-    public static final String N_INCLUDE_SETTINGS = "IncludeSettings";
 
     /** Parsed field. */
     int m_width;
@@ -359,7 +359,9 @@ public class CmsFormatterBeanParser {
 
         Map<String, CmsXmlContentProperty> mergedSettings = new LinkedHashMap<>();
         for (Map.Entry<String, CmsXmlContentProperty> entry : m_settings.entrySet()) {
-            CmsXmlContentProperty defaultSetting = combinedIncludedSettings.get(entry.getKey());
+            CmsXmlContentProperty setting = entry.getValue();
+            String includeName = setting.getIncludeName(setting.getName());
+            CmsXmlContentProperty defaultSetting = combinedIncludedSettings.get(includeName);
             CmsXmlContentProperty mergedSetting;
             if (defaultSetting != null) {
                 mergedSetting = entry.getValue().mergeDefaults(defaultSetting);
