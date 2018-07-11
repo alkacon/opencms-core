@@ -669,7 +669,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     locCms = OpenCms.initCmsObject(exportCms, ctxInfo);
                 }
                 // read the content in the matching locale
-                byte[] content = loader.export(locCms, file, req, wrapRes);
+                byte[] content = loader.export(locCms, new CmsFile(file), req, wrapRes);
                 if (content != null) {
                     // write to rfs
                     exported = true;
@@ -684,7 +684,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!matched) {
             // no rule matched
             String exportPath = getExportPath(siteRoot + vfsName);
-            byte[] content = loader.export(exportCms, file, req, wrapRes);
+            byte[] content = loader.export(exportCms, new CmsFile(file), req, wrapRes);
             if (content != null) {
                 exported = true;
                 writeResource(req, exportPath, rfsName, resource, content);
