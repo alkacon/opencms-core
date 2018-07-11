@@ -26,7 +26,7 @@
         	<xsd:element name="Formatters" type="OpenCmsFormatterReference" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="PlaceholderMacro" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
-        	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+        	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>

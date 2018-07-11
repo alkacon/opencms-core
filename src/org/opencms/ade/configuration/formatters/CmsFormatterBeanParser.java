@@ -65,6 +65,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+
 /**
  * Parses formatter beans from formatter configuration XML contents.<p>
  */
@@ -339,30 +341,34 @@ public class CmsFormatterBeanParser {
 
         m_resourceType = getStringSet(root, N_TYPE);
         parseSettings(root);
-        CmsXmlVfsFileValue includeSettingsVal = (CmsXmlVfsFileValue)content.getValue(N_INCLUDE_SETTINGS, en);
-        if (includeSettingsVal != null) {
-
+        List<I_CmsXmlContentValue> settingIncludes = content.getValues(N_INCLUDE_SETTINGS, en);
+        settingIncludes = Lists.reverse(settingIncludes); // make defaults from earlier include files 'win' when merging them into a map
+        Map<String, CmsXmlContentProperty> combinedIncludedSettings = new HashMap<>();
+        for (I_CmsXmlContentValue settingInclude : settingIncludes) {
             try {
-                CmsUUID includeSettingsId = includeSettingsVal.getLink(m_cms).getStructureId();
-                Map<String, CmsXmlContentProperty> addSettings = m_additionalSettingConfigs.get(includeSettingsId);
-                if (addSettings != null) {
-                    Map<String, CmsXmlContentProperty> mergedSettings = new LinkedHashMap<>();
-                    for (Map.Entry<String, CmsXmlContentProperty> entry : m_settings.entrySet()) {
-                        CmsXmlContentProperty defaultSetting = addSettings.get(entry.getKey());
-                        CmsXmlContentProperty mergedSetting;
-                        if (defaultSetting != null) {
-                            mergedSetting = entry.getValue().mergeDefaults(defaultSetting);
-                        } else {
-                            mergedSetting = entry.getValue();
-                        }
-                        mergedSettings.put(mergedSetting.getName(), mergedSetting);
-                    }
-                    m_settings = mergedSettings;
+                CmsXmlVfsFileValue includeFileVal = (CmsXmlVfsFileValue)settingInclude;
+                CmsUUID includeSettingsId = includeFileVal.getLink(m_cms).getStructureId();
+                Map<String, CmsXmlContentProperty> includedSettings = m_additionalSettingConfigs.get(includeSettingsId);
+                if (includedSettings != null) {
+                    combinedIncludedSettings.putAll(includedSettings);
                 }
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+
+        Map<String, CmsXmlContentProperty> mergedSettings = new LinkedHashMap<>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : m_settings.entrySet()) {
+            CmsXmlContentProperty defaultSetting = combinedIncludedSettings.get(entry.getKey());
+            CmsXmlContentProperty mergedSetting;
+            if (defaultSetting != null) {
+                mergedSetting = entry.getValue().mergeDefaults(defaultSetting);
+            } else {
+                mergedSetting = entry.getValue();
+            }
+            mergedSettings.put(mergedSetting.getName(), mergedSetting);
+        }
+        m_settings = mergedSettings;
 
         String isDetailStr = getString(root, N_DETAIL, "true");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
