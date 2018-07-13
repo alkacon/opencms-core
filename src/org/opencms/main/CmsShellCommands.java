@@ -62,6 +62,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
@@ -377,6 +378,31 @@ class CmsShellCommands implements I_CmsShellCommands {
         user.setLastname(lastname);
         m_cms.writeUser(user);
         return user;
+    }
+
+    /**
+     * Create a web OU
+     * @param ouFqn the fully qualified name of the OU
+     * @param description the description of the OU
+     * @param hideLogin flag, indicating if the OU should be hidden from the login form.
+     *
+     * @return the created OU, or <code>null</code> if creation fails.
+     */
+    public CmsOrganizationalUnit createWebOU(String ouFqn, String description, boolean hideLogin) {
+
+        try {
+            return OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                m_cms,
+                ouFqn,
+                description,
+                (hideLogin ? CmsOrganizationalUnit.FLAG_HIDE_LOGIN : 0) | CmsOrganizationalUnit.FLAG_WEBUSERS,
+                null);
+        } catch (CmsException e) {
+            // TODO Auto-generated catch block
+            m_shell.getOut().println(
+                getMessages().key(Messages.GUI_SHELL_WEB_OU_CREATION_FAILED_2, ouFqn, description));
+            return null;
+        }
     }
 
     /**

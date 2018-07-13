@@ -256,6 +256,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_WEB_INF_PATH_1 = "GUI_SHELL_WEB_INF_PATH_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_WEB_OU_CREATION_FAILED_2 = "GUI_SHELL_WEB_OU_CREATION_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_WELCOME_0 = "GUI_SHELL_WELCOME_0";
 
     /** Message constant for key in the resource bundle. */
