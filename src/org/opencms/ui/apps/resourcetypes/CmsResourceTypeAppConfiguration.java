@@ -29,7 +29,6 @@ package org.opencms.ui.apps.resourcetypes;
 
 import org.opencms.security.CmsRole;
 import org.opencms.ui.CmsCssIcon;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
@@ -71,7 +70,7 @@ public class CmsResourceTypeAppConfiguration extends A_CmsWorkplaceAppConfigurat
     @Override
     public String getHelpText(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_APP_NAME_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_RESOURCETYPE_APP_NAME_HELP_0);
     }
 
     /**
@@ -96,7 +95,7 @@ public class CmsResourceTypeAppConfiguration extends A_CmsWorkplaceAppConfigurat
     @Override
     public String getName(Locale locale) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_APP_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_RESOURCETYPE_APP_NAME_0);
     }
 
     /**
