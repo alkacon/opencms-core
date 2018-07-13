@@ -114,8 +114,8 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
      * @param callback the function to call
      */
     static native void callNativeFunction(JavaScriptObject callback)/*-{
-                                                                    callback.call();
-                                                                    }-*/;
+        callback.call();
+    }-*/;
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -152,22 +152,17 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
      * Exports utility methods to the window context.<p>
      */
     private native void exportUtitlityFunctions()/*-{
-                                                 $wnd.cmsLoadScripts = function(scriptURIs, callback) {
-                                                 @org.opencms.ui.client.CmsWidgetSetEntryPoint::loadScriptDependencies(Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(scriptURIs, callback);
-                                                 }
-                                                 $wnd.cmsLoadCSS = function(cssURIs) {
-                                                 for (i = 0; i < cssURIs.length; i++) {
-                                                 @org.opencms.gwt.client.util.CmsDomUtil::ensureStyleSheetIncluded(Ljava/lang/String;)(cssURIs[i]);
-                                                 }
-                                                 }
-                                                 }-*/;
-
-    /**
-     *
-     */
-    private native void foo() /*-{
-                              $wnd.console.log("foo");
-                              $wnd.console.log("bar");
-                              }-*/;
+        $wnd.cmsLoadScripts = function(scriptURIs, callback) {
+            @org.opencms.ui.client.CmsWidgetSetEntryPoint::loadScriptDependencies(Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(scriptURIs, callback);
+        }
+        $wnd.cmsSafeLoadCSS = function(cssURIs, callback) {
+            @org.opencms.gwt.client.util.CmsDomUtil::safeLoadStylesheets([Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(cssURIs, callback);
+        }
+        $wnd.cmsLoadCSS = function(cssURIs) {
+            for (i = 0; i < cssURIs.length; i++) {
+                @org.opencms.gwt.client.util.CmsDomUtil::ensureStyleSheetIncluded(Ljava/lang/String;)(cssURIs[i]);
+            }
+        }
+    }-*/;
 
 }
