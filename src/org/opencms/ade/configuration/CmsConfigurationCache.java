@@ -480,28 +480,31 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     protected Map<CmsUUID, CmsElementView> loadElementViews() {
 
         List<CmsElementView> views = new ArrayList<CmsElementView>();
-        views.add(CmsElementView.DEFAULT_ELEMENT_VIEW);
-        try {
-            @SuppressWarnings("deprecation")
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
-                m_elementViewType.getTypeId());
-            List<CmsResource> groups = m_cms.readResources("/", filter);
-            for (CmsResource res : groups) {
-                try {
-                    views.add(new CmsElementView(m_cms, res));
-                } catch (Exception e) {
-                    LOG.error(e.getMessage(), e);
+        if (m_cms.existsResource("/")) {
+            views.add(CmsElementView.DEFAULT_ELEMENT_VIEW);
+            try {
+                @SuppressWarnings("deprecation")
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                    m_elementViewType.getTypeId());
+                List<CmsResource> groups = m_cms.readResources("/", filter);
+                for (CmsResource res : groups) {
+                    try {
+                        views.add(new CmsElementView(m_cms, res));
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage(), e);
+                    }
                 }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            Collections.sort(views, new CmsElementView.ElementViewComparator());
+            Map<CmsUUID, CmsElementView> elementViews = new LinkedHashMap<CmsUUID, CmsElementView>();
+            for (CmsElementView view : views) {
+                elementViews.put(view.getId(), view);
+            }
+            return elementViews;
         }
-        Collections.sort(views, new CmsElementView.ElementViewComparator());
-        Map<CmsUUID, CmsElementView> elementViews = new LinkedHashMap<CmsUUID, CmsElementView>();
-        for (CmsElementView view : views) {
-            elementViews.put(view.getId(), view);
-        }
-        return elementViews;
+        return null;
     }
 
     /**
