@@ -345,6 +345,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     private CheckBox m_selfmanagement;
 
+    /** Label containing invisible dummy password fields to dissuade Firefox from saving the password *after* the user edit dialog. */
+    private Label m_dummyPasswordLabel;
+
     /**vaadin component.*/
     private ComboBox m_startview;
 
@@ -1308,6 +1311,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * Sets the password fields.<p>
      */
     private void setPasswordFields() {
+
+        m_dummyPasswordLabel.setContentMode(com.vaadin.v7.shared.ui.label.ContentMode.HTML);
+
+        // ugly hack to prevent Firefox from asking user to save password on every click which causes the history token to change after editing a user
+        String pwd = "<input type=\"password\" value=\"password\">";
+        m_dummyPasswordLabel.setValue("<div style=\"display: none;\">" + pwd + pwd + "</div>");
 
         m_pw.hideOldPassword();
         m_pw.setHeaderVisible(false);
