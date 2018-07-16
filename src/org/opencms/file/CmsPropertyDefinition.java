@@ -222,6 +222,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property to control the template. */
     public static final String PROPERTY_TEMPLATE = "template";
 
+    /** Property for specifying a list of container types used to match formatters in the display formatter selection widget. */
+    public static final String PROPERTY_TEMPLATE_DISPLAY_CONTAINERS = "template.display.containers";
+
     /** Property to control the template elements. */
     public static final String PROPERTY_TEMPLATE_ELEMENTS = "template-elements";
 
