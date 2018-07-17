@@ -134,7 +134,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         try {
             CmsProperty prop = cms.readPropertyObject(
                 resourceSitePath,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_CONTAINERS,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES,
                 true);
             String propValue = prop.getValue();
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
