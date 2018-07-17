@@ -551,12 +551,23 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      *
      * @param newUser is the user new?
      */
-    protected static void sendMail(CmsObject cms, String password, CmsUser user, boolean newUser) {
+    protected static void sendMail(
+        CmsObject cms,
+        String password,
+        CmsUser user,
+        boolean newUser,
+        boolean changePassword) {
 
-        sendMail(cms, password, user, user.getOuFqn(), newUser);
+        sendMail(cms, password, user, user.getOuFqn(), newUser, changePassword);
     }
 
-    protected static void sendMail(CmsObject cms, String password, CmsUser user, String ou, boolean newUser) {
+    protected static void sendMail(
+        CmsObject cms,
+        String password,
+        CmsUser user,
+        String ou,
+        boolean newUser,
+        boolean changePassword) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getEmail())) {
             return;
@@ -568,7 +579,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             ou,
             cms.getRequestContext().getCurrentUser(),
             OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false),
-            newUser);
+            newUser,
+            changePassword);
         try {
             notification.send();
         } catch (EmailException e) {
@@ -728,7 +740,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
             saveUserSettings();
             if (m_sendEmail.getValue().booleanValue() & m_sendEmail.isEnabled()) {
-                sendMail(m_cms, m_pw.getPassword1(), m_user, newUser);
+                sendMail(m_cms, m_pw.getPassword1(), m_user, newUser, m_forceResetPassword.getValue().booleanValue());
             }
         } catch (CmsException e) {
             LOG.error("Unable to save user", e);

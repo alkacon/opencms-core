@@ -34,14 +34,22 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.notification.A_CmsNotification;
 import org.opencms.notification.CmsNotificationMacroResolver;
+import org.opencms.util.CmsMacroResolver;
 
 /**
  * Class to send email to user in case of password reset or creating new user.<p>
  */
 public class CmsSendPasswordNotification extends A_CmsNotification {
 
+    private static final String FIELD_CHANGE_PASSWORD = "TextChangePassword";
+
+    private static final String FIELD_KEEP_PASSWORD = "TextKeepPassword";
+
     /**Is user new? */
     private boolean m_new;
+
+    /**Is password temporal? */
+    private boolean m_tempPassword;
 
     /**
      * Public constructor.<p>
@@ -61,10 +69,12 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         String ou,
         CmsUser adminUser,
         String link,
-        boolean newUser) {
+        boolean newUser,
+        boolean tempPassword) {
 
         super(cms, receiver);
         m_new = newUser;
+        m_tempPassword = tempPassword;
         addMacro("password", password);
         addMacro(CmsNotificationMacroResolver.RECEIVER_OU_FQN, ou);
         try {
@@ -76,6 +86,23 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         } catch (CmsException e) {
             addMacro(CmsNotificationMacroResolver.RECEIVER_OU, receiver.getOuFqn());
         }
+
+    }
+
+    @Override
+    protected void appendXMLContent(StringBuffer msg) {
+
+        String xmlName = m_tempPassword ? FIELD_CHANGE_PASSWORD : FIELD_KEEP_PASSWORD;
+
+        // append header from xmlcontent
+        msg.append(
+            CmsMacroResolver.resolveMacros(m_mailContent.getStringValue(m_cms, xmlName, m_locale), m_macroResolver));
+
+        msg.append("\n<br/><br/>\n");
+
+        // append footer from xmlcontent
+        msg.append(
+            CmsMacroResolver.resolveMacros(m_mailContent.getStringValue(m_cms, "Footer", m_locale), m_macroResolver));
 
     }
 

@@ -1524,7 +1524,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_HELP_CREATE_ELEMENTS_0 = "GUI_MODULES_HELP_CREATE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_I18N_0 = "GUI_MODULES_HELP_CREATE_I18N_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0 = "GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_XPATH_0 = "GUI_RESOURCETYPE_EDIT_XPATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_XPATH_HELP_0 = "GUI_RESOURCETYPE_EDIT_XPATH_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_LIB_FOLDER_0 = "GUI_MODULES_HELP_CREATE_LIB_FOLDER_0";
@@ -1594,6 +1603,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_I18N_0 = "GUI_MODULES_LABEL_CREATE_I18N_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_ELEMENTS_0 = "GUI_MODULES_LABEL_CREATE_ELEMENTS_0";

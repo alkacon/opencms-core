@@ -79,13 +79,13 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     protected CmsXmlContent m_mailContent;
 
     /** The CmsObject. */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
 
     /** The locale of the receiver of the content notification. */
-    private Locale m_locale;
+    protected Locale m_locale;
 
     /** The macro resolver used. */
-    private CmsNotificationMacroResolver m_macroResolver;
+    protected CmsNotificationMacroResolver m_macroResolver;
 
     /** The receiver of the notification. */
     private CmsUser m_receiver;
@@ -213,23 +213,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
 
             // append html header
             appendHtmlHeader(msg);
-
-            // append header from xmlcontent
-            msg.append(
-                CmsMacroResolver.resolveMacros(
-                    m_mailContent.getStringValue(m_cms, "Header", m_locale),
-                    m_macroResolver));
-
-            // append body
-            msg.append("\n<br/><br/>\n");
-            msg.append(generateHtmlMsg());
-            msg.append("\n<br/><br/>\n");
-
-            // append footer from xmlcontent
-            msg.append(
-                CmsMacroResolver.resolveMacros(
-                    m_mailContent.getStringValue(m_cms, "Footer", m_locale),
-                    m_macroResolver));
+            appendXMLContent(msg);
 
             // append html footer
             appenHtmlFooter(msg);
@@ -289,6 +273,27 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             buffer.append("  </head>\r\n");
             buffer.append("  <body>\r\n");
         }
+    }
+
+    /**
+     * Append XMLContent to StringBuffer.<p>
+     *
+     * @param msg StringBuffer
+     */
+    protected void appendXMLContent(StringBuffer msg) {
+
+        // append header from xmlcontent
+        msg.append(
+            CmsMacroResolver.resolveMacros(m_mailContent.getStringValue(m_cms, "Header", m_locale), m_macroResolver));
+
+        // append body
+        msg.append("\n<br/><br/>\n");
+        msg.append(generateHtmlMsg());
+        msg.append("\n<br/><br/>\n");
+
+        // append footer from xmlcontent
+        msg.append(
+            CmsMacroResolver.resolveMacros(m_mailContent.getStringValue(m_cms, "Footer", m_locale), m_macroResolver));
     }
 
     /**

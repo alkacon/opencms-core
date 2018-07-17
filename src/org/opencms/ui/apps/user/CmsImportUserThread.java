@@ -127,7 +127,7 @@ public class CmsImportUserThread extends A_CmsReportThread {
                         password = OpenCms.getPasswordHandler().digest(password);
 
                         if (m_sendMail) {
-                            CmsUserEditDialog.sendMail(getCms(), user.getPassword(), user, m_ou, true);
+                            CmsUserEditDialog.sendMail(getCms(), user.getPassword(), user, m_ou, true, false);
                         }
                     } catch (CmsPasswordEncryptionException e) {
                         //
@@ -135,7 +135,7 @@ public class CmsImportUserThread extends A_CmsReportThread {
                 } else {
                     password = password.substring(password.indexOf("_") + 1);
                     if (m_sendMail) {
-                        CmsUserEditDialog.sendMail(getCms(), "your old password", user, m_ou, true);
+                        CmsUserEditDialog.sendMail(getCms(), "your old password", user, m_ou, true, false);
                     }
                 }
 
