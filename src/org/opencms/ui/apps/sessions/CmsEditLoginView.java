@@ -46,7 +46,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Window;
 
 /**
@@ -64,25 +64,34 @@ public class CmsEditLoginView extends CmsBasicDialog {
     private Button m_cancel;
 
     /**vaadin component.*/
-    private CheckBox m_enabled;
+    private CheckBox m_enabledAfter;
+
+    /**vaadin component.*/
+    private CheckBox m_enabledBefore;
 
     /**date field.*/
-    private CmsDateField m_endTime;
+    private CmsDateField m_endTimeAfter;
 
     /** The form field binder. */
-    private Binder<CmsLoginMessage> m_formBinder;
+    private Binder<CmsLoginMessage> m_formBinderAfter;
+
+    /** The form field binder. */
+    private Binder<CmsLoginMessage> m_formBinderBefore;
 
     /**vaadin component.*/
-    private CheckBox m_logout;
+    private CheckBox m_logoutAfter;
 
     /**vaadin component.*/
-    private TextArea m_message;
+    private RichTextArea m_messageAfter;
+
+    /**vaadin component.*/
+    private RichTextArea m_messageBefore;
 
     /**vaadin component.*/
     private Button m_ok;
 
     /**date field.*/
-    private CmsDateField m_startTime;
+    private CmsDateField m_startTimeAfter;
 
     /**
      * Public constructor.<p>
@@ -99,7 +108,13 @@ public class CmsEditLoginView extends CmsBasicDialog {
         if (message == null) {
             message = new CmsLoginMessage();
         }
-        m_formBinder.readBean(message);
+        m_formBinderAfter.readBean(message);
+
+        CmsLoginMessage messageBefore = OpenCms.getLoginManager().getBeforeLoginMessage();
+        if (messageBefore == null) {
+            messageBefore = new CmsLoginMessage();
+        }
+        m_formBinderBefore.readBean(messageBefore);
 
         m_cancel.addClickListener(new ClickListener() {
 
@@ -134,10 +149,10 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     protected long getEnd() {
 
-        if (m_endTime.getValue() == null) {
+        if (m_endTimeAfter.getValue() == null) {
             return 0;
         }
-        return m_endTime.getDate().getTime();
+        return m_endTimeAfter.getDate().getTime();
     }
 
     /**
@@ -147,10 +162,10 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     protected long getStart() {
 
-        if (m_startTime.getValue() == null) {
+        if (m_startTimeAfter.getValue() == null) {
             return 0;
         }
-        return m_startTime.getDate().getTime();
+        return m_startTimeAfter.getDate().getTime();
     }
 
     /**
@@ -160,8 +175,8 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     protected boolean isFormValid() {
 
-        // return m_startTime.isValid() & m_endTime.isValid() & m_message.isValid();
-        return !m_formBinder.validate().hasErrors();
+        // return m_startTimeAfter.isValid() & m_endTimeAfter.isValid() & m_messageAfter.isValid();
+        return !m_formBinderAfter.validate().hasErrors();
     }
 
     /**
@@ -170,9 +185,12 @@ public class CmsEditLoginView extends CmsBasicDialog {
     protected void submit() {
 
         CmsLoginMessage loginMessage = new CmsLoginMessage();
+        CmsLoginMessage beforeLoginMessage = new CmsLoginMessage();
         try {
-            m_formBinder.writeBean(loginMessage);
+            m_formBinderAfter.writeBean(loginMessage);
+            m_formBinderBefore.writeBean(beforeLoginMessage);
             OpenCms.getLoginManager().setLoginMessage(A_CmsUI.getCmsObject(), loginMessage);
+            OpenCms.getLoginManager().setBeforeLoginMessage(A_CmsUI.getCmsObject(), beforeLoginMessage);
             // update the system configuration
             OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
         } catch (Exception e) {
@@ -195,20 +213,20 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     private void bindFields() {
 
-        m_formBinder = new Binder<>();
-        m_formBinder.bind(m_message, CmsLoginMessage::getMessage, CmsLoginMessage::setMessage);
+        m_formBinderAfter = new Binder<>();
+        m_formBinderAfter.bind(m_messageAfter, CmsLoginMessage::getMessage, CmsLoginMessage::setMessage);
 
-        m_formBinder.bind(
-            m_enabled,
+        m_formBinderAfter.bind(
+            m_enabledAfter,
             loginMessage -> Boolean.valueOf(loginMessage.isEnabled()),
             (loginMessage, enabled) -> loginMessage.setEnabled(enabled.booleanValue()));
 
-        m_formBinder.bind(
-            m_logout,
+        m_formBinderAfter.bind(
+            m_logoutAfter,
             loginMessage -> Boolean.valueOf(loginMessage.isLoginCurrentlyForbidden()),
             (loginMessage, forbidden) -> loginMessage.setLoginForbidden(forbidden.booleanValue()));
 
-        m_formBinder.forField(m_endTime).withValidator(
+        m_formBinderAfter.forField(m_endTimeAfter).withValidator(
             endTime -> hasValidTimes(),
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_VAL_DATE_0)).bind(
                 loginMessage -> loginMessage.getTimeEnd() != CmsLoginMessage.DEFAULT_TIME_END
@@ -218,7 +236,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
                     endTime != null
                     ? CmsDateField.localDateTimeToDate(endTime).getTime()
                     : CmsLoginMessage.DEFAULT_TIME_END));
-        m_formBinder.forField(m_startTime).withValidator(
+        m_formBinderAfter.forField(m_startTimeAfter).withValidator(
             startTime -> hasValidTimes(),
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_VAL_DATE_0)).bind(
                 loginMessage -> loginMessage.getTimeStart() != CmsLoginMessage.DEFAULT_TIME_START
@@ -228,5 +246,12 @@ public class CmsEditLoginView extends CmsBasicDialog {
                     startTime != null
                     ? CmsDateField.localDateTimeToDate(startTime).getTime()
                     : CmsLoginMessage.DEFAULT_TIME_START));
+        m_formBinderBefore = new Binder<>();
+        m_formBinderBefore.bind(m_messageBefore, CmsLoginMessage::getMessage, CmsLoginMessage::setMessage);
+
+        m_formBinderBefore.bind(
+            m_enabledBefore,
+            loginMessage -> Boolean.valueOf(loginMessage.isEnabled()),
+            (loginMessage, enabled) -> loginMessage.setEnabled(enabled.booleanValue()));
     }
 }

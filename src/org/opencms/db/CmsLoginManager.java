@@ -188,6 +188,9 @@ public class CmsLoginManager {
     /** The login message, setting this may also disable logins for non-Admin users. */
     private CmsLoginMessage m_loginMessage;
 
+    /** The before login message. */
+    private CmsLoginMessage m_beforeLoginMessage;
+
     /** Max inactivity time. */
     private String m_maxInactive;
 
@@ -352,6 +355,18 @@ public class CmsLoginManager {
             throw new CmsAuthentificationException(
                 Messages.get().container(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, m_loginMessage.getMessage()));
         }
+    }
+
+    /**
+     * Returns the current before login message that is displayed on the login form.<p>
+     *
+     * if <code>null</code> is returned, no login message has been currently set.<p>
+     *
+     * @return  the current login message that is displayed if a user logs in
+     */
+    public CmsLoginMessage getBeforeLoginMessage() {
+
+        return m_beforeLoginMessage;
     }
 
     /**
@@ -626,6 +641,29 @@ public class CmsLoginManager {
             userData.reset();
         }
         TEMP_DISABLED_USER.remove(username);
+    }
+
+    /**
+     * Sets the before login message to display on the login form.<p>
+     *
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param message the message to set
+     *
+     * @throws CmsRoleViolationException in case the current user does not have the required role permissions
+     */
+    public void setBeforeLoginMessage(CmsObject cms, CmsLoginMessage message) throws CmsRoleViolationException {
+
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+            // during configuration phase no permission check id required
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
+        }
+        m_beforeLoginMessage = message;
+
+        if (m_beforeLoginMessage != null) {
+            m_beforeLoginMessage.setFrozen();
+        }
     }
 
     /**

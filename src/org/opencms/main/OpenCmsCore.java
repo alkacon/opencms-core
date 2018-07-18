@@ -1521,6 +1521,7 @@ public final class OpenCmsCore {
         // set the login message
         try {
             m_loginManager.setLoginMessage(null, variablesConfiguration.getLoginMessage());
+            m_loginManager.setBeforeLoginMessage(null, variablesConfiguration.getBeforeLoginMessage());
         } catch (CmsRoleViolationException e1) {
             CmsLog.INIT.error(e1.getLocalizedMessage(), e1);
         }

@@ -6,7 +6,7 @@
 <!--
 # Contains frequently changing configuration options, that may be changed through workplace tools.
 -->
-<!ELEMENT variables (loginmessage?)>
+<!ELEMENT variables (loginmessage?,beforeloginmessage?)>
 
 <!--
 # Login message:
@@ -14,6 +14,8 @@
 # Also, the login can be forbidden for all non-Admin users.
 -->
 <!ELEMENT loginmessage (enabled, message, loginForbidden, timeStart?, timeEnd?)>
+
+<!ELEMENT beforeloginmessage (enabled, message)>
 
 <!ELEMENT enabled (#PCDATA)>
 <!ELEMENT message (#PCDATA)>

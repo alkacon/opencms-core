@@ -75,6 +75,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_EDIT_ID_HELP_0 = "GUI_RESOURCETYPE_EDIT_ID_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TAB_AFTER_0 = "GUI_MESSAGES_LOGINMESSAGE_TAB_AFTER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_TAB_BEFORE_0 = "GUI_MESSAGES_LOGINMESSAGE_TAB_BEFORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_ENABLED_BEFORE_0 = "GUI_MESSAGES_LOGINMESSAGE_ENABLED_BEFORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_ENABLED_BEFORE_HELP_0 = "GUI_MESSAGES_LOGINMESSAGE_ENABLED_BEFORE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_0 = "GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_0";
 
     /** Message constant for key in the resource bundle. */

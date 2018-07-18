@@ -43,7 +43,7 @@ import java.util.Set;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.TextArea;
+import com.vaadin.v7.ui.RichTextArea;
 
 /**
  * Class for the dialiog to send broadcasts.<p>
@@ -59,7 +59,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     private Button m_cancel;
 
     /**Message text area.*/
-    private TextArea m_message;
+    private RichTextArea m_message;
 
     /**ok button.*/
     private Button m_ok;
