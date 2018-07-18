@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.notification.A_CmsNotification;
 import org.opencms.notification.CmsNotificationMacroResolver;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
@@ -81,9 +82,13 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
             CmsNotificationMacroResolver.WORKPLACE_LOGIN_LINK,
             "<a href =\""
                 + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
-                + "?ocUname="
+                + "?"
+                + CmsLoginHelper.PARAM_USERNAME
+                + "="
                 + receiver.getSimpleName()
-                + "&ocOuFqn="
+                + "&"
+                + CmsLoginHelper.PARAM_OUFQN
+                + "="
                 + receiver.getOuFqn()
                 + "\">"
                 + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
