@@ -77,6 +77,29 @@
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*/resources/.*</regex>
 			</resourcestorender>
+            <rfs-rules>
+                <rfs-rule>
+                    <name>default</name>
+                    <description>default</description>
+                    <source>.*</source>
+                    <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+                    <exportpath>export</exportpath>
+                    <related-system-res>
+                        <regex>$.</regex>
+                    </related-system-res>
+                </rfs-rule>
+                <rfs-rule>
+                    <name>sys</name>
+                    <description>sys</description>
+                    <source>.*</source>
+                    <rfs-prefix>https://cdn.opencms.rocks${CONTEXT_NAME}/export</rfs-prefix>
+                    <exportpath>export</exportpath>
+                    <related-system-res>
+                        <regex>/system/.*</regex>
+                        <regex>/shared/.*</regex>
+                    </related-system-res>
+                </rfs-rule>
+            </rfs-rules>
 		</rendersettings>
 	</staticexport>
 	<usercsvexport>
