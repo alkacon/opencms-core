@@ -82,6 +82,9 @@ public class CmsNotificationMacroResolver extends CmsMacroResolver {
     /**Macro for Workplace. */
     public static final String WORKPLACE_LOGIN_URL = "workplace.login-url";
 
+    /** Macro for workplace url.*/
+    public static final String WORKPLACE_LOGIN_LINK = "workplace.login-url.html";
+
     /**
      * public constructor.<p>
      *
@@ -119,5 +122,12 @@ public class CmsNotificationMacroResolver extends CmsMacroResolver {
         addMacro(
             WORKPLACE_LOGIN_URL,
             OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false));
+        addMacro(
+            WORKPLACE_LOGIN_LINK,
+            "<a href =\""
+                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "\">"
+                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "</a>");
     }
 }

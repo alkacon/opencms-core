@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.notification.A_CmsNotification;
 import org.opencms.notification.CmsNotificationMacroResolver;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 /**
  * Class to send email to user in case of password reset or creating new user.<p>
@@ -76,6 +77,17 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         m_new = newUser;
         m_tempPassword = tempPassword;
         addMacro("password", password);
+        addMacro(
+            CmsNotificationMacroResolver.WORKPLACE_LOGIN_LINK,
+            "<a href =\""
+                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "?ocUname="
+                + receiver.getSimpleName()
+                + "&ocOuFqn="
+                + receiver.getOuFqn()
+                + "\">"
+                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "</a>");
         addMacro(CmsNotificationMacroResolver.RECEIVER_OU_FQN, ou);
         try {
             addMacro(
