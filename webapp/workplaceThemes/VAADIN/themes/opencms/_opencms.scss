@@ -577,6 +577,26 @@
 		}
 	}
 
+	.o-richtextarea-reduced {
+		
+		.gwt-RichTextToolbar div:nth-child(4),
+		.gwt-RichTextToolbar div:nth-child(5),
+		.gwt-RichTextToolbar div:nth-child(6),		
+		.gwt-RichTextToolbar div:nth-child(7),		
+		.gwt-RichTextToolbar div:nth-child(8),		
+		.gwt-RichTextToolbar div:nth-child(9),
+		.gwt-RichTextToolbar div:nth-child(10),
+		.gwt-RichTextToolbar div:nth-child(11),
+		.gwt-RichTextToolbar div:nth-child(12),
+		.gwt-RichTextToolbar div:nth-child(13),
+		.gwt-RichTextToolbar div:nth-child(15),
+		.gwt-RichTextToolbar select:nth-child(1),
+		.gwt-RichTextToolbar select:nth-child(3){
+				display:none;
+			}	
+	
+	}
+
 	textarea.o-shell-terminal, .o-shell-terminal.o-report{
 		
 		    display: block;

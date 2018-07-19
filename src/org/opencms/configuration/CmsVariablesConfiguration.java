@@ -107,6 +107,7 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // initialized OpenCms instance is available, use latest values
             m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
+            m_beforeLoginMessage = OpenCms.getLoginManager().getBeforeLoginMessage();
         }
         // login message
         if (m_loginMessage != null) {
