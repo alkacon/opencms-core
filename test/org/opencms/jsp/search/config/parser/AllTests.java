@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.staticexport;
+package org.opencms.jsp.search.config.parser;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -58,12 +58,7 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestCmsLinkManager.suite());
-        suite.addTest(TestCmsStaticExportManager.suite());
-        suite.addTest(TestExportFile.suite());
-        suite.addTest(TestSecure.suite());
-        suite.addTest(TestCmsExternalLinksValidator.suite());
-        suite.addTest(TestExportScaledImage.suite());
+        suite.addTest(TestJSONSearchConfigurationParser.suite());
         //$JUnit-END$
         return suite;
     }

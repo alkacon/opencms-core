@@ -27,9 +27,6 @@
 
 package org.opencms.jsp.search.config.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
@@ -54,6 +51,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -65,10 +64,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /** Tests the JSON configuration parser of cms:search. */
-public class TestJSONSearchConfigurationParser {
+public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
+
+    /**
+     * Default JUnit constructor.<p>
+     *
+     * @param arg0 JUnit parameters
+     */
+    public TestJSONSearchConfigurationParser(String arg0) {
+
+        super(arg0);
+    }
+
+    /**
+     * Test suite for this test class.<p>
+     *
+     * @return the test suite
+     */
+    public static Test suite() {
+
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+
+        TestSuite suite = new TestSuite();
+        suite.addTest(new TestJSONSearchConfigurationParser("testParseCompleteConfiguration"));
+        suite.addTest(new TestJSONSearchConfigurationParser("testParseMultiplePageSizes"));
+        return suite;
+    }
 
     /**
      * Reads a complete configuration (with all options used) and tests if it matches the expectation.
@@ -76,7 +101,7 @@ public class TestJSONSearchConfigurationParser {
      * @throws IOException thrown if reading the configuration file with the test configuration fails
      * @throws URISyntaxException thrown if reading the configuration file with the test configuration fails
      */
-    @Test
+    @org.junit.Test
     public void testParseCompleteConfiguration() throws IOException, URISyntaxException {
 
         String configString = new String(
@@ -96,7 +121,7 @@ public class TestJSONSearchConfigurationParser {
      * @throws IOException
      * @throws URISyntaxException
      */
-    @Test
+    @org.junit.Test
     public void testParseMultiplePageSizes() throws IOException, URISyntaxException {
 
         String configString = new String(
