@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
@@ -634,8 +635,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             if (showShared && (shared != null) && !siteroots.contains(shared)) {
                 siteroots.add(shared);
             }
-            // all sites are compatible for root admins, skip unnecessary tests
-            boolean allCompatible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+            // all sites are compatible for root admins in the root OU, skip unnecessary tests
+            boolean allCompatible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)
+                && (ouFqn.isEmpty() || ouFqn.equals(CmsOrganizationalUnit.SEPARATOR));
             List<CmsResource> resources = Collections.emptyList();
             if (!allCompatible) {
                 try {
