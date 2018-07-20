@@ -635,9 +635,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 siteroots.add(shared);
             }
             // all sites are compatible for root admins, skip unnecessary tests
-            boolean compatible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+            boolean allCompatible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
             List<CmsResource> resources = Collections.emptyList();
-            if (!compatible) {
+            if (!allCompatible) {
                 try {
                     resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
                 } catch (CmsException e) {
@@ -648,6 +648,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             Iterator<String> roots = siteroots.iterator();
             while (roots.hasNext()) {
                 String folder = roots.next();
+                boolean compatible = allCompatible;
                 if (!compatible) {
                     Iterator<CmsResource> itResources = resources.iterator();
                     while (itResources.hasNext()) {
