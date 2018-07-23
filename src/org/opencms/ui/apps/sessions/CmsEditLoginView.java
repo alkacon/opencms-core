@@ -36,6 +36,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
+import org.opencms.ui.components.CmsRichTextArea;
 
 import java.util.Date;
 
@@ -46,7 +47,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.Window;
 
 /**
@@ -78,14 +81,16 @@ public class CmsEditLoginView extends CmsBasicDialog {
     /** The form field binder. */
     private Binder<CmsLoginMessage> m_formBinderBefore;
 
+    private TabSheet m_tab;
+
     /**vaadin component.*/
     private CheckBox m_logoutAfter;
 
     /**vaadin component.*/
-    private RichTextArea m_messageAfter;
+    protected CmsRichTextArea m_messageAfter;
 
     /**vaadin component.*/
-    private RichTextArea m_messageBefore;
+    protected CmsRichTextArea m_messageBefore;
 
     /**vaadin component.*/
     private Button m_ok;
@@ -139,6 +144,18 @@ public class CmsEditLoginView extends CmsBasicDialog {
                 }
 
             }
+        });
+        m_messageAfter.setFontStyle();
+        m_messageBefore.setFontStyle();
+        m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
+
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+
+                m_messageAfter.setFontStyle();
+                m_messageBefore.setFontStyle();
+
+            }
+
         });
     }
 
