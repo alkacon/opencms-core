@@ -877,12 +877,12 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         select = changeState ? !select : select;
         if (m_isSingleSelection) {
             m_selectedCategories.clear();
-            Iterator<Widget> it = m_scrollList.iterator();
-            while (it.hasNext()) {
-                ((CmsTreeItem)it.next()).getCheckBox().setChecked(false);
-            }
+            uncheckAll(m_scrollList);
         }
         if (select) {
+            if (m_isSingleSelection) {
+                m_singleResult = item.getId();
+            }
             CmsTreeItem currentItem = item;
             do {
                 currentItem.getCheckBox().setChecked(true);
@@ -893,6 +893,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 currentItem = currentItem.getParentItem();
             } while (currentItem != null);
         } else {
+            if (m_isSingleSelection) {
+                m_singleResult = "";
+            }
             deselectChildren(item);
             CmsTreeItem currentItem = item;
             do {
@@ -1040,6 +1043,19 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 treeItem.getCheckBox().disable(disabledReason);
             }
             setListEnabled(treeItem.getChildren(), enabled, disabledReason);
+        }
+    }
+
+    /**
+     * Uncheck all items in the list including all sub-items.
+     * @param list list of CmsTreeItem entries.
+     */
+    private void uncheckAll(CmsList<? extends I_CmsListItem> list) {
+
+        for (Widget it : list) {
+            CmsTreeItem treeItem = (CmsTreeItem)it;
+            treeItem.getCheckBox().setChecked(false);
+            uncheckAll(treeItem.getChildren());
         }
     }
 
