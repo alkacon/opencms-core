@@ -81,6 +81,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
     /** The form field binder. */
     private Binder<CmsLoginMessage> m_formBinderBefore;
 
+    /**Vaadin component. */
     private TabSheet m_tab;
 
     /**vaadin component.*/
@@ -113,8 +114,12 @@ public class CmsEditLoginView extends CmsBasicDialog {
         if (message == null) {
             message = new CmsLoginMessage();
         }
-        m_formBinderAfter.readBean(message);
 
+        m_formBinderAfter.readBean(message);
+        if (!message.isEnabled()) {
+            m_endTimeAfter.setValue(null);
+            m_startTimeAfter.setValue(null);
+        }
         CmsLoginMessage messageBefore = OpenCms.getLoginManager().getBeforeLoginMessage();
         if (messageBefore == null) {
             messageBefore = new CmsLoginMessage();
@@ -222,6 +227,10 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     boolean hasValidTimes() {
 
+        if ((getEnd() > 0L) && (getEnd() < System.currentTimeMillis())) {
+            return false;
+        }
+
         return ((getEnd() == 0) | (getStart() == 0)) || (getEnd() >= getStart());
     }
 
@@ -240,7 +249,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
 
         m_formBinderAfter.bind(
             m_logoutAfter,
-            loginMessage -> Boolean.valueOf(loginMessage.isLoginCurrentlyForbidden()),
+            loginMessage -> Boolean.valueOf(loginMessage.isLoginForbidden()),
             (loginMessage, forbidden) -> loginMessage.setLoginForbidden(forbidden.booleanValue()));
 
         m_formBinderAfter.forField(m_endTimeAfter).withValidator(

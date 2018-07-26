@@ -35,6 +35,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.sessions.CmsSessionsApp.MessageValidator;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsRichTextAreaV7;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,6 @@ import java.util.Set;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.RichTextArea;
 
 /**
  * Class for the dialiog to send broadcasts.<p>
@@ -59,7 +59,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     private Button m_cancel;
 
     /**Message text area.*/
-    private RichTextArea m_message;
+    private CmsRichTextAreaV7 m_message;
 
     /**ok button.*/
     private Button m_ok;
@@ -77,7 +77,6 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     public CmsSendBroadcastDialog(final Set<String> sessionIds, final Runnable closeRunnable) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
         if (sessionIds != null) {
             displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));
         } else {
