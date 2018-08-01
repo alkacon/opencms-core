@@ -1308,19 +1308,20 @@ public final class CmsSecurityManager {
         if (group.isRole()) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_DELETE_ROLE_GROUP_1, group.getName()));
         }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = null;
         try {
+            dbc = getDbContextForDeletePrincipal(context);
             // catch own exception as special cause for general "Error deleting group".
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(group.getName())));
-            // this is needed because
-            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
-            // expects an offline project, if not, data will become inconsistent
-            checkProjectForDeletePrincipal(dbc);
             m_driverManager.deleteGroup(dbc, group, replacementId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, group.getName()), e);
+            CmsDbContext dbcForException = m_dbContextFactory.getDbContext(context);
+            dbcForException.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, group.getName()), e);
+            dbcForException.clear();
         } finally {
-            dbc.clear();
+            if (null != dbc) {
+                dbc.clear();
+            }
         }
     }
 
@@ -1343,20 +1344,22 @@ public final class CmsSecurityManager {
         if (group.isRole()) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_DELETE_ROLE_GROUP_1, name));
         }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsDbContext dbc = null;
         try {
+            dbc = getDbContextForDeletePrincipal(context);
             // catch own exception as special cause for general "Error deleting group".
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
-            // this is needed because
-            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
-            // expects an offline project, if not data will become inconsistent
-            checkProjectForDeletePrincipal(dbc);
             m_driverManager.deleteGroup(dbc, group, null);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
+            CmsDbContext dbcForException = m_dbContextFactory.getDbContext(context);
+            dbcForException.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
+            dbcForException.clear();
         } finally {
-            dbc.clear();
+            if (null != dbc) {
+                dbc.clear();
+            }
         }
+
     }
 
     /**
@@ -3760,11 +3763,8 @@ public final class CmsSecurityManager {
             if (source.isFolder()) {
                 dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS, Boolean.TRUE);
                 try {
-                    m_driverManager.getVfsDriver(dbc).moveResource(
-                        dbc,
-                        dbc.currentProject().getUuid(),
-                        source,
-                        destination);
+                    m_driverManager.getVfsDriver(
+                        dbc).moveResource(dbc, dbc.currentProject().getUuid(), source, destination);
                 } catch (CmsDataAccessException e) {
                     // unwrap the permission violation exception
                     if (e.getCause() instanceof CmsPermissionViolationException) {
@@ -5784,11 +5784,8 @@ public final class CmsSecurityManager {
         String result = null;
         try {
             checkOfflineProject(dbc);
-            result = m_driverManager.getVfsDriver(dbc).readResource(
-                dbc,
-                CmsProject.ONLINE_PROJECT_ID,
-                resource.getStructureId(),
-                true).getRootPath();
+            result = m_driverManager.getVfsDriver(
+                dbc).readResource(dbc, CmsProject.ONLINE_PROJECT_ID, resource.getStructureId(), true).getRootPath();
         } catch (Exception e) {
             dbc.report(
                 null,
@@ -7203,23 +7200,25 @@ public final class CmsSecurityManager {
         if (context.getCurrentUser().equals(user)) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_USER_CANT_DELETE_ITSELF_USER_0));
         }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+
+        CmsDbContext dbc = null;
         try {
+            dbc = getDbContextForDeletePrincipal(context);
             CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName()));
             checkRoleForUserModification(dbc, user.getName(), role);
-            // this is needed because
-            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
-            // expects an offline project, if not data will become inconsistent
-            checkProjectForDeletePrincipal(dbc);
-            if (replacement == null) {
-                m_driverManager.deleteUser(dbc, context.getCurrentProject(), user.getName(), null);
-            } else {
-                m_driverManager.deleteUser(dbc, context.getCurrentProject(), user.getName(), replacement.getName());
-            }
+            m_driverManager.deleteUser(
+                dbc,
+                dbc.getRequestContext().getCurrentProject(),
+                user.getName(),
+                null == replacement ? null : replacement.getName());
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
+            CmsDbContext dbcForException = m_dbContextFactory.getDbContext(context);
+            dbcForException.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
+            dbcForException.clear();
         } finally {
-            dbc.clear();
+            if (null != dbc) {
+                dbc.clear();
+            }
         }
     }
 
@@ -7488,40 +7487,59 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the current project allows deletion of a principal.<p>
+     * Determines a project where the deletion of a principal can be executed and sets it in the returned db context.<p>
      *
-     * @param dbc the database context
+     * @param context the current request context
      *
-     * @throws CmsDataAccessException if the current project can not be used to delete a principal
+     * @return the db context to use when deleting the principal.
+     *
+     * @throws CmsDataAccessException if determining a project that is suitable to delete the prinicipal fails.
      */
-    private void checkProjectForDeletePrincipal(CmsDbContext dbc) throws CmsDataAccessException {
+    private CmsDbContext getDbContextForDeletePrincipal(CmsRequestContext context) throws CmsDataAccessException {
 
-        CmsProject currentProject = dbc.currentProject();
+        CmsProject currentProject = context.getCurrentProject();
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsUUID projectId = dbc.getProjectId();
         // principal modifications are allowed if the current project is not the online project
         if (currentProject.isOnlineProject()) {
-            try {
-                // if the current project is the online project, check if there is a valid offline project at all
-                List<CmsProject> projects = m_driverManager.getProjectDriver(dbc).readProjects(dbc, "");
-                for (CmsProject project : projects) {
-                    if (!project.isOnlineProject()) {
-                        CmsResource root = null;
-                        try {
-                            dbc.setProjectId(project.getUuid());
-                            root = m_driverManager.readResource(dbc, "/", CmsResourceFilter.ALL);
-                        } catch (Exception e) {
-                            // ignore
+            // this is needed because
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not, data will become inconsistent
+
+            // if the current project is the online project, check if there is a valid offline project at all
+            List<CmsProject> projects = m_driverManager.getProjectDriver(dbc).readProjects(dbc, "");
+            for (CmsProject project : projects) {
+                if (!project.isOnlineProject()) {
+                    try {
+                        dbc.setProjectId(project.getUuid());
+                        if (null != m_driverManager.readResource(dbc, "/", CmsResourceFilter.ALL)) {
+                            // shallow clone the context with project adjusted
+                            context = new CmsRequestContext(
+                                context.getCurrentUser(),
+                                project,
+                                context.getUri(),
+                                context.getRequestMatcher(),
+                                context.getSiteRoot(),
+                                context.isSecureRequest(),
+                                context.getLocale(),
+                                context.getEncoding(),
+                                context.getRemoteAddress(),
+                                context.getRequestTime(),
+                                context.getDirectoryTranslator(),
+                                context.getFileTranslator(),
+                                context.getOuFqn());
+                            dbc = m_dbContextFactory.getDbContext(context);
+                            projectId = dbc.getProjectId();
+                            break;
                         }
-                        if (root != null) {
-                            throw new CmsVfsException(
-                                org.opencms.file.Messages.get().container(
-                                    org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
-                        }
+                    } catch (Exception e) {
+                        // ignore
                     }
                 }
-            } finally {
-                dbc.setProjectId(currentProject.getUuid());
             }
         }
+        dbc.setProjectId(projectId);
+        return dbc;
     }
 
 }
