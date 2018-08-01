@@ -3111,7 +3111,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER);
 
         // iterate groups and roles
-        for (boolean readRoles = false; !readRoles; readRoles = !readRoles) {
+        for (int i = 0; i < 2; i++) {
+            boolean readRoles = i != 0;
             Iterator<CmsGroup> itGroups = getGroupsOfUser(
                 dbc,
                 username,
