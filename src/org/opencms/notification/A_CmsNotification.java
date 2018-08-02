@@ -61,7 +61,7 @@ import org.apache.commons.mail.EmailException;
 public abstract class A_CmsNotification extends CmsHtmlMail {
 
     /** Path to optional config file containing header and footer. */
-    public static final String HEADER_FOOTER_CONFIG_PATH = "/system/config/notification-header-footer.html";
+    public static final String HEADER_FOOTER_CONFIG_PATH = "notification-header-footer.html";
 
     /** Separator between header and footer in optional config file. */
     public static final String HEADER_FOOTER_SEPARATOR = Pattern.quote("$BODY");
@@ -193,7 +193,8 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             m_macroResolver.addMacro("lastname", m_receiver.getLastname());
             m_macroResolver.addMacro("project", m_cms.getRequestContext().getCurrentProject().getName());
             try {
-                CmsResource configRes = m_cms.readResource(HEADER_FOOTER_CONFIG_PATH);
+                CmsResource configRes = m_cms.readResource(
+                    OpenCms.getSystemInfo().getConfigFilePath(m_cms, HEADER_FOOTER_CONFIG_PATH));
                 CmsFile configFile = m_cms.readFile(configRes);
                 String configContent = new String(configFile.getContents(), "UTF-8");
                 String[] configParts = configContent.split(HEADER_FOOTER_SEPARATOR);

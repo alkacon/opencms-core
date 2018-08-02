@@ -30,6 +30,7 @@ package org.opencms.notification;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
 import java.util.Iterator;
@@ -44,7 +45,7 @@ import java.util.List;
 public class CmsPublishNotification extends A_CmsNotification {
 
     /** The path to the xml content with the subject, header and footer of the notification e-mail.<p> */
-    public static final String NOTIFICATION_CONTENT = "/system/config/notification/publish-notification";
+    public static final String NOTIFICATION_CONTENT = "notification/publish-notification";
 
     /** The report containing the errors and warnings to put into the notification. */
     private I_CmsReport m_report;
@@ -99,7 +100,7 @@ public class CmsPublishNotification extends A_CmsNotification {
     @Override
     protected String getNotificationContent() {
 
-        return NOTIFICATION_CONTENT;
+        return OpenCms.getSystemInfo().getConfigFilePath(m_cms, NOTIFICATION_CONTENT);
     }
 
     /**

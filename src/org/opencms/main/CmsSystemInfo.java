@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.mail.CmsMailSettings;
@@ -154,6 +155,12 @@ public class CmsSystemInfo {
 
     /** Static version number to use if version.properties can not be read. */
     private static final String DEFAULT_VERSION_NUMBER = "9.x.y";
+
+    /** The VFS config files folder. */
+    public static final String VFS_CONFIG_FOLDER = "/system/config/";
+
+    /** The folder to contain configuration file overrides. */
+    public static final String VFS_CONFIG_OVERRIDE_FOLDER = VFS_CONFIG_FOLDER + "overrides/";
 
     /** The list of additional version information that was contained in the version.properties file. */
     private Map<String, BuildInfoItem> m_buildInfo;
@@ -299,6 +306,24 @@ public class CmsSystemInfo {
     public Map<String, BuildInfoItem> getBuildInfo() {
 
         return m_buildInfo;
+    }
+
+    /**
+     * Returns the path to a configuration file.<p>
+     * This will either be a file below /system/config/ or in case an override file exists below /system/config/overrides/.<p>
+     *
+     * @param cms the cms ontext
+     * @param configFile the config file path within /system/config/
+     *
+     * @return the file path
+     */
+    public String getConfigFilePath(CmsObject cms, String configFile) {
+
+        String path = CmsStringUtil.joinPaths(VFS_CONFIG_OVERRIDE_FOLDER, configFile);
+        if (!cms.existsResource(path)) {
+            path = CmsStringUtil.joinPaths(VFS_CONFIG_FOLDER, configFile);
+        }
+        return path;
     }
 
     /**

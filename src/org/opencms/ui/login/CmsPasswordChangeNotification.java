@@ -30,6 +30,7 @@ package org.opencms.ui.login;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.notification.A_CmsNotification;
 
 /**
@@ -49,6 +50,7 @@ public class CmsPasswordChangeNotification extends A_CmsNotification {
      * @param expiration the formatted link expiration date
      */
     public CmsPasswordChangeNotification(CmsObject cms, CmsUser receiver, String link, String expiration) {
+
         super(cms, receiver);
         m_link = CmsEncoder.escapeXml(link);
         addMacro("user", receiver.getName());
@@ -71,7 +73,7 @@ public class CmsPasswordChangeNotification extends A_CmsNotification {
     @Override
     protected String getNotificationContent() {
 
-        return "/system/config/notification/password-change-notification";
+        return OpenCms.getSystemInfo().getConfigFilePath(m_cms, "notification/password-change-notification");
     }
 
 }

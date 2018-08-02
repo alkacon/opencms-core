@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.io.ByteArrayInputStream;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
 public class CmsEditorDisplayOptions {
 
     /** The name of the configuration folder.<p> */
-    public static final String FOLDER_EDITORCONFIGURATION = "/system/config/wysiwyg/";
+    public static final String FOLDER_EDITORCONFIGURATION = "wysiwyg/";
 
     /** Mapping entry name that is used if no mapping is available for the user.<p> */
     public static final String NO_MAPPING_FOR_USER = "na";
@@ -150,7 +151,8 @@ public class CmsEditorDisplayOptions {
         Properties displayOptions;
         if (mappedConfigFile == null) {
             // no configuration file name stored for user, get the navigation items of the configuration folder
-            List<CmsJspNavElement> items = new CmsJspNavBuilder(cms).getNavigationForFolder(FOLDER_EDITORCONFIGURATION);
+            String configFolder = OpenCms.getSystemInfo().getConfigFilePath(cms, FOLDER_EDITORCONFIGURATION);
+            List<CmsJspNavElement> items = new CmsJspNavBuilder(cms).getNavigationForFolder(configFolder);
             if (items.size() > 0) {
                 // get first found configuration file
                 CmsJspNavElement nav = items.get(0);

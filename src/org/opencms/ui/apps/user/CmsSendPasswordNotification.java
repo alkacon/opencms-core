@@ -43,8 +43,10 @@ import org.opencms.workplace.CmsWorkplaceLoginHandler;
  */
 public class CmsSendPasswordNotification extends A_CmsNotification {
 
+    /** Field name. */
     private static final String FIELD_CHANGE_PASSWORD = "TextChangePassword";
 
+    /** Field name. */
     private static final String FIELD_KEEP_PASSWORD = "TextKeepPassword";
 
     /**Is user new? */
@@ -59,10 +61,11 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
      * @param cms CmsObject
      * @param password password
      * @param receiver User
-     * @param ou
+     * @param ou the user OU
      * @param adminUser User
      * @param link to login
      * @param newUser boolean
+     * @param tempPassword <code>true</code> to use a temporary password
      */
     public CmsSendPasswordNotification(
         CmsObject cms,
@@ -106,6 +109,9 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
 
     }
 
+    /**
+     * @see org.opencms.notification.A_CmsNotification#appendXMLContent(java.lang.StringBuffer)
+     */
     @Override
     protected void appendXMLContent(StringBuffer msg) {
 
@@ -139,9 +145,11 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
     protected String getNotificationContent() {
 
         if (m_new) {
-            return "/system/config/notification/password-new-user-notification";
+            return OpenCms.getSystemInfo().getConfigFilePath(m_cms, "notification/password-new-user-notification");
         }
-        return "/system/config/notification/password-new-password-from-admin-notification";
+        return OpenCms.getSystemInfo().getConfigFilePath(
+            m_cms,
+            "notification/password-new-password-from-admin-notification");
     }
 
 }

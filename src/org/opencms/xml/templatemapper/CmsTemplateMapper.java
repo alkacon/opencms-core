@@ -101,7 +101,6 @@ public final class CmsTemplateMapper {
     private CmsTemplateMapper() {
 
         m_enabled = true;
-        m_configPath = "/system/config/template-mapping.xml";
     }
 
     /**
@@ -350,6 +349,10 @@ public final class CmsTemplateMapper {
 
         if (!m_enabled) {
             return CmsTemplateMapperConfiguration.EMPTY_CONFIG;
+        }
+
+        if (m_configPath == null) {
+            m_configPath = OpenCms.getSystemInfo().getConfigFilePath(cms, "template-mapping.xml");
         }
 
         return (CmsTemplateMapperConfiguration)(CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().loadVfsObject(
