@@ -1413,7 +1413,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                                 false,
                                 isOnline,
                                 null,
-                                CmsRequestUtil.getAtrributeMap(req),
+                                CmsRequestUtil.getAttributeMap(req),
                                 req,
                                 res);
                         } else {

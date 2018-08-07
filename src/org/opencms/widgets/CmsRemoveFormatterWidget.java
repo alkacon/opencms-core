@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -128,6 +129,9 @@ public class CmsRemoveFormatterWidget extends A_CmsFormatterWidget {
             List<I_CmsFormatterBean> formatters = Lists.newArrayList(activeFormatters.values());
             Collections.sort(formatters, new A_CmsFormatterWidget.FormatterSelectComparator());
             for (I_CmsFormatterBean formatterBean : formatters) {
+                if (formatterBean instanceof CmsFunctionFormatterBean) {
+                    continue;
+                }
                 CmsSelectWidgetOption option = getWidgetOptionForFormatter(cms, formatterBean);
                 result.add(option);
             }

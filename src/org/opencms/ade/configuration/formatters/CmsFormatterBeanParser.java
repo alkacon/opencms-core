@@ -32,8 +32,10 @@ import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFunctionV2;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.util.CmsFunctionRenderer;
 import org.opencms.jsp.util.CmsMacroFormatterResolver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -44,8 +46,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFlexFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.CmsMetaMapping;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -65,6 +69,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 
 /**
@@ -190,6 +195,9 @@ public class CmsFormatterBeanParser {
     public static final String N_ORDER = "Order";
 
     /** Content value node name. */
+    public static final String N_PARAMETER = "Parameter";
+
+    /** Content value node name. */
     public static final String N_PLACEHOLDER_MACRO = "PlaceholderMacro";
 
     /** Node name. */
@@ -218,6 +226,9 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_TYPES = "Types";
+
+    /** Content value node name. */
+    public static final String N_VALUE = "Value";
 
     /** Content value node name. */
     public static final String N_WIDTH = "Width";
@@ -314,30 +325,35 @@ public class CmsFormatterBeanParser {
      * @throws ParseException if parsing goes wrong
      * @throws CmsException if something else goes wrong
      */
-    public CmsFormatterBean parse(CmsXmlContent content, String location, String id)
+    public I_CmsFormatterBean parse(CmsXmlContent content, String location, String id)
     throws CmsException, ParseException {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(content.getFile());
         boolean isMacroFromatter = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(type.getTypeName());
         boolean isFlexFormatter = CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(type.getTypeName());
+        boolean isFunction = OpenCms.getResourceManager().matchResourceType(
+            CmsResourceTypeFunctionV2.TYPE_NAME,
+            content.getFile().getTypeId());
 
         Locale en = Locale.ENGLISH;
         I_CmsXmlContentValue niceName = content.getValue(N_NICE_NAME, en);
         m_niceName = niceName != null ? niceName.getStringValue(m_cms) : null;
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, en);
         I_CmsXmlContentValueLocation rankLoc = root.getSubValue(N_RANK);
-        String rankStr = rankLoc.getValue().getStringValue(m_cms);
-        if (rankStr != null) {
-            rankStr = rankStr.trim();
+        if (rankLoc != null) {
+            String rankStr = rankLoc.getValue().getStringValue(m_cms);
+            if (rankStr != null) {
+                rankStr = rankStr.trim();
+            }
+            int rank;
+            try {
+                rank = Integer.parseInt(rankStr);
+            } catch (NumberFormatException e) {
+                rank = CmsFormatterBean.DEFAULT_CONFIGURATION_RANK;
+                LOG.debug("Error parsing formatter rank.", e);
+            }
+            m_rank = rank;
         }
-        int rank;
-        try {
-            rank = Integer.parseInt(rankStr);
-        } catch (NumberFormatException e) {
-            rank = CmsFormatterBean.DEFAULT_CONFIGURATION_RANK;
-            LOG.debug("Error parsing formatter rank.", e);
-        }
-        m_rank = rank;
 
         m_resourceType = getStringSet(root, N_TYPE);
         parseSettings(root);
@@ -389,12 +405,14 @@ public class CmsFormatterBeanParser {
         String nestedFormatterSettings = getString(root, N_NESTED_FORMATTER_SETTINGS, "false");
         boolean nestedFormatters = Boolean.parseBoolean(nestedFormatterSettings);
 
-        parseMatch(root);
+        // Functions which just have been created don't have any matching rules, but should fit anywhere
+        boolean strictMode = !isFunction;
+        parseMatch(root, strictMode);
 
         List<CmsMetaMapping> mappings = parseMetaMappings(root);
 
         boolean hasNestedContainers;
-        CmsFormatterBean formatterBean;
+        I_CmsFormatterBean formatterBean;
         if (isMacroFromatter || isFlexFormatter) {
             // setting macro formatter defaults
             m_formatterResource = content.getFile();
@@ -426,7 +444,7 @@ public class CmsFormatterBeanParser {
                     m_niceName,
                     description,
                     m_resourceType,
-                    rank,
+                    m_rank,
                     id,
                     defContentRes != null ? defContentRes.getRootPath() : null,
                     defContentRes != null ? defContentRes.getStructureId() : null,
@@ -453,7 +471,7 @@ public class CmsFormatterBeanParser {
                     m_niceName,
                     description,
                     m_resourceType,
-                    rank,
+                    m_rank,
                     id,
                     defContentRes != null ? defContentRes.getRootPath() : null,
                     defContentRes != null ? defContentRes.getStructureId() : null,
@@ -470,18 +488,29 @@ public class CmsFormatterBeanParser {
             CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
             CmsLink link = jspValue.getLink(m_cms);
 
+            CmsUUID jspID = null;
             if (link == null) {
-                // JSP link is not set (for example because the formatter configuration has just been created)
-                LOG.info("JSP link is null in formatter configuration: " + content.getFile().getRootPath());
-                return null;
+                if (isFunction) {
+                    CmsResource defaultFormatter = CmsFunctionRenderer.getDefaultFunctionJsp(m_cms);
+                    jspID = defaultFormatter.getStructureId();
+                } else {
+                    // JSP link is not set (for example because the formatter configuration has just been created)
+                    LOG.info("JSP link is null in formatter configuration: " + content.getFile().getRootPath());
+                    return null;
+                }
+            } else {
+                jspID = link.getStructureId();
             }
-            CmsUUID jspID = link.getStructureId();
 
             if (jspID == null) {
                 throw new CmsConfigurationException(
                     Messages.get().container(
                         Messages.ERR_READ_FORMATTER_CONFIG_4,
-                        new Object[] {link.getUri(), m_niceName, location, "" + m_resourceType}));
+                        new Object[] {
+                            link != null ? link.getUri() : " ??? ",
+                            m_niceName,
+                            location,
+                            "" + m_resourceType}));
             }
 
             CmsResource formatterRes = m_cms.readResource(jspID);
@@ -494,33 +523,55 @@ public class CmsFormatterBeanParser {
             String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
             hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
             parseHeadIncludes(root);
-            formatterBean = new CmsFormatterBean(
-                m_containerTypes,
-                m_formatterResource.getRootPath(),
-                m_formatterResource.getStructureId(),
-                m_width,
-                m_maxWidth,
-                m_preview,
-                m_extractContent,
-                location,
-                m_cssPaths,
-                m_inlineCss.toString(),
-                m_jsPaths,
-                m_inlineJs.toString(),
-                m_niceName,
-                description,
-                m_resourceType,
-                m_rank,
-                id,
-                m_settings,
-                true,
-                m_autoEnabled,
-                isDetail,
-                isDisplay,
-                hasNestedContainers,
-                isStrictContainers,
-                nestedFormatters,
-                mappings);
+            if (isFunction) {
+                Map<String, String[]> params = parseParams(root);
+                formatterBean = new CmsFunctionFormatterBean(
+                    m_containerTypes,
+                    m_formatterResource.getRootPath(),
+                    m_formatterResource.getStructureId(),
+                    m_width,
+                    m_maxWidth,
+                    location,
+                    m_cssPaths,
+                    m_inlineCss.toString(),
+                    m_jsPaths,
+                    m_inlineJs.toString(),
+                    m_niceName,
+                    description,
+                    id,
+                    m_settings,
+                    hasNestedContainers,
+                    isStrictContainers,
+                    params);
+            } else {
+                formatterBean = new CmsFormatterBean(
+                    m_containerTypes,
+                    m_formatterResource.getRootPath(),
+                    m_formatterResource.getStructureId(),
+                    m_width,
+                    m_maxWidth,
+                    m_preview,
+                    m_extractContent,
+                    location,
+                    m_cssPaths,
+                    m_inlineCss.toString(),
+                    m_jsPaths,
+                    m_inlineJs.toString(),
+                    m_niceName,
+                    description,
+                    m_resourceType,
+                    m_rank,
+                    id,
+                    m_settings,
+                    true,
+                    m_autoEnabled,
+                    isDetail,
+                    isDisplay,
+                    hasNestedContainers,
+                    isStrictContainers,
+                    nestedFormatters,
+                    mappings);
+            }
         }
 
         return formatterBean;
@@ -611,10 +662,11 @@ public class CmsFormatterBeanParser {
      * Parses the matching criteria (container types or widths) for the formatter.<p>
      *
      * @param linkFormatterLoc the formatter value location
+     * @param strict if we should throw an error for incomplete match
      *
      * @throws ParseException if parsing goes wrong
      */
-    private void parseMatch(I_CmsXmlContentLocation linkFormatterLoc) throws ParseException {
+    private void parseMatch(I_CmsXmlContentLocation linkFormatterLoc, boolean strict) throws ParseException {
 
         Set<String> containerTypes = new HashSet<String>();
         I_CmsXmlContentValueLocation typesLoc = linkFormatterLoc.getSubValue(path(N_MATCH, N_TYPES));
@@ -641,7 +693,12 @@ public class CmsFormatterBeanParser {
                 LOG.debug(maxWidthStr, e);
             }
         } else {
-            throw new ParseException("Neither container types nor container widths defined!");
+            if (strict) {
+                throw new ParseException("Neither container types nor container widths defined!");
+            } else {
+                m_width = -1;
+                m_maxWidth = Integer.MAX_VALUE;
+            }
         }
     }
 
@@ -672,6 +729,34 @@ public class CmsFormatterBeanParser {
             mappings.add(mapping);
         }
         return mappings;
+    }
+
+    /**
+     * Parse parameters and put them in a map.<p>
+     *
+     * @param root the location from which to start parsing
+     *
+     * @return the parameter map
+     */
+    private Map<String, String[]> parseParams(I_CmsXmlContentLocation root) {
+
+        // first use multimap for convenience, to group values for the same key,
+        // and then convert to result format
+        ArrayListMultimap<String, String> mmap = ArrayListMultimap.create();
+        for (I_CmsXmlContentLocation location : root.getSubValues(N_PARAMETER)) {
+            String key = location.getSubValue(N_KEY).getValue().getStringValue(m_cms);
+            String value = location.getSubValue(N_VALUE).getValue().getStringValue(m_cms);
+            mmap.put(key, value);
+        }
+        Map<String, String[]> result = new HashMap<>();
+        String[] emptyArray = new String[] {}; // need this for toArray
+        for (String key : mmap.keySet()) {
+            List<String> values = mmap.get(key);
+            String[] valuesArray = values.toArray(emptyArray);
+            result.put(key, valuesArray);
+        }
+        return result;
+
     }
 
     /**

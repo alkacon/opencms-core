@@ -302,9 +302,11 @@ public class CmsElementUtil {
         CmsADESessionCache cache) {
 
         I_CmsFormatterBean formatter = null;
-        Map<String, I_CmsFormatterBean> formatters = config.getFormatters(
-            cms,
-            element.getResource()).getFormatterSelection(container.getType(), container.getWidth(), allowNested);
+        CmsFormatterConfiguration formatterSet = config.getFormatters(cms, element.getResource());
+        Map<String, I_CmsFormatterBean> formatters = formatterSet.getFormatterSelection(
+            container.getType(),
+            container.getWidth(),
+            allowNested);
         String formatterId = element.getIndividualSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
@@ -972,7 +974,18 @@ public class CmsElementUtil {
         if (formatter != null) {
             element.initSettings(m_cms, formatter, m_locale, m_req);
             try {
+                //                if (formatter instanceof CmsFunctionFormatterBean) {
+                //                    if (element.getResource().getStructureId().isNullUUID()) {
+                //                        return CmsFunctionRenderer.defaultHtml();
+                //                    } else {
+                //                        content = getElementContent(
+                //                            element,
+                //                            m_cms.readResource(formatter.getJspStructureId()),
+                //                            container);
+                //                    }
+                //                } else {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
+                //                }
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

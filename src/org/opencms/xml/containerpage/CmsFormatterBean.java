@@ -68,85 +68,85 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public static final String WILDCARD_TYPE = "*";
 
     /** The formatter container type. */
-    private Set<String> m_containerTypes;
+    protected Set<String> m_containerTypes;
 
     /** CSS Head includes. */
-    private Set<String> m_cssHeadIncludes = new LinkedHashSet<String>();
-
-    /** The id for this formatter. */
-    private String m_id;
-
-    /** Inline CSS snippets. */
-    private String m_inlineCss;
-
-    /** Inline Javascript snippets. */
-    private String m_inlineJavascript;
-
-    /** Is the formatter automatically enabled? */
-    private boolean m_isAutoEnabled;
-
-    /** True if this formatter can be used for detail views. */
-    private boolean m_isDetail;
-
-    /** True if this formatter should be used by the display tag. */
-    private boolean m_isDisplay;
-
-    /** Is the formatter from a formatter configuration file? */
-    private boolean m_isFromFormatterConfigFile;
-
-    /** Indicates if this formatter is to be used as preview in the ADE gallery GUI. */
-    private boolean m_isPreviewFormatter;
-
-    /** JavaScript head includes. */
-    private List<String> m_javascriptHeadIncludes = new ArrayList<String>();
-
-    /** The formatter JSP. */
-    private String m_jspRootPath;
-
-    /** The UUID of the JSP resource for this formatter. */
-    private CmsUUID m_jspStructureId;
-
-    /** The location this formatter was configured in. */
-    private String m_location;
-
-    /** If true, will match any container/width combination. */
-    private boolean m_matchAll;
-
-    /** The formatter max width. */
-    private int m_maxWidth;
-
-    /** The meta mappings. */
-    private List<CmsMetaMapping> m_metaMappings;
-
-    /** The formatter min width. */
-    private int m_minWidth;
-
-    /** Indicating if this formatter has nested containers. */
-    private boolean m_nestedContainers;
-
-    /** Indicates whether nested formatter settings should be displayed. */
-    private boolean m_nestedFormatterSettings;
-
-    /** The nice name. */
-    private String m_niceName;
-
-    /** The rank. */
-    private int m_rank;
-
-    /** The resource type name. */
-    private Collection<String> m_resourceTypeNames;
-
-    /** Indicates if the content should be searchable in the online index when this formatter is used. */
-    private boolean m_search;
+    protected Set<String> m_cssHeadIncludes = new LinkedHashSet<String>();
 
     /** The description text for the formatter. */
-    private String m_description;
+    protected String m_description;
+
+    /** The id for this formatter. */
+    protected String m_id;
+
+    /** Inline CSS snippets. */
+    protected String m_inlineCss;
+
+    /** Inline Javascript snippets. */
+    protected String m_inlineJavascript;
+
+    /** Is the formatter automatically enabled? */
+    protected boolean m_isAutoEnabled;
+
+    /** True if this formatter can be used for detail views. */
+    protected boolean m_isDetail;
+
+    /** True if this formatter should be used by the display tag. */
+    protected boolean m_isDisplay;
+
+    /** Is the formatter from a formatter configuration file? */
+    protected boolean m_isFromFormatterConfigFile;
+
+    /** Indicates if this formatter is to be used as preview in the ADE gallery GUI. */
+    protected boolean m_isPreviewFormatter;
+
+    /** JavaScript head includes. */
+    protected List<String> m_javascriptHeadIncludes = new ArrayList<String>();
+
+    /** The formatter JSP. */
+    protected String m_jspRootPath;
+
+    /** The UUID of the JSP resource for this formatter. */
+    protected CmsUUID m_jspStructureId;
+
+    /** The location this formatter was configured in. */
+    protected String m_location;
+
+    /** If true, will match any container/width combination. */
+    protected boolean m_matchAll;
+
+    /** The formatter max width. */
+    protected int m_maxWidth;
+
+    /** The meta mappings. */
+    protected List<CmsMetaMapping> m_metaMappings;
+
+    /** The formatter min width. */
+    protected int m_minWidth;
+
+    /** Indicating if this formatter has nested containers. */
+    protected boolean m_nestedContainers;
+
+    /** Indicates whether nested formatter settings should be displayed. */
+    protected boolean m_nestedFormatterSettings;
+
+    /** The nice name. */
+    protected String m_niceName;
+
+    /** The rank. */
+    protected int m_rank;
+
+    /** The resource type name. */
+    protected Collection<String> m_resourceTypeNames;
+
+    /** Indicates if the content should be searchable in the online index when this formatter is used. */
+    protected boolean m_search;
 
     /** The settings. */
-    private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
+    protected Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
     /** Indicating if this formatter will always render all nested containers. */
-    private boolean m_strictContainers;
+    protected boolean m_strictContainers;
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>

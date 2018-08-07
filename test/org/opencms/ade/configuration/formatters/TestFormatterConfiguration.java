@@ -109,7 +109,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
                     CmsObject cms = setupOpenCms("simpletest", "/");
                     try {
-                        CmsFormatterConfigurationCache.UPDATE_DELAY_SECONDS = 2;
+                        CmsFormatterConfigurationCache.UPDATE_DELAY_MILLIS = 100;
                         m_exampleFormatter = cms.createResource("/system/f1.jsp", getTypeId("jsp"));
                         m_exampleResourceA = cms.createResource("/system/xa.xml", getTypeId(TYPE_A));
                         m_exampleResourceB = cms.createResource("/system/xb.xml", getTypeId(TYPE_B));

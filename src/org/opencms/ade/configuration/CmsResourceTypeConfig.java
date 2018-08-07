@@ -34,6 +34,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFunctionV2;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -63,11 +64,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Enum used to distinguish the type of menu in which a configured resource type can be displayed.
      */
     public enum AddMenuType {
-        /** ADE add menu. */
-        ade,
+    /** ADE add menu. */
+    ade,
 
-        /** Workplace dialogs. */
-        workplace
+    /** Workplace dialogs. */
+    workplace
     }
 
     /**
@@ -214,7 +215,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)) {
             return true;
         }
-        if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(m_typeName)) {
+        if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(m_typeName)
+            || CmsResourceTypeFunctionV2.TYPE_NAME.equals(m_typeName)) {
             return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
         }
         checkInitialized();

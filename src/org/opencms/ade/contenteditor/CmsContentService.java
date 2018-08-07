@@ -120,6 +120,9 @@ import com.google.common.collect.Sets;
  */
 public class CmsContentService extends CmsGwtService implements I_CmsContentService {
 
+    /** Request context attribute to mark a writeFile() triggered by the user saving in the content editor. */
+    public static final String ATTR_EDITOR_SAVING = "__EDITOR_SAVING";
+
     /** The logger for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsContentService.class);
 
@@ -2033,7 +2036,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 e);
         }
         // the file content might have been modified during the write operation
-        file = cms.writeFile(file);
+        cms.getRequestContext().setAttribute(ATTR_EDITOR_SAVING, "true");
+        try {
+            file = cms.writeFile(file);
+        } finally {
+            cms.getRequestContext().removeAttribute(ATTR_EDITOR_SAVING);
+        }
         return CmsXmlContentFactory.unmarshal(cms, file);
     }
 

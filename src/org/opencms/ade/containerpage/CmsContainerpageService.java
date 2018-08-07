@@ -73,6 +73,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFunctionV2;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -683,10 +684,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 modelResource,
                 CmsResource.getParentFolder(pageResource.getRootPath()));
             CmsContainerElementBean bean = getCachedElement(clientId, pageResource.getRootPath());
+            Map<String, String> settings = new HashMap<String, String>();
+
+            // Dynamic functions (V2) are their own formatters, so for new ones the real formatter id can only be set after they're created.
+            if (CmsResourceTypeFunctionV2.isFunction(newResource)) {
+                for (Map.Entry<String, String> entry : bean.getIndividualSettings().entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    if (key.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                        value = newResource.getStructureId().toString();
+                    }
+                    settings.put(key, value);
+                }
+            } else {
+                settings = bean.getIndividualSettings();
+            }
+
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
                 null,
-                bean.getIndividualSettings(),
+                settings,
                 typeConfig.isCopyInModels());
             String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);

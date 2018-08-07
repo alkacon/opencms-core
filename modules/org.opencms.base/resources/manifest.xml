@@ -112,6 +112,19 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="function" id="22">
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFunctionV2" name="function-v2" id="29">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeHtmlRedirect" name="htmlredirect" id="15">
 				<properties>
 					<property>
@@ -462,6 +475,13 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			</explorertype>
 			<explorertype name="function" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v"/>
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="function-v2" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function-v2" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
@@ -1154,6 +1174,60 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.base/elementviews/legacy-elements</source>
+			<destination>system/modules/org.opencms.base/elementviews/legacy-elements</destination>
+			<type>elementview</type>
+			<uuidstructure>574aa175-9aef-11e8-ab54-1f0f0d8667a3</uuidstructure>
+			<uuidresource>574aa176-9aef-11e8-ab54-1f0f0d8667a3</uuidresource>
+			<datecreated>Wed, 08 Aug 2018 09:42:18 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Legacy elements]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>OVERWRITE_ALL</uuidprincipal>
+					<flags>256</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.CATEGORY_EDITOR</uuidprincipal>
+					<flags>512</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.GALLERY_EDITOR</uuidprincipal>
+					<flags>512</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.base/elementviews/system-elements</source>
 			<destination>system/modules/org.opencms.base/elementviews/system-elements</destination>
 			<type>elementview</type>
@@ -1214,6 +1288,69 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/function-default.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/function-default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f25037c5-6654-47fe-80ef-20ca9f9c7e8f</uuidstructure>
+			<uuidresource>a3bee9a5-a2a3-4bd4-bc44-3ecbda0f07a0</uuidresource>
+			<datecreated>Mon, 17 Jul 2017 14:39:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/function-default.xml</source>
+			<destination>system/modules/org.opencms.base/formatters/function-default.xml</destination>
+			<type>function-v2</type>
+			<uuidstructure>d9d312d4-9a06-11e8-b9b2-1f0f0d8667a3</uuidstructure>
+			<uuidresource>d9d312d5-9a06-11e8-b9b2-1f0f0d8667a3</uuidresource>
+			<datecreated>Tue, 07 Aug 2018 05:58:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Internal default function formatter]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/function-v2.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/function-v2.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>fcd6e109-aab1-4f6e-b12e-4d795310f11f</uuidstructure>
+			<uuidresource>a8867190-69db-493d-b4d2-d974ee1e34ab</uuidresource>
+			<datecreated>Mon, 17 Jul 2017 14:39:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

@@ -70,6 +70,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsWaitHandle;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -117,12 +118,12 @@ public class CmsADEManager {
 
     /** JSON property name constant. */
     protected enum FavListProp {
-        /** element property. */
-        ELEMENT,
-        /** formatter property. */
-        FORMATTER,
-        /** properties property. */
-        PROPERTIES;
+    /** element property. */
+    ELEMENT,
+    /** formatter property. */
+    FORMATTER,
+    /** properties property. */
+    PROPERTIES;
     }
 
     /**
@@ -267,6 +268,21 @@ public class CmsADEManager {
         m_parameters = new LinkedHashMap<String, String>(systemConfiguration.getAdeParameters());
         // further initialization is done by the initialize() method. We don't do that in the constructor,
         // because during the setup the configuration resource types don't exist yet.
+    }
+
+    /**
+     * Adds a wait handle for the next cache update to a formatter configuration.<p>
+     *
+     * @param online true if we want to add a wait handle to the online cache, else the offline cache
+     * @return the wait handle that has been added
+     */
+    public CmsWaitHandle addFormatterCacheWaitHandle(boolean online) {
+
+        CmsWaitHandle handle = new CmsWaitHandle(true); // single use wait handle
+        CmsFormatterConfigurationCache cache = online ? m_onlineFormatterCache : m_offlineFormatterCache;
+        cache.addWaitHandle(handle);
+        return handle;
+
     }
 
     /**

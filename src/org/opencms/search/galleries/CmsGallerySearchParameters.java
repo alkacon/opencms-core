@@ -30,6 +30,7 @@ package org.opencms.search.galleries;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFunctionV2;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
@@ -57,74 +58,74 @@ public class CmsGallerySearchParameters {
     /** Sort parameter constants. */
     public enum CmsGallerySortParam {
 
-        /** Sort by date created ascending. */
-        dateCreated_asc,
+    /** Sort by date created ascending. */
+    dateCreated_asc,
 
-        /** Sort by date created descending. */
-        dateCreated_desc,
+    /** Sort by date created descending. */
+    dateCreated_desc,
 
-        /** Sort date expired ascending. */
-        dateExpired_asc,
+    /** Sort date expired ascending. */
+    dateExpired_asc,
 
-        /** Sort date expired descending. */
-        dateExpired_desc,
+    /** Sort date expired descending. */
+    dateExpired_desc,
 
-        /** Sort by date modified ascending. */
-        dateLastModified_asc,
+    /** Sort by date modified ascending. */
+    dateLastModified_asc,
 
-        /** Sort by date modified descending. */
-        dateLastModified_desc,
+    /** Sort by date modified descending. */
+    dateLastModified_desc,
 
-        /** Sort date released ascending. */
-        dateReleased_asc,
+    /** Sort date released ascending. */
+    dateReleased_asc,
 
-        /** Sort date released descending. */
-        dateReleased_desc,
+    /** Sort date released descending. */
+    dateReleased_desc,
 
-        /** Sort by length ascending. */
-        length_asc,
+    /** Sort by length ascending. */
+    length_asc,
 
-        /** Sort by length descending. */
-        length_desc,
+    /** Sort by length descending. */
+    length_desc,
 
-        /** Sort by VFS root path ascending. */
-        path_asc,
+    /** Sort by VFS root path ascending. */
+    path_asc,
 
-        /** Sort by VFS root path descending. */
-        path_desc,
+    /** Sort by VFS root path descending. */
+    path_desc,
 
-        /** Sort by score ascending. */
-        score,
+    /** Sort by score ascending. */
+    score,
 
-        /** Sort state ascending. */
-        state_asc,
+    /** Sort state ascending. */
+    state_asc,
 
-        /** Sort state descending. */
-        state_desc,
+    /** Sort state descending. */
+    state_desc,
 
-        /** Sort by title ascending. */
-        title_asc,
+    /** Sort by title ascending. */
+    title_asc,
 
-        /** Sort by title ascending. */
-        title_desc,
+    /** Sort by title ascending. */
+    title_desc,
 
-        /** Sort by type ascending. */
-        type_asc,
+    /** Sort by type ascending. */
+    type_asc,
 
-        /** Sort by type descending. */
-        type_desc,
+    /** Sort by type descending. */
+    type_desc,
 
-        /** Sort created by ascending. */
-        userCreated_asc,
+    /** Sort created by ascending. */
+    userCreated_asc,
 
-        /** Sort created by descending. */
-        userCreated_desc,
+    /** Sort created by descending. */
+    userCreated_desc,
 
-        /** Sort modified by ascending. */
-        userLastModified_asc,
+    /** Sort modified by ascending. */
+    userLastModified_asc,
 
-        /** Sort modified by descending. */
-        userLastModified_desc;
+    /** Sort modified by descending. */
+    userLastModified_desc;
 
         /** The default sort parameter. */
         public static final CmsGallerySortParam DEFAULT = title_asc;
@@ -204,6 +205,9 @@ public class CmsGallerySearchParameters {
     /** The list of folders to search in. */
     private List<String> m_folders;
 
+    /** Enlists all VFS folders to perform a search in. */
+    private List<String> m_foldersToSearchIn;
+
     /** The galleries to search in. */
     private List<String> m_galleries;
 
@@ -233,9 +237,6 @@ public class CmsGallerySearchParameters {
 
     /** Search words to search for. */
     private String m_words;
-
-    /** Enlists all VFS folders to perform a search in. */
-    private List<String> m_foldersToSearchIn;
 
     /**
      * Default constructor.<p>
@@ -428,7 +429,12 @@ public class CmsGallerySearchParameters {
 
         // set resource types
         if (null != m_resourceTypes) {
-            query.setResourceTypes(m_resourceTypes);
+            List<String> resourceTypes = new ArrayList<>(m_resourceTypes);
+            if (m_resourceTypes.contains(CmsResourceTypeFunctionV2.TYPE_NAME)
+                && !m_resourceTypes.contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
+                resourceTypes.add(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION);
+            }
+            query.setResourceTypes(resourceTypes);
         }
 
         // set result page
@@ -782,6 +788,23 @@ public class CmsGallerySearchParameters {
     }
 
     /**
+     * Checks if the given list of resource type names contains a function-like type.<p>
+     *
+     * @param resourceTypes the collection of resource types
+     * @return true if the list contains a function-like type
+     */
+    private boolean containsFunctionType(List<String> resourceTypes) {
+
+        if (resourceTypes.contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
+            return true;
+        }
+        if (resourceTypes.contains(CmsResourceTypeFunctionV2.TYPE_NAME)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns the Lucene sort indicated by the selected sort order.<p>
      *
      * @return the Lucene sort indicated by the selected sort order
@@ -873,7 +896,8 @@ public class CmsGallerySearchParameters {
 
         // If the resource types contain the type "function" also
         // add "/system/modules/" to the search path
-        if ((null != getResourceTypes()) && getResourceTypes().contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
+
+        if ((null != getResourceTypes()) && containsFunctionType(getResourceTypes())) {
             searchRoots.add("/system/modules/");
         }
 

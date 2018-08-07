@@ -68,6 +68,7 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
+import org.opencms.file.types.CmsResourceTypeFunctionV2;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -1818,9 +1819,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     if (isFunctionDetail) {
                         String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
                         CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
-                        CmsResource functionFormatter = cms.readResource(
-                            CmsDynamicFunctionBean.FORMATTER_PATH,
-                            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                        CmsResource functionRes = cms.readResource(
+                            functionStructureId,
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                        CmsResource functionFormatter;
+                        if (OpenCms.getResourceManager().matchResourceType(
+                            CmsResourceTypeFunctionV2.TYPE_NAME,
+                            functionRes.getTypeId())) {
+                            functionFormatter = cms.readResource(CmsResourceTypeFunctionV2.FORMATTER_PATH);
+                        } else {
+                            functionFormatter = cms.readResource(
+                                CmsDynamicFunctionBean.FORMATTER_PATH,
+                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                        }
                         addFunctionDetailElement(
                             cms,
                             page,
