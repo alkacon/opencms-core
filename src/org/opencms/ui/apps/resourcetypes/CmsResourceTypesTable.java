@@ -28,8 +28,10 @@
 package org.opencms.ui.apps.resourcetypes;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.A_CmsResourceTypeFolderBase;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -39,6 +41,8 @@ import org.opencms.module.CmsModule;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.apps.CmsEditorConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.search.CmsSearchReplaceSettings;
 import org.opencms.ui.apps.search.CmsSourceSearchApp;
@@ -56,8 +60,11 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -66,7 +73,9 @@ import com.google.common.collect.Lists;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
@@ -92,8 +101,16 @@ public class CmsResourceTypesTable extends Table {
 
             try {
                 final Window window = CmsBasicDialog.prepareWindow();
-                final I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
-                if (m_cms.readResources("", CmsResourceFilter.requireType(type), true).size() > 0) {
+                Iterator<String> it = data.iterator();
+                boolean existResources = false;
+                while (it.hasNext()) {
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
+                    if (m_cms.readResources("", CmsResourceFilter.requireType(type), true).size() > 0) {
+                        existResources = true;
+                    }
+                }
+
+                if (existResources) {
                     CmsConfirmationDialog.show(
                         CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_DELETE_NOT_POSSIBLE_0),
                         CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_DELETE_NOT_POSSIBLE_LONG_0),
@@ -116,28 +133,48 @@ public class CmsResourceTypesTable extends Table {
                             public void run() {
 
                                 try {
-
-                                    CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(
-                                        type.getModuleName()).clone();
-                                    List<CmsExplorerTypeSettings> typeSettings = Lists.newArrayList(
-                                        module.getExplorerTypes());
-                                    List<CmsExplorerTypeSettings> newTypeSettings = new ArrayList<CmsExplorerTypeSettings>();
-                                    for (CmsExplorerTypeSettings setting : typeSettings) {
-                                        if (!setting.getName().equals(type.getTypeName())) {
-                                            newTypeSettings.add(setting);
+                                    Iterator<String> it = data.iterator();
+                                    Map<String, CmsModule> modulesToBeUpdated = new HashMap<String, CmsModule>();
+                                    while (it.hasNext()) {
+                                        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
+                                            it.next());
+                                        CmsModule module;
+                                        if (!modulesToBeUpdated.containsKey(type.getModuleName())) {
+                                            modulesToBeUpdated.put(
+                                                type.getModuleName(),
+                                                (CmsModule)OpenCms.getModuleManager().getModule(
+                                                    type.getModuleName()).clone());
                                         }
+                                        module = modulesToBeUpdated.get(type.getModuleName());
+
+                                        List<CmsExplorerTypeSettings> typeSettings = Lists.newArrayList(
+                                            module.getExplorerTypes());
+                                        List<CmsExplorerTypeSettings> newTypeSettings = new ArrayList<CmsExplorerTypeSettings>();
+                                        for (CmsExplorerTypeSettings setting : typeSettings) {
+                                            if (!setting.getName().equals(type.getTypeName())) {
+                                                newTypeSettings.add(setting);
+                                            }
+                                        }
+                                        OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
+
+                                        List<I_CmsResourceType> types = new ArrayList<I_CmsResourceType>(
+                                            module.getResourceTypes());
+
+                                        types.remove(type);
+
+                                        module.setResourceTypes(types);
+
+                                        module.setExplorerTypes(newTypeSettings);
+
                                     }
-                                    OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
-
-                                    List<I_CmsResourceType> types = new ArrayList<I_CmsResourceType>(
-                                        module.getResourceTypes());
-                                    types.remove(type);
-                                    module.setResourceTypes(types);
-
-                                    module.setExplorerTypes(newTypeSettings);
-                                    OpenCms.getModuleManager().updateModule(m_cms, module);
-                                    OpenCms.getResourceManager().initialize(m_cms);
-                                    OpenCms.getWorkplaceManager().addExplorerTypeSettings(module);
+                                    for (String moduleName : modulesToBeUpdated.keySet()) {
+                                        OpenCms.getModuleManager().updateModule(
+                                            m_cms,
+                                            modulesToBeUpdated.get(moduleName));
+                                        OpenCms.getResourceManager().initialize(m_cms);
+                                        OpenCms.getWorkplaceManager().addExplorerTypeSettings(
+                                            modulesToBeUpdated.get(moduleName));
+                                    }
                                     // re-initialize the workplace
                                     OpenCms.getWorkplaceManager().initialize(m_cms);
                                 } catch (CmsException e) {
@@ -174,43 +211,38 @@ public class CmsResourceTypesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            String typeName = data.iterator().next();
             try {
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
-                return CmsStringUtil.isEmptyOrWhitespaceOnly(
-                    (String)getItem(type).getItemProperty(TableProperty.Module).getValue())
-                    ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE
-                    : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-            } catch (CmsLoaderException e) {
-                LOG.error("Unable to read resource type by name", e);
+                Iterator<String> it = data.iterator();
+                while (it.hasNext()) {
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                    }
+                }
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            } catch (CmsException e) {
+                LOG.error("Unable to read resourcetype", e);
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
     }
 
     /**
      * The delete project context menu entry.<p>
      */
-    class EditEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+    class EditEntry implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(final Set<String> data) {
 
-            try {
-                Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+            openEditDialog(data.iterator().next());
+        }
 
-                window.setContent(
-                    new CmsEditResourceTypeDialog(
-                        window,
-                        m_app,
-                        OpenCms.getResourceManager().getResourceType(data.iterator().next())));
-                window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_WINDOW_CAPTION_0));
-                A_CmsUI.get().addWindow(window);
-            } catch (CmsLoaderException e) {
-                LOG.error("Unable to read resource type by name", e);
-            }
+        public String getStyles() {
+
+            return ValoTheme.LABEL_BOLD;
         }
 
         /**
@@ -226,66 +258,20 @@ public class CmsResourceTypesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
+            if (data.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             String typeName = data.iterator().next();
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
-                return CmsStringUtil.isEmptyOrWhitespaceOnly(
-                    (String)getItem(type).getItemProperty(TableProperty.Module).getValue())
-                    ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE
-                    : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                return CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())
+                ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE
+                : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             } catch (CmsLoaderException e) {
                 LOG.error("Unable to read resource type by name", e);
             }
             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
-    }
-
-    /**
-     * The menu entry to switch to the explorer of concerning site.<p>
-     */
-    class MessagesEditorEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        public void executeAction(Set<String> data) {
-
-            try {
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
-
-                CmsModule module = OpenCms.getModuleManager().getModule(type.getModuleName());
-                String messageFolder = CmsEditResourceTypeDialog.getMessageParentFolder(module.getName());
-                //               if(m_cms.existsResource(messageFolder+"/"+CmsEditResourceTypeDialog.PATH_I18N+"/"+module.getName()+"_"+locale))
-
-            } catch (CmsLoaderException e) {
-                LOG.error("Unable to read resource type", e);
-            }
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_SEARCH_RESOURCES_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
-
-            try {
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
-
-                return type instanceof A_CmsResourceTypeFolderBase
-                ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
-                : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-            } catch (CmsLoaderException e) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-            }
-        }
-
     }
 
     /**
@@ -325,8 +311,81 @@ public class CmsResourceTypesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
+            if (data.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
+    }
+
+    /**
+     * The menu entry to switch to the explorer of concerning site.<p>
+     */
+    class SchemaEditorEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
+                if (type instanceof CmsResourceTypeXmlContent) {
+                    CmsResourceTypeXmlContent typeXML = (CmsResourceTypeXmlContent)type;
+
+                    CmsResource resource = m_cms.readResource(typeXML.getSchema());
+                    String editState = CmsEditor.getEditState(
+                        resource.getStructureId(),
+                        false,
+                        UI.getCurrent().getPage().getLocation().toString());
+
+                    CmsAppWorkplaceUi.get().showApp(
+                        OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsEditorConfiguration.APP_ID),
+                        editState);
+                }
+
+            } catch (CmsLoaderException e) {
+                LOG.error("Unable to read resource type", e);
+            } catch (CmsException e) {
+                LOG.error("Unable to read schema file", e);
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if (data.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
+                if (type instanceof CmsResourceTypeXmlContent) {
+                    CmsResourceTypeXmlContent typeXML = (CmsResourceTypeXmlContent)type;
+
+                    try {
+                        m_cms.readResource(typeXML.getSchema());
+                    } catch (CmsException e) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                    }
+                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                }
+
+            } catch (CmsLoaderException e) {
+                LOG.error("Unable to read resource type", e);
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
     }
 
     /**
@@ -363,6 +422,9 @@ public class CmsResourceTypesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
+            if (data.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
 
@@ -567,6 +629,7 @@ public class CmsResourceTypesTable extends Table {
         if (m_menuEntries == null) {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new EditEntry());
+            m_menuEntries.add(new SchemaEditorEntry());
             m_menuEntries.add(new SearchEntry());
             m_menuEntries.add(new MoveEntry());
             m_menuEntries.add(new DeleteEntry());
@@ -600,7 +663,7 @@ public class CmsResourceTypesTable extends Table {
         for (I_CmsResourceType type : CmsVaadinUtils.getResourceTypes()) {
             CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 type.getTypeName());
-            Item item = m_container.addItem(type);
+            Item item = m_container.addItem(type.getTypeName());
             item.getItemProperty(TableProperty.ID).setValue(type.getTypeId());
             item.getItemProperty(TableProperty.Icon).setValue(CmsResourceUtil.getBigIconResource(typeSetting, null));
             item.getItemProperty(TableProperty.Name).setValue(CmsVaadinUtils.getMessageText(typeSetting.getKey()));
@@ -625,10 +688,31 @@ public class CmsResourceTypesTable extends Table {
             changeValueIfNotMultiSelect(itemId);
             // don't interfere with multi-selection using control key
             if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
-                Set<I_CmsResourceType> val = (Set<I_CmsResourceType>)getValue();
-                m_menu.setEntries(getMenuEntries(), Collections.singleton(val.iterator().next().getTypeName()));
+                m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
+            } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.Name.equals(propertyId)) {
+                String typeName = (String)itemId;
+                openEditDialog(typeName);
             }
+        }
+    }
+
+    /**
+     * Opens the edit dialog.<p>
+     *
+     * @param typeName type to be edited.
+     */
+    void openEditDialog(String typeName) {
+
+        try {
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+
+            window.setContent(
+                new CmsEditResourceTypeDialog(window, m_app, OpenCms.getResourceManager().getResourceType(typeName)));
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_WINDOW_CAPTION_0));
+            A_CmsUI.get().addWindow(window);
+        } catch (CmsLoaderException e) {
+            LOG.error("Unable to read resource type by name", e);
         }
     }
 

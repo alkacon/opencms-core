@@ -63,6 +63,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_BUNDLE_0 = "GUI_RESOURCETYPE_EDIT_BUNDLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_BUNDLE_HELP_0 = "GUI_RESOURCETYPE_EDIT_BUNDLE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_0 = "GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_HELP_0 = "GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_SHORT_NAME_HELP_0 = "GUI_RESOURCETYPE_EDIT_SHORT_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -99,6 +111,27 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_KEY_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_KEY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_KEY_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_KEY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_NOT_EMPTY_0 = "GUI_RESOURCETYPE_EDIT_NOT_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_KEY_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_KEY_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_WARNING_TEXT_0 = "GUI_RESOURCETYPE_EDIT_WARNING_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_WARNING_TEXT_CONFIRM_0 = "GUI_RESOURCETYPE_EDIT_WARNING_TEXT_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_KEY_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_KEY_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -108,7 +141,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_HELP_0";
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_KEY_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_KEY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_KEY_HELP_0 = "GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_KEY_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_0 = "GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_0";

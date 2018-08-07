@@ -206,6 +206,8 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The version of this module. */
     private CmsModuleVersion m_version;
 
+    private boolean m_createI18NFolder;
+
     /**
      * Creates a new, empty CmsModule object.<p>
      */
@@ -1062,6 +1064,16 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Returns the createI18NFolder flag.<p>
+     *
+     * @return boolean
+     */
+    public boolean isCreateI18NFolder() {
+
+        return m_createI18NFolder;
+    }
+
+    /**
      * Returns the createLibFolder flag.<p>
      *
      * @return the createLibFolder flag
@@ -1266,6 +1278,16 @@ public class CmsModule implements Comparable<CmsModule> {
     public void setCreateFormattersFolder(boolean createFormattersFolder) {
 
         m_createFormattersFolder = createFormattersFolder;
+    }
+
+    /**
+     * Sets the createI18NFolder flag.<p>
+     *
+     * @param createI18NFolder boolean
+     */
+    public void setCreateI18NFolder(boolean createI18NFolder) {
+
+        m_createI18NFolder = createI18NFolder;
     }
 
     /**

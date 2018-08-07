@@ -109,11 +109,11 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
      *
      * @param dialog dialog
      */
-    public CmsMoveResourceTypeDialog(CmsEditResourceTypeDialog dialog) {
+    public CmsMoveResourceTypeDialog(CmsNewResourceTypeDialog dialog) {
 
         init(null);
         m_ok.addClickListener(e -> dialog.setModule(getModuleName(), CmsMoveResourceTypeDialog.this));
-        m_cancel.addClickListener(e -> dialog.setModule(null, CmsMoveResourceTypeDialog.this));
+        m_cancel.addClickListener(e -> CmsVaadinUtils.getWindow(CmsMoveResourceTypeDialog.this).close());
     }
 
     /**
@@ -285,6 +285,8 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
         m_table.setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         m_table.setSelectable(true);
         m_table.setVisibleColumns("name", "title");
+        m_table.setSortContainerPropertyId("name");
+        m_table.sort();
 
         m_filter.setIcon(FontOpenCms.FILTER);
         m_filter.setInputPrompt(

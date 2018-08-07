@@ -167,8 +167,9 @@ public class CmsResourceTypeApp extends A_CmsWorkplaceApp {
             public void buttonClick(ClickEvent event) {
 
                 Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-                CmsEditResourceTypeDialog dialog = new CmsEditResourceTypeDialog(window, CmsResourceTypeApp.this);
-                window.setContent(dialog);
+                CmsNewResourceTypeDialog dialog = new CmsNewResourceTypeDialog(window, CmsResourceTypeApp.this);
+                CmsMoveResourceTypeDialog moduleDialog = new CmsMoveResourceTypeDialog(dialog);
+                window.setContent(moduleDialog);
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_CREATE_NEW_TYPE_0));
                 A_CmsUI.get().addWindow(window);
             }

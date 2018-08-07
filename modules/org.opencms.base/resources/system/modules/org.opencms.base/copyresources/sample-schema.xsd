@@ -2,15 +2,15 @@
 
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 
-	<xsd:element name="SampleTypes" type="OpenCmsSampleTypes"/>
+	<xsd:element name="%(SampleType)s" type="OpenCms%(SampleType)s"/>
 
-	<xsd:complexType name="OpenCmsSampleTypes">
+	<xsd:complexType name="OpenCms%(SampleType)s">
 		<xsd:sequence>
-			<xsd:element name="SampleType" type="OpenCmsSampleType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="%(SampleType)" type="OpenCms%(SampleType)" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsSampleType">
+	<xsd:complexType name="OpenCms%(SampleType)">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Text" type="OpenCmsHtml" />
