@@ -1215,7 +1215,9 @@ public final class CmsSiteManagerImpl {
             }
         } catch (CmsException e) {
             //In case of having problems with new site, recover the old one.
-            addSite(cms, oldSite);
+            if (oldSite != null) {
+                addSite(cms, oldSite);
+            }
             throw e;
         }
     }
