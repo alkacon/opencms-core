@@ -300,6 +300,22 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Gets all site matchers which should be used for matching the site.<p>
+     *
+     * @return all site matchers to be used for matching the site
+     */
+    public List<CmsSiteMatcher> getAllMatchers() {
+
+        List<CmsSiteMatcher> result = Lists.newArrayList();
+
+        result = Lists.newArrayList();
+        result.add(m_siteMatcher);
+        result.addAll(m_aliases);
+        return result;
+
+    }
+
+    /**
      * Returns the errorPage.<p>
      *
      * @return the errorPage

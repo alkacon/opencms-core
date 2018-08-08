@@ -284,7 +284,7 @@ public final class CmsSiteManagerImpl {
         site.setWebserver(Boolean.valueOf(webserver).booleanValue());
 
         // add the server(s)
-        addServer(matcher, site);
+
         if (CmsStringUtil.isNotEmpty(secureServer)) {
             matcher = new CmsSiteMatcher(secureServer);
             site.setSecureServer(matcher);
@@ -297,10 +297,21 @@ public final class CmsSiteManagerImpl {
         // note that Digester first calls the addAliasToConfigSite method.
         // therefore, the aliases are already set
         site.setAliases(m_aliases);
-        Iterator<CmsSiteMatcher> i = m_aliases.iterator();
-        while (i.hasNext()) {
-            matcher = i.next();
-            addServer(matcher, site);
+
+        boolean valid = true;
+        List<CmsSiteMatcher> toAdd = new ArrayList<CmsSiteMatcher>();
+        for (CmsSiteMatcher matcherToAdd : site.getAllMatchers()) {
+            valid = valid & isServerValid(matcherToAdd) & !toAdd.contains(matcherToAdd);
+            toAdd.add(matcherToAdd);
+        }
+
+        if (!valid) {
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
+        }
+
+        for (CmsSiteMatcher matcherToAdd : site.getAllMatchers()) {
+            addServer(matcherToAdd, site);
         }
         m_aliases = new ArrayList<CmsSiteMatcher>();
         site.setParameters(m_siteParams);
@@ -309,6 +320,77 @@ public final class CmsSiteManagerImpl {
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
+        }
+    }
+
+    /**
+     * Adds a new CmsSite to the list of configured sites,
+     * this is only allowed during configuration.<p>
+     *
+     * If this method is called after the configuration is finished,
+     * a <code>RuntimeException</code> is thrown.<p>
+     *
+     * @param server the Server
+     * @param uri the VFS path
+     * @param title the display title for this site
+     * @param position the display order for this site
+     * @param errorPage the URI to use as error page for this site
+     * @param webserver indicates whether to write the web server configuration for this site or not
+     * @param secureServer a secure server, can be <code>null</code>
+     * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
+     * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
+     *                             if set to <code>false</code> will redirect to secure URL
+     * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
+     *
+     * @throws CmsConfigurationException in case the site was not configured correctly
+     *
+     */
+
+    public void addSiteInternally(
+        String server,
+        String uri,
+        String title,
+        String position,
+        String errorPage,
+        String webserver,
+        String secureServer,
+        String exclusive,
+        String error,
+        String usePermanentRedirects)
+    throws CmsConfigurationException {
+
+        try {
+            addSite(
+                server,
+                uri,
+                title,
+                position,
+                errorPage,
+                webserver,
+                secureServer,
+                exclusive,
+                error,
+                usePermanentRedirects);
+
+        } catch (CmsConfigurationException e) {
+            LOG.error("Error reading definitions. Try to read without aliase..", e);
+
+            //If the aliases are making problems, just remove them
+            m_aliases.clear();
+
+            //If this fails, the webserver was defined before ->throw exception
+            addSite(
+                server,
+                uri,
+                title,
+                position,
+                errorPage,
+                webserver,
+                secureServer,
+                exclusive,
+                error,
+                usePermanentRedirects);
+
         }
     }
 
@@ -1126,10 +1208,15 @@ public final class CmsSiteManagerImpl {
             // remove the old site
             removeSite(cms, oldSite);
         }
-
-        if (newSite != null) {
-            // add the new site
-            addSite(cms, newSite);
+        try {
+            if (newSite != null) {
+                // add the new site
+                addSite(cms, newSite);
+            }
+        } catch (CmsException e) {
+            //In case of having problems with new site, recover the old one.
+            addSite(cms, oldSite);
+            throw e;
         }
     }
 
@@ -1159,15 +1246,9 @@ public final class CmsSiteManagerImpl {
      *
      * @param matcher the SiteMatcher of the server
      * @param site the site to add
-     *
-     * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
-    private void addServer(CmsSiteMatcher matcher, CmsSite site) throws CmsConfigurationException {
+    private void addServer(CmsSiteMatcher matcher, CmsSite site) {
 
-        if (m_siteMatcherSites.containsKey(matcher)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
-        }
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
         siteMatcherSites.put(matcher, site);
         setSiteMatcherSites(siteMatcherSites);
@@ -1189,6 +1270,19 @@ public final class CmsSiteManagerImpl {
             return matcher;
         }
         return m_siteMatchers.get(index);
+    }
+
+    /**
+     * Checks whether the given matcher is included in the currently configured and valid matchers.<p>
+     *
+     * @param matcher the matcher to check
+     *
+     * @return <code>true</code> in case the given matcher is included in the currently configured and valid matchers
+     */
+    private boolean isServerValid(CmsSiteMatcher matcher) {
+
+        return !m_siteMatcherSites.containsKey(matcher);
+
     }
 
     /**

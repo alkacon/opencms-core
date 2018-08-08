@@ -967,7 +967,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add site configuration rule
         String siteXpath = "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE;
 
-        digester.addCallMethod(siteXpath, "addSite", 10);
+        digester.addCallMethod(siteXpath, "addSiteInternally", 10);
         digester.addCallParam(siteXpath, 0, A_SERVER);
         digester.addCallParam(siteXpath, 1, A_URI);
         digester.addCallParam(siteXpath, 2, A_TITLE);
