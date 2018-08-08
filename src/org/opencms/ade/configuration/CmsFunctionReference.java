@@ -34,6 +34,9 @@ import org.opencms.util.CmsUUID;
  */
 public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctionReference> {
 
+    /** The function default page id. */
+    private CmsUUID m_functionDefaultPageId;
+
     /** The function reference name. */
     private String m_name;
 
@@ -48,13 +51,25 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
      *
      * @param name the name of the function reference
      * @param structureId the structure id of the function
+     * @param functionDefaultPageId the function default page id
      * @param order the number used for sorting the function references
      */
-    public CmsFunctionReference(String name, CmsUUID structureId, int order) {
+    public CmsFunctionReference(String name, CmsUUID structureId, CmsUUID functionDefaultPageId, int order) {
 
         m_name = name;
         m_structureId = structureId;
+        m_functionDefaultPageId = functionDefaultPageId;
         m_order = order;
+    }
+
+    /**
+     * Returns the function default page id.<p>
+     *
+     * @return the function default page id
+     */
+    public CmsUUID getFunctionDefaultPageId() {
+
+        return m_functionDefaultPageId;
     }
 
     /**

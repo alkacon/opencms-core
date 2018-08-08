@@ -176,11 +176,13 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
                     // this is a VAADIN UI request
                     active = getPath(cms, req.getSession()) != null;
                     if (!active) {
-                        message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
+                        message = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                            Messages.GUI_SITEMAP_COULD_NOT_BE_DETERMINED_0);
                     }
                 }
             } else {
-                message = CmsVaadinUtils.getMessageText(Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
+                message = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                    Messages.GUI_SITEMAP_NOT_AVAILABLE_0);
             }
             return new CmsAppVisibilityStatus(true, active, message);
         } else {

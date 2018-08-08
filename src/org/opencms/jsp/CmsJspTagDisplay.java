@@ -60,7 +60,6 @@ import java.util.Map.Entry;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -114,6 +113,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      * Constructor.<p>
      */
     public CmsJspTagDisplay() {
+
         m_parameterMap = new LinkedHashMap<String, String>();
         m_displayFormatterPaths = new HashMap<String, String>();
         m_displayFormatterIds = new HashMap<String, CmsUUID>();
@@ -191,7 +191,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             CmsRequestUtil.getAtrributeMap(request),
                             request,
                             response);
-                    } catch (JspException e) {
+                    } catch (Exception e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
                     if (openedEditable) {

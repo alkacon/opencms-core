@@ -104,6 +104,7 @@ import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsPair;
@@ -1383,8 +1384,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
 
             String onlineLink = null;
-            if (!OpenCms.getSiteManager().getWorkplaceServer().equals(
-                OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot()).getUrl())) {
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+            if ((site != null) && !OpenCms.getSiteManager().getWorkplaceServer().equals(site.getUrl())) {
                 if (detailResource != null) {
                     onlineLink = OpenCms.getLinkManager().getOnlineLink(
                         cms,

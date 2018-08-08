@@ -2468,6 +2468,31 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         Locale locale) {
 
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
+        CmsNewResourceInfo defaultPageInfo;
+        if (modelResource != null) {
+            defaultPageInfo = new CmsNewResourceInfo(
+                modelResource.getTypeId(),
+                CmsADEManager.DEFAULT_DETAILPAGE_TYPE,
+                "Default",
+                "The default detail page will be used to display detail contents or functions.",
+                modelResource.getStructureId(),
+                false,
+                "The default detail page will be used to display detail contents or functions.");
+
+        } else {
+            defaultPageInfo = new CmsNewResourceInfo(
+                CmsResourceTypeXmlContainerPage.getContainerPageTypeIdSafely(),
+                CmsADEManager.DEFAULT_DETAILPAGE_TYPE,
+                "Default",
+                "The default detail page will be used to display detail contents or functions.",
+                null,
+                false,
+                "The default detail page will be used to display detail contents or functions.");
+        }
+
+        defaultPageInfo.setBigIconClasses(
+            CmsIconUtil.getIconClasses(CmsResourceTypeXmlContainerPage.getStaticTypeName(), null, false));
+        result.add(defaultPageInfo);
         for (CmsResourceTypeConfig typeConfig : resourceTypeConfigs) {
             if (typeConfig.isDetailPagesDisabled()) {
                 continue;

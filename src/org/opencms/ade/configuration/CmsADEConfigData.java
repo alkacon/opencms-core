@@ -103,6 +103,7 @@ public class CmsADEConfigData {
          * @param basePath the base path of the sitemap configuration
          */
         public DetailInfo(String folderPath, CmsDetailPageInfo detailPageInfo, String type, String basePath) {
+
             m_folderPath = folderPath;
             m_detailPageInfo = detailPageInfo;
             m_type = type;
@@ -404,6 +405,21 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns the default detail page.<p>
+     *
+     * @return the default detail page
+     */
+    public CmsDetailPageInfo getDefaultDetailPage() {
+
+        for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
+            if (CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                return detailpage;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the default model page.<p>
      *
      * @return the default model page
@@ -459,9 +475,21 @@ public class CmsADEConfigData {
     public List<CmsDetailPageInfo> getDetailPagesForType(String type) {
 
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
-        for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
-            if (detailpage.getType().equals(type)) {
-                result.add(detailpage);
+        CmsResourceTypeConfig typeConfig = getResourceType(type);
+        if ((typeConfig != null) && !typeConfig.isDetailPagesDisabled()) {
+
+            CmsDetailPageInfo defaultPage = null;
+            for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
+                if (detailpage.getType().equals(type)) {
+                    result.add(detailpage);
+                } else if ((defaultPage == null)
+                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                    defaultPage = detailpage;
+                }
+            }
+            if (defaultPage != null) {
+                // add default detail page last
+                result.add(defaultPage);
             }
         }
         return result;
@@ -951,19 +979,23 @@ public class CmsADEConfigData {
             for (String siteRoot : siteRoots) {
                 cms.getRequestContext().setSiteRoot(siteRoot);
                 for (CmsResourceTypeConfig config : getResourceTypes()) {
-                    String typeName = config.getTypeName();
-                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
-                        String folderPath = config.getFolderPath(cms, null);
-                        result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                    if (!config.isDetailPagesDisabled()) {
+                        String typeName = config.getTypeName();
+                        if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
+                            String folderPath = config.getFolderPath(cms, null);
+                            result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                        }
                     }
                 }
             }
         } else {
             for (CmsResourceTypeConfig config : getResourceTypes()) {
-                String typeName = config.getTypeName();
-                if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
-                    String folderPath = config.getFolderPath(getCms(), null);
-                    result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                if (!config.isDetailPagesDisabled()) {
+                    String typeName = config.getTypeName();
+                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
+                        String folderPath = config.getFolderPath(getCms(), null);
+                        result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                    }
                 }
             }
         }

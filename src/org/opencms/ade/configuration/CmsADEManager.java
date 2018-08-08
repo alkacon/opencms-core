@@ -161,6 +161,9 @@ public class CmsADEManager {
     /** Default favorite/recent list size constant. */
     public static final int DEFAULT_ELEMENT_LIST_SIZE = 10;
 
+    /** The default detail page type name. */
+    public static final String DEFAULT_DETAILPAGE_TYPE = "##DEFAULT##";
+
     /** The name of the element view configuration file type. */
     public static final String ELEMENT_VIEW_TYPE = "elementview";
 
@@ -440,7 +443,20 @@ public class CmsADEManager {
                 return pageInfo.get(0).getUri();
             }
         }
-        return null;
+        // find the default detail page if present
+        String path = null;
+        //        if (targetFirst) {
+        //            path = findDefaultDetailPage(cms, targetConfigData);
+        //            if (path == null) {
+        //                path = findDefaultDetailPage(cms, configData);
+        //            }
+        //        } else {
+        //            path = findDefaultDetailPage(cms, configData);
+        //            if (path == null) {
+        //                path = findDefaultDetailPage(cms, targetConfigData);
+        //            }
+        //        }
+        return path;
     }
 
     /**

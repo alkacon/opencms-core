@@ -130,6 +130,9 @@ public class CmsConfigurationReader {
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
 
+    /** The function node name. */
+    public static final String N_FUNCTION_DEFAULT_PAGE = "FunctionDefaultPage";
+
     /** The function reference node name. */
     public static final String N_FUNCTION_REF = "FunctionRef";
 
@@ -844,7 +847,11 @@ public class CmsConfigurationReader {
 
         String name = node.getSubValue(N_NAME).asString(m_cms);
         CmsUUID functionId = node.getSubValue(N_FUNCTION).asId(m_cms);
-
+        CmsUUID functionDefaultPageId = null;
+        I_CmsXmlContentValueLocation defaultPageValue = node.getSubValue(N_FUNCTION_DEFAULT_PAGE);
+        if (defaultPageValue != null) {
+            functionDefaultPageId = defaultPageValue.asId(m_cms);
+        }
         I_CmsXmlContentValueLocation orderNode = node.getSubValue(N_ORDER);
         int order = I_CmsConfigurationObject.DEFAULT_ORDER;
         if (orderNode != null) {
@@ -855,7 +862,7 @@ public class CmsConfigurationReader {
                 // noop
             }
         }
-        m_functionReferences.add(new CmsFunctionReference(name, functionId, order));
+        m_functionReferences.add(new CmsFunctionReference(name, functionId, functionDefaultPageId, order));
     }
 
     /**
