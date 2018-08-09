@@ -58,6 +58,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
@@ -96,27 +98,24 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterConfigurationCache.class);
 
+    /** The future for the scheduled task. */
+    private volatile ScheduledFuture<?> m_taskFuture;
+
+    /** The work queue to keep track of what needs to be done during the next cache update. */
+    private LinkedBlockingQueue<Object> m_workQueue = new LinkedBlockingQueue<>();
+
     /** The CMS context used by this cache. */
     private CmsObject m_cms;
-
-    /** The set of ids to update. */
-    private Set<CmsUUID> m_idsToUpdate = new HashSet<CmsUUID>();
 
     /** The cache name. */
     private String m_name;
 
-    /** Flag which indicates whether an update operation has been scheduled. */
-    private boolean m_scheduledUpdate;
-
     /** Additional setting configurations. */
-    private Map<CmsUUID, Map<String, CmsXmlContentProperty>> m_settingConfigs;
+    private volatile Map<CmsUUID, Map<String, CmsXmlContentProperty>> m_settingConfigs;
 
     /** The current data contained in the formatter cache.<p> This field is reassigned when formatters are changed, but the objects pointed to by this  field are immutable.<p> **/
     private volatile CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
         Collections.<CmsUUID, I_CmsFormatterBean> emptyMap());
-
-    /** The list of wait handles to process. */
-    private List<CmsWaitHandle> m_waitHandles = new ArrayList<>();
 
     /**
      * Creates a new formatter configuration cache instance.<p>
@@ -140,9 +139,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
      *
      * @param handle the handle to add
      */
-    public synchronized void addWaitHandle(CmsWaitHandle handle) {
+    public void addWaitHandle(CmsWaitHandle handle) {
 
-        m_waitHandles.add(handle);
+        m_workQueue.add(handle);
     }
 
     /**
@@ -174,41 +173,67 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     }
 
     /**
+     * Initializes the cache and installs the update task.<p>
+     */
+    public void initialize() {
+
+        if (m_taskFuture != null) {
+            m_taskFuture.cancel(false);
+            m_taskFuture = null;
+        }
+        reload();
+        m_taskFuture = OpenCms.getExecutor().scheduleWithFixedDelay(
+            this::performUpdate,
+            UPDATE_DELAY_MILLIS,
+            UPDATE_DELAY_MILLIS,
+            TimeUnit.MILLISECONDS);
+
+    }
+
+    /**
      * The method called by the scheduled update action to update the cache.<p>
      */
-    public synchronized void performUpdate() {
+    public void performUpdate() {
 
-        m_scheduledUpdate = false;
-        Set<CmsUUID> copiedIds = new HashSet<CmsUUID>(m_idsToUpdate);
-        List<CmsWaitHandle> waitHandles = new ArrayList<>(m_waitHandles);
-        m_idsToUpdate.clear();
-        m_waitHandles.clear();
-        if (copiedIds.contains(RELOAD_MARKER)) {
-            // clear cache event, reload all formatter configurations
-            reload();
-        } else {
-            // normal case: incremental update
-            Map<CmsUUID, I_CmsFormatterBean> formattersToUpdate = Maps.newHashMap();
-            for (CmsUUID structureId : copiedIds) {
-                I_CmsFormatterBean formatterBean = readFormatter(structureId);
-                // formatterBean may be null here
-                formattersToUpdate.put(structureId, formatterBean);
+        // Wrap everything in try-catch because we don't want to leak an exception out of a scheduled task
+        try {
+            ArrayList<Object> work = new ArrayList<>();
+            m_workQueue.drainTo(work);
+            Set<CmsUUID> copiedIds = new HashSet<CmsUUID>();
+            List<CmsWaitHandle> waitHandles = new ArrayList<>();
+            for (Object o : work) {
+                if (o instanceof CmsUUID) {
+                    copiedIds.add((CmsUUID)o);
+                } else if (o instanceof CmsWaitHandle) {
+                    waitHandles.add((CmsWaitHandle)o);
+                }
             }
-            m_state = m_state.createUpdatedCopy(formattersToUpdate);
+            if (copiedIds.contains(RELOAD_MARKER)) {
+                // clear cache event, reload all formatter configurations
+                reload();
+            } else {
+                // normal case: incremental update
+                Map<CmsUUID, I_CmsFormatterBean> formattersToUpdate = Maps.newHashMap();
+                for (CmsUUID structureId : copiedIds) {
+                    I_CmsFormatterBean formatterBean = readFormatter(structureId);
+                    // formatterBean may be null here
+                    formattersToUpdate.put(structureId, formatterBean);
+                }
+                m_state = m_state.createUpdatedCopy(formattersToUpdate);
+            }
+            for (CmsWaitHandle handle : waitHandles) {
+                handle.release();
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        for (CmsWaitHandle handle : waitHandles) {
-            handle.release();
-        }
-        m_waitHandles.clear();
     }
 
     /**
      * Reloads the formatter cache.<p>
      */
-    public synchronized void reload() {
+    public void reload() {
 
-        m_idsToUpdate.clear();
-        m_waitHandles.clear();
         List<CmsResource> settingConfigResources = new ArrayList<>();
         try {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_SETTINGS_CONFIG);
@@ -293,16 +318,11 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
      *
      * Should only be used in tests.<p>
      */
-    public synchronized void waitForUpdate() {
+    public void waitForUpdate() {
 
-        while (m_scheduledUpdate) {
-            try {
-                // use wait, not Thread.sleep, so the object monitor is released
-                wait(300);
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
+        CmsWaitHandle handle = new CmsWaitHandle(true);
+        addWaitHandle(handle);
+        handle.enter(Long.MAX_VALUE);
     }
 
     /**
@@ -371,20 +391,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
      *
      * @param structureId the structure id of the formatter configuration
      */
-    private synchronized void markForUpdate(CmsUUID structureId) {
+    private void markForUpdate(CmsUUID structureId) {
 
-        m_idsToUpdate.add(structureId);
-        if (!m_scheduledUpdate) {
-            OpenCms.getExecutor().schedule(new Runnable() {
-
-                public void run() {
-
-                    performUpdate();
-                }
-            }, UPDATE_DELAY_MILLIS, TimeUnit.MILLISECONDS);
-            m_scheduledUpdate = true;
-
-        }
+        m_workQueue.add(structureId);
     }
 
     /**

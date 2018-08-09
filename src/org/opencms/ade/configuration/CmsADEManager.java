@@ -1064,9 +1064,9 @@ public class CmsADEManager {
                 m_offlineFormatterCache = new CmsFormatterConfigurationCache(m_offlineCms, "offline formatters");
                 m_onlineFormatterCache = new CmsFormatterConfigurationCache(m_onlineCms, "online formatters");
                 CmsLog.INIT.info(". Reading online formatter configurations...");
-                m_onlineFormatterCache.reload();
+                m_onlineFormatterCache.initialize();
                 CmsLog.INIT.info(". Reading offline formatter configurations...");
-                m_offlineFormatterCache.reload();
+                m_offlineFormatterCache.initialize();
 
                 m_offlineDetailIdCache = new CmsDetailNameCache(m_offlineCms);
                 m_onlineDetailIdCache = new CmsDetailNameCache(m_onlineCms);
