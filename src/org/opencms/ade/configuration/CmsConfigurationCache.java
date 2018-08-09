@@ -46,12 +46,14 @@ import org.opencms.util.CmsWaitHandle;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -97,6 +99,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
 
+    /** The work queue to keep of track of what needs to be done during the next cache update. */
+    private LinkedBlockingQueue<Object> m_workQueue = new LinkedBlockingQueue<>();
+
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;
 
@@ -141,16 +146,6 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     private ScheduledFuture<?> m_taskFuture;
 
     /**
-     *  A set of IDs which represent the configuration updates to perform. The IDs in this set
-     * are either the structure IDs of sitemap configurations to reload, or special IDs which
-     * are not structure IDs but signal e.g. that the complete configuration should be reloaded.
-     */
-    private CmsSynchronizedUpdateSet<CmsUUID> m_updateSet = new CmsSynchronizedUpdateSet<CmsUUID>();
-
-    /** A wait handle which is used for waiting until the update task has run (e.g. for testing purposes). */
-    private CmsWaitHandle m_waitHandle = new CmsWaitHandle();
-
-    /**
      * Creates a new cache instance.<p>
      *
      * @param cms the CMS object used for reading the configuration data
@@ -190,7 +185,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      */
     public void clear() {
 
-        m_updateSet.add(ID_UPDATE_ALL);
+        m_workQueue.add(ID_UPDATE_ALL);
         m_detailPageIdCache.invalidateAll();
         m_pathCache.clear();
     }
@@ -233,7 +228,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      */
     public CmsWaitHandle getWaitHandleForUpdateTask() {
 
-        return m_waitHandle;
+        CmsWaitHandle handle = new CmsWaitHandle(true);
+        m_workQueue.add(handle);
+        return handle;
     }
 
     /**
@@ -532,7 +529,17 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
         // Wrap a try-catch around everything, because an escaping exception would cancel the task from which this is called
         try {
-            Set<CmsUUID> updateIds = m_updateSet.removeAll();
+            ArrayList<Object> work = new ArrayList<>();
+            m_workQueue.drainTo(work);
+            Set<CmsUUID> updateIds = new HashSet<CmsUUID>();
+            List<CmsWaitHandle> waitHandles = new ArrayList<>();
+            for (Object item : work) {
+                if (item instanceof CmsUUID) {
+                    updateIds.add((CmsUUID)item);
+                } else if (item instanceof CmsWaitHandle) {
+                    waitHandles.add((CmsWaitHandle)item);
+                }
+            }
             CmsADEConfigCacheState oldState = m_state;
             if (!updateIds.isEmpty() || (oldState == null)) {
                 try {
@@ -567,10 +574,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews);
                 }
             }
+            for (CmsWaitHandle handle : waitHandles) {
+                handle.release();
+            }
         } catch (Exception e) {
             LOG.error("Could not perform configuration cache update: " + e.getMessage(), e);
         }
-        m_waitHandle.release();
     }
 
     /**
@@ -587,13 +596,13 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
         m_pathCache.remove(structureId);
         if (isSitemapConfiguration(rootPath, type)) {
-            m_updateSet.add(structureId);
+            m_workQueue.add(structureId);
         } else if (isModuleConfiguration(rootPath, type)) {
-            m_updateSet.add(ID_UPDATE_MODULES);
+            m_workQueue.add(ID_UPDATE_MODULES);
         } else if (isElementView(type)) {
-            m_updateSet.add(ID_UPDATE_ELEMENT_VIEWS);
+            m_workQueue.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
-            m_updateSet.add(ID_UPDATE_FOLDERTYPES);
+            m_workQueue.add(ID_UPDATE_FOLDERTYPES);
         }
     }
 
@@ -612,14 +621,14 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
         m_pathCache.replace(structureId, rootPath);
         if (isSitemapConfiguration(rootPath, type)) {
-            m_updateSet.add(structureId);
+            m_workQueue.add(structureId);
         } else if (isModuleConfiguration(rootPath, type)) {
             LOG.info("Changed module configuration file " + rootPath + "(" + structureId + ")");
-            m_updateSet.add(ID_UPDATE_MODULES);
+            m_workQueue.add(ID_UPDATE_MODULES);
         } else if (isElementView(type)) {
-            m_updateSet.add(ID_UPDATE_ELEMENT_VIEWS);
+            m_workQueue.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
-            m_updateSet.add(ID_UPDATE_FOLDERTYPES);
+            m_workQueue.add(ID_UPDATE_FOLDERTYPES);
         } else if (isMacroOrFlexFormatter(type, rootPath)) {
             try {
                 String path = CmsResource.getParentFolder(CmsResource.getParentFolder(rootPath));
@@ -628,7 +637,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 if (m_cms.existsResource(path, filter)) {
 
                     CmsResource config = m_cms.readResource(path, filter);
-                    m_updateSet.add(config.getStructureId());
+                    m_workQueue.add(config.getStructureId());
                 }
             } catch (Exception e) {
                 LOG.warn(e.getMessage(), e);
