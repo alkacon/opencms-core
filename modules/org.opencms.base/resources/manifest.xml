@@ -112,7 +112,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="function" id="22">
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeFunctionV2" name="function-v2" id="29">
+			<type class="org.opencms.file.types.CmsResourceTypeFunctionConfig" name="function_config" id="29">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -480,8 +480,8 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="function-v2" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function-v2" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
+			<explorertype name="function_config" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function_config" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
@@ -1311,7 +1311,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 		<file>
 			<source>system/modules/org.opencms.base/formatters/function-default.xml</source>
 			<destination>system/modules/org.opencms.base/formatters/function-default.xml</destination>
-			<type>function-v2</type>
+			<type>function_config</type>
 			<uuidstructure>d9d312d4-9a06-11e8-b9b2-1f0f0d8667a3</uuidstructure>
 			<uuidresource>d9d312d5-9a06-11e8-b9b2-1f0f0d8667a3</uuidresource>
 			<datecreated>Tue, 07 Aug 2018 05:58:04 GMT</datecreated>

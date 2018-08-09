@@ -27,7 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.file.types.CmsResourceTypeFunctionV2;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -105,7 +105,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             inlineJavascript,
             niceName,
             description,
-            Arrays.asList(CmsResourceTypeFunctionV2.TYPE_NAME),
+            Arrays.asList(CmsResourceTypeFunctionConfig.TYPE_NAME),
             10099, // rank
             id,
             settings,
@@ -126,23 +126,23 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
     /**
      * @see org.opencms.xml.containerpage.CmsFormatterBean#getJspRootPath()
      *
-     * This is not the configured JSP, but the formatter JSP for the function-v2 type itself.
+     * This is not the configured JSP, but the formatter JSP for the function_config type itself.
      */
     @Override
     public String getJspRootPath() {
 
-        return CmsResourceTypeFunctionV2.FORMATTER_PATH;
+        return CmsResourceTypeFunctionConfig.FORMATTER_PATH;
     }
 
     /**
      * @see org.opencms.xml.containerpage.CmsFormatterBean#getJspStructureId()
      *
-     * This is not the configured JSP, but the formatter JSP for the function-v2 type itself.
+     * This is not the configured JSP, but the formatter JSP for the function_config type itself.
      */
     @Override
     public CmsUUID getJspStructureId() {
 
-        return CmsResourceTypeFunctionV2.FORMATTER_ID;
+        return CmsResourceTypeFunctionConfig.FORMATTER_ID;
     }
 
     /**
@@ -190,7 +190,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
     @Override
     public Collection<String> getResourceTypeNames() {
 
-        return Collections.singletonList(CmsResourceTypeFunctionV2.TYPE_NAME);
+        return Collections.singletonList(CmsResourceTypeFunctionConfig.TYPE_NAME);
     }
 
 }

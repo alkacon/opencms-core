@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<DynamicFunctionsV2 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd">
-  <DynamicFunctionV2 language="en">
+<FunctionConfigs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd">
+  <FunctionConfig language="en">
     <NiceName><![CDATA[Internal default function formatter]]></NiceName>
     <Jsp>
       <link type="WEAK">
@@ -10,5 +10,5 @@
       </link>
     </Jsp>
     <Description><![CDATA[Default formatter for newly created functions - do not use directly]]></Description>
-  </DynamicFunctionV2>
-</DynamicFunctionsV2>
+  </FunctionConfig>
+</FunctionConfigs>

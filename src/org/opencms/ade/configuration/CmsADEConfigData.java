@@ -36,7 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeFunctionV2;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
@@ -549,7 +549,7 @@ public class CmsADEConfigData {
      */
     public CmsFormatterConfiguration getFormatters(CmsObject cms, CmsResource res) {
 
-        if (CmsResourceTypeFunctionV2.isFunction(res)) {
+        if (CmsResourceTypeFunctionConfig.isFunction(res)) {
 
             CmsFormatterConfigurationCacheState formatters = getCachedFormatters();
             I_CmsFormatterBean function = formatters.getFormatters().get(res.getStructureId());
@@ -839,7 +839,7 @@ public class CmsADEConfigData {
 
         try {
             if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(resType.getTypeName())
-                || CmsResourceTypeFunctionV2.TYPE_NAME.equals(resType.getTypeName())) {
+                || CmsResourceTypeFunctionConfig.TYPE_NAME.equals(resType.getTypeName())) {
                 // dynamic function may match any container
                 return true;
             }

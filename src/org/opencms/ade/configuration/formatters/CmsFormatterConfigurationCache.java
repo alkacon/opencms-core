@@ -34,7 +34,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeFunctionV2;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
@@ -264,7 +264,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             CmsResourceFilter filterFlex = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeFlex);
             formatterResources.addAll(m_cms.readResources("/", filterFlex));
             I_CmsResourceType typeFunction = OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeFunctionV2.TYPE_NAME);
+                CmsResourceTypeFunctionConfig.TYPE_NAME);
             CmsResourceFilter filterFunction = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeFunction);
             formatterResources.addAll(m_cms.readResources("/", filterFunction));
         } catch (CmsException e) {
@@ -381,7 +381,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         if (manager.matchResourceType(TYPE_FORMATTER_CONFIG, resourceType)
             || manager.matchResourceType(TYPE_MACRO_FORMATTER, resourceType)
             || manager.matchResourceType(TYPE_FLEX_FORMATTER, resourceType)
-            || manager.matchResourceType(CmsResourceTypeFunctionV2.TYPE_NAME, resourceType)) {
+            || manager.matchResourceType(CmsResourceTypeFunctionConfig.TYPE_NAME, resourceType)) {
             markForUpdate(structureId);
         }
     }

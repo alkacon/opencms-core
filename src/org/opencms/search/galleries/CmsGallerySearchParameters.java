@@ -30,7 +30,7 @@ package org.opencms.search.galleries;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeFunctionV2;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
@@ -430,7 +430,7 @@ public class CmsGallerySearchParameters {
         // set resource types
         if (null != m_resourceTypes) {
             List<String> resourceTypes = new ArrayList<>(m_resourceTypes);
-            if (m_resourceTypes.contains(CmsResourceTypeFunctionV2.TYPE_NAME)
+            if (m_resourceTypes.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)
                 && !m_resourceTypes.contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
                 resourceTypes.add(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION);
             }
@@ -798,7 +798,7 @@ public class CmsGallerySearchParameters {
         if (resourceTypes.contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
             return true;
         }
-        if (resourceTypes.contains(CmsResourceTypeFunctionV2.TYPE_NAME)) {
+        if (resourceTypes.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)) {
             return true;
         }
         return false;

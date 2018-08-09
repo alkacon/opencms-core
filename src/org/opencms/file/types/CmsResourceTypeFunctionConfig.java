@@ -40,7 +40,7 @@ import org.opencms.util.CmsWaitHandle;
 /**
  * Resource type class for the second version of dynamic functions.<p>
  */
-public class CmsResourceTypeFunctionV2 extends CmsResourceTypeXmlAdeConfiguration {
+public class CmsResourceTypeFunctionConfig extends CmsResourceTypeXmlAdeConfiguration {
 
     /** The structure id of the JSP used for rendering v2 functions. */
     public static final CmsUUID FORMATTER_ID = new CmsUUID("fcd6e109-aab1-4f6e-b12e-4d795310f11f");
@@ -49,7 +49,7 @@ public class CmsResourceTypeFunctionV2 extends CmsResourceTypeXmlAdeConfiguratio
     public static final String FORMATTER_PATH = "/system/modules/org.opencms.base/formatters/function-v2.jsp";
 
     /** The type name. */
-    public static final String TYPE_NAME = "function-v2";
+    public static final String TYPE_NAME = "function_config";
 
     /**
      * Returns the static type name of this (default) resource type.<p>

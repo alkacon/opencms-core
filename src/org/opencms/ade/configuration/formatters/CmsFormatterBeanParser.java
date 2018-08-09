@@ -32,7 +32,7 @@ import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeFunctionV2;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsFunctionRenderer;
@@ -332,7 +332,7 @@ public class CmsFormatterBeanParser {
         boolean isMacroFromatter = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(type.getTypeName());
         boolean isFlexFormatter = CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(type.getTypeName());
         boolean isFunction = OpenCms.getResourceManager().matchResourceType(
-            CmsResourceTypeFunctionV2.TYPE_NAME,
+            CmsResourceTypeFunctionConfig.TYPE_NAME,
             content.getFile().getTypeId());
 
         Locale en = Locale.ENGLISH;
