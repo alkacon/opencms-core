@@ -27,9 +27,11 @@
 
 package org.opencms.ui.apps.resourcetypes;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -517,14 +519,18 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
 
         Locale l = CmsLocaleManager.getDefaultLocale();
 
-        CmsResource formatter = m_cms.readResource(formatterPath);
         CmsResource config = m_cms.readResource(formatterConfigPath);
 
         CmsFile file = m_cms.readFile(config);
 
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
-        I_CmsXmlContentValue v = xmlContent.getValue("Jsp", l);
 
+        if (!xmlContent.hasLocale(l)) {
+            xmlContent.addLocale(m_cms, l);
+        }
+        CmsResource formatter = m_cms.readResource(formatterPath);
+
+        I_CmsXmlContentValue v = xmlContent.getValue("Jsp", l);
         v.setStringValue(m_cms, formatter.getRootPath());
 
         String xmlPath = "NiceName";
@@ -547,7 +553,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
      */
     private void adjustModuleConfig() {
 
-        Locale l = CmsLocaleManager.getDefaultLocale();
+        Locale l = CmsLocaleManager.getLocale("en");//.getDefaultLocale();
         try {
             CmsResource config = m_cms.readResource(m_config.getValue());
             CmsFile configFile = m_cms.readFile(config);
@@ -667,7 +673,21 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
             }
 
             if (!m_cms.existsResource(formatterConfigPath)) {
-                m_cms.copyResource(SAMPLE_FORMATTER_CONFIG, formatterConfigPath);
+                I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(
+                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG);
+                List<CmsProperty> props = new ArrayList<CmsProperty>();
+                props.add(
+                    new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_LOCALE,
+                        CmsLocaleManager.getDefaultLocale().toString(),
+                        null));
+                props.add(
+                    new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
+                        CmsLocaleManager.getDefaultLocale().toString(),
+                        null));
+
+                m_cms.createResource(formatterConfigPath, configType, null, props);
             }
             CmsLockUtil.tryUnlock(m_cms, m_cms.readResource(formatterPath));
             CmsLockUtil.tryUnlock(m_cms, m_cms.readResource(formatterConfigPath));
