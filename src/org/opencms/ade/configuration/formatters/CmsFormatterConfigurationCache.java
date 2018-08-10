@@ -374,6 +374,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         CmsResourceManager manager = OpenCms.getResourceManager();
 
         if (manager.matchResourceType(TYPE_SETTINGS_CONFIG, resourceType)) {
+            // for each formatter configuration, only the combined settings are stored, not
+            // the reference to the settings config. So we need to reload everything when a setting configuration
+            // changes.
             markForUpdate(RELOAD_MARKER);
             return;
         }
