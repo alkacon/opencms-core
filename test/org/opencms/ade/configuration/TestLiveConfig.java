@@ -242,10 +242,10 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject offlineCms = getCmsObject();
         CmsObject onlineCms = onlineCms();
         OpenCms.getADEManager().refresh();
-        checkResourceTypes(offlineCms, "/sites/default", "foldername", "a1", "b1", "c1");
-        checkResourceTypes(onlineCms, "/sites/default", "foldername", "a1", "b1", "c1");
-        checkResourceTypes(offlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
-        checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
+        checkResourceTypes(offlineCms, "/sites/default", "foldername", "a1", "b1", "c1", "foo1");
+        checkResourceTypes(onlineCms, "/sites/default", "foldername", "a1", "b1", "c1", "foo1");
+        checkResourceTypes(offlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
+        checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
     }
 
     /**
@@ -257,15 +257,15 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject offlineCms = getCmsObject();
         CmsObject onlineCms = onlineCms();
         OpenCms.getADEManager().refresh();
-        checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2", "a1", "c1");
-        checkResourceTypes(offlineCms, "/sites/default/today/events/foo", "foldername", "d2", "a1", "c1");
-        checkResourceTypes(onlineCms, "/sites/default/today/events/", "foldername", "d2", "a1", "c1");
-        checkResourceTypes(onlineCms, "/sites/default/today/events/foo", "foldername", "d2", "a1", "c1");
+        checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2", "a1", "c1", "foo1");
+        checkResourceTypes(offlineCms, "/sites/default/today/events/foo", "foldername", "d2", "a1", "c1", "foo1");
+        checkResourceTypes(onlineCms, "/sites/default/today/events/", "foldername", "d2", "a1", "c1", "foo1");
+        checkResourceTypes(onlineCms, "/sites/default/today/events/foo", "foldername", "d2", "a1", "c1", "foo1");
 
-        checkResourceTypes(onlineCms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1");
-        checkResourceTypes(onlineCms, "/sites/default/today/news/foo/", "foldername", "c3", "e3", "a1", "b1");
-        checkResourceTypes(offlineCms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1");
-        checkResourceTypes(offlineCms, "/sites/default/today/news/foo", "foldername", "c3", "e3", "a1", "b1");
+        checkResourceTypes(onlineCms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1", "foo1");
+        checkResourceTypes(onlineCms, "/sites/default/today/news/foo/", "foldername", "c3", "e3", "a1", "b1", "foo1");
+        checkResourceTypes(offlineCms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1", "foo1");
+        checkResourceTypes(offlineCms, "/sites/default/today/news/foo", "foldername", "c3", "e3", "a1", "b1", "foo1");
     }
 
     /**
@@ -357,7 +357,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
             waitForUpdate(false);
-            checkResourceTypes(cms, "/sites/default", "foldername", "a1", "b1", "c1", "m0");
+            checkResourceTypes(cms, "/sites/default", "foldername", "a1", "b1", "c1", "foo1", "m0");
         } finally {
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -376,8 +376,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
             cms.lockResource("/sites/default/today/events");
             cms.moveResource("/sites/default/today/events", "/sites/default/today/news/events");
             OpenCms.getADEManager().getOfflineCache().getWaitHandleForUpdateTask().enter(0);
-            checkResourceTypes(cms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1");
-            checkResourceTypes(cms, "/sites/default/today/news/events/", "foldername", "d2", "c3", "e3", "a1");
+            checkResourceTypes(cms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1", "foo1");
+            checkResourceTypes(cms, "/sites/default/today/news/events/", "foldername", "d2", "c3", "e3", "a1", "foo1");
         } finally {
             restoreFiles();
         }
@@ -429,17 +429,17 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject onlineCms = onlineCms();
         try {
             waitForUpdate(false);
-            checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1");
+            checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
             cms.copyResource("/sites/default/today/news/.content", "sites/default/today/.content");
             waitForUpdate(true);
             waitForUpdate(false);
-            checkResourceTypes(cms, "/sites/default/today", "foldername", "c3", "e3", "a1", "b1");
-            checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
+            checkResourceTypes(cms, "/sites/default/today", "foldername", "c3", "e3", "a1", "b1", "foo1");
+            checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
             publish();
             waitForUpdate(true);
             waitForUpdate(false);
-            checkResourceTypes(onlineCms, "/sites/default/today/", "foldername", "c3", "e3", "a1", "b1");
-            checkResourceTypes(onlineCms, "/sites/default/today/events", "foldername", "d2", "c3", "e3", "a1");
+            checkResourceTypes(onlineCms, "/sites/default/today/", "foldername", "c3", "e3", "a1", "b1", "foo1");
+            checkResourceTypes(onlineCms, "/sites/default/today/events", "foldername", "d2", "c3", "e3", "a1", "foo1");
         } finally {
             restoreFiles();
         }
@@ -457,12 +457,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
         try {
             waitForUpdate(false);
             waitForUpdate(true);
-            checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1");
-            checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
+            checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
+            checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
             cms.lockResource("/sites/default/.content");
             cms.deleteResource("/sites/default/.content", CmsResource.DELETE_PRESERVE_SIBLINGS);
             waitForUpdate(true);
-            checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
+            checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1", "foo1");
             publish();
             waitForUpdate(true);
             checkResourceTypes(onlineCms, "/sites/default/today/", "foldername");
