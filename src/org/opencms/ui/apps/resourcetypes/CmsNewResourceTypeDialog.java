@@ -517,30 +517,38 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
 
     private void adjustFormatterConfig(String formatterPath, String formatterConfigPath) throws CmsException {
 
-        Locale l = CmsLocaleManager.getDefaultLocale();
-
         CmsResource config = m_cms.readResource(formatterConfigPath);
 
         CmsFile file = m_cms.readFile(config);
 
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
+        for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
 
-        if (!xmlContent.hasLocale(l)) {
-            xmlContent.addLocale(m_cms, l);
+            if (!xmlContent.hasLocale(l)) {
+                xmlContent.addLocale(m_cms, l);
+            }
+            CmsResource formatter = m_cms.readResource(formatterPath);
+
+            I_CmsXmlContentValue v = xmlContent.getValue("Jsp", l);
+            v.setStringValue(m_cms, formatter.getRootPath());
+
+            String xmlPath = "NiceName";
+            v = xmlContent.getValue(xmlPath, l);
+            v.setStringValue(m_cms, m_typeName.getValue());
+
+            xmlPath = "Type";
+            v = xmlContent.getValue(xmlPath, l);
+            v.setStringValue(m_cms, m_typeShortName.getValue());
+
+            xmlPath = "AutoEnabled";
+            v = xmlContent.getValue(xmlPath, l);
+            v.setStringValue(m_cms, "true");
+
+            xmlPath = "Match/Width/Width";
+            createParentXmlElements(xmlContent, xmlPath, l);
+            v = xmlContent.getValue(xmlPath, l);
+            v.setStringValue(m_cms, "-1");
         }
-        CmsResource formatter = m_cms.readResource(formatterPath);
-
-        I_CmsXmlContentValue v = xmlContent.getValue("Jsp", l);
-        v.setStringValue(m_cms, formatter.getRootPath());
-
-        String xmlPath = "NiceName";
-        v = xmlContent.getValue(xmlPath, l);
-        v.setStringValue(m_cms, m_typeName.getValue());
-
-        xmlPath = "Type";
-        v = xmlContent.getValue(xmlPath, l);
-        v.setStringValue(m_cms, m_typeShortName.getValue());
-
         file.setContents(xmlContent.marshal());
         CmsLockUtil.ensureLock(m_cms, file);
         m_cms.writeFile(file);
@@ -676,16 +684,9 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
                 I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(
                     CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG);
                 List<CmsProperty> props = new ArrayList<CmsProperty>();
+                props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, getAvailableLocalString(), null));
                 props.add(
-                    new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_LOCALE,
-                        CmsLocaleManager.getDefaultLocale().toString(),
-                        null));
-                props.add(
-                    new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
-                        CmsLocaleManager.getDefaultLocale().toString(),
-                        null));
+                    new CmsProperty(CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, getAvailableLocalString(), null));
 
                 m_cms.createResource(formatterConfigPath, configType, null, props);
             }
@@ -777,6 +778,24 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
             m_bundle.setValue(bundle.getRootPath());
 
         }
+    }
+
+    /**
+     * Returns the property string for all available locales.<p>
+     *
+     * @return String to use in properties
+     */
+    private String getAvailableLocalString() {
+
+        String res = "";
+
+        for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            res += locale.toString() + ",";
+        }
+        if (res.endsWith(",")) {
+            res = res.substring(0, res.length() - 1);
+        }
+        return res;
     }
 
     /**
