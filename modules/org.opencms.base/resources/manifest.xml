@@ -473,7 +473,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="function" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+			<explorertype name="function" key="fileicon.function_v1" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
@@ -1172,60 +1172,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<properties/>
 			<relations/>
 			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.base/elementviews/legacy-elements</source>
-			<destination>system/modules/org.opencms.base/elementviews/legacy-elements</destination>
-			<type>elementview</type>
-			<uuidstructure>574aa175-9aef-11e8-ab54-1f0f0d8667a3</uuidstructure>
-			<uuidresource>574aa176-9aef-11e8-ab54-1f0f0d8667a3</uuidresource>
-			<datecreated>Wed, 08 Aug 2018 09:42:18 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Legacy elements]]></value>
-				</property>
-				<property>
-					<name>locale</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[true]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>OVERWRITE_ALL</uuidprincipal>
-					<flags>256</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.CATEGORY_EDITOR</uuidprincipal>
-					<flags>512</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.GALLERY_EDITOR</uuidprincipal>
-					<flags>512</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.base/elementviews/system-elements</source>
