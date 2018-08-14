@@ -528,11 +528,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     protected void performUpdate() {
 
         // Wrap a try-catch around everything, because an escaping exception would cancel the task from which this is called
+        List<CmsWaitHandle> waitHandles = new ArrayList<>();
         try {
             ArrayList<Object> work = new ArrayList<>();
             m_workQueue.drainTo(work);
             Set<CmsUUID> updateIds = new HashSet<CmsUUID>();
-            List<CmsWaitHandle> waitHandles = new ArrayList<>();
+
             for (Object item : work) {
                 if (item instanceof CmsUUID) {
                     updateIds.add((CmsUUID)item);
@@ -574,11 +575,13 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews);
                 }
             }
+
+        } catch (Exception e) {
+            LOG.error("Could not perform configuration cache update: " + e.getMessage(), e);
+        } finally {
             for (CmsWaitHandle handle : waitHandles) {
                 handle.release();
             }
-        } catch (Exception e) {
-            LOG.error("Could not perform configuration cache update: " + e.getMessage(), e);
         }
     }
 
