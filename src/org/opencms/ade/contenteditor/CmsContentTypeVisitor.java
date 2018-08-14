@@ -47,6 +47,7 @@ import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
@@ -492,6 +493,16 @@ public class CmsContentTypeVisitor {
     private String getHelp(I_CmsXmlSchemaType value) {
 
         StringBuffer result = new StringBuffer(64);
+        I_CmsXmlContentHandler handler = value.getContentDefinition().getContentHandler();
+        if (handler instanceof CmsDefaultXmlContentHandler) {
+            CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
+            String help = defaultHandler.getFieldHelp().get(value.getName());
+            if (help != null) {
+                CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setMessages(m_messages);
+                return resolver.resolveMacros(help);
+            }
+        }
         result.append(A_CmsWidget.LABEL_PREFIX);
         result.append(getTypeKey(value));
         result.append(A_CmsWidget.HELP_POSTFIX);
@@ -507,6 +518,16 @@ public class CmsContentTypeVisitor {
      */
     private String getLabel(I_CmsXmlSchemaType value) {
 
+        I_CmsXmlContentHandler handler = value.getContentDefinition().getContentHandler();
+        if (handler instanceof CmsDefaultXmlContentHandler) {
+            CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
+            String label = defaultHandler.getFieldLabels().get(value.getName());
+            if (label != null) {
+                CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setMessages(m_messages);
+                return resolver.resolveMacros(label);
+            }
+        }
         StringBuffer result = new StringBuffer(64);
         result.append(A_CmsWidget.LABEL_PREFIX);
         result.append(getTypeKey(value));

@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3 = "ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_XMLCONTENT_BAD_FIELD_NAME_1 = "ERR_XMLCONTENT_BAD_FIELD_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_CHECK_INVALID_ELEM_1 = "ERR_XMLCONTENT_CHECK_INVALID_ELEM_1";
 
     /** Message constant for key in the resource bundle. */
