@@ -28,9 +28,9 @@
 package org.opencms.ade.contenteditor.shared.rpc;
 
 import org.opencms.acacia.shared.CmsEntity;
-import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
+import org.opencms.ade.contenteditor.shared.CmsSaveResult;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -95,6 +95,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * Loads the content definition for a given entity.<p>
      *
      * @param entityId the entity id/URI
+     * @param clientId the container element client id if available
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
@@ -109,6 +110,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      */
     CmsContentDefinition loadInitialDefinition(
         String entityId,
+        String clientId,
         String newLink,
         CmsUUID modelFileId,
         String editContext,
@@ -123,6 +125,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * This will load the entity representation of a new locale node.<p>
      *
      * @param entityId the entity id/URI
+     * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
      *
@@ -130,7 +133,11 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadNewDefinition(String entityId, CmsEntity editedLocaleEntity, Collection<String> skipPaths)
+    CmsContentDefinition loadNewDefinition(
+        String entityId,
+        String clientId,
+        CmsEntity editedLocaleEntity,
+        Collection<String> skipPaths)
     throws CmsRpcException;
 
     /**
@@ -143,20 +150,22 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
     CmsContentDefinition prefetch() throws CmsRpcException;
 
     /**
-     * Saves and deletes the given entities. Returns a validation result in case of invalid entities.<p>
+     * Saves and deletes the given entities. Returns the editor save result information.<p>
      *
      * @param lastEditedEntity the last edited entity
+     * @param clientId the container element client id if available
      * @param deletedEntities the entity id's to delete
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
      * @param clearOnSuccess  <code>true</code> to unlock resource after saving
      *
-     * @return the validation result in case of invalid entities
+     * @return the editor save result information
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsValidationResult saveAndDeleteEntities(
+    CmsSaveResult saveAndDeleteEntities(
         CmsEntity lastEditedEntity,
+        String clientId,
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,

@@ -94,7 +94,7 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
 
             }, new I_CmsContentEditorHandler() {
 
-                public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+                public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
 
                     // nothing to do
                 }

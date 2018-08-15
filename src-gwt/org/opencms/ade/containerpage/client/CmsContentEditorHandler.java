@@ -104,9 +104,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean, boolean)
      */
-    public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+    public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
 
         if (m_currentElementId == null) {
             m_currentElementId = structureId.toString();
@@ -142,6 +142,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.m_controller.setContentEditing(false);
         m_handler.m_controller.reInitInlineEditing();
         m_currentElementId = null;
+        m_handler.m_controller.setPageChanged(new Runnable[] {});
         m_editorOpened = false;
     }
 
@@ -311,12 +312,12 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 } else {
                     m_currentElementId = URL.decodePathSegment(id);
                 }
-                Command onClose = new Command() {
+                I_CmsSimpleCallback<Boolean> onClose = new I_CmsSimpleCallback<Boolean>() {
 
-                    public void execute() {
+                    public void execute(Boolean hasChangedSettings) {
 
                         addClosedEditorHistoryItem();
-                        onClose(null, new CmsUUID(getCurrentElementId()), false);
+                        onClose(null, new CmsUUID(getCurrentElementId()), false, hasChangedSettings.booleanValue());
                     }
                 };
                 String editorLocale = CmsCoreProvider.get().getLocale();
@@ -325,6 +326,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     getEditorContext(),
                     editorLocale,
                     m_currentElementId,
+                    null,
                     null,
                     null,
                     null,
@@ -436,12 +438,12 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         mainLocale = CmsContentDefinition.getLocaleFromId(entityId);
                     }
                 }
-                Command onClose = new Command() {
+                I_CmsSimpleCallback<Boolean> onClose = new I_CmsSimpleCallback<Boolean>() {
 
-                    public void execute() {
+                    public void execute(Boolean hasChangedSettings) {
 
                         addClosedEditorHistoryItem();
-                        onClose(element.getSitePath(), new CmsUUID(serverId), false);
+                        onClose(element.getSitePath(), new CmsUUID(serverId), false, hasChangedSettings.booleanValue());
                     }
                 };
                 if (inline && CmsContentEditor.hasEditable(element.getElement())) {
@@ -465,6 +467,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         getEditorContext(),
                         editorLocale,
                         serverId,
+                        m_currentElementId,
                         null,
                         null,
                         null,
@@ -516,18 +519,23 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 getEditorContext(),
                 CmsCoreProvider.get().getLocale(),
                 editableData.getStructureId().toString(),
+                null,
                 newLink,
                 null,
                 editableData.getPostCreateHandler(),
                 mode,
                 m_handler.m_controller.getData().getMainLocale(),
                 editHandlerData,
-                new Command() {
+                new I_CmsSimpleCallback<Boolean>() {
 
-                    public void execute() {
+                    public void execute(Boolean hasChangedSettings) {
 
                         addClosedEditorHistoryItem();
-                        onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
+                        onClose(
+                            editableData.getSitePath(),
+                            editableData.getStructureId(),
+                            isNew,
+                            hasChangedSettings.booleanValue());
                     }
                 });
         }

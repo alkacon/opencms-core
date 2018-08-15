@@ -42,6 +42,7 @@ public interface I_CmsContentEditorHandler {
      * @param sitePath the sitepath of the edited resource
      * @param structureId the structure id of the edited resource
      * @param isNew <code>true</code> if the resource was newly created
+     * @param hasChangedSettings <code>true</code> in case container page element settings where changed during edit
      */
-    void onClose(String sitePath, CmsUUID structureId, boolean isNew);
+    void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings);
 }

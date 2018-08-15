@@ -38,6 +38,36 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1 = "ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERROR_FAILED_READING_CATEGORIES_1 = "ERROR_FAILED_READING_CATEGORIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_EMPTY_EVENT_SERIES_0 = "GUI_SERIALDATE_EMPTY_EVENT_SERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_INVALID_SERIES_SPECIFICATION_0 = "GUI_SERIALDATE_INVALID_SERIES_SPECIFICATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_MULTIPLE_EVENTS_3 = "GUI_SERIALDATE_MULTIPLE_EVENTS_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_SINGLE_EVENT_1 = "GUI_SERIALDATE_SINGLE_EVENT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SERIALDATE_STATUS_TOO_MANY_DATES_2 = "GUI_SERIALDATE_STATUS_TOO_MANY_DATES_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SETTINGS_TAB_DESCRIPTION_0 = "GUI_SETTINGS_TAB_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SETTINGS_TAB_LABEL_0 = "GUI_SETTINGS_TAB_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2 = "LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_TAKE_READING_ENTITY_TIME_1 = "LOG_TAKE_READING_ENTITY_TIME_1";
 
     /** Message constant for key in the resource bundle. */
@@ -48,30 +78,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_TAKE_VISITING_TYPES_TIME_1 = "LOG_TAKE_VISITING_TYPES_TIME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2 = "LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERROR_FAILED_READING_CATEGORIES_1 = "ERROR_FAILED_READING_CATEGORIES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1 = "ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_STATUS_TOO_MANY_DATES_2 = "GUI_SERIALDATE_STATUS_TOO_MANY_DATES_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_EMPTY_EVENT_SERIES_0 = "GUI_SERIALDATE_EMPTY_EVENT_SERIES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_SINGLE_EVENT_1 = "GUI_SERIALDATE_SINGLE_EVENT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_MULTIPLE_EVENTS_3 = "GUI_SERIALDATE_MULTIPLE_EVENTS_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SERIALDATE_INVALID_SERIES_SPECIFICATION_0 = "GUI_SERIALDATE_INVALID_SERIES_SPECIFICATION_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.messages";

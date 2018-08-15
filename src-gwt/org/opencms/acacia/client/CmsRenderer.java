@@ -40,6 +40,7 @@ import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
 
@@ -443,6 +444,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                     // attributes configured as invisible, will be skipped
                     continue;
                 }
+                if (nextTab != null) {
+                    CmsDebugLog.consoleLog(
+                        "Checking tab start for " + attributeName + " with tab start name: " + nextTab.getStartName());
+                }
                 if ((nextTab != null) && attributeName.endsWith("/" + nextTab.getStartName())) {
                     currentTab = nextTab;
                     nextTab = tabIt.hasNext() ? tabIt.next() : null;
@@ -580,6 +585,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 if ((attribute == null) && (minOccurrence > 0)) {
                     attribute = createEmptyAttribute(entity, attributeName, handler, minOccurrence);
                 }
+
                 CmsType attributeType = entityType.getAttributeType(attributeName);
                 CmsValuePanel attributeElement = new CmsValuePanel();
                 context.add(attributeElement);

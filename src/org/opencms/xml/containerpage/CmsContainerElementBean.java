@@ -401,7 +401,10 @@ public class CmsContainerElementBean implements Cloneable {
     public String editorHash() {
 
         if (m_editorHash == null) {
-            m_editorHash = m_elementId.toString() + getSettingsHash();
+            m_editorHash = getInstanceId();
+            if (m_editorHash == null) {
+                throw new RuntimeException("Missing instance id");
+            }
         }
         return m_editorHash;
     }
@@ -781,6 +784,16 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Gets the hash code for the element settings.<p>
+     *
+     * @return the hash code for the element settings
+     */
+    private String getSettingsHash() {
+
+        return getSettingsHash(getIndividualSettings(), m_createNew);
+    }
+
+    /**
      * Sets the settings map.<p>
      *
      * @param settings the settings
@@ -792,15 +805,5 @@ public class CmsContainerElementBean implements Cloneable {
         } else {
             m_settings = new CmsNullIgnoringConcurrentMap<String, String>(settings);
         }
-    }
-
-    /**
-     * Gets the hash code for the element settings.<p>
-     *
-     * @return the hash code for the element settings
-     */
-    private String getSettingsHash() {
-
-        return getSettingsHash(getIndividualSettings(), m_createNew);
     }
 }

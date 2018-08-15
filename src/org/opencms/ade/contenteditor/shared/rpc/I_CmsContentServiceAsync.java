@@ -28,9 +28,9 @@
 package org.opencms.ade.contenteditor.shared.rpc;
 
 import org.opencms.acacia.shared.CmsEntity;
-import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
+import org.opencms.ade.contenteditor.shared.CmsSaveResult;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -86,6 +86,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * Loads the content definition for a given type creating a new resource according to the new link and model file parameter.<p>
      *
      * @param entityId the entity id/URI
+     * @param clientId the container element client id if available
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
@@ -97,6 +98,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      */
     void loadInitialDefinition(
         String entityId,
+        String clientId,
         String newLink,
         CmsUUID modelFileId,
         String editContext,
@@ -111,12 +113,14 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * This will load the entity representation of a new locale node.<p>
      *
      * @param entityId the entity id/URI
+     * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
      * @param callback the asynchronous callback
      */
     void loadNewDefinition(
         String entityId,
+        String clientId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
         AsyncCallback<CmsContentDefinition> callback);
@@ -129,9 +133,10 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
     void prefetch(AsyncCallback<CmsContentDefinition> callback);
 
     /**
-     * Saves and deletes the given entities. Returns a validation result in case of invalid entities.<p>
+     * Saves and deletes the given entities. Returns the editor save result information.<p>
      *
      * @param lastEditedEntity the last edited entity
+     * @param clientId the container element client id if available
      * @param deletedEntities the entity id's to delete
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
@@ -140,11 +145,12 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      */
     void saveAndDeleteEntities(
         CmsEntity lastEditedEntity,
+        String clientId,
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,
         boolean clearOnSuccess,
-        AsyncCallback<CmsValidationResult> callback);
+        AsyncCallback<CmsSaveResult> callback);
 
     /**
      * Saves a value in an existing XML content.<p>
