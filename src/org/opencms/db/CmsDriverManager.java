@@ -35,6 +35,8 @@ import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.timing.CmsDefaultProfilingHandler;
+import org.opencms.db.timing.CmsProfilingInvocationHandler;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
 import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
@@ -118,6 +120,7 @@ import org.opencms.util.PrintfFormat;
 import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workplace.threads.A_CmsProgressThread;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10320,7 +10323,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (driverName == null) {
             CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
         }
-        return newDriverInstance(dbc, configManager, driverName, drivers);
+        Object result = newDriverInstance(dbc, configManager, driverName, drivers);
+        if ("true".equalsIgnoreCase(System.getProperty("opencms.profile.drivers"))) {
+            result = wrapDriverInProfilingProxy(result);
+        }
+        return result;
     }
 
     /**
@@ -11186,6 +11193,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Gets the correct driver interface to use for proxying a specific driver instance.<p>
+     *
+     * @param obj the driver instance
+     * @return the interface to use for proxying
+     */
+    private Class<?> getDriverInterfaceForProxy(Object obj) {
+
+        for (Class<?> interfaceClass : new Class[] {
+            I_CmsUserDriver.class,
+            I_CmsVfsDriver.class,
+            I_CmsProjectDriver.class,
+            I_CmsHistoryDriver.class,
+            I_CmsSubscriptionDriver.class}) {
+            if (interfaceClass.isAssignableFrom(obj.getClass())) {
+                return interfaceClass;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the correct project id.<p>
      *
      * @param dbc the database context
@@ -11934,6 +11962,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // update the structure state
             getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_STRUCTURE_STATE);
         }
+    }
+
+    /**
+     * Wraps a driver object with a dynamic proxy that counts method calls and their durations.<p>
+     *
+     * @param newDriverInstance the driver instance to wrap
+     * @return the proxy
+     */
+    private Object wrapDriverInProfilingProxy(Object newDriverInstance) {
+
+        Class<?> cls = getDriverInterfaceForProxy(newDriverInstance);
+        if (cls == null) {
+            return newDriverInstance;
+        }
+        return Proxy.newProxyInstance(
+            Thread.currentThread().getContextClassLoader(),
+            new Class[] {cls},
+            new CmsProfilingInvocationHandler(newDriverInstance, CmsDefaultProfilingHandler.INSTANCE));
     }
 
 }

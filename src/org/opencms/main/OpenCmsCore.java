@@ -48,6 +48,8 @@ import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.db.CmsSubscriptionManager;
+import org.opencms.db.timing.CmsDefaultProfilingHandler;
+import org.opencms.db.timing.CmsThreadStatsTreeProfilingHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -117,6 +119,7 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Security;
 import java.util.ArrayList;
@@ -2381,7 +2384,28 @@ public final class OpenCmsCore {
         }
         // only init ADE manager in case of servlet initialization, it won't be needed in case of shell access
         if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
-            m_adeManager.initialize();
+            CmsThreadStatsTreeProfilingHandler stats = new CmsThreadStatsTreeProfilingHandler();
+            try {
+                CmsDefaultProfilingHandler.INSTANCE.addHandler(stats);
+                m_adeManager.initialize();
+            } finally {
+                CmsDefaultProfilingHandler.INSTANCE.removeHandler(stats);
+                if (stats.hasData()) {
+                    String adeInitData = stats.dump();
+                    String prefix = String.format("%010X", Long.valueOf(System.currentTimeMillis() / 1000));
+                    String path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                        "logs/" + prefix + "_startup-ade-driver-report.xml");
+                    try (FileOutputStream out = new FileOutputStream(path)) {
+                        out.write(adeInitData.getBytes("UTF-8"));
+                    } catch (Exception e) {
+                        LOG.error(
+                            "Could not write ADE init profiling data to file, writing to log instead: "
+                                + e.getLocalizedMessage(),
+                            e);
+                        LOG.error(adeInitData);
+                    }
+                }
+            }
         }
         // everything is initialized, now start publishing
         m_publishManager.startPublishing();
