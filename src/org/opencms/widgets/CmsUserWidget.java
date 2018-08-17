@@ -28,32 +28,31 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
-import org.opencms.xml.types.A_CmsXmlContentValue;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides a OpenCms User selection widget, for use on a widget dialog.<p>
  *
  * @since 6.0.0
  */
-public class CmsUserWidget extends A_CmsWidget implements I_CmsADEWidget {
+public class CmsUserWidget extends CmsSelectWidget {
 
     /** Configuration parameter to set the flags of the users to display, optional. */
     public static final String CONFIGURATION_FLAGS = "flags";
 
     /** Configuration parameter to set the group of users to display, optional. */
     public static final String CONFIGURATION_GROUP = "group";
+
+    private static final Log LOG = CmsLog.getLog(CmsUserWidget.class);
 
     /** The the flags used in the popup window. */
     private Integer m_flags;
@@ -120,65 +119,6 @@ public class CmsUserWidget extends A_CmsWidget implements I_CmsADEWidget {
         }
 
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
-     */
-    public String getConfiguration(
-        CmsObject cms,
-        A_CmsXmlContentValue schemaType,
-        CmsMessages messages,
-        CmsResource resource,
-        Locale contentLocale) {
-
-        String result = "";
-        try {
-            if (m_groupName != null) {
-                List<CmsUser> users = cms.getUsersOfGroup(m_groupName);
-                Iterator<CmsUser> it = users.iterator();
-                int i = 0;
-                while (it.hasNext()) {
-                    CmsUser user = it.next();
-                    if (i > 0) {
-                        result += "|";
-                    }
-                    result += user.getFullName();
-                    i++;
-                }
-            } else {
-                Iterator<CmsUser> ituser = OpenCms.getOrgUnitManager().getUsers(cms, "/", true).iterator();
-                int i = 0;
-                while (ituser.hasNext()) {
-                    CmsUser user1 = ituser.next();
-                    if (i > 0) {
-                        result += "|";
-                    }
-                    result += user1.getFullName();
-                    i++;
-                }
-
-            }
-        } catch (CmsException e) {
-            // nothing to do;
-        }
-        return result;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getCssResourceLinks(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
-     */
-    public DisplayType getDefaultDisplayType() {
-
-        return DisplayType.singleline;
     }
 
     /**
@@ -278,35 +218,11 @@ public class CmsUserWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
-     */
-    public String getInitCall() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
      */
     public String getWidgetName() {
 
         return CmsSelectWidget.class.getName();
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
-     */
-    public boolean isInternal() {
-
-        return false;
     }
 
     /**
@@ -352,5 +268,33 @@ public class CmsUserWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
         }
         super.setConfiguration(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        List<CmsSelectWidgetOption> options = new ArrayList<>();
+        options.add(new CmsSelectWidgetOption("", true, ""));
+        try {
+            List<CmsUser> users;
+            if (m_groupName != null) {
+                users = cms.getUsersOfGroup(m_groupName);
+            } else {
+                users = OpenCms.getOrgUnitManager().getUsers(cms, "/", true);
+            }
+            for (CmsUser user : users) {
+                CmsSelectWidgetOption option = new CmsSelectWidgetOption(user.getName(), false, user.getFullName());
+                options.add(option);
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return options;
     }
 }
