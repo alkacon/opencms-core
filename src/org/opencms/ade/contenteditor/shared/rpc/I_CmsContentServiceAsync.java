@@ -72,12 +72,14 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * Loads the content definition for a given type.<p>
      *
      * @param entityId the entity id/URI
+     * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
      * @param callback the asynchronous callback
      */
     void loadDefinition(
         String entityId,
+        String clientId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
         AsyncCallback<CmsContentDefinition> callback);

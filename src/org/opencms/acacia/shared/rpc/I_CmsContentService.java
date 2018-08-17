@@ -93,13 +93,13 @@ public interface I_CmsContentService extends RemoteService {
     CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo) throws Exception;
 
     /**
-     * Validates the given entities and returns maps of error and warning messages in case of invalid attributes.<p>
+     * Validates the given entity and returns maps of error and warning messages in case of invalid attributes.<p>
      *
-     * @param changedEntities the entities to validate
+     * @param changedEntity the entity to validate
      *
      * @return the validation result
      *
      * @throws Exception if something goes wrong processing the request
      */
-    CmsValidationResult validateEntities(List<CmsEntity> changedEntities) throws Exception;
+    CmsValidationResult validateEntity(CmsEntity changedEntity) throws Exception;
 }

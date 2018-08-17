@@ -148,6 +148,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The type name prefix. */
     static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
 
+    /** The settings widget name for hidden entries. */
+    private static final String HIDDEN_SETTINGS_WIDGET_NAME = "hidden";
+
     /** The RDFA attributes string. */
     private static final String RDFA_ATTRIBUTES = CmsGwtConstants.ATTR_DATA_ID
         + "=\"%1$s\" "
@@ -157,8 +160,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The serial version id. */
     private static final long serialVersionUID = 7873052619331296648L;
 
+    /** The setting type name. */
+    private static final String SETTING_TYPE_NAME = "###SETTING_TYPE###";
+
     /** The settings attribute name prefix. */
-    private static final String SETTINGS_NAME_PREFIX = "SETTING:::";
+    private static final String SETTINGS_ATTRIBUTE_NAME_PREFIX = "SETTING:::";
+
+    /** The attribute name used for the client id. */
+    private static final String SETTINGS_CLIENT_ID_ATTRIBUTE = "/" + SETTINGS_ATTRIBUTE_NAME_PREFIX + "CLIENT_ID:::";
+
+    /** The settings validation rule type name. */
+    private static final String SETTINGS_RULE_TYPE_ERROR = "error";
 
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
@@ -490,10 +502,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection)
      */
     public CmsContentDefinition loadDefinition(
         String entityId,
+        String clientId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths)
     throws CmsRpcException {
@@ -512,7 +525,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 file,
                 content,
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
-                null,
+                clientId,
                 contentLocale,
                 false,
                 null,
@@ -736,6 +749,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             containerElement.getResource(),
                             locale,
                             getRequest());
+                        validateSettings(lastEditedEntity, validationResult, settingsConfig);
+                        if (validationResult.hasErrors()) {
+                            return new CmsSaveResult(false, validationResult);
+                        }
+
                         List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(
                             cms,
                             containerElement.getResource(),
@@ -893,15 +911,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#validateEntities(java.util.List)
+     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#validateEntity(org.opencms.acacia.shared.CmsEntity)
      */
-    public CmsValidationResult validateEntities(List<CmsEntity> changedEntities) throws CmsRpcException {
+    public CmsValidationResult validateEntity(CmsEntity changedEntity) throws CmsRpcException {
 
         CmsUUID structureId = null;
-        if (changedEntities.isEmpty()) {
+        if (changedEntity == null) {
             return new CmsValidationResult(null, null);
         }
-        structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
+        structureId = CmsContentDefinition.entityIdToUuid(changedEntity.getId());
         if (structureId != null) {
             CmsObject cms = getCmsObject();
             Set<String> setFieldNames = Sets.newHashSet();
@@ -909,16 +927,33 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-                for (CmsEntity entity : changedEntities) {
-                    String entityId = entity.getId();
-                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-                    if (content.hasLocale(contentLocale)) {
-                        content.removeLocale(contentLocale);
-                    }
-                    content.addLocale(cms, contentLocale);
-                    setFieldNames.addAll(addEntityAttributes(cms, content, "", entity, contentLocale));
+                String entityId = changedEntity.getId();
+                Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                if (content.hasLocale(contentLocale)) {
+                    content.removeLocale(contentLocale);
                 }
-                return validateContent(cms, structureId, content, setFieldNames);
+                content.addLocale(cms, contentLocale);
+                setFieldNames.addAll(addEntityAttributes(cms, content, "", changedEntity, contentLocale));
+
+                CmsValidationResult result = validateContent(cms, structureId, content, setFieldNames);
+                CmsEntityAttribute clientIdAttr = changedEntity.getAttribute(SETTINGS_CLIENT_ID_ATTRIBUTE);
+                if (clientIdAttr != null) {
+                    String clientId = clientIdAttr.getSimpleValue();
+                    CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
+                    I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
+                    if ((formatter != null)
+                        && (formatter.getSettings() != null)
+                        && !formatter.getSettings().isEmpty()) {
+                        Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
+                            cms,
+                            formatter,
+                            containerElement.getResource(),
+                            contentLocale,
+                            getRequest());
+                        validateSettings(changedEntity, result, settingsConfig);
+                    }
+                }
+                return result;
             } catch (Exception e) {
                 error(e);
             }
@@ -1174,16 +1209,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Adds the attribute values of the entity to the given XML content.<p>
-     *
-     * @param cms the current cms context
-     * @param content the XML content
-     * @param parentPath the parent path
-     * @param entity the entity
-     * @param contentLocale the content locale
-     *
-     * @return the set of xpaths of simple fields in the XML content which were set by this method
-     */
+    * Adds the attribute values of the entity to the given XML content.<p>
+    *
+    * @param cms the current cms context
+    * @param content the XML content
+    * @param parentPath the parent path
+    * @param entity the entity
+    * @param contentLocale the content locale
+    *
+    * @return the set of xpaths of simple fields in the XML content which were set by this method
+    */
     private Set<String> addEntityAttributes(
         CmsObject cms,
         CmsXmlContent content,
@@ -1288,6 +1323,18 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsMessages messages,
         Locale contentLocale) {
 
+        attributeConfiguration.put(
+            SETTINGS_CLIENT_ID_ATTRIBUTE,
+            new CmsAttributeConfiguration(
+                "internal_client_id",
+                "",
+                null,
+                null,
+                null,
+                DisplayType.none.name(),
+                false,
+                false,
+                false));
         for (Entry<String, CmsXmlContentProperty> entry : settingsConfig.entrySet()) {
             CmsXmlContentProperty prop = entry.getValue();
             attributeConfiguration.put(
@@ -1299,7 +1346,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     getWidgetConfig(prop.getWidget(), prop.getWidgetConfiguration(), messages, contentLocale),
                     prop.getDefault(),
                     DisplayType.singleline.name(),
-                    !"hidden".equals(prop.getWidget()),
+                    !HIDDEN_SETTINGS_WIDGET_NAME.equals(prop.getWidget()),
                     false,
                     false));
         }
@@ -1337,9 +1384,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         List<I_CmsFormatterBean> nestedFormatters) {
 
         CmsType baseType = types.get(entityType);
-        CmsType settingType = new CmsType("SETTING");
+        CmsType settingType = new CmsType(SETTING_TYPE_NAME);
         types.put(settingType.getId(), settingType);
-
+        baseType.addAttribute(SETTINGS_CLIENT_ID_ATTRIBUTE, settingType, 1, 1);
         // add main settings first
         for (Entry<String, CmsXmlContentProperty> entry : settingsConfig.entrySet()) {
             boolean nested = false;
@@ -1386,6 +1433,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsContainerElementBean containerElement,
         List<I_CmsFormatterBean> nestedFormatters) {
 
+        entity.addAttributeValue(SETTINGS_CLIENT_ID_ATTRIBUTE, containerElement.editorHash());
         for (Entry<String, String> settingEntry : containerElement.getIndividualSettings().entrySet()) {
             boolean nested = false;
             if (nestedFormatters != null) {
@@ -1397,9 +1445,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (attribute != null) {
                             nestedEntity = attribute.getComplexValue();
                         } else {
-                            nestedEntity = new CmsEntity(
-                                entity.getId() + nestedSettingAttributeName + "[1]",
-                                formatter.getId());
+                            nestedEntity = new CmsEntity(nestedSettingAttributeName + "[1]", formatter.getId());
                             entity.addAttributeValue(nestedSettingAttributeName, nestedEntity);
                         }
                         nestedEntity.addAttributeValue(
@@ -1813,7 +1859,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     private String getSettingsAttributeName(String settingName) {
 
-        return "/" + SETTINGS_NAME_PREFIX + settingName;
+        return "/" + SETTINGS_ATTRIBUTE_NAME_PREFIX + settingName;
     }
 
     /**
@@ -1886,7 +1932,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     private boolean isSettingsAttribute(String attributeName) {
 
-        return attributeName.startsWith("/" + SETTINGS_NAME_PREFIX);
+        return attributeName.startsWith("/" + SETTINGS_ATTRIBUTE_NAME_PREFIX);
     }
 
     /**
@@ -2058,7 +2104,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
                 addSettingsAttributes(attrConfig, settingsConfig, nestedFormatters, messages, locale);
                 addSettingsTypes(entity.getTypeName(), types, settingsConfig, nestedFormatters);
-                addSettingsValues(entity, containerElement, nestedFormatters);
+                if (editedLocaleEntity != null) {
+                    transferSettingValues(editedLocaleEntity, entity);
+                } else {
+                    addSettingsValues(entity, containerElement, nestedFormatters);
+                }
                 if (tabInfos.isEmpty()) {
                     tabInfos.add(new CmsTabInfo("Content", "content", null, false, null));
                 }
@@ -2066,7 +2116,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     new CmsTabInfo(
                         Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_LABEL_0),
                         "###formattersettings###",
-                        SETTINGS_NAME_PREFIX + formatter.getSettings().keySet().iterator().next(),
+                        SETTINGS_ATTRIBUTE_NAME_PREFIX + formatter.getSettings().keySet().iterator().next(),
                         false,
                         Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0)));
             }
@@ -2225,12 +2275,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
             }
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)
-                && !"hidden".equals(settingsEntry.getValue().getWidget())
+                && !HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && values.containsKey(settingsEntry.getKey())) {
                 values.remove(settingsEntry.getKey());
                 hasChangedSettings = true;
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
-                && !"hidden".equals(settingsEntry.getValue().getWidget())
+                && !HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
                 values.put(settingsEntry.getKey(), value);
                 hasChangedSettings = true;
@@ -2292,6 +2342,31 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         addEntityAttributes(cms, content, "", entity, contentLocale);
         content.synchronizeLocaleIndependentValues(cms, skipPaths, contentLocale);
+    }
+
+    /**
+     * Transfers settings attribute values from one entity to another.<p>
+     *
+     * @param source the source entity
+     * @param target the target entity
+     */
+    private void transferSettingValues(CmsEntity source, CmsEntity target) {
+
+        for (CmsEntityAttribute attr : source.getAttributes()) {
+            if (isSettingsAttribute(attr.getAttributeName())) {
+                if (attr.isSimpleValue()) {
+                    target.addAttributeValue(attr.getAttributeName(), attr.getSimpleValue());
+                } else {
+                    CmsEntity nestedSource = attr.getComplexValue();
+
+                    CmsEntity nested = new CmsEntity(nestedSource.getId(), nestedSource.getTypeName());
+                    for (CmsEntityAttribute nestedAttr : nestedSource.getAttributes()) {
+                        nested.addAttributeValue(nestedAttr.getAttributeName(), nestedAttr.getSimpleValue());
+                    }
+                    target.addAttributeValue(attr.getAttributeName(), nested);
+                }
+            }
+        }
     }
 
     /**
@@ -2366,6 +2441,83 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
         }
         return new CmsValidationResult(errorsByEntity, warningsByEntity);
+    }
+
+    /**
+     * Validates the settings attribute values.<p>
+     *
+     * @param entity the entity to validate
+     * @param validationResult the validation result
+     * @param settingsConfig the settings configuration
+     */
+    private void validateSettings(
+        CmsEntity entity,
+        CmsValidationResult validationResult,
+        Map<String, CmsXmlContentProperty> settingsConfig) {
+
+        Map<String, Map<String[], String>> errors = validationResult.getErrors();
+        Map<String[], String> entityErrors = errors.get(entity.getId());
+        if (entityErrors == null) {
+            entityErrors = new HashMap<String[], String>();
+        }
+        Map<String, Map<String[], String>> warnings = validationResult.getWarnings();
+        Map<String[], String> entityWarnings = warnings.get(entity.getId());
+        if (entityWarnings == null) {
+            entityWarnings = new HashMap<String[], String>();
+        }
+
+        for (CmsEntityAttribute attribute : entity.getAttributes()) {
+            if (isSettingsAttribute(attribute.getAttributeName())) {
+                if (attribute.isSimpleValue()) {
+                    String settingsKey = attribute.getAttributeName().substring(
+                        SETTINGS_ATTRIBUTE_NAME_PREFIX.length() + 1);
+                    CmsXmlContentProperty prop = settingsConfig.get(settingsKey);
+                    if (prop != null) {
+                        String regex = prop.getRuleRegex();
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(regex)) {
+                            if (!attribute.getSimpleValue().matches(regex)) {
+                                String[] path = new String[] {attribute.getAttributeName()};
+
+                                if (SETTINGS_RULE_TYPE_ERROR.equals(prop.getRuleType())) {
+                                    entityErrors.put(path, prop.getError());
+                                } else {
+                                    entityWarnings.put(path, prop.getError());
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    CmsEntity nested = attribute.getComplexValue();
+                    for (CmsEntityAttribute nestedAttribute : nested.getAttributes()) {
+                        String settingsKey = nestedAttribute.getAttributeName().substring(
+                            SETTINGS_ATTRIBUTE_NAME_PREFIX.length() + 1);
+                        CmsXmlContentProperty prop = settingsConfig.get(settingsKey);
+                        if (prop != null) {
+                            String regex = prop.getRuleRegex();
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(regex)) {
+                                if (!nestedAttribute.getSimpleValue().matches(regex)) {
+                                    String[] path = new String[] {
+                                        attribute.getAttributeName(),
+                                        nestedAttribute.getAttributeName()};
+                                    if (SETTINGS_RULE_TYPE_ERROR.equals(prop.getRuleType())) {
+                                        entityErrors.put(path, prop.getError());
+                                    } else {
+                                        entityWarnings.put(path, prop.getError());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!entityErrors.isEmpty()) {
+            errors.put(entity.getId(), entityErrors);
+        }
+        if (!entityWarnings.isEmpty()) {
+            warnings.put(entity.getId(), entityWarnings);
+        }
+
     }
 
     /**

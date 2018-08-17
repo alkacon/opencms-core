@@ -653,7 +653,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadDefinition(entityId, editedEntity, getSkipPaths(), this);
+                getService().loadDefinition(entityId, m_clientId, editedEntity, getSkipPaths(), this);
             }
 
             @Override

@@ -81,6 +81,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * Loads the content definition for a given entity.<p>
      *
      * @param entityId the entity id/URI
+     * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
      *
@@ -88,7 +89,11 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      *
      * @throws Exception if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(String entityId, CmsEntity editedLocaleEntity, Collection<String> skipPaths)
+    CmsContentDefinition loadDefinition(
+        String entityId,
+        String clientId,
+        CmsEntity editedLocaleEntity,
+        Collection<String> skipPaths)
     throws Exception;
 
     /**
