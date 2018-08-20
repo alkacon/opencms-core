@@ -1,4 +1,4 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-btn, mce-active, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+@external mce-tinymce, mce-widget, mce-tooltip, mce-btn, mce-active, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -98,7 +98,7 @@ div.attributeValue.secondColumn{
 .attributeValue.singleLine > .widgetHolder > div > .label{
 	position:absolute;
 	text-align: left;
-	right: 765px;
+	right: 665px;
 	margin:0px;
 	left: 7px;
 	top: 6px;
@@ -109,7 +109,7 @@ div.attributeValue.secondColumn{
 .attributeValue.singleLine > .widgetHolder > div > .widget {
 	float: right;
 	margin: 4px 25px 4px 0px;
-	width: 730px;
+	width: 630px;
 }
 
 /* clear both after the widget holder */
@@ -438,12 +438,17 @@ div.helpBubble{
 	background: #FFFFCC;
 	color: value("constants.css.textColor");
 	top: 100%;
-	left: 2px;
+	left: 150px;
+	max-width: 600px;
 	display: none;
 	padding: 7px 19px 5px 5px;
 	border-radius:value("constants.css.borderRadius");
 	z-index: 10;
 	box-shadow: 2px 2px 2px #666666;
+}
+
+div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
+	color: value("constants.css.textColorImportant");
 }
 
 .hasError .helpMessage, .hasWarning .helpMessage{
@@ -696,5 +701,17 @@ div.overlayButtonPanel > div{
 	font-size: 126%; 
 }
 
+.tabDescription.tabDescription .tabDescriptionPanel {
+	background-color: #ffffcc;
+	color: value("constants.css.textColor");
+	border: 1px solid value("constants.css.borderColor");
+	border-radius: value("constants.css.borderRadius");
+	padding: 6px;
+	margin: 8px 25px 2px 3px; 
+	font-size: value("constants.css.fontSize");
+}
 
+.tabDescription.tabDescription .tabDescriptionPanel a{
+	color: value("constants.css.textColorImportant");
+}
 
