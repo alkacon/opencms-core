@@ -269,6 +269,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String input();
 
         /**
+         * Returns the CSS class assigned on label hover.<p>
+         *
+         * @return the CSS class assigned on label hover
+         */
+        String labelHover();
+
+        /**
          * Returns the move handle CSS class name.<p>
          *
          * @return the move handle CSS class

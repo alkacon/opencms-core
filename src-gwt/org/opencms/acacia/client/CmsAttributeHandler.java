@@ -623,8 +623,6 @@ public class CmsAttributeHandler extends CmsRootHandler {
             m_attributeValueViews.remove(valueView);
             m_attributeValueViews.add(index, valueView);
 
-            // CmsDebugLog.consoleLog(m_attributeValueViews.toString());
-
             ((FlowPanel)container).insert(valueView, index);
 
             insertHandlers(valueIndex);

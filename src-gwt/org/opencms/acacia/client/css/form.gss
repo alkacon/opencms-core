@@ -497,7 +497,7 @@ div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
 	color: value("constants.css.textColor");
 }
 
-.attributeValue.focused > .helpBubble, div.attributeValue.focused.hasError > .helpBubble, div.attributeValue.focused.hasWarning > .helpBubble{
+.attributeValue.focused > .helpBubble, div.attributeValue.focused.hasError > .helpBubble, div.attributeValue.focused.hasWarning > .helpBubble, div.attributeValue.labelHover > div.helpBubble{
 	display: block;
 }
 

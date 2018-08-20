@@ -84,13 +84,8 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
             CmsDebugLog.consoleLog("There were " + configParts.length + " configuration parts. 3 were expected.");
         }
         m_valuePath = splitPath(configParts[0]);
-        CmsDebugLog.consoleLog("The first config part (xpath): " + configParts[0]);
         m_optionsDefault = new CmsSelectConfigurationParser(configParts[1]);
-        CmsDebugLog.consoleLog("The second config part (default opts): " + configParts[1]);
-        CmsDebugLog.consoleLog("Read " + m_optionsDefault.getOptions().size() + " Default options.");
         m_optionsAllRemoved = new CmsSelectConfigurationParser(configParts[2]);
-        CmsDebugLog.consoleLog("The third config part (all-removed opts): " + configParts[2]);
-        CmsDebugLog.consoleLog("Read " + m_optionsAllRemoved.getOptions().size() + " 'All removed' options.");
 
         // Place the check above the box using a vertical panel.
         m_selectBox.addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
@@ -260,7 +255,6 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
      */
     private void replaceOptions(CmsSelectConfigurationParser parser) {
 
-        CmsDebugLog.consoleLog("Replacing options. Should have " + parser.getOptions().size() + " new options.");
         String oldValue = m_selectBox.getFormValueAsString();
         // set the help info first!!
         for (Entry<String, String> helpEntry : parser.getHelpTexts().entrySet()) {
@@ -274,11 +268,7 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
             m_selectBox.selectValue(parser.getDefaultValue());
             //TODO?: m_defaultValue = parser.getDefaultValue();
         }
-        CmsDebugLog.consoleLog("Finished replacing ... set selection");
-
         m_selectBox.setFormValueAsString(oldValue);
-        CmsDebugLog.consoleLog("Selection set.");
-
     }
 
     /**
