@@ -72,6 +72,7 @@ public class CmsHistoryRow {
      * @param bean the history resource bean
      */
     public CmsHistoryRow(CmsHistoryResourceBean bean) {
+
         m_bean = bean;
     }
 
@@ -186,6 +187,17 @@ public class CmsHistoryRow {
     }
 
     /**
+     * Gets the file size.<p>
+     *
+     * @return the file size
+     */
+    @Column(header = org.opencms.workplace.commons.Messages.GUI_LABEL_SIZE_0, order = 80)
+    public Integer getSize() {
+
+        return Integer.valueOf(m_bean.getSize());
+    }
+
+    /**
      * Gets the last modification user.<p>
      *
      * @return the last modification user
@@ -205,17 +217,6 @@ public class CmsHistoryRow {
     public String getVersion() {
 
         return formatVersion(m_bean);
-    }
-
-    /**
-     * Gets the file size.<p>
-     *
-     * @return the file size
-     */
-    @Column(header = org.opencms.workplace.commons.Messages.GUI_LABEL_SIZE_0, order = 80)
-    Integer getSize() {
-
-        return Integer.valueOf(m_bean.getSize());
     }
 
 }
