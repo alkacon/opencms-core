@@ -496,6 +496,8 @@ public class CmsResourceTable extends CustomComponent {
             long release = resource.getDateReleased();
             if (release != CmsResource.DATE_RELEASED_DEFAULT) {
                 resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(Long.valueOf(release));
+            } else {
+                resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(null);
             }
         }
 
@@ -503,6 +505,8 @@ public class CmsResourceTable extends CustomComponent {
             long expire = resource.getDateExpired();
             if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
                 resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(Long.valueOf(expire));
+            } else {
+                resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(null);
             }
         }
 
