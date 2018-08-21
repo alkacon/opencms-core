@@ -481,7 +481,8 @@ public class CmsADEConfigData {
 
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
         CmsResourceTypeConfig typeConfig = getResourceType(type);
-        if ((typeConfig != null) && !typeConfig.isDetailPagesDisabled()) {
+        if (type.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)
+            || ((typeConfig != null) && !typeConfig.isDetailPagesDisabled())) {
 
             CmsDetailPageInfo defaultPage = null;
             for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
