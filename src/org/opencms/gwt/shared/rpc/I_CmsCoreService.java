@@ -239,6 +239,19 @@ public interface I_CmsCoreService extends RemoteService {
     String lockIfExists(String sitePath) throws CmsRpcException;
 
     /**
+     * Locks the given resource with a temporary lock if it exists.<p>
+     * If the resource does not exist yet, the closest existing ancestor folder will check if it is lockable.<p>
+     *
+     * @param sitePath the site path of the resource to lock
+     * @param loadTime the time when the requested resource was loaded
+     *
+     * @return <code>null</code> if successful, an error message if not
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    String lockIfExists(String sitePath, long loadTime) throws CmsRpcException;
+
+    /**
      * Locks the given resource with a temporary lock.<p>
      *
      * @param structureId the structure id of the resource to lock
@@ -248,6 +261,19 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     String lockTemp(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Locks the given resource with a temporary lock.<p>
+     * Locking will fail in case the requested resource has been changed since the given load time.<p>
+     *
+     * @param structureId the resource structure id
+     * @param loadTime the time when the requested resource was loaded
+     *
+     * @return <code>null</code> if successful, an error message if not
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    String lockTemp(CmsUUID structureId, long loadTime) throws CmsRpcException;
 
     /**
      * Generates core data for prefetching in the host page.<p>

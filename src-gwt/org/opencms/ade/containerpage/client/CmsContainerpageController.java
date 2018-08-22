@@ -2344,9 +2344,15 @@ public final class CmsContainerpageController {
             };
 
             if (getData().getDetailContainerPage() != null) {
-                CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage(), call);
+                CmsCoreProvider.get().lockOrReturnError(
+                    getData().getDetailContainerPage(),
+                    getData().getLoadTime(),
+                    call);
             } else {
-                CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId(), call);
+                CmsCoreProvider.get().lockOrReturnError(
+                    CmsCoreProvider.get().getStructureId(),
+                    getData().getLoadTime(),
+                    call);
             }
         }
     }

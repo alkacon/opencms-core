@@ -1457,7 +1457,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 modelGroupElementId,
                 mainLocale != null ? mainLocale.toString() : null,
                 localeLinkBeans,
-                title);
+                title,
+                System.currentTimeMillis());
         } catch (Throwable e) {
             error(e);
         }

@@ -716,6 +716,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         CmsAlertDialog alert = new CmsAlertDialog(
             Messages.get().key(Messages.ERR_LOCK_TITLE_RESOURCE_LOCKED_0),
             errorMessage);
+        alert.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                m_controller.reloadPage();
+            }
+        });
+
         alert.center();
     }
 

@@ -859,6 +859,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      * @param panel the element panel
      * @param mainLocale the main language to copy in case the element language node does not exist yet
+     * @param loadTime the time when the requested resource was loaded
      * @param onClose the command to execute on close
      */
     public void openInlineEditor(
@@ -867,13 +868,14 @@ public final class CmsContentEditor extends CmsEditorBase {
         String locale,
         final I_CmsInlineFormParent panel,
         final String mainLocale,
+        long loadTime,
         I_CmsSimpleCallback<Boolean> onClose) {
 
         initEventPreviewHandler();
         final String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
-        CmsCoreProvider.get().lock(elementId, new I_CmsSimpleCallback<Boolean>() {
+        CmsCoreProvider.get().lock(elementId, loadTime, new I_CmsSimpleCallback<Boolean>() {
 
             public void execute(Boolean arg) {
 

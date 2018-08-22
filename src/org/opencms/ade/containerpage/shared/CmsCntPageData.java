@@ -100,6 +100,12 @@ public final class CmsCntPageData implements IsSerializable {
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
 
+    /** The app title to display in the toolbar. */
+    private String m_appTitle;
+
+    /** The element delete mode. */
+    private ElementDeleteMode m_deleteMode;
+
     /** The detail view container resource path. */
     private String m_detailContainerPage;
 
@@ -124,6 +130,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The date at which the container page was last modified. */
     private long m_lastModified;
 
+    /** The time when the page was loaded. */
+    private long m_loadTime;
+
     /** The content locale. */
     private String m_locale;
 
@@ -135,6 +144,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The main locale to this page in case it is part of a locale group. */
     private String m_mainLocale;
+
+    /** The model group base element id. */
+    private String m_modelGroupEmenetId;
 
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
@@ -163,15 +175,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
-    /** The model group base element id. */
-    private String m_modelGroupEmenetId;
-
-    /** The app title to display in the toolbar. */
-    private String m_appTitle;
-
-    /** The element delete mode. */
-    private ElementDeleteMode m_deleteMode;
-
     /**
      * Constructor.<p>
      *
@@ -198,6 +201,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param mainLocale the main locale to this page in case it is part of a locale group
      * @param localeLinkBeans beans for links to other pages in the locale group
      * @param appTitle the title to display in the toolbar
+     * @param loadTime the current time
      */
     public CmsCntPageData(
         String onlineLink,
@@ -222,7 +226,9 @@ public final class CmsCntPageData implements IsSerializable {
         String modelGroupEmenetId,
         String mainLocale,
         Map<String, CmsLocaleLinkBean> localeLinkBeans,
-        String appTitle) {
+        String appTitle,
+        long loadTime) {
+
         m_onlineLink = onlineLink;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -246,6 +252,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_mainLocale = mainLocale;
         m_localeLinkBeans = localeLinkBeans;
         m_appTitle = appTitle;
+        m_loadTime = loadTime;
     }
 
     /**
@@ -344,6 +351,16 @@ public final class CmsCntPageData implements IsSerializable {
     public List<CmsElementViewInfo> getElementViews() {
 
         return m_elementViews;
+    }
+
+    /**
+     * Returns the time off page load.<p>
+     *
+     * @return the time stamp
+     */
+    public long getLoadTime() {
+
+        return m_loadTime;
     }
 
     /**

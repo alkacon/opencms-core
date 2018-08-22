@@ -428,15 +428,19 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 classicEdit.run();
             } else {
                 String editorLocale = CmsCoreProvider.get().getLocale();
-                String mainLocale = m_handler.m_controller.getData().getMainLocale();
-                if (mainLocale == null) {
+                final String mainLocale;
+                if (m_handler.m_controller.getData().getMainLocale() == null) {
                     Element htmlEl = CmsDomUtil.querySelector(
                         "[" + CmsGwtConstants.ATTR_DATA_ID + "*='" + serverId + "']",
                         element.getElement());
                     if (htmlEl != null) {
                         String entityId = htmlEl.getAttribute(CmsGwtConstants.ATTR_DATA_ID);
                         mainLocale = CmsContentDefinition.getLocaleFromId(entityId);
+                    } else {
+                        mainLocale = null;
                     }
+                } else {
+                    mainLocale = m_handler.m_controller.getData().getMainLocale();
                 }
                 I_CmsSimpleCallback<Boolean> onClose = new I_CmsSimpleCallback<Boolean>() {
 
@@ -450,7 +454,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     addEditingHistoryItem(true);
                     CmsEditorContext context = getEditorContext();
                     context.setHtmlContextInfo(getContextInfo(element));
-                    // remove expired style before initializing the editorm_dependingElementId
+                    // remove expired style before initializing the editor
                     element.setReleasedAndNotExpired(true);
 
                     CmsContentEditor.getInstance().openInlineEditor(
@@ -459,22 +463,46 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         editorLocale,
                         element,
                         mainLocale,
+                        m_handler.m_controller.getData().getLoadTime(),
                         onClose);
                 } else {
                     addEditingHistoryItem(false);
+                    boolean allowSettings = !m_handler.m_controller.isEditingDisabled()
+                        && !serverId.equals(String.valueOf(m_handler.m_controller.getData().getDetailId()));
+                    I_CmsSimpleCallback<Boolean> openEditor = new I_CmsSimpleCallback<Boolean>() {
 
-                    CmsContentEditor.getInstance().openFormEditor(
-                        getEditorContext(),
-                        editorLocale,
-                        serverId,
-                        m_currentElementId,
-                        null,
-                        null,
-                        null,
-                        null,
-                        mainLocale,
-                        null,
-                        onClose);
+                        public void execute(Boolean lockedPage) {
+
+                            CmsContentEditor.getInstance().openFormEditor(
+                                getEditorContext(),
+                                editorLocale,
+                                serverId,
+                                lockedPage.booleanValue() ? getCurrentElementId() : null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                mainLocale,
+                                null,
+                                onClose);
+                        }
+                    };
+                    if (allowSettings) {
+                        if (m_handler.m_controller.getData().getDetailContainerPage() != null) {
+                            CmsCoreProvider.get().lock(
+                                m_handler.m_controller.getData().getDetailContainerPage(),
+                                m_handler.m_controller.getData().getLoadTime(),
+                                openEditor);
+                        } else {
+                            CmsCoreProvider.get().lock(
+                                CmsCoreProvider.get().getStructureId(),
+                                m_handler.m_controller.getData().getLoadTime(),
+                                openEditor);
+                        }
+                    } else {
+                        openEditor.execute(Boolean.FALSE);
+                    }
+
                 }
             }
         } else {
