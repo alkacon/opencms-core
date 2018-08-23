@@ -1062,6 +1062,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 cms.getRequestContext().getRootUri());
             CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
             I_CmsFormatterBean formatter = formatters.getDetailFormatter(getType(), getContainerWidth());
+
             if (formatter != null) {
                 // use structure id as the instance id to enable use of nested containers
                 Map<String, String> settings = new HashMap<String, String>();
@@ -1078,7 +1079,20 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     }
                 }
 
-                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
+                String formatterKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                if (settings.containsKey(formatterKey)) {
+                    String formatterConfigId = settings.get(formatterKey);
+                    if (CmsUUID.isValidUUID(formatterConfigId)) {
+                        I_CmsFormatterBean formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                            cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                                new CmsUUID(formatterConfigId));
+                        if (formatterBean != null) {
+                            formatter = formatterBean;
+                        }
+                    }
+                }
+                settings.put(formatterKey, formatter.getId());
+                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
                     detailContent.getStructureId(),

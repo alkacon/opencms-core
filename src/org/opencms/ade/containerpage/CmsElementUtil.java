@@ -310,12 +310,22 @@ public class CmsElementUtil {
         String formatterId = element.getIndividualSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
-            formatter = formatters.get(formatterId);
+            if (CmsUUID.isValidUUID(formatterId)) {
+                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                    new CmsUUID(formatterId));
+            } else {
+                formatters.get(formatterId);
+            }
         }
         if (formatter == null) {
             formatterId = element.getIndividualSettings().get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY);
             if (formatterId != null) {
-                formatter = formatters.get(formatterId);
+                if (CmsUUID.isValidUUID(formatterId)) {
+                    formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                        new CmsUUID(formatterId));
+                } else {
+                    formatters.get(formatterId);
+                }
             }
         }
         if ((formatter == null) && (element.getFormatterId() != null)) {
