@@ -401,10 +401,7 @@ public class CmsContainerElementBean implements Cloneable {
     public String editorHash() {
 
         if (m_editorHash == null) {
-            m_editorHash = getInstanceId();
-            if (m_editorHash == null) {
-                throw new RuntimeException("Missing instance id");
-            }
+            m_editorHash = m_elementId.toString() + getSettingsHash();
         }
         return m_editorHash;
     }
@@ -790,7 +787,11 @@ public class CmsContainerElementBean implements Cloneable {
      */
     private String getSettingsHash() {
 
-        return getSettingsHash(getIndividualSettings(), m_createNew);
+        String instanceId = getInstanceId();
+        if (instanceId == null) {
+            throw new RuntimeException("Missing instance id");
+        }
+        return CmsADEManager.CLIENT_ID_SEPERATOR + getInstanceId();
     }
 
     /**
