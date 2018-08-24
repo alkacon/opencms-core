@@ -27,6 +27,8 @@
 
 package org.opencms.ade.detailpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -59,6 +61,9 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     /** The attribute containing the detail content resource. */
     public static final String ATTR_DETAIL_CONTENT_RESOURCE = "__opencms_detail_content_resource";
 
+    /** The attribute containing the detail function page resource. */
+    public static final String ATTR_DETAIL_FUNCTION_PAGE = "__opencms_detail_function_page";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailPageResourceHandler.class);
 
@@ -68,6 +73,18 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     public CmsDetailPageResourceHandler() {
 
         // empty
+    }
+
+    /**
+     * Returns the detail function page resource, if available.<p>
+     *
+     * @param req the current request
+     *
+     * @return the detail function page resource
+     */
+    public static CmsResource getDetailFunctionPage(ServletRequest req) {
+
+        return (CmsResource)req.getAttribute(ATTR_DETAIL_FUNCTION_PAGE);
     }
 
     /**
@@ -143,6 +160,30 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
                 // set the resource path
                 cms.getRequestContext().setUri(cms.getSitePath(detailPage));
                 return detailPage;
+            } else {
+                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().addSiteRoot(path));
+                // check if the detail name matches any named function
+                for (CmsFunctionReference ref : configData.getFunctionReferences()) {
+                    if (detailName.equals(ref.getName()) && (ref.getFunctionDefaultPageId() != null)) {
+                        CmsResource detailPage = cms.readDefaultFile(CmsResource.getFolderPath(path));
+                        if (OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
+                            if (res != null) {
+                                // response will be null if this run through the init handler is only for determining the locale
+                                CmsResource functionDefaultPage = cms.readResource(ref.getFunctionDefaultPageId());
+                                req.setAttribute(ATTR_DETAIL_FUNCTION_PAGE, functionDefaultPage);
+                                cms.getRequestContext().setDetailResource(functionDefaultPage);
+                            }
+                            // set the resource path
+                            cms.getRequestContext().setUri(cms.getSitePath(detailPage));
+                            return detailPage;
+                        } else {
+                            return null;
+                        }
+
+                    }
+                }
             }
         } catch (CmsPermissionViolationException e) {
             // trigger the permission denied handler

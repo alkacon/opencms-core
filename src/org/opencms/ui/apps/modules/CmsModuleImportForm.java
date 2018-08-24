@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.components.CmsAutoItemCreatingComboBox;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -91,6 +92,7 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
      *
      * @param app the module manager app instance for which this was opened
      */
+    @SuppressWarnings("deprecation")
     public CmsModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report) {
 
         super(app, start, report);
@@ -204,6 +206,10 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
                     OpenCms.getSystemInfo().getWebInfRfsPath(),
                     "packages/modules",
                     processFileName(filename));
+                // make sure parent folders exist
+                File rfsFile = new File(path);
+                rfsFile.getParentFile().mkdirs();
+
                 m_importFile = new CmsModuleImportFile(path);
                 try {
                     return new FileOutputStream(m_importFile.getPath());

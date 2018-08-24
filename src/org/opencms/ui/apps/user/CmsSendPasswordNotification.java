@@ -34,14 +34,26 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.notification.A_CmsNotification;
 import org.opencms.notification.CmsNotificationMacroResolver;
+import org.opencms.ui.login.CmsLoginHelper;
+import org.opencms.util.CmsMacroResolver;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 /**
  * Class to send email to user in case of password reset or creating new user.<p>
  */
 public class CmsSendPasswordNotification extends A_CmsNotification {
 
+    /** Field name. */
+    private static final String FIELD_CHANGE_PASSWORD = "TextChangePassword";
+
+    /** Field name. */
+    private static final String FIELD_KEEP_PASSWORD = "TextKeepPassword";
+
     /**Is user new? */
     private boolean m_new;
+
+    /**Is password temporal? */
+    private boolean m_tempPassword;
 
     /**
      * Public constructor.<p>
@@ -49,10 +61,11 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
      * @param cms CmsObject
      * @param password password
      * @param receiver User
-     * @param ou
+     * @param ou the user OU
      * @param adminUser User
      * @param link to login
      * @param newUser boolean
+     * @param tempPassword <code>true</code> to use a temporary password
      */
     public CmsSendPasswordNotification(
         CmsObject cms,
@@ -61,11 +74,28 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         String ou,
         CmsUser adminUser,
         String link,
-        boolean newUser) {
+        boolean newUser,
+        boolean tempPassword) {
 
         super(cms, receiver);
         m_new = newUser;
+        m_tempPassword = tempPassword;
         addMacro("password", password);
+        addMacro(
+            CmsNotificationMacroResolver.WORKPLACE_LOGIN_LINK,
+            "<a href =\""
+                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "?"
+                + CmsLoginHelper.PARAM_USERNAME
+                + "="
+                + receiver.getSimpleName()
+                + "&"
+                + CmsLoginHelper.PARAM_OUFQN
+                + "="
+                + receiver.getOuFqn()
+                + "\">"
+                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "</a>");
         addMacro(CmsNotificationMacroResolver.RECEIVER_OU_FQN, ou);
         try {
             addMacro(
@@ -76,6 +106,26 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         } catch (CmsException e) {
             addMacro(CmsNotificationMacroResolver.RECEIVER_OU, receiver.getOuFqn());
         }
+
+    }
+
+    /**
+     * @see org.opencms.notification.A_CmsNotification#appendXMLContent(java.lang.StringBuffer)
+     */
+    @Override
+    protected void appendXMLContent(StringBuffer msg) {
+
+        String xmlName = m_tempPassword ? FIELD_CHANGE_PASSWORD : FIELD_KEEP_PASSWORD;
+
+        // append header from xmlcontent
+        msg.append(
+            CmsMacroResolver.resolveMacros(m_mailContent.getStringValue(m_cms, xmlName, m_locale), m_macroResolver));
+
+        msg.append("\n<br/><br/>\n");
+
+        // append footer from xmlcontent
+        msg.append(
+            CmsMacroResolver.resolveMacros(m_mailContent.getStringValue(m_cms, "Footer", m_locale), m_macroResolver));
 
     }
 
@@ -95,9 +145,11 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
     protected String getNotificationContent() {
 
         if (m_new) {
-            return "/system/config/notification/password-new-user-notification";
+            return OpenCms.getSystemInfo().getConfigFilePath(m_cms, "notification/password-new-user-notification");
         }
-        return "/system/config/notification/password-new-password-from-admin-notification";
+        return OpenCms.getSystemInfo().getConfigFilePath(
+            m_cms,
+            "notification/password-new-password-from-admin-notification");
     }
 
 }

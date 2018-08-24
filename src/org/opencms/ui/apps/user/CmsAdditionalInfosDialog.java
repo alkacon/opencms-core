@@ -55,9 +55,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the Additional User info dialog.<p>
@@ -106,8 +106,9 @@ public class CmsAdditionalInfosDialog extends CmsBasicDialog {
      * @param cms CmsObject
      * @param userID id of user
      * @param window window
+     * @param app
      */
-    public CmsAdditionalInfosDialog(CmsObject cms, CmsUUID userID, final Window window) {
+    public CmsAdditionalInfosDialog(CmsObject cms, CmsUUID userID, final Window window, CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
@@ -169,6 +170,7 @@ public class CmsAdditionalInfosDialog extends CmsBasicDialog {
 
                 submit();
                 window.close();
+                app.reload();
             }
         });
 

@@ -43,6 +43,7 @@ import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,9 +68,6 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
-    /** The class name for data elements which precede the direct editable elements. */
-    public static final String CLASS_NAME = "cms-editable";
-
     /** The map of button bar positions. */
     protected Map<String, CmsPositionBean> m_buttonPositions = new HashMap<String, CmsPositionBean>();
 
@@ -90,7 +88,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
      */
     public void initializeButtons() {
 
-        List<Element> editableElements = CmsDomUtil.getElementsByClass(CLASS_NAME, Tag.div);
+        List<Element> editableElements = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div);
         List<CmsDirectEditButtons> editables = Lists.newArrayList();
 
         for (Element elem : editableElements) {

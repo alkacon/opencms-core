@@ -46,10 +46,14 @@ window.org_opencms_ui_components_codemirror_CmsCodeMirror = function() {
             	// set the messages
             	window.lang=JSON.parse(state.m_messages);
             	// load required CSS and scripts
-            	window.cmsLoadCSS(state.m_cssURIs)
-            	window.cmsLoadScripts(state.m_scriptURIs,function(){
-            		initCodeMirror();
+            	// Important: CodeMirror initialization requires the CSS to be fully loaded, so we use cmsSafeLoadCSS to load the stylesheets
+            	// and do the rest in a callback  
+            	window.cmsSafeLoadCSS(state.m_cssURIs, function() {
+	            	window.cmsLoadScripts(state.m_scriptURIs,function(){
+	            		initCodeMirror();
+	            	});
             	});
+            	
             } 
         }else {
         	modifyCodeMirrorState(state);

@@ -156,6 +156,9 @@ public final class CmsInlineEntityWidget extends Composite {
         // nothing to do
     }
 
+    /** The height required by edit buttons. */
+    private static final int REQUIRED_BUTTON_HEIGHT = 20;
+
     /** The UI binder instance. */
     private static I_InlineEntityWidgetUiBinder uiBinder = GWT.create(I_InlineEntityWidgetUiBinder.class);
 
@@ -300,9 +303,26 @@ public final class CmsInlineEntityWidget extends Composite {
             attributeIndex,
             htmlUpdateHandler,
             widgetService);
-        CmsInlineEditOverlay.getRootOverlay().addButton(widget, element.getAbsoluteTop());
+        CmsInlineEditOverlay.getRootOverlay().addButton(widget, getButtonTop(element));
         attributeHandler.updateButtonVisibilty(widget);
         return widget;
+    }
+
+    /**
+     * Returns the button top position for the given reference element.<p>
+     *
+     * @param element the reference element
+     *
+     * @return the button position
+     */
+    private static int getButtonTop(Element element) {
+
+        int top = element.getAbsoluteTop();
+        int height = element.getClientHeight();
+        if ((height < REQUIRED_BUTTON_HEIGHT) && (top > REQUIRED_BUTTON_HEIGHT)) {
+            top = top - REQUIRED_BUTTON_HEIGHT;
+        }
+        return top;
     }
 
     /**
@@ -398,7 +418,7 @@ public final class CmsInlineEntityWidget extends Composite {
      */
     protected void positionWidget() {
 
-        CmsInlineEditOverlay.getRootOverlay().setButtonPosition(this, m_referenceElement.getAbsoluteTop());
+        CmsInlineEditOverlay.getRootOverlay().setButtonPosition(this, getButtonTop(m_referenceElement));
     }
 
     /** Adds a new attribute value. */
@@ -622,11 +642,8 @@ public final class CmsInlineEntityWidget extends Composite {
                 positionPopup();
             }
         });
-        m_widgetService.getRendererForType(type).renderAttributeValue(
-            m_parentEntity,
-            m_attributeHandler,
-            m_attributeIndex,
-            formPanel);
+        m_widgetService.getRendererForType(
+            type).renderAttributeValue(m_parentEntity, m_attributeHandler, m_attributeIndex, formPanel);
         CmsInlineEditOverlay.addOverlayForElement(m_referenceElement);
         positionPopup();
         m_popup.getElement().getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup());

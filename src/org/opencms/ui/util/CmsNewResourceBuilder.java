@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsPropertyEditorHelper;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -190,6 +191,7 @@ public class CmsNewResourceBuilder {
             listInfo.addAdditionalInfo(
                 messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
                 resTypeNiceName);
+            listInfo.setBigIconClasses(CmsIconUtil.getIconClasses(m_type, sitePath, false));
             listInfo.setResourceType(m_type);
             return listInfo;
         }

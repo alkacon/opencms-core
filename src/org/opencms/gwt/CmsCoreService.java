@@ -479,7 +479,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
         ? OpenCms.getSiteManager().getSharedFolder()
         : "";
-        String link = getFileExplorerLink(cms, siteRoot) + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
+        String sitePath = resourceRootFolder.substring(siteRoot.length());
+        String link = getFileExplorerLink(cms, siteRoot) + sitePath;
         return link;
     }
 
@@ -1024,6 +1025,52 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockIfExists(java.lang.String, long)
+     */
+    public String lockIfExists(String sitePath, long loadTime) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        String errorMessage = null;
+        try {
+            if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+
+                try {
+                    CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+                    if (resource.getDateLastModified() > loadTime) {
+                        // the resource has been changed since it was loaded
+                        return "The resource has been changed by " + resource.getUserLastModified() + ".";
+                    }
+                    ensureLock(resource);
+                } catch (CmsException e) {
+                    errorMessage = e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                }
+
+            } else {
+                // check if parent folder may be locked by the current user
+                String parentFolder = CmsResource.getParentFolder(sitePath);
+                while ((parentFolder != null)
+                    && !cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    parentFolder = CmsResource.getParentFolder(parentFolder);
+                }
+                if (parentFolder != null) {
+                    CmsResource ancestorFolder = cms.readResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    CmsUser user = cms.getRequestContext().getCurrentUser();
+                    CmsLock lock = cms.getLock(ancestorFolder);
+                    if (!lock.isLockableBy(user)) {
+                        errorMessage = "Can not lock parent folder '" + parentFolder + "'.";
+                    }
+                } else {
+                    errorMessage = "Can not access any parent folder.";
+                }
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+
+        return errorMessage;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTemp(org.opencms.util.CmsUUID)
      */
     public String lockTemp(CmsUUID structureId) throws CmsRpcException {
@@ -1032,6 +1079,29 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         try {
             try {
                 ensureLock(structureId);
+            } catch (CmsException e) {
+                return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTemp(org.opencms.util.CmsUUID, long)
+     */
+    public String lockTemp(CmsUUID structureId, long loadTime) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            try {
+                CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                if (resource.getDateLastModified() > loadTime) {
+                    // the resource has been changed since it was loaded
+                    return "The resource has been changed by " + resource.getUserLastModified() + ".";
+                }
+                ensureLock(resource);
             } catch (CmsException e) {
                 return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
             }

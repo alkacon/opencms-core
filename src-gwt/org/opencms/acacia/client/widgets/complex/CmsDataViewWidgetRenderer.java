@@ -37,6 +37,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.shared.CmsDataViewConstants;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.List;
 
@@ -134,7 +135,7 @@ public class CmsDataViewWidgetRenderer implements I_CmsEntityRenderer {
 
         context.addStyleName(ENTITY_CLASS);
         context.getElement().setAttribute("typeof", entity.getTypeName());
-        context.getElement().setAttribute("about", entity.getId());
+        context.getElement().setAttribute(CmsGwtConstants.ATTR_DATA_ID, entity.getId());
         CmsDataViewValueAccessor accessor = new CmsDataViewValueAccessor(entity, parentHandler, attributeIndex);
         context.add(new CmsDataViewClientWidget(accessor, m_configuration));
     }
@@ -167,13 +168,4 @@ public class CmsDataViewWidgetRenderer implements I_CmsEntityRenderer {
 
         // ignore
     }
-
-    /**
-     * Throws an error indicating that a method is not supported.<p>
-     */
-    private void notSupported() {
-
-        throw new UnsupportedOperationException("method not supported by this renderer!");
-    }
-
 }

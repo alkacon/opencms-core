@@ -36,6 +36,8 @@ import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.vaadin.client.ResourceLoader;
 import com.vaadin.client.ResourceLoader.ResourceLoadEvent;
 import com.vaadin.client.ResourceLoader.ResourceLoadListener;
@@ -71,7 +73,13 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
                 // The show must go on
                 absoluteUris.remove(event.getResourceUrl());
                 if (absoluteUris.isEmpty()) {
-                    callNativeFunction(callback);
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                        public void execute() {
+
+                            callNativeFunction(callback);
+                        }
+                    });
                 }
 
             }
@@ -81,7 +89,14 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
 
                 absoluteUris.remove(event.getResourceUrl());
                 if (absoluteUris.isEmpty()) {
-                    callNativeFunction(callback);
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                        public void execute() {
+
+                            callNativeFunction(callback);
+                        }
+                    });
+
                 }
             }
         };
@@ -110,22 +125,26 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
 
         super.onModuleLoad();
         exportUtitlityFunctions();
-        String tinyMCE = CmsCoreProvider.get().getTinymce().getLink();
-        if (tinyMCE == null) {
-            CmsDebugLog.consoleLog("tinyMCE link is null");
-        } else {
-            ResourceLoader.get().loadScript(tinyMCE, new ResourceLoadListener() {
+        try {
+            String tinyMCE = CmsCoreProvider.get().getTinymce().getLink();
+            if (tinyMCE == null) {
+                CmsDebugLog.consoleLog("tinyMCE link is null");
+            } else {
+                ResourceLoader.get().loadScript(tinyMCE, new ResourceLoadListener() {
 
-                public void onError(ResourceLoadEvent event) {
+                    public void onError(ResourceLoadEvent event) {
 
-                    CmsDebugLog.consoleLog("error loading TinyMCE");
-                }
+                        CmsDebugLog.consoleLog("error loading TinyMCE");
+                    }
 
-                public void onLoad(ResourceLoadEvent event) {
-                    // ignore
+                    public void onLoad(ResourceLoadEvent event) {
+                        // ignore
 
-                }
-            });
+                    }
+                });
+            }
+        } catch (Exception e) {
+            //
         }
     }
 
@@ -136,19 +155,14 @@ public class CmsWidgetSetEntryPoint extends A_CmsEntryPoint {
         $wnd.cmsLoadScripts = function(scriptURIs, callback) {
             @org.opencms.ui.client.CmsWidgetSetEntryPoint::loadScriptDependencies(Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(scriptURIs, callback);
         }
+        $wnd.cmsSafeLoadCSS = function(cssURIs, callback) {
+            @org.opencms.gwt.client.util.CmsDomUtil::safeLoadStylesheets([Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(cssURIs, callback);
+        }
         $wnd.cmsLoadCSS = function(cssURIs) {
             for (i = 0; i < cssURIs.length; i++) {
                 @org.opencms.gwt.client.util.CmsDomUtil::ensureStyleSheetIncluded(Ljava/lang/String;)(cssURIs[i]);
             }
         }
-    }-*/;
-
-    /**
-     *
-     */
-    private native void foo() /*-{
-        $wnd.console.log("foo");
-        $wnd.console.log("bar");
     }-*/;
 
 }

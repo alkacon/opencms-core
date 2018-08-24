@@ -50,12 +50,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
-import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.data.util.BeanItemContainer;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -242,7 +242,7 @@ public class CmsGlobalForm extends CmsBasicDialog {
                 CmsWorkplaceServerWidget row = new CmsWorkplaceServerWidget(sites, null);
                 return row;
             }
-        }, "Add hard");
+        }, "Add");
 
         for (String server : OpenCms.getSiteManager().getWorkplaceServers()) {
             CmsWorkplaceServerWidget row = new CmsWorkplaceServerWidget(sites, server);

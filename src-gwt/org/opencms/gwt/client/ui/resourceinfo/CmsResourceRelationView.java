@@ -279,7 +279,11 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                                     new DialogOptions(),
                                     new I_CmsContentEditorHandler() {
 
-                                        public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+                                        public void onClose(
+                                            String sitePath,
+                                            CmsUUID structureId,
+                                            boolean isNew,
+                                            boolean hasChangedSettings) {
 
                                             if (m_popup != null) {
                                                 m_popup.hide();

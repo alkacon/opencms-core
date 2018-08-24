@@ -122,18 +122,23 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         /**Group id to be opended (or null). */
         private CmsUUID m_groupID;
 
+        /**the filter for tables. */
+        private String m_filter;
+
         /**
          * public constructor.<p>
          *
          * @param path ou path
          * @param type type to be opened
          * @param groupID groupid
+         * @param filter filter string
          */
-        public CmsStateBean(String path, CmsOuTreeType type, CmsUUID groupID) {
+        public CmsStateBean(String path, CmsOuTreeType type, CmsUUID groupID, String filter) {
 
-            m_path = path;
+            m_path = path.equals("/") ? "" : path;
             m_type = type;
             m_groupID = groupID;
+            m_filter = filter;
         }
 
         /**
@@ -146,6 +151,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         public static CmsStateBean parseState(String state, String baseOU) {
 
             String path = baseOU;
+            String filter = "";
             CmsOuTreeType type = CmsOuTreeType.OU;
             CmsUUID groupId = null;
             List<String> fields = CmsStringUtil.splitAsList(state, STATE_SEPERATOR);
@@ -163,10 +169,15 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                     }
                 }
                 if (fields.size() > 2) {
-                    groupId = new CmsUUID(fields.get(2));
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(fields.get(2))) {
+                        groupId = new CmsUUID(fields.get(2));
+                    }
+                }
+                if (fields.size() > 3) {
+                    filter = fields.get(3);
                 }
             }
-            return new CmsStateBean(path, type, groupId);
+            return new CmsStateBean(path, type, groupId, filter);
         }
 
         /**
@@ -197,10 +208,22 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         public String getState() {
 
             String typeString = m_type.getID();
+            String groupString = "";
             if (m_groupID != null) {
-                return typeString + STATE_SEPERATOR + m_path + STATE_SEPERATOR + m_groupID.getStringValue();
+                groupString = m_groupID.getStringValue();
             }
-            return typeString + STATE_SEPERATOR + m_path;
+            return typeString + STATE_SEPERATOR + m_path + STATE_SEPERATOR + groupString + STATE_SEPERATOR + m_filter;
+
+        }
+
+        /**
+         * Gets the filter string for the table.<p>
+         *
+         * @return
+         */
+        public String getTableFilter() {
+
+            return m_filter;
         }
 
         /**
@@ -251,7 +274,13 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     private Button m_addElementButton;
 
     /**vaadin component.*/
-    private Button m_toggleButton;
+    Button m_toggleButtonRole;
+
+    /**vaadin component.*/
+    Button m_toggleButtonUser;
+
+    /**vaadin component.*/
+    Button m_toggleButtonGroups;
 
     /**State bean. */
     CmsStateBean m_stateBean;
@@ -451,6 +480,14 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
+     * Reloads the app with current state.<p>
+     */
+    public void reload() {
+
+        update(m_stateBean.getPath(), m_stateBean.getType(), m_stateBean.getGroupID());
+    }
+
+    /**
      * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#setType(java.lang.String)
      */
     public void setType(String type) {
@@ -468,7 +505,21 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      */
     public void update(String ou, CmsOuTreeType type, CmsUUID groupID) {
 
-        CmsStateBean stateBean = new CmsStateBean(ou, type, groupID);
+        update(ou, type, groupID, m_filterTable.getValue());
+
+    }
+
+    /**
+     * Updates the app state.<p>
+     *
+     * @param ou to be opened
+     * @param type to be opened
+     * @param roleOrGroupID to be openend(may be null)
+     * @param filter filter string
+     */
+    public void update(String ou, CmsOuTreeType type, CmsUUID roleOrGroupID, String filter) {
+
+        CmsStateBean stateBean = new CmsStateBean(ou, type, roleOrGroupID, filter);
         openSubView(stateBean.getState(), true);
 
     }
@@ -503,7 +554,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                         A_CmsUI.get().getLocale()));
                 return crumbs;
             }
-            CmsStateBean beanCr = new CmsStateBean(m_baseOU, CmsOuTreeType.OU, null);
+            CmsStateBean beanCr = new CmsStateBean(m_baseOU, CmsOuTreeType.OU, null, "");
             crumbs.put(
                 CmsAccountsAppConfiguration.APP_ID + "/" + beanCr.getState(),
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_baseOU).getDisplayName(
@@ -514,11 +565,11 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 if (!oP.isEmpty()) {
                     if ((oP + base).length() > m_baseOU.length()) {
                         if (oP.equals(ouPath[ouPath.length - 1])) {
-                            CmsStateBean beanCrumb = new CmsStateBean(base + oP, CmsOuTreeType.OU, null);
+                            CmsStateBean beanCrumb = new CmsStateBean(base + oP, CmsOuTreeType.OU, null, "");
                             pathOfLastElement = CmsAccountsAppConfiguration.APP_ID + "/" + beanCrumb.getState();
                             crumbs.put("", oP);
                         } else {
-                            CmsStateBean beanCrumb = new CmsStateBean(base + oP, CmsOuTreeType.OU, null);
+                            CmsStateBean beanCrumb = new CmsStateBean(base + oP, CmsOuTreeType.OU, null, "");
                             crumbs.put(CmsAccountsAppConfiguration.APP_ID + "/" + beanCrumb.getState(), oP);
                         }
                     }
@@ -534,7 +585,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                     if (bean.getGroupID() == null) {
                         crumbs.put("", bean.getType().getName());
                     } else {
-                        CmsStateBean beanCrumb = new CmsStateBean(bean.getPath(), bean.getType(), null);
+                        CmsStateBean beanCrumb = new CmsStateBean(bean.getPath(), bean.getType(), null, "");
                         crumbs.put(
                             CmsAccountsAppConfiguration.APP_ID + "/" + beanCrumb.getState(),
                             beanCrumb.getType().getName());
@@ -567,52 +618,69 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_doNotChange = true;
 
         m_filter.setValue(m_stateBean.getPath());
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_stateBean.getTableFilter())) {
+            m_filterTable.setValue(m_stateBean.getTableFilter());
+        } else {
+            m_filterTable.setValue("");
+        }
 
         m_newButton.setVisible((m_stateBean.getGroupID() == null) & isOUManagable(m_stateBean.getPath()));
-        m_toggleButton.setVisible(
-            m_stateBean.getType().equals(CmsOuTreeType.ROLE) & (m_stateBean.getGroupID() != null));
-        m_infoButton.setVisible(!m_stateBean.getType().equals(CmsOuTreeType.OU));
+        m_toggleButtonRole.setVisible(
+            m_stateBean.getType().equals(CmsOuTreeType.ROLE) && (m_stateBean.getGroupID() != null));
+        m_toggleButtonUser.setVisible(m_stateBean.getType().equals(CmsOuTreeType.USER));
+        m_toggleButtonGroups.setVisible(
+            m_stateBean.getType().equals(CmsOuTreeType.GROUP) && (m_stateBean.getGroupID() == null));
+        m_infoButton.setVisible(
+            m_stateBean.getType().equals(CmsOuTreeType.USER)
+                || (m_stateBean.getType().equals(CmsOuTreeType.ROLE) && (m_stateBean.getGroupID() != null))
+                || (m_stateBean.getType().equals(CmsOuTreeType.GROUP) && (m_stateBean.getGroupID() != null)));
         m_addElementButton.setVisible(
             (m_stateBean.getType().equals(CmsOuTreeType.GROUP) | m_stateBean.getType().equals(CmsOuTreeType.ROLE))
                 & (m_stateBean.getGroupID() != null));
         m_ouTree.openPath(m_stateBean.getPath(), m_stateBean.getType(), m_stateBean.getGroupID());
 
         m_doNotChange = false;
+        I_CmsFilterableTable table = null;
         if (m_stateBean.getType().equals(CmsOuTreeType.OU)) {
             m_table = new CmsOUTable(m_stateBean.getPath(), this);
-            return m_table;
+            table = m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.USER)) {
-            m_table = new CmsUserTable(m_stateBean.getPath(), this);
-            return m_table;
+            m_table = new CmsUserTable(m_stateBean.getPath(), this, isPressed(m_toggleButtonUser));
+            table = m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.GROUP)) {
             if (m_stateBean.getGroupID() == null) {
-                m_table = new CmsGroupTable(m_stateBean.getPath(), this);
-                return m_table;
+                m_table = new CmsGroupTable(m_stateBean.getPath(), this, isPressed(m_toggleButtonGroups));
+                table = m_table;
+            } else {
+                m_table = new CmsUserTable(
+                    m_stateBean.getPath(),
+                    m_stateBean.getGroupID(),
+                    m_stateBean.getType(),
+                    false,
+                    this);
+                table = m_table;
             }
-            m_table = new CmsUserTable(
-                m_stateBean.getPath(),
-                m_stateBean.getGroupID(),
-                m_stateBean.getType(),
-                isPressed(m_toggleButton),
-                this);
-            return m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.ROLE)) {
             if (m_stateBean.getGroupID() == null) {
                 m_table = new CmsRoleTable(this, m_stateBean.getPath());
-                return m_table;
+                table = m_table;
+            } else {
+                m_table = new CmsUserTable(
+                    m_stateBean.getPath(),
+                    m_stateBean.getGroupID(),
+                    m_stateBean.getType(),
+                    isPressed(m_toggleButtonRole),
+                    this);
+                table = m_table;
             }
-            m_table = new CmsUserTable(
-                m_stateBean.getPath(),
-                m_stateBean.getGroupID(),
-                m_stateBean.getType(),
-                isPressed(m_toggleButton),
-                this);
-            return m_table;
         }
-        return null;
+        if ((table != null) && !CmsStringUtil.isEmptyOrWhitespaceOnly(m_filterTable.getValue())) {
+            table.filter(m_filterTable.getValue());
+        }
+        return table;
     }
 
     /**
@@ -630,7 +698,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     protected void openNewDialog() {
 
         final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        CmsBasicDialog dialog = new CmsNewElementDialog(m_cms, m_stateBean.getPath(), window);
+        CmsBasicDialog dialog = new CmsNewElementDialog(m_cms, m_stateBean.getPath(), window, this);
         window.setContent(dialog);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
         A_CmsUI.get().addWindow(window);
@@ -686,20 +754,20 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
     /**
      * toggles the table.<p>
+     * @param toggleButtonRole
      */
-    void toggleTable() {
+    void toggleTable(Button toggleButton) {
 
-        CmsUserTable table = (CmsUserTable)m_table;
-        table.toggle(!isPressed(m_toggleButton));
-        if (isPressed(m_toggleButton)) {
-            m_toggleButton.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
+        I_CmsToggleTable table = (I_CmsToggleTable)m_table;
+        table.toggle(!isPressed(toggleButton));
+        if (isPressed(toggleButton)) {
+            toggleButton.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
         } else {
-            m_toggleButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
+            toggleButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
         }
-        m_infoButton.replaceData(
-            Collections.singletonMap(
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
-                String.valueOf(table.size())));
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_filterTable.getValue())) {
+            filterTable(m_filterTable.getValue());
+        }
     }
 
     /**
@@ -735,16 +803,46 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             }
         });
 
-        m_toggleButton = CmsToolBar.createButton(
+        m_toggleButtonRole = CmsToolBar.createButton(
             FontOpenCms.USERS,
             CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ROLES_TOGGLE_0));
-        m_toggleButton.addClickListener(new ClickListener() {
+        m_toggleButtonRole.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 8265075332953321274L;
 
             public void buttonClick(ClickEvent event) {
 
-                toggleTable();
+                toggleTable(m_toggleButtonRole);
+
+            }
+
+        });
+
+        m_toggleButtonUser = CmsToolBar.createButton(
+            FontOpenCms.USERS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_TOGGLE_0));
+        m_toggleButtonUser.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 8265075332953321274L;
+
+            public void buttonClick(ClickEvent event) {
+
+                toggleTable(m_toggleButtonUser);
+
+            }
+
+        });
+
+        m_toggleButtonGroups = CmsToolBar.createButton(
+            FontOpenCms.USERS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUPS_TOGGLE_0));
+        m_toggleButtonGroups.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 8265075332953321274L;
+
+            public void buttonClick(ClickEvent event) {
+
+                toggleTable(m_toggleButtonGroups);
 
             }
 
@@ -754,7 +852,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
         m_uiContext.addToolbarButton(m_addElementButton);
         m_uiContext.addToolbarButton(m_infoButton);
-        m_uiContext.addToolbarButton(m_toggleButton);
+        m_uiContext.addToolbarButton(m_toggleButtonRole);
+        m_uiContext.addToolbarButton(m_toggleButtonUser);
+        m_uiContext.addToolbarButton(m_toggleButtonGroups);
         m_filter = CmsVaadinUtils.getOUComboBox(m_cms, m_baseOU, LOG);
         m_filter.setWidth("379px");
         m_infoLayout.addComponent(m_filter, 0);
@@ -774,6 +874,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 filterTable(event.getText());
             }
         });
+        m_filterTable.setWidth("200px");
         m_infoLayout.addComponent(m_filterTable);
         m_filter.addValueChangeListener(new ValueChangeListener() {
 

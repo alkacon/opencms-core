@@ -112,7 +112,7 @@ public final class CmsJspVfsAccessBean {
         public Object transform(Object input) {
 
             // first read the resource using the lazy map
-            CmsResource resource = getReadResource().get(input);
+            CmsJspResourceWrapper resource = getReadResource().get(input);
             return Boolean.valueOf(
                 (resource != null)
                     && (CmsResourceTypeXmlPage.isXmlPage(resource)
@@ -195,7 +195,7 @@ public final class CmsJspVfsAccessBean {
          */
         public Object transform(Object input) {
 
-            CmsResource result;
+            CmsJspResourceWrapper result;
             try {
                 // read the requested resource
                 result = CmsJspElFunctions.convertResource(getCmsObject(), input);
@@ -233,7 +233,7 @@ public final class CmsJspVfsAccessBean {
 
             Map<String, String> result = null;
             // first read the resource using the lazy map
-            CmsResource resource = getReadResource().get(input);
+            CmsJspResourceWrapper resource = getReadResource().get(input);
             if (resource != null) {
                 result = CmsCollectionsGenericWrapper.createLazyMap(
                     new CmsLocalePropertyLoaderTransformer(getCmsObject(), resource, m_search));
@@ -269,7 +269,7 @@ public final class CmsJspVfsAccessBean {
 
             Map<String, String> result = null;
             // first read the resource using the lazy map
-            CmsResource resource = getReadResource().get(input);
+            CmsJspResourceWrapper resource = getReadResource().get(input);
             if (resource != null) {
                 result = CmsCollectionsGenericWrapper.createLazyMap(
                     new CmsPropertyLoaderTransformer(getCmsObject(), resource, m_search));
@@ -309,7 +309,7 @@ public final class CmsJspVfsAccessBean {
 
             CmsJspContentAccessBean result = null;
             // first read the resource using the lazy map
-            CmsResource resource = getReadResource().get(input);
+            CmsJspResourceWrapper resource = getReadResource().get(input);
             if ((resource != null)
                 && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource))) {
                 // make sure we have a resource that really is an XML content
@@ -356,7 +356,7 @@ public final class CmsJspVfsAccessBean {
     private Map<String, List<Locale>> m_availableLocales;
 
     /** Resources loaded from the OpenCms VFS. */
-    private Map<String, CmsResource> m_resources;
+    private Map<String, CmsJspResourceWrapper> m_resources;
 
     /** XML contents read from the VFS. */
     private Map<String, CmsJspContentAccessBean> m_xmlContent;
@@ -889,7 +889,7 @@ public final class CmsJspVfsAccessBean {
      *
      * @see #getResource() for a short form of this method
      */
-    public Map<String, CmsResource> getReadResource() {
+    public Map<String, CmsJspResourceWrapper> getReadResource() {
 
         if (m_resources == null) {
             // create lazy map only on demand
@@ -946,7 +946,7 @@ public final class CmsJspVfsAccessBean {
      *
      * @see #getReadResource()
      */
-    public Map<String, CmsResource> getResource() {
+    public Map<String, CmsJspResourceWrapper> getResource() {
 
         return getReadResource();
     }

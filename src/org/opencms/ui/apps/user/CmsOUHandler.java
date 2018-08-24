@@ -78,14 +78,6 @@ public class CmsOUHandler {
 
         List<String> ous = new ArrayList<String>();
         try {
-            cms.getRequestContext().getCurrentUser().getOuFqn();
-            List<CmsRole> list = OpenCms.getRoleManager().getRolesOfUser(
-                cms,
-                cms.getRequestContext().getCurrentUser().getName(),
-                "",
-                true,
-                false,
-                true);
             for (CmsRole role : OpenCms.getRoleManager().getRolesOfUser(
                 cms,
                 cms.getRequestContext().getCurrentUser().getName(),

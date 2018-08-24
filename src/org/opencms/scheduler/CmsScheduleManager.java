@@ -54,10 +54,11 @@ import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.triggers.CronTriggerImpl;
 
 /**
  * Manages the OpenCms scheduled jobs.<p>
@@ -138,14 +139,20 @@ public class CmsScheduleManager implements Job {
     public void execute(JobExecutionContext context) {
 
         JobDataMap jobData = context.getJobDetail().getJobDataMap();
+
         CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(SCHEDULER_JOB_INFO);
 
         if (jobInfo == null) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_JOB_1, ((JobDetailImpl)context.getJobDetail()).getFullName()));
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INVALID_JOB_1,
+                    ((JobDetailImpl)context.getJobDetail()).getFullName()));
             // can not continue
             return;
         }
-
+        // update the execution times in job info
+        jobInfo.setPreviousFireTime(context.getFireTime());
+        jobInfo.setNextFireTime(context.getNextFireTime());
         executeJob(jobInfo);
     }
 
@@ -356,11 +363,15 @@ public class CmsScheduleManager implements Job {
         }
 
         // generate Quartz job trigger
-        CronTriggerImpl trigger ;
+        Trigger trigger;
         try {
-            trigger = (CronTriggerImpl)CronScheduleBuilder.cronSchedule(jobInfo.getCronExpression()).build();
-            trigger.setName(jobId);
-            trigger.setGroup(Scheduler.DEFAULT_GROUP);
+
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(jobInfo.getCronExpression());
+            TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
+            triggerBuilder.withSchedule(scheduleBuilder);
+            triggerBuilder.withIdentity(jobId, Scheduler.DEFAULT_GROUP);
+            trigger = triggerBuilder.build();
+
         } catch (Exception e) {
             if (idCreated) {
                 jobInfo.setId(null);

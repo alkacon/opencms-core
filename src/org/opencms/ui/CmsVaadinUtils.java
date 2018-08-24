@@ -76,36 +76,36 @@ import org.apache.commons.logging.Log;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Version;
-import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
+import com.vaadin.v7.ui.AbstractField;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.OptionGroup;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Vaadin utility functions.<p>
@@ -355,6 +355,9 @@ public final class CmsVaadinUtils {
             for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, ouFqn, true)) {
                 if (!blackList.contains(group)) {
                     Item item = res.addItem(group);
+                    if (item == null) {
+                        continue;
+                    }
                     item.getItemProperty(caption).setValue(group.getSimpleName());
                     item.getItemProperty(idOu).setValue(group.getOuFqn());
                 }
@@ -742,6 +745,24 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Gets list of resource types.<p>
+     *
+     * @return List
+     */
+    public static List<I_CmsResourceType> getResourceTypes() {
+
+        List<I_CmsResourceType> res = new ArrayList<I_CmsResourceType>();
+        for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
+            CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName());
+            if (typeSetting != null) {
+                res.add(type);
+            }
+        }
+        return res;
+    }
+
+    /**
      * Returns the available resource types container.<p>
      *
      * @return the resource types container
@@ -753,20 +774,16 @@ public final class CmsVaadinUtils {
         types.addContainerProperty(PropertyId.icon, Resource.class, null);
         types.addContainerProperty(PropertyId.isFolder, Boolean.class, null);
         types.addContainerProperty(PropertyId.isXmlContent, Boolean.class, null);
-        for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
+        for (I_CmsResourceType type : getResourceTypes()) {
             CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 type.getTypeName());
-            if (typeSetting != null) {
-                Item typeItem = types.addItem(type);
-                typeItem.getItemProperty(PropertyId.caption).setValue(
-                    CmsVaadinUtils.getMessageText(typeSetting.getKey()));
-                typeItem.getItemProperty(PropertyId.icon).setValue(
-                    CmsResourceUtil.getSmallIconResource(typeSetting, null));
-                typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
-                    Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));
-                typeItem.getItemProperty(PropertyId.isFolder).setValue(
-                    Boolean.valueOf(type instanceof A_CmsResourceTypeFolderBase));
-            }
+            Item typeItem = types.addItem(type);
+            typeItem.getItemProperty(PropertyId.caption).setValue(CmsVaadinUtils.getMessageText(typeSetting.getKey()));
+            typeItem.getItemProperty(PropertyId.icon).setValue(CmsResourceUtil.getSmallIconResource(typeSetting, null));
+            typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
+                Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));
+            typeItem.getItemProperty(PropertyId.isFolder).setValue(
+                Boolean.valueOf(type instanceof A_CmsResourceTypeFolderBase));
         }
 
         return types;
@@ -1132,7 +1149,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

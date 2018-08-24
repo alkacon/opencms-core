@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FunctionConfigs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd">
+  <FunctionConfig language="en">
+    <NiceName><![CDATA[Internal default function formatter]]></NiceName>
+    <Jsp>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.base/pages/function-default.jsp]]></target>
+        <uuid>f25037c5-6654-47fe-80ef-20ca9f9c7e8f</uuid>
+      </link>
+    </Jsp>
+    <Description><![CDATA[Default formatter for newly created functions - do not use directly]]></Description>
+  </FunctionConfig>
+</FunctionConfigs>

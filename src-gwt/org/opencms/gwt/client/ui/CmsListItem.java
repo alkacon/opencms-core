@@ -314,7 +314,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.appendChild(m_helper);
 
             m_provisionalParent.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
-
+            m_provisionalParent.addClassName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
             Style style = m_helper.getStyle();
             style.setWidth(m_helper.getOffsetWidth(), Unit.PX);
             // the dragging class will set position absolute

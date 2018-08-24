@@ -1,4 +1,4 @@
-@external cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-button, v-button-wrap, v-disabled, v-icon, v-button-caption;
+@external oc-toolbar, cms-user-info, cms-user-image, opencms, o-color-blue, o-color-cyan, o-color-gray, o-color-orange, o-color-red, o-color-transparent, v-button, v-button-wrap, v-disabled, v-icon, v-button-caption;
 
 @def TOOLBAR_HEIGHT 52px;
 
@@ -125,7 +125,7 @@
 	}
 }
 
-.toolbarHide.toolbar .toolbarBackground{
+.toolbarHide.oc-toolbar .toolbarBackground{
 	animation-name: toolbarfadeaway;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -136,14 +136,14 @@
 	height: 0;
 }
 
-.toolbarHide.toolbar .toolbarButtonsRight, .toolbarHide.toolbar .toolbarButtonsLeft{
+.toolbarHide.oc-toolbar .toolbarButtonsRight, .toolbarHide.oc-toolbar .toolbarButtonsLeft{
 	height: 0;
 	border: 0;
 	background: transparent;
 	overflow: visible;
 }
 
-.toolbarHide.toolbar .toolbarCenter{
+.toolbarHide.oc-toolbar .toolbarCenter{
 	display: none;
 	animation-name: logofadeaway;
 	animation-duration: 1s;
@@ -151,7 +151,7 @@
 	animation-timing-function: ease;
 }
 
-.toolbar .toolbarButtonsRight > div, .toolbar .toolbarButtonsLeft > div{
+.oc-toolbar .toolbarButtonsRight > div, .oc-toolbar .toolbarButtonsLeft > div{
 	animation-name: buttonfadein;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -160,7 +160,7 @@
 	vertical-align: middle;
 }
 
-.toolbarHide.toolbar .toolbarButtonsRight > div, .toolbarHide.toolbar .toolbarButtonsLeft > div {
+.toolbarHide.oc-toolbar .toolbarButtonsRight > div, .toolbarHide.oc-toolbar .toolbarButtonsLeft > div {
 	animation-name: buttonfadeaway;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -170,11 +170,11 @@
 	visibility: hidden;
 }
 
-.toolbar .toolbarButtonsRight > div.toolbarShow, .toolbar .toolbarButtonsLeft > div.toolbarShow {
+.oc-toolbar .toolbarButtonsRight > div.toolbarShow, .oc-toolbar .toolbarButtonsLeft > div.toolbarShow {
 	animation: none;
 }
 
-.toolbarHide.toolbar .toolbarButtonsRight > div.toolbarShow, .toolbarHide.toolbar .toolbarButtonsLeft > div.toolbarShow {
+.toolbarHide.oc-toolbar .toolbarButtonsRight > div.toolbarShow, .toolbarHide.oc-toolbar .toolbarButtonsLeft > div.toolbarShow {
 	animation: none;
 	height: 40px;
 	overflow: show;
@@ -185,13 +185,14 @@
 
 .simpleToolbarShow{}
 
-.toolbar, .toolbar *, .toolbar table tr td {
+.oc-toolbar, .oc-toolbar *, .oc-toolbar table tr td {
 	margin: 0;
 	padding: 0;
 	border: none;
 	color: value("constants.css.textColor"); 
 	font-family: value("constants.css.fontFamily"); 
  	font-size: value("constants.css.fontSize");
+ 	font-weight: normal;
 	line-height: value("constants.css.lineHeight"); 
 	background: transparent;
 	text-align: left;
@@ -205,7 +206,7 @@
 	-moz-box-sizing: border-box;
 }
 
-.toolbar{
+.oc-toolbar{
 	left: 0px;
 	top: 0px;
 	right: 0px;
@@ -213,13 +214,13 @@
 	z-index: value("constants.css.zIndexPopup"); 
 }
 
-.opencms .toolbar { 
+.opencms .oc-toolbar { 
 	z-index: 9000;
 }
 
 
 
-.toolbarBackground{
+div.toolbarBackground{
 	animation-name: toolbarfadein;
 	animation-duration: 1s;
 	animation-iteration-count: 1;
@@ -236,7 +237,7 @@
 	background-color: value("constants.css.backgroundColorDialog");
 }
 
-.toolbarBackground .toolbarCenter{
+div.toolbarBackground .toolbarCenter{
 	display: block;
   	position: absolute;
   	left: 0;
@@ -249,47 +250,47 @@
 	animation-timing-function: ease;
 }
 
-.toolbarBackground .toolbarLogo{
+div.toolbarBackground .toolbarLogo{
 	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJzdmc0MTM2IiB3aWR0aD0iMTcwIiBoZWlnaHQ9IjQyIiB2aWV3Qm94PSIwIDAgMTcwIDQyIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3Ij4NCiAgPGc+DQogICAgPHBhdGggaWQ9ImxvZ29fc2hhcGUiIGZpbGw9IiNiMzFiMzQiIGQ9Ik0yOS44Ni41Yy00LjIyLjAyLTguNDIgMS4zLTExLjg0IDMuOC0xLjg2IDEuMjctMy41NSAyLjkyLTQuODggNC43NS0xLjUtLjE3LTIuOTYgMC00LjQzLjQ1QzQuMjMgMTAuNy43NSAxNC42Ny4xOCAxOS4yN2MtLjYgNC4xMiAxLjEgOC41NyA0LjQgMTEuMTMgMi4zNiAxLjkgNS40NyAyLjg0IDguNDggMi42IDEuOSAyLjY4IDQuNCA0Ljc4IDcuMzQgNi4zIDYuMzMgMy4zOCAxNC41IDMuMDcgMjAuNTctLjc4IDEtLjc3IDIuMzUtMS4zMyAyLjktMi41Mi42LTEuNDYtMS0zLjEyLTIuNS0yLjYtLjE4LjA4LS4zNy4xNi0uNTMuMjgtNC4zMiAzLjczLTEwLjY4IDQuOTQtMTYuMSAzLjEyLTIuOTItLjkzLTUuNTItMi42Ni03LjUtNSAzLjMzLTEuNTggNS44Ny00Ljg3IDYuNTgtOC41Ljg1LTMuOTMtLjQ3LTguMi0zLjQtMTEtLjg3LS44Ni0xLjktMS40Ny0zLTIuMDIuOS0xLjA0IDEuOTMtMi4wNyAzLjA3LTIuODQgNS4yNy0zLjc0IDEyLjg1LTMuOTQgMTguMy0uNDcgMS4wNy41MiAxLjgyIDEuNjggMy4wNSAxLjgyIDEuNTguMTYgMi43Mi0xLjggMS44LTMuMS0xLjE4LTEuMjgtMi43NC0yLjE4LTQuMjgtMi45OEMzNi40NSAxLjE4IDMzLjEzLjQ1IDI5Ljg3LjV6Ii8+DQogICAgPHBhdGggaWQ9ImxvZ29fd2hpdGVfZG90IiBmaWxsPSIjZmZmIiBkPSJNMTkuODQgMjIuNmMtLjU3IDIuOTItMi45IDUuNC01Ljc3IDYuMTMtMi44LjgtNi0uMTQtNy45NC0yLjMtMS45LTItMi42LTUuMDMtMS44Mi03LjY3LjcyLTIuNTMgMi43Ny00LjY0IDUuMy01LjQyIDIuNTctLjgzIDUuNTgtLjIzIDcuNiAxLjU4IDIuMiAxLjg0IDMuMjMgNC45IDIuNjMgNy42OHoiLz4NCiAgICA8cGF0aCBpZD0ibG9nb19ibHVlX2RvdCIgZmlsbD0iIzAwMzA4MiIgZD0iTTE1LjkgMjEuNzhjLS4xOCAxLS43OCAxLjktMS42IDIuNDctLjc1LjUzLTEuNy44LTIuNi43My0uOTYtLjA4LTEuOS0uNS0yLjU2LTEuMi0uOC0uOC0xLjIyLTEuOTgtMS4xMy0zLjEyLjA3LS43My4zMi0xLjQ0Ljc2LTIuMDMuNy0uOTUgMS44LTEuNTggMy0xLjY0Ljk1LS4wOCAxLjk1LjI0IDIuNy44NC43Ni42IDEuMyAxLjQ2IDEuNDUgMi40LjEyLjUuMSAxLjAzIDAgMS41NHoiLz4NCiAgICA8cGF0aCBpZD0iTyIgZmlsbD0iIzAwMzA4MiIgZD0iTTM3LjAyIDEwLjAyYy0yLjMyLS4wMy01LjAzIDIuNjctNSA0Ljk2djEyYy0uMDYgMi4zNSAyLjY2IDUuMDIgNSA1LjAyaDlDNDguMyAzMiA1MSAyOS4yNyA1MSAyNy4wMlYxNS4zYzAtMi42LTIuNjItNS4zLTQuOTctNS4yOHptMCAzLjk3aDljLjUgMCAuOTguNDQuOTggMWwuMDIgMTIuMDNjLS4wMi40OC0uNTMuOTgtMSAxaC05Yy0uNi0uMDQtLjk3LS40My0uOTgtMS4wMmwtLjAyLTEyYy4wMy0uNi41LTEgMS0xeiIvPg0KICAgIDxwYXRoIGlkPSJwIiBmaWxsPSIjMDAzMDgyIiBkPSJNNTMuMDIgMTUuOTZDNTMuMDIgMTcgNTQgMTggNTUgMTguMDJoMTAuMWMuNi4wOC45LjQ2LjkzIDF2OGMtLjAyLjQ1LS40NS45NS0xLjA0IDFoLTkuMDRDNTQuNDggMjggNTMgMjkuNSA1My4wMiAzMXYzLjk3YzAgMS4wMy45OCAyLjAzIDEuOTggMiAxIC4wMyAyLS45NyAyLTJWMzIuOWMwLS40NS41NC0uODUgMS4wNi0uOWg2LjY1YzIuNiAwIDUuMzItMi42NiA1LjMtNC45N3YtOGMtLjAyLTIuMzgtMi43LTUuMDgtNS01LjAyaC05Ljk4Yy0xLjAyLS4wNS0yIDEtMiAxLjk2eiIvPg0KICAgIDxwYXRoIGlkPSJlIiBmaWxsPSIjMDAzMDgyIiBkPSJNODkgMTUuOThDODguOTcgMTUgODguMDMgMTQgODcuMDIgMTRINzdjLTIuMjYgMC01IDIuNjUtNC45NyA1bC4wMyA4LjA1QzcyIDI5LjMyIDc0LjcgMzIgNzcgMzEuOTdsMTAuMDMuMDNDODggMzIgODkgMzEgODkgMzAuMDZjMC0xLjA2LTEtMi4wNi0xLjk3LTIuMDNMNzcgMjhjLS40NyAwLTEtLjcyLTEtMS41NiAwLS43NS40NS0xLjQ0IDEtMS40NGgxMC4wM2MuOTcgMCAyLjAyLS45NSAxLjk2LTIgLjA1LS45NS0xLTItMS45Ny0xLjk3TDc3IDIxYy0uNiAwLTEtLjYtMS4wMi0xLjU4LjAyLS44Mi41LTEuNDIgMS4wMy0xLjRoMTAuMDNjMS0uMDIgMS45NS0xLjAyIDEuOTYtMi4wNHoiLz4NCiAgICA8cGF0aCBpZD0ibiIgZmlsbD0iIzAwMzA4MiIgZD0iTTk2IDE0LjA0Yy0yLjMtLjA1LTUgMi42LTUgNC45NnYxMC45N0M5MSAzMSA5MiAzMiA5Mi45NSAzMmMxLjA1IDAgMi4wNS0xIDIuMS0yLjAzTDk1IDE5YzAtLjYyLjUtLjk0IDEuMDQtLjk4aDdjLjU0LS4wMy45OC40OCAxIC45OHYxMC45N0MxMDMuOTcgMzEgMTA1IDMyIDEwNiAzMS45M2MxIC4wNyAyLS45MyAyLjA0LTEuOTZWMTljLS4wNC0yLjM3LTIuNS01LTUuMDgtNC45NnoiLz4NCiAgICA8cGF0aCBpZD0iQyIgZmlsbD0iI2IzMWIzNCIgZD0iTTExNS4wMiAxMC4wMmMtMi4zIDAtNS4wMiAyLjY1LTUuMDcgNC45NkwxMTAgMjdjMCAyLjM3IDIuNyA1LjAyIDUuMDIgNS4wNWgxMC4wM0MxMjYgMzIgMTI3IDMxIDEyNyAzMC4wMmMwLTEuMDItMS0yLjAyLTEuOTUtMmgtMTAuMDNjLS41NS0uMDYtMS4wMi0uNTItMS0xbC0uMDQtMTIuMDRjLjAyLS41Ni41LTEgMS4wNC0uOTZoMTAuMDNDMTI2IDE0IDEyNyAxMyAxMjcuMDIgMTEuOTggMTI3IDExIDEyNiAxMCAxMjUuMDUgMTAuMDJ6Ii8+DQogICAgPHBhdGggaWQ9Im0iIGZpbGw9IiNiMzFiMzQiIGQ9Ik0xMzQgMTRjLTIuMyAwLTUgMi42NS01LjAyIDQuOThWMzBjLjAyIDEgMS4wMiAyIDIuMDUgMiAuOTcgMCAxLjk3LTEgMS45OC0yVjE4Ljk4YzAtLjUuNTItLjk4IDEuMDMtLjk1SDEzN2MuNjMtLjAzIDEgLjQgMSAuOTVWMzBjMCAxIDEgMiAyIDJzMi0xIDEuOTgtMlYxOC45OGMuMDItLjUuNS0uOTggMS4wNS0uOTVoMy4wM2MuNTUtLjAzLjk0LjUuOTcuOTVWMzBjLS4wMyAxIC45NyAyIDIgMiAuOTcgMCAyLjAyLTEgMi0yVjE4Ljk4Yy4wMi0yLjMtMi42Ni00Ljk4LTQuOTctNC45OHoiLz4NCiAgICA8cGF0aCBpZD0icyIgZmlsbD0iI2IzMWIzNCIgZD0iTTE1OC4wNCAxNGMtMi40NC0uMDctNS4wNyAyLjg0LTUuMDIgNS40My0uMDUgMi40IDIuNTUgNS41NyA1LjAyIDUuNThsNy0uMDNjLjU0LjA2Ljk2LjYyIDEgMS41My0uMDQuODUtLjUyIDEuNS0xIDEuNTNoLTEwLjA4Yy0uOTctLjA0LTEuODguOTctMS45NCAyLjA2LjA2LjkuOSAxLjkgMS45NCAxLjkyaDEwLjFjMi4yNy0uMDMgNC45NS0zIDQuOTUtNS41MiAwLTIuNDgtMi42LTUuNS00Ljk1LTUuNDhoLTdjLS42Mi0uMDItMS4wNS0uNjYtMS4wNC0xLjYgMC0uOC41NC0xLjQgMS4wNC0xLjQ0aDEwLjAyYzEgLjAyIDItLjk4IDEuOTUtMS45Ny4wNS0xLS45NS0yLTEuOTQtMnoiLz4NCiAgPC9nPg0KPC9zdmc+") no-repeat 0 0 / 170px 42px transparent;
 	display: inline-block;
   	height: 42px;
   	width: 170px;
 }
 
-@media screen and (max-width: 1024px) {
-	div.toolbarBackground .toolbarLogo{
+@media screen and (max-width: 1000px) {
+	.oc-toolbar div.toolbarBackground span.toolbarLogo, .oc-toolbar div.toolbarBackground div.title{
 		display: none;
 	}
 }
 
-.toolbarBackground .toolbarContent{
+div.toolbarBackground .toolbarContent{
 	margin: 0 20px;
-  	min-width: 800px;
   	text-align: center;
   	display: block;
 }
 
-.toolbarButtonsRight, .toolbarButtonsLeft{
+div.toolbarButtonsRight, div.toolbarButtonsLeft{
 	margin: 5px 0;
-	z-index: 10;
 	height: 40px;
 	overflow: hidden;
 }
 
-.toolbarButtonsRight > * {
+div.toolbarButtonsRight > * {
 	margin-top: auto;
 	margin-bottom: auto;
 }
 
-
-.toolbarButtonsLeft{
-	float: left;
-	width: 49%;
+div.toolbarButtonsRight{
+	z-index: 10;
 }
 
+div.toolbarButtonsLeft{
+	position: absolute;
+	z-index: 11;
+	background-color: value("constants.css.backgroundColorDialog");
+}
 
-
-.toolbarButtonsRight{
+div.toolbarButtonsRight{
 	text-align: right;
 	vertical-align:middle;
 	float: right;
@@ -297,16 +298,16 @@
 }
 
 
-.toolbarButtonsLeft>div{
+div.toolbarButtonsLeft>div{
 	margin-right: 10px;
 	vertical-align:middle;
 }
 
-.toolbarButtonsRight>div{
+div.toolbarButtonsRight>div{
 	margin-left: 10px;
 }
 
-.toolbarBackground div.title{
+div.toolbarBackground div.title{
 	background: #4E545B;
     border-radius: 4px;
     color: #FAFAFD;
@@ -325,7 +326,7 @@ div.toolbarBackground > div.toolbarContent div.userInfo{
     order: 99;
 }
 
-.toolbarBackground div.userInfo > div {
+div.toolbarBackground div.userInfo > div {
 	border: 2px solid #4E545B;
     border-radius: 4px;
     width: 40px;
@@ -334,13 +335,13 @@ div.toolbarBackground > div.toolbarContent div.userInfo{
 	background: transparent;
 }
 
-.toolbarBackground div.userInfo img {
+div.toolbarBackground div.userInfo img {
 	height: 32px;
 	width: 32px;
 	vertical-align: middle;
 }
 
-.toolbarBackground div.userInfo > div:hover{
+div.toolbarBackground div.userInfo > div:hover{
 	border-color: #2197DB !important;
 }
 
@@ -377,7 +378,7 @@ div.userInfoDialog .cms-user-image img{
 	width: 96px;
 }
 
-.notification {
+div.notification {
 	text-align: center;
 	position:absolute;
 	/** Must have the value as the .toolbarBackground class. */
@@ -385,43 +386,7 @@ div.userInfoDialog .cms-user-image img{
 	width:100%;
 }
 
-
-div.toolbarToggle{
-	position: fixed;
-	left: 97%;
-	top: -3px;
-	padding: 3px 3px 1px 3px;
-	z-index: value("constants.css.zIndexDND");
-}
-
-
-.toolbarToggle, .toolbarToggle * {
-	margin: 0;
-	padding: 0;
-	border: none;
-	color: value("constants.css.textColor");
-	font-family: value("constants.css.fontFamily");
-	font-size: value("constants.css.fontSize");
-	line-height: value("constants.css.lineHeight");
-	background: transparent;
-	text-align: left;
-	height: auto;
-	width: auto;
-	min-height: 0;
-	max-height: none;
-	min-width: 0;
-	max-width: none;
-}
-
-.toolbarButtonShowSmallElements { 
-	
-}
-
-.hideButtonShowSmallElements .toolbarButtonShowSmallElements {
-	display: none; 
-}
-
-.toolbarFontButton { 
+div.toolbarFontButton, span.toolbarFontButton { 
 	width: 32px;
 	height: 32px;
 	line-height: 32px;
@@ -441,7 +406,7 @@ div.quickLaunchContainer {
 	background-color: white;
 }
 	
-.quickLaunchContainer .v-button {
+div.quickLaunchContainer .v-button {
 	margin-bottom: 10px;
 	padding-left: 13px; 
 	padding-right: 13px;
@@ -454,17 +419,17 @@ div.quickLaunchContainer {
 	background: transparent;
 	box-shadow: none;
 }
-.quickLaunchContainer div.v-button:before{
+div.quickLaunchContainer div.v-button:before{
 	display: none;
 }
-.quickLaunchContainer .v-button:hover:after{
+div.quickLaunchContainer .v-button:hover:after{
 	background: transparent;
 }
-.quickLaunchContainer .v-button-wrap{
+div.quickLaunchContainer .v-button-wrap{
 	display: inline-block;
 }
 
-.quickLaunchContainer span.v-button-caption { 
+div.quickLaunchContainer span.v-button-caption { 
   font-size: 12px;
   font-weight: 500;
   font-family: "Open Sans", sans-serif; 
@@ -473,6 +438,6 @@ div.quickLaunchContainer {
   white-space: nowrap;
 }
 
-.quickLaunchContainer .v-disabled .v-button-wrap{
+div.quickLaunchContainer .v-disabled .v-button-wrap{
 	opacity: 0.5;
 }

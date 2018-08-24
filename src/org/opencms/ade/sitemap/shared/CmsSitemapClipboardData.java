@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.util.CmsUUID;
 
 import java.util.LinkedHashMap;
@@ -80,6 +81,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
             m_deletions.remove(entry.getId());
         }
         m_deletions.put(entry.getId(), entry);
+        checkMapSize(m_deletions);
     }
 
     /**
@@ -93,6 +95,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
             m_modifications.remove(entry.getId());
         }
         m_modifications.put(entry.getId(), entry);
+        checkMapSize(m_modifications);
     }
 
     /**
@@ -157,6 +160,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
     public void setDeletions(LinkedHashMap<CmsUUID, CmsClientSitemapEntry> deletions) {
 
         m_deletions = deletions;
+        checkMapSize(m_deletions);
     }
 
     /**
@@ -167,5 +171,18 @@ public class CmsSitemapClipboardData implements IsSerializable {
     public void setModifications(LinkedHashMap<CmsUUID, CmsClientSitemapEntry> modifications) {
 
         m_modifications = modifications;
+        checkMapSize(m_modifications);
+    }
+
+    /**
+     * Checks map size to remove entries in case it exceeds the default list size.<p>
+     *
+     * @param map the map to check
+     */
+    private void checkMapSize(LinkedHashMap<?, ?> map) {
+
+        while (map.size() > CmsADEManager.DEFAULT_ELEMENT_LIST_SIZE) {
+            map.remove(map.keySet().iterator().next());
+        }
     }
 }

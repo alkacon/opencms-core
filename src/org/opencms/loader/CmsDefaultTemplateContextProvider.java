@@ -115,7 +115,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         if (m_params.containsKey(PARAM_CONFIGURATION)) {
             return m_params.get(PARAM_CONFIGURATION);
         } else {
-            return "/system/config/templatecontexts.json";
+            return OpenCms.getSystemInfo().getConfigFilePath(m_cms, "templatecontexts.json");
         }
     }
 

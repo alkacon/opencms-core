@@ -377,18 +377,21 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
 
         if (isIndexing(res)) {
-            if (OpenCms.getResourceManager().getResourceType(res) instanceof CmsResourceTypeXmlContainerPage) {
-                return OpenCms.getSearchManager().getDocumentFactory(
-                    CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
-                    "text/html");
+            I_CmsDocumentFactory defaultFactory = super.getDocumentFactory(res);
+            if (null == defaultFactory) {
+
+                if (OpenCms.getResourceManager().getResourceType(res) instanceof CmsResourceTypeXmlContainerPage) {
+                    return OpenCms.getSearchManager().getDocumentFactory(
+                        CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
+                        "text/html");
+                }
+                if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+                    return OpenCms.getSearchManager().getDocumentFactory(
+                        CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
+                        "text/html");
+                }
             }
-            if (CmsResourceTypeXmlContent.isXmlContent(res)) {
-                return OpenCms.getSearchManager().getDocumentFactory(
-                    CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
-                    "text/html");
-            } else {
-                return super.getDocumentFactory(res);
-            }
+            return defaultFactory;
         }
         return null;
     }

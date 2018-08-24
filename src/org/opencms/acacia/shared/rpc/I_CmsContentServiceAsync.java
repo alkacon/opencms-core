@@ -83,10 +83,10 @@ public interface I_CmsContentServiceAsync {
         AsyncCallback<CmsEntityHtml> callback);
 
     /**
-     * Validates the given entities and returns maps of error and warning messages in case of invalid attributes.<p>
+     * Validates the given entity and returns maps of error and warning messages in case of invalid attributes.<p>
      *
-     * @param changedEntities the entities to validate
+     * @param changedEntity the entity to validate
      * @param callback the asynchronous callback
      */
-    void validateEntities(List<CmsEntity> changedEntities, AsyncCallback<CmsValidationResult> callback);
+    void validateEntity(CmsEntity changedEntity, AsyncCallback<CmsValidationResult> callback);
 }

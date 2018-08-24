@@ -36,7 +36,6 @@ import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
@@ -491,8 +490,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         for (Widget widget : m_selector) {
             if (widget instanceof A_CmsSelectCell) {
                 int cellWidth = ((A_CmsSelectCell)widget).getRequiredWidth();
-                CmsDebugLog.getInstance().printLine(
-                    "Measure for " + ((A_CmsSelectCell)widget).getElement().getInnerText() + ": " + cellWidth);
                 if (cellWidth > m_maxCellWidth) {
                     m_maxCellWidth = cellWidth;
                 }

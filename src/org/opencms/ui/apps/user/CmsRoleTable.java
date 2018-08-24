@@ -52,17 +52,17 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table for the roles.<p>
@@ -136,6 +136,7 @@ public class CmsRoleTable extends Table implements I_CmsFilterableTable {
          * @param defaultValue value
          */
         TableProperty(String name, Class<?> type, Object defaultValue) {
+
             m_headerMessage = name;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -208,6 +209,7 @@ public class CmsRoleTable extends Table implements I_CmsFilterableTable {
      * @param ou name
      */
     public CmsRoleTable(CmsAccountsApp app, String ou) {
+
         try {
             m_app = app;
             m_parentOU = ou;
@@ -250,7 +252,7 @@ public class CmsRoleTable extends Table implements I_CmsFilterableTable {
      */
     protected void updateApp(CmsRole role) {
 
-        m_app.update(m_parentOU, CmsOuTreeType.ROLE, role.getId());
+        m_app.update(m_parentOU, CmsOuTreeType.ROLE, role.getId(), "");
     }
 
     /**

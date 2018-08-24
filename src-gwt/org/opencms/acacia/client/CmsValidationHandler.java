@@ -33,7 +33,6 @@ import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.acacia.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 
-import java.util.Collections;
 import java.util.Map.Entry;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -306,20 +305,18 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
 
         if (!m_validating) {
             m_validating = true;
-            m_contentService.validateEntities(
-                Collections.singletonList(entity),
-                new AsyncCallback<CmsValidationResult>() {
+            m_contentService.validateEntity(entity, new AsyncCallback<CmsValidationResult>() {
 
-                    public void onFailure(Throwable caught) {
+                public void onFailure(Throwable caught) {
 
-                        // can be ignored
-                    }
+                    // can be ignored
+                }
 
-                    public void onSuccess(CmsValidationResult result) {
+                public void onSuccess(CmsValidationResult result) {
 
-                        displayValidation(entity.getId(), result);
-                    }
-                });
+                    displayValidation(entity.getId(), result);
+                }
+            });
         }
     }
 

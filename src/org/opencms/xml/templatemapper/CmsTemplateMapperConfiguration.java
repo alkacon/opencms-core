@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +46,6 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
-
-import com.google.common.collect.Maps;
 
 /**
  * Configuration for the template mapper.<p>
@@ -71,16 +70,22 @@ public class CmsTemplateMapperConfiguration {
     public static final String N_FORMATTER_JSP = "formatter-jsp";
 
     /** XML element name. */
+    public static final String N_ELEMENT_GROUP_TYPE = "element-group-type";
+
+    /** XML element name. */
     public static final String N_PATH = "path";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateMapperConfiguration.class);
 
     /** The formatter configuration mapping (structure id to structure id). */
-    private Map<CmsUUID, CmsUUID> m_formatterConfigMap = Maps.newHashMap();
+    private Map<CmsUUID, CmsUUID> m_formatterConfigMap = new HashMap<>();
 
     /** The formatter JSP mapping (structure id to structure id). */
-    private Map<CmsUUID, CmsUUID> m_formatterJspMap = Maps.newHashMap();
+    private Map<CmsUUID, CmsUUID> m_formatterJspMap = new HashMap<>();
+
+    /** Mapping for element group types. */
+    private Map<String, String> m_groupTypeMap = new HashMap<>();
 
     /** List of root paths for which the configuration is valid. */
     private List<String> m_paths = Lists.newArrayList();
@@ -135,11 +140,31 @@ public class CmsTemplateMapperConfiguration {
                 }
             }
 
+            for (Node node : root.selectNodes("//" + N_ELEMENT_GROUP_TYPE)) {
+                Element groupElem = (Element)node;
+                String oldType = groupElem.attributeValue(A_OLD);
+                String newType = groupElem.attributeValue(A_NEW);
+                m_groupTypeMap.put(oldType, newType);
+            }
+
             for (Node node : root.selectNodes("//" + N_PATH)) {
                 Element pathElem = (Element)node;
                 m_paths.add(pathElem.getText());
             }
         }
+    }
+
+    /**
+     * Gets the mapped type for a given element group type, or null if there is no mapped type.<p>
+     *
+     * @param type the original element group type
+     *
+     * @return the mapped element group type
+     */
+    public String getMappedElementGroupType(String type) {
+
+        return m_groupTypeMap.get(type);
+
     }
 
     /**

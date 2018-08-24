@@ -462,14 +462,14 @@
 	.o-responsive[width-range~="1241px-"]{
 		/* big screen styles */
 		.o-toolbar{
-			.o-toolbar-items-left, .o-toolbar-items-right{
+			.o-toolbar-items-right{
 				width: 520px;
 			}
 		}
 		@include o-workplace-form-wide;
 	}
   
-	.o-responsive[width-range~="0-983px"]{
+	.o-responsive[width-range~="0-1000px"]{
 		/* small screen styles */
 		@include o-workplace-form-narrow;
  	
@@ -477,8 +477,15 @@
 			.o-toolbar-inner{
 				margin: 0 5px;
 			}
-			.o-toolbar-items-left, .o-toolbar-items-right{
+			.o-toolbar-items-right{
 				width: 350px;
+			}
+			.o-toolbar-items-left{
+				margin-left: -10px;
+				
+				.o-toolbar-app-indicator{
+					display: none;
+				}
 			}
 			div.o-toolbar-center {
 				span.o-toolbar-logo{
@@ -513,12 +520,12 @@
 		}
 	}
   
-	.o-responsive[width-range~="984px-1240px"]{
+	.o-responsive[width-range~="1001px-1240px"]{
 		/* medium screen styles */
 		@include o-workplace-form-wide;
   	
 		.o-toolbar{
-			.o-toolbar-items-left, .o-toolbar-items-right{
+			.o-toolbar-items-right{
 				width: 400px;
 			}
 		}
@@ -568,6 +575,26 @@
 			top: 0;
 			right: 0;
 		}
+	}
+
+	.o-richtextarea-reduced {
+		
+		.gwt-RichTextToolbar div:nth-child(4),
+		.gwt-RichTextToolbar div:nth-child(5),
+		.gwt-RichTextToolbar div:nth-child(6),		
+		.gwt-RichTextToolbar div:nth-child(7),		
+		.gwt-RichTextToolbar div:nth-child(8),		
+		.gwt-RichTextToolbar div:nth-child(9),
+		.gwt-RichTextToolbar div:nth-child(10),
+		.gwt-RichTextToolbar div:nth-child(11),
+		.gwt-RichTextToolbar div:nth-child(12),
+		.gwt-RichTextToolbar div:nth-child(13),
+		.gwt-RichTextToolbar div:nth-child(15),
+		.gwt-RichTextToolbar select:nth-child(1),
+		.gwt-RichTextToolbar select:nth-child(3){
+				display:none;
+			}	
+	
 	}
 
 	textarea.o-shell-terminal, .o-shell-terminal.o-report{
@@ -865,6 +892,12 @@
   			width: 170px;
   			background: $o-opencms-logo;
 		}
+	}
+
+	.o-login-additional{
+		
+	padding-bottom: 10px;
+	border-bottom: 1px solid #d9d9d9;
 	}
 	 
 	div.o-upload-drop{
@@ -1252,4 +1285,8 @@
 	& ~ .mce-tooltip, .mce-fullscreen {
 		z-index: 200000 !important;
 	}		
+	
+	.o-dnd-area {
+		min-height: 78px;
+	}
 }

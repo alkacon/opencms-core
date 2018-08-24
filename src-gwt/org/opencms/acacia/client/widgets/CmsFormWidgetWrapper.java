@@ -29,7 +29,6 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -40,6 +39,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Wraps an edit widget to supply a widget label.<p>
@@ -122,6 +122,16 @@ implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
         // make sure the widget has been initialized
         assert m_editWidget != null;
         return m_editWidget;
+    }
+
+    /**
+     * Returns the label widget.<p>
+     *
+     * @return the label widget
+     */
+    public Label getLabel() {
+
+        return m_label;
     }
 
     /**
@@ -235,7 +245,5 @@ implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
     public void setWidgetInfo(String label, String help) {
 
         m_label.setHTML(label);
-        m_label.setTitle(CmsDomUtil.stripHtml(help));
     }
-
 }

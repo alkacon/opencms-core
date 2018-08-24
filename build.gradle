@@ -226,6 +226,7 @@ jar {
     }
     baseName 'opencms-core'
     archiveName 'opencms.jar'
+    group 'OpenCms core JARs'
 
     include 'org/opencms/**'
     include 'org/vaadin/risto/**'
@@ -319,6 +320,7 @@ task modulesJar(type: Jar) {
 	from sourceSets.modules.output
     archiveName 'opencms-modules.jar'
     baseName 'opencms-modules'
+    group 'OpenCms core JARs'
     exclude '**/.gitignore'
 }
 
@@ -481,6 +483,7 @@ task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
     }
     baseName='opencms-resources'
     archiveName='opencms-resources.jar'
+    group 'OpenCms core JARs'
     allModuleNames.split(',').each{ moduleName ->
 	    from ("${projectDir}/modules/${moduleName}/static"){
 	    	into "OPENCMS"
@@ -596,6 +599,7 @@ task setupJar(dependsOn: jar, type: Jar) {
     from sourceSets.setup.output
     archiveName 'opencms-setup.jar'
     baseName 'opencms-setup'
+    group 'OpenCms core JARs'
     exclude '**/.gitignore'
 }
 
@@ -753,6 +757,7 @@ allModuleNames.split(',').each{ moduleName ->
 
         // TODO: set the module version to match the manifest.xml
         baseName moduleName
+        group 'OpenCms module ZIPs'
         doFirst {
             println '======================================================'
             println "Building ZIP for $moduleName version $moduleVersion"
@@ -820,6 +825,7 @@ allModuleNames.split(',').each{ moduleName ->
             }
             archiveName moduleName+'.jar'
             baseName moduleName
+            group 'OpenCms module JARs'
             exclude '**/.gitignore'
             doFirst{
                 println '======================================================'

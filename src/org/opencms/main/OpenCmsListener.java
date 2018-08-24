@@ -80,7 +80,18 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
      */
     public void contextInitialized(ServletContextEvent event) {
 
+        String basePath = event.getServletContext().getRealPath("/");
+        String path = basePath + "/WEB-INF/logs/startup-stacktraces.zip";
+        String summaryPath = basePath + "/WEB-INF/logs/startup-summary.xml";
+        CmsSingleThreadDumperThread dumpThread = new CmsSingleThreadDumperThread(
+            path,
+            summaryPath,
+            Thread.currentThread().getId());
+        boolean enableThreadDumps = "true".equalsIgnoreCase(System.getProperty("opencms.profile.startup.stacktraces"));
         try {
+            if (enableThreadDumps) {
+                dumpThread.start();
+            }
             // upgrade the OpenCms runlevel
             OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
         } catch (CmsInitException e) {
@@ -93,6 +104,10 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
             // throw a new init Exception to make sure a "context destroyed" event is triggered
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, t.getMessage()));
+        } finally {
+            // Signal the thread to finish its business.
+            // This doesn't do anything if the thread isn't running.
+            dumpThread.interrupt();
         }
     }
 

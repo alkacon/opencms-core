@@ -81,14 +81,41 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_VIEW_ONLINE = "viewonline";
 
+    /** Collector data attribute name. */
+    public static final String ATTR_DATA_COLLECTOR = "data-oc-collector";
+
+    /** Container data attribute name. */
+    public static final String ATTR_DATA_CONTAINER = "data-oc-container";
+
+    /** Editable data attribute name. */
+    public static final String ATTR_DATA_EDITABLE = "data-oc-editable";
+
+    /** Element data attribute name. */
+    public static final String ATTR_DATA_ELEMENT = "data-oc-element";
+
+    /** Content field data attribute name. */
+    public static final String ATTR_DATA_FIELD = "data-oc-field";
+
+    /** Entity id data attribute name. */
+    public static final String ATTR_DATA_ID = "data-oc-id";
+
     /** Name of the Javascript callback used to handle property changes triggered from the locale compare view. */
     public static final String CALLBACK_HANDLE_CHANGED_PROPERTIES = "cmsHandleChangedProperties";
 
     /** Javascript function name for showing the locale compare view. */
     public static final String CALLBACK_REFRESH_LOCALE_COMPARISON = "cmsRefreshLocaleComparison";
 
-    /** CSS class name used for the DOM elements containing collector information. */
-    public static final String CLASS_COLLECTOR_INFO = "cms-collector-info";
+    /** The CSS class name used for the DOM elements containing collector information. */
+    public static final String CLASS_COLLECTOR_INFO = "oc-collector-info";
+
+    /** The CSS class name for data elements which precede the direct editable elements. */
+    public static final String CLASS_EDITABLE = "oc-editable";
+
+    /** The CSS class name for elements which end the direct editable elements. */
+    public static final String CLASS_EDITABLE_END = CLASS_EDITABLE + "-end";
+
+    /** The CSS class name for elements which mark elements to be skipped during direct edit. */
+    public static final String CLASS_EDITABLE_SKIP = CLASS_EDITABLE + "-skip";
 
     /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
     public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
@@ -129,6 +156,9 @@ public final class CmsGwtConstants {
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
 
+    /** Name of property containing focal point for images. */
+    public static final String PROPERTY_IMAGE_FOCALPOINT = "image.focalpoint";
+
     /** Tab id for the preference dialog. */
     public static final String TAB_BASIC = "basic";
 
@@ -150,11 +180,11 @@ public final class CmsGwtConstants {
     /** Name for the pseudo-type 'modelgroup'. */
     public static final String TYPE_MODELGROUP = "modelgroup";
 
-    /** Name for the pseudo-type 'modelgrouppage'. */
-    public static final String TYPE_MODELGROUP_PAGE = "modelgrouppage";
-
     /** Name for the pseudo-type 'modelgroupreuse'. */
     public static final String TYPE_MODELGROUP_COPY = "modelgroupcopy";
+
+    /** Name for the pseudo-type 'modelgrouppage'. */
+    public static final String TYPE_MODELGROUP_PAGE = "modelgrouppage";
 
     /** Name for the type 'modelpage'. */
     public static final String TYPE_MODELPAGE = "modelpage";

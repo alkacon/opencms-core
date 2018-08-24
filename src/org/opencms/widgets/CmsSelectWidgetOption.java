@@ -200,7 +200,7 @@ public class CmsSelectWidgetOption {
             } else {
                 first = false;
             }
-            result.append(o.toString());
+            result.append(o.toString().replace("|", "\\|"));
         }
         return result.toString();
     }
@@ -281,8 +281,8 @@ public class CmsSelectWidgetOption {
         }
 
         // cut along the delimiter
-        String[] parts = CmsStringUtil.splitAsArray(input, INPUT_DELIMITER);
-        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        String[] parts = splitOptions(input);
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>(parts.length);
 
         // indicates if a default of 'true' was already set in this result list
         boolean foundDefault = false;
@@ -296,7 +296,7 @@ public class CmsSelectWidgetOption {
             }
 
             try {
-
+                part = part.replace("\\|", "|");
                 String value = null;
                 String option = null;
                 String help = null;
@@ -335,9 +335,9 @@ public class CmsSelectWidgetOption {
                     // no explicit setting using the key, value must be at the first position
                     value = part.substring(0, end).trim();
                 } else {
-                    value = part.substring(posValue + KEY_VALUE.length(), end).trim();
+                    value = part.substring((posValue + KEY_VALUE.length()) - 1, end).trim();
                     // cut of trailing '
-                    value = value.substring(0, value.length() - 1);
+                    value = value.substring(1, value.length() - 1);
                 }
 
                 boolean shortOption = false;
@@ -392,9 +392,9 @@ public class CmsSelectWidgetOption {
                         // shortcut syntax used for option with ':' appended to value
                         option = part.substring(posOption + 1, end).trim();
                     } else {
-                        option = part.substring(posOption + KEY_OPTION.length(), end).trim();
+                        option = part.substring((posOption + KEY_OPTION.length()) - 1, end).trim();
                         // cut of trailing '
-                        option = option.substring(0, option.length() - 1);
+                        option = option.substring(1, option.length() - 1);
                     }
                 }
 
@@ -410,9 +410,9 @@ public class CmsSelectWidgetOption {
                     if ((posValue > posHelp) && (posValue < end)) {
                         end = posValue;
                     }
-                    help = part.substring(posHelp + KEY_HELP.length(), end).trim();
+                    help = part.substring((posHelp + KEY_HELP.length()) - 1, end).trim();
                     // cut of trailing '
-                    help = help.substring(0, help.length() - 1);
+                    help = help.substring(1, help.length() - 1);
                 }
 
                 // check if there was already a 'true' default, if so all other entries are 'false'
@@ -432,6 +432,19 @@ public class CmsSelectWidgetOption {
         }
 
         return result;
+    }
+
+    /**
+     * Splits the options string at every unescaped input delimiter, i.e., every unescaped "|".
+     * @param input the options string
+     * @return the array with the various options
+     */
+    public static String[] splitOptions(String input) {
+
+        //Note that we use a regex matching all "|" characters not prefixed by "\"
+        //Since we define a regex for matching, the input delimiter "|" needs to be escaped, as well as "\",
+        //which is even double-escaped - one escaping is due to the String, one due to the regex.
+        return input.split("(?<!\\\\)\\" + INPUT_DELIMITER);
     }
 
     /**

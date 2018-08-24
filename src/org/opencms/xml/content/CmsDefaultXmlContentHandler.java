@@ -27,6 +27,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.log.CmsLogEntry;
@@ -134,6 +135,66 @@ import com.google.common.collect.Maps;
  * @since 6.0.0
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_CmsXmlContentVisibilityHandler {
+
+    /**
+     * Helper class for mapping widget names and configurations which are configured using the setting-like 'field' syntax.<p>
+     *
+     * Widget mappers are single-use, one instance needs to be created for each field.
+     */
+    public static class WidgetMapper {
+
+        /** Internal widget map. */
+        private static Map<String, String> m_mapping = new HashMap<>();
+        /** The original configuration. */
+        private String m_config;
+
+        /** The original widget name. */
+        private String m_widget;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param widget the original widget name
+         * @param config the original widget configuration
+         */
+        public WidgetMapper(String widget, String config) {
+
+            m_widget = widget;
+            m_config = config;
+        }
+
+        static {
+            m_mapping.put("string", "StringWidget");
+            m_mapping.put("select", "SelectorWidget");
+            m_mapping.put("combo", "ComboWidget");
+            m_mapping.put("selectcombo", "SelectComboWidget");
+            m_mapping.put("checkbox", "BooleanWidget");
+        }
+
+        /**
+         * Gets the widget configuration.<p>
+         *
+         * @return the widget configuration
+         */
+        public String getConfig() {
+
+            return m_config;
+        }
+
+        /**
+         * Gets the mapped widget name.<p>
+         *
+         * @return the mapped widget name
+         */
+        public String getWidget() {
+
+            String mappedValue = m_mapping.get(m_widget);
+            if (mappedValue != null) {
+                return mappedValue;
+            }
+            return m_widget;
+        }
+    }
 
     /**
      * Contains the visibility handler configuration for a content field path.<p>
@@ -508,11 +569,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The node name for the default complex widget configuration. */
     private static final Object APPINFO_DEFAULTWIDGET = "defaultwidget";
 
+    /** Node name for the list of field declarations. */
+    private static final Object APPINFO_FIELDS = "fields";
+
     /** Attribute name for the context used for resolving content mappings. */
     private static final String ATTR_MAPPING_RESOLUTION_CONTEXT = "MAPPING_RESOLUTION_CONTEXT";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
+
+    /** Node name for the field declaration. */
+    private static final String N_FIELD = "field";
 
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
@@ -527,40 +594,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The title property shared mapping key. */
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
 
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
@@ -646,6 +679,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The container page only flag, indicating if this XML content should be indexed on container pages only. */
     private boolean m_containerPageOnly;
 
+    /** The content definition for which this content handler is configured. */
+    private CmsXmlContentDefinition m_contentDefinition;
+
     /** The default complex widget class name. */
     private String m_defaultWidget;
 
@@ -663,6 +699,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The editor change handlers. */
     private List<I_CmsXmlContentEditorChangeHandler> m_editorChangeHandlers;
+
+    /** The descriptions for the fields. */
+    private Map<String, String> m_fieldDescriptions = new HashMap<>();
+
+    /** The nice names for the fields. */
+    private Map<String, String> m_fieldNiceNames = new HashMap<>();
 
     /** A set of keys identifying the mappings which should use default values if the corresponding values are not set in the XML content. */
     private Set<String> m_mappingsUsingDefault = new HashSet<String>();
@@ -688,15 +730,46 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
-    /** The content definition for which this content handler is configured. */
-    private CmsXmlContentDefinition m_contentDefinition;
-
     /**
      * Creates a new instance of the default XML content handler.<p>
      */
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -906,6 +979,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers() {
 
         return Collections.unmodifiableList(m_editorChangeHandlers);
+    }
+
+    /**
+     * Gets the help texts for the fields.<p>
+     *
+     * @return the help texts for the fields
+     */
+    public Map<String, String> getFieldHelp() {
+
+        return Collections.unmodifiableMap(m_fieldDescriptions);
+    }
+
+    /**
+     * Gets the labels for the fields.<p>
+     *
+     * @return the labels for the fields
+     */
+    public Map<String, String> getFieldLabels() {
+
+        return Collections.unmodifiableMap(m_fieldNiceNames);
     }
 
     /**
@@ -1326,6 +1419,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initMessageKeyHandler(element);
                 } else if (nodeName.equals(APPINFO_PARAMETERS)) {
                     initParameters(element);
+                } else if (nodeName.equals(APPINFO_FIELDS)) {
+                    initFields(element, contentDefinition);
                 }
             }
         }
@@ -2291,6 +2386,84 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Processes a single field definition.<p>
+     *
+     * @param configValues the configuration values with the XML element names as keys
+     * @param contentDef the content definition
+     *
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initField(Map<String, String> configValues, CmsXmlContentDefinition contentDef)
+    throws CmsXmlException {
+
+        String name = configValues.get(CmsConfigurationReader.N_PROPERTY_NAME);
+        if ((name == null) || name.contains("/") || name.contains("[")) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_BAD_FIELD_NAME_1));
+        }
+        name = name.trim();
+        String ruleRegex = configValues.get(CmsConfigurationReader.N_RULE_REGEX);
+        String ruleType = configValues.get(CmsConfigurationReader.N_RULE_TYPE);
+        String error = configValues.get(CmsConfigurationReader.N_ERROR);
+        if (error == null) {
+            error = "";
+        }
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(ruleRegex)) {
+            addValidationRule(contentDef, name, ruleRegex, error, "warning".equalsIgnoreCase(ruleType));
+        }
+        String defaultValue = configValues.get(CmsConfigurationReader.N_DEFAULT);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(defaultValue)) {
+            addDefault(contentDef, name, defaultValue, "true");
+        }
+
+        String widget = configValues.get(CmsConfigurationReader.N_WIDGET);
+        String widgetConfig = configValues.get(CmsConfigurationReader.N_WIDGET_CONFIG);
+        if (widget != null) {
+            WidgetMapper mapper = new WidgetMapper(widget, widgetConfig);
+            widget = mapper.getWidget();
+            widgetConfig = mapper.getConfig();
+            addWidget(contentDef, name, widget);
+            if (widgetConfig != null) {
+                widgetConfig = widgetConfig.trim();
+                addConfiguration(contentDef, name, widgetConfig);
+            }
+        }
+
+        String niceName = configValues.get(CmsConfigurationReader.N_DISPLAY_NAME);
+        if (niceName != null) {
+            m_fieldNiceNames.put(name, niceName);
+        }
+        String description = configValues.get(CmsConfigurationReader.N_DESCRIPTION);
+        if (description != null) {
+            m_fieldDescriptions.put(name, description);
+        }
+    }
+
+    /**
+     * Processes all field declarations in the schema.<p>
+     *
+     * @param parent the parent element
+     * @param contentDef the content definition
+     *
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initFields(Element parent, CmsXmlContentDefinition contentDef) throws CmsXmlException {
+
+        List<Node> fieldNodes = parent.selectNodes(N_FIELD);
+        for (Node node : fieldNodes) {
+            Element element = (Element)node;
+            Map<String, String> configValues = new HashMap<>();
+            for (Node configValueNode : element.selectNodes("*")) {
+                Element configValueElem = (Element)configValueNode;
+                String name = configValueElem.getName();
+                String value = configValueElem.getText();
+                configValues.put(name, value);
+            }
+            initField(configValues, contentDef);
+        }
+
     }
 
     /**

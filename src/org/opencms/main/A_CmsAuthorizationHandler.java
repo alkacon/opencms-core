@@ -35,6 +35,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -87,6 +88,15 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
      * @throws CmsException if something goes wrong
      */
     protected CmsObject registerSession(HttpServletRequest request, CmsObject cms) throws CmsException {
+
+        if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            // make sure we have a new session after login for security reasons
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            session = request.getSession(true);
+        }
 
         // update the request context
         cms = OpenCmsCore.getInstance().updateContext(request, cms);

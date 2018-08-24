@@ -603,6 +603,31 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
+     * Replace properties of given resources.<p>
+     *
+     * @param matchedResources to replace properties
+     */
+    private void replaceProperties(Set<CmsResource> matchedResources) {
+
+        for (CmsResource resource : matchedResources) {
+            try {
+                CmsProperty prop = getCms().readPropertyObject(resource, m_settings.getProperty().getName(), false);
+                Matcher matcher = Pattern.compile(m_settings.getSearchpattern()).matcher(prop.getValue());
+                if (m_settings.getReplacepattern().isEmpty()) {
+                    prop.setValue("", "");
+                } else {
+                    prop.setValue(matcher.replaceAll(m_settings.getReplacepattern()), CmsProperty.TYPE_INDIVIDUAL);
+                }
+                getCms().lockResource(resource);
+                getCms().writePropertyObjects(resource, Collections.singletonList(prop));
+                getCms().unlockResource(resource);
+            } catch (CmsException e) {
+                LOG.error("Ubable to change property", e);
+            }
+        }
+    }
+
+    /**
      * Reads the content as byte array of the given resource and prints a message to the report.<p>
      *
      * @param report the report
@@ -734,6 +759,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                     Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0),
                     I_CmsReport.FORMAT_OK);
             }
+
         } else {
             for (CmsResource resource : resources) {
                 Matcher matcher;
@@ -745,14 +771,6 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                         getReport().println(
                             Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0),
                             I_CmsReport.FORMAT_OK);
-                        if (m_replace) {
-                            if (m_settings.getReplacepattern().isEmpty()) {
-                                prop.setValue(matcher.replaceAll(m_settings.getReplacepattern()), "");
-                            }
-                            getCms().lockResource(resource);
-                            getCms().writePropertyObjects(resource, Collections.singletonList(prop));
-                            getCms().unlockResource(resource);
-                        }
                     } else {
                         getReport().println(
                             Messages.get().container(Messages.RPT_SOURCESEARCH_NOT_MATCHED_0),
@@ -760,9 +778,12 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                     }
 
                 } catch (CmsException e) {
-                    LOG.error("Ubable to read or change property", e);
+                    LOG.error("Ubable to read property", e);
                 }
             }
+        }
+        if (m_replace) {
+            replaceProperties(m_matchedResources);
         }
         // report results
         reportResults(resources.size());

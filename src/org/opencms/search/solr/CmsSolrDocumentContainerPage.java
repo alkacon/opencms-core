@@ -32,6 +32,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.I_CmsSearchIndex;
@@ -51,6 +52,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Lucene document factory class to extract index data from a resource
  * of type <code>CmsResourceTypeContainerPage</code>.<p>
@@ -58,6 +61,9 @@ import java.util.Map;
  * @since 8.5.0
  */
 public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentContainerPage.class);
 
     /** The solr document type name for xml-contents. */
     public static final String TYPE_CONTAINERPAGE_SOLR = "containerpage-solr";
@@ -116,20 +122,30 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                 for (CmsContainerElementBean element : containerBean.getElements()) {
                     // check all elements in this container
                     // get the formatter configuration for this element
-                    element.initResource(cms);
-                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, file.getRootPath());
-                    CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
-                    if ((formatters != null)
-                        && (element.getFormatterId() != null)
-                        && formatters.isSearchContent(element.getFormatterId())) {
-                        // the content of this element must be included for the container page
+                    try {
                         element.initResource(cms);
-                        all.add(
-                            CmsSolrDocumentXmlContent.extractXmlContent(
-                                cms,
-                                element.getResource(),
-                                index,
-                                forceLocale));
+                        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                            cms,
+                            file.getRootPath());
+                        CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
+                        if ((formatters != null)
+                            && (element.getFormatterId() != null)
+                            && formatters.isSearchContent(element.getFormatterId())) {
+                            // the content of this element must be included for the container page
+                            all.add(
+                                CmsSolrDocumentXmlContent.extractXmlContent(
+                                    cms,
+                                    element.getResource(),
+                                    index,
+                                    forceLocale));
+                        }
+                    } catch (CmsException e) {
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_SKIPPING_CONTAINERPAGE_ELEMENT_WITH_UNREADABLE_RESOURCE_2,
+                                file.getRootPath(),
+                                element.getId()),
+                            e);
                     }
                 }
             }

@@ -14,7 +14,8 @@
 	  			</above>
 		  		<content>
 		  			<vaadin7-vertical-layout margin spacing>
-		  				<vaadin7-option-group _id="m_securityField" caption="%(key.GUI_LOGIN_SECURITY_0)" visible="%(showSecure)" />
+		  				<vaadin7-label _id="m_additionalMessage" style-name="o-login-additional" visible="false"></vaadin7-label> 
+		  				<vaadin7-option-group _id="m_securityField"  visible="%(showSecure)"/>
 		  				<vaadin7-label>%(key.GUI_LOGIN_MESSAGE_0)</vaadin7-label> 
 		  				<v-form-layout>
 					    	<w-cms-login-user-field _id="m_userField" caption="%(key.GUI_LOGIN_USERNAME_0)" />

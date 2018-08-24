@@ -56,6 +56,9 @@ public class CmsDbImportServer extends A_CmsServerImportForm {
     /**vaadin component.*/
     private ComboBox m_siteSelect;
 
+    /**vaadin component.*/
+    private ComboBox m_projectSelect;
+
     /**
      * Public constructor.<p>
      *
@@ -104,6 +107,12 @@ public class CmsDbImportServer extends A_CmsServerImportForm {
     protected Button getOkButton() {
 
         return m_ok;
+    }
+
+    @Override
+    protected ComboBox getProjectSelector() {
+
+        return m_projectSelect;
     }
 
     /**

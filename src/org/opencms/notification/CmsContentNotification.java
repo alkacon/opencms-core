@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 public class CmsContentNotification extends A_CmsNotification {
 
     /** The path to the xml content with the subject, header and footer of the notification e-mail.<p> */
-    public static final String NOTIFICATION_CONTENT = "/system/config/notification/notification";
+    public static final String NOTIFICATION_CONTENT = "notification/notification";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContentNotification.class);
@@ -201,7 +201,7 @@ public class CmsContentNotification extends A_CmsNotification {
     @Override
     protected String getNotificationContent() {
 
-        return NOTIFICATION_CONTENT;
+        return OpenCms.getSystemInfo().getConfigFilePath(m_cms, NOTIFICATION_CONTENT);
     }
 
     /**

@@ -43,6 +43,9 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the login message. */
     public static final String N_LOGINMESSAGE = "loginmessage";
 
+    /** The node name for the login message. */
+    public static final String N_BEFORELOGINMESSAGE = "beforeloginmessage";
+
     /** The node name for the variables element. */
     public static final String N_VARIABLES = "variables";
 
@@ -70,6 +73,9 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
     /** The configured login message. */
     private CmsLoginMessage m_loginMessage;
 
+    /** The configured before login message. */
+    private CmsLoginMessage m_beforeLoginMessage;
+
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester3.Digester)
      */
@@ -83,6 +89,12 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
         digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMESTART);
         digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMEEND);
         digester.addSetNext("*/" + N_LOGINMESSAGE, "setLoginMessage");
+
+        // add before login message creation rules
+        digester.addObjectCreate("*/" + N_BEFORELOGINMESSAGE, CmsLoginMessage.class);
+        digester.addBeanPropertySetter("*/" + N_BEFORELOGINMESSAGE + "/" + N_ENABLED);
+        digester.addBeanPropertySetter("*/" + N_BEFORELOGINMESSAGE + "/" + N_MESSAGE);
+        digester.addSetNext("*/" + N_BEFORELOGINMESSAGE, "setBeforeLoginMessage");
     }
 
     /**
@@ -95,6 +107,7 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // initialized OpenCms instance is available, use latest values
             m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
+            m_beforeLoginMessage = OpenCms.getLoginManager().getBeforeLoginMessage();
         }
         // login message
         if (m_loginMessage != null) {
@@ -109,8 +122,24 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
                 messageElement.addElement(N_TIMEEND).addText(String.valueOf(m_loginMessage.getTimeEnd()));
             }
         }
+        // before login message
+        if (m_beforeLoginMessage != null) {
+            Element messageElement = variablesElement.addElement(N_BEFORELOGINMESSAGE);
+            messageElement.addElement(N_ENABLED).addText(String.valueOf(m_beforeLoginMessage.isEnabled()));
+            messageElement.addElement(N_MESSAGE).addCDATA(m_beforeLoginMessage.getMessage());
+        }
 
         return variablesElement;
+    }
+
+    /**
+     * Returns the login message.<p>
+     *
+     * @return before login message
+     */
+    public CmsLoginMessage getBeforeLoginMessage() {
+
+        return m_beforeLoginMessage;
     }
 
     /**
@@ -129,6 +158,24 @@ public class CmsVariablesConfiguration extends A_CmsXmlConfiguration {
     public CmsLoginMessage getLoginMessage() {
 
         return m_loginMessage;
+    }
+
+    /**
+     * Adds the before login message from the configuration.<p>
+     *
+     * @param message the login message to add
+     */
+    public void setBeforeLoginMessage(CmsLoginMessage message) {
+
+        m_beforeLoginMessage = message;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_LOGINMESSAGE_3,
+                    Boolean.valueOf(message.isEnabled()),
+                    Boolean.valueOf(message.isLoginForbidden()),
+                    message.getMessage()));
+        }
     }
 
     /**

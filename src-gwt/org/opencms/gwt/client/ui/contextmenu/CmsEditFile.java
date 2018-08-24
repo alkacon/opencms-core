@@ -170,7 +170,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsValid
             I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
 
                 @SuppressWarnings("synthetic-access")
-                public void onClose(String sitePath, CmsUUID id, boolean isNew) {
+                public void onClose(String sitePath, CmsUUID id, boolean isNew, boolean hasChangedSettings) {
 
                     if (!m_reload) {
                         return;
@@ -267,41 +267,41 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsValid
      * @return true if there is an open editor
      */
     public native boolean isEditorOpen() /*-{
-        var windowStack = [ $wnd.top ];
-        var allWindows = [];
-        while (windowStack.length > 0) {
-            var current = windowStack.pop();
-            allWindows.push(current);
-            try {
-                for (var i = 0; i < current.frames.length; i++) {
-                    try {
-                        var frameWindow = current.frames[i];
-                        windowStack.push(frameWindow);
-                    } catch (e) {
-                        // ignore
-                    }
-                }
-            } catch (e2) {
-                // ignore
-            }
+		var windowStack = [ $wnd.top ];
+		var allWindows = [];
+		while (windowStack.length > 0) {
+			var current = windowStack.pop();
+			allWindows.push(current);
+			try {
+				for (var i = 0; i < current.frames.length; i++) {
+					try {
+						var frameWindow = current.frames[i];
+						windowStack.push(frameWindow);
+					} catch (e) {
+						// ignore
+					}
+				}
+			} catch (e2) {
+				// ignore
+			}
 
-        }
-        for (var i = 0; i < allWindows.length; i++) {
-            try {
-                var currentWindow = allWindows[i];
-                if (currentWindow.location.href.indexOf("acacia/editor.jsp") >= 0) {
-                    return true;
-                }
-                if (currentWindow.document
-                        .querySelector(".org-opencms-ade-contenteditor-client-css-I_CmsLayoutBundle-I_CmsXmlEditorCss-basePanel") != null) {
-                    return true;
-                }
-            } catch (e) {
-                // ignore
-            }
-        }
+		}
+		for (var i = 0; i < allWindows.length; i++) {
+			try {
+				var currentWindow = allWindows[i];
+				if (currentWindow.location.href.indexOf("acacia/editor.jsp") >= 0) {
+					return true;
+				}
+				if (currentWindow.document
+						.querySelector(".org-opencms-ade-contenteditor-client-css-I_CmsLayoutBundle-I_CmsXmlEditorCss-basePanel") != null) {
+					return true;
+				}
+			} catch (e) {
+				// ignore
+			}
+		}
 
-        return false;
+		return false;
 
     }-*/;
 
@@ -325,6 +325,6 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsValid
      * Reloads top frame.<p>
      */
     private native void reloadTop() /*-{
-        $wnd.top.location.reload();
+		$wnd.top.location.reload();
     }-*/;
 }

@@ -126,23 +126,28 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             }
             String timeParam = "&time=" + System.currentTimeMillis();
             // insert tile view image div
-            ImageTile imageTile = new ImageTile("<img src=\""
-            + src
-            + getBigImageScaleParam()
+            ImageTile imageTile = new ImageTile("<img src=\"" + src + getBigImageScaleParam()
             // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImage()
                 + "\" />"
                 // using a second image tag for the small thumbnail variant
-                + "<img src=\"" + src + getSmallImageScaleParam(infoBean)
+                + "<img src=\""
+                + src
+                + getSmallImageScaleParam(infoBean)
                 // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImage()
                 + "\" />"
-                + "<div class='" + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay() + "' />");
+                + "<div class='"
+                + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay()
+                + "' />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
+            if (CmsClientStringUtil.checkIsPathOrLinkToSvg(infoBean.getPath())) {
+                imageTile.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().svg());
+            }
             m_imageTile = imageTile;
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
             m_contentPanel.insert(imageTile, 0);

@@ -634,6 +634,7 @@ public class CmsFlexController {
         }
         attributeMap.remove(CmsFlexController.ATTRIBUTE_NAME);
         attributeMap.remove(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE);
+        attributeMap.remove(CmsDetailPageResourceHandler.ATTR_DETAIL_FUNCTION_PAGE);
     }
 
     /**

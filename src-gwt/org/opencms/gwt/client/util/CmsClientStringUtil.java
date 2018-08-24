@@ -51,6 +51,26 @@ public final class CmsClientStringUtil {
     }
 
     /**
+     * Checks if the given string looks like a path or link to an SVG file.<p>
+     *
+     * @param path the path to check
+     *
+     * @return true if the path looks like a path or link to an SVG file
+     */
+    public static boolean checkIsPathOrLinkToSvg(String path) {
+
+        if (path == null) {
+            return false;
+        }
+        path = path.trim().toLowerCase();
+        int paramPos = path.indexOf("?");
+        if (paramPos >= 0) {
+            path = path.substring(0, paramPos);
+        }
+        return path.endsWith(".svg");
+    }
+
+    /**
      * Returns the exception message.<p>
      *
      * @param t the exception to get the message for

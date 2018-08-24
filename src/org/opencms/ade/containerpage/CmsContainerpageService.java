@@ -47,6 +47,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
@@ -72,6 +73,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -103,6 +105,7 @@ import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsPair;
@@ -681,10 +684,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 modelResource,
                 CmsResource.getParentFolder(pageResource.getRootPath()));
             CmsContainerElementBean bean = getCachedElement(clientId, pageResource.getRootPath());
+            Map<String, String> settings = new HashMap<String, String>();
+
+            // Dynamic functions (V2) are their own formatters, so for new ones the real formatter id can only be set after they're created.
+            if (CmsResourceTypeFunctionConfig.isFunction(newResource)) {
+                for (Map.Entry<String, String> entry : bean.getIndividualSettings().entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    if (key.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                        value = newResource.getStructureId().toString();
+                    }
+                    settings.put(key, value);
+                }
+            } else {
+                settings = bean.getIndividualSettings();
+            }
+
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
                 null,
-                bean.getIndividualSettings(),
+                settings,
                 typeConfig.isCopyInModels());
             String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
@@ -863,7 +882,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementSettingsConfig(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, java.lang.String, java.lang.String, java.util.Collection, boolean, java.lang.String)
      */
-    public CmsContainerElementData getElementSettingsConfig(
+    public CmsElementSettingsConfig getElementSettingsConfig(
         CmsContainerPageRpcContext context,
         String clientId,
         String containerId,
@@ -1382,8 +1401,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
 
             String onlineLink = null;
-            if (!OpenCms.getSiteManager().getWorkplaceServer().equals(
-                OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot()).getUrl())) {
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+            if ((site != null) && !OpenCms.getSiteManager().getWorkplaceServer().equals(site.getUrl())) {
                 if (detailResource != null) {
                     onlineLink = OpenCms.getLinkManager().getOnlineLink(
                         cms,
@@ -1438,7 +1457,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 modelGroupElementId,
                 mainLocale != null ? mainLocale.toString() : null,
                 localeLinkBeans,
-                title);
+                title,
+                System.currentTimeMillis());
         } catch (Throwable e) {
             error(e);
         }

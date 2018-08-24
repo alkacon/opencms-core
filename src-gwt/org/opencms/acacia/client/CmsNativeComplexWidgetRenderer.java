@@ -34,6 +34,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
 import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.List;
 
@@ -142,7 +143,7 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
 
         context.addStyleName(ENTITY_CLASS);
         context.getElement().setAttribute("typeof", entity.getTypeName());
-        context.getElement().setAttribute("about", entity.getId());
+        context.getElement().setAttribute(CmsGwtConstants.ATTR_DATA_ID, entity.getId());
         String initFunction = CmsContentDefinition.FUNCTION_RENDER_FORM;
         renderNative(
             getNativeInstance(),
@@ -204,12 +205,12 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
      * @return the native renderer instance
      */
     protected native JavaScriptObject createNativeInstance(String initCall) /*-{
-                                                                            if ($wnd[initCall]) {
-                                                                            return $wnd[initCall]();
-                                                                            } else {
-                                                                            throw ("No init function found: " + initCall);
-                                                                            }
-                                                                            }-*/;
+		if ($wnd[initCall]) {
+			return $wnd[initCall]();
+		} else {
+			throw ("No init function found: " + initCall);
+		}
+    }-*/;
 
     /**
      * Gets the native renderer instance.<p>
@@ -240,16 +241,16 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
         com.google.gwt.dom.client.Element element,
         CmsEntity entity,
         JavaScriptObject config) /*-{
-                                 var entityWrapper = new $wnd.acacia.CmsEntityWrapper();
-                                 entityWrapper.setEntity(entity);
-                                 var backEndWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
-                                 if (nativeRenderer && nativeRenderer[renderFunction]) {
-                                 nativeRenderer[renderFunction](element, entityWrapper, backEndWrapper,
-                                 config);
-                                 } else if ($wnd.console) {
-                                 $wnd.console.log("Rendering function not found: " + renderFunction);
-                                 }
-                                 }-*/;
+		var entityWrapper = new $wnd.acacia.CmsEntityWrapper();
+		entityWrapper.setEntity(entity);
+		var backEndWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
+		if (nativeRenderer && nativeRenderer[renderFunction]) {
+			nativeRenderer[renderFunction](element, entityWrapper,
+					backEndWrapper, config);
+		} else if ($wnd.console) {
+			$wnd.console.log("Rendering function not found: " + renderFunction);
+		}
+    }-*/;
 
     /**
      * Throws an error indicating that a method is not supported.<p>

@@ -34,9 +34,11 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.impl.DOMImpl;
 import org.opencms.gwt.client.util.impl.DocumentStyleImpl;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -492,14 +494,14 @@ public final class CmsDomUtil {
     /** Browser dependent DOM implementation. */
     private static DOMImpl domImpl;
 
-    /** Browser dependent style implementation. */
-    private static DocumentStyleImpl styleImpl;
-
     /** The dynamic style sheet object. */
     private static JavaScriptObject m_dynamicStyleSheet;
 
     /** Stores the scroll bar width measurement. */
     private static int m_scrollbarWidth = -1;
+
+    /** Browser dependent style implementation. */
+    private static DocumentStyleImpl styleImpl;
 
     /**
      * Hidden constructor.<p>
@@ -1109,16 +1111,16 @@ public final class CmsDomUtil {
     }-*/;
 
     /**
-     * Gets the edit data for all cms-editable elements in the page.<p>
+     * Gets the edit data for all oc-editable elements in the page.<p>
      *
      * @return the list of edit data
      */
     public static List<CmsEditableDataJSO> getAllEditableDataForPage() {
 
-        List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div);
+        List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div);
         List<CmsEditableDataJSO> result = Lists.newArrayList();
         for (Element elem : elems) {
-            String jsonData = elem.getAttribute("rel");
+            String jsonData = elem.getAttribute(CmsGwtConstants.ATTR_DATA_EDITABLE);
             CmsEditableDataJSO data = CmsEditableDataJSO.parseEditableData(jsonData);
             result.add(data);
         }
@@ -1251,13 +1253,13 @@ public final class CmsDomUtil {
         result.setTop(dummy);
         Element sibling = editable.getNextSiblingElement();
         while ((sibling != null)
-            && !CmsDomUtil.hasClass("cms-editable", sibling)
-            && !CmsDomUtil.hasClass("cms-editable-end", sibling)) {
+            && !CmsDomUtil.hasClass(CmsGwtConstants.CLASS_EDITABLE, sibling)
+            && !CmsDomUtil.hasClass(CmsGwtConstants.CLASS_EDITABLE_END, sibling)) {
             // only consider element nodes
 
             if ((sibling.getNodeType() == Node.ELEMENT_NODE)
                 && !sibling.getTagName().equalsIgnoreCase(Tag.script.name())) {
-                if (!CmsDomUtil.hasClass("cms-editable-skip", sibling)) {
+                if (!CmsDomUtil.hasClass(CmsGwtConstants.CLASS_EDITABLE_SKIP, sibling)) {
                     CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
                     result.setLeft(
                         ((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
@@ -1996,6 +1998,31 @@ public final class CmsDomUtil {
                 parent = parent.getParent();
             }
         }
+    }
+
+    /**
+     * Loads a list of stylesheets and invokes a Javascript callback after everything has been loaded.<p>
+     *
+     * @param stylesheets the array of stylesheet uris
+     * @param callback the callback to call after everything is loaded
+     */
+    public static void safeLoadStylesheets(String[] stylesheets, JavaScriptObject callback) {
+
+        CmsStylesheetLoader loader = new CmsStylesheetLoader(Arrays.asList(stylesheets), new Runnable() {
+
+            public native void call(JavaScriptObject jsCallback) /*-{
+        jsCallback();
+    }-*/;
+
+            public void run() {
+
+                if (callback != null) {
+                    call(callback);
+                }
+            }
+
+        });
+        loader.loadWithTimeout(5000);
     }
 
     /**

@@ -31,6 +31,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,14 +117,14 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the complex attribute names
      */
     private static native String[] getComplexAttributeNames(JavaScriptObject entityWrapper)/*-{
-        var attr = entityWrapper.getAttributes();
-        var result = [];
-        for (i = 0; i < attr.length; i++) {
-            if (!attr[i].isSimpleValue()) {
-                result.push(attr[i].getAttributeName());
-            }
-        }
-        return result;
+		var attr = entityWrapper.getAttributes();
+		var result = [];
+		for (i = 0; i < attr.length; i++) {
+			if (!attr[i].isSimpleValue()) {
+				result.push(attr[i].getAttributeName());
+			}
+		}
+		return result;
     }-*/;
 
     /**
@@ -137,7 +138,7 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
     private static native JavaScriptObject[] getComplexAttributeValues(
         JavaScriptObject entityWrapper,
         String attributeName)/*-{
-        return entityWrapper.getAttribute(attributeName).getComplexValues();
+		return entityWrapper.getAttribute(attributeName).getComplexValues();
     }-*/;
 
     /**
@@ -148,7 +149,7 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the entity type name
      */
     private static native String getEntityType(JavaScriptObject entityWrapper)/*-{
-        return entityWrapper.getTypeName();
+		return entityWrapper.getTypeName();
     }-*/;
 
     /**
@@ -159,14 +160,14 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the simple attribute names
      */
     private static native String[] getSimpleAttributeNames(JavaScriptObject entityWrapper)/*-{
-        var attr = entityWrapper.getAttributes();
-        var result = [];
-        for (i = 0; i < attr.length; i++) {
-            if (attr[i].isSimpleValue()) {
-                result.push(attr[i].getAttributeName());
-            }
-        }
-        return result;
+		var attr = entityWrapper.getAttributes();
+		var result = [];
+		for (i = 0; i < attr.length; i++) {
+			if (attr[i].isSimpleValue()) {
+				result.push(attr[i].getAttributeName());
+			}
+		}
+		return result;
     }-*/;
 
     /**
@@ -178,7 +179,7 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the simple attribute values
      */
     private static native String[] getSimpleAttributeValues(JavaScriptObject entityWrapper, String attributeName)/*-{
-        return entityWrapper.getAttribute(attributeName).getSimpleValues();
+		return entityWrapper.getAttribute(attributeName).getSimpleValues();
     }-*/;
 
     /**
@@ -254,10 +255,14 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
     public List<Element> getAttributeElements(String entityId, String attributeName, Element context) {
 
         StringBuffer select = new StringBuffer();
-        select.append("[about='").append(entityId).append("'][property$='").append(attributeName).append("'], ");
-        select.append("[about='").append(entityId).append("'] [property$='").append(attributeName).append("'], ");
-        select.append("[about='").append(entityId).append("'][property*='").append(attributeName).append("['], ");
-        select.append("[about='").append(entityId).append("'] [property*='").append(attributeName).append("[']");
+        select.append("[").append(CmsGwtConstants.ATTR_DATA_ID).append("='").append(entityId).append("'][").append(
+            CmsGwtConstants.ATTR_DATA_FIELD).append("$='").append(attributeName).append("'], ");
+        select.append("[").append(CmsGwtConstants.ATTR_DATA_ID).append("='").append(entityId).append("'] [").append(
+            CmsGwtConstants.ATTR_DATA_FIELD).append("$='").append(attributeName).append("'], ");
+        select.append("[").append(CmsGwtConstants.ATTR_DATA_ID).append("='").append(entityId).append("'][").append(
+            CmsGwtConstants.ATTR_DATA_FIELD).append("*='").append(attributeName).append("['], ");
+        select.append("[").append(CmsGwtConstants.ATTR_DATA_ID).append("='").append(entityId).append("'] [").append(
+            CmsGwtConstants.ATTR_DATA_FIELD).append("*='").append(attributeName).append("[']");
 
         if (context == null) {
             context = Document.get().getDocumentElement();

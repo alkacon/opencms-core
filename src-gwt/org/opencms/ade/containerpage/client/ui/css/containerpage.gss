@@ -1,4 +1,4 @@
-@external opencms-icon, opencms-icon-edit-point, html-face, cms_ade_groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
+@external oc-edit-buttons-visible, oc-ignore-small-element, oc-small-element, oc-enlarge-small-elements, oc-drag-element, oc-option-bar, opencms-icon, opencms-icon-edit-point, html-face, oc-groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
 
 .showButtons, .hideButtons, .elementInfoChanged, .elementInfoUnchanged, .editableElement {}
 
@@ -27,22 +27,23 @@
 
 /** hiding buttons in clip-board menu while dragging **/
 .dragStarted .clipboardList .cmsState, .dragStarted div.directEditButtons, 
-.cms_ade_groupcontainer.hideElements .hiddenElement, .dragStarted .cms_ade_groupcontainer .hiddenElement{
+.oc-groupcontainer.hideElements .hiddenElement, .dragStarted .oc-groupcontainer .hiddenElement{
 	display:none;
 }
 
 
-.dragElement div.optionBar{
+.oc-drag-element div.oc-option-bar{
 	border: 1px solid transparent;
-	position: absolute;
+	position: absolute !important;
 	top: 2px;
 	right: 2px;
 	z-index: value("constants.css.zIndexInline");
-	margin: 0 0 2px 0;
+	margin: 0 0 2px 0 !important;
 	padding: 0;
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: right;
@@ -54,12 +55,12 @@
 	max-width: none;
 }
 
-.dragElement div.optionBar, .dragElement div.optionBar *{
+.oc-drag-element div.oc-option-bar, .oc-drag-element div.oc-option-bar *{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
 
-.editButtonsVisible div.expired, .dragging div.expired{
+.oc-edit-buttons-visible div.expired, .dragging div.expired{
 	display: block;
 }
 
@@ -105,7 +106,7 @@ div.toolbarToggle{
 	z-index: value("constants.css.zIndexPopup");
 }
 
-div.optionBar .cmsState, div.optionBar .html-face, div.optionBar span{
+div.oc-option-bar .cmsState, div.oc-option-bar .html-face, div.oc-option-bar span{
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -120,20 +121,20 @@ div.optionBar .cmsState, div.optionBar .html-face, div.optionBar span{
 	max-width: none;
 }
 
-.editButtonsVisible div.optionBar.cmsHovering{
+.oc-edit-buttons-visible div.oc-option-bar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
 	border-radius: value("constants.css.borderRadius");
 	background: value("constants.css.backgroundColorDialog");
 }
 
-.optionBar div.cmsState{
+.oc-option-bar div.cmsState{
 	display: none;
 }
 
-.dragStarted .optionBar, .dragPlaceholder .optionBar, 
-.groupcontainerEditor .cms_ade_groupcontainer .dragPlaceholder .optionBar, .groupcontainerEditing .optionBar, 
-.cms_ade_groupcontainer .dragElement .optionBar{
+.dragStarted .oc-option-bar, .dragPlaceholder .oc-option-bar, 
+.groupcontainerEditor .oc-groupcontainer .dragPlaceholder .oc-option-bar, .groupcontainerEditing .oc-option-bar, 
+.oc-groupcontainer .oc-drag-element .oc-option-bar{
 	display: none;
 }
 .emptyGroupContainer{
@@ -164,27 +165,27 @@ div.groupcontainerPlaceholder{
 	opacity: 0.2;
 }
 
-.groupcontainerEditor .cms_ade_groupcontainer .optionBar{
+.groupcontainerEditor .oc-groupcontainer .oc-option-bar{
 	display: block;
 }
 
-.groupcontainerEditing .emptyGroupContainer, .editButtonsVisible .dragging div.optionBar.cmsHovering{
+.groupcontainerEditing .emptyGroupContainer, .oc-edit-buttons-visible .dragging div.oc-option-bar.cmsHovering{
 	background: transparent;
 	border: none;
 }
 
-.editButtonsVisible .optionBar .cmsState:last-child,
-.editButtonsVisible .optionBar.cmsHovering .cmsState{
+.oc-edit-buttons-visible .oc-option-bar .cmsState:last-child,
+.oc-edit-buttons-visible .oc-option-bar.cmsHovering .cmsState{
 	display: inline-block;
 }
 
-.optionBar .opencms-icon span.lockedElement.opencms-icon-edit-point:before{
+.oc-option-bar .opencms-icon span.lockedElement.opencms-icon-edit-point:before{
 	content: "\e90e";
 	opacity: 1;
 	background: transparent;
 }
 
-.optionBar .opencms-icon .opencms-icon-edit-point:before, .optionBar div.opencms-icon.cmsState-up-disabled .opencms-icon-edit-point:before {
+.oc-option-bar .opencms-icon .opencms-icon-edit-point:before, .oc-option-bar div.opencms-icon.cmsState-up-disabled .opencms-icon-edit-point:before {
 	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYwIDE2MCI+DQogIDxwYXRoIGQ9Ik0xMTYgMTcuN2E3MiA3MiAwIDAgMSAyNi4zIDk4LjRBNzIgNzIgMCAwIDEgNDQgMTQyLjUgNzIgNzIgMCAwIDEgMTcuNiA0NCA3MiA3MiAwIDAgMSAxMTYgMTcuNyIvPg0KICA8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTA0IDM4LjVhNDggNDggMCAwIDEgMTcuNSA2NS41QTQ4IDQ4IDAgMCAxIDU2IDEyMS41IDQ4IDQ4IDAgMCAxIDM4LjUgNTYgNDggNDggMCAwIDEgMTA0IDM4LjQiLz4NCiAgPHBhdGggZD0iTTkyIDU5LjJhMjQgMjQgMCAwIDEgOC44IDMyLjggMjQgMjQgMCAwIDEtMzIuOCA4LjhBMjQgMjQgMCAwIDEgNTkuMiA2OCAyNCAyNCAwIDAgMSA5MiA1OS4yIi8+DQo8L3N2Zz4=");
 	background-size: 100% 100%;
     content: "";
@@ -194,18 +195,16 @@ div.groupcontainerPlaceholder{
     opacity: 0.45;
 }
 
-.optionBar.cmsHovering .opencms-icon .opencms-icon-edit-point:before {
+.oc-option-bar.cmsHovering .opencms-icon .opencms-icon-edit-point:before {
 	background: transparent;
 	content: "\e902";
 	opacity: 1;
 }
 
-@def enlargedMinHeight eval("org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.getNecessaryHeight()");
-
-.enlargeSmallElements .smallElement {
-	min-height: enlargedMinHeight; 
+.oc-enlarge-small-elements .oc-small-element {
+	min-height: eval("org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.NECESSARY_HEIGHT_RULE");
 }
 
-.ignoreSmallElements .smallElement .optionBar {
+.oc-ignore-small-elements .oc-small-element .oc-option-bar {
 	visibility: hidden; 
 }

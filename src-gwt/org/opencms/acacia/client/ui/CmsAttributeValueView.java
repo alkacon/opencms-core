@@ -35,6 +35,7 @@ import org.opencms.acacia.client.CmsValueFocusHandler;
 import org.opencms.acacia.client.I_CmsEntityRenderer;
 import org.opencms.acacia.client.I_CmsWidgetService;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
+import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 import org.opencms.acacia.shared.CmsEntity;
@@ -81,16 +82,17 @@ import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -111,6 +113,64 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
 
             getHandler().handleValueChange(CmsAttributeValueView.this, event.getValue());
             removeValidationMessage();
+        }
+    }
+
+    /**
+     * Handles showing and hiding the help bubble on mouse over the title label.<p>
+     */
+    protected class LabelHoverHandler implements MouseOverHandler, MouseOutHandler {
+
+        /** Mouse in timer. */
+        Timer m_inTimer;
+
+        /** Mouse out timer. */
+        Timer m_outTimer;
+
+        /**
+         * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+         */
+        public void onMouseOut(MouseOutEvent event) {
+
+            if (m_inTimer != null) {
+                m_inTimer.cancel();
+                m_inTimer = null;
+            }
+            if (m_outTimer == null) {
+                m_outTimer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        toggleLabelHover(false);
+                        m_outTimer = null;
+                    }
+                };
+                m_outTimer.schedule(200);
+            }
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+         */
+        public void onMouseOver(MouseOverEvent event) {
+
+            if (m_outTimer != null) {
+                m_outTimer.cancel();
+                m_outTimer = null;
+            }
+            if (m_inTimer == null) {
+                m_inTimer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        toggleLabelHover(true);
+                        m_inTimer = null;
+                    }
+                };
+                m_inTimer.schedule(400);
+            }
         }
     }
 
@@ -260,6 +320,12 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     /** The label text. */
     private String m_label;
 
+    /** The label mouse in handler registration. */
+    private HandlerRegistration m_labelOutRegistration;
+
+    /** The label mouse over handler registration. */
+    private HandlerRegistration m_labelOverRegistration;
+
     /** The drag and drop place holder element. */
     private Element m_placeHolder;
 
@@ -284,7 +350,7 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         m_label = label;
         m_help = help;
         if (m_help == null) {
-            closeHelpBubble(null);
+            m_helpBubble.getStyle().setDisplay(Display.NONE);
             m_help = "";
         }
         generateLabel();
@@ -718,6 +784,12 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
             removeStyleName(formCss().emptyValue());
         }
         addStyleName(formCss().simpleValue());
+
+        if (m_widget instanceof CmsFormWidgetWrapper) {
+            addLabelHoverHandler(((CmsFormWidgetWrapper)m_widget).getLabel());
+        } else {
+            removeLabelHoverHandler();
+        }
     }
 
     /**
@@ -958,6 +1030,25 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     }
 
     /**
+     * Toggles the label hover CSS class.<p>
+     *
+     * @param hovered <code>true</code> in case the
+     */
+    void toggleLabelHover(boolean hovered) {
+
+        if (hovered) {
+            addStyleName(formCss().labelHover());
+            if (shouldDisplayTooltipAbove()) {
+                addStyleName(formCss().displayAbove());
+            } else {
+                removeStyleName(formCss().displayAbove());
+            }
+        } else {
+            removeStyleName(formCss().labelHover());
+        }
+    }
+
+    /**
      * Updates the widget width according to the compact mode setting.<p>
      */
     void updateWidth() {
@@ -994,6 +1085,19 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     }
 
     /**
+     * Adds the label hover mouse handler.<p>
+     *
+     * @param label the label widget
+     */
+    private void addLabelHoverHandler(Label label) {
+
+        removeLabelHoverHandler();
+        LabelHoverHandler hoverHandler = new LabelHoverHandler();
+        m_labelOutRegistration = label.addMouseOutHandler(hoverHandler);
+        m_labelOverRegistration = label.addMouseOverHandler(hoverHandler);
+    }
+
+    /**
      * Called when a drag operation for this widget is stopped.<p>
      */
     private void clearDrag() {
@@ -1022,14 +1126,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
      */
     private void generateLabel() {
 
-        HTML labelWidget = new HTML(
-            "<div title=\""
-                + SafeHtmlUtils.htmlEscape(stripHtml(m_help))
-                + "\" class=\""
-                + formCss().label()
-                + "\">"
-                + m_label
-                + "</div>");
+        HTML labelWidget = new HTML("<div class=\"" + formCss().label() + "\">" + m_label + "</div>");
+        addLabelHoverHandler(labelWidget);
         m_widgetHolder.add(labelWidget);
     }
 
@@ -1114,6 +1212,21 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     }
 
     /**
+     * Removes the label hover mouse handler.<p>
+     */
+    private void removeLabelHoverHandler() {
+
+        if (m_labelOverRegistration != null) {
+            m_labelOverRegistration.removeHandler();
+            m_labelOverRegistration = null;
+        }
+        if (m_labelOutRegistration != null) {
+            m_labelOutRegistration.removeHandler();
+            m_labelOutRegistration = null;
+        }
+    }
+
+    /**
      * Returns if the help bubble should be displayed above the value field.<p>
      *
      * @return <code>true</code> if the help bubble should be displayed above
@@ -1121,15 +1234,5 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     private boolean shouldDisplayTooltipAbove() {
 
         return !isSimpleValue();
-    }
-
-    /**
-     * Strips all HTML tags.<p>
-     * @param html the string that should be striped
-     * @return the striped HTML string
-     */
-    private String stripHtml(String html) {
-
-        return html.replaceAll("\\<.*?\\>", "");
     }
 }

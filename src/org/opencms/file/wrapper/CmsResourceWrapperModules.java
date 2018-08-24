@@ -45,6 +45,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -104,18 +105,19 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     public List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
     throws CmsException {
 
-        String resourceNameWithTrailingSlash = CmsStringUtil.joinPaths(resourcename, "/");
-        if (matchPath("/", resourceNameWithTrailingSlash)) {
-            return getVirtualResourcesForRoot(cms);
-        } else if (matchPath(BASE_PATH, resourceNameWithTrailingSlash)) {
-            return getVirtualResourcesForBasePath(cms);
-        } else if (matchPath(EXPORT_PATH, resourceNameWithTrailingSlash)) {
-            return getVirtualResourcesForExport(cms);
-        } else if (matchPath(IMPORT_PATH, resourceNameWithTrailingSlash)) {
-            return getVirtualResourcesForImport(cms);
-        } else if (matchPath(LOG_PATH, resourceNameWithTrailingSlash)) {
-            return getVirtualLogResources(cms);
-
+        if (checkAccess(cms)) {
+            String resourceNameWithTrailingSlash = CmsStringUtil.joinPaths(resourcename, "/");
+            if (matchPath("/", resourceNameWithTrailingSlash)) {
+                return getVirtualResourcesForRoot(cms);
+            } else if (matchPath(BASE_PATH, resourceNameWithTrailingSlash)) {
+                return getVirtualResourcesForBasePath(cms);
+            } else if (matchPath(EXPORT_PATH, resourceNameWithTrailingSlash)) {
+                return getVirtualResourcesForExport(cms);
+            } else if (matchPath(IMPORT_PATH, resourceNameWithTrailingSlash)) {
+                return getVirtualResourcesForImport(cms);
+            } else if (matchPath(LOG_PATH, resourceNameWithTrailingSlash)) {
+                return getVirtualLogResources(cms);
+            }
         }
 
         return Collections.emptyList();
@@ -130,9 +132,10 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
-        if (matchParentPath(IMPORT_PATH, resourcename)) {
+        if (checkAccess(cms) && matchParentPath(IMPORT_PATH, resourcename)) {
             CmsResource res = createFakeBinaryFile(resourcename, 0);
             CmsFile file = new CmsFile(res);
             file.setContents(content);
@@ -153,7 +156,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     public boolean deleteResource(CmsObject cms, String resourcename, CmsResource.CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
-        if (matchParentPath(EXPORT_PATH, resourcename)) {
+        if (checkAccess(cms) && matchParentPath(EXPORT_PATH, resourcename)) {
             String fileName = CmsResource.getName(resourcename);
             boolean result = OpenCms.getModuleManager().getImportExportRepository().deleteModule(fileName);
             return result;
@@ -216,49 +219,53 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
             return null;
         }
 
-        for (String folder : FOLDERS) {
-            if (matchPath(resourcepath, folder)) {
-                return createFakeFolder(folder);
-            }
-        }
-
-        if (matchParentPath(IMPORT_PATH, resourcepath)) {
-            if (hasImportFile(resourcepath)) {
-                CmsFile importData = m_importDataCache.get(resourcepath);
-                if (importData != null) {
-                    return importData;
+        if (checkAccess(cms)) {
+            for (String folder : FOLDERS) {
+                if (matchPath(resourcepath, folder)) {
+                    return createFakeFolder(folder);
                 }
-                return new CmsFile(createFakeBinaryFile(resourcepath));
             }
-        }
 
-        if (matchParentPath(EXPORT_PATH, resourcepath)) {
-            CmsFile resultFile = new CmsFile(createFakeBinaryFile(resourcepath));
-            if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
-                // we *do* require the file size, so we need to get the module data
-                LOG.info("Getting data for " + resourcepath);
-                byte[] data = OpenCms.getModuleManager().getImportExportRepository().getExportedModuleData(
-                    CmsResource.getName(resourcepath),
-                    cms.getRequestContext().getCurrentProject());
-                resultFile.setContents(data);
+            if (matchParentPath(IMPORT_PATH, resourcepath)) {
+                if (hasImportFile(resourcepath)) {
+                    CmsFile importData = m_importDataCache.get(resourcepath);
+                    if (importData != null) {
+                        return importData;
+                    }
+                    return new CmsFile(createFakeBinaryFile(resourcepath));
+                }
             }
-            return resultFile;
-        }
 
-        if (matchParentPath(LOG_PATH, resourcepath)) {
-            CmsFile resultFile = new CmsFile(createFakeBinaryFile(resourcepath));
-            // if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
-            String moduleName = CmsResource.getName(resourcepath).replaceFirst("\\.log$", "");
-            try {
-                byte[] data = OpenCms.getModuleManager().getImportExportRepository().getModuleLog().readLog(moduleName);
-                resultFile.setContents(data);
+            if (matchParentPath(EXPORT_PATH, resourcepath)) {
+                CmsFile resultFile = new CmsFile(createFakeBinaryFile(resourcepath));
+                if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
+                    // we *do* require the file size, so we need to get the module data
+                    LOG.info("Getting data for " + resourcepath);
+                    byte[] data = OpenCms.getModuleManager().getImportExportRepository().getExportedModuleData(
+                        CmsResource.getName(resourcepath),
+                        cms.getRequestContext().getCurrentProject());
+                    resultFile.setContents(data);
+                }
                 return resultFile;
-            } catch (IOException e) {
-                throw new CmsVfsResourceNotFoundException(
-                    org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_READ_RESOURCE_1, resourcepath),
-                    e);
             }
 
+            if (matchParentPath(LOG_PATH, resourcepath)) {
+                CmsFile resultFile = new CmsFile(createFakeBinaryFile(resourcepath));
+                // if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
+                String moduleName = CmsResource.getName(resourcepath).replaceFirst("\\.log$", "");
+                try {
+                    byte[] data = OpenCms.getModuleManager().getImportExportRepository().getModuleLog().readLog(
+                        moduleName);
+                    resultFile.setContents(data);
+                    return resultFile;
+                } catch (IOException e) {
+                    throw new CmsVfsResourceNotFoundException(
+                        org.opencms.db.Messages.get().container(
+                            org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                            resourcepath),
+                        e);
+                }
+            }
         }
         return super.readResource(cms, resourcepath, filter);
     }
@@ -278,7 +285,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     @Override
     public CmsFile writeFile(CmsObject cms, CmsFile resource) throws CmsException {
 
-        if (matchParentPath(IMPORT_PATH, resource.getRootPath())) {
+        if (checkAccess(cms) && matchParentPath(IMPORT_PATH, resource.getRootPath())) {
             OpenCms.getModuleManager().getImportExportRepository().importModule(
                 CmsResource.getName(resource.getRootPath()),
                 resource.getContents());
@@ -410,6 +417,17 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
             dateContent,
             version);
         return resource;
+    }
+
+    /**
+     * Checks whether the the current user should have access to the module functionality.<p>
+     *
+     * @param cms the current CMS context
+     * @return true if the user should have access
+     */
+    private boolean checkAccess(CmsObject cms) {
+
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.DATABASE_MANAGER);
     }
 
     /**

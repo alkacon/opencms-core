@@ -28,7 +28,7 @@
 package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.A_CmsAttributeAwareApp;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsStringUtil;
 
@@ -40,7 +40,7 @@ import com.vaadin.ui.Component;
 /**
  * Class for the database export function.<p>
  */
-public class CmsDbExportApp extends A_CmsAttributeAwareApp {
+public class CmsDbExportApp extends A_CmsWorkplaceApp {
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -64,6 +64,7 @@ public class CmsDbExportApp extends A_CmsAttributeAwareApp {
     @Override
     protected Component getComponentForState(String state) {
 
+        m_rootLayout.setMainHeightFull(true);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             return new CmsDbExportView();
         }

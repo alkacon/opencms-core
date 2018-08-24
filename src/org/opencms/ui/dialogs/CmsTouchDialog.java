@@ -254,7 +254,6 @@ public class CmsTouchDialog extends CmsBasicDialog {
             // no date value entered, use current resource modification date
             timeStamp = sourceRes.getDateLastModified();
         }
-        cms.setDateLastModified(resourceName, timeStamp, recursive);
 
         if (touchContent) {
             if (sourceRes.isFile()) {
@@ -269,5 +268,8 @@ public class CmsTouchDialog extends CmsBasicDialog {
                 }
             }
         }
+
+        cms.setDateLastModified(resourceName, timeStamp, recursive);
+
     }
 }

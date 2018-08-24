@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<o-cms-basic-dialog>
+		<content>
+			<vaadin7-vertical-layout :center margin spacing width="100%" style-name="o-formlayout-const-capture-200">
+				<v-panel style-name="o-report o-warning" width="100%">
+			 		<vaadin7-vertical-layout style-name="o-error-dialog" width="100%">
+			 		<vaadin7-horizontal-layout width="100%"> 
+			 			<vaadin7-label _id="m_warningIcon" width="60px" style-name="o-warning-icon" :middle></vaadin7-label>
+			 			<vaadin7-label :expand style-name="o-error-message" :middle>%(key.GUI_RESOURCETYPE_EDIT_WARNING_TEXT_0)</vaadin7-label>
+			 		</vaadin7-horizontal-layout>
+			 			<vaadin7-check-box  _id="m_confirm" caption="%(key.GUI_RESOURCETYPE_EDIT_WARNING_TEXT_CONFIRM_0)"></vaadin7-check-box>
+			 		</vaadin7-vertical-layout>
+			 	</v-panel>
+				<v-form-layout margin spacing style-name="o-formlayout-workplace-main o-wrap">
+					<vaadin7-text-field _id="m_typeShortName" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_SHORT_NAME_0)" description="%(key.GUI_RESOURCETYPE_EDIT_SHORT_NAME_HELP_0)" />											
+					<vaadin7-text-field _id="m_typeID" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_ID_0)" description="%(key.GUI_RESOURCETYPE_EDIT_ID_HELP_0)" />				
+					<f-cms-path-select-field _id="m_schema" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_0)" description="%(key.GUI_RESOURCETYPE_EDIT_SCHEMA_DEFINITION_HELP_0)" />				
+					<vaadin7-text-field _id="m_typeName" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_KEY_0)" description="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_KEY_HELP_0)" />
+					<vaadin7-text-field _id="m_typeTitle" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_KEY_0)" description="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_TITLE_KEY_HELP_0)" />
+					<vaadin7-text-field _id="m_typeDescription" caption="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_KEY_0)" description="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_KEY_HELP_0)" width="100%"></vaadin7-text-field>										
+					<vaadin7-option-group _id="m_iconMode" caption="%(key.GUI_RESOURCETYPE_EDIT_ICON_0)">
+					<option item-id="css">%(key.GUI_RESOURCETYPE_EDIT_ICON_CSS_0)</option>
+					<option item-id="file">%(key.GUI_RESOURCETYPE_EDIT_ICON_FILE_0)</option>
+					</vaadin7-option-group>	
+					<vaadin7-text-field _id="m_smallIconCSS" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_ICON_CSS_SMALL_0)" description="%(key.GUI_RESOURCETYPE_EDIT_ICON_CSS_SMALL_HELP_0)" />
+					<vaadin7-text-field _id="m_bigIconCSS" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_ICON_CSS_BIG_0)" description="%(key.GUI_RESOURCETYPE_EDIT_ICON_CSS_BIG_HELP_0)" />
+					<vaadin7-text-field _id="m_smallIconFile" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_ICON_FILE_SMALL_0)" description="%(key.GUI_RESOURCETYPE_EDIT_ICON_FILE_SMALL_HELP_0)"/>											
+					<vaadin7-text-field _id="m_bigIconFile" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_ICON_FILE_BIG_0)" description="%(key.GUI_RESOURCETYPE_EDIT_ICON_FILE_BIG_HELP_0)"/>							
+					
+				</v-form-layout>
+			</vaadin7-vertical-layout>
+		</content>
+		<buttons>
+			<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+			<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+		</buttons>
+	</o-cms-basic-dialog>
+</body>
+</html>

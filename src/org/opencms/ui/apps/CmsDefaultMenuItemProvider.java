@@ -80,12 +80,14 @@ import org.opencms.ui.actions.CmsUndeleteDialogAction;
 import org.opencms.ui.actions.CmsUndoDialogAction;
 import org.opencms.ui.actions.CmsUnlinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsUnlockAction;
+import org.opencms.ui.actions.CmsViewInExplorerAction;
 import org.opencms.ui.actions.CmsViewOnlineAction;
 import org.opencms.ui.actions.CmsWorkplaceAction;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.xml.templatemapper.CmsTemplateMapperAction;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -123,12 +125,12 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsDisplayAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsSitemapOpenParentAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsSitemapRefreshAction(), null, 100, 0),
-
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsStealLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsLockedResourcesAction(), null, 120, 0),
             new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 150, 0),
+            new CmsContextMenuActionItem(new CmsViewInExplorerAction(), null, 200, 0),
             new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishScheduledDialogAction(), null, 400, 0),
             new CmsContextMenuActionItem(new CmsCopyDialogAction(), null, 900, 0),
@@ -168,6 +170,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsWorkplaceAction(), advanced.getId(), 1300, 0),
             new CmsContextMenuActionItem(new CmsSitemapAliasAction(), advanced.getId(), 1500, 0),
             new CmsContextMenuActionItem(new CmsSitemapEditConfigAction(), advanced.getId(), 1600, 0),
+            new CmsContextMenuActionItem(new CmsTemplateMapperAction(), advanced.getId(), 1700, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),

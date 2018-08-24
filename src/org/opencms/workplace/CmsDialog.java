@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsPreEditorAction;
@@ -341,9 +342,10 @@ public class CmsDialog extends CmsToolDialog {
         Map<String, String> params = new HashMap<String, String>();
         params.put(PARAM_RESOURCE, "");
         if (isPopup()) {
+            JspWriter out = getJsp().getJspContext().getOut();
             try {
                 // try to close the popup
-                JspWriter out = getJsp().getJspContext().getOut();
+
                 out.write("<html><head></head>\n");
                 out.write("<body onload=\"top.close();\">\n");
                 out.write("</body>\n");
@@ -351,18 +353,19 @@ public class CmsDialog extends CmsToolDialog {
             } catch (IOException e) {
                 // error redirecting, include explorer file list
                 getJsp().include(FILE_EXPLORER_FILELIST, null, params);
+            } finally {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    throw new JspException(e.getMessage(), e);
+                }
             }
         } else if (getParamCloseLink() != null) {
             // close link parameter present
             try {
                 if (CmsLinkManager.isWorkplaceLink(getParamCloseLink())) {
                     // in case the close link points to the new workplace, make sure to set the new location on the top frame
-                    JspWriter out = getJsp().getJspContext().getOut();
-                    out.write(
-                        "<html><head><script type=\"text/javascript\">top.location.href=\""
-                            + getParamCloseLink()
-                            + "\";</script></head>\n");
-                    out.write("</html>\n");
+                    openWorkplaceLink(getParamCloseLink());
                 } else if (Boolean.valueOf(getParamRedirect()).booleanValue()) {
                     // redirect parameter is true, redirect to given close link
                     getJsp().getResponse().sendRedirect(getParamCloseLink());
@@ -394,11 +397,11 @@ public class CmsDialog extends CmsToolDialog {
                 getJsp().include(frameUri, null, params);
             } else {
                 // no URI found, include the explorer file list
-                getJsp().include(FILE_EXPLORER_FILELIST, null, params);
+                openLaunchpad();
             }
         } else {
             // no frame name parameter found, include the explorer file list
-            getJsp().include(FILE_EXPLORER_FILELIST, null, params);
+            openLaunchpad();
         }
     }
 
@@ -1904,6 +1907,44 @@ public class CmsDialog extends CmsToolDialog {
         fillParamValues(request);
         if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
+        }
+    }
+
+    /**
+     * Opens the launch pad view.<p>
+     *
+     * @throws JspException in case writing to the JSP output stream fails
+     */
+    protected void openLaunchpad() throws JspException {
+
+        try {
+            openWorkplaceLink(
+                OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + CmsAppHierarchyConfiguration.APP_ID);
+        } catch (Exception e) {
+            // forward failed
+            throw new JspException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Opens a workplace UI link in the top frame.<p>
+     *
+     * @param workplaceLink the workplace link to open
+     *
+     * @throws IOException in case writing to the JSP output stream fails
+     */
+    protected void openWorkplaceLink(String workplaceLink) throws IOException {
+
+        // in case the close link points to the new workplace, make sure to set the new location on the top frame
+        JspWriter out = getJsp().getJspContext().getOut();
+        try {
+            out.write(
+                "<html><head><script type=\"text/javascript\">top.location.href=\""
+                    + workplaceLink
+                    + "\";</script></head>\n");
+            out.write("</html>\n");
+        } finally {
+            out.close();
         }
     }
 

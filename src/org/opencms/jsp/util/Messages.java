@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FORMATTER_RENDERING_NOT_WELL_FORMED_0 = "GUI_FORMATTER_RENDERING_NOT_WELL_FORMED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FUNCTION_DEFAULT_HTML_0 = "GUI_FUNCTION_DEFAULT_HTML_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_REASON_0 = "GUI_REASON_0";
 
     /** Name of the used resource bundle. */

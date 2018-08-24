@@ -46,14 +46,14 @@ import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Basic dialog class with a content panel and button bar.<p>
@@ -413,6 +413,37 @@ public class CmsBasicDialog extends VerticalLayout {
         if (content instanceof Layout.MarginHandler) {
             ((Layout.MarginHandler)content).setMargin(true);
         }
+    }
+
+    /**
+     * Sets the height of the content to a given min Height or 100%.<p>
+     *
+     * @param height minimal height.
+     */
+    public void setContentMinHeight(int height) {
+
+        if ((0.9 * Page.getCurrent().getBrowserWindowHeight()) < height) {
+            m_contentPanel.getContent().setHeight(height + "px");
+        } else {
+            m_contentPanel.getContent().setHeight("100%");
+        }
+    }
+
+    /**
+     * Sets the window which contains this dialog to full height with a given minimal height in pixel.<p>
+     *
+     * @param minHeight minimal height in pixel
+     */
+    public void setWindowMinFullHeight(int minHeight) {
+
+        Window window = CmsVaadinUtils.getWindow(this);
+        if (window == null) {
+            return;
+        }
+        window.setHeight("90%");
+        setHeight("100%");
+        setContentMinHeight(minHeight);
+        window.center();
     }
 
     /**

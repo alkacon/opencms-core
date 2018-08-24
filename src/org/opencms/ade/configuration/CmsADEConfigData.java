@@ -27,16 +27,20 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
+import org.opencms.jsp.util.CmsFunctionRenderer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -47,6 +51,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -103,6 +108,7 @@ public class CmsADEConfigData {
          * @param basePath the base path of the sitemap configuration
          */
         public DetailInfo(String folderPath, CmsDetailPageInfo detailPageInfo, String type, String basePath) {
+
             m_folderPath = folderPath;
             m_detailPageInfo = detailPageInfo;
             m_type = type;
@@ -404,6 +410,21 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns the default detail page.<p>
+     *
+     * @return the default detail page
+     */
+    public CmsDetailPageInfo getDefaultDetailPage() {
+
+        for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
+            if (CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                return detailpage;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the default model page.<p>
      *
      * @return the default model page
@@ -459,9 +480,22 @@ public class CmsADEConfigData {
     public List<CmsDetailPageInfo> getDetailPagesForType(String type) {
 
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
-        for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
-            if (detailpage.getType().equals(type)) {
-                result.add(detailpage);
+        CmsResourceTypeConfig typeConfig = getResourceType(type);
+        if (type.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)
+            || ((typeConfig != null) && !typeConfig.isDetailPagesDisabled())) {
+
+            CmsDetailPageInfo defaultPage = null;
+            for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
+                if (detailpage.getType().equals(type)) {
+                    result.add(detailpage);
+                } else if ((defaultPage == null)
+                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                    defaultPage = detailpage;
+                }
+            }
+            if (defaultPage != null) {
+                // add default detail page last
+                result.add(defaultPage);
             }
         }
         return result;
@@ -516,15 +550,53 @@ public class CmsADEConfigData {
      */
     public CmsFormatterConfiguration getFormatters(CmsObject cms, CmsResource res) {
 
-        try {
-            int resTypeId = res.getTypeId();
-            return getFormatters(
-                cms,
-                OpenCms.getResourceManager().getResourceType(resTypeId),
-                getFormattersFromSchema(cms, res));
-        } catch (CmsLoaderException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return null;
+        if (CmsResourceTypeFunctionConfig.isFunction(res)) {
+
+            CmsFormatterConfigurationCacheState formatters = getCachedFormatters();
+            I_CmsFormatterBean function = formatters.getFormatters().get(res.getStructureId());
+            if (function != null) {
+                return CmsFormatterConfiguration.create(cms, Collections.singletonList(function));
+            } else {
+                if ((!res.getStructureId().isNullUUID())
+                    && cms.existsResource(res.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    // usually if it's just been created, but not added to the configuration cache yet
+                    CmsFormatterBeanParser parser = new CmsFormatterBeanParser(cms, new HashMap<>());
+                    try {
+                        function = parser.parse(
+                            CmsXmlContentFactory.unmarshal(cms, cms.readFile(res)),
+                            res.getRootPath(),
+                            "" + res.getStructureId());
+                        return CmsFormatterConfiguration.create(cms, Collections.singletonList(function));
+                    } catch (Exception e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
+                    }
+
+                } else {
+                    // if a new function has been dragged on the page, it doesn't exist in the VFS yet, so we need a different
+                    // instance as a replacement
+                    CmsResource defaultFormatter = CmsFunctionRenderer.getDefaultFunctionInstance(cms);
+                    if (defaultFormatter != null) {
+                        I_CmsFormatterBean defaultFormatterBean = formatters.getFormatters().get(
+                            defaultFormatter.getStructureId());
+                        return CmsFormatterConfiguration.create(cms, Collections.singletonList(defaultFormatterBean));
+                    } else {
+                        LOG.warn("Could not read default formatter for functions.");
+                        return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
+                    }
+                }
+            }
+        } else {
+            try {
+                int resTypeId = res.getTypeId();
+                return getFormatters(
+                    cms,
+                    OpenCms.getResourceManager().getResourceType(resTypeId),
+                    getFormattersFromSchema(cms, res));
+            } catch (CmsLoaderException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
+            }
         }
     }
 
@@ -767,7 +839,8 @@ public class CmsADEConfigData {
     public boolean hasFormatters(CmsObject cms, I_CmsResourceType resType, Collection<CmsContainer> containers) {
 
         try {
-            if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(resType.getTypeName())) {
+            if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(resType.getTypeName())
+                || CmsResourceTypeFunctionConfig.TYPE_NAME.equals(resType.getTypeName())) {
                 // dynamic function may match any container
                 return true;
             }
@@ -951,19 +1024,23 @@ public class CmsADEConfigData {
             for (String siteRoot : siteRoots) {
                 cms.getRequestContext().setSiteRoot(siteRoot);
                 for (CmsResourceTypeConfig config : getResourceTypes()) {
-                    String typeName = config.getTypeName();
-                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
-                        String folderPath = config.getFolderPath(cms, null);
-                        result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                    if (!config.isDetailPagesDisabled()) {
+                        String typeName = config.getTypeName();
+                        if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
+                            String folderPath = config.getFolderPath(cms, null);
+                            result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                        }
                     }
                 }
             }
         } else {
             for (CmsResourceTypeConfig config : getResourceTypes()) {
-                String typeName = config.getTypeName();
-                if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
-                    String folderPath = config.getFolderPath(getCms(), null);
-                    result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                if (!config.isDetailPagesDisabled()) {
+                    String typeName = config.getTypeName();
+                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
+                        String folderPath = config.getFolderPath(getCms(), null);
+                        result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                    }
                 }
             }
         }

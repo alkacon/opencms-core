@@ -325,7 +325,7 @@ public class CmsPublishDialog extends CmsPopup {
         List<Element> collectorInfos = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_COLLECTOR_INFO);
         int j = 1;
         for (Element elem : collectorInfos) {
-            String infoJson = elem.getAttribute("rel");
+            String infoJson = elem.getAttribute(CmsGwtConstants.ATTR_DATA_COLLECTOR);
             params.put(CmsPublishOptions.PARAM_COLLECTOR_INFO + "." + j, infoJson);
             j += 1;
         }

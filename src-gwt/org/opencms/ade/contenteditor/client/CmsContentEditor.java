@@ -45,6 +45,7 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
+import org.opencms.ade.contenteditor.shared.CmsSaveResult;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
@@ -72,6 +73,7 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -208,19 +210,19 @@ public final class CmsContentEditor extends CmsEditorBase {
     private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener";
 
     /** The entity id selector prefix. */
-    private static final String ENTITY_ID_SELECTOR_PREFIX = "[about*=\"";
+    private static final String ENTITY_ID_SELECTOR_PREFIX = "[" + CmsGwtConstants.ATTR_DATA_ID + "*=\"";
 
     /** The entity id selector suffix. */
     private static final String ENTITY_ID_SELECTOR_SUFFIX = "\"]";
+
+    /** The editable field selector. */
+    private static final String FIELD_SELECTOR = "[" + CmsGwtConstants.ATTR_DATA_FIELD + "*=\"opencms://\"]";
 
     /** The get current entity method name. */
     private static final String GET_CURRENT_ENTITY_METHOD = "cmsGetCurrentEntity";
 
     /** The in-line editor instance. */
     private static CmsContentEditor INSTANCE;
-
-    /** The editable property selector. */
-    private static final String PROPERTY_SELECTOR = "[property*=\"opencms://\"]";
 
     /** Flag indicating that an AJAX call for the editor change handler is running. */
     protected boolean m_callingChangeHandlers;
@@ -229,10 +231,13 @@ public final class CmsContentEditor extends CmsEditorBase {
     protected String m_locale;
 
     /** The on close call back. */
-    protected Command m_onClose;
+    protected I_CmsSimpleCallback<Boolean> m_onClose;
 
     /** The edit tool-bar. */
     protected CmsToolbar m_toolbar;
+
+    /** The container element client id if available. */
+    String m_clientId;
 
     /** Flag indicating that we need to collect changed values. */
     boolean m_needsValueChangeProcessing;
@@ -341,6 +346,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The undo redo event handler registration. */
     private HandlerRegistration m_undoRedoHandlerRegistration;
+
+    /** Indicates if any settings attributes have been changed. */
+    boolean m_hasChangedSettings;
 
     /**
      * Constructor.<p>
@@ -457,7 +465,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public static boolean hasEditable(Element element) {
 
-        NodeList<Element> children = CmsDomUtil.querySelectorAll(PROPERTY_SELECTOR, element);
+        NodeList<Element> children = CmsDomUtil.querySelectorAll(FIELD_SELECTOR, element);
         return (children != null) && (children.getLength() > 0);
     }
 
@@ -470,12 +478,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public static boolean isEditable(Element element) {
 
-        String property = element.getAttribute("property");
-        return (property != null) && property.contains("opencms://");
+        String field = element.getAttribute(CmsGwtConstants.ATTR_DATA_FIELD);
+        return (field != null) && field.contains("opencms://");
     }
 
     /**
-     * Replaces the id's within about attributes of the given element and all it's children.<p>
+     * Replaces the id's within data-oc-id attributes of the given element and all it's children.<p>
      *
      * @param element the element
      * @param oldId the old id
@@ -484,14 +492,14 @@ public final class CmsContentEditor extends CmsEditorBase {
     public static void replaceResourceIds(Element element, String oldId, String newId) {
 
         NodeList<Element> children = CmsDomUtil.querySelectorAll(
-            PROPERTY_SELECTOR + ENTITY_ID_SELECTOR_PREFIX + oldId + ENTITY_ID_SELECTOR_SUFFIX,
+            FIELD_SELECTOR + ENTITY_ID_SELECTOR_PREFIX + oldId + ENTITY_ID_SELECTOR_SUFFIX,
             element);
         if (children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {
                 Element child = children.getItem(i);
-                String about = child.getAttribute("about");
-                about = about.replace(oldId, newId);
-                child.setAttribute("about", about);
+                String idData = child.getAttribute(CmsGwtConstants.ATTR_DATA_ID);
+                idData = idData.replace(oldId, newId);
+                child.setAttribute(CmsGwtConstants.ATTR_DATA_ID, idData);
             }
         }
     }
@@ -509,7 +517,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         NodeList<Element> children = CmsDomUtil.querySelectorAll(
-            PROPERTY_SELECTOR + ENTITY_ID_SELECTOR_PREFIX + serverId + ENTITY_ID_SELECTOR_SUFFIX,
+            FIELD_SELECTOR + ENTITY_ID_SELECTOR_PREFIX + serverId + ENTITY_ID_SELECTOR_SUFFIX,
             element);
         if (children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {
@@ -532,17 +540,17 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeScope the change scope
      */
     static native void addNativeListener(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-        var instance = changeListener;
-        var nat = {
-            onChange : function(entity) {
-                var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
-                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
-            }
-        }
-        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-        if (typeof method == 'function') {
-            method(nat, changeScope);
-        }
+		var instance = changeListener;
+		var nat = {
+			onChange : function(entity) {
+				var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
+				instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
+			}
+		}
+		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+		if (typeof method == 'function') {
+			method(nat, changeScope);
+		}
     }-*/;
 
     /**
@@ -551,12 +559,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-        if (typeof method == 'function') {
-            return true;
-        } else {
-            return false;
-        }
+		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+		if (typeof method == 'function') {
+			return true;
+		} else {
+			return false;
+		}
     }-*/;
 
     /**
@@ -565,8 +573,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                ();
+		return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+				();
     }-*/;
 
     /**
@@ -645,7 +653,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadDefinition(entityId, editedEntity, getSkipPaths(), this);
+                getService().loadDefinition(entityId, m_clientId, editedEntity, getSkipPaths(), this);
             }
 
             @Override
@@ -697,6 +705,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                 start(0, true);
                 getService().loadInitialDefinition(
                     entityId,
+                    m_clientId,
                     newLink,
                     modelFileId,
                     CmsCoreProvider.get().getUri(),
@@ -749,7 +758,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadNewDefinition(entityId, editedEntity, getSkipPaths(), this);
+                getService().loadNewDefinition(entityId, m_clientId, editedEntity, getSkipPaths(), this);
             }
 
             @Override
@@ -777,6 +786,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param context the editor context
      * @param locale the content locale
      * @param elementId the element id
+     * @param clientId the container element client id if available
      * @param newLink the new link
      * @param modelFileId the model file id
      * @param postCreateHandler the post-create handler class (optional)
@@ -789,15 +799,17 @@ public final class CmsContentEditor extends CmsEditorBase {
         final CmsEditorContext context,
         final String locale,
         String elementId,
+        String clientId,
         final String newLink,
         final CmsUUID modelFileId,
         final String postCreateHandler,
         final String mode,
         final String mainLocale,
         final CmsEditHandlerData editHandlerData,
-        final Command onClose) {
+        final I_CmsSimpleCallback<Boolean> onClose) {
 
         m_onClose = onClose;
+        m_clientId = clientId;
         initEventPreviewHandler();
         final CmsUUID structureId = new CmsUUID(elementId);
 
@@ -847,6 +859,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      * @param panel the element panel
      * @param mainLocale the main language to copy in case the element language node does not exist yet
+     * @param loadTime the time when the requested resource was loaded
      * @param onClose the command to execute on close
      */
     public void openInlineEditor(
@@ -855,13 +868,14 @@ public final class CmsContentEditor extends CmsEditorBase {
         String locale,
         final I_CmsInlineFormParent panel,
         final String mainLocale,
-        Command onClose) {
+        long loadTime,
+        I_CmsSimpleCallback<Boolean> onClose) {
 
         initEventPreviewHandler();
         final String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
-        CmsCoreProvider.get().lock(elementId, new I_CmsSimpleCallback<Boolean>() {
+        CmsCoreProvider.get().lock(elementId, loadTime, new I_CmsSimpleCallback<Boolean>() {
 
             public void execute(Boolean arg) {
 
@@ -983,7 +997,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
      * @param callback the call back command
      */
-    public void saveAndDeleteEntities(final boolean clearOnSuccess, final Command callback) {
+    public void saveAndDeleteEntities(final boolean clearOnSuccess, final I_CmsSimpleCallback<Boolean> callback) {
 
         final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
         saveAndDeleteEntities(entity, new ArrayList<String>(m_deletedEntities), clearOnSuccess, callback);
@@ -1001,9 +1015,9 @@ public final class CmsContentEditor extends CmsEditorBase {
         final CmsEntity lastEditedEntity,
         final List<String> deletedEntites,
         final boolean clearOnSuccess,
-        final Command callback) {
+        final I_CmsSimpleCallback<Boolean> callback) {
 
-        CmsRpcAction<CmsValidationResult> asyncCallback = new CmsRpcAction<CmsValidationResult>() {
+        CmsRpcAction<CmsSaveResult> asyncCallback = new CmsRpcAction<CmsSaveResult>() {
 
             @Override
             public void execute() {
@@ -1011,6 +1025,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                 start(200, true);
                 getService().saveAndDeleteEntities(
                     lastEditedEntity,
+                    m_clientId,
                     deletedEntites,
                     getSkipPaths(),
                     m_locale,
@@ -1019,13 +1034,13 @@ public final class CmsContentEditor extends CmsEditorBase {
             }
 
             @Override
-            protected void onResponse(CmsValidationResult result) {
+            protected void onResponse(CmsSaveResult result) {
 
                 stop(false);
                 if ((result != null) && result.hasErrors()) {
-                    showValidationErrorDialog(result);
+                    showValidationErrorDialog(result.getValidationResult());
                 } else {
-                    callback.execute();
+                    callback.execute(Boolean.valueOf((result != null) && result.isHasChangedSettings()));
                     if (clearOnSuccess) {
                         destroyForm(true);
                     }
@@ -1265,7 +1280,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         setEditorState(false);
         unlockResource();
         if (m_onClose != null) {
-            m_onClose.execute();
+            m_onClose.execute(Boolean.valueOf(m_hasChangedSettings));
         }
         destroyForm(true);
         clearEditor();
@@ -1530,20 +1545,22 @@ public final class CmsContentEditor extends CmsEditorBase {
         initToolbar();
         if (inline && (formParent != null)) {
             if ((mainLocale != null)
-                && (CmsDomUtil.querySelector("[about^='" + m_entityId + "']", formParent.getElement()) == null)) {
+                && (CmsDomUtil.querySelector(
+                    "[" + CmsGwtConstants.ATTR_DATA_ID + "^='" + m_entityId + "']",
+                    formParent.getElement()) == null)) {
                 // in case a main locale is given and there are not any HTML elements attributed to the current entity id,
                 // check if the content was rendered for the main locale
                 CmsUUID structureId = CmsContentDefinition.entityIdToUuid(m_entityId);
                 String mainLocaleEntityId = CmsContentDefinition.uuidToEntityId(structureId, mainLocale);
                 NodeList<Element> elements = CmsDomUtil.querySelectorAll(
-                    "[about^='" + mainLocaleEntityId + "']",
+                    "[" + CmsGwtConstants.ATTR_DATA_ID + "^='" + mainLocaleEntityId + "']",
                     formParent.getElement());
                 if (elements.getLength() > 0) {
                     for (int i = 0; i < elements.getLength(); i++) {
                         Element element = elements.getItem(i);
                         element.setAttribute(
-                            "about",
-                            element.getAttribute("about").replace(mainLocaleEntityId, m_entityId));
+                            CmsGwtConstants.ATTR_DATA_ID,
+                            element.getAttribute(CmsGwtConstants.ATTR_DATA_ID).replace(mainLocaleEntityId, m_entityId));
                     }
                 }
 
@@ -1657,6 +1674,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     context,
                     definition.getLocale(),
                     definition.getReferenceResourceId().toString(),
+                    m_clientId,
                     definition.getNewLink(),
                     modelStructureId,
                     null,
@@ -1735,12 +1753,13 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void save() {
 
-        saveAndDeleteEntities(false, new Command() {
+        saveAndDeleteEntities(false, new I_CmsSimpleCallback<Boolean>() {
 
-            public void execute() {
+            public void execute(Boolean hasChangedSettings) {
 
                 setSaved();
                 setUnchanged();
+                m_hasChangedSettings = m_hasChangedSettings || hasChangedSettings.booleanValue();
             }
         });
     }
@@ -1753,13 +1772,13 @@ public final class CmsContentEditor extends CmsEditorBase {
         boolean unlock = shouldUnlockAutomatically();
         // store the scroll position
         final int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
-        saveAndDeleteEntities(unlock, new Command() {
+        saveAndDeleteEntities(unlock, new I_CmsSimpleCallback<Boolean>() {
 
-            public void execute() {
+            public void execute(final Boolean hasChangedSettings) {
 
                 setSaved();
                 if (m_onClose != null) {
-                    m_onClose.execute();
+                    m_onClose.execute(Boolean.valueOf(m_hasChangedSettings || hasChangedSettings.booleanValue()));
                 }
                 clearEditor();
                 // restore the scroll position
@@ -1798,6 +1817,11 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_sitePath = definition.getSitePath();
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
+        String tabs = "";
+        for (CmsTabInfo info : definition.getTabInfos()) {
+            tabs += info.getTabId() + ":" + info.getStartName() + "   ";
+        }
+        CmsDebugLog.consoleLog("Tabs: " + tabs);
         m_tabInfos = definition.getTabInfos();
         m_iconClasses = definition.getIconClasses();
         addContentDefinition(definition);
@@ -2058,14 +2082,14 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-        if ($wnd.top.cms_ade_closeEditorDialog) {
-            $wnd.top.cms_ade_closeEditorDialog();
-        } else {
-            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-            if (backlink) {
-                $wnd.top.location.href = backlink;
-            }
-        }
+		if ($wnd.top.cms_ade_closeEditorDialog) {
+			$wnd.top.cms_ade_closeEditorDialog();
+		} else {
+			var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+			if (backlink) {
+				$wnd.top.location.href = backlink;
+			}
+		}
     }-*/;
 
     /**
@@ -2099,18 +2123,18 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-        var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                listener, scope) {
-            var wrapper = {
-                onChange : listener.onChange
-            }
-            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-        }
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-            return new $wnd.acacia.CmsEntityWrapper(
-                    self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
-        }
+		var self = this;
+		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+				listener, scope) {
+			var wrapper = {
+				onChange : listener.onChange
+			}
+			self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+		}
+		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+			return new $wnd.acacia.CmsEntityWrapper(
+					self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
+		}
     }-*/;
 
     /**
@@ -2256,9 +2280,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                 boolean unlock = shouldUnlockAutomatically();
 
-                saveAndDeleteEntities(unlock, new Command() {
+                saveAndDeleteEntities(unlock, new I_CmsSimpleCallback<Boolean>() {
 
-                    public void execute() {
+                    public void execute(final Boolean hasChangedSeetings) {
 
                         setSaved();
                         HashMap<String, String> params = new HashMap<String, String>(
@@ -2271,7 +2295,8 @@ public final class CmsContentEditor extends CmsEditorBase {
                             public void onClose(CloseEvent<PopupPanel> closeEvent) {
 
                                 if (m_onClose != null) {
-                                    m_onClose.execute();
+                                    m_onClose.execute(
+                                        Boolean.valueOf(m_hasChangedSettings || hasChangedSeetings.booleanValue()));
                                 }
                                 clearEditor();
                             }
@@ -2403,9 +2428,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changed if the content has been changed
      */
     private native void setEditorState(boolean changed)/*-{
-        if (typeof $wnd.cmsSetEditorChangedState === 'function') {
-            $wnd.cmsSetEditorChangedState(changed);
-        }
+		if (typeof $wnd.cmsSetEditorChangedState === 'function') {
+			$wnd.cmsSetEditorChangedState(changed);
+		}
     }-*/;
 
     /**
@@ -2415,8 +2440,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-        $wnd._editResource = sitePath;
-        $wnd._editLanguage = locale;
+		$wnd._editResource = sitePath;
+		$wnd._editLanguage = locale;
     }-*/;
 
     /**

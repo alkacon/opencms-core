@@ -29,7 +29,12 @@ package org.opencms.widgets;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -37,8 +42,14 @@ import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Sets;
 
 /**
  * Widget to select a type and formatter combination.<p>
@@ -85,12 +96,16 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
          * @param rank the formatter rank
          */
         FormatterOption(String key, String typeName, String label, int rank) {
+
             m_key = key;
             m_typeName = typeName;
             m_label = label;
             m_rank = rank;
         }
     }
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDisplayTypeSelectWidget.class);
 
     /**
      * @see org.opencms.widgets.CmsSelectWidget#newInstance()
@@ -113,9 +128,32 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
         List<FormatterOption> options = new ArrayList<FormatterOption>();
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, getResourcePath(cms, widgetDialog));
+        String resourcePath = getResourcePath(cms, widgetDialog);
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(resourcePath);
+        Set<String> containerTypes = new HashSet<>();
+        try {
+            CmsProperty prop = cms.readPropertyObject(
+                resourceSitePath,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES,
+                true);
+            String propValue = prop.getValue();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
+                for (String type : propValue.trim().split(" *, *")) {
+                    containerTypes.add(type);
+                }
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resourcePath);
         if (config != null) {
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
+                if (!containerTypes.isEmpty()) {
+                    if (Sets.intersection(containerTypes, formatter.getContainerTypes()).isEmpty()) {
+                        continue;
+                    }
+                }
                 for (String typeName : formatter.getResourceTypeNames()) {
                     String label = formatter.getNiceName(wpLocale)
                         + " ("

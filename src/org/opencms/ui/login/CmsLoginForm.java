@@ -27,6 +27,7 @@
 
 package org.opencms.ui.login;
 
+import org.opencms.db.CmsLoginMessage;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -40,10 +41,10 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
 import com.vaadin.v7.ui.TextField;
@@ -75,6 +76,9 @@ public class CmsLoginForm extends VerticalLayout {
 
     /** Button for opening the "forgot password" dialog. */
     private Button m_forgotPasswordButton;
+
+    /** Label showing an optional configurable message.*/
+    private Label m_additionalMessage;
 
     /** Login button. */
     private Button m_loginButton;
@@ -115,7 +119,12 @@ public class CmsLoginForm extends VerticalLayout {
         m_securityField.setValue(pctype);
         m_copyright.setContentMode(ContentMode.HTML);
         m_copyright.setValue(CmsLoginHelper.getCopyrightHtml(locale));
-
+        CmsLoginMessage beforeLoginMessage = OpenCms.getLoginManager().getBeforeLoginMessage();
+        if ((beforeLoginMessage != null) && beforeLoginMessage.isEnabled()) {
+            m_additionalMessage.setVisible(true);
+            m_additionalMessage.setContentMode(ContentMode.HTML);
+            m_additionalMessage.setValue(beforeLoginMessage.getMessage());
+        }
         m_securityField.setItemCaption(
             PC_TYPE_PRIVATE,
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PRIVATE_0));

@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.input.category;
 
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLabelLeftTruncating;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -95,6 +96,13 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
          *
          * @return the CSS style name
          */
+        String rtl();
+
+        /**
+         * Returns the CSS style name.<p>
+         *
+         * @return the CSS style name
+         */
         String searchMatch();
 
         /**
@@ -140,6 +148,29 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
     /** The width of this widget. */
     private int m_width;
 
+    /** Flag indicating if the label width should be (part-1)/part instead of 1/part. */
+    private boolean m_complementPartWidth;
+
+    /**
+     * Constructor to generate the DataValueWidget with image.<p>
+     *
+     * @param width the width of this widget.
+     * @param part the part of the width that should be used for the label
+     * @param image the css string for the image that is shown in front of the label
+     * @param complementPartWidth if true, the label has width if (part-1)/part instead of 1/part.
+     * @param parameters the values that should be shown in this widget. The first value is used for the label
+     */
+    public CmsDataValue(int width, int part, String image, boolean complementPartWidth, String... parameters) {
+
+        initWidget(uiBinder.createAndBindUi(this));
+        m_part = part;
+        m_complementPartWidth = complementPartWidth;
+        m_parameters = parameters;
+        m_image = image;
+        generateDataValue();
+        setWidth(width);
+    }
+
     /**
      * Constructor to generate the DataValueWidget with image.<p>
      *
@@ -150,12 +181,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      */
     public CmsDataValue(int width, int part, String image, String... parameters) {
 
-        initWidget(uiBinder.createAndBindUi(this));
-        m_part = part;
-        m_parameters = parameters;
-        m_image = image;
-        generateDataValue();
-        setWidth(width);
+        this(width, part, image, false, parameters);
     }
 
     /**
@@ -282,7 +308,15 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        setWidth(clientWidth);
+        int tableWidth = setWidth(clientWidth);
+        for (int i = 0; i < m_table.getRowCount(); i++) {
+            for (int j = 0; j < m_table.getCellCount(i); j++) {
+                Widget w = m_table.getWidget(i, j);
+                if (w instanceof I_CmsTruncable) {
+                    ((I_CmsTruncable)w).truncate(textMetricsKey, tableWidth);
+                }
+            }
+        }
     }
 
     /**
@@ -298,14 +332,19 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
         m_table.insertRow(0);
         int i = 0;
         for (String parameter : m_parameters) {
-
             if (i > 0) {
-                if (parameter.contains("hide:")) {
-                    m_parameters[i] = parameter.replace("hide:", "");
+                boolean rtl = false;
+                if (parameter.startsWith("rtl:")) {
+                    parameter = parameter.substring(4);
+                    m_parameters[i] = parameter;
+                    rtl = true;
+                }
+                if (parameter.startsWith("hide:")) {
+                    m_parameters[i] = parameter.substring(5);
                 } else {
-
-                    Label label = new Label(parameter);
+                    Label label = rtl ? new CmsLabelLeftTruncating(parameter) : new Label(parameter);
                     label.setStyleName(m_style.parameter());
+                    label.addStyleName(m_style.rtl());
                     label.setTitle(parameter);
                     m_table.setWidget(0, i - 1, label);
                 }
@@ -321,13 +360,20 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      * Sets the widget width.<p>
      *
      * @param width the widget width
+     *
+     * @return the width set for the table that is part of the widget
      */
-    private void setWidth(int width) {
+    private int setWidth(int width) {
 
         m_width = width;
         int width_label = (m_width / m_part);
+        if (m_complementPartWidth) {
+            int complementaryWidth = m_width - width_label;
+            width_label = complementaryWidth < 30 ? 30 : complementaryWidth;
+        }
         int width_table = (m_width - 30) - width_label;
         m_table.getElement().getStyle().setWidth(width_table, Unit.PX);
+        return width_table;
     }
 
 }

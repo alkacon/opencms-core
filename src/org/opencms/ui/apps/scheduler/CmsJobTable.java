@@ -46,6 +46,7 @@ import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
@@ -57,14 +58,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.MouseEvents;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table used to display scheduled jobs, together with buttons for modifying the jobs.<p>
@@ -77,31 +78,48 @@ public class CmsJobTable extends Table {
      */
     enum Action {
         /** Enable / disable. */
-        activation(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0),
+        activation(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0,
+        org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0),
 
         /** Create new job from template. */
-        copy(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0),
+        copy(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0, ""),
 
         /** Deletes the job. */
-        delete(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
+        delete(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0, ""),
 
         /** Edits the job. */
         /** Message constant for key in the resource bundle. */
-        edit(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0),
+        edit(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0, ""),
 
         /** Executes the job immediately. */
-        run(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EXECUTE_NAME_0);
+        run(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EXECUTE_NAME_0, "");
 
         /** The message key. */
         private String m_key;
+
+        /** The message key for activated case.*/
+        private String m_keyActivated;
 
         /**
          * Creates a new action.<p>
          *
          * @param key the message key for the action
+         * @param activatedKey an (optional) message key
          */
-        private Action(String key) {
+        private Action(String key, String activatedKey) {
+
             m_key = key;
+            m_keyActivated = activatedKey;
+        }
+
+        /**
+         * Returns an activated key.
+         *
+         * @return a message key
+         */
+        String getActivatedMessageKey() {
+
+            return CmsStringUtil.isEmptyOrWhitespaceOnly(m_keyActivated) ? m_key : m_keyActivated;
         }
 
         /**
@@ -150,7 +168,14 @@ public class CmsJobTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            return (data != null) && (data.size() == 1)
+            if ((data == null) || (data.size() > 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            @SuppressWarnings("unchecked")
+            CmsScheduledJobInfo job = (((Set<CmsJobBean>)getValue()).iterator().next()).getJob();
+
+            return !job.isActive()
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
@@ -183,6 +208,54 @@ public class CmsJobTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             return (data != null) && (data.size() == 1)
+            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+    }
+
+    /**
+     * The activate job context menu entry.<p>
+     */
+    class DeActivateEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            String jobId = data.iterator().next();
+            @SuppressWarnings("unchecked")
+            CmsScheduledJobInfo job = (((Set<CmsJobBean>)getValue()).iterator().next()).getJob();
+            CmsScheduledJobInfo jobClone = (CmsScheduledJobInfo)job.clone();
+            jobClone.setActive(!job.isActive());
+            try {
+                writeChangedJob(jobClone);
+            } catch (CmsException e) {
+                LOG.error("Error on activate job with id " + jobId, e);
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Action.activation.getActivatedMessageKey());
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if ((data == null) || (data.size() > 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            @SuppressWarnings("unchecked")
+            CmsScheduledJobInfo job = (((Set<CmsJobBean>)getValue()).iterator().next()).getJob();
+
+            return job.isActive()
             ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
             : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
@@ -380,6 +453,7 @@ public class CmsJobTable extends Table {
          * @param header message
          */
         private TableProperty(String propName, String header) {
+
             m_header = header;
             m_name = propName;
         }
@@ -462,6 +536,7 @@ public class CmsJobTable extends Table {
      * @param manager the job manager instance
      */
     public CmsJobTable(CmsJobManagerApp manager) {
+
         m_manager = manager;
         m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
         setContainerDataSource(m_beanContainer);
@@ -565,6 +640,7 @@ public class CmsJobTable extends Table {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new EditEntry());
             m_menuEntries.add(new ActivateEntry());
+            m_menuEntries.add(new DeActivateEntry());
             m_menuEntries.add(new CopyEntry());
             m_menuEntries.add(new DeleteEntry());
             m_menuEntries.add(new RunEntry());

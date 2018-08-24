@@ -1,4 +1,6 @@
-.dragElement{
+@external oc-drag-element, oc-drag-target;
+
+.oc-drag-element{
 	position: relative;
 }
 
@@ -29,16 +31,16 @@ div.dragHandle{
 	position: relative;
 }
 
-.dragTarget.dragging{
+.oc-drag-target.dragging{
 	min-height: 25px;
 }
-.dragTarget.dragging:empty{
+.oc-drag-target.dragging:empty{
 	margin-bottom: 10px;
 }
 
 /** Following is a clear-fix for containers with floated content, forcing the container to enclose its content.
     @see http://www.positioniseverything.net/easyclearing.html */
-.dragTarget.clearFix:after {
+.oc-drag-target.clearFix:after {
     content: ".";
     display: block;
     height: 0;

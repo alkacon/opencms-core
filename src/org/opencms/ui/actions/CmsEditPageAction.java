@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
@@ -98,6 +99,17 @@ public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEActio
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return context.getContextType().equals(ContextType.containerpageToolbar)
+        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
+        : super.getVisibility(context);
     }
 
     /**

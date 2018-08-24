@@ -108,6 +108,9 @@ public class CmsXmlContentProperty implements Serializable {
     /** The error message. */
     private String m_error;
 
+    /** The include name. */
+    private String m_includeName;
+
     /** The name of the property. */
     private String m_name;
 
@@ -171,7 +174,7 @@ public class CmsXmlContentProperty implements Serializable {
         this(
             name,
             type,
-            Visibility.both,
+            null, // visibility
             widget,
             widgetConfiguration,
             ruleRegex,
@@ -239,6 +242,22 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
+     * Gets the fist non-null value.<p>
+     *
+     * @param o1 the first value
+     * @param o2 the second value
+     *
+     * @return the first non-null value
+     */
+    private static <T> T firstNotNull(T o1, T o2) {
+
+        if (o1 != null) {
+            return o1;
+        }
+        return o2;
+    }
+
+    /**
      * Copies this property definition.<p>
      *
      * @return a new copy of the current property definition
@@ -258,6 +277,26 @@ public class CmsXmlContentProperty implements Serializable {
             m_description,
             m_error,
             m_preferFolder);
+    }
+
+    /**
+     * Gets the configured visibility, without using a default value.
+     *
+     * @return the configured visibility
+     */
+    public Visibility getConfiguredVisibility() {
+
+        return m_visibility;
+    }
+
+    /**
+     * Gets the configured widget, without using a default if it is null.<p>
+     *
+     * @return the configured widget
+     */
+    public String getConfiguredWidget() {
+
+        return m_widget;
     }
 
     /**
@@ -288,6 +327,24 @@ public class CmsXmlContentProperty implements Serializable {
     public String getError() {
 
         return m_error;
+    }
+
+    /**
+     * Gets the include name.<p>
+     *
+     * This is only used for element settings in formatters, where defaults from setting configuration files
+     * can be imported. The returned value is used to look up the setting name to look up for such an import in the
+     * setting configuration file.
+     *
+     * @param defaultValue the value that should be returned if no include name is configured
+     * @return the include name
+     */
+    public String getIncludeName(String defaultValue) {
+
+        if (m_includeName != null) {
+            return m_includeName;
+        }
+        return defaultValue;
     }
 
     /**
@@ -353,10 +410,15 @@ public class CmsXmlContentProperty implements Serializable {
     /**
      * Returns the visibility of the property, used in the container page element context.<p>
      *
+     * @param defaultValue the default value to return if the visibility is not set
+     *
      * @return the visibility of the property
      */
-    public Visibility getVisibility() {
+    public Visibility getVisibility(Visibility defaultValue) {
 
+        if (m_visibility == null) {
+            return defaultValue;
+        }
         return m_visibility;
     }
 
@@ -367,6 +429,9 @@ public class CmsXmlContentProperty implements Serializable {
      */
     public String getWidget() {
 
+        if (m_widget == null) {
+            return "string";
+        }
         return m_widget;
     }
 
@@ -393,6 +458,33 @@ public class CmsXmlContentProperty implements Serializable {
 
         return (m_preferFolder == null) || Boolean.valueOf(m_preferFolder).booleanValue();
 
+    }
+
+    /**
+     * Merges this object with another one containing default values.<p>
+     *
+     * This method does not modify this object or the object passed as a parameter.
+     * The resulting object's fields will be filled with the values from the default if they're null in this object.
+     *
+     * @param defaults the object with the defaults
+     *
+     * @return the result of merging this object with the defaults
+     */
+    public CmsXmlContentProperty mergeDefaults(CmsXmlContentProperty defaults) {
+
+        return new CmsXmlContentProperty(
+            m_name,
+            firstNotNull(m_type, defaults.m_type),
+            firstNotNull(m_visibility, defaults.m_visibility),
+            firstNotNull(m_widget, defaults.m_widget),
+            firstNotNull(m_widgetConfiguration, defaults.m_widgetConfiguration),
+            firstNotNull(m_ruleRegex, defaults.m_ruleRegex),
+            firstNotNull(m_ruleType, defaults.m_ruleType),
+            firstNotNull(m_default, defaults.m_default),
+            firstNotNull(m_niceName, defaults.m_niceName),
+            firstNotNull(m_description, defaults.m_description),
+            firstNotNull(m_error, defaults.m_error),
+            firstNotNull(m_preferFolder, defaults.m_preferFolder));
     }
 
     /**
@@ -440,6 +532,23 @@ public class CmsXmlContentProperty implements Serializable {
             m_description,
             m_error,
             m_preferFolder);
+    }
+
+    /**
+     * Creates a copy of this object with its include name set to a specific value.<p>
+     *
+     * @param includeName the include name to use
+     *
+     * @return the copy with the include name set
+     */
+    public CmsXmlContentProperty withIncludeName(String includeName) {
+
+        CmsXmlContentProperty result = copy();
+        if (includeName != null) {
+            includeName = includeName.trim();
+        }
+        result.m_includeName = includeName;
+        return result;
     }
 
     /**

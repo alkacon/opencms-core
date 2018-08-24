@@ -36,7 +36,9 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsTemplateContextProvider;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -46,8 +48,10 @@ import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -73,21 +77,15 @@ public final class CmsTemplateMapper {
     /** The path to the mapper configuration. */
     protected String m_configPath;
 
-    /**
-     * Hidden default constructor, because this is a singleton.<p>
-     */
-    private CmsTemplateMapper() {
-
-        m_enabled = true;
-        m_configPath = "/system/config/template-mapping.xml";
-    }
+    /** Flag to enable mode for saving. */
+    private boolean m_forSave;
 
     /**
      * Creates a new instance.<p>
      *
      * @param configPath the template mapper configuration VFS path
      */
-    private CmsTemplateMapper(String configPath) {
+    public CmsTemplateMapper(String configPath) {
 
         if (configPath != null) {
             m_enabled = true;
@@ -95,6 +93,14 @@ public final class CmsTemplateMapper {
         } else {
             m_enabled = false;
         }
+    }
+
+    /**
+     * Hidden default constructor, because this is a singleton.<p>
+     */
+    private CmsTemplateMapper() {
+
+        m_enabled = true;
     }
 
     /**
@@ -141,6 +147,16 @@ public final class CmsTemplateMapper {
     }
 
     /**
+     * Sets the for-save mode.<p>
+     *
+     * @param forSave true if for-save mode should be enabled
+     */
+    public void setForSave(boolean forSave) {
+
+        m_forSave = forSave;
+    }
+
+    /**
      * Transforms a container page bean.<p>
      *
      * @param cms the current CMS context
@@ -160,8 +176,10 @@ public final class CmsTemplateMapper {
             List<CmsContainerElementBean> elements = container.getElements();
             List<CmsContainerElementBean> newElements = new ArrayList<>();
             for (CmsContainerElementBean element : elements) {
-                CmsContainerElementBean newElement = transformContainerElement(config, element);
-                newElements.add(newElement);
+                CmsContainerElementBean newElement = transformContainerElement(cms, config, element);
+                if (newElement != null) {
+                    newElements.add(newElement);
+                }
             }
             CmsContainerBean newContainer = new CmsContainerBean(
                 container.getName(),
@@ -193,7 +211,7 @@ public final class CmsTemplateMapper {
         if ((config == null) || !config.isEnabledForPath(rootPath)) {
             return input;
         }
-        return transformContainerElement(config, input);
+        return transformContainerElement(cms, config, input);
 
     }
 
@@ -214,29 +232,53 @@ public final class CmsTemplateMapper {
         }
         List<CmsContainerElementBean> newElements = new ArrayList<>();
         for (CmsContainerElementBean element : input.getElements()) {
-            CmsContainerElementBean newElement = transformContainerElement(config, element);
-            newElements.add(newElement);
+            CmsContainerElementBean newElement = transformContainerElement(cms, config, element);
+            if (newElement != null) {
+                newElements.add(newElement);
+            }
         }
+        Set<String> transformedTypes = new HashSet<>();
+        Set<String> oldTypes = input.getTypes();
+        if (oldTypes == null) {
+            oldTypes = new HashSet<>();
+        }
+        for (String type : oldTypes) {
+            String newType = config.getMappedElementGroupType(type);
+            if (newType == null) {
+                newType = type;
+            }
+            transformedTypes.add(newType);
+        }
+
         CmsGroupContainerBean result = new CmsGroupContainerBean(
             input.getTitle(),
             input.getDescription(),
             newElements,
-            input.getTypes());
+            transformedTypes);
         return result;
     }
 
     /**
      * Helper method to transform a single container element.<p>
-     *
+     * @param cms the CMS context
      * @param config the configuration
      * @param element the container element to be transformed
      *
      * @return the transformed bean
      */
     protected CmsContainerElementBean transformContainerElement(
+        CmsObject cms,
         CmsTemplateMapperConfiguration config,
         CmsContainerElementBean element) {
 
+        if (m_forSave) {
+            try {
+                element.initResource(cms);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return null;
+            }
+        }
         Map<String, String> settings = element.getIndividualSettings();
         if (settings == null) {
             settings = new HashMap<>();
@@ -248,6 +290,9 @@ public final class CmsTemplateMapper {
                 continue;
             }
             String value = entry.getValue();
+            if (value == null) {
+                continue;
+            }
             String newValue = value;
             if (key.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
                 if (CmsUUID.isValidUUID(value)) {
@@ -271,6 +316,22 @@ public final class CmsTemplateMapper {
         CmsContainerElementBean newElement = element.clone();
         newElement.updateIndividualSettings(newSettings);
         CmsUUID formatterId = element.getFormatterId();
+        if ((formatterId == null) && m_forSave) {
+            try {
+                if (element.isGroupContainer(cms)) {
+                    // ID for group-container.jsp
+                    formatterId = new CmsUUID("e7029fa2-761e-11e0-bd7f-9ffeadaf4d46");
+                    newElement.setFormatterId(formatterId);
+                } else if (OpenCms.getResourceManager().matchResourceType(
+                    "function",
+                    element.getResource().getTypeId())) {
+                    formatterId = new CmsUUID("087ba7c9-e7fc-4336-acb8-d3416a4eb1fd");
+                    newElement.setFormatterId(formatterId);
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
         CmsUUID mappedFormatterJspId = config.getMappedFormatterJspId(formatterId);
         if (mappedFormatterJspId != null) {
             newElement.setFormatterId(mappedFormatterJspId);
@@ -288,6 +349,10 @@ public final class CmsTemplateMapper {
 
         if (!m_enabled) {
             return CmsTemplateMapperConfiguration.EMPTY_CONFIG;
+        }
+
+        if (m_configPath == null) {
+            m_configPath = OpenCms.getSystemInfo().getConfigFilePath(cms, "template-mapping.xml");
         }
 
         return (CmsTemplateMapperConfiguration)(CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().loadVfsObject(

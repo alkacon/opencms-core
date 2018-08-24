@@ -36,6 +36,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
+import org.opencms.ui.components.CmsRichTextArea;
 
 import java.util.Date;
 
@@ -46,7 +47,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.Window;
 
 /**
@@ -64,25 +67,37 @@ public class CmsEditLoginView extends CmsBasicDialog {
     private Button m_cancel;
 
     /**vaadin component.*/
-    private CheckBox m_enabled;
+    private CheckBox m_enabledAfter;
+
+    /**vaadin component.*/
+    private CheckBox m_enabledBefore;
 
     /**date field.*/
-    private CmsDateField m_endTime;
+    private CmsDateField m_endTimeAfter;
 
     /** The form field binder. */
-    private Binder<CmsLoginMessage> m_formBinder;
+    private Binder<CmsLoginMessage> m_formBinderAfter;
+
+    /** The form field binder. */
+    private Binder<CmsLoginMessage> m_formBinderBefore;
+
+    /**Vaadin component. */
+    private TabSheet m_tab;
 
     /**vaadin component.*/
-    private CheckBox m_logout;
+    private CheckBox m_logoutAfter;
 
     /**vaadin component.*/
-    private TextArea m_message;
+    protected CmsRichTextArea m_messageAfter;
+
+    /**vaadin component.*/
+    protected CmsRichTextArea m_messageBefore;
 
     /**vaadin component.*/
     private Button m_ok;
 
     /**date field.*/
-    private CmsDateField m_startTime;
+    private CmsDateField m_startTimeAfter;
 
     /**
      * Public constructor.<p>
@@ -92,14 +107,24 @@ public class CmsEditLoginView extends CmsBasicDialog {
     public CmsEditLoginView(final Window window) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
+        setHeight("100%");
         bindFields();
 
         CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
         if (message == null) {
             message = new CmsLoginMessage();
         }
-        m_formBinder.readBean(message);
+
+        m_formBinderAfter.readBean(message);
+        if (!message.isEnabled()) {
+            m_endTimeAfter.setValue(null);
+            m_startTimeAfter.setValue(null);
+        }
+        CmsLoginMessage messageBefore = OpenCms.getLoginManager().getBeforeLoginMessage();
+        if (messageBefore == null) {
+            messageBefore = new CmsLoginMessage();
+        }
+        m_formBinderBefore.readBean(messageBefore);
 
         m_cancel.addClickListener(new ClickListener() {
 
@@ -125,13 +150,18 @@ public class CmsEditLoginView extends CmsBasicDialog {
 
             }
         });
-        m_ok.setEnabled(true);
+        m_messageAfter.setFontStyle();
+        m_messageBefore.setFontStyle();
+        m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
-        m_enabled.addValueChangeListener(event -> {
-            setFieldsEnabled();
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+
+                m_messageAfter.setFontStyle();
+                m_messageBefore.setFontStyle();
+
+            }
+
         });
-
-        setFieldsEnabled();
     }
 
     /**
@@ -141,10 +171,10 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     protected long getEnd() {
 
-        if (m_endTime.getValue() == null) {
+        if (m_endTimeAfter.getValue() == null) {
             return 0;
         }
-        return m_endTime.getDate().getTime();
+        return m_endTimeAfter.getDate().getTime();
     }
 
     /**
@@ -154,10 +184,10 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     protected long getStart() {
 
-        if (m_startTime.getValue() == null) {
+        if (m_startTimeAfter.getValue() == null) {
             return 0;
         }
-        return m_startTime.getDate().getTime();
+        return m_startTimeAfter.getDate().getTime();
     }
 
     /**
@@ -167,20 +197,8 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     protected boolean isFormValid() {
 
-        // return m_startTime.isValid() & m_endTime.isValid() & m_message.isValid();
-        return !m_formBinder.validate().hasErrors();
-    }
-
-    /**
-     * Set the enable status of fields.<p>
-     */
-    protected void setFieldsEnabled() {
-
-        boolean enabled = m_enabled.getValue().booleanValue();
-        m_startTime.setEnabled(enabled);
-        m_endTime.setEnabled(enabled);
-        m_logout.setEnabled(enabled);
-        m_message.setEnabled(enabled);
+        // return m_startTimeAfter.isValid() & m_endTimeAfter.isValid() & m_messageAfter.isValid();
+        return !m_formBinderAfter.validate().hasErrors();
     }
 
     /**
@@ -189,12 +207,14 @@ public class CmsEditLoginView extends CmsBasicDialog {
     protected void submit() {
 
         CmsLoginMessage loginMessage = new CmsLoginMessage();
+        CmsLoginMessage beforeLoginMessage = new CmsLoginMessage();
         try {
-            m_formBinder.writeBean(loginMessage);
+            m_formBinderAfter.writeBean(loginMessage);
+            m_formBinderBefore.writeBean(beforeLoginMessage);
             OpenCms.getLoginManager().setLoginMessage(A_CmsUI.getCmsObject(), loginMessage);
+            OpenCms.getLoginManager().setBeforeLoginMessage(A_CmsUI.getCmsObject(), beforeLoginMessage);
             // update the system configuration
             OpenCms.writeConfiguration(CmsVariablesConfiguration.class);
-            m_ok.setEnabled(false);
         } catch (Exception e) {
             LOG.error("Unable to save Login Message", e);
         }
@@ -207,6 +227,10 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     boolean hasValidTimes() {
 
+        if ((getEnd() > 0L) && (getEnd() < System.currentTimeMillis())) {
+            return false;
+        }
+
         return ((getEnd() == 0) | (getStart() == 0)) || (getEnd() >= getStart());
     }
 
@@ -215,20 +239,20 @@ public class CmsEditLoginView extends CmsBasicDialog {
      */
     private void bindFields() {
 
-        m_formBinder = new Binder<>();
-        m_formBinder.bind(m_message, CmsLoginMessage::getMessage, CmsLoginMessage::setMessage);
+        m_formBinderAfter = new Binder<>();
+        m_formBinderAfter.bind(m_messageAfter, CmsLoginMessage::getMessage, CmsLoginMessage::setMessage);
 
-        m_formBinder.bind(
-            m_enabled,
+        m_formBinderAfter.bind(
+            m_enabledAfter,
             loginMessage -> Boolean.valueOf(loginMessage.isEnabled()),
             (loginMessage, enabled) -> loginMessage.setEnabled(enabled.booleanValue()));
 
-        m_formBinder.bind(
-            m_logout,
-            loginMessage -> Boolean.valueOf(loginMessage.isLoginCurrentlyForbidden()),
+        m_formBinderAfter.bind(
+            m_logoutAfter,
+            loginMessage -> Boolean.valueOf(loginMessage.isLoginForbidden()),
             (loginMessage, forbidden) -> loginMessage.setLoginForbidden(forbidden.booleanValue()));
 
-        m_formBinder.forField(m_endTime).withValidator(
+        m_formBinderAfter.forField(m_endTimeAfter).withValidator(
             endTime -> hasValidTimes(),
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_VAL_DATE_0)).bind(
                 loginMessage -> loginMessage.getTimeEnd() != CmsLoginMessage.DEFAULT_TIME_END
@@ -238,7 +262,7 @@ public class CmsEditLoginView extends CmsBasicDialog {
                     endTime != null
                     ? CmsDateField.localDateTimeToDate(endTime).getTime()
                     : CmsLoginMessage.DEFAULT_TIME_END));
-        m_formBinder.forField(m_startTime).withValidator(
+        m_formBinderAfter.forField(m_startTimeAfter).withValidator(
             startTime -> hasValidTimes(),
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_VAL_DATE_0)).bind(
                 loginMessage -> loginMessage.getTimeStart() != CmsLoginMessage.DEFAULT_TIME_START
@@ -248,5 +272,12 @@ public class CmsEditLoginView extends CmsBasicDialog {
                     startTime != null
                     ? CmsDateField.localDateTimeToDate(startTime).getTime()
                     : CmsLoginMessage.DEFAULT_TIME_START));
+        m_formBinderBefore = new Binder<>();
+        m_formBinderBefore.bind(m_messageBefore, CmsLoginMessage::getMessage, CmsLoginMessage::setMessage);
+
+        m_formBinderBefore.bind(
+            m_enabledBefore,
+            loginMessage -> Boolean.valueOf(loginMessage.isEnabled()),
+            (loginMessage, enabled) -> loginMessage.setEnabled(enabled.booleanValue()));
     }
 }

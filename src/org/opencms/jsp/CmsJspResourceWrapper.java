@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleGroup;
@@ -63,6 +64,12 @@ public class CmsJspResourceWrapper extends CmsResource {
     /** The main locale. */
     private Locale m_mainLocale;
 
+    /** The file object for this resource. */
+    private CmsFile m_file;
+
+    /** The resource / file content as a String. */
+    private String m_content;
+
     /**
      * Creates a new instance.<p>
      *
@@ -70,6 +77,7 @@ public class CmsJspResourceWrapper extends CmsResource {
      * @param res the resource to wrap
      */
     public CmsJspResourceWrapper(CmsObject cms, CmsResource res) {
+
         super(
             res.getStructureId(),
             res.getResourceId(),
@@ -90,10 +98,42 @@ public class CmsJspResourceWrapper extends CmsResource {
             res.getDateContent(),
             res.getVersion());
         m_cms = cms;
+        m_file = null;
+        m_content = "";
     }
 
     /**
-     * Gets a link to the resource.<p>
+     * Returns the content of the file as a String.<p>
+     *
+     * @return the content of the file as a String
+     */
+    public String getContent() {
+
+        if ((m_content.length() == 0) && (getFile() != null)) {
+            m_content = new String(getFile().getContents());
+        }
+        return m_content;
+    }
+
+    /**
+     * Returns the full file object for the resource.<p>
+     *
+     * @return the full file object for the resource
+     */
+    public CmsFile getFile() {
+
+        if ((m_file == null) && !isFolder()) {
+            try {
+                m_file = m_cms.readFile(this);
+            } catch (CmsException e) {
+                // this should not happen since we are updating from a resource object
+            }
+        }
+        return m_file;
+    }
+
+    /**
+     * Returns a substituted link to the resource.<p>
      *
      * @return the link
      */
@@ -105,7 +145,7 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
-     * Gets a map of the locale group for the current resource, with locale strings as keys.<p>
+     * Returns a map of the locale group for the current resource, with locale strings as keys.<p>
      *
      * @return a map with locale strings as keys and resource wrappers for the corresponding locale variants
      */
@@ -129,7 +169,7 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
-     * Gets the main locale for this resource.<p>
+     * Returns the main locale for this resource.<p>
      *
      * @return the main locale for this resource
      */
@@ -148,7 +188,7 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
-     * Gets the current site path to the resource.<p>
+     * Returns the current site path to the resource.<p>
      *
      * @return the current site path to the resource
      */

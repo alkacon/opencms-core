@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContain
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
@@ -58,9 +59,9 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -125,6 +126,22 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             return row;
         }
 
+    }
+
+    /**
+     * Exception for the case where no formatter configuration is available.<p>
+     */
+    public static class NoFormatterException extends Exception {
+
+        /** uid. */
+        private static final long serialVersionUID = -5735428472483535958L;
+
+        /**
+         * Creates a new instance.<p>
+         */
+        public NoFormatterException() {
+            // nothing here
+        }
     }
 
     /** The model group options. */
@@ -210,20 +227,25 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      *
      * @param controller the container page controller
      * @param elementWidget the element panel
-     * @param elementBean the element data bean
+     * @param settingsConfig the element setting configuration
+     *
+     * @throws NoFormatterException if no formatter configuration is found for the element
      */
     public CmsElementSettingsDialog(
         CmsContainerpageController controller,
         CmsContainerPageElementPanel elementWidget,
-        CmsContainerElementData elementBean) {
+        CmsElementSettingsConfig settingsConfig)
+    throws NoFormatterException {
 
         super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), 700);
+        CmsContainerElementData elementBean = settingsConfig.getElementData();
         m_elementWidget = elementWidget;
         m_controller = controller;
         m_elementBean = elementBean;
         m_contextInfo = m_controller.getData().getTemplateContextInfo();
         m_containerId = m_elementWidget.getParentTarget().getContainerId();
         CmsListInfoBean infoBean = new CmsListInfoBean();
+        infoBean.setResourceState(settingsConfig.getState());
         infoBean.setTitle(elementBean.getTitle());
         infoBean.setSubTitle(elementBean.getSitePath());
         infoBean.setResourceType(elementBean.getResourceType());
@@ -231,16 +253,16 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         infoBean.setBigIconClasses(elementBean.getBigIconClasses());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
-
         String formatterPath;
-        try {
-            CmsFormatterConfig currentFormatterConfig = m_elementBean.getFormatterConfig(m_containerId);
-            formatterPath = currentFormatterConfig.getJspRootPath();
-        } catch (Exception e) {
-            CmsDebugLog.consoleLog("Could not read formatter");
-            formatterPath = "[error: could not get formatter]";
+        CmsFormatterConfig currentFormatterConfig = m_elementBean.getFormatterConfig(m_containerId);
+        if (currentFormatterConfig == null) {
+            throw new NoFormatterException();
         }
+        formatterPath = currentFormatterConfig.getJspRootPath();
 
+        for (CmsAdditionalInfoBean addInfo : settingsConfig.getAdditionalInfo()) {
+            infoBean.addAdditionalInfo(addInfo.getName(), addInfo.getValue(), addInfo.getStyle());
+        }
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_PATH_0), formatterPath);
 
         I_CmsDropContainer dropContainer = elementWidget.getParentTarget();

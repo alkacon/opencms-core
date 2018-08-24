@@ -41,10 +41,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 
 /**
@@ -77,6 +77,7 @@ public class CmsKillSessionDialog extends CmsBasicDialog {
      * @param canelRunnable runnable to be runned on cancel
      */
     public CmsKillSessionDialog(final Set<String> sessionIds, final Runnable canelRunnable) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));

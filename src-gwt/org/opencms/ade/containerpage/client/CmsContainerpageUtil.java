@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -129,7 +130,8 @@ public class CmsContainerpageUtil {
                 child);
             if (isContainerElement || isGroupcontainerElement) {
                 containsElements = true;
-                String serializedData = child.getAttribute("rel");
+                String serializedData = child.getAttribute(CmsGwtConstants.ATTR_DATA_ELEMENT);
+                child.removeAttribute(CmsGwtConstants.ATTR_DATA_ELEMENT);
                 CmsContainerElement elementData = null;
                 try {
                     elementData = m_controller.getSerializedElement(serializedData);
@@ -290,7 +292,7 @@ public class CmsContainerpageUtil {
         Map<String, CmsContainerPageContainer> result = new HashMap<String, CmsContainerPageContainer>();
         List<Element> containerElements = CmsDomUtil.getElementsByClass(CmsContainerElement.CLASS_CONTAINER, context);
         for (Element containerElement : containerElements) {
-            String data = containerElement.getAttribute("rel");
+            String data = containerElement.getAttribute(CmsGwtConstants.ATTR_DATA_CONTAINER);
             try {
                 CmsContainer container = m_controller.getSerializedContainer(data);
                 containers.put(container.getName(), container);
@@ -313,6 +315,7 @@ public class CmsContainerpageUtil {
                         "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
                         e));
             }
+            containerElement.removeAttribute(CmsGwtConstants.ATTR_DATA_CONTAINER);
         }
         return result;
     }
@@ -506,7 +509,8 @@ public class CmsContainerpageUtil {
             elementData.hasEditHandler(),
             elementData.getModelGroupId(),
             elementData.isWasModelGroup(),
-            elementData.getElementView());
+            elementData.getElementView(),
+            elementData.getBigIconClasses());
         dragElement.setCreateNew(elementData.isCreateNew());
         if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
@@ -544,7 +548,8 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
-            elementData.getElementView());
+            elementData.getElementView(),
+            elementData.getBigIconClasses());
         return groupContainer;
     }
 }

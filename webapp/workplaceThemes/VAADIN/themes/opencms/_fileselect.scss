@@ -98,4 +98,22 @@
 	        }
 	    }
 	}
+	.v-customcomponent-error .o-fileselect {
+	        	&  .v-button.o-button-icon { 
+	        		&, &:focus, &::after, &:focus::after { 
+	    				border-color: #ed473b !important; 
+	    			}
+	    			
+	    			&::after, &:hover::after {
+	    				background-color: rgba(255, 215, 215, 0.1) !important;
+	    			}
+	    		}
+	    		
+	    		& .o-fileselect-spacer {
+	    			background-color: #fffbfb !important; 
+	    			& > *::after, & > *::before { 
+	    				background-color: #ed473b;
+	    			} 
+	    	} 
+	    }
 }

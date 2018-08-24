@@ -73,6 +73,9 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
 
+    /** The "redirect" attribute. */
+    public static final String A_REDIRECT = "redirect";
+
     /** The "title" attribute. */
     public static final String A_TITLE = "title";
 
@@ -188,9 +191,10 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
         // add an alias to the currently configured site
-        digester.addCallMethod("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, "addAliasToConfigSite", 2);
+        digester.addCallMethod("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, "addAliasToConfigSite", 3);
         digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_OFFSET);
+        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_REDIRECT);
+        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 2, A_OFFSET);
 
         digester.addCallMethod("*/" + N_SITES + "/" + N_SHARED_FOLDER, "setSharedFolder", 0);
 
@@ -275,6 +279,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
                 CmsSiteMatcher matcher = aliasIterator.next();
                 Element aliasElement = siteElement.addElement(N_ALIAS);
                 aliasElement.addAttribute(A_SERVER, matcher.getUrl());
+                aliasElement.addAttribute(A_REDIRECT, String.valueOf(matcher.isRedirect()));
                 if (matcher.getTimeOffset() != 0) {
                     aliasElement.addAttribute(A_OFFSET, "" + matcher.getTimeOffset());
                 }

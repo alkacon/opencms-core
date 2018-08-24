@@ -47,10 +47,23 @@ div.previewDialog div.previewTitle{
 	height:100%;
 }
 
+.previewHolder .previewPanel img{
+	vertical-align: middle;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
 .imagePanel {
 	text-align: center;
 	line-height: inherit;
 	vertical-align: middle;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	height: 100%; 
 }
 
 /* Tabs panel (details) */
@@ -64,6 +77,10 @@ div.previewDialog div.previewTitle{
 	bottom:4px;
 	right:3px;
 	margin:2px;
+}
+
+.previewButtonBar > * {
+	margin-right: 10px !important; 
 }
 
 .savePropertiesButton{
@@ -123,15 +140,21 @@ table.infoTable tr, table.infoTable td{
 	float:right;
 }
 
+.propertyForm {
+	display: flex; 
+	align-items: center;
+	margin: 0 3px 3px 9px !important;
+} 
+
 .labelField{
-	float:left;
 	font-weight:bold;
 	white-space: nowrap;
+	width: 122px;
 }
 
 .inputField{
-	float:right;
-	margin-left:2px;
+	-ms-flex: 1; 
+	flex: 1; 
 }
 
 /* Image format tab. */
@@ -164,6 +187,8 @@ table.infoTable tr, table.infoTable td{
 .formatLabel{
 	font-weight:bold;
 }
+
+
 
 .formatLabel, .formatText, .formatSelectBox{
 	display: inline-block;

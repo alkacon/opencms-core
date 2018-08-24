@@ -440,14 +440,26 @@ public final class CmsJspStandardContextBean {
                 m_cms,
                 m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
             List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
+            CmsDetailPageInfo detailPage = null;
+            boolean usingDefault = false;
             if ((detailPages == null) || (detailPages.size() == 0)) {
+                detailPage = config.getDefaultDetailPage();
+                usingDefault = true;
+            } else {
+                detailPage = detailPages.get(0);
+            }
+            if (detailPage == null) {
                 return "[No detail page configured for type =" + type + "=]";
             }
-            CmsDetailPageInfo mainDetailPage = detailPages.get(0);
-            CmsUUID id = mainDetailPage.getId();
+
+            CmsUUID id = detailPage.getId();
             try {
                 CmsResource r = m_cms.readResource(id);
-                return OpenCms.getLinkManager().substituteLink(m_cms, r);
+                String link = OpenCms.getLinkManager().substituteLink(m_cms, r);
+                if (usingDefault) {
+                    link = CmsStringUtil.joinPaths(link, (String)input);
+                }
+                return link;
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 return "[Error reading detail page for type =" + type + "=]";
@@ -463,11 +475,11 @@ public final class CmsJspStandardContextBean {
         /** The element formatter config. */
         private I_CmsFormatterBean m_formatter;
 
-        /** The element. */
-        private CmsContainerElementBean m_transformElement;
-
         /** The configured formatter settings. */
         private Map<String, CmsXmlContentProperty> m_formatterSettingsConfig;
+
+        /** The element. */
+        private CmsContainerElementBean m_transformElement;
 
         /**
          * Constructor.<p>
@@ -650,20 +662,20 @@ public final class CmsJspStandardContextBean {
     /** The meta mapping data. */
     class MetaMapping {
 
-        /** The mapping key. */
-        String m_key;
-
-        /** The mapping value xpath. */
-        String m_elementXPath;
-
-        /** The mapping order. */
-        int m_order;
-
         /** The mapping content structure id. */
         CmsUUID m_contentId;
 
         /** The default value. */
         String m_defaultValue;
+
+        /** The mapping value xpath. */
+        String m_elementXPath;
+
+        /** The mapping key. */
+        String m_key;
+
+        /** The mapping order. */
+        int m_order;
     }
 
     /** The attribute name of the cms object.*/
@@ -678,6 +690,12 @@ public final class CmsJspStandardContextBean {
     /** OpenCms user context. */
     protected CmsObject m_cms;
 
+    /** The meta mapping configuration. */
+    Map<String, MetaMapping> m_metaMappings;
+
+    /** The current request. */
+    ServletRequest m_request;
+
     /** Lazily initialized map from a category path to all sub-categories of that category. */
     private Map<String, CmsJspCategoryAccessBean> m_allSubCategories;
 
@@ -689,6 +707,9 @@ public final class CmsJspStandardContextBean {
 
     /** The current detail content resource if available. */
     private CmsResource m_detailContentResource;
+
+    /** The detail function page. */
+    private CmsResource m_detailFunctionPage;
 
     /** The detail only page references containers that are only displayed in detail view. */
     private CmsContainerPageBean m_detailOnlyPage;
@@ -729,26 +750,20 @@ public final class CmsJspStandardContextBean {
     /** Lazily initialized map from a category path to all categories on that path. */
     private Map<String, List<CmsCategory>> m_pathCategories;
 
-    /** The current request. */
-    ServletRequest m_request;
-
     /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
     private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
 
     /** The resource wrapper for the current page. */
     private CmsJspResourceWrapper m_resourceWrapper;
 
+    /** Map from root paths to site relative paths. */
+    private Map<String, String> m_sitePaths;
+
     /** The lazy initialized map for the detail pages. */
     private Map<String, String> m_typeDetailPage;
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
-
-    /** The meta mapping configuration. */
-    Map<String, MetaMapping> m_metaMappings;
-
-    /** Map from root paths to site relative paths. */
-    private Map<String, String> m_sitePaths;
 
     /**
      * Creates an empty instance.<p>
@@ -781,6 +796,7 @@ public final class CmsJspStandardContextBean {
         updateCmsObject(cms);
 
         m_detailContentResource = CmsDetailPageResourceHandler.getDetailResource(req);
+        m_detailFunctionPage = CmsDetailPageResourceHandler.getDetailFunctionPage(req);
     }
 
     /**
@@ -922,6 +938,16 @@ public final class CmsJspStandardContextBean {
         return ((m_cms == null) || (m_detailContentResource == null))
         ? null
         : m_cms.getSitePath(m_detailContentResource);
+    }
+
+    /**
+     * Returns the detail function page.<p>
+     *
+     * @return the detai function page
+     */
+    public CmsResource getDetailFunctionPage() {
+
+        return m_detailFunctionPage;
     }
 
     /**

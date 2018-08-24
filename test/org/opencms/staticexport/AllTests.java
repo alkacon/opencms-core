@@ -63,6 +63,7 @@ public final class AllTests {
         suite.addTest(TestExportFile.suite());
         suite.addTest(TestSecure.suite());
         suite.addTest(TestCmsExternalLinksValidator.suite());
+        suite.addTest(TestExportScaledImage.suite());
         //$JUnit-END$
         return suite;
     }

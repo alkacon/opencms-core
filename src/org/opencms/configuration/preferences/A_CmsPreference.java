@@ -52,7 +52,7 @@ public abstract class A_CmsPreference implements I_CmsPreference {
             {I_CmsXmlConfiguration.A_VALUE, getDefaultValue()},
             {CmsWorkplaceConfiguration.A_NICE_NAME, prop.getNiceName()},
             {CmsWorkplaceConfiguration.A_DESCRIPTION, prop.getDescription()},
-            {CmsWorkplaceConfiguration.A_WIDGET, prop.getWidget()},
+            {CmsWorkplaceConfiguration.A_WIDGET, prop.getConfiguredWidget()},
             {CmsWorkplaceConfiguration.A_WIDGET_CONFIG, prop.getWidgetConfiguration()},
             {CmsWorkplaceConfiguration.A_RULE_REGEX, prop.getRuleRegex()},
             {CmsWorkplaceConfiguration.A_ERROR, prop.getError()}}) {

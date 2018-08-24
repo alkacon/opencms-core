@@ -46,10 +46,18 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * Resource type descriptor for the type "image".<p>
@@ -166,6 +174,86 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         }
     }
 
+    /**
+     * Helper class for parsing SVG sizes.<p>
+     *
+     * Note: This is *not* intended as a general purpose tool, it is only used for parsing SVG sizes
+     * as part of the image.size property determination.
+     */
+    private static class SvgSize {
+
+        /** The numeric value of the size. */
+        private double m_size;
+
+        /** The unit of the size. */
+        private String m_unit;
+
+        /**
+         * Parses the SVG size.<p>
+         *
+         * @param s the string containing the size
+         *
+         * @return the parsed size
+         */
+        public static SvgSize parse(String s) {
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(s)) {
+                return null;
+            }
+            s = s.trim();
+            double length = -1;
+            int unitPos;
+            String unit = "";
+            // find longest prefix of s that can be parsed as a number, use the remaining part as the unit
+            for (unitPos = s.length(); unitPos >= 0; unitPos--) {
+                String prefix = s.substring(0, unitPos);
+                unit = s.substring(unitPos);
+                try {
+                    length = Double.parseDouble(prefix);
+                    break;
+                } catch (NumberFormatException e) {}
+            }
+            if (length < 0) {
+                LOG.warn("Invalid string for SVG size: " + s);
+                return null;
+            }
+            SvgSize result = new SvgSize();
+            result.m_size = length;
+            result.m_unit = unit;
+            return result;
+        }
+
+        /**
+         * Gets the numeric value of the size.<p>
+         *
+         * @return the size
+         */
+        public double getSize() {
+
+            return m_size;
+        }
+
+        /**
+         * Gets the unit of the size.<p>
+         *
+         * @return the unit
+         */
+        public String getUnit() {
+
+            return m_unit;
+
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return m_size + m_unit;
+        }
+    }
+
     /** The default image preview provider. */
     private static final String GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.CmsImagePreviewProvider";
 
@@ -232,7 +320,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
             CmsProperty fileSizeProperty = cms.readPropertyObject(
                 parentFolder,
                 CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                false);
+                true);
             if (!fileSizeProperty.isNullProperty()) {
                 // image.size property has been set
                 String value = fileSizeProperty.getValue().trim();
@@ -284,9 +372,13 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
-        if (CmsImageLoader.isEnabled()) {
+        if (resourcename.toLowerCase().endsWith(".svg")) {
+            List<CmsProperty> prop2 = tryAddImageSizeFromSvg(content, properties);
+            properties = prop2;
+        } else if (CmsImageLoader.isEnabled()) {
             String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
             // get the downscaler to use
             CmsImageScaler downScaler = getDownScaler(cms, rootPath);
@@ -334,9 +426,12 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
-        if (CmsImageLoader.isEnabled()) {
+        if (resourcename.toLowerCase().endsWith(".svg")) {
+            properties = tryAddImageSizeFromSvg(content, properties);
+        } else if (CmsImageLoader.isEnabled()) {
             // siblings have null content in import
             if (content != null) {
                 // get the downscaler to use
@@ -420,9 +515,15 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
-        if (CmsImageLoader.isEnabled()) {
+        if (resource.getRootPath().toLowerCase().endsWith(".svg")) {
+            List<CmsProperty> newProperties = tryAddImageSizeFromSvg(content, properties);
+            if (properties != newProperties) { // yes, we actually do want to compare object identity here
+                writePropertyObjects(cms, securityManager, resource, newProperties);
+            }
+        } else if (CmsImageLoader.isEnabled()) {
             // check if the user has write access and if resource is locked
             // done here so that no image operations are performed in case no write access is granted
             securityManager.checkPermissions(
@@ -484,4 +585,62 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         }
         return super.writeFile(cms, securityManager, resource);
     }
+
+    /**
+     * Tries to use the viewbox from the SVG data to determine the image size and add it to the list of properties.<p>
+     *
+     * @param content the content bytes of an SVG file
+     * @param properties the original properties (this object will not be modified)
+     *
+     * @return the amended properties
+     */
+    protected List<CmsProperty> tryAddImageSizeFromSvg(byte[] content, List<CmsProperty> properties) {
+
+        if ((content == null) || (content.length == 0)) {
+            return properties;
+        }
+        List<CmsProperty> newProps = properties;
+        try {
+            double w = -1, h = -1;
+            SAXReader reader = new SAXReader();
+            Document doc = reader.read(new ByteArrayInputStream(content));
+            Element node = (Element)(doc.selectSingleNode("/svg"));
+            if (node != null) {
+                String widthStr = node.attributeValue("width");
+                String heightStr = node.attributeValue("height");
+                SvgSize width = SvgSize.parse(widthStr);
+                SvgSize height = SvgSize.parse(heightStr);
+                if ((width != null) && (height != null) && Objects.equals(width.getUnit(), height.getUnit())) {
+                    // If width and height are given and have the same units, just interpret them as pixels, otherwise use viewbox
+                    w = width.getSize();
+                    h = height.getSize();
+                } else {
+                    String viewboxStr = node.attributeValue("viewBox");
+                    if (viewboxStr != null) {
+                        viewboxStr = viewboxStr.replace(",", " ");
+                        String[] viewboxParts = viewboxStr.trim().split(" +");
+                        if (viewboxParts.length == 4) {
+                            w = Double.parseDouble(viewboxParts[2]);
+                            h = Double.parseDouble(viewboxParts[3]);
+                        }
+                    }
+                }
+                if ((w > 0) && (h > 0)) {
+                    String propValue = "w:" + (int)Math.round(w) + ",h:" + (int)Math.round(h);
+                    Map<String, CmsProperty> propsMap = properties == null
+                    ? new HashMap<>()
+                    : CmsProperty.toObjectMap(properties);
+                    propsMap.put(
+                        CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                        new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, propValue));
+                    newProps = new ArrayList<>(propsMap.values());
+                }
+
+            }
+        } catch (Exception e) {
+            LOG.error("Error while trying to determine size of SVG: " + e.getLocalizedMessage(), e);
+        }
+        return newProps;
+    }
+
 }

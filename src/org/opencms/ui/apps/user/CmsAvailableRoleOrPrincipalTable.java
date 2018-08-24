@@ -39,16 +39,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table showing available items from A_CmsEditUserGroupRoleDialog.<p>
@@ -204,7 +204,15 @@ public class CmsAvailableRoleOrPrincipalTable extends Table {
 
         m_container.removeAllContainerFilters();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
-            m_container.addContainerFilter(new Or(new SimpleStringFilter(PROP_NAME, search, true, false)));
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_dialog.getFurtherColumnId())) {
+                m_container.addContainerFilter(new Or(new SimpleStringFilter(PROP_NAME, search, true, false)));
+            } else {
+                m_container.addContainerFilter(
+                    new Or(
+                        new SimpleStringFilter(PROP_NAME, search, true, false),
+                        new SimpleStringFilter(m_dialog.getFurtherColumnId(), search, true, false)));
+            }
+
         }
         if ((getValue() != null) & !((Set<String>)getValue()).isEmpty()) {
             setCurrentPageFirstItemId(((Set<String>)getValue()).iterator().next());

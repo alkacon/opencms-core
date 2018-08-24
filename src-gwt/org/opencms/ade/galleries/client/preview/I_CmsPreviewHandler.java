@@ -30,6 +30,8 @@ package org.opencms.ade.galleries.client.preview;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * Preview dialog handler interface.<p>
  *
@@ -42,16 +44,23 @@ import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 public interface I_CmsPreviewHandler<T extends CmsResourceInfoBean> extends I_CmsPropertiesHandler {
 
     /**
+     * Closes the preview.<p>
+     */
+    void closePreview();
+
+    /**
+     * Gets the additional widget to be displayed in the property tab.<p>
+     *
+     * @return the additional widget to be displayed in the property tab
+     */
+    Widget getAdditionalWidgetForPropertyTab();
+
+    /**
      * Returns the gallery dialog.<p>
      *
      * @return the gallery dialog
      */
     CmsGalleryDialog getGalleryDialog();
-
-    /**
-     * Closes the preview.<p>
-     */
-    void closePreview();
 
     /**
      * Returns false, if the dialog may not be closed due to unsaved properties.<p>

@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
@@ -137,6 +138,9 @@ public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
         }
         Collections.sort(formatters, new A_CmsFormatterWidget.FormatterSelectComparator());
         for (I_CmsFormatterBean formatterBean : formatters) {
+            if (formatterBean instanceof CmsFunctionFormatterBean) {
+                continue;
+            }
 
             if (formatterBean instanceof CmsMacroFormatterBean) {
                 boolean systemOrShared = formatterBean.getLocation().startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")

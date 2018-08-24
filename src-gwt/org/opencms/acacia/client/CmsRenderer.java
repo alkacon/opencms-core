@@ -41,6 +41,7 @@ import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.Iterator;
 import java.util.List;
@@ -401,7 +402,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
             context.getElement().getStyle().setHeight(600, Unit.PX);
             context.getElement().setAttribute("typeof", entity.getTypeName());
-            context.getElement().setAttribute("about", entity.getId());
+            context.getElement().setAttribute(CmsGwtConstants.ATTR_DATA_ID, entity.getId());
             context.getElement().getStyle().setPadding(0, Unit.PX);
             CmsTabbedPanel<FlowPanel> tabbedPanel = new CmsTabbedPanel<FlowPanel>(CmsTabbedPanelStyle.classicTabs);
             tabbedPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().wrapTabs());
@@ -514,7 +515,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
         context.addStyleName(ENTITY_CLASS);
         context.getElement().setAttribute("typeof", entity.getTypeName());
-        context.getElement().setAttribute("about", entity.getId());
+        context.getElement().setAttribute(CmsGwtConstants.ATTR_DATA_ID, entity.getId());
         CmsType entityType = m_entityBackEnd.getType(entity.getTypeName());
         CmsAttributeValueView lastCompactView = null;
         if (entityType.isChoice()) {
@@ -579,6 +580,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 if ((attribute == null) && (minOccurrence > 0)) {
                     attribute = createEmptyAttribute(entity, attributeName, handler, minOccurrence);
                 }
+
                 CmsType attributeType = entityType.getAttributeType(attributeName);
                 CmsValuePanel attributeElement = new CmsValuePanel();
                 context.add(attributeElement);
@@ -839,7 +841,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 setAttributeChoice(valueWidget, attributeType);
             }
         } else {
-            CmsAttributeValueView valueWidget = new CmsAttributeValueView(handler, label, help); 
+            CmsAttributeValueView valueWidget = new CmsAttributeValueView(handler, label, help);
             attributeElement.add(valueWidget);
             if (attributeType.isSimpleType()) {
                 // create a deactivated widget, to add the attribute on click

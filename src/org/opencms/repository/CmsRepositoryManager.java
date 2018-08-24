@@ -36,6 +36,7 @@ import org.opencms.jlan.CmsJlanThreadManager;
 import org.opencms.jlan.CmsJlanUsers;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsShell;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +123,8 @@ public class CmsRepositoryManager {
     public static List<I_CmsResourceWrapper> createResourceWrappersFromConfiguration(
         CmsParameterConfiguration config,
         String paramName,
-        Log log) throws CmsConfigurationException {
+        Log log)
+    throws CmsConfigurationException {
 
         List<I_CmsResourceWrapper> wrapperObjects = Lists.newArrayList();
         if (config.containsKey(paramName)) {
@@ -327,7 +329,7 @@ public class CmsRepositoryManager {
         }
 
         CmsJlanUsers.setAdminCms(cms);
-        if (!getRepositories(CmsJlanRepository.class).isEmpty()) {
+        if (!CmsShell.isJlanDisabled() && !getRepositories(CmsJlanRepository.class).isEmpty()) {
             m_jlanThreadManager.start();
         }
 

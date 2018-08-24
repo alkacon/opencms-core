@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="i:org.opencms.ui.apps.user" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+					<vaadin7-vertical-layout _id="m_error" visible="false" spacing margin >
+						<vaadin7-label _id="m_errorLabel" >%(key.GUI_USERMANAGEMENT_USER_MOVE_OU_FOUND_GROUPS_0)</vaadin7-label>
+						<i-cms-groups-of-user-table _id="m_groupTable" width="100%" height="200px"/>
+						<vaadin7-check-box _id="m_removeAll" caption="%(key.GUI_USERMANAGEMENT_USER_MOVE_OU_REMOVE_GROUPS_0)" description="%(key.GUI_USERMANAGEMENT_USER_MOVE_OU_REMOVE_GROUPS_HELP_0)" />									
+					</vaadin7-vertical-layout>
+					<v-form-layout _id="m_ouHolder" margin spacing style-name="o-formlayout-workplace-main">
+						<vaadin7-combo-box _id="m_ou" caption="%(key.GUI_USERMANAGEMENT_USER_MOVE_OU_SELECT_OU_0)" width="100%">
+					</v-form-layout>
+				</vaadin7-vertical-layout>
+			</content>
+			<buttons>	
+				<v-button _id="m_ok" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

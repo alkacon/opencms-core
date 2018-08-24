@@ -102,6 +102,9 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     /**Table showing sessions.*/
     CmsSessionsTable m_table;
 
+    /**Info button. */
+    CmsInfoButton m_infoButton;
+
     /**
      * Get resource info boxes for given users.<p>
      *
@@ -177,9 +180,13 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     protected static void showSendBroadcastDialog(Set<String> ids, String caption, final CmsSessionsTable table) {
 
         final Window window = CmsBasicDialog.prepareWindow();
+
         window.setCaption(caption);
-        window.setContent(new CmsSendBroadcastDialog(ids, CmsSessionsTable.getCloseRunnable(window, table)));
+        CmsBasicDialog dialog = new CmsSendBroadcastDialog(ids, CmsSessionsTable.getCloseRunnable(window, table));
+        window.setContent(dialog);
+        dialog.setWindowMinFullHeight(500);
         A_CmsUI.get().addWindow(window);
+
     }
 
     /**
@@ -216,6 +223,29 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     }
 
     /**
+     * Get a map with infos for info button.<p>
+     *
+     * @return map
+     */
+    protected Map<String, String> getInfoMap() {
+
+        Map<String, String> infos = new LinkedHashMap<String, String>();
+        List<CmsSessionInfo> sessions = OpenCms.getSessionManager().getSessionInfos();
+        List<CmsUUID> user = new ArrayList<CmsUUID>();
+        for (CmsSessionInfo info : sessions) {
+            CmsUUID id = info.getUserId();
+            if (!user.contains(id)) {
+                user.add(id);
+            }
+        }
+        infos.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SESSION_COUNT_0),
+            String.valueOf(sessions.size()));
+        infos.put(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_COUNT_0), String.valueOf(user.size()));
+        return infos;
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
      */
     @Override
@@ -230,8 +260,10 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
     protected void openEditLoginMessageDialog() {
 
         Window window = CmsBasicDialog.prepareWindow();
-        window.setContent(new CmsEditLoginView(window));
+        CmsBasicDialog dialog = new CmsEditLoginView(window);
+        window.setContent(dialog);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_LOGINMESSAGE_TOOL_NAME_0));
+        dialog.setWindowMinFullHeight(500);
         A_CmsUI.get().addWindow(window);
     }
 
@@ -294,7 +326,8 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
             }
         });
         m_uiContext.addToolbarButton(broadcastToAll);
-        m_uiContext.addToolbarButton(getStatisticButton());
+        m_infoButton = getStatisticButton();
+        m_uiContext.addToolbarButton(m_infoButton);
         Button button = CmsToolBar.createButton(
             FontOpenCms.RESET,
             CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_REFRESH_0));
@@ -306,6 +339,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
 
                 try {
                     m_table.ini();
+                    m_infoButton.replaceData(getInfoMap());
                 } catch (CmsException e) {
                     //
                 }
@@ -322,21 +356,7 @@ public class CmsSessionsApp extends A_CmsWorkplaceApp {
      */
     private CmsInfoButton getStatisticButton() {
 
-        Map<String, String> infos = new LinkedHashMap<String, String>();
-
-        List<CmsSessionInfo> sessions = OpenCms.getSessionManager().getSessionInfos();
-        List<CmsUUID> user = new ArrayList<CmsUUID>();
-        for (CmsSessionInfo info : sessions) {
-            CmsUUID id = info.getUserId();
-            if (!user.contains(id)) {
-                user.add(id);
-            }
-        }
-        infos.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_SESSION_COUNT_0),
-            String.valueOf(sessions.size()));
-        infos.put(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_USER_COUNT_0), String.valueOf(user.size()));
-        CmsInfoButton ret = new CmsInfoButton(infos);
+        CmsInfoButton ret = new CmsInfoButton(getInfoMap());
         ret.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_STATISTICS_CAPTION_0));
         ret.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_STATISTICS_CAPTION_0));
         return ret;

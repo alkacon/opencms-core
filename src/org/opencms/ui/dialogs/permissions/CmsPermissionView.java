@@ -118,33 +118,15 @@ public class CmsPermissionView extends CssLayout {
     /** Constant for unknown type. */
     private static final String UNKNOWN_TYPE = "Unknown";
 
-    /** The table field factory. */
-    private final TableFieldFactory m_fieldFactory = new DefaultFieldFactory() {
+    /** The value change listener for all fields of this view. */
+    final ValueChangeListener m_valueChangeListener = new ValueChangeListener() {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 3923093753370151014L;
 
-        /**
-         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.v7.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
-         */
-        @Override
-        public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+        public void valueChange(ValueChangeEvent event) {
 
-            Field<?> result = null;
-            if (PROPERTY_ALLOWED.equals(propertyId) || PROPERTY_DENIED.equals(propertyId)) {
-                result = super.createField(container, itemId, propertyId, uiContext);
-                result.addValueChangeListener(new ValueChangeListener() {
+            setPermissions();
 
-                    private static final long serialVersionUID = 3923093753370151014L;
-
-                    public void valueChange(ValueChangeEvent event) {
-
-                        setPermissions();
-
-                    }
-                });
-                result.setCaption("");
-            }
-            return result;
         }
     };
 
@@ -159,6 +141,27 @@ public class CmsPermissionView extends CssLayout {
 
     /** The access control entry to display. */
     private CmsAccessControlEntry m_entry;
+
+    /** The table field factory. */
+    private final TableFieldFactory m_fieldFactory = new DefaultFieldFactory() {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.v7.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+         */
+        @Override
+        public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+
+            Field<?> result = null;
+            if (PROPERTY_ALLOWED.equals(propertyId) || PROPERTY_DENIED.equals(propertyId)) {
+                result = super.createField(container, itemId, propertyId, uiContext);
+                result.addValueChangeListener(m_valueChangeListener);
+                result.setCaption("");
+            }
+            return result;
+        }
+    };
 
     /** The inherit check box. */
     private CheckBox m_inheritCheckbox;
@@ -199,6 +202,10 @@ public class CmsPermissionView extends CssLayout {
         m_entry = entry;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
+        m_responsibleCheckbox.addValueChangeListener(m_valueChangeListener);
+        m_overwriteCheckbox.addValueChangeListener(m_valueChangeListener);
+        m_inheritCheckbox.addValueChangeListener(m_valueChangeListener);
+
         // get name and type of the current entry
         I_CmsPrincipal principal;
         try {

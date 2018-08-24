@@ -24,6 +24,7 @@
         	<xsd:element name="StringTemplate" type="OpenCmsString" />
         	<xsd:element name="PlaceholderStringTemplate" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
+        	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
@@ -53,7 +54,7 @@
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="StringTemplate" name="TabTemplate" collapse="false" />
 			<tab element="PlaceholderStringTemplate" name="TabNewContent" collapse="false" />
-			<tab element="Setting" name="TabSettings" collapse="false" />
+			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
 			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
 		</tabs>
         </xsd:appinfo> 

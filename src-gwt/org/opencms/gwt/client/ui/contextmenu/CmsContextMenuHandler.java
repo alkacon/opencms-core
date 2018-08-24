@@ -97,7 +97,7 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
         if (m_editorHandler == null) {
             m_editorHandler = new I_CmsContentEditorHandler() {
 
-                public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+                public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
 
                     // do nothing
                 }

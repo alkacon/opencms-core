@@ -75,6 +75,9 @@ public class CmsJlanNetworkFile extends NetworkFile {
     /** The wrapped resource. */
     private CmsResource m_resource;
 
+    /** Flag which indicates whether we need to unlock the resource. */
+    private boolean m_needToUnlock;
+
     /** Creates a new network file instance.<p>
      *
      * @param cms the CMS object wrapper to use
@@ -101,9 +104,10 @@ public class CmsJlanNetworkFile extends NetworkFile {
             delete();
         } else {
             flushFile();
-            if (getWriteCount() > 0) {
+            if ((getWriteCount() > 0) && m_needToUnlock) {
                 try {
                     m_cms.unlockResource(m_cms.getSitePath(m_resource));
+                    m_needToUnlock = false;
                 } catch (CmsException e) {
                     LOG.error("Couldn't unlock file: " + m_resource.getRootPath());
                 }
@@ -395,6 +399,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
         CmsLock lock = m_cms.getLock(m_resource);
         if (lock.isUnlocked() || !lock.isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
             m_cms.lockResourceTemporary(m_cms.getSitePath(m_resource));
+            m_needToUnlock = true;
         }
     }
 

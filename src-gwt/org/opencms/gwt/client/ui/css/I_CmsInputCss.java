@@ -391,6 +391,11 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      */
     String textArea();
 
+    /**
+     * Css class reader.<p>
+     *
+     * @return the css class
+     */
     String textAreaGhostMode();
 
     /**

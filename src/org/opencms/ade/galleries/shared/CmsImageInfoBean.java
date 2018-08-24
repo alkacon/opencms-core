@@ -37,6 +37,9 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     /** The image copyright information. */
     private String m_copyright;
 
+    /** Focal point of the image (null if not set). */
+    private CmsPoint m_focalPoint;
+
     /** The structure id hash. */
     private int m_hash;
 
@@ -60,6 +63,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public String getCopyright() {
 
         return m_copyright;
+    }
+
+    /**
+     * Gets the focal point of the image (null if not set).<p>
+     *
+     * @return the focal point of the image
+     */
+    public CmsPoint getFocalPoint() {
+
+        return m_focalPoint;
     }
 
     /**
@@ -120,6 +133,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public void setCopyright(String copyright) {
 
         m_copyright = copyright;
+    }
+
+    /**
+     * Sets the focal point for the image.<p>
+     *
+     * @param imagePoint the focal point
+     */
+    public void setFocalPoint(CmsPoint imagePoint) {
+
+        m_focalPoint = imagePoint;
     }
 
     /**

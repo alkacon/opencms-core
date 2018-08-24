@@ -61,6 +61,7 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspTagLink;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -69,6 +70,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsWaitHandle;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -116,12 +118,12 @@ public class CmsADEManager {
 
     /** JSON property name constant. */
     protected enum FavListProp {
-        /** element property. */
-        ELEMENT,
-        /** formatter property. */
-        FORMATTER,
-        /** properties property. */
-        PROPERTIES;
+    /** element property. */
+    ELEMENT,
+    /** formatter property. */
+    FORMATTER,
+    /** properties property. */
+    PROPERTIES;
     }
 
     /**
@@ -159,6 +161,9 @@ public class CmsADEManager {
 
     /** Default favorite/recent list size constant. */
     public static final int DEFAULT_ELEMENT_LIST_SIZE = 10;
+
+    /** The default detail page type name. */
+    public static final String DEFAULT_DETAILPAGE_TYPE = "##DEFAULT##";
 
     /** The name of the element view configuration file type. */
     public static final String ELEMENT_VIEW_TYPE = "elementview";
@@ -263,6 +268,21 @@ public class CmsADEManager {
         m_parameters = new LinkedHashMap<String, String>(systemConfiguration.getAdeParameters());
         // further initialization is done by the initialize() method. We don't do that in the constructor,
         // because during the setup the configuration resource types don't exist yet.
+    }
+
+    /**
+     * Adds a wait handle for the next cache update to a formatter configuration.<p>
+     *
+     * @param online true if we want to add a wait handle to the online cache, else the offline cache
+     * @return the wait handle that has been added
+     */
+    public CmsWaitHandle addFormatterCacheWaitHandle(boolean online) {
+
+        CmsWaitHandle handle = new CmsWaitHandle(true); // single use wait handle
+        CmsFormatterConfigurationCache cache = online ? m_onlineFormatterCache : m_offlineFormatterCache;
+        cache.addWaitHandle(handle);
+        return handle;
+
     }
 
     /**
@@ -439,7 +459,20 @@ public class CmsADEManager {
                 return pageInfo.get(0).getUri();
             }
         }
-        return null;
+        // find the default detail page if present
+        String path = null;
+        //        if (targetFirst) {
+        //            path = findDefaultDetailPage(cms, targetConfigData);
+        //            if (path == null) {
+        //                path = findDefaultDetailPage(cms, configData);
+        //            }
+        //        } else {
+        //            path = findDefaultDetailPage(cms, configData);
+        //            if (path == null) {
+        //                path = findDefaultDetailPage(cms, targetConfigData);
+        //            }
+        //        }
+        return path;
     }
 
     /**
@@ -589,9 +622,10 @@ public class CmsADEManager {
         ServletRequest req) {
 
         Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+        Visibility defaultVisibility = Visibility.both;
         if (mainFormatter != null) {
             for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings().entrySet()) {
-                if (!entry.getValue().getVisibility().equals(Visibility.parent)) {
+                if (!entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
                     result.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -600,9 +634,9 @@ public class CmsADEManager {
                 if (nestedFormatters != null) {
                     for (I_CmsFormatterBean formatter : nestedFormatters) {
                         for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
-                            if (entry.getValue().getVisibility().equals(Visibility.parent)) {
+                            if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
                                 result.put(entry.getKey(), entry.getValue());
-                            } else if (entry.getValue().getVisibility().equals(Visibility.both)) {
+                            } else if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.both)) {
                                 String settingName = formatter.getId() + "_" + entry.getKey();
                                 CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
 
@@ -769,31 +803,39 @@ public class CmsADEManager {
             CmsResourceFilter.ALL.addRequireVisible());
         boolean hasWrite = false;
         if (hasView) {
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            hasView = (settings == null) || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
-            if (hasView
-                && CmsResourceTypeXmlContent.isXmlContent(resource)
-                && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-                if (contextPath == null) {
-                    contextPath = resource.getRootPath();
-                }
-                CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());
-                if (localConfigData != null) {
-                    Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
-                    hasView = elmenetViews.containsKey(localConfigData.getElementView())
-                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
+                hasView = (settings == null)
+                    || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
+                if (hasView
+                    && CmsResourceTypeXmlContent.isXmlContent(resource)
+                    && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                    if (contextPath == null) {
+                        contextPath = resource.getRootPath();
+                    }
+                    CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+                        type.getTypeName());
+                    if (localConfigData != null) {
+                        Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
+                        hasView = elmenetViews.containsKey(localConfigData.getElementView())
+                            && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
+                    }
                 }
+                // the user may only have write permissions if he is allowed to view the resource
+                hasWrite = hasView
+                    && cms.hasPermissions(
+                        resource,
+                        CmsPermissionSet.ACCESS_WRITE,
+                        false,
+                        CmsResourceFilter.IGNORE_EXPIRATION)
+                    && ((settings == null)
+                        || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
+            } catch (CmsLoaderException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                hasWrite = false;
             }
-            // the user may only have write permissions if he is allowed to view the resource
-            hasWrite = hasView
-                && cms.hasPermissions(
-                    resource,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION)
-                && ((settings == null) || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
         }
 
         String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
@@ -1022,9 +1064,9 @@ public class CmsADEManager {
                 m_offlineFormatterCache = new CmsFormatterConfigurationCache(m_offlineCms, "offline formatters");
                 m_onlineFormatterCache = new CmsFormatterConfigurationCache(m_onlineCms, "online formatters");
                 CmsLog.INIT.info(". Reading online formatter configurations...");
-                m_onlineFormatterCache.reload();
+                m_onlineFormatterCache.initialize();
                 CmsLog.INIT.info(". Reading offline formatter configurations...");
-                m_offlineFormatterCache.reload();
+                m_offlineFormatterCache.initialize();
 
                 m_offlineDetailIdCache = new CmsDetailNameCache(m_offlineCms);
                 m_onlineDetailIdCache = new CmsDetailNameCache(m_onlineCms);

@@ -47,9 +47,9 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * Dialog to create new element. (User, Group or OU).
@@ -86,6 +86,9 @@ public class CmsNewElementDialog extends CmsBasicDialog {
     /**The ou. */
     private String m_ou;
 
+    /**Accounts app. */
+    private CmsAccountsApp m_app;
+
     /**
      * public constructor.<p>
      * @param cms CmsObject
@@ -93,8 +96,9 @@ public class CmsNewElementDialog extends CmsBasicDialog {
      *
      * @param window window holding the dialog
      */
-    public CmsNewElementDialog(CmsObject cms, String ou, final Window window) {
+    public CmsNewElementDialog(CmsObject cms, String ou, final Window window, CmsAccountsApp app) {
 
+        m_app = app;
         m_window = window;
         m_cms = cms;
         m_ou = ou;
@@ -169,16 +173,16 @@ public class CmsNewElementDialog extends CmsBasicDialog {
         String caption = "";
 
         if (id.equals(ID_GROUP)) {
-            dialog = new CmsGroupEditDialog(m_cms, m_window, m_ou);
+            dialog = new CmsGroupEditDialog(m_cms, m_window, m_ou, m_app);
             caption = CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_GROUP_0);
         }
         if (id.equals(ID_OU)) {
-            dialog = new CmsOUEditDialog(m_cms, m_window, m_ou);
+            dialog = new CmsOUEditDialog(m_cms, m_window, m_ou, m_app);
             caption = CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_OU_0);
 
         }
         if (id.equals(ID_USER)) {
-            dialog = new CmsUserEditDialog(m_cms, m_window, m_ou);
+            dialog = new CmsUserEditDialog(m_cms, m_window, m_ou, m_app);
             caption = CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_USER_0);
         }
 

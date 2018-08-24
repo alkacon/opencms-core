@@ -68,6 +68,7 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -1818,9 +1819,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     if (isFunctionDetail) {
                         String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
                         CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
-                        CmsResource functionFormatter = cms.readResource(
-                            CmsDynamicFunctionBean.FORMATTER_PATH,
-                            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                        CmsResource functionRes = cms.readResource(
+                            functionStructureId,
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                        CmsResource functionFormatter;
+                        if (OpenCms.getResourceManager().matchResourceType(
+                            CmsResourceTypeFunctionConfig.TYPE_NAME,
+                            functionRes.getTypeId())) {
+                            functionFormatter = cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
+                        } else {
+                            functionFormatter = cms.readResource(
+                                CmsDynamicFunctionBean.FORMATTER_PATH,
+                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                        }
                         addFunctionDetailElement(
                             cms,
                             page,
@@ -2242,6 +2253,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                                 res.isFolder()
                                 ? EntryType.folder
                                 : isRedirectType(res.getTypeId()) ? EntryType.redirect : EntryType.leaf);
+                            delEntry.setNavModeIcon(
+                                CmsIconUtil.getIconClasses(
+                                    delEntry.getResourceTypeName(),
+                                    delEntry.getVfsPath(),
+                                    false));
                             delEntry.setId(delId);
                             result.put(delId, delEntry);
                         }
@@ -2463,6 +2479,31 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         Locale locale) {
 
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
+        CmsNewResourceInfo defaultPageInfo;
+        if (modelResource != null) {
+            defaultPageInfo = new CmsNewResourceInfo(
+                modelResource.getTypeId(),
+                CmsADEManager.DEFAULT_DETAILPAGE_TYPE,
+                "Default",
+                "The default detail page will be used to display detail contents or functions.",
+                modelResource.getStructureId(),
+                false,
+                "The default detail page will be used to display detail contents or functions.");
+
+        } else {
+            defaultPageInfo = new CmsNewResourceInfo(
+                CmsResourceTypeXmlContainerPage.getContainerPageTypeIdSafely(),
+                CmsADEManager.DEFAULT_DETAILPAGE_TYPE,
+                "Default",
+                "The default detail page will be used to display detail contents or functions.",
+                null,
+                false,
+                "The default detail page will be used to display detail contents or functions.");
+        }
+
+        defaultPageInfo.setBigIconClasses(
+            CmsIconUtil.getIconClasses(CmsResourceTypeXmlContainerPage.getStaticTypeName(), null, false));
+        result.add(defaultPageInfo);
         for (CmsResourceTypeConfig typeConfig : resourceTypeConfigs) {
             if (typeConfig.isDetailPagesDisabled()) {
                 continue;

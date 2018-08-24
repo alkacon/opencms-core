@@ -28,7 +28,6 @@
 package org.opencms.acacia.client.export;
 
 import org.opencms.acacia.shared.CmsEntity;
-import org.opencms.gwt.client.util.CmsDebugLog;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -49,7 +48,6 @@ public class CmsEntityWrapper implements Exportable {
      */
     public CmsEntityWrapper() {
 
-        CmsDebugLog.getInstance().printLine("Created empty entity wrapper");
     }
 
     /**
@@ -214,15 +212,15 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
     public void setAttributeValueEntity(String attributeName, CmsEntityWrapper value, int index) {
-
+    
         m_entity.setAttributeValue(attributeName, value.getEntity(), index);
     }
-
+    
     public void setAttributeValueString(String attributeName, String value) {
-
+    
         m_entity.setAttributeValue(attributeName, value);
     }
-
+    
     /**
      * Wrapper method.<p>
      *

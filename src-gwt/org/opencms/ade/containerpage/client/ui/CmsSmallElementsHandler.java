@@ -44,6 +44,9 @@ public class CmsSmallElementsHandler {
     /** The height necessary for a container page element. */
     public static int NECESSARY_HEIGHT = 24;
 
+    /** The height necessary for a container page element CSS rule. */
+    public static String NECESSARY_HEIGHT_RULE = NECESSARY_HEIGHT + "px !important";
+
     /** True if currently small elements are editable. */
     boolean m_editing;
 
@@ -65,16 +68,6 @@ public class CmsSmallElementsHandler {
 
         m_smallElementsStyle = new CmsStyleVariable(RootPanel.get());
         m_service = service;
-    }
-
-    /**
-     * Returns the necessary height as a CSS height string in pixels.<p>
-     *
-     * @return the necessary height as a CSS string
-     */
-    public static String getNecessaryHeight() {
-
-        return NECESSARY_HEIGHT + "px !important";
     }
 
     /**

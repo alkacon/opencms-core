@@ -370,21 +370,13 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
      * Converts a list of select widget options to the configuration string as expected on the client side of the widget.
      * @param options the options to convert
      * @return the configuration String as expected on the client side of the widget.
+     *
+     * @deprecated use {@link CmsSelectWidgetOption#createConfigurationString(List)}.
      */
+    @Deprecated
     String optionsToConfigurationString(final List<CmsSelectWidgetOption> options) {
 
-        String result = "";
-        Iterator<CmsSelectWidgetOption> it = options.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            CmsSelectWidgetOption option = it.next();
-            if (i > 0) {
-                result += "|";
-            }
-            result += option.toString();
-            i++;
-        }
-        return result;
+        return CmsSelectWidgetOption.createConfigurationString(options);
     }
 
 }

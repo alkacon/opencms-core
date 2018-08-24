@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<o-cms-basic-dialog>
+		<content>
+			<vaadin7-vertical-layout :center margin spacing width="100%" style-name="o-formlayout-const-capture-200">
+				<v-form-layout margin spacing style-name="o-formlayout-workplace-main o-wrap">
+					<vaadin7-text-field _id="m_typeShortName" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_SHORT_NAME_0)" description="%(key.GUI_RESOURCETYPE_EDIT_SHORT_NAME_HELP_0)" />											
+					<vaadin7-text-field _id="m_typeID" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_ID_0)" description="%(key.GUI_RESOURCETYPE_EDIT_ID_HELP_0)" />				
+					<vaadin7-text-field _id="m_typeXPathName" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_XPATH_0)" description="%(key.GUI_RESOURCETYPE_EDIT_XPATH_HELP_0)" />
+					
+					<vaadin7-text-field _id="m_typeName" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_0)" description="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_HELP_0)" />
+					<vaadin7-text-area _id="m_typeDescription" caption="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_0)" description="%(key.GUI_RESOURCETYPE_EDIT_DISPLAY_DESCRIPTION_HELP_0)" width="100%"></vaadin7-text-area>										
+					<f-cms-path-select-field _id="m_bundle" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_BUNDLE_0)" description="%(key.GUI_RESOURCETYPE_EDIT_BUNDLE_HELP_0)"/>							
+					<f-cms-path-select-field _id="m_config" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_0)" description="%(key.GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_HELP_0)"/>							
+					
+					<f-cms-path-select-field _id="m_parentSchema" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_0)" description="%(key.GUI_RESOURCETYPE_EDIT_PARENT_SCHEMA_DESCRIPTION_0)"/>							
+					<f-cms-path-select-field _id="m_parentFormatter" width="100%" caption="%(key.GUI_RESOURCETYPE_EDIT_PARENT_FORMATTER_0)" description="%(key.GUI_RESOURCETYPE_EDIT_PARENT_FORMATTER_HELP_0)"/>							
+				</v-form-layout>
+			</vaadin7-vertical-layout>
+		</content>
+		<buttons>
+			<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+			<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+		</buttons>
+	</o-cms-basic-dialog>
+</body>
+</html>

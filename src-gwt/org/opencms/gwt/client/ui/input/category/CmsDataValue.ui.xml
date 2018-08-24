@@ -15,16 +15,20 @@
 		.label{
 			padding: 2px 10px 2px 2px;
 		}
-		
+
 		.searchMatch .label {
-			font-weight: bold; 
+			font-weight: bold;
 		}
-		
+
+		.parameter.rtl {
+		    text-overflow: clip;
+		}
+
 		.parameter{
 			padding: 2px;
 		}
 		.label, .parameter{
-			text-overflow:ellipsis; 
+			text-overflow:ellipsis;
 			white-space: nowrap;
 			overflow: hidden;
 		}
@@ -40,8 +44,8 @@
 	</ui:style>
 	<cms:CmsHoverPanel ui:field="m_inputRow" addStyleNames="{resources.inputCss.dataValue}">
 		<g:FlexTable ui:field="m_table" styleName="{m_style.table}"/>
-		<g:SimplePanel ui:field="m_imagePanel" styleName="{m_style.icon}"/>	
+		<g:SimplePanel ui:field="m_imagePanel" styleName="{m_style.icon}"/>
 		<g:Label ui:field="m_label" styleName="{m_style.label}"/>
 		<g:FlowPanel ui:field="m_buttonPanel" styleName="{mainCss.listItemWidgetCss.buttonPanel}" addStyleNames="{m_style.buttonPanel}" />
-	</cms:CmsHoverPanel>	
-</ui:UiBinder> 
+	</cms:CmsHoverPanel>
+</ui:UiBinder>

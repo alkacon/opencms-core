@@ -51,12 +51,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String clipboardList();
 
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String cms_ade_groupcontainer();
-
         /**
          * Access method.<p>
          *
@@ -68,6 +62,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-enlarge-small-elements")
         String enlargeSmallElements();
 
         /**
@@ -83,6 +78,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String expiredOverlay();
+
+        /** Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        @ClassName("oc-groupcontainer")
+        String groupContainer();
 
         /** Access method.<p>
          *
@@ -130,6 +132,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-ignore-small-elements")
         String ignoreSmallElements();
 
         /** Access method.<p>
@@ -148,6 +151,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-small-element")
         String smallElement();
 
         /** Access method.<p>
@@ -166,6 +170,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-drag-element")
         String dragElement();
 
         /**
@@ -234,6 +239,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-drag-target")
         String dragTarget();
 
         /**

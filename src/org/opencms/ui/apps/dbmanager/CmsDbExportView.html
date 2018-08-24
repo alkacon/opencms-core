@@ -8,21 +8,23 @@
 </head>
 <body>
 
-	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
-		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_FILE_BLOCK_0)">	
-			<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
-				<vaadin7-combo-box _id="m_target" immediate="true"  width="100%" caption="%(key.GUI_DATABASEAPP_EXPORT_PATH_0)" description="%(key.GUI_DATABASEAPP_EXPORT_PATH_HELP_0)"/>
-			</v-form-layout>
-		</v-panel>
-		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_TYPES_BLOCK_0)">
+	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth o-test" height="100%">
+	<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_RESOURCES_BLOCK_0)" height="100%" :expand>
+			<vaadin7-vertical-layout>
+				<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+					<vaadin7-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_DATABASEAPP_SITE_0)" description="%(key.GUI_DATABASEAPP_SITE_HELP_0)"/>
+					<vaadin7-combo-box _id="m_project" immediate="true"  width="100%" caption="%(key.GUI_PQUEUE_PROJECT_0)"/>					
+				</v-form-layout>
+				<vaadin7-vertical-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
+				</vaadin7-vertical-layout>	
+			</vaadin7-vertical-layout>
+		</v-panel>		
+
+		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_SETTINGS_BLOCK_0)">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 				<vaadin7-check-box _id="m_includeResource" caption="%(key.GUI_DATABASEAPP_EXPORT_RESOURCEDATA_0)" description="%(key.GUI_DATABASEAPP_EXPORT_RESOURCEDATA_HELP_0)" />
 				<vaadin7-check-box _id="m_includeAccount" caption="%(key.GUI_DATABASEAPP_EXPORT_ACCOUNT_0)" description="%(key.GUI_DATABASEAPP_EXPORT_ACCOUNT_HELP_0)" />
 				<vaadin7-check-box _id="m_includeProject" caption="%(key.GUI_DATABASEAPP_EXPORT_PROJECTDATA_0)" description="%(key.GUI_DATABASEAPP_EXPORT_PROJECTDATA_HELP_0)" />		
-			</v-form-layout>
-		</v-panel>	
-		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_SETTINGS_BLOCK_0)">
-			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 				<vaadin7-check-box _id="m_includeUnchanged" caption="%(key.GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_0)" description="%(key.GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_HELP_0)" />
 				<vaadin7-check-box _id="m_includeSystem" caption="%(key.GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_0)" description="%(key.GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_HELP_0)" />
 				<o-cms-date-field _id="m_changedSince" caption="%(key.GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0)" description="%(key.GUI_DATABASEAPP_EXPORT_CONTENT_AGE_HELP_0)" />
@@ -31,26 +33,17 @@
 				<vaadin7-check-box _id="m_asFiles" caption="%(key.GUI_DATABASEAPP_EXPORT_ASFILES_0)" description="%(key.GUI_DATABASEAPP_EXPORT_ASFILES_HELP_0)" />		
 			</v-form-layout>
 		</v-panel>
-		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_RESOURCES_BLOCK_0)">
-			<vaadin7-vertical-layout>
-				<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
-					<vaadin7-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_DATABASEAPP_SITE_0)" description="%(key.GUI_DATABASEAPP_SITE_HELP_0)"/>
-				</v-form-layout>
-				<v-form-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
-					<v-button _id="m_addResource" style-name="o-button-site">%(key.GUI_DATABASEAPP_EXPORT_ADD_RESOURCE_0)</v-button>
-				</v-form-layout>
-			</vaadin7-vertical-layout>
-		</v-panel>		
+		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_FILE_BLOCK_0)">	
+			<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
+				<vaadin7-combo-box _id="m_target" immediate="true"  width="100%" caption="%(key.GUI_DATABASEAPP_EXPORT_PATH_0)" description="%(key.GUI_DATABASEAPP_EXPORT_PATH_HELP_0)"/>
+			</v-form-layout>
+		</v-panel>
 		<v-panel>
 			<vaadin7-horizontal-layout width="100%">
 				<vaadin7-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
 					<v-button _id="m_ok">%(key.GUI_DATABASEAPP_EXPORT_START_0)</v-button>
 				</vaadin7-horizontal-layout>
 			</vaadin7-horizontal-layout>	
-		</v-panel>
-		<v-panel _id="m_reportPanel">
-			<v-form-layout _id="m_reportLayout">
-			</v-form-layout>
 		</v-panel>
 	</vaadin7-vertical-layout>
 </body>

@@ -556,11 +556,15 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     /**
      * Gets the resource  notification content path.<p>
      *
+     * @param cms the cms context
+     *
      * @return the resource notification content path
      */
-    protected String getNotificationResource() {
+    protected String getNotificationResource(CmsObject cms) {
 
-        String result = getParameter(PARAM_NOTIFICATION_CONTENT, "/system/config/notification/workflow-notification");
+        String result = getParameter(
+            PARAM_NOTIFICATION_CONTENT,
+            OpenCms.getSystemInfo().getConfigFilePath(cms, "notification/workflow-notification"));
         return result;
     }
 
@@ -688,7 +692,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
                 m_adminCms,
                 userCms,
                 recipient,
-                getNotificationResource(),
+                getNotificationResource(m_adminCms),
                 workflowProject,
                 resources,
                 linkHref);

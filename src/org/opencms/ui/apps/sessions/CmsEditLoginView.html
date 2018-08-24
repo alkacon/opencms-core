@@ -6,14 +6,30 @@
 <body>
 		<o-cms-basic-dialog>
 			<content>
-				<v-vertical-layout :center margin spacing>	
-						<v-form-layout _id="m_layout" margin spacing style-name="o-formlayout-workplace-main">
-							<v-check-box _id="m_enabled" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_ENABLED_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_ENABLED_HELP_0)" width="100%" /> 
- 							<v-text-area _id="m_message" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_MESSAGE_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_MESSAGE_HELP_0)" width="100%" />
-							<o-cms-date-field _id="m_startTime" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMESTART_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMESTART_HELP_0)" />
-							<o-cms-date-field _id="m_endTime" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMEEND_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMEEND_HELP_0)" />
-							<v-check-box _id="m_logout" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_HELP_0)" width="100%" /> 
-						</v-form-layout>
+				<v-vertical-layout :center margin height="100%">	
+					<v-tab-sheet _id="m_tab" height="100%">
+						<tab  caption="%(key.GUI_MESSAGES_LOGINMESSAGE_TAB_AFTER_0)" height="100%">
+							<v-vertical-layout height="100%">
+								<v-horizontal-layout spacing style-name="o-formlayout-hard" width="100%">
+									<v-vertical-layout :expand >
+										<v-check-box _id="m_enabledAfter" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_ENABLED_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_ENABLED_HELP_0)" width="100%" /> 
+										<v-check-box _id="m_logoutAfter" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_LOGINFORBIDDEN_HELP_0)" width="100%" />
+									</v-vertical-layout>
+									<v-vertical-layout :expand>
+										<o-cms-date-field _id="m_startTimeAfter" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMESTART_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMESTART_HELP_0)" />
+										<o-cms-date-field _id="m_endTimeAfter" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMEEND_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_TIMEEND_HELP_0)" />
+									</v-vertical-layout>
+								</v-horizontal-layout>
+								<o-cms-rich-text-area _id="m_messageAfter" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_MESSAGE_0)" width="100%" height="100%" :expand/>						
+							</v-vertical-layout>
+						</tab>
+						<tab  caption="%(key.GUI_MESSAGES_LOGINMESSAGE_TAB_BEFORE_0)">
+							<v-vertical-layout height="100%">
+								<v-check-box _id="m_enabledBefore" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_ENABLED_BEFORE_0)" description="%(key.GUI_MESSAGES_LOGINMESSAGE_ENABLED_BEFORE_HELP_0)" width="100%" /> 		
+								<o-cms-rich-text-area _id="m_messageBefore" caption="%(key.GUI_MESSAGES_LOGINMESSAGE_MESSAGE_0)" width="100%" height="100%" :expand/>						
+							</v-vertical-layout>
+						</tab>
+					</v-tab-sheet>
 				</v-vertical-layout>
 			</content>
 			<buttons>	

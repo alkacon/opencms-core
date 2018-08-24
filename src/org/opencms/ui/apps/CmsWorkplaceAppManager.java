@@ -69,6 +69,7 @@ import org.opencms.ui.apps.modules.CmsModuleAppConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.apps.projects.CmsProjectOverviewConfiguration;
 import org.opencms.ui.apps.publishqueue.CmsPublishQueueConfiguration;
+import org.opencms.ui.apps.resourcetypes.CmsResourceTypeAppConfiguration;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.ui.apps.search.CmsSourceSearchAppConfiguration;
 import org.opencms.ui.apps.searchindex.CmsSearchindexAppConfiguration;
@@ -806,7 +807,8 @@ public class CmsWorkplaceAppManager {
                 new CmsBroadCastConfigurtion(),
                 new CmsModuleAppConfiguration(),
                 new CmsAccountsAppConfiguration(),
-                new CmsShellAppConfiguration()));
+                new CmsShellAppConfiguration(),
+                new CmsResourceTypeAppConfiguration()));
 
         return result;
     }

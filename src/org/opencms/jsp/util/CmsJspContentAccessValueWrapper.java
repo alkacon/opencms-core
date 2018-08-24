@@ -764,7 +764,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      *
      * Use to insert the annotation attributes into a HTML tag.<p>
      * Example using EL: &lt;h1 ${value.Title.rdfaAttr}&gt;${value.Title}&lt;/h1&gt; will result in
-     * &lt;h1 about="..." property="..."&gt;My title&lt;/h1&gt;<p>
+     * &lt;h1 data-oc-id="..." data-oc-field="..."&gt;My title&lt;/h1&gt;<p>
      *
      * @return the RDFA
      */

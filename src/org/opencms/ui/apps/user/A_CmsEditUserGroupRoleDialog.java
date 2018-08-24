@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPrincipal;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
@@ -87,8 +86,10 @@ public abstract class A_CmsEditUserGroupRoleDialog extends CmsBasicDialog {
      * @param cms CmsObject
      * @param userId id of user
      * @param window window
+     * @param app
+     * @param app
      */
-    public A_CmsEditUserGroupRoleDialog(CmsObject cms, CmsUUID userId, final Window window) {
+    public A_CmsEditUserGroupRoleDialog(CmsObject cms, CmsUUID userId, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_cms = cms;
@@ -111,7 +112,7 @@ public abstract class A_CmsEditUserGroupRoleDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 window.close();
-                A_CmsUI.get().reload();
+                app.reload();
             }
         });
         init();

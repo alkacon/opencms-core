@@ -27,24 +27,30 @@
 
 package org.opencms.ui.apps.sessions;
 
+import org.opencms.file.CmsUser;
+import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.sessions.CmsSessionsApp.MessageValidator;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsRichTextAreaV7;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.TextArea;
 
 /**
  * Class for the dialiog to send broadcasts.<p>
  */
 public class CmsSendBroadcastDialog extends CmsBasicDialog {
+
+    private static final Map<CmsUser, CmsBroadcast> USER_BROADCAST = new HashMap<CmsUser, CmsBroadcast>();
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -7642289972554010162L;
@@ -53,7 +59,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     private Button m_cancel;
 
     /**Message text area.*/
-    private TextArea m_message;
+    private CmsRichTextAreaV7 m_message;
 
     /**ok button.*/
     private Button m_ok;
@@ -71,9 +77,13 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     public CmsSendBroadcastDialog(final Set<String> sessionIds, final Runnable closeRunnable) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
         if (sessionIds != null) {
             displayResourceInfoDirectly(CmsSessionsApp.getUserInfos(sessionIds));
+        } else {
+            if (USER_BROADCAST.containsKey(A_CmsUI.getCmsObject().getRequestContext().getCurrentUser())) {
+                m_message.setValue(
+                    USER_BROADCAST.get(A_CmsUI.getCmsObject().getRequestContext().getCurrentUser()).getMessage());
+            }
         }
 
         m_resetBroadcasts.addClickListener(event -> removeAllBroadcasts(sessionIds));
@@ -134,6 +144,12 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
                 A_CmsUI.getCmsObject(),
                 m_message.getValue(),
                 m_repeat.getValue().booleanValue());
+            USER_BROADCAST.put(
+                A_CmsUI.getCmsObject().getRequestContext().getCurrentUser(),
+                new CmsBroadcast(
+                    A_CmsUI.getCmsObject().getRequestContext().getCurrentUser(),
+                    m_message.getValue(),
+                    m_repeat.getValue().booleanValue()));
         } else {
             for (String id : sessionIds) {
                 OpenCms.getSessionManager().sendBroadcast(

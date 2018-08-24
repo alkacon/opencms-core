@@ -214,6 +214,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * @param conf the gallery configuration
      */
     public CmsGalleryController(CmsGalleryControllerHandler handler, final I_CmsGalleryConfiguration conf) {
+
         m_configuration = conf;
         m_resultsSelectable = conf.isResultsSelectable();
         m_galleriesSelectable = conf.isGalleriesSelectable();
@@ -1904,6 +1905,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     private String getProviderName(String resourceType) {
 
+        CmsDebugLog.consoleLog("getProviderName for " + resourceType);
         for (CmsResourceTypeBean typeBean : m_dialogBean.getTypes()) {
             if (typeBean.getType().equals(resourceType)) {
                 return typeBean.getPreviewProviderName();

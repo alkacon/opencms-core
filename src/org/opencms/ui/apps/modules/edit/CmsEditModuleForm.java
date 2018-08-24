@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.modules.edit;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.galleries.CmsSiteSelectorOptionBuilder;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.db.CmsExportPoint;
@@ -35,6 +36,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -117,6 +120,9 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** The formatters folder within the module. */
     public static final String PATH_FORMATTERS = "formatters/";
 
+    /** Message bundle file name suffix. */
+    private static final String SUFFIX_BUNDLE_FILE = ".messages";
+
     /** Lib folder within the module. */
     public static final String PATH_LIB = "lib/";
 
@@ -137,6 +143,11 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /**I18n path. */
+    private static final String PATH_i18n = "i18n/";
+
+    public static final String CONFIG_FILE = ".config";
 
     /** Text box for the action class. */
     private TextField m_actionClass;
@@ -181,7 +192,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     private CheckBox m_folderClasses;
 
     /** Check box for creating the elmments folder. */
-    private CheckBox m_folderElements;
+    private CheckBox m_folderI18N;
 
     /** Check box for creating the formatters folder. */
     private CheckBox m_folderFormatters;
@@ -289,6 +300,10 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         m_importSite.setNullSelectionItemId(ID_EMPTY_SITE);
         m_importSite.setItemCaptionPropertyId(PROPERTY_SITE_NAME);
         m_importSite.setNewValueHandler(new CmsSiteSelectorNewValueHandler(PROPERTY_SITE_NAME));
+        if (m_new) {
+            m_module.setCreateModuleFolder(true);
+            m_module.setCreateI18NFolder(true);
+        }
         m_fieldGroup.setItemDataSource(m_module);
         m_fieldGroup.bind(m_name, "name");
         m_fieldGroup.bind(m_niceName, "niceName");
@@ -304,7 +319,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         m_fieldGroup.bind(m_reducedMetadata, "reducedExportMode");
         m_fieldGroup.bind(m_folderModule, "createModuleFolder");
         m_fieldGroup.bind(m_folderClasses, "createClassesFolder");
-        m_fieldGroup.bind(m_folderElements, "createElementsFolder");
+        m_fieldGroup.bind(m_folderI18N, "createI18NFolder");
         m_fieldGroup.bind(m_folderFormatters, "createFormattersFolder");
         m_fieldGroup.bind(m_folderLib, "createLibFolder");
         m_fieldGroup.bind(m_folderResources, "createResourcesFolder");
@@ -360,7 +375,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             for (AbstractField<?> field : new AbstractField[] {
                 m_folderModule,
                 m_folderClasses,
-                m_folderElements,
+                m_folderI18N,
                 m_folderFormatters,
                 m_folderLib,
                 m_folderResources,
@@ -616,7 +631,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
             CmsObject cms = A_CmsUI.getCmsObject();
             if (m_new) {
-                createModuleFolders(m_module);
+                createModuleFolders(cms, m_module);
                 OpenCms.getModuleManager().addModule(cms, m_module);
             } else {
                 OpenCms.getModuleManager().updateModule(cms, m_module);
@@ -792,16 +807,16 @@ public class CmsEditModuleForm extends CmsBasicDialog {
      *
      * @throws CmsException if somehting goes wrong
      */
-    private CmsModule createModuleFolders(CmsModule module) throws CmsException {
+    private CmsModule createModuleFolders(CmsObject cms, CmsModule module) throws CmsException {
 
         String modulePath = CmsWorkplace.VFS_PATH_MODULES + module.getName() + "/";
-        CmsObject cms = A_CmsUI.getCmsObject();
         List<CmsExportPoint> exportPoints = module.getExportPoints();
         List<String> resources = module.getResources();
 
         // set the createModuleFolder flag if any other flag is set
         if (module.isCreateClassesFolder()
             || module.isCreateElementsFolder()
+            || module.isCreateI18NFolder()
             || module.isCreateLibFolder()
             || module.isCreateResourcesFolder()
             || module.isCreateSchemasFolder()
@@ -819,10 +834,14 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
         I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType(
             CmsResourceTypeFolder.getStaticTypeName());
+        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE);
+
         if (module.isCreateModuleFolder()) {
             CmsResource resource = cms.createResource(modulePath, folderType);
+            CmsResource configResource = cms.createResource(modulePath + CONFIG_FILE, configType);
             try {
                 cms.unlockResource(resource);
+                cms.unlockResource(configResource);
             } catch (CmsLockException locke) {
                 LOG.warn("Unbale to unlock resource", locke);
             }
@@ -837,6 +856,23 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             CmsResource resource = cms.createResource(path, folderType);
             try {
                 cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
+        }
+
+        if (module.isCreateI18NFolder()) {
+            String path = modulePath + PATH_i18n;
+            CmsResource resource = cms.createResource(path, folderType);
+            CmsResource bundleResource = cms.createResource(
+                path + module.getName() + SUFFIX_BUNDLE_FILE + "_" + CmsLocaleManager.getDefaultLocale(),
+                OpenCms.getResourceManager().getResourceType(CmsVfsBundleManager.TYPE_PROPERTIES_BUNDLE),
+                null,
+                null);
+            cms.writeResource(bundleResource);
+            try {
+                cms.unlockResource(resource);
+                cms.unlockResource(bundleResource);
             } catch (CmsLockException locke) {
                 LOG.warn("Unbale to unlock resource", locke);
             }

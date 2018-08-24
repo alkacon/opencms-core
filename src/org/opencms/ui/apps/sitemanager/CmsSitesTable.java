@@ -55,21 +55,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.server.Resource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.MouseEvents;
-import com.vaadin.server.Resource;
-import com.vaadin.server.StreamResource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.ui.Image;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  *  Class to create Vaadin Table object with all available sites.<p>
@@ -328,6 +329,9 @@ public class CmsSitesTable extends Table {
     /**Is site new? */
     public static final String PROP_NEW = "new";
 
+    /**SSL Mode. */
+    public static final String PROP_SSL = "ssl";
+
     /**Is site config ok? */
     public static final String PROP_OK = "ok";
 
@@ -380,8 +384,10 @@ public class CmsSitesTable extends Table {
         m_container.addContainerProperty(PROP_UNDER_OTHER_SITE, Boolean.class, new Boolean(false));
         m_container.addContainerProperty(PROP_CHANGED, Boolean.class, new Boolean(false));
         m_container.addContainerProperty(PROP_NEW, Boolean.class, new Boolean(false));
+        m_container.addContainerProperty(PROP_SSL, Integer.class, new Integer(1));
 
         setContainerDataSource(m_container);
+        setColumnHeader(PROP_SSL, "");
         setColumnHeader(PROP_ICON, "");
         setColumnHeader(PROP_FAVICON, "");
         setColumnHeader(PROP_SERVER, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_0));
@@ -394,6 +400,7 @@ public class CmsSitesTable extends Table {
         setColumnExpandRatio(PROP_TITLE, 2);
         setColumnExpandRatio(PROP_PATH, 2);
         setColumnWidth(PROP_FAVICON, 40);
+        setColumnWidth(PROP_SSL, 130);
 
         setColumnAlignment(PROP_FAVICON, Align.CENTER);
         setSelectable(true);
@@ -416,6 +423,10 @@ public class CmsSitesTable extends Table {
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 String styles = "";
+
+                if (PROP_SSL.equals(propertyId)) {
+                    styles += " " + getSSLStyle(OpenCms.getSiteManager().getSiteForSiteRoot((String)itemId));
+                }
 
                 if (PROP_SERVER.equals(propertyId)) {
                     styles += " " + OpenCmsTheme.HOVER_COLUMN;
@@ -443,7 +454,33 @@ public class CmsSitesTable extends Table {
             }
         });
 
+        addGeneratedColumn(PROP_SSL, new ColumnGenerator() {
+
+            private static final long serialVersionUID = -2144476865774782965L;
+
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+
+                return getSSLStatus(OpenCms.getSiteManager().getSiteForSiteRoot((String)itemId));
+
+            }
+
+        });
         addGeneratedColumn(PROP_FAVICON, new FavIconColumn());
+
+        setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+
+            private static final long serialVersionUID = 7367011213487089661L;
+
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                if (PROP_SSL.equals(propertyId)) {
+
+                    return OpenCms.getSiteManager().getSiteForSiteRoot(
+                        (String)itemId).getSSLMode().getLocalizedMessage();
+                }
+                return null;
+            }
+        });
 
         setColumnCollapsingAllowed(true);
         setColumnCollapsible(PROP_ALIASES, true);
@@ -454,7 +491,15 @@ public class CmsSitesTable extends Table {
         setColumnCollapsible(PROP_FAVICON, false);
         setColumnCollapsible(PROP_ICON, false);
 
-        setVisibleColumns(PROP_ICON, PROP_FAVICON, PROP_SERVER, PROP_TITLE, PROP_PATH, PROP_SECURESITES, PROP_ALIASES);
+        setVisibleColumns(
+            PROP_ICON,
+            PROP_SSL,
+            PROP_FAVICON,
+            PROP_SERVER,
+            PROP_TITLE,
+            PROP_PATH,
+            PROP_SECURESITES,
+            PROP_ALIASES);
 
         setColumnCollapsed(PROP_ALIASES, true);
         setColumnCollapsed(PROP_SECURESITES, true);
@@ -556,6 +601,22 @@ public class CmsSitesTable extends Table {
             }
         }
         m_manager.showPublishButton(showPublishButton);
+    }
+
+    protected String getSSLStatus(CmsSite site) {
+
+        if (site.getSSLMode().isSecure()) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ENCRYPTED_0);
+        }
+        return CmsVaadinUtils.getMessageText(Messages.GUI_SITE_UNENCRYPTED_0);
+    }
+
+    protected String getSSLStyle(CmsSite site) {
+
+        if (site.getSSLMode().isSecure()) {
+            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
+        }
+        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
     }
 
     /**

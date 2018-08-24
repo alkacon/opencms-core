@@ -292,9 +292,11 @@ public class TestConfig extends OpenCmsTestCase {
             set(typeConfigs.get(0).getFolderPath(rootCms(), null), typeConfigs.get(1).getFolderPath(rootCms(), null)));
 
         assertEquals(2, config2.getResourceTypes().size());
-        assertEquals(set("/sites/default/foo/.content/foo", "/sites/default/.content/plain"), set(
-            config2.getResourceTypes().get(0).getFolderPath(rootCms(), null),
-            config2.getResourceTypes().get(1).getFolderPath(rootCms(), null)));
+        assertEquals(
+            set("/sites/default/foo/.content/foo", "/sites/default/.content/plain"),
+            set(
+                config2.getResourceTypes().get(0).getFolderPath(rootCms(), null),
+                config2.getResourceTypes().get(1).getFolderPath(rootCms(), null)));
     }
 
     /**
@@ -493,9 +495,12 @@ public class TestConfig extends OpenCmsTestCase {
         List<CmsDetailPageInfo> parentDetailPages = list(a1, a2, b1, b2);
         List<CmsDetailPageInfo> childDetailPages = list(a3, a4);
 
+        List<CmsResourceTypeConfig> types = new ArrayList<CmsResourceTypeConfig>();
+        types.add(new CmsResourceTypeConfig("a", false, null, null, false, false, null, null, true, false, 1, null));
+
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/sites/default",
-            NO_TYPES,
+            types,
             NO_PROPERTIES,
             parentDetailPages,
             NO_MODEL_PAGES);

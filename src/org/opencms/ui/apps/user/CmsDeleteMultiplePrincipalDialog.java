@@ -33,7 +33,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.Messages;
@@ -51,14 +50,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Dialog for delete multiple principal.<p>
@@ -110,10 +109,11 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
      * @param cms CmsObeject
      * @param context ids of principal to delete
      * @param window window
+     * @param app
      */
-    public CmsDeleteMultiplePrincipalDialog(CmsObject cms, Set<String> context, Window window) {
+    public CmsDeleteMultiplePrincipalDialog(CmsObject cms, Set<String> context, Window window, CmsAccountsApp app) {
 
-        init(cms, window);
+        init(cms, window, app);
         m_ids = context;
         m_groupIDs = new HashSet<CmsUUID>();
         m_userIDs = new HashSet<CmsUUID>();
@@ -190,8 +190,9 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
      *
      * @param cms CmsObject
      * @param window window
+     * @param app
      */
-    private void init(CmsObject cms, final Window window) {
+    private void init(CmsObject cms, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_icon.setContentMode(ContentMode.HTML);
@@ -205,7 +206,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
 
                 deletePrincipal();
                 window.close();
-                A_CmsUI.get().reload();
+                app.reload();
 
             }
 

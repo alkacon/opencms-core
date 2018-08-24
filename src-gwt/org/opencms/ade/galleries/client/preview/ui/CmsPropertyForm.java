@@ -34,7 +34,6 @@ import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -72,36 +71,28 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
     /** The parent panel. */
     private FlowPanel m_parent;
 
-    /** The width of the parent panel. */
-    private int m_parentWidth;
-
     /**
      * The constructor.<p>
      *
      * @param id the id of the property from
-     * @param width the property from width
      * @param value the property value
      * @param noEditReason the reason why the properties are not editable
-     * @param textMetricsKey the key identifying the text metrics to use
      */
-    public CmsPropertyForm(String id, int width, String value, String noEditReason, String textMetricsKey) {
+    public CmsPropertyForm(String id, String value, String noEditReason) {
 
         m_id = id;
         m_originalValue = value;
         m_isChanged = false;
-        m_parentWidth = width;
+        //m_parentWidth = width;
         m_parent = new FlowPanel();
-        m_parent.getElement().getStyle().setWidth(m_parentWidth, Unit.PX);
+        m_parent.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyForm());
         // set form label
         m_label = new CmsLabel(m_id);
         m_label.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().labelField());
-        m_label.getElement().getStyle().setWidth(getLabelWidth(), Unit.PX);
-        m_label.truncate(textMetricsKey, getLabelWidth());
         m_parent.add(m_label);
 
         // set form text box
         m_inputPanel = new FlowPanel();
-        m_inputPanel.getElement().getStyle().setWidth(getInputWidth(), Unit.PX);
         m_inputPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().inputField());
         m_textBox = new CmsTextBox();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noEditReason)) {
@@ -195,24 +186,4 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
         m_parent.addStyleName(style);
     }
 
-    /**
-     * The width of the text box.<p>
-     *
-     * @return the width
-     */
-    private int getInputWidth() {
-
-        return (m_parentWidth / 3) * 2;
-    }
-
-    /**
-     * The width of the label.<p>
-     *
-     * @return the label width
-     */
-    private int getLabelWidth() {
-
-        // 2px: margin-left
-        return (m_parentWidth / 3) - 2;
-    }
 }

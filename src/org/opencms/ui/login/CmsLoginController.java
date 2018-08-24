@@ -494,6 +494,13 @@ public class CmsLoginController {
             CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(cloneCms);
             final String loginTarget = getLoginTarget(cloneCms, settings, m_params.getRequestedResource());
 
+            // make sure we have a new session after login for security reasons
+            HttpSession session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(true);
+
             // provisional login successful, now do for real
             currentCms.loginUser(realUser, password);
             if (LOG.isInfoEnabled()) {

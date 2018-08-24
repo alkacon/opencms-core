@@ -345,6 +345,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     private CheckBox m_selfmanagement;
 
+    /** Label containing invisible dummy password fields to dissuade Firefox from saving the password *after* the user edit dialog. */
+    private Label m_dummyPasswordLabel;
+
     /**vaadin component.*/
     private ComboBox m_startview;
 
@@ -359,12 +362,14 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
     /**
      * public constructor.<p>
+     * @param callingOu
      *
      * @param cms CmsObject
      * @param userId id of user
      * @param window to be closed
+     * @param app
      */
-    public CmsUserEditDialog(CmsObject cms, CmsUUID userId, final Window window) {
+    public CmsUserEditDialog(CmsObject cms, CmsUUID userId, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         setPasswordFields();
@@ -373,8 +378,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_startfolder.disableSiteSwitch();
             m_user = m_cms.readUser(userId);
             if (m_user.isWebuser()) {
-                m_tab.removeTab(m_tab.getTab(3));
-                m_selfmanagement.setValue(new Boolean(false));
+                m_sendEmail.setVisible(false);
+                m_sendEmail.setValue(Boolean.FALSE);
+                m_forceResetPassword.setVisible(false);
+                m_forceResetPassword.setValue(Boolean.FALSE);
+                m_selfmanagement.setVisible(false);
+                m_selfmanagement.setValue(Boolean.FALSE);
                 m_isWebOU = true;
             } else {
                 m_selfmanagement.setValue(new Boolean(true));
@@ -391,7 +400,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_selfmanagement.setValue(new Boolean(!m_user.isManaged()));
             m_enabled.setValue(new Boolean(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
-            init(window, settings);
+            init(window, app, settings);
             m_sendEmail.setEnabled(false);
             m_forceResetPassword.setValue(
                 CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()) == null
@@ -414,7 +423,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * @param window Window
      * @param ou organizational unit
      */
-    public CmsUserEditDialog(CmsObject cms, final Window window, String ou) {
+    public CmsUserEditDialog(CmsObject cms, final Window window, String ou, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsOrganizationalUnit myOu = null;
@@ -423,10 +432,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             myOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou);
 
             m_isWebOU = false;
+            m_sendEmail.setValue(Boolean.TRUE);
+            m_forceResetPassword.setValue(Boolean.TRUE);
             if (myOu.hasFlagWebuser()) {
-                m_tab.removeTab(m_tab.getTab(2));
                 m_role.setVisible(false);
-                m_selfmanagement.setValue(new Boolean(false));
+                m_sendEmail.setVisible(false);
+                m_sendEmail.setValue(Boolean.FALSE);
+                m_forceResetPassword.setVisible(false);
+                m_forceResetPassword.setValue(Boolean.FALSE);
+                m_selfmanagement.setVisible(false);
+                m_selfmanagement.setValue(Boolean.FALSE);
                 m_isWebOU = true;
             } else {
                 iniRole(m_cms, ou, m_role, LOG);
@@ -443,13 +458,17 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
         m_group.setRealPrincipalsOnly(true);
         m_group.setOU(m_ou.getValue());
+        try {
+            m_group.setIncludeWebOus(OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou).hasFlagWebuser());
+        } catch (CmsException e) {
+            //
+        }
 
         m_enabled.setValue(Boolean.TRUE);
 
-        init(window, null);
+        init(window, app, null);
         setupStartFolder(null);
-        m_sendEmail.setValue(Boolean.TRUE);
-        m_forceResetPassword.setValue(Boolean.TRUE);
+
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
             private static final long serialVersionUID = -2579639520410382246L;
@@ -532,12 +551,23 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      *
      * @param newUser is the user new?
      */
-    protected static void sendMail(CmsObject cms, String password, CmsUser user, boolean newUser) {
+    protected static void sendMail(
+        CmsObject cms,
+        String password,
+        CmsUser user,
+        boolean newUser,
+        boolean changePassword) {
 
-        sendMail(cms, password, user, user.getOuFqn(), newUser);
+        sendMail(cms, password, user, user.getOuFqn(), newUser, changePassword);
     }
 
-    protected static void sendMail(CmsObject cms, String password, CmsUser user, String ou, boolean newUser) {
+    protected static void sendMail(
+        CmsObject cms,
+        String password,
+        CmsUser user,
+        String ou,
+        boolean newUser,
+        boolean changePassword) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getEmail())) {
             return;
@@ -549,7 +579,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             ou,
             cms.getRequestContext().getCurrentUser(),
             OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false),
-            newUser);
+            newUser,
+            changePassword);
         try {
             notification.send();
         } catch (EmailException e) {
@@ -709,7 +740,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
             saveUserSettings();
             if (m_sendEmail.getValue().booleanValue() & m_sendEmail.isEnabled()) {
-                sendMail(m_cms, m_pw.getPassword1(), m_user, newUser);
+                sendMail(m_cms, m_pw.getPassword1(), m_user, newUser, m_forceResetPassword.getValue().booleanValue());
             }
         } catch (CmsException e) {
             LOG.error("Unable to save user", e);
@@ -723,7 +754,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         Component tab = m_tab.getSelectedTab();
         int pos = m_tab.getTabPosition(m_tab.getTab(tab));
-        int maxPos = m_isWebOU ? 2 : 3;
+        //TODO: check if necessary (when it was finally known which tabs web ou users should see..
+        int maxPos = m_isWebOU ? 3 : 3; //has to be changed if number of tabs is changed for web OU user
         m_next.setVisible(pos < maxPos);
         m_ok.setVisible(pos == maxPos);
     }
@@ -1049,7 +1081,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                     return false;
                 }
                 List<CmsRole> groupRoles = roleFromGroup.getChildren(true);
-                groupRoles.add(CmsRole.valueOf(group));
+                groupRoles.add(roleFromGroup);
                 List<String> roleNames = new ArrayList<String>();
                 for (CmsRole gr : groupRoles) {
                     roleNames.add(gr.getRoleName());
@@ -1120,9 +1152,10 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * A initialization method.<p>
      *
      * @param window to be closed
+     * @param app
      * @param settings user settings, null if new user
      */
-    private void init(final Window window, final CmsUserSettings settings) {
+    private void init(final Window window, final CmsAccountsApp app, final CmsUserSettings settings) {
 
         m_userdata.initFields(m_user, true);
         if (m_user != null) {
@@ -1159,7 +1192,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 if (isValid()) {
                     save();
                     window.close();
-                    A_CmsUI.get().reload();
+                    app.reload();
                 }
             }
         });
@@ -1290,6 +1323,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * Sets the password fields.<p>
      */
     private void setPasswordFields() {
+
+        m_dummyPasswordLabel.setContentMode(com.vaadin.v7.shared.ui.label.ContentMode.HTML);
+
+        // ugly hack to prevent Firefox from asking user to save password on every click which causes the history token to change after editing a user
+        String pwd = "<input type=\"password\" value=\"password\">";
+        m_dummyPasswordLabel.setValue("<div style=\"display: none;\">" + pwd + pwd + "</div>");
 
         m_pw.hideOldPassword();
         m_pw.setHeaderVisible(false);

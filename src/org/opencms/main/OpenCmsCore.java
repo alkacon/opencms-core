@@ -48,6 +48,8 @@ import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.db.CmsSubscriptionManager;
+import org.opencms.db.timing.CmsDefaultProfilingHandler;
+import org.opencms.db.timing.CmsThreadStatsTreeProfilingHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -117,6 +119,7 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Security;
 import java.util.ArrayList;
@@ -355,8 +358,9 @@ public final class OpenCmsCore {
             throw new CmsInitException(m_errorCondition, false);
         }
 
-        if (m_instance != null)
+        if (m_instance != null) {
             return m_instance;
+        }
         synchronized (LOCK) {
             if (m_instance == null) {
                 try {
@@ -1254,10 +1258,11 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(". "
-                + Messages.get().getBundle().key(
-                    Messages.GUI_SHELL_VERSION_1,
-                    OpenCms.getSystemInfo().getVersionNumber()));
+            CmsLog.INIT.info(
+                ". "
+                    + Messages.get().getBundle().key(
+                        Messages.GUI_SHELL_VERSION_1,
+                        OpenCms.getSystemInfo().getVersionNumber()));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
                 CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
@@ -1519,6 +1524,7 @@ public final class OpenCmsCore {
         // set the login message
         try {
             m_loginManager.setLoginMessage(null, variablesConfiguration.getLoginMessage());
+            m_loginManager.setBeforeLoginMessage(null, variablesConfiguration.getBeforeLoginMessage());
         } catch (CmsRoleViolationException e1) {
             CmsLog.INIT.error(e1.getLocalizedMessage(), e1);
         }
@@ -1632,7 +1638,6 @@ public final class OpenCmsCore {
 
             // initialize ade manager
             m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
-            m_adeManager.initialize();
             m_workplaceAppManager = new CmsWorkplaceAppManager(initCmsObject(adminCms));
             m_workplaceAppManager.loadApps();
             m_workplaceAppManager.initWorkplaceCssUris(m_moduleManager);
@@ -1981,6 +1986,20 @@ public final class OpenCmsCore {
                     // of files to be exported just by varying the request parameters!
                     String url = m_linkManager.getOnlineLink(cms, uri);
                     res.sendRedirect(url);
+                    return;
+                }
+            }
+            List<CmsSiteMatcher> currentSiteAliase = m_siteManager.getCurrentSite(cms).getAliases();
+            CmsSiteMatcher currentSiteMatcher = cms.getRequestContext().getRequestMatcher();
+            if (currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("http"))
+                || currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("https"))) {
+                int pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("http"));
+                if (pos == -1) {
+                    pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("https"));
+                }
+                if (currentSiteAliase.get(pos).isRedirect()) {
+                    res.sendRedirect(
+                        m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
                     return;
                 }
             }
@@ -2363,7 +2382,31 @@ public final class OpenCmsCore {
                     e);
             }
         }
-
+        // only init ADE manager in case of servlet initialization, it won't be needed in case of shell access
+        if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            CmsThreadStatsTreeProfilingHandler stats = new CmsThreadStatsTreeProfilingHandler();
+            try {
+                CmsDefaultProfilingHandler.INSTANCE.addHandler(stats);
+                m_adeManager.initialize();
+            } finally {
+                CmsDefaultProfilingHandler.INSTANCE.removeHandler(stats);
+                if (stats.hasData()) {
+                    String adeInitData = stats.dump();
+                    String prefix = String.format("%010X", Long.valueOf(System.currentTimeMillis() / 1000));
+                    String path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                        "logs/" + prefix + "_startup-ade-driver-report.xml");
+                    try (FileOutputStream out = new FileOutputStream(path)) {
+                        out.write(adeInitData.getBytes("UTF-8"));
+                    } catch (Exception e) {
+                        LOG.error(
+                            "Could not write ADE init profiling data to file, writing to log instead: "
+                                + e.getLocalizedMessage(),
+                            e);
+                        LOG.error(adeInitData);
+                    }
+                }
+            }
+        }
         // everything is initialized, now start publishing
         m_publishManager.startPublishing();
     }

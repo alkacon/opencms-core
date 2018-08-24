@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+	<o-cms-basic-dialog>
+		<content>
+			<vaadin7-vertical-layout :center margin spacing width="100%">
+			<vaadin7-vertical-layout _id="m_missingSchemaLayout" width="100%"> 
+			<v-panel width="100%">
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main o-wrap">
+				<v-label _id="m_missingSchema" width="100%">%(key.GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0)</v-label>
+				<vaadin7-check-box _id="m_moveAnyway" width="100%" caption="%(key.GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_MOVE_ANYWAY_0)" />
+			</v-form-layout>
+			</v-panel>
+			</vaadin7-vertical-layout>
+				<v-horizontal-layout width="100%">
+					<v-label :expand></v-label>
+					<vaadin7-text-field _id="m_filter" width="200px"/>
+				</v-horizontal-layout>
+				<vaadin7-table _id="m_table"/>
+			</vaadin7-vertical-layout>
+		</content>
+		<buttons>
+			<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+			<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+		</buttons>
+	</o-cms-basic-dialog>
+</body>
+</html>

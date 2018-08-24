@@ -190,7 +190,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     static ViewRules m_defaultViewRules = new ViewRules(
         "folder,plain,jsp,htmlredirect,containerpage:view_basic",
         "imagegallery,downloadgallery,linkgallery,subsitemap,content_folder:view_folders",
-        "formatter_config,xmlvfsbundle,propertyvfsbundle,bundledescriptor,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config,macro_formatter,flex_formatter:view_configs",
+        "formatter_config,xmlvfsbundle,propertyvfsbundle,bundledescriptor,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config,macro_formatter,flex_formatter,settings_config:view_configs",
         "xmlcontent,pointer:view_other");
 
     /** The default account infos. */
@@ -2588,8 +2588,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
-            if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isErrorEnabled()) {
-                LOG.error(
+            if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isInfoEnabled()) {
+                LOG.info(
                     Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
                     e);
             }

@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
 import java.util.Set;
@@ -70,6 +71,7 @@ public class CmsPermissionBean {
      * @param principalName principal name
      */
     public CmsPermissionBean(String principalType, String principalName) {
+
         m_principalName = principalName;
         m_principalType = principalType;
         m_delete = true;
@@ -85,6 +87,7 @@ public class CmsPermissionBean {
      * @param flags int
      */
     public CmsPermissionBean(String principalType, String principalName, int allowed, int denied, int flags) {
+
         m_principalName = principalName;
         m_principalType = principalType;
         m_allowed = allowed;
@@ -101,6 +104,7 @@ public class CmsPermissionBean {
      * @param permissionString permission string
      */
     public CmsPermissionBean(String principalType, String principalName, String permissionString) {
+
         m_principalName = principalName;
         m_principalType = principalType;
         m_permissionString = permissionString;
@@ -138,10 +142,15 @@ public class CmsPermissionBean {
         if (entry.isOverwriteAll()) {
             return CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME;
         }
-        try {
-            return CmsPrincipal.readPrincipal(cms, entry.getPrincipal()).getName();
-        } catch (CmsException e) {
-            //
+        CmsRole role = CmsRole.valueOfId(entry.getPrincipal());
+        if (role != null) {
+            return role.getRoleName();
+        } else {
+            try {
+                return CmsPrincipal.readPrincipal(cms, entry.getPrincipal()).getName();
+            } catch (CmsException e) {
+                //
+            }
         }
         return "";
     }
@@ -274,10 +283,17 @@ public class CmsPermissionBean {
 
         CmsUUID id = null;
         if (isRealPrinciple()) {
-            try {
-                id = CmsPrincipal.readPrincipal(cms, m_principalName).getId();
-            } catch (CmsException e) {
-                //
+            if (CmsRole.PRINCIPAL_ROLE.equals(m_principalType)) {
+                CmsRole role = CmsRole.valueOfRoleName(m_principalName);
+                if (role != null) {
+                    id = role.getId();
+                }
+            } else {
+                try {
+                    id = CmsPrincipal.readPrincipal(cms, m_principalName).getId();
+                } catch (CmsException e) {
+                    //
+                }
             }
         } else {
             if (m_principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {

@@ -76,19 +76,19 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     }
 
     /** HTML class used to identify containers. */
-    public static final String CLASS_CONTAINER = "cms_ade_container";
+    public static final String CLASS_CONTAINER = "oc-container";
 
     /** HTML class used to identify container elements. */
-    public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
+    public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "oc-element-end";
 
     /** HTML class used to identify container elements. */
-    public static final String CLASS_CONTAINER_ELEMENT_START_MARKER = "cms_ade_element_start";
+    public static final String CLASS_CONTAINER_ELEMENT_START_MARKER = "oc-element-start";
 
     /** HTML class used to identify error message for elements where rendering failed to render. */
-    public static final String CLASS_ELEMENT_ERROR = "cms_ade_element_error";
+    public static final String CLASS_ELEMENT_ERROR = "oc-element-error";
 
     /** HTML class used to identify group container elements. */
-    public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
+    public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "oc-groupcontainer";
 
     /** The create as new setting key. */
     public static final String CREATE_AS_NEW = "create_as_new";

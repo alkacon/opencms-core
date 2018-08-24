@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	
+	<ui:style gss="true">
+	
+		@external propertiesTabActive; 
+		@external imagepointdefault; 
+		
+		.imagepoint {
+  			width: 21px;
+  			height: 21px;
+  		    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NCIgaGVpZ2h0PSI4NCIgdmlld0JveD0iMCAwIDIyLjIgMjIuMiI+DQogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTI3NC44KSI+DQogICAgPHJlY3Qgd2lkdGg9IjEuMSIgaGVpZ2h0PSIyMi4yIiB4PSIxMC42IiB5PSIyNzQuOCIgZmlsbD0iI2ZmZiIgcnk9IjAiLz4NCiAgICA8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAyODUuNGgyMi4ydjEuMUgweiIvPg0KICA8L2c+DQo8L3N2Zz4NCg==");
+		    background-size: 21px 21px;
+			z-index: 999999;
+			display: none;   
+			position: absolute;
+			box-sizing: border-box;
+			border-radius: 50%; 
+			cursor: pointer; 
+			opacity: 0.4;
+			background-color: #b31b34;
+		}
+		
+		.imagepoint.imagepointdefault {
+			background-color: #356ee1;
+		}
+		
+		.propertiesTabActive .imagepoint {
+			display: inline-block;
+		}
+
+
+	</ui:style>
+	<g:FlowPanel ui:field="m_content" addStyleNames="{style.imagepoint}">
+	
+	</g:FlowPanel>
+	
+</ui:UiBinder> 

@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagAddParams.ParamState;
@@ -61,6 +62,8 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.containerpage.CmsXmlInheritGroupContainerHandler;
@@ -74,6 +77,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -95,6 +99,9 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
 
     /** Default number of max elements in the container in case no value has been set. */
     public static final String DEFAULT_MAX_ELEMENTS = "100";
+
+    /** The detail function container name. */
+    public static final String DETAIL_FUNCTION_CONTAINER_NAME = "FunctionDefault";
 
     /** HTML used for invisible dummy elements. */
     public static final String DUMMY_ELEMENT = "<div class='"
@@ -131,9 +138,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /** The name attribute value. */
     private String m_name;
 
-    /** The parameter state. */
-    private CmsJspTagAddParams.ParamState m_paramState;
-
     /**
      * The container name prefix to use for nested container names.
      * If empty the element instance id of the parent element will be used.
@@ -142,6 +146,9 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
 
     /** The optional container parameter. */
     private String m_param;
+
+    /** The parameter state. */
+    private CmsJspTagAddParams.ParamState m_paramState;
 
     /** The parent container. */
     private CmsContainerBean m_parentContainer;
@@ -392,7 +399,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             buffer.append(" id=\"").append(containerName).append("\" ");
         }
         if (containerData != null) {
-            buffer.append(" rel=\"").append(containerData).append("\" ");
+            buffer.append(" " + CmsGwtConstants.ATTR_DATA_CONTAINER + "=\"").append(containerData).append("\" ");
             // set the marker CSS class
             tagClass = tagClass == null
             ? CmsContainerElement.CLASS_CONTAINER
@@ -465,6 +472,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 m_parentContainer = standardContext.getContainer();
                 CmsContainerPageBean containerPage = standardContext.getPage();
                 CmsResource detailContent = standardContext.getDetailContent();
+                CmsResource detailFunctionPage = standardContext.getDetailFunctionPage();
                 // get the container
                 CmsContainerBean container = null;
                 boolean detailOnly = m_detailOnly || ((m_parentContainer != null) && m_parentContainer.isDetailOnly());
@@ -497,6 +505,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         maxElements,
                         Collections.<CmsContainerElementBean> emptyList());
                 } else if ((m_parentElement != null)
+                    && !m_detailOnly //ignore parent information for detail only containers to render content on different detail pages.
                     && !m_parentElement.getInstanceId().equals(container.getParentInstanceId())) {
                     // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
                     LOG.error(
@@ -513,7 +522,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 // set the detail only flag
                 container.setDetailOnly(detailOnly);
                 boolean isUsedAsDetailView = false;
-                if (m_detailView && (detailContent != null)) {
+                if (m_detailView && ((detailContent != null) || (detailFunctionPage != null))) {
                     isUsedAsDetailView = true;
                 }
                 // create tag for container
@@ -544,7 +553,11 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 List<CmsContainerElementBean> allElements = new ArrayList<CmsContainerElementBean>();
                 CmsContainerElementBean detailElement = null;
                 if (isUsedAsDetailView) {
-                    detailElement = generateDetailViewElement(req, cms, detailContent, container);
+                    if (detailContent != null) {
+                        detailElement = generateDetailViewElement(req, cms, detailContent, container);
+                    } else {
+                        detailElement = getDetailFunctionElement(cms, detailFunctionPage, req);
+                    }
                 }
                 if (detailElement != null) {
                     allElements.add(detailElement);
@@ -1014,7 +1027,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             }
             String serializedElement = getElementInfo(cms, elementBean, page);
             result.append("'");
-            result.append(" rel='").append(serializedElement);
+            result.append(" " + CmsGwtConstants.ATTR_DATA_ELEMENT + "='").append(serializedElement);
             if (isGroupContainer) {
                 result.append("'>");
             } else {
@@ -1049,6 +1062,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 cms.getRequestContext().getRootUri());
             CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
             I_CmsFormatterBean formatter = formatters.getDetailFormatter(getType(), getContainerWidth());
+
             if (formatter != null) {
                 // use structure id as the instance id to enable use of nested containers
                 Map<String, String> settings = new HashMap<String, String>();
@@ -1065,7 +1079,20 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     }
                 }
 
-                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
+                String formatterKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                if (settings.containsKey(formatterKey)) {
+                    String formatterConfigId = settings.get(formatterKey);
+                    if (CmsUUID.isValidUUID(formatterConfigId)) {
+                        I_CmsFormatterBean formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                            cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                                new CmsUUID(formatterConfigId));
+                        if (formatterBean != null) {
+                            formatter = formatterBean;
+                        }
+                    }
+                }
+                settings.put(formatterKey, formatter.getId());
+                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
                     detailContent.getStructureId(),
@@ -1096,6 +1123,42 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             LOG.debug("Error parsing container width.", e);
         }
         return containerWidth;
+    }
+
+    /**
+     * Returns the detail function element.<p>
+     *
+     * @param cms the cms context
+     * @param detailFunctionPage the detail function page
+     * @param req the current request
+     *
+     * @return the detail function element, if available
+     */
+    private CmsContainerElementBean getDetailFunctionElement(
+        CmsObject cms,
+        CmsResource detailFunctionPage,
+        ServletRequest req) {
+
+        try {
+            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, detailFunctionPage, req);
+
+            CmsContainerPageBean page = xmlContainerPage.getContainerPage(cms);
+            CmsContainerBean container = page.getContainers().get(DETAIL_FUNCTION_CONTAINER_NAME);
+            if (container == null) {
+                for (Entry<String, CmsContainerBean> entry : page.getContainers().entrySet()) {
+                    if (entry.getKey().endsWith("-" + DETAIL_FUNCTION_CONTAINER_NAME)) {
+                        container = entry.getValue();
+                        break;
+                    }
+                }
+            }
+            if (container != null) {
+                return container.getElements().get(0);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return null;
     }
 
     /**
@@ -1364,7 +1427,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                                 false,
                                 isOnline,
                                 null,
-                                CmsRequestUtil.getAtrributeMap(req),
+                                CmsRequestUtil.getAttributeMap(req),
                                 req,
                                 res);
                         } else {

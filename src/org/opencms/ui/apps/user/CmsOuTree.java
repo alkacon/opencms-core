@@ -43,6 +43,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -365,7 +366,7 @@ public class CmsOuTree extends Tree {
             }
         }
 
-        m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID);
+        m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID, "");
         if (isExpanded(itemId) | (itemId instanceof CmsUUID)) {
             return;
         }
@@ -405,12 +406,20 @@ public class CmsOuTree extends Tree {
      */
     private void addChildForOU(CmsOrganizationalUnit item) {
 
+        List<Object> itemsToRemove = new ArrayList<Object>();
+
+        Collection<?> childCol = m_treeContainer.getChildren(item);
+        if (childCol != null) {
+            itemsToRemove.addAll(childCol);
+        }
+
         try {
             if (m_app.isOUManagable(item.getName())) {
                 List<CmsOuTreeType> types = Arrays.asList(CmsOuTreeType.GROUP, CmsOuTreeType.ROLE, CmsOuTreeType.USER);
                 for (CmsOuTreeType type : types) {
                     String itemId = type.getID() + item.getName();
                     Item newItem = m_treeContainer.addItem(itemId);
+                    itemsToRemove.remove(itemId);
                     if (newItem != null) {
                         newItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(itemId, type));
                         newItem.getItemProperty(PROP_TYPE).setValue(type);
@@ -426,6 +435,7 @@ public class CmsOuTree extends Tree {
             List<CmsOrganizationalUnit> webOus = new ArrayList<CmsOrganizationalUnit>();
             for (CmsOrganizationalUnit ou : ous) {
                 if (m_app.isParentOfManagableOU(ou.getName())) {
+                    itemsToRemove.remove(ou);
                     if (ou.hasFlagWebuser()) {
                         webOus.add(ou);
                     } else {
@@ -435,11 +445,15 @@ public class CmsOuTree extends Tree {
             }
             for (CmsOrganizationalUnit ou : webOus) {
                 if (m_app.isParentOfManagableOU(ou.getName())) {
+                    itemsToRemove.remove(ou);
                     addOuToTree(ou, item);
                 }
             }
         } catch (CmsException e) {
             LOG.error("Can't read ou", e);
+        }
+        for (Object it : itemsToRemove) {
+            m_treeContainer.removeItemRecursively(it);
         }
     }
 

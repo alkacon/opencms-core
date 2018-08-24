@@ -41,12 +41,44 @@ public class CmsWaitHandle {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWaitHandle.class);
 
+    /** Flag which indicates whether release has already been called. */
+    private boolean m_released;
+
+    /** Flag indicating whether the wait handle is single-use. */
+    private boolean m_singleUse;
+
+    /**
+     * Creates a reusable wait handle.<p>
+     */
+    public CmsWaitHandle() {
+
+        m_singleUse = false;
+    }
+
+    /**
+     * Creates a wait handle.<p>
+     *
+     * The argument controls whether the wait handle will be single-use or reusable. The difference is that, for a single-use
+     * wait handle, all calls to enter() will return immediately after the first call to release(), while calling enter() on
+     * a reusable wait handle will always wait for the <em>next</em> release call.
+     *
+     * @param singleUse true if a single-use wait handle should be created
+     */
+    public CmsWaitHandle(boolean singleUse) {
+
+        m_singleUse = singleUse;
+    }
+
     /**
      * Waits for a maximum of waitTime, but returns if another thread calls release().<p>
      *
      * @param waitTime the maximum wait time
      */
     public synchronized void enter(long waitTime) {
+
+        if (m_singleUse && m_released) {
+            return;
+        }
 
         try {
             wait(waitTime);
@@ -62,6 +94,7 @@ public class CmsWaitHandle {
     public synchronized void release() {
 
         notifyAll();
+        m_released = true;
     }
 
 }

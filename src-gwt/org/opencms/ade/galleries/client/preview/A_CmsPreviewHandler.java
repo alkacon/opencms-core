@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import java.util.Map;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Preview dialog handler.<p>
@@ -72,6 +73,15 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
             CmsPreviewUtil.enableEditorOk(false);
         }
         m_resourcePreview.getGalleryDialog().setPreviewVisible(false);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler#getAdditionalWidgetForPropertyTab()
+     */
+    public Widget getAdditionalWidgetForPropertyTab() {
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**

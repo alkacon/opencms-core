@@ -10,8 +10,7 @@
 		<nicename><![CDATA[OpenCms ADE Configuration]]></nicename>
 		<group>OpenCms ADE</group>
 		<class/>
-		<import-script><![CDATA[
-# sets access control entries  and properties on folders not exclusively belonging to this module
+		<import-script><![CDATA[# sets access control entries  and properties on folders not exclusively belonging to this module
 chacc '/system/' 'ROLE' 'WORKPLACE_USER' '+I+R'
 chacc '/system/modules/' 'ROLE' 'WORKPLACE_USER' '+I+R+V'
 writeProperty '/system/config/' 'export' 'false'
@@ -28,8 +27,8 @@ createFolder '/system/' 'categories'
 writeProperty '/system/categories/' 'Title' 'Global categories'
 writeProperty '/system/categories/' 'Title_de' 'Globale Kategorien'
 # create folders for user images
-chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
-		]]></import-script>
+chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
+		<site>/</site>
 		<export-mode name="reduced"/>
 		<description><![CDATA[Configuration for OpenCms websites.<br>
 <i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i>]]></description>
@@ -39,7 +38,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies />
+		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.base/classes/" destination="WEB-INF/classes/"/>
 		</exportpoints>
@@ -112,6 +111,19 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21"/>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="function" id="22">
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFunctionConfig" name="function_config" id="29">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeHtmlRedirect" name="htmlredirect" id="15">
 				<properties>
@@ -290,8 +302,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/macro_formatter.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-				name="bundledescriptor" id="320">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="settings_config" id="316">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -303,14 +314,29 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					</property>
 					<property>
 						<name>search.exclude</name>
-						<value>all</value>
+						<value><![CDATA[all]]></value>
 					</property>
 				</properties>
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/bundledescriptor.xsd
-				</param>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/settings_config.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-				name="listconfig" id="321">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="bundledescriptor" id="320">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value><![CDATA[all]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/bundledescriptor.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="listconfig" id="321">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -321,8 +347,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<value><![CDATA[en]]></value>
 					</property>
 				</properties>
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/list_config.xsd
-				</param>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/list_config.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeMacroFormatter" name="flex_formatter" id="322">
 				<properties>
@@ -429,8 +454,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role"/>
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage"/>
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role"/>
-							<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog" rule="containerpage-no-different-site-and-has-editor-role"/>
-						</entry>
+							<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog" rule="containerpage-no-different-site-and-has-editor-role"/></entry>
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="containerpage-basic"/>
 					</contextmenu>
@@ -449,11 +473,18 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="function" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+			<explorertype name="function" key="fileicon.function_v1" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="function_config" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=function_config" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v"/>
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="seo_file" key="fileicon.seo_file" reference="xmlcontent">
@@ -523,8 +554,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 						<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0" name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="sitemap">
 							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0" name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog" rule="sitemap"/>
-							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" params="reload=true|filename=%(subsite)/.content/.config" rule="sitemapcheckfile"/>
-						</entry>
+							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" params="reload=true|filename=%(subsite)/.content/.config" rule="sitemapcheckfile"/></entry>
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="sitemap"/>
 					</contextmenu>
@@ -544,6 +574,12 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</explorertype>
 			<explorertype name="formatter_config" key="fileicon.formatter_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
 				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.formatter_config"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="settings_config" key="fileicon.settings_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
+				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=settings_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.settings_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
@@ -610,30 +646,17 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="bundledescriptor" key="fileicon.bundledescriptor"
-				smalliconstyle="oc-icon-16-localization_descriptor" bigiconstyle="oc-icon-24-localization_descriptor"
-				reference="xmlcontent">
-				<newresource page="otheroptions"
-					uri="newresource_xmlcontent.jsp?newresourcetype=bundledescriptor"
-					order="29" autosetnavigation="false" autosettitle="false"
-					info="desc.bundledescriptor" />
+			<explorertype name="bundledescriptor" key="fileicon.bundledescriptor" smalliconstyle="oc-icon-16-localization_descriptor" bigiconstyle="oc-icon-24-localization_descriptor" reference="xmlcontent">
+				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=bundledescriptor" order="29" autosetnavigation="false" autosettitle="false" info="desc.bundledescriptor"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER"
-						permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="listconfig" key="fileicon.listconfig"
-				smalliconstyle="oc-icon-16-list" bigiconstyle="oc-icon-24-list"
-				reference="xmlcontent">
-				<newresource page="otheroptions"
-					uri="newresource_xmlcontent.jsp?newresourcetype=listconfig"
-					order="29" autosetnavigation="false" autosettitle="false"
-					info="desc.listconfig" />
+			<explorertype name="listconfig" key="fileicon.listconfig" smalliconstyle="oc-icon-16-list" bigiconstyle="oc-icon-24-list" reference="xmlcontent">
+				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=listconfig" order="29" autosetnavigation="false" autosettitle="false" info="desc.listconfig"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.EDITOR"
-						permissions="+r+v" />
-					<accessentry principal="ROLE.LIST_EDITOR"
-						permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v"/>
+					<accessentry principal="ROLE.LIST_EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="flex_formatter" key="fileicon.flex_formatter" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
@@ -1006,6 +1029,61 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.base/copyresources/sample-formatter.jsp</source>
+			<destination>system/modules/org.opencms.base/copyresources/sample-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>61ad6a7c-75e7-11e8-8de8-8715041bae26</uuidstructure>
+			<uuidresource>61ad6a7d-75e7-11e8-8de8-8715041bae26</uuidresource>
+			<datecreated>Fri, 22 Jun 2018 06:42:07 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample formatter for new resource types]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/copyresources/sample-formatter.xml</source>
+			<destination>system/modules/org.opencms.base/copyresources/sample-formatter.xml</destination>
+			<type>formatter_config</type>
+			<uuidstructure>198be7c2-75f0-11e8-8736-8715041bae26</uuidstructure>
+			<uuidresource>198be7c3-75f0-11e8-8736-8715041bae26</uuidresource>
+			<datecreated>Fri, 22 Jun 2018 07:44:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Sample formatter configurations]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/copyresources/sample-schema.xsd</source>
+			<destination>system/modules/org.opencms.base/copyresources/sample-schema.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>8ed68af0-75e7-11e8-8de8-8715041bae26</uuidstructure>
+			<uuidresource>8ed68af1-75e7-11e8-8de8-8715041bae26</uuidresource>
+			<datecreated>Fri, 22 Jun 2018 06:43:22 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample schema for new resource types]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.base/copyresources/sitemap.config</source>
 			<destination>system/modules/org.opencms.base/copyresources/sitemap.config</destination>
 			<type>sitemap_config</type>
@@ -1045,7 +1123,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sub level redirect]]></value>
+					<value><![CDATA[Redirect to first page in navigation]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1156,6 +1234,69 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/function-default.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/function-default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f25037c5-6654-47fe-80ef-20ca9f9c7e8f</uuidstructure>
+			<uuidresource>a3bee9a5-a2a3-4bd4-bc44-3ecbda0f07a0</uuidresource>
+			<datecreated>Mon, 17 Jul 2017 14:39:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/function-default.xml</source>
+			<destination>system/modules/org.opencms.base/formatters/function-default.xml</destination>
+			<type>function_config</type>
+			<uuidstructure>d9d312d4-9a06-11e8-b9b2-1f0f0d8667a3</uuidstructure>
+			<uuidresource>d9d312d5-9a06-11e8-b9b2-1f0f0d8667a3</uuidresource>
+			<datecreated>Tue, 07 Aug 2018 05:58:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Internal default function formatter]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/function-v2.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/function-v2.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>fcd6e109-aab1-4f6e-b12e-4d795310f11f</uuidstructure>
+			<uuidresource>a8867190-69db-493d-b4d2-d974ee1e34ab</uuidresource>
+			<datecreated>Mon, 17 Jul 2017 14:39:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1309,11 +1450,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</accesscontrol>
 		</file>
 		<file>
-			<destination>system/config</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.base/schemas</destination>
 			<type>folder</type>
 			<uuidstructure>9663eff5-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
@@ -1339,6 +1475,32 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			</properties>
 			<relations/>
 			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/schemas/notification-user-password.xsd</source>
+			<destination>system/modules/org.opencms.base/schemas/notification-user-password.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>8f676af3-89b7-11e8-b89f-e15be1fe1821</uuidstructure>
+			<uuidresource>8f676af4-89b7-11e8-b89f-e15be1fe1821</uuidresource>
+			<datecreated>Tue, 17 Jul 2018 11:50:11 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema Definition for Content Notifications]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.base/schemas/notification.xsd</source>
@@ -1413,35 +1575,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/editor-backlink.html</source>
-			<destination>system/workplace/commons/editor-backlink.html</destination>
-			<type>plain</type>
-			<uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
-			<uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
-			<datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/commons/resourceIcon.css</source>
-			<destination>system/workplace/commons/resourceIcon.css</destination>
-			<type>jsp</type>
-			<uuidstructure>c69e7fdf-619d-11df-ace9-2393f34d19cc</uuidstructure>
-			<uuidresource>c69e7fe0-619d-11df-ace9-2393f34d19cc</uuidresource>
-			<datecreated>Mon, 17 May 2010 10:20:11 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/commons/direct_publish.jsp</source>
 			<destination>system/workplace/commons/direct_publish.jsp</destination>
 			<type>jsp</type>
@@ -1489,6 +1622,18 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/editor-backlink.html</source>
+			<destination>system/workplace/commons/editor-backlink.html</destination>
+			<type>plain</type>
+			<uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
+			<uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
+			<datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1671,18 +1816,18 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
 					<uuidprincipal>ALL_OTHERS</uuidprincipal>
 					<flags>132</flags>
 					<permissionset>
 						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1713,6 +1858,23 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
+		</file>
+		<file>
+			<source>system/workplace/commons/resourceIcon.css</source>
+			<destination>system/workplace/commons/resourceIcon.css</destination>
+			<type>jsp</type>
+			<uuidstructure>c69e7fdf-619d-11df-ace9-2393f34d19cc</uuidstructure>
+			<uuidresource>c69e7fe0-619d-11df-ace9-2393f34d19cc</uuidresource>
+			<datecreated>Mon, 17 May 2010 10:20:11 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/commons/sitemap.jsp</source>
@@ -1846,7 +2008,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</property>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:32,h:32]]></value>
+					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1871,7 +2033,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R'
 				</property>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations/>

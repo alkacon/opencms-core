@@ -1,4 +1,4 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, mce-branding-powered-by, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+@external mce-tinymce, mce-widget, mce-tooltip, mce-btn, mce-active, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -33,6 +33,7 @@ div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
 	background: transparent;
 	text-align: left;
@@ -97,7 +98,7 @@ div.attributeValue.secondColumn{
 .attributeValue.singleLine > .widgetHolder > div > .label{
 	position:absolute;
 	text-align: left;
-	right: 765px;
+	right: 665px;
 	margin:0px;
 	left: 7px;
 	top: 6px;
@@ -108,7 +109,7 @@ div.attributeValue.secondColumn{
 .attributeValue.singleLine > .widgetHolder > div > .widget {
 	float: right;
 	margin: 4px 25px 4px 0px;
-	width: 730px;
+	width: 630px;
 }
 
 /* clear both after the widget holder */
@@ -299,22 +300,22 @@ div.tinymceToolbarContainer > div{
 	white-space: normal;
 }
 
-.mce-branding-powered-by{
+.mce-branding{
 	display: none !important;
 }
 
 /* this styles the tinymce toolbar */
-.attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child{
+.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part{
 	position: absolute;
     right: -1px;
-    top: -4px;
+    top: -2px;
     width :90%;
     display: none;
 }
 
-.attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child > .mce-container-body{
+.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part > .mce-container-body{
 	background: inherit;
-    bottom: 0;
+    bottom: -2px;
     max-width: 100%;
     position: absolute;
     right: 0;
@@ -324,13 +325,40 @@ div.tinymceToolbarContainer > div{
     border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
 }
 
-div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
-	border: none;
-	position:fixed; 
-	top:0; 
-	left:0; 
-	right:0; 
-	bottom:0;
+.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part > .mce-container-body > div{
+	border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
+}
+
+div.attributeValue div.mce-tinymce.mce-fullscreen {
+	width: 100%;
+	top: 0px;
+	right: 0px;
+	left: 0px;
+	bottom: 0px;
+}
+
+
+
+div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body {
+	display: flex;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	height: 100%;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > * > .mce-top-part,
+ .attributeValue .mce-tinymce.mce-fullscreen > * > .mce-top-part > .mce-container-body, 
+ .attributeValue .mce-tinymce.mce-fullscreen > * > .mce-statusbar  {
+	position: static;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > * > .mce-edit-area {
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body > .mce-statusbar {
+	position: static !important;
 }
 
 .attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp {
@@ -339,9 +367,20 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	width: 100%;
 }
 
-.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp > .mce-container-body{
-	position: static; border:none
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp .mce-btn.mce-active {
+	background-color: lightgray !important;
 }
+
+.attributeValue .mce-btn.mce-active button, .attributeValue .mce-btn.mce-active:hover button, .attributeValue .mce-btn.mce-active i, .attributeValue .mce-btn.mce-active:hover i,
+.tinymceToolbarContainer .mce-btn.mce-active button, .tinymceToolbarContainer .mce-btn.mce-active:hover button, .tinymceToolbarContainer .mce-btn.mce-active i, .tinymceToolbarContainer .mce-btn.mce-active:hover i{
+	
+	color: black !important;
+}
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp > .mce-container-body{
+	position: static; 
+	border:none
+}
+
 
 .attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area, .attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area > iframe {
 	height: 100% !important; 
@@ -352,9 +391,13 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	background: transparent;
 }
 
-.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-panel:first-child, 
+.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-top-part, 
 .attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
 	display: block;	
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body > .mce-top-part {
+	width: 100%;
 }
 
 .attributeValue > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
@@ -370,6 +413,9 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
     right: -1px;
     z-index: 2;
 }
+
+
+	
 
 .mce-statusbar .mce-wordcount, .mce-statusbar .mce-path{
 	padding: 2px;
@@ -392,12 +438,17 @@ div.helpBubble{
 	background: #FFFFCC;
 	color: value("constants.css.textColor");
 	top: 100%;
-	left: 2px;
+	left: 150px;
+	max-width: 600px;
 	display: none;
 	padding: 7px 19px 5px 5px;
 	border-radius:value("constants.css.borderRadius");
 	z-index: 10;
 	box-shadow: 2px 2px 2px #666666;
+}
+
+div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
+	color: value("constants.css.textColorImportant");
 }
 
 .hasError .helpMessage, .hasWarning .helpMessage{
@@ -446,7 +497,7 @@ div.helpBubble{
 	color: value("constants.css.textColor");
 }
 
-.attributeValue.focused > .helpBubble, div.attributeValue.focused.hasError > .helpBubble, div.attributeValue.focused.hasWarning > .helpBubble{
+.attributeValue.focused > .helpBubble, div.attributeValue.focused.hasError > .helpBubble, div.attributeValue.focused.hasWarning > .helpBubble, div.attributeValue.labelHover > div.helpBubble{
 	display: block;
 }
 
@@ -650,5 +701,17 @@ div.overlayButtonPanel > div{
 	font-size: 126%; 
 }
 
+.tabDescription.tabDescription .tabDescriptionPanel {
+	background-color: #ffffcc;
+	color: value("constants.css.textColor");
+	border: 1px solid value("constants.css.borderColor");
+	border-radius: value("constants.css.borderRadius");
+	padding: 6px;
+	margin: 8px 25px 2px 3px; 
+	font-size: value("constants.css.fontSize");
+}
 
+.tabDescription.tabDescription .tabDescriptionPanel a{
+	color: value("constants.css.textColorImportant");
+}
 

@@ -72,6 +72,7 @@ public interface I_CmsDirectEditCss extends I_CmsToolbarButtonCss {
      *
      * @return a CSS class name
      */
+    @ClassName("oc-option-bar")
     String optionBar();
 
     /**

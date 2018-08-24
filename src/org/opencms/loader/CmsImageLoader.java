@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.cache.CmsVfsNameBasedDiskCache;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
@@ -361,6 +362,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
             file = cms.readFile(resource);
             // upgrade the file (load the content)
             if (scaler.isValid()) {
+                if (scaler.getType() == 8) {
+                    // only need the focal point for mode 8
+                    scaler.setFocalPoint(CmsPreviewService.readFocalPoint(cms, resource));
+                }
                 // valid scaling parameters found, scale the content
                 content = scaler.scaleImage(file);
                 // exchange the content of the file with the scaled version

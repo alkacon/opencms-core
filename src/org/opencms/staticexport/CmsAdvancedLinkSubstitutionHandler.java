@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
 public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
     /** Filename of the link exclude definition file. */
-    private static final String LINK_EXCLUDE_DEFINIFITON_FILE = "/system/config/linkexcludes";
+    private static final String LINK_EXCLUDE_DEFINIFITON_FILE = "linkexcludes";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAdvancedLinkSubstitutionHandler.class);
@@ -147,12 +148,13 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
 
         // get the list of link excludes form the cache if possible
         CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
+        String filePath = OpenCms.getSystemInfo().getConfigFilePath(cms, LINK_EXCLUDE_DEFINIFITON_FILE);
         @SuppressWarnings("unchecked")
-        List<String> excludes = (List<String>)cache.getCachedObject(cms, LINK_EXCLUDE_DEFINIFITON_FILE);
+        List<String> excludes = (List<String>)cache.getCachedObject(cms, filePath);
         if (excludes == null) {
             // nothing found in cache, so read definition file and store the result in cache
             excludes = readLinkExcludes(cms);
-            cache.putCachedObject(cms, LINK_EXCLUDE_DEFINIFITON_FILE, excludes);
+            cache.putCachedObject(cms, filePath, excludes);
         }
         return excludes;
     }
@@ -169,7 +171,8 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
 
         try {
             // get the link exclude file
-            CmsResource res = cms.readResource(LINK_EXCLUDE_DEFINIFITON_FILE);
+            String filePath = OpenCms.getSystemInfo().getConfigFilePath(cms, LINK_EXCLUDE_DEFINIFITON_FILE);
+            CmsResource res = cms.readResource(filePath);
             CmsFile file = cms.readFile(res);
             CmsXmlContent linkExcludeDefinitions = CmsXmlContentFactory.unmarshal(cms, file);
 

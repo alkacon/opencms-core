@@ -86,6 +86,9 @@ public class CmsSiteBean {
     /** The position. */
     private float m_position;
 
+    /** The list of aliases that are configured to redirect to the site's main URL. */
+    private List<String> m_redirectAliases = new ArrayList<String>();
+
     /** The secure server. */
     private boolean m_secureServer;
 
@@ -133,7 +136,8 @@ public class CmsSiteBean {
             m_originalSite = site;
             m_title = site.getTitle();
             m_server = site.getUrl();
-            CmsSiteMatcher matcher = new CmsSiteMatcher(site.getUrl(), site.getSiteMatcher().getTimeOffset());
+
+            CmsSiteMatcher matcher = site.getSiteMatcher();
             m_serverProtocol = matcher.getServerProtocol();
             m_serverName = matcher.getServerName();
             m_port = matcher.getServerPort();
@@ -147,6 +151,9 @@ public class CmsSiteBean {
             for (CmsSiteMatcher aMatcher : site.getAliases()) {
                 if ((aMatcher != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(aMatcher.getUrl())) {
                     m_aliases.add(aMatcher.getUrl());
+                    if (aMatcher.isRedirect()) {
+                        m_redirectAliases.add(aMatcher.getUrl());
+                    }
                 }
             }
             m_position = site.getPosition();
@@ -156,7 +163,6 @@ public class CmsSiteBean {
             m_mode = site.getSSLMode().name();
         }
     }
-
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -266,6 +272,16 @@ public class CmsSiteBean {
     public float getPosition() {
 
         return m_position;
+    }
+
+    /**
+     * Returns the list of aliases that are configured to redirect to the site's main URL.<p>
+     *
+     * @return the redirect aliases
+     */
+    public List<String> getRedirectAliases() {
+
+        return m_redirectAliases;
     }
 
     /**
@@ -493,6 +509,16 @@ public class CmsSiteBean {
     }
 
     /**
+     * Sets the list of aliases that are configured to redirect to the site's main URL.<p>
+     *
+     * @param redirectAliases the redierect aliases
+     */
+    public void setRedirectAliases(List<String> redirectAliases) {
+
+        m_redirectAliases = redirectAliases;
+    }
+
+    /**
      * Sets the secureServer.<p>
      *
      * @param secureServer the secureServer to set
@@ -609,7 +635,9 @@ public class CmsSiteBean {
         String errorPage = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorPage) ? m_errorPage : null;
         List<CmsSiteMatcher> aliases = new ArrayList<CmsSiteMatcher>();
         for (String alias : m_aliases) {
-            aliases.add(new CmsSiteMatcher(alias));
+            CmsSiteMatcher aliasMatcher = new CmsSiteMatcher(alias);
+            aliasMatcher.setRedirect(m_redirectAliases.contains(alias));
+            aliases.add(aliasMatcher);
         }
         CmsSite result = new CmsSite(
             m_siteRoot,

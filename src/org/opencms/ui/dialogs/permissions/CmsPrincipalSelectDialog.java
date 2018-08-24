@@ -53,24 +53,24 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.FontIcon;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.FontIcon;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the dialog to show the principal table.<p>
@@ -161,6 +161,30 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         boolean realOnly,
         WidgetType defaultView) {
 
+        this(cmsPrincipalSelect, ou, window, widgetType, realOnly, defaultView, true);
+
+    }
+
+    /**
+     * public constructor.<p>
+     *
+     * @param cmsPrincipalSelect calling vaadin component
+     * @param ou the current OU
+     * @param window window to be closed after finishing
+     * @param widgetType type of principal to be shown
+     * @param realOnly true, only show real principals
+     * @param defaultView default mode to open
+     * @param includeWebOus boolean
+     */
+    public CmsPrincipalSelectDialog(
+        I_CmsPrincipalSelect cmsPrincipalSelect,
+        String ou,
+        final Window window,
+        WidgetType widgetType,
+        boolean realOnly,
+        WidgetType defaultView,
+        boolean includeWebOus) {
+
         m_ou = ou;
         m_type = widgetType;
         m_realOnly = realOnly;
@@ -169,11 +193,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             m_selectField = cmsPrincipalSelect;
 
-            m_ouCombo = CmsVaadinUtils.getOUComboBox(
-                m_cms,
-                m_cms.getRequestContext().getOuFqn(),
-                null,
-                OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou).hasFlagWebuser());
+            m_ouCombo = CmsVaadinUtils.getOUComboBox(m_cms, m_cms.getRequestContext().getOuFqn(), null, includeWebOus);
             m_ouCombo.select(m_ou);
 
             IndexedContainer data;
@@ -282,6 +302,21 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      */
     public static void openEmbeddedDialog(final CmsEmbeddedDialogContext dialogContext, Map<String, String[]> params) {
 
+        openEmbeddedDialog(dialogContext, params, true);
+    }
+
+    /**
+     * Opens the principal select dialog within an embedded dialog context.<p>
+     *
+     * @param dialogContext the dialog context
+     * @param params the request parameters
+     * @param includeWebOus include WebOu?
+     */
+    public static void openEmbeddedDialog(
+        final CmsEmbeddedDialogContext dialogContext,
+        Map<String, String[]> params,
+        boolean includeWebOus) {
+
         String[] param = params.get(PARAM_OU);
         String ou;
         if ((param != null) && (param.length >= 1)) {
@@ -319,7 +354,14 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         }
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
         dialogContext.setWindow(window);
-        CmsPrincipalSelectDialog dialog = new CmsPrincipalSelectDialog(null, ou, window, type, realOnly, startType);
+        CmsPrincipalSelectDialog dialog = new CmsPrincipalSelectDialog(
+            null,
+            ou,
+            window,
+            type,
+            realOnly,
+            startType,
+            includeWebOus);
         dialog.setSelectHandler(new I_PrincipalSelectHandler() {
 
             public void onPrincipalSelect(String principalType, String principalName) {

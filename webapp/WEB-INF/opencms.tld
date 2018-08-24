@@ -2080,10 +2080,10 @@
                 This attribute defines the tag that the <code>&lt;cms:container&gt;</code>-tag is translated to.<BR>
             Values should have the the form:</P>
             <DL>
-              <DT><code><b>&lt;{tag-name}&gt;</b></code></DT>
+              <DT><code><b>{tag-name}</b></code></DT>
               <DD> <code>tag-name</code> is a name of a valid HTML tag.</DD>
             </DL>
-            Default: <code>&lt;div&gt;</code>
+            Default: <code>div</code>
             ]]></description>
             <name>tag</name>
             <required>false</required>
@@ -2265,6 +2265,113 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+    </tag>
+        <tag>
+        <description><![CDATA[
+            <p>Via this tag, you can render an XML content with a given formatter from inside a (formatter) JSP.</p>
+            <p>
+            	This tag is simpler than the &lt;cms:display&gt; tag in that it only allows you to specify a single formatter.
+            </p>
+            <p>Optionally, you can display edit points at the output. They facilitate similar editing functionality as <code>&lt;cms:edit&gt;</code>.
+            </p>
+            <p>In the body of the <code>&lt;cms:display&gt;</code> the following other tags can be used</p>
+            <ul>
+                <li>
+                    <code>&lt;cms:param&gt;</code>
+                    <p>This tag, contrary to it's default purpose, is used to pass element settings.</p>
+                    <p>To pass a setting, write:</p>
+                    <p>
+                    <code>&lt;cms:param name="settingName"&gt;settingValue&lt;/cms:param&gt;</code>
+                    </p>
+                    </p>
+                    The setting values specified here, overwrite the values that are possibly passed from the settings of the surrounding formatter (see the attribute <code>passSettings</code>.
+                </li>
+        ]]></description>
+        <name>simpledisplay</name>
+        <tag-class>org.opencms.jsp.CmsJspTagSimpleDisplay</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description><![CDATA[
+                <p>If you use the tag inside a formatter that already has settings, you can pass these settings to the formatter used by the display tag.</p>
+            ]]></description>
+            <name>passSettings</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+         	<description><![CDATA[
+                <p>Specifies the formatter configuration file which should be used to render the content.</p>
+            ]]></description>
+            <name>formatter</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>Allows to set the element settings as a java.util.Map<String,String>.</p>
+            ]]></description>
+            <name>settings</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If set to <code>true</code>, the "Edit" button is added to the edit buttons.</p>
+                <p><em>Default: <code>false</code></em></p>
+            ]]></description>
+            <name>editable</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Site path or structure id of the XML content that should be rendered via the <code>&lt;cms:display&gt;</code>-tag.
+            ]]></description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>If set to <code>true</code> the "Create" option is added to the edit buttons.
+              Newly created resources have the same type as the resource displayed.
+              </p>
+            ]]></description>
+            <name>create</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>The location where newly created contents are stored is read from sitemap configurations.
+              <code>creationSiteMap</code> specifies the sitemap from which the configuration should be used. Provide the (site-relative) path to a folder in the (sub)sitemap.</p>
+              <em>Default: The (sub)sitemap of the currently requested URI.
+            ]]></description>
+            <name>creationSiteMap</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>If set to <code>true</code>, the "Delete" option is added to the edit buttons.</p>
+              <em>Default: <code>false</code></em>
+            ]]></description>
+            <name>delete</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              The fully qualified class name of a <code>org.opencms.file.collectors.I_CmsCollectorPostCreateHandler</code> that
+              is called when a new resource is created via the tag.
+            ]]></description>
+            <name>postCreateHandler</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        
     </tag>
     <tag>
         <description><![CDATA[

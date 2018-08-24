@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
@@ -155,6 +156,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property containing the maps API key. */
     public static final String PROPERTY_GOOGLE_API_KEY = "google.apikey";
 
+    /** Name of the property in which the focal point is stored. */
+    public static final String PROPERTY_IMAGE_FOCAL_POINT = CmsGwtConstants.PROPERTY_IMAGE_FOCALPOINT;
+
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
 
@@ -167,11 +171,11 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
 
-    /** Property for the 'do not translate' marking in the sitemap editor. */
-    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
-
     /** Property to mark detail pages to have locale independent detail only containers. */
     public static final String PROPERTY_LOCALE_INDEPENDENT_DETAILS = "locale.independent-details";
+
+    /** Property for the 'do not translate' marking in the sitemap editor. */
+    public static final String PROPERTY_LOCALE_NOTRANSLATION = "locale.notranslation";
 
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
@@ -217,6 +221,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property to control the template. */
     public static final String PROPERTY_TEMPLATE = "template";
+
+    /** Property for specifying a list of container types used to match formatters in the display formatter selection widget. */
+    public static final String PROPERTY_TEMPLATE_DISPLAY_TYPES = "template.display.types";
 
     /** Property to control the template elements. */
     public static final String PROPERTY_TEMPLATE_ELEMENTS = "template-elements";

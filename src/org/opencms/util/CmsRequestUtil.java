@@ -500,13 +500,27 @@ public final class CmsRequestUtil {
     }
 
     /**
-     * Returns a map with all request attributes.<p>
+     * Exactly like getAttributeMap, but incorrectly spelled.<p>
+     *
+     * Kept for backward compatibility.
      *
      * @param req the request
      *
      * @return the attribute map
      */
     public static Map<String, Object> getAtrributeMap(ServletRequest req) {
+
+        return getAttributeMap(req);
+    }
+
+    /**
+     * Returns a map with all request attributes.<p>
+     *
+     * @param req the request
+     *
+     * @return the attribute map
+     */
+    public static Map<String, Object> getAttributeMap(ServletRequest req) {
 
         if (req instanceof CmsFlexRequest) {
             return ((CmsFlexRequest)req).getAttributeMap();

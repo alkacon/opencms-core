@@ -275,6 +275,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
+    /** The resource type icon CSS classes. */
+    private String m_iconClasses;
+
     /**
      * Constructor.<p>
      *
@@ -295,6 +298,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param modelGroupId the model group id
      * @param wasModelGroup in case of a former copy model group
      * @param elementView the element view of the element
+     * @param iconClasses the resource type icon CSS classes
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -313,7 +317,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasEditHandler,
         CmsUUID modelGroupId,
         boolean wasModelGroup,
-        CmsUUID elementView) {
+        CmsUUID elementView,
+        String iconClasses) {
 
         super(element);
         m_clientId = clientId;
@@ -335,6 +340,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_elementView = elementView;
         getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroupId != null);
         getElement().setPropertyBoolean(PROP_WAS_MODEL_GROUP, wasModelGroup);
+        m_iconClasses = iconClasses;
     }
 
     /**
@@ -388,6 +394,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         CmsListInfoBean info = new CmsListInfoBean(m_title, m_subTitle, null);
         info.setResourceType(m_resourceType);
+        info.setBigIconClasses(m_iconClasses);
         CmsListItemWidget helperWidget = new CmsListItemWidget(info);
         helperWidget.setWidth("600px");
         helperWidget.truncate("ggg", 550);
@@ -1081,7 +1088,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     protected List<Element> getEditableElements() {
 
-        List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+        List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div, getElement());
         List<Element> result = Lists.newArrayList();
         for (Element currentElem : elems) {
             // don't return elements which are contained in nested containers
@@ -1260,28 +1267,28 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-        var $this = this;
-        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-        if (handler == null) {
-            handler = function(event) {
-                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-            };
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-        } else {
-            if (element.removeEventLister) {
-                element.removeEventListener("DOMNodeInserted", handler);
-            } else if (element.detachEvent) {
-                // IE specific
-                element.detachEvent("onDOMNodeInserted", handler);
-            }
-        }
-        if (element.addEventListener) {
-            element.addEventListener("DOMNodeInserted", handler, false);
-        } else if (element.attachEvent) {
-            // IE specific
-            element.attachEvent("onDOMNodeInserted", handler);
-        }
+		var $this = this;
+		var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+		var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+		if (handler == null) {
+			handler = function(event) {
+				$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+			};
+			$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+		} else {
+			if (element.removeEventLister) {
+				element.removeEventListener("DOMNodeInserted", handler);
+			} else if (element.detachEvent) {
+				// IE specific
+				element.detachEvent("onDOMNodeInserted", handler);
+			}
+		}
+		if (element.addEventListener) {
+			element.addEventListener("DOMNodeInserted", handler, false);
+		} else if (element.attachEvent) {
+			// IE specific
+			element.attachEvent("onDOMNodeInserted", handler);
+		}
     }-*/;
 
     /**

@@ -118,9 +118,10 @@ public class CmsPropertyEditorHelper {
                 if (wysiwygConfig == null) {
                     String configStr = "";
                     try {
+                        String filePath = OpenCms.getSystemInfo().getConfigFilePath(cms, "wysiwyg/property-widget");
                         String configFromVfs = (String)CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().loadVfsObject(
                             cms,
-                            "/system/config/wysiwyg/property-widget",
+                            filePath,
                             new Transformer() {
 
                                 public Object transform(Object rootPath) {
