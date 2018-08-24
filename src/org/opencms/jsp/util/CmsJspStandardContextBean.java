@@ -1607,8 +1607,10 @@ public final class CmsJspStandardContextBean {
 
         return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
 
-            if (obj instanceof A_CmsJspValueWrapper) {
+            if ((obj instanceof A_CmsJspValueWrapper) || (obj instanceof CmsJspResourceWrapper)) {
                 return obj;
+            } else if (obj instanceof CmsResource) {
+                return new CmsJspResourceWrapper(m_cms, (CmsResource)obj);
             } else {
                 return CmsJspObjectValueWrapper.createWrapper(m_cms, obj);
             }
