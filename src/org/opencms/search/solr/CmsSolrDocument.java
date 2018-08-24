@@ -435,7 +435,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void setId(CmsUUID structureId) {
 
-        m_doc.addField(CmsSearchField.FIELD_ID, structureId);
+        m_doc.addField(CmsSearchField.FIELD_ID, structureId.toString());
 
     }
 
