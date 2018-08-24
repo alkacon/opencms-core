@@ -1598,6 +1598,25 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * JSP EL accessor for wrapping an object with a CmsJspObjectValueWrapper, unless it
+     * already is a wrapper, in which case it is returned unchanged.<p>
+     *
+     * @return the lazy map used to wrap its input
+     */
+    public Map<Object, Object> getWrap() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
+
+            if (obj instanceof A_CmsJspValueWrapper) {
+                return obj;
+            } else {
+                return CmsJspObjectValueWrapper.createWrapper(m_cms, obj);
+            }
+        });
+
+    }
+
+    /**
      * Initializes the requested container page.<p>
      *
      * @param cms the cms context
