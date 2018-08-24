@@ -976,9 +976,9 @@ public final class CmsJspVfsAccessBean {
      *
      * @throws CmsException in case reading the resources fails
      */
-    public List<CmsResource> readFilesInFolder(String resourcePath) throws CmsException {
+    public List<CmsJspResourceWrapper> readFilesInFolder(String resourcePath) throws CmsException {
 
-        return m_cms.getFilesInFolder(resourcePath);
+        return CmsJspElFunctions.convertResourceList(m_cms, m_cms.getFilesInFolder(resourcePath));
     }
 
     /**
@@ -991,7 +991,7 @@ public final class CmsJspVfsAccessBean {
      *
      * @throws CmsException in case reading the resources fails
      */
-    public List<CmsResource> readFilesInFolder(String resourcePath, String filterString) throws CmsException {
+    public List<CmsJspResourceWrapper> readFilesInFolder(String resourcePath, String filterString) throws CmsException {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filterString)) {
@@ -1002,7 +1002,7 @@ public final class CmsJspVfsAccessBean {
                 }
             }
         }
-        return m_cms.getFilesInFolder(resourcePath, filter);
+        return CmsJspElFunctions.convertResourceList(m_cms, m_cms.getFilesInFolder(resourcePath, filter));
     }
 
     /**
@@ -1014,11 +1014,13 @@ public final class CmsJspVfsAccessBean {
      *
      * @throws CmsException in case reading the resource fails
      */
-    public CmsResource readSubsiteFor(String path) throws CmsException {
+    public CmsJspResourceWrapper readSubsiteFor(String path) throws CmsException {
 
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
             m_cms,
             m_cms.getRequestContext().addSiteRoot(path));
-        return m_cms.readResource(m_cms.getRequestContext().removeSiteRoot(config.getBasePath()));
+        return new CmsJspResourceWrapper(
+            m_cms,
+            m_cms.readResource(m_cms.getRequestContext().removeSiteRoot(config.getBasePath())));
     }
 }

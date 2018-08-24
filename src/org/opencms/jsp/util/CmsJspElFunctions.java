@@ -306,12 +306,12 @@ public final class CmsJspElFunctions {
     public static CmsResource convertRawResource(CmsObject cms, Object input) throws CmsException {
 
         CmsResource result;
-        if (input instanceof String) {
-            // input is a String
-            result = cms.readResource((String)input);
-        } else if (input instanceof CmsResource) {
+        if (input instanceof CmsResource) {
             // input is already a resource
             result = (CmsResource)input;
+        } else if (input instanceof String) {
+            // input is a String
+            result = cms.readResource((String)input);
         } else if (input instanceof CmsUUID) {
             // input is a UUID
             result = cms.readResource((CmsUUID)input);
@@ -359,7 +359,34 @@ public final class CmsJspElFunctions {
      */
     public static CmsJspResourceWrapper convertResource(CmsObject cms, Object input) throws CmsException {
 
-        return new CmsJspResourceWrapper(cms, convertRawResource(cms, input));
+        CmsJspResourceWrapper result;
+        if (input instanceof CmsJspResourceWrapper) {
+            result = (CmsJspResourceWrapper)input;
+        } else {
+            result = new CmsJspResourceWrapper(cms, convertRawResource(cms, input));
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of resource wrappers created from the input list of resources.
+     *
+     * @param cms the current OpenCms user context
+     * @param list the list to create the resource wrapper list from
+     *
+     * @return the list of wrapped resources.
+     */
+    public static List<CmsJspResourceWrapper> convertResourceList(CmsObject cms, List<CmsResource> list) {
+
+        List<CmsJspResourceWrapper> result = new ArrayList<CmsJspResourceWrapper>(list.size());
+        for (CmsResource res : list) {
+            if (res instanceof CmsJspResourceWrapper) {
+                result.add((CmsJspResourceWrapper)res);
+            } else {
+                result.add(new CmsJspResourceWrapper(cms, res));
+            }
+        }
+        return result;
     }
 
     /**
