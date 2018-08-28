@@ -53,12 +53,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ALIAS_IS_VFS_0 = "ERR_ALIAS_IS_VFS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INHERITANCE_GROUP_NOT_FOUND_1 = "ERR_INHERITANCE_GROUP_NOT_FOUND_1";
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
+    public static final String ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3 = "ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INHERITANCE_GROUP_NOT_FOUND_1 = "ERR_INHERITANCE_GROUP_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_INCORRECT_TYPE_2 = "ERR_INSTANTIATION_INCORRECT_TYPE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCKING_MODIFIED_RESOURCE_1 = "ERR_LOCKING_MODIFIED_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCKING_MODIFIED_RESOURCE_2 = "ERR_LOCKING_MODIFIED_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PERMUTATION_AVAILABLE_0 = "ERR_NO_PERMUTATION_AVAILABLE_0";
@@ -80,9 +89,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATOR_INSTANTIATION_FAILED_1 = "ERR_VALIDATOR_INSTANTIATION_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3 = "ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_0 = "GUI_ALIAS_0";
