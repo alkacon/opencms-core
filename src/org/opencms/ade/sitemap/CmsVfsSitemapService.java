@@ -132,7 +132,6 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
@@ -1829,7 +1828,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                             functionFormatter = cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
                         } else {
                             functionFormatter = cms.readResource(
-                                CmsDynamicFunctionBean.FORMATTER_PATH,
+                                CmsResourceTypeFunctionConfig.FORMATTER_PATH,
                                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                         }
                         addFunctionDetailElement(

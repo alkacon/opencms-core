@@ -30,6 +30,7 @@ package org.opencms.jsp.util;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.main.CmsException;
@@ -39,12 +40,18 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
+import org.opencms.xml.containerpage.CmsDynamicFunctionParser;
 import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -176,28 +183,59 @@ public class CmsFunctionRenderer {
      */
     public void render() throws IOException, JspException {
 
-        CmsFunctionFormatterBean function = getFormatterBean(m_cms);
-        if (function != null) {
-            CmsUUID jspId = function.getRealJspId();
-            if (jspId != null) {
-                CmsJspTagInclude.includeTagAction(
-                    m_context,
-                    m_cms.getRequestContext().removeSiteRoot(function.getRealJspRootPath()),
-                    null,
-                    m_cms.getRequestContext().getLocale(),
-                    false,
-                    m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
-                    function.getParameters(),
-                    CmsRequestUtil.getAttributeMap(m_request),
-                    m_request,
-                    m_response);
+        boolean isNewFunctionType = OpenCms.getResourceManager().matchResourceType(
+            CmsResourceTypeFunctionConfig.TYPE_NAME,
+            m_element.getResource().getTypeId());
+        if (isNewFunctionType) {
+            CmsFunctionFormatterBean function = getFormatterBean(m_cms);
+            if (function != null) {
+                CmsUUID jspId = function.getRealJspId();
+                if (jspId != null) {
+                    CmsJspTagInclude.includeTagAction(
+                        m_context,
+                        m_cms.getRequestContext().removeSiteRoot(function.getRealJspRootPath()),
+                        null,
+                        m_cms.getRequestContext().getLocale(),
+                        false,
+                        m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
+                        function.getParameters(),
+                        CmsRequestUtil.getAttributeMap(m_request),
+                        m_request,
+                        m_response);
+                } else {
+                    m_context.getOut().print(defaultHtml(m_request));
+                }
             } else {
                 m_context.getOut().print(defaultHtml(m_request));
             }
         } else {
-            m_context.getOut().print(defaultHtml(m_request));
-        }
+            CmsDynamicFunctionBean.Format format = getFunctionFormat();
+            if ((format != null) && m_cms.existsResource(format.getJspStructureId())) {
+                try {
+                    CmsResource jspResource = m_cms.readResource(format.getJspStructureId());
+                    Map<String, String[]> params = new HashMap<>();
+                    for (Entry<String, String> paramEntry : format.getParameters().entrySet()) {
+                        params.put(paramEntry.getKey(), new String[] {paramEntry.getValue()});
+                    }
+                    CmsJspTagInclude.includeTagAction(
+                        m_context,
 
+                        m_cms.getSitePath(jspResource),
+                        null,
+                        m_cms.getRequestContext().getLocale(),
+                        false,
+                        m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
+                        params,
+                        CmsRequestUtil.getAttributeMap(m_request),
+                        m_request,
+                        m_response);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            } else {
+                m_context.getOut().print(defaultHtml(m_request));
+            }
+        }
     }
 
     /**
@@ -217,6 +255,34 @@ public class CmsFunctionRenderer {
         CmsFunctionFormatterBean function = (CmsFunctionFormatterBean)formatterConfig;
         return function;
 
+    }
+
+    /**
+     * Returns the function format for the current element.<p>
+     *
+     * @return the function format
+     */
+    private CmsDynamicFunctionBean.Format getFunctionFormat() {
+
+        CmsDynamicFunctionBean functionBean = null;
+        try {
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(m_element.getResource()));
+            CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
+            functionBean = parser.parseFunctionBean(m_cms, content);
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        }
+        CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(m_request);
+        String type = contextBean.getContainer().getType();
+        String width = contextBean.getContainer().getWidth();
+        int widthNum = -1;
+        try {
+            widthNum = Integer.parseInt(width);
+        } catch (NumberFormatException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        return functionBean.getFormatForContainer(m_cms, type, widthNum);
     }
 
     /**

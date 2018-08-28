@@ -1284,23 +1284,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.base/formatters/function-v2.jsp</source>
-			<destination>system/modules/org.opencms.base/formatters/function-v2.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>fcd6e109-aab1-4f6e-b12e-4d795310f11f</uuidstructure>
-			<uuidresource>a8867190-69db-493d-b4d2-d974ee1e34ab</uuidresource>
-			<datecreated>Mon, 17 Jul 2017 14:39:04 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.base/formatters/function.jsp</source>
 			<destination>system/modules/org.opencms.base/formatters/function.jsp</destination>
 			<type>jsp</type>

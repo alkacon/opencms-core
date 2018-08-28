@@ -46,7 +46,7 @@ public class CmsResourceTypeFunctionConfig extends CmsResourceTypeXmlAdeConfigur
     public static final CmsUUID FORMATTER_ID = new CmsUUID("fcd6e109-aab1-4f6e-b12e-4d795310f11f");
 
     /** The path of the JSP used for rendering v2 functions. */
-    public static final String FORMATTER_PATH = "/system/modules/org.opencms.base/formatters/function-v2.jsp";
+    public static final String FORMATTER_PATH = "/system/modules/org.opencms.base/formatters/function.jsp";
 
     /** The type name. */
     public static final String TYPE_NAME = "function_config";

@@ -31,6 +31,7 @@ import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsPair;
@@ -135,7 +136,7 @@ public class CmsDynamicFunctionParser {
     protected CmsResource getFunctionFormatter(CmsObject cms) throws CmsException {
 
         CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
-        String path = CmsDynamicFunctionBean.FORMATTER_PATH;
+        String path = CmsResourceTypeFunctionConfig.FORMATTER_PATH;
         Object cacheValue = cache.getCachedObject(cms, path);
         if (cacheValue == null) {
             CmsResource functionRes = cms.readResource(path);

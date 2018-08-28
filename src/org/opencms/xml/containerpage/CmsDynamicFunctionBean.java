@@ -29,6 +29,7 @@ package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -174,9 +175,6 @@ public class CmsDynamicFunctionBean {
         }
     }
 
-    /** The path of the formatter which calls the JSP. */
-    public static final String FORMATTER_PATH = "/system/modules/org.opencms.base/formatters/function.jsp";
-
     /** The function formatter resource. */
     private CmsResource m_functionFormatter;
 
@@ -306,14 +304,14 @@ public class CmsDynamicFunctionBean {
 
         if (format.hasNoContainerSettings()) {
             return new CmsFormatterBean(
-                FORMATTER_PATH,
+                CmsResourceTypeFunctionConfig.FORMATTER_PATH,
                 m_functionFormatter.getStructureId(),
                 m_resource.getRootPath(),
                 isPreview);
         } else {
             CmsFormatterBean result = new CmsFormatterBean(
                 format.getType(),
-                FORMATTER_PATH,
+                CmsResourceTypeFunctionConfig.FORMATTER_PATH,
                 format.getMinWidth(),
                 format.getMaxWidth(),
                 "" + isPreview,
