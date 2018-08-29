@@ -164,18 +164,18 @@ sourceSets{
         	exclude 'data/**'
         }
         resources {
-        	srcDirs=['test','src','src-modules','src-setup']
+        	srcDirs=['test']
         	exclude 'data/**'
         }
     }
 
     testGwt {
         java {
-        	srcDirs=['src-gwt','test-gwt']
+        	srcDirs=['test-gwt', 'src-gwt']
         	exclude '**/super_src/**'
         }
         resources {
-        	srcDirs=['src-gwt','test-gwt']
+        	srcDirs=['test-gwt', 'src-gwt']
         	exclude '**/super_src/**'
         }
     }
@@ -197,6 +197,24 @@ eclipse.classpath.file {
         		if (entry.path == 'src') {
         			entry.output='bin/main'
         		}
+        		else if(entry.path == 'test') {
+        			entry.output='bin/test'
+        		}
+        		else if(entry.path == 'src-modules') {
+        			entry.output='bin/modules'
+        		}
+        		else if(entry.path == 'src-setup') {
+        			entry.output='bin/setup'
+        		}
+        		else if(entry.path == 'src-gwt') {
+        			entry.output='bin/srcGwt'
+        		}
+        		else if(entry.path == 'test-gwt') {
+        			entry.output='bin/testGwt'
+        		}
+        	}
+        	else if(entry.kind == 'output') {
+        		entry.path='bin/default';
         	}
         }
     }
@@ -205,7 +223,7 @@ eclipse.classpath.file {
 eclipse.classpath.plusConfigurations = configurations.findAll { it.name.endsWith("Compile") }
 
 task wrapper(type: Wrapper){
-	gradleVersion = '4.4'
+	gradleVersion = '4.10'
 }
 
 task copyDeps(type: Copy) {
@@ -1750,6 +1768,7 @@ tasks.withType(JavaCompile) {
     options.encoding='UTF-8'
 }
 tasks.withType(Javadoc) {
+    options.encoding='UTF-8'
     options.addStringOption("sourcepath", "")
     if (JavaVersion.current().isJava8Compatible()) {
     	options.addStringOption("Xdoclint:none", "-quiet")
