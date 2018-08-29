@@ -524,11 +524,13 @@ public class CmsFormatterBeanParser {
             hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
             parseHeadIncludes(root);
             if (isFunction) {
+                CmsResource functionFormatter = m_cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
                 Map<String, String[]> params = parseParams(root);
                 formatterBean = new CmsFunctionFormatterBean(
                     m_containerTypes,
                     m_formatterResource.getRootPath(),
                     m_formatterResource.getStructureId(),
+                    functionFormatter.getStructureId(),
                     m_width,
                     m_maxWidth,
                     location,

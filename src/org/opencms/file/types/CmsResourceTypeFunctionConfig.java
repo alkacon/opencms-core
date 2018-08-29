@@ -34,16 +34,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
 /**
  * Resource type class for the second version of dynamic functions.<p>
  */
 public class CmsResourceTypeFunctionConfig extends CmsResourceTypeXmlAdeConfiguration {
-
-    /** The structure id of the JSP used for rendering v2 functions. */
-    public static final CmsUUID FORMATTER_ID = new CmsUUID("fcd6e109-aab1-4f6e-b12e-4d795310f11f");
 
     /** The path of the JSP used for rendering v2 functions. */
     public static final String FORMATTER_PATH = "/system/modules/org.opencms.base/formatters/function.jsp";

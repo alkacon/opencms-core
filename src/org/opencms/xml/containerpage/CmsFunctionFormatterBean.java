@@ -50,12 +50,16 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
     /** The real path of the configured jsp. */
     private String m_realJspRootPath;
 
+    /** The standard function formatter structure id. */
+    private CmsUUID m_functionFormatterId;
+
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
      *
      * @param containerTypes the formatter container types
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
+     * @param functionFormatterId the standard function formatter structure id
      * @param minWidth the formatter min width
      * @param maxWidth the formatter max width
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
@@ -75,6 +79,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
         Set<String> containerTypes,
         String jspRootPath,
         CmsUUID jspStructureId,
+        CmsUUID functionFormatterId,
         int minWidth,
         int maxWidth,
         String location,
@@ -118,6 +123,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             false, // nestedFormatterSettings
             Collections.<CmsMetaMapping> emptyList());
         m_realJspRootPath = jspRootPath;
+        m_functionFormatterId = functionFormatterId;
         if (parameters != null) {
             m_parameters.putAll(parameters);
         }
@@ -142,7 +148,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
     @Override
     public CmsUUID getJspStructureId() {
 
-        return CmsResourceTypeFunctionConfig.FORMATTER_ID;
+        return m_functionFormatterId;
     }
 
     /**
