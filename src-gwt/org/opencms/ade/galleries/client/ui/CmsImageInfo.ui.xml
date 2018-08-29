@@ -5,6 +5,7 @@
 	<ui:style>
 		span.title{
 			font-weight: bold;
+			display: block;
 		}
 		
 		div.imageInfo table.infos{
