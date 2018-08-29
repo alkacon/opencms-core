@@ -314,18 +314,13 @@ public class CmsElementUtil {
                 formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
                     new CmsUUID(formatterId));
             } else {
-                formatters.get(formatterId);
+                formatter = formatters.get(formatterId);
             }
         }
         if (formatter == null) {
             formatterId = element.getIndividualSettings().get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY);
             if (formatterId != null) {
-                if (CmsUUID.isValidUUID(formatterId)) {
-                    formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                        new CmsUUID(formatterId));
-                } else {
-                    formatters.get(formatterId);
-                }
+                formatter = formatters.get(formatterId);
             }
         }
         if ((formatter == null) && (element.getFormatterId() != null)) {
@@ -984,16 +979,6 @@ public class CmsElementUtil {
         if (formatter != null) {
             element.initSettings(m_cms, formatter, m_locale, m_req);
             try {
-                //                if (formatter instanceof CmsFunctionFormatterBean) {
-                //                    if (element.getResource().getStructureId().isNullUUID()) {
-                //                        return CmsFunctionRenderer.defaultHtml();
-                //                    } else {
-                //                        content = getElementContent(
-                //                            element,
-                //                            m_cms.readResource(formatter.getJspStructureId()),
-                //                            container);
-                //                    }
-                //                } else {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
                 //                }
             } catch (Exception e) {
