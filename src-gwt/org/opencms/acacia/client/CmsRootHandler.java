@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * The root attribute handler.<p>
@@ -254,6 +255,19 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
     public void setHandlerById(String attributeName, CmsAttributeHandler handler) {
 
         m_handlerById.put(handler.getEntityId() + "/" + attributeName, handler);
+    }
+
+    /**
+     * Recruses over all child handlers of this handler and passes them to a callback.<p>
+     *
+     * @param handler the handler whose child handlers should be processed
+     */
+    public void visit(Consumer<I_CmsAttributeHandler> handler) {
+
+        handler.accept(this);
+        for (CmsAttributeHandler child : m_handlerById.values()) {
+            child.visit(handler);
+        }
     }
 
     /**

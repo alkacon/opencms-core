@@ -108,6 +108,19 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
     private CmsValidationContext m_validationContext;
 
     /**
+     * Clears validation message for an attribute handler.<p>
+     *
+     * @param handler the handler for which to clear the validation message
+     */
+    public static void clearValidation(I_CmsAttributeHandler handler) {
+
+        if (handler instanceof CmsAttributeHandler) {
+            ((CmsAttributeHandler)handler).removeValidationMessages();
+        }
+
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<CmsValidationContext> handler) {
@@ -144,6 +157,7 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
         if (m_formTabPanel != null) {
             CmsAttributeHandler.clearErrorStyles(m_formTabPanel);
         }
+        m_rootHandler.visit(CmsValidationHandler::clearValidation);
         if (validationResult.hasWarnings(entityId)) {
             for (Entry<String[], String> warning : validationResult.getWarnings(entityId).entrySet()) {
                 String[] pathElements = warning.getKey();

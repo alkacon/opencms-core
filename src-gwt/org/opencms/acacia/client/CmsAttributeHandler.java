@@ -79,6 +79,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
     /** The entity. */
     private CmsEntity m_entity;
 
+    /** The entity back end instance. */
+    private I_CmsEntityBackend m_entityBackEnd;
+
     /** The entity type. */
     private CmsType m_entityType;
 
@@ -87,9 +90,6 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /** The single value index. */
     private int m_singleValueIndex;
-
-    /** The entity back end instance. */
-    private I_CmsEntityBackend m_entityBackEnd;
 
     /** The widget service. */
     private I_CmsWidgetService m_widgetService;
@@ -947,6 +947,16 @@ public class CmsAttributeHandler extends CmsRootHandler {
             } else {
                 m_entity.removeAttributeValue(m_attributeName, valueIndex);
             }
+        }
+    }
+
+    /**
+     * Removes validation messages for all views associated with this attribute handler.<p>
+     */
+    public void removeValidationMessages() {
+
+        for (CmsAttributeValueView view : m_attributeValueViews) {
+            view.removeValidationMessage();
         }
     }
 
