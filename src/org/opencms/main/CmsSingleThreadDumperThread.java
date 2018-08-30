@@ -286,7 +286,7 @@ public class CmsSingleThreadDumperThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            saveSummaryXml(root, "/home/user/gnarf.xml");
+            saveSummaryXml(root);
         }
     }
 
@@ -352,9 +352,8 @@ public class CmsSingleThreadDumperThread extends Thread {
      * Saves the stack trace summary tree starting from the given root node to an XML file.<p>
      *
      * @param root the root node
-     * @param path the RFS path for the XML file
      */
-    private void saveSummaryXml(SampleNode root, String path) {
+    private void saveSummaryXml(SampleNode root) {
 
         root.sortTree();
         Document doc = DocumentHelper.createDocument();
