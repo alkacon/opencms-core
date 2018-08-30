@@ -73,6 +73,9 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The date of last modification. */
     private long m_lastModifiedDate;
 
+    /** The time this element was loaded. */
+    private long m_loadTime;
+
     /** The element navText property. */
     private String m_navText;
 
@@ -235,6 +238,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public long getLastModifiedDate() {
 
         return m_lastModifiedDate;
+    }
+
+    /**
+     * Returns the load time.<p>
+     *
+     * @return the load time
+     */
+    public long getLoadTime() {
+
+        return m_loadTime;
     }
 
     /**
@@ -457,6 +470,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setLastModifiedDate(long lastModifiedDate) {
 
         m_lastModifiedDate = lastModifiedDate;
+    }
+
+    /**
+     * Sets the load time.<p>
+     *
+     * @param loadTime the load time to set
+     */
+    public void setLoadTime(long loadTime) {
+
+        m_loadTime = loadTime;
     }
 
     /**

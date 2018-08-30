@@ -433,16 +433,16 @@ public interface I_CmsContainerpageServiceAsync {
     void saveClipboardTab(int tabIndex, AsyncCallback<Void> callback);
 
     /**
-     * Saves the container-page.<p>
+     * Saves the container-page. Returning the save time stamp.<p>
      *
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      * @param callback the call-back executed on response
      */
-    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, AsyncCallback<Void> callback);
+    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, AsyncCallback<Long> callback);
 
     /**
-     * Saves the detail containers.<p>
+     * Saves the detail containers. Returning the save time stamp.<p>
      *
      * @param detailId the detail content id
      * @param detailContainerResource the detail container resource path
@@ -454,7 +454,7 @@ public interface I_CmsContainerpageServiceAsync {
         String detailContainerResource,
         List<CmsContainer> containers,
 
-        AsyncCallback<Void> callback);
+        AsyncCallback<Long> callback);
 
     /**
      * Saves the settings for the given element to the container page and returns the updated element data.<p>

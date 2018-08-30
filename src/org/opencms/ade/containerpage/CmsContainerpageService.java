@@ -1536,7 +1536,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveContainerpage(org.opencms.util.CmsUUID, java.util.List)
      */
-    public void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
+    public long saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
@@ -1548,12 +1548,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
+        return System.currentTimeMillis();
     }
 
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(org.opencms.util.CmsUUID, java.lang.String, java.util.List)
      */
-    public void saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
+    public long saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
     throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
@@ -1570,6 +1571,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
+        return System.currentTimeMillis();
     }
 
     /**

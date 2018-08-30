@@ -475,9 +475,11 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      *
+     * @return the server time stamp of time of saving
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
+    long saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the detail containers.<p>
@@ -486,9 +488,11 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
      *
+     * @return the server time stamp of time of saving
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
+    long saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
     throws CmsRpcException;
 
     /**

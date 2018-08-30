@@ -923,7 +923,7 @@ public class CmsElementUtil {
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsContainerElementData elementData = new CmsContainerElementData();
         setElementInfo(element, elementData);
-
+        elementData.setLoadTime(System.currentTimeMillis());
         elementData.setLastModifiedDate(element.getResource().getDateLastModified());
         elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
         elementData.setNavText(resUtil.getNavText());

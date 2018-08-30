@@ -1038,7 +1038,20 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
                     if (resource.getDateLastModified() > loadTime) {
                         // the resource has been changed since it was loaded
-                        return "The resource has been changed by " + resource.getUserLastModified() + ".";
+                        CmsUser user = null;
+                        try {
+                            user = cms.readUser(resource.getUserLastModified());
+                        } catch (CmsException e) {
+                            // ignore
+                        }
+                        CmsMessages messages = Messages.get().getBundle(
+                            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                        return user != null
+                        ? messages.key(
+                            Messages.ERR_LOCKING_MODIFIED_RESOURCE_2,
+                            resource.getRootPath(),
+                            user.getFullName())
+                        : messages.key(Messages.ERR_LOCKING_MODIFIED_RESOURCE_1, resource.getRootPath());
                     }
                     ensureLock(resource);
                 } catch (CmsException e) {

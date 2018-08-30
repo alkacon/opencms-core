@@ -734,6 +734,9 @@ public final class CmsContainerpageController {
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
 
+    /** The container page load time. */
+    private long m_loadTime;
+
     /**
      * Constructor.<p>
      */
@@ -747,6 +750,7 @@ public final class CmsContainerpageController {
                 CmsCntPageData.DICT_NAME);
             m_elementView = m_data.getElementView();
             m_modelGroupElementId = m_data.getModelGroupElementId();
+            m_loadTime = m_data.getLoadTime();
         } catch (SerializationException e) {
             CmsErrorDialog.handleException(
                 new Exception(
@@ -1659,6 +1663,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the time off page load.<p>
+     *
+     * @return the time stamp
+     */
+    public long getLoadTime() {
+
+        return m_loadTime;
+    }
+
+    /**
      * Gets the lock error message.<p>
      *
      * @return the lock error message
@@ -2344,15 +2358,9 @@ public final class CmsContainerpageController {
             };
 
             if (getData().getDetailContainerPage() != null) {
-                CmsCoreProvider.get().lockOrReturnError(
-                    getData().getDetailContainerPage(),
-                    getData().getLoadTime(),
-                    call);
+                CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage(), getLoadTime(), call);
             } else {
-                CmsCoreProvider.get().lockOrReturnError(
-                    CmsCoreProvider.get().getStructureId(),
-                    getData().getLoadTime(),
-                    call);
+                CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId(), getLoadTime(), call);
             }
         }
     }
@@ -2583,6 +2591,7 @@ public final class CmsContainerpageController {
                                 if (result != null) {
                                     // cache the loaded element
                                     m_elements.put(result.getClientId(), result);
+                                    setLoadTime(Long.valueOf(result.getLoadTime()));
                                 }
                                 callback.execute(result);
                             }
@@ -2862,7 +2871,7 @@ public final class CmsContainerpageController {
     public void saveAndLeave(final Command leaveCommand) {
 
         if (hasPageChanged()) {
-            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+            CmsRpcAction<Long> action = new CmsRpcAction<Long>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -2888,8 +2897,9 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Void result) {
+                protected void onResponse(Long result) {
 
+                    setLoadTime(result);
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
@@ -2908,7 +2918,7 @@ public final class CmsContainerpageController {
     public void saveAndLeave(final String targetUri) {
 
         if (hasPageChanged()) {
-            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+            CmsRpcAction<Long> action = new CmsRpcAction<Long>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -2934,8 +2944,9 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Void result) {
+                protected void onResponse(Long result) {
 
+                    setLoadTime(result);
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
@@ -2979,7 +2990,7 @@ public final class CmsContainerpageController {
     public void saveContainerpage(final Runnable... afterSaveActions) {
 
         if (hasPageChanged()) {
-            final CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+            final CmsRpcAction<Long> action = new CmsRpcAction<Long>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -3006,8 +3017,9 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Void result) {
+                protected void onResponse(Long result) {
 
+                    setLoadTime(result);
                     stop(false);
                     setPageChanged(false, false);
                     CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
@@ -3796,6 +3808,18 @@ public final class CmsContainerpageController {
                 }
             };
             m_resizeTimer.schedule(300);
+        }
+    }
+
+    /**
+     * Sets the load time.<p>
+     *
+     * @param time the time to set
+     */
+    void setLoadTime(Long time) {
+
+        if (time != null) {
+            m_loadTime = time.longValue();
         }
     }
 

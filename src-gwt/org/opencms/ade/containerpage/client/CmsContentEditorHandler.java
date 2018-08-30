@@ -142,7 +142,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.m_controller.setContentEditing(false);
         m_handler.m_controller.reInitInlineEditing();
         m_currentElementId = null;
-        m_handler.m_controller.setPageChanged(new Runnable[] {});
+        if (hasChangedSettings) {
+            m_handler.m_controller.setPageChanged(new Runnable[] {});
+        }
         m_editorOpened = false;
     }
 
@@ -463,7 +465,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         editorLocale,
                         element,
                         mainLocale,
-                        m_handler.m_controller.getData().getLoadTime(),
+                        m_handler.m_controller.getLoadTime(),
                         onClose);
                 } else {
                     addEditingHistoryItem(false);
@@ -491,12 +493,12 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         if (m_handler.m_controller.getData().getDetailContainerPage() != null) {
                             CmsCoreProvider.get().lock(
                                 m_handler.m_controller.getData().getDetailContainerPage(),
-                                m_handler.m_controller.getData().getLoadTime(),
+                                m_handler.m_controller.getLoadTime(),
                                 openEditor);
                         } else {
                             CmsCoreProvider.get().lock(
                                 CmsCoreProvider.get().getStructureId(),
-                                m_handler.m_controller.getData().getLoadTime(),
+                                m_handler.m_controller.getLoadTime(),
                                 openEditor);
                         }
                     } else {
