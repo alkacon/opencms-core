@@ -1291,12 +1291,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<uuidresource>087ba7c9-e7fc-4336-acb8-d3416a4eb1fe</uuidresource>
 			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[container-element;locale]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
