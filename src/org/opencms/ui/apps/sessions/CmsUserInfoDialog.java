@@ -41,7 +41,9 @@ import org.opencms.ui.apps.sessions.CmsSessionsTable.TableProperty;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.util.CmsDateUtil;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -52,8 +54,8 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Dialog to show user information and to switch to user session.<p>
@@ -228,6 +230,13 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
                 res.add(getLastLoginMessage(inacTime));
             }
         }
+        res.add(
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0)
+                + ": "
+                + CmsDateUtil.getDateTime(
+                    new Date(m_user.getDateCreated()),
+                    DateFormat.SHORT,
+                    A_CmsUI.get().getLocale()));
         if (currentSession != null) {
             res.add(TableProperty.Site.getLocalizedMessage() + ": " + getSiteTitle(currentSession));
 

@@ -730,6 +730,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
         /**Last login. */
         LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
+        /**Last login. */
+        Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
         /**IsIndirect?. */
         INDIRECT("", Boolean.class, new Boolean(false)),
         /**From Other ou?. */
@@ -1207,6 +1209,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
             LOG.error("Can't read OU", e);
         }
         item.getItemProperty(TableProperty.LastLogin).setValue(new Long(user.getLastlogin()));
+        item.getItemProperty(TableProperty.Created).setValue(new Long(user.getDateCreated()));
         item.getItemProperty(TableProperty.INDIRECT).setValue(new Boolean(m_indirects.contains(user)));
         item.getItemProperty(TableProperty.FROMOTHEROU).setValue(new Boolean(!user.getOuFqn().equals(m_ou)));
         item.getItemProperty(TableProperty.STATUS).setValue(getStatusInt(disabled, newUser));
@@ -1385,6 +1388,22 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
         });
 
+        addGeneratedColumn(TableProperty.Created, new ColumnGenerator() {
+
+            private static final long serialVersionUID = -6781906011584975559L;
+
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+
+                long created = ((Long)source.getItem(itemId).getItemProperty(
+                    TableProperty.Created).getValue()).longValue();
+                return created == 0L
+                ? ""
+                : CmsDateUtil.getDateTime(new Date(created), DateFormat.SHORT, A_CmsUI.get().getLocale());
+
+            }
+
+        });
+
         setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
             private static final long serialVersionUID = 7367011213487089661L;
@@ -1408,7 +1427,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
             TableProperty.Name,
             TableProperty.FullName,
             TableProperty.OU,
-            TableProperty.LastLogin);
+            TableProperty.LastLogin,
+            TableProperty.Created);
     }
 
     /**
