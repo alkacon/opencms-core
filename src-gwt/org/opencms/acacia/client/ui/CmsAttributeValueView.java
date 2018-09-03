@@ -38,7 +38,10 @@ import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
+import org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection;
+import org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection.Direction;
 import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
@@ -49,6 +52,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -86,6 +90,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -93,6 +98,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -821,10 +827,14 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
 
         if (focusOn) {
             addStyleName(formCss().focused());
-            if (shouldDisplayTooltipAbove()) {
-                addStyleName(formCss().displayAbove());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_help) || m_hasError) {
+                if (shouldDisplayTooltipAbove()) {
+                    addStyleName(formCss().displayAbove());
+                } else {
+                    removeStyleName(formCss().displayAbove());
+                }
             } else {
-                removeStyleName(formCss().displayAbove());
+                m_helpBubble.getStyle().setDisplay(Display.NONE);
             }
         } else {
             removeStyleName(formCss().focused());
@@ -1036,7 +1046,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
      */
     void toggleLabelHover(boolean hovered) {
 
-        if (hovered) {
+        boolean hover = hovered && (m_hasError || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_help));
+        if (hover) {
             addStyleName(formCss().labelHover());
             if (shouldDisplayTooltipAbove()) {
                 addStyleName(formCss().displayAbove());
@@ -1046,6 +1057,9 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         } else {
             removeStyleName(formCss().labelHover());
         }
+        CmsValueFocusHandler.getInstance().hideHelpBubbles(
+            RootPanel.get(),
+            hover || !CmsCoreProvider.get().isShowEditorHelp());
     }
 
     /**
@@ -1129,6 +1143,33 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         HTML labelWidget = new HTML("<div class=\"" + formCss().label() + "\">" + m_label + "</div>");
         addLabelHoverHandler(labelWidget);
         m_widgetHolder.add(labelWidget);
+    }
+
+    /**
+     * Checks whether their is enough space to display the help bubble below the widget.<p>
+     *
+     * @return <code>true</code> in case their is enough space
+     */
+    private boolean hasHelpBubbleSpaceBelow() {
+
+        m_helpBubble.getStyle().setDisplay(Display.BLOCK);
+        int bubbleHeight = m_helpBubble.getOffsetHeight();
+        m_helpBubble.getStyle().clearDisplay();
+
+        Element widgetElement = m_widget.asWidget().getElement();
+        // Calculate top position for the popup
+        int top = widgetElement.getAbsoluteTop();
+
+        int windowTop = Window.getScrollTop();
+        int windowBottom = Window.getScrollTop() + Window.getClientHeight();
+
+        int distanceFromWindowTop = top - windowTop;
+
+        int distanceToWindowBottom = windowBottom - (top + widgetElement.getOffsetHeight());
+
+        boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
+            && (distanceToWindowBottom < bubbleHeight);
+        return !displayAbove;
     }
 
     /**
@@ -1233,6 +1274,27 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
      */
     private boolean shouldDisplayTooltipAbove() {
 
-        return !isSimpleValue();
+        boolean displayAbove;
+        if (isSimpleValue()) {
+            Direction direction = Direction.none;
+            if (m_widget instanceof I_CmsHasDisplayDirection) {
+                direction = ((I_CmsHasDisplayDirection)m_widget).getDisplayingDirection();
+            }
+            switch (direction) {
+                case above:
+                    displayAbove = false;
+                    break;
+                case below:
+                    displayAbove = true;
+                    break;
+                case none:
+                default:
+                    displayAbove = !hasHelpBubbleSpaceBelow();
+                    break;
+            }
+        } else {
+            displayAbove = true;
+        }
+        return displayAbove;
     }
 }

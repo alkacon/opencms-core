@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Composite;
  * Provides a DHTML calendar widget, for use on a widget dialog.<p>
  *
  * */
-public class CmsCalendarWidget extends Composite implements I_CmsEditWidget {
+public class CmsCalendarWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -61,6 +61,7 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget {
      * @param config The configuration string given from OpenCms XSD.
      */
     public CmsCalendarWidget(String config) {
+
         m_dateBox.setAllowInvalidValue(true);
 
         // All composites must call initWidget() in their constructors.
@@ -129,6 +130,14 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget {
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return Direction.below;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public String getValue() {
@@ -157,9 +166,7 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget {
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
-
+        return getElement().isOrHasChild(element);
     }
 
     /**

@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Label;
  * Wraps an edit widget to supply a widget label.<p>
  **/
 public class CmsFormWidgetWrapper extends Composite
-implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
+implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow, I_CmsHasDisplayDirection {
 
     /** The edit widget. */
     private I_CmsEditWidget m_editWidget;
@@ -110,6 +110,16 @@ implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
         // make sure the widget has been initialized
         assert m_editWidget != null;
         return m_editWidget.addValueChangeHandler(handler);
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return (m_editWidget instanceof I_CmsHasDisplayDirection)
+        ? ((I_CmsHasDisplayDirection)m_editWidget).getDisplayingDirection()
+        : Direction.none;
     }
 
     /**

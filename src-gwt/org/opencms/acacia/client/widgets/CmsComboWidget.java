@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  */
-public class CmsComboWidget extends Composite implements I_CmsEditWidget {
+public class CmsComboWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -127,6 +127,14 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return m_comboBox.displayingAbove() ? Direction.above : Direction.below;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public String getValue() {
@@ -155,9 +163,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
-
+        return getElement().isOrHasChild(element);
     }
 
     /**

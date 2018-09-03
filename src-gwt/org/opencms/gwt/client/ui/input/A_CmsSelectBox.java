@@ -45,6 +45,7 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -266,6 +267,40 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
+     * Returns whether the select options are being displayed below or above the widget.<p>
+     *
+     * @return <code>true</code> in case the select options are displayed above the widget
+     */
+    public boolean displayingAbove() {
+
+        int popupHeight = getPopupHeight();
+        // Calculate top position for the popup
+        int top = m_opener.getAbsoluteTop();
+
+        // Make sure scrolling is taken into account, since
+        // box.getAbsoluteTop() takes scrolling into account.
+        int windowTop = Window.getScrollTop();
+        int windowBottom = Window.getScrollTop() + Window.getClientHeight();
+
+        // Distance from the top edge of the window to the top edge of the
+        // text box
+        int distanceFromWindowTop = top - windowTop;
+
+        // Distance from the bottom edge of the window to the bottom edge of
+        // the text box
+        int distanceToWindowBottom = windowBottom - (top + m_opener.getOffsetHeight());
+
+        // If there is not enough space for the popup's height below the text
+        // box and there IS enough space for the popup's height above the text
+        // box, then then position the popup above the text box. However, if there
+        // is not enough space on either side, then stick with displaying the
+        // popup below the text box.
+        boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
+            && (distanceToWindowBottom < popupHeight);
+        return displayAbove;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -482,6 +517,25 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
+     * Returns the offset height of the popup panel, should also work when the popup is currently not showing.<p>
+     *
+     * @return the offset height
+     */
+    protected int getPopupHeight() {
+
+        if (m_popup.isShowing()) {
+            return m_popup.getOffsetHeight();
+        } else {
+            Element el = CmsDomUtil.clone(m_popup.getElement());
+            RootPanel.getBodyElement().appendChild(el);
+            el.getStyle().setProperty("position", "absolute");
+            int height = el.getOffsetHeight();
+            el.removeFromParent();
+            return height;
+        }
+    }
+
+    /**
      * Initializes the selector width.<p>
      */
     protected void initMaxCellWidth() {
@@ -660,7 +714,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             int width = m_popup.getOffsetWidth();
 
             int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
-            int popupHeight = m_popup.getOffsetHeight();
+            int popupHeight = getPopupHeight();
             int dx = 0;
             if (width > (m_opener.getOffsetWidth())) {
                 int spaceOnTheRight = (Window.getClientWidth() + Window.getScrollLeft())
@@ -684,13 +738,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             // the text box
             int distanceToWindowBottom = windowBottom - (top + m_opener.getOffsetHeight());
 
-            // If there is not enough space for the popup's height below the text
-            // box and there IS enough space for the popup's height above the text
-            // box, then then position the popup above the text box. However, if there
-            // is not enough space on either side, then stick with displaying the
-            // popup below the text box.
-            boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
-                && (distanceToWindowBottom < popupHeight);
+            boolean displayAbove = displayingAbove();
 
             // in case there is not enough space, add a scroll panel to the selector popup
             if ((displayAbove && (distanceFromWindowTop < popupHeight))

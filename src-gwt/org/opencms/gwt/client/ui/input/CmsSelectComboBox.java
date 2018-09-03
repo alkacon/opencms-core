@@ -90,6 +90,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
      * @param forProperties if true, use the special widget versions for the property dialog
      */
     public CmsSelectComboBox(Map<String, String> options, boolean forProperties) {
+
         m_options = options;
         m_selectBox = forProperties ? new CmsPropertySelectBox(options) : new CmsSelectBox(options, false);
         m_comboBox = forProperties ? new CmsPropertyComboBox(m_options) : new CmsComboBox(m_options);
@@ -153,6 +154,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
                 r2.removeHandler();
             }
         };
+    }
+
+    /**
+     * Returns whether the select options are being displayed below or above the widget.<p>
+     *
+     * @return <code>true</code> in case the select options are displayed above the widget
+     */
+    public boolean displayingAbove() {
+
+        return getActiveWidget().displayingAbove();
     }
 
     /**
@@ -293,7 +304,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
      *
      * @return the active widget
      */
-    private I_CmsFormWidget getActiveWidget() {
+    private A_CmsSelectBox<?> getActiveWidget() {
 
         if (m_comboMode) {
             return m_comboBox;

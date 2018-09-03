@@ -59,7 +59,7 @@ import com.google.gwt.user.client.Timer;
  * After constructing the instance, the actual editor is opened using the init() method, and destroyed with the close()
  * method. While the editor is opened, the edited contents can be accessed using the methods of the HasValue interface.
  */
-public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResizeHandlers {
+public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResizeHandlers, I_CmsHasDisplayDirection {
 
     /** Use as option to disallow any HTML or formatting the content. */
     public static final String NO_HTML_EDIT = "no_html_edit";
@@ -170,6 +170,14 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
         return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return Direction.above;
     }
 
     /**

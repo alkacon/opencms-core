@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  */
-public class CmsSelectComboWidget extends Composite implements I_CmsEditWidget {
+public class CmsSelectComboWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -113,6 +113,14 @@ public class CmsSelectComboWidget extends Composite implements I_CmsEditWidget {
 
         ValueChangeEvent.fire(this, m_comboBox.getFormValueAsString());
 
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return m_comboBox.displayingAbove() ? Direction.above : Direction.below;
     }
 
     /**

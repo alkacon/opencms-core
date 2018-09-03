@@ -55,10 +55,7 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * The widget attaches event listeners to the editor so it can dynamically update the list of select options when the content changes.
  */
-public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidget {
-
-    /** Path components of the path used to select the option value. */
-    private String[] m_valuePath;
+public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
 
     /** The global select box. */
     protected CmsSelectBox m_selectBox = new CmsSelectBox();
@@ -66,9 +63,14 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
     /** Value of the activation. */
     private boolean m_active = true;
 
+    /** The removed options. */
+    private CmsSelectConfigurationParser m_optionsAllRemoved;
+
+    /** The default options. */
     private CmsSelectConfigurationParser m_optionsDefault;
 
-    private CmsSelectConfigurationParser m_optionsAllRemoved;
+    /** Path components of the path used to select the option value. */
+    private String[] m_valuePath;
 
     /**
      * Creates a new widget instance.<p>
@@ -80,7 +82,6 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
         CmsDebugLog.consoleLog("Configuration of formatter-select-widget: " + configuration);
         String[] configParts = configuration.split("\\|\\|");
         if (configParts.length != 3) {
-            //TODO: Throw exception
             CmsDebugLog.consoleLog("There were " + configParts.length + " configuration parts. 3 were expected.");
         }
         m_valuePath = splitPath(configParts[0]);
@@ -134,6 +135,14 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return m_selectBox.displayingAbove() ? Direction.above : Direction.below;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public String getValue() {
@@ -179,8 +188,7 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
+        return getElement().isOrHasChild(element);
 
     }
 
@@ -251,7 +259,7 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
     /**
      * Replaces the select options with the given options.<p>
      *
-     * @param options the map of select options (keys are option values, values are option descriptions)
+     * @param parser the configuration parser
      */
     private void replaceOptions(CmsSelectConfigurationParser parser) {
 
@@ -266,7 +274,6 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
         if (parser.getDefaultValue() != null) {
             //set the declared value selected.
             m_selectBox.selectValue(parser.getDefaultValue());
-            //TODO?: m_defaultValue = parser.getDefaultValue();
         }
         m_selectBox.setFormValueAsString(oldValue);
     }

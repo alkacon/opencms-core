@@ -58,16 +58,7 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * The widget attaches event listeners to the editor so it can dynamically update the list of select options when the content changes.
  */
-public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidget {
-
-    /** Path components of the base path. */
-    private String[] m_basePath;
-
-    /** Path components of the path used to select the option value. */
-    private String[] m_valuePath;
-
-    /** Path components of the path used to select the 'nice name' for the select option. */
-    private String[] m_descriptionPath;
+public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
 
     /** The global select box. */
     protected CmsSelectBox m_selectBox = new CmsSelectBox();
@@ -75,8 +66,17 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
     /** Value of the activation. */
     private boolean m_active = true;
 
+    /** Path components of the base path. */
+    private String[] m_basePath;
+
+    /** Path components of the path used to select the 'nice name' for the select option. */
+    private String[] m_descriptionPath;
+
     /** The last value set through the setValue method. This is not necessarily the current widget value. */
     private String m_externalValue;
+
+    /** Path components of the path used to select the option value. */
+    private String[] m_valuePath;
 
     /**
      * Creates a new widget instance.<p>
@@ -150,6 +150,14 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection#getDisplayingDirection()
+     */
+    public Direction getDisplayingDirection() {
+
+        return m_selectBox.displayingAbove() ? Direction.above : Direction.below;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public String getValue() {
@@ -195,9 +203,7 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
-
+        return getElement().isOrHasChild(element);
     }
 
     /**
