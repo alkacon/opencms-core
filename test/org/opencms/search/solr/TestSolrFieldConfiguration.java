@@ -35,10 +35,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.json.JSONObject;
-import org.opencms.main.CmsException;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.search.CmsSearchException;
@@ -50,7 +51,6 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -60,7 +60,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.common.SolrInputDocument;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -186,7 +185,6 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         assertTrue(fieldValue.equals("Homepage n.a."));
         fieldValue = res.getField("ahomepage_en");
         assertTrue(fieldValue.contains("/sites/default/index.html"));
-
 
         //////////////////
         // MAPPING TEST //
@@ -520,16 +518,22 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Checks if the extra fields for list sort options are index correctly.
-     *
-     * @throws CmsException thrown if module import fails
-     * @throws IOException thrown if module import fails
-     * @throws InterruptedException thrown if module import fails
+     * @throws Exception should not happen
      */
-    public void testListSortOptionFields() throws CmsException, IOException, InterruptedException {
+    public void testListSortOptionFields() throws Exception {
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("/");
         importModule(getCmsObject(), "org.opencms.test.modules.solr.additionalsortfields");
+        CmsResource g = cms.readResource("/sites/default/files/g.txt", CmsResourceFilter.ALL);
+        CmsResource g1 = cms.readResource("/sites/default/files/1/g.txt", CmsResourceFilter.ALL);
+        try (AutoCloseable c = CmsLockUtil.withLockedResources(cms, g, g1)) {
+            cms.setDateExpired(g, System.currentTimeMillis() + 10000, false);
+            cms.setDateExpired(g1, System.currentTimeMillis() + 10000, false);
+        }
+        OpenCms.getPublishManager().publishResource(cms, g.getRootPath());
+        OpenCms.getPublishManager().publishResource(cms, g1.getRootPath());
+        OpenCms.getPublishManager().waitWhileRunning();
 
         String query = "q=*:*&fq=parent-folders:\"/sites/default/files/\"&rows=20";
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE);
