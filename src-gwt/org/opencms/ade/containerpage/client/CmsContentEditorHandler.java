@@ -469,7 +469,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         onClose);
                 } else {
                     addEditingHistoryItem(false);
-                    boolean allowSettings = !m_handler.m_controller.isEditingDisabled()
+                    boolean allowSettings = m_handler.m_controller.getData().allowSettingsInEditor()
+                        && !m_handler.m_controller.isEditingDisabled()
                         && !serverId.equals(String.valueOf(m_handler.m_controller.getData().getDetailId()));
                     I_CmsSimpleCallback<Boolean> openEditor = new I_CmsSimpleCallback<Boolean>() {
 

@@ -175,6 +175,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** Temporary flag to disable the option to edit settings in content editor. */
+    private boolean m_allowSettingsInEditor;
+
     /**
      * Constructor.<p>
      *
@@ -261,6 +264,11 @@ public final class CmsCntPageData implements IsSerializable {
     protected CmsCntPageData() {
 
         // empty
+    }
+
+    public boolean allowSettingsInEditor() {
+
+        return m_allowSettingsInEditor;
     }
 
     /**
@@ -523,6 +531,11 @@ public final class CmsCntPageData implements IsSerializable {
     public boolean isUseClassicEditor() {
 
         return m_useClassicEditor;
+    }
+
+    public void setAllowSettingsInEditor(boolean allowSettingsInEditor) {
+
+        m_allowSettingsInEditor = allowSettingsInEditor;
     }
 
     /**

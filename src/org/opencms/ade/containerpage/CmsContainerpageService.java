@@ -97,6 +97,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -1446,6 +1447,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 localeLinkBeans,
                 title,
                 System.currentTimeMillis());
+            boolean allowSettingsInEditor = true;
+            CmsModule baseModule = OpenCms.getModuleManager().getModule("org.opencms.base");
+            if (baseModule != null) {
+                String param = baseModule.getParameter("allowSettingsInEditor");
+                allowSettingsInEditor = CmsStringUtil.isEmptyOrWhitespaceOnly(param)
+                    || Boolean.valueOf(param).booleanValue();
+            }
+            data.setAllowSettingsInEditor(allowSettingsInEditor);
         } catch (Throwable e) {
             error(e);
         }
