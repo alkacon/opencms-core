@@ -1150,7 +1150,7 @@ public final class CmsJspStandardContextBean {
     public Map<String, CmsJspResourceWrapper> getLocaleResource() {
 
         Map<String, CmsJspResourceWrapper> result = getResourceWrapperForPage().getLocaleResource();
-        List<Locale> locales = CmsLocaleGroupService.getPossibleLocales(m_cms, getContainerPage());
+        List<Locale> locales = CmsLocaleGroupService.getPossibleLocales(m_cms, getPageResource());
         for (Locale locale : locales) {
             if (!result.containsKey(locale.toString())) {
                 result.put(locale.toString(), null);
@@ -1188,6 +1188,27 @@ public final class CmsJspStandardContextBean {
     public CmsContainerPageBean getPage() {
 
         return m_page;
+    }
+
+    /**
+     * Returns the current container page resource.<p>
+     *
+     * @return the current container page resource
+     */
+    public CmsResource getPageResource() {
+
+        try {
+            if (m_pageResource == null) {
+                // get the container page itself, checking the history first
+                m_pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(m_request);
+                if (m_pageResource == null) {
+                    m_pageResource = m_cms.readResource(m_cms.getRequestContext().getUri());
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return m_pageResource;
     }
 
     /**
@@ -1726,7 +1747,7 @@ public final class CmsJspStandardContextBean {
      */
     public boolean isModelGroupPage() {
 
-        CmsResource page = getContainerPage();
+        CmsResource page = getPageResource();
         return (page != null) && CmsContainerpageService.isEditingModelGroups(m_cms, page);
 
     }
@@ -2004,27 +2025,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the current container page resource.<p>
-     *
-     * @return the current container page resource
-     */
-    private CmsResource getContainerPage() {
-
-        try {
-            if (m_pageResource == null) {
-                // get the container page itself, checking the history first
-                m_pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(m_request);
-                if (m_pageResource == null) {
-                    m_pageResource = m_cms.readResource(m_cms.getRequestContext().getUri());
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return m_pageResource;
-    }
-
-    /**
      * Convenience method for getting a request attribute without an explicit cast.<p>
      *
      * @param name the attribute name
@@ -2048,7 +2048,7 @@ public final class CmsJspStandardContextBean {
         if (m_resourceWrapper != null) {
             return m_resourceWrapper;
         }
-        m_resourceWrapper = new CmsJspResourceWrapper(m_cms, getContainerPage());
+        m_resourceWrapper = new CmsJspResourceWrapper(m_cms, getPageResource());
         return m_resourceWrapper;
     }
 

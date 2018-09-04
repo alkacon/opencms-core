@@ -566,21 +566,40 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 }
                 // iterate over elements to render
                 int numRenderedElements = 0;
+                boolean first = true;
                 for (CmsContainerElementBean elementBean : allElements) {
+                    // in case of rendering a detail container on a detail page,
+                    // the first element may be used to provide settings for the detail content
+                    // this element will not be rendered, in case the detail page is not actually used to render detail content
+                    boolean skipDetailTemplateElement = false;
                     try {
-                        boolean rendered = renderContainerElement(
-                            (HttpServletRequest)req,
-                            cms,
-                            standardContext,
-                            elementBean,
-                            locale,
-                            numRenderedElements >= maxElements);
-                        if (rendered) {
-                            numRenderedElements += 1;
-                        }
+                        skipDetailTemplateElement = first
+                            && !m_editableRequest
+                            && m_detailView
+                            && (detailElement == null)
+                            && OpenCms.getADEManager().isDetailPage(cms, standardContext.getPageResource())
+                            && OpenCms.getADEManager().getDetailPages(cms, elementBean.getTypeName()).contains(
+                                CmsResource.getFolderPath(standardContext.getPageResource().getRootPath()));
                     } catch (Exception e) {
-                        if (LOG.isErrorEnabled()) {
-                            LOG.error(e.getLocalizedMessage(), e);
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    first = false;
+                    if (!skipDetailTemplateElement) {
+                        try {
+                            boolean rendered = renderContainerElement(
+                                (HttpServletRequest)req,
+                                cms,
+                                standardContext,
+                                elementBean,
+                                locale,
+                                numRenderedElements >= maxElements);
+                            if (rendered) {
+                                numRenderedElements += 1;
+                            }
+                        } catch (Exception e) {
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
                         }
                     }
                 }
