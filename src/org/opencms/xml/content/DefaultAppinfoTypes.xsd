@@ -358,21 +358,50 @@
 	
 		<xsd:complexType name="OpenCmsDefaultAppinfoFields">
 		<xsd:sequence>
-			<xsd:element name="field" type="OpenCmsDefaultAppinfoField" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Setting" type="OpenCmsDefaultAppinfoField" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsFieldRelation">
+        <xsd:sequence>
+            <xsd:element name="Type" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="Invalidate" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsFieldVisibility">
+        <xsd:sequence>
+            <xsd:element name="Class" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="Params" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsFieldMapping">
+        <xsd:sequence>
+            <xsd:element name="MapTo" type="xsd:string" />
+            <xsd:element name="UseDefault" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoField">
     	<xsd:sequence>
-    		<xsd:element name="PropertyName" type="xsd:string" minOccurs="1" maxOccurs="1" /><!-- * -->
+    		<xsd:element name="PropertyName" type="xsd:string" minOccurs="1" maxOccurs="1" />
             <xsd:element name="DisplayName" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Widget" type="xsd:string" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="Default" type="xsd:string" minOccurs="0" maxOccurs="1" /><!-- * -->
+            <xsd:element name="Default" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="DefaultResolveMacros" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="WidgetConfig" type="xsd:string" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="RuleRegex" type="xsd:string" minOccurs="0" maxOccurs="1" /><!-- * -->
-            <xsd:element name="RuleType" type="xsd:string" minOccurs="0" maxOccurs="1" /><!-- * -->
-            <xsd:element name="Error" type="xsd:string" minOccurs="0" maxOccurs="1" /><!-- * -->
+            <xsd:element name="RuleRegex" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="RuleType" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Error" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Relation" type="OpenCmsFieldRelation" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Search" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="FieldVisibility" type="OpenCmsFieldVisibility" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Mapping" type="OpenCmsFieldMapping" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="NestedFormatter" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Display" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Synchronization" type="xsd:string" minOccurs="0" maxOccurs="1" />
     	</xsd:sequence>
 	</xsd:complexType>
 	
