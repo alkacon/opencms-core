@@ -339,7 +339,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      */
     public int getNavTreeLevel() {
 
-        if (m_navTreeLevel < 0) {
+        if (m_navTreeLevel == Integer.MIN_VALUE) {
             // use "lazy initializing"
             m_navTreeLevel = CmsResource.getPathLevel(m_sitePath);
         }
@@ -614,7 +614,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /**
      * Returns the site path of the target resource.<p>
-     * 
+     *
      * This may not be the same as the navigation resource.<p>
      *
      * @return the target resource site path
@@ -636,7 +636,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /**
      * Helper to get locale specific properties.
-     * 
+     *
      * @return the locale specific properties map.
      */
     private Map<String, String> getLocaleProperties() {
