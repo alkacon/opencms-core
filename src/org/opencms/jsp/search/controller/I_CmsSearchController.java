@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Arrays;
@@ -45,9 +46,22 @@ public interface I_CmsSearchController {
     void addParametersForCurrentState(Map<String, String[]> parameters);
 
     /** Generate the Solr query part specific for the controller, e.g., the part for a field facet.
+     *
      * @param query A, possibly empty, query, where further query parts are added
+     *
+     * @deprecated use {@link #addQueryParts(CmsSolrQuery, CmsObject)} instead.
      */
-    void addQueryParts(CmsSolrQuery query);
+    @Deprecated
+    default void addQueryParts(CmsSolrQuery query) {
+
+        addQueryParts(query, null);
+    }
+
+    /** Generate the Solr query part specific for the controller, e.g., the part for a field facet.
+     * @param query A, possibly empty, query, where further query parts are added
+     * @param cms the current context to resolve context-specific macros.
+     */
+    void addQueryParts(CmsSolrQuery query, CmsObject cms);
 
     /** Update the controllers state in case the term that is search for (the query as given by the user) has changed. */
     void updateForQueryChange();

@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
 import org.opencms.jsp.search.state.CmsSearchStateFacet;
@@ -71,10 +72,10 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         addFacetPart(query);
         addFilterQueryParts(query);

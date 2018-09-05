@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.search.solr.CmsSolrQuery;
 
@@ -58,10 +59,10 @@ public class CmsSearchControllerHighlighting implements I_CmsSearchControllerHig
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         query.set("hl", "true");
         query.set("hl.fl", m_config.getHightlightField());

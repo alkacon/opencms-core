@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.state.CmsSearchStatePagination;
 import org.opencms.jsp.search.state.I_CmsSearchStatePagination;
@@ -65,10 +66,10 @@ public class CmsSearchControllerPagination implements I_CmsSearchControllerPagin
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         query.setRows(Integer.valueOf(getCurrentPageSize()));
         final int start = getCurrentPageStart();

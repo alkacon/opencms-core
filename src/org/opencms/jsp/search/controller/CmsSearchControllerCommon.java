@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.state.CmsSearchStateCommon;
 import org.opencms.jsp.search.state.I_CmsSearchStateCommon;
@@ -37,12 +38,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
 /** Search controller for the common search options. */
 public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
 
+    /** Value macro. */
+    private static final String MACRO_VALUE = "value";
+    /** Site root macro. */
+    private static final String MACRO_SITE_ROOT = "site_root";
     /** Configuration of common search options. */
     private final I_CmsSearchConfigurationCommon m_config;
     /** State of the common search options. */
@@ -70,10 +76,10 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         String queryString = m_state.getQuery();
         if (!m_config.getIgnoreQueryParam()) {
@@ -100,9 +106,14 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
         }
 
         if (!m_config.getExtraSolrParams().isEmpty()) {
+            String currentSiteRoot = null == cms ? null : cms.getRequestContext().getSiteRoot();
+            if ((null != currentSiteRoot) && !currentSiteRoot.endsWith("/")) {
+                currentSiteRoot = currentSiteRoot + "/";
+            }
             Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(m_config.getExtraSolrParams());
             for (String key : extraParamsMap.keySet()) {
                 for (String value : Arrays.asList(extraParamsMap.get(key))) {
+                    value = resolveMacro(value, MACRO_SITE_ROOT, currentSiteRoot);
                     if (SET_VARIABLES.contains(key)) {
                         query.set(key, value);
                     } else {
@@ -112,8 +123,9 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             }
         }
         for (String additionalParam : m_state.getAdditionalParameters().keySet()) {
-            String additionalParamString = resolveMacros(
+            String additionalParamString = resolveMacro(
                 m_config.getAdditionalParameters().get(additionalParam),
+                MACRO_VALUE,
                 m_state.getAdditionalParameters().get(additionalParam));
             Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(additionalParamString);
             for (String key : extraParamsMap.keySet()) {
@@ -192,13 +204,17 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
         m_state.setAdditionalParameters(additionalParameters);
     }
 
-    /** Replaces the %(value) macro accordingly.
+    /**
+     * Replaces the macro with the value, unless the value is <code>null</code>, then the macro is kept.
+     *
      * @param string The String where the macros should be replaced.
      * @param value The value used for the replacement.
+     * @param macroName The name of the macro to resolve.
+     *
      * @return The original String with %(value) macros replaced.
      */
-    private String resolveMacros(final String string, final String value) {
+    private String resolveMacro(final String string, final String macroName, final String value) {
 
-        return string.replaceAll("\\%\\(value\\)", value);
+        return null != value ? string.replaceAll("\\%\\(" + Pattern.quote(macroName) + "\\)", value) : string;
     }
 }

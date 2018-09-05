@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.state.CmsSearchStateFacet;
 import org.opencms.jsp.search.state.I_CmsSearchStateFacet;
@@ -70,10 +71,10 @@ public class CmsSearchControllerFacetRange implements I_CmsSearchControllerFacet
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         addFacetPart(query);
         addFilterQueryParts(query);
@@ -163,7 +164,8 @@ public class CmsSearchControllerFacetRange implements I_CmsSearchControllerFacet
         StringBuffer value = new StringBuffer();
         value.append("{!key=").append(m_config.getName());
         addFacetOptions(value);
-        if (m_config.getIgnoreAllFacetFilters() || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
+        if (m_config.getIgnoreAllFacetFilters()
+            || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
             value.append(" ex=").append(m_config.getIgnoreTags());
         }
         value.append("}");

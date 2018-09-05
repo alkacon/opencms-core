@@ -1547,7 +1547,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             resetTextSearch();
         }
 
-        controller.addQueryParts(query);
+        controller.addQueryParts(query, A_CmsUI.getCmsObject());
         executeSearch(controller, query);
     }
 
@@ -1879,7 +1879,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             CmsSolrQuery query = m_currentConfigParser.getInitialQuery();
             CmsSearchController controller = new CmsSearchController(new CmsSearchConfiguration(m_currentConfigParser));
             controller.getPagination().getState().setCurrentPage(1);
-            controller.addQueryParts(query);
+            controller.addQueryParts(query, A_CmsUI.getCmsObject());
 
             CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
             try {

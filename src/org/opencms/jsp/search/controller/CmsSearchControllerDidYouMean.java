@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.state.CmsSearchStateDidYouMean;
 import org.opencms.jsp.search.state.I_CmsSearchStateDidYouMean;
@@ -61,9 +62,9 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         query.set("spellcheck", "true");
         String queryString = m_state.getQuery();

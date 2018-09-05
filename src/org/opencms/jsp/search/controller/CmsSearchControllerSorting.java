@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
 import org.opencms.jsp.search.state.CmsSearchStateSorting;
@@ -65,10 +66,10 @@ public class CmsSearchControllerSorting implements I_CmsSearchControllerSorting 
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         if (m_state.getSelected() != null) {
             query.set("sort", m_state.getSelected().getSolrValue());

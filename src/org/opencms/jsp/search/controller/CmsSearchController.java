@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.search.solr.CmsSolrQuery;
 
@@ -108,15 +109,15 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery, CmsObject)
      */
     @Override
-    public void addQueryParts(CmsSolrQuery query) {
+    public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         final Iterator<I_CmsSearchController> it = m_controllers.iterator();
-        it.next().addQueryParts(query);
+        it.next().addQueryParts(query, cms);
         while (it.hasNext()) {
-            it.next().addQueryParts(query);
+            it.next().addQueryParts(query, cms);
         }
         // fix for highlighting bug
         if ((getHighlighting() != null) && !((query.getParams("df") != null) || (query.getParams("type") != null))) {

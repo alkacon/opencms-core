@@ -365,7 +365,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             && (null == m_searchController.getCommon().getConfig().getSolrIndex())
             && (null != m_addContentInfoForEntries)) {
             CmsSolrQuery query = new CmsSolrQuery();
-            m_searchController.addQueryParts(query);
+            m_searchController.addQueryParts(query, m_cms);
             query.setStart(Integer.valueOf(0));
             query.setRows(m_addContentInfoForEntries);
             CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
@@ -414,7 +414,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             }
         }
         CmsSolrQuery query = new CmsSolrQuery(null, queryParams);
-        m_searchController.addQueryParts(query);
+        m_searchController.addQueryParts(query, m_cms);
         try {
             // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
             // also set resource filter to allow for returning unreleased/expired resources if necessary.
