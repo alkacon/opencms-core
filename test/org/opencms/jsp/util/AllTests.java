@@ -58,6 +58,7 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(TestCmsJspContentAccessBean.suite());
+        suite.addTest(TestCmsJspResourceWrapper.suite());
         suite.addTest(TestCmsJspVfsAccessBean.suite());
         suite.addTest(TestCmsJspNavigationBean.suite());
         suite.addTest(TestCmsJspResourceAccessBean.suite());
