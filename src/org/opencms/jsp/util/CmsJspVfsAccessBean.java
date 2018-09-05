@@ -654,6 +654,58 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
+     * Returns the parent folder of a resource.<p>
+     *
+     * This assumes the parameter is either a CmsResource, or a String representing a file name.
+     * If the parameter is a CmsResource, the result will be relative to the current site.</p>
+     *
+     * @return the parent folder of a resource
+     *
+     * @param obj a CmsResource or a String representing a resource name
+     *
+     * @see CmsResource#getParentFolder(String)
+     * @see org.opencms.jsp.CmsJspResourceWrapper#getSiteParentFolder()
+     */
+    public String getParentFolder(Object obj) {
+
+        String result;
+        if (obj instanceof CmsResource) {
+            result = CmsResource.getParentFolder(m_cms.getRequestContext().getSitePath((CmsResource)obj));
+        } else {
+            result = CmsResource.getParentFolder(String.valueOf(obj));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the directory level of a resource.<p>
+     *
+     * This assumes the parameter is either a CmsResource, or a String representing a file name.
+     * If the parameter is a CmsResource, the result will be relative to the current site.</p>
+     *
+     * The root folder "/" has level 0,
+     * a folder "/foo/" would have level 1,
+     * a folder "/foo/bar/" level 2 etc.<p>
+     *
+     * @param obj a CmsResource or a String representing a resource name
+     *
+     * @return the directory level of a resource
+     *
+     * @see CmsResource#getPathLevel(String)
+     * @see org.opencms.jsp.CmsJspResourceWrapper#getSitePathLevel()
+     */
+    public int getPathLevel(Object obj) {
+
+        int result;
+        if (obj instanceof CmsResource) {
+            result = CmsResource.getPathLevel(m_cms.getRequestContext().getSitePath((CmsResource)obj));
+        } else {
+            result = CmsResource.getPathLevel(String.valueOf(obj));
+        }
+        return result;
+    }
+
+    /**
      * Short form for {@link #getReadPermissions()}.<p>
      *
      * Usage example on a JSP with the EL:<pre>
@@ -949,6 +1001,58 @@ public final class CmsJspVfsAccessBean {
     public Map<String, CmsJspResourceWrapper> getResource() {
 
         return getReadResource();
+    }
+
+    /**
+     * Returns the resource name extension if present.<p>
+     *
+     * This assumes the parameter is either a CmsResource, or a String representing a resource name.</p>
+     *
+     * The extension will always be lower case.<p>
+     *
+     * @param obj a CmsResource or a String representing a resource name
+     *
+     * @return the extension or <code>null</code> if not available
+     *
+     * @see CmsResource#getExtension(String)
+     * @see org.opencms.jsp.CmsJspResourceWrapper#getResourceExtension()
+     */
+    public String getResourceExtension(Object obj) {
+
+        String result;
+        if (obj instanceof CmsResource) {
+            result = CmsResource.getExtension(((CmsResource)obj).getRootPath());
+        } else {
+            result = CmsResource.getExtension(String.valueOf(obj));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the name of a resource without the path information.<p>
+     *
+     * This assumes the parameter is either a CmsResource, or a String representing a resource name.<p>
+     *
+     * The resource name of a file is the name of the file.
+     * The resource name of a folder is the folder name with trailing "/".
+     * The resource name of the root folder is <code>/</code>.<p>
+     *
+     * @param obj a CmsResource or a String representing a resource name
+     *
+     * @return the name of a resource without the path information
+     *
+     * @see CmsResource#getName()
+     * @see org.opencms.jsp.CmsJspResourceWrapper#getResourceName()
+     */
+    public String getResourceName(Object obj) {
+
+        String result;
+        if (obj instanceof CmsResource) {
+            result = ((CmsResource)obj).getName();
+        } else {
+            result = CmsResource.getName(String.valueOf(obj));
+        }
+        return result;
     }
 
     /**

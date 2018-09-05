@@ -70,6 +70,9 @@ public class CmsJspResourceWrapper extends CmsResource {
     /** The resource / file content as a String. */
     private String m_content;
 
+    /** The calculated site path of the resource. */
+    private String m_sitePath;
+
     /**
      * Creates a new instance.<p>
      *
@@ -113,6 +116,21 @@ public class CmsJspResourceWrapper extends CmsResource {
             m_content = new String(getFile().getContents());
         }
         return m_content;
+    }
+
+    /**
+     * Returns the resource name extension if present.<p>
+     *
+     * The extension will always be lower case.<p>
+     *
+     * @return the extension or <code>null</code> if not available
+     *
+     * @see CmsResource#getExtension(String)
+     * @see org.opencms.jsp.util.CmsJspVfsAccessBean#getResourceExtension(Object)
+     */
+    public String getExtension() {
+
+        return getExtension(getRootPath());
     }
 
     /**
@@ -188,12 +206,108 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
+     * Returns the resource name extension if present.<p>
+     *
+     * The extension will always be lower case.<p>
+     *
+     * @return the extension or <code>null</code> if not available
+     *
+     * @see CmsResource#getExtension(String)
+     * @see org.opencms.jsp.util.CmsJspVfsAccessBean#getResourceExtension(Object)
+     */
+    public String getResourceExtension() {
+
+        return getExtension();
+    }
+
+    /**
+     * Returns the name of the resource without the path information.<p>
+     *
+     * The resource name of a file is the name of the file.
+     * The resource name of a folder is the folder name with trailing "/".
+     * The resource name of the root folder is <code>/</code>.<p>
+     *
+     * @return the name of the resource without the path information
+     *
+     * @see CmsResource#getName()
+     * @see org.opencms.jsp.util.CmsJspVfsAccessBean#getResourceName(Object)
+     */
+    public String getResourceName() {
+
+        return getName();
+    }
+
+    /**
+     * Returns the parent folder to the resource from the root site.<p>
+     *
+     * @return the parent folder to the resource from the root site
+     *
+     * @see CmsResource#getParentFolder(String)
+     */
+    public String getRootParentFolder() {
+
+        return getParentFolder(getRootPath());
+    }
+
+    /**
+     * Returns the directory level of a resource from the root site.<p>
+     *
+     * The root folder "/" has level 0,
+     * a folder "/foo/" would have level 1,
+     * a folder "/foo/bar/" level 2 etc.<p>
+     *
+     * @return the directory level of a resource from the root site
+     *
+     * @see CmsResource#getPathLevel(String)
+     */
+    public int getRootPathLevel() {
+
+        return getPathLevel(getRootPath());
+    }
+
+    /**
+     * Returns the parent folder to the resource in the current site.<p>
+     *
+     * @return the parent folder to the resource in the current site
+     *
+     * @see CmsResource#getParentFolder(String)
+     * @see org.opencms.jsp.util.CmsJspVfsAccessBean#getParentFolder(Object)
+     */
+    public String getSiteParentFolder() {
+
+        return getParentFolder(getSitePath());
+    }
+
+    /**
      * Returns the current site path to the resource.<p>
      *
      * @return the current site path to the resource
+     *
+     * @see org.opencms.file.CmsRequestContext#getSitePath(CmsResource)
      */
     public String getSitePath() {
 
-        return m_cms.getRequestContext().getSitePath(this);
+        if (m_sitePath == null) {
+            m_sitePath = m_cms.getRequestContext().getSitePath(this);
+        }
+
+        return m_sitePath;
+    }
+
+    /**
+     * Returns the directory level of a resource in the current site.<p>
+     *
+     * The root folder "/" has level 0,
+     * a folder "/foo/" would have level 1,
+     * a folder "/foo/bar/" level 2 etc.<p>
+     *
+     * @return the directory level of a resource in the current site
+     *
+     * @see CmsResource#getPathLevel(String)
+     * @see org.opencms.jsp.util.CmsJspVfsAccessBean#getPathLevel(Object)
+     */
+    public int getSitePathLevel() {
+
+        return getPathLevel(getSitePath());
     }
 }
