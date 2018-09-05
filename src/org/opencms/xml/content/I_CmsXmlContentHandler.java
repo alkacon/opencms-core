@@ -69,17 +69,17 @@ public interface I_CmsXmlContentHandler {
      * The available display types for element widgets.
      */
     public static enum DisplayType {
-        /** The two column type. */
-        column,
+    /** The two column type. */
+    column,
 
-        /** The default display type. */
-        none,
+    /** The default display type. */
+    none,
 
-        /** The single line type. */
-        singleline,
+    /** The single line type. */
+    singleline,
 
-        /** The default wide display type. */
-        wide
+    /** The default wide display type. */
+    wide
     }
 
     /**
@@ -156,6 +156,24 @@ public interface I_CmsXmlContentHandler {
      * @return the configuration String value for the widget used to edit the given XML content schema type
      */
     String getConfiguration(I_CmsXmlSchemaType type);
+
+    /**
+     * Gets the widget configuration for the given sub-path.<p>
+     *
+     * @param remainingPath a sub-path
+     * @return the widget configuration for the given sub-path
+     */
+    String getConfiguration(String remainingPath);
+
+    /**
+     * Gets the configured display type for a given path.<p>
+     *
+     * @param path the path
+     * @param defaultVal the value to return if no configured display type is found
+     *
+     * @return the configured display type (or the default value)
+     */
+    DisplayType getConfiguredDisplayType(String path, DisplayType defaultVal);
 
     /**
      * Returns the resource-independent CSS resources to include into the html-page head.<p>
@@ -447,6 +465,14 @@ public interface I_CmsXmlContentHandler {
     String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
+     * Gets an unconfigured widget for a given sub-path, i.e. one without a configuration string.<p>
+     *
+     * @param path the sub-path
+     * @return the widget for the given path
+     */
+    I_CmsWidget getUnconfiguredWidget(String path);
+
+    /**
      * Returns the editor widget that should be used for the given XML content value.<p>
      *
      * The handler implementations should use the "appinfo" node of the XML content definition
@@ -458,6 +484,7 @@ public interface I_CmsXmlContentHandler {
      *
      * @throws CmsXmlException if something goes wrong
      */
+    @Deprecated
     I_CmsWidget getWidget(I_CmsXmlSchemaType value) throws CmsXmlException;
 
     /**

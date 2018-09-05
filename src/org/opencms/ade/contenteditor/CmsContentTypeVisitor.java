@@ -47,6 +47,7 @@ import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
@@ -270,6 +271,9 @@ public class CmsContentTypeVisitor {
     /** The widgets encountered by this visitor. */
     private List<I_CmsWidget> m_widgets = new ArrayList<I_CmsWidget>();
 
+    /** The root content definition. */
+    private CmsXmlContentDefinition m_rootContentDefinition;
+
     /**
      * Constructor.<p>
      *
@@ -384,6 +388,7 @@ public class CmsContentTypeVisitor {
      */
     public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale) {
 
+        m_rootContentDefinition = xmlContentDefinition;
         m_contentHandler = xmlContentDefinition.getContentHandler();
         CmsMessages messages = null;
         m_messages = new CmsMultiMessages(messageLocale);
@@ -563,6 +568,8 @@ public class CmsContentTypeVisitor {
 
         boolean result = false;
         I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
+        // We don't care about the old editor for the 'inheritable' widget configuration,
+        // so we're using the old getWidget method here
         I_CmsWidget widget = contentHandler.getWidget(schemaType);
         result = (widget == null) || (widget instanceof I_CmsADEWidget);
         return result;
@@ -612,9 +619,44 @@ public class CmsContentTypeVisitor {
         DisplayType defaultType = DisplayType.none;
         EvaluationRule rule = EvaluationRule.none;
         try {
+            I_CmsWidget widget = null;
             I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
-            I_CmsWidget widget = contentHandler.getWidget(schemaType);
-            configuredType = contentHandler.getDisplayType(schemaType);
+            final List<I_CmsWidget> configuredWidgets = new ArrayList<>();
+            final List<String> configuredWidgetConfigs = new ArrayList<>();
+            final List<DisplayType> configuredDisplayTypes = new ArrayList<>();
+            m_rootContentDefinition.findSchemaTypesForPath(path, (nestedType, remainingPath) -> {
+                remainingPath = CmsXmlUtils.concatXpath(nestedType.getName(), remainingPath);
+                I_CmsXmlContentHandler handler = nestedType.getContentDefinition().getContentHandler();
+                I_CmsWidget confWidget = handler.getUnconfiguredWidget(remainingPath);
+                String config = handler.getConfiguration(remainingPath);
+                DisplayType type = handler.getConfiguredDisplayType(remainingPath, null);
+                if (confWidget != null) {
+                    configuredWidgets.add(confWidget);
+                }
+                if (config != null) {
+                    configuredWidgetConfigs.add(config);
+                }
+                if (type != null) {
+                    configuredDisplayTypes.add(type);
+                }
+            });
+            if (!configuredWidgets.isEmpty()) {
+                widget = configuredWidgets.get(0).newInstance();
+            } else {
+                widget = OpenCms.getXmlContentTypeManager().getWidgetDefault(schemaType.getTypeName());
+            }
+            if (!configuredDisplayTypes.isEmpty()) {
+                configuredType = configuredDisplayTypes.get(0);
+            }
+            if (!configuredWidgetConfigs.isEmpty()) {
+                widgetConfig = configuredWidgetConfigs.get(0);
+            } else {
+                widgetConfig = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(widget);
+            }
+            if (widget != null) {
+                widget.setConfiguration(widgetConfig);
+            }
+
             if (configuredType.equals(DisplayType.none) && schemaType.isSimpleType()) {
                 // check the type is on the root level of the document, those will be displayed 'wide'
                 // the path will always have a leading '/'

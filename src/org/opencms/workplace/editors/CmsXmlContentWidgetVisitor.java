@@ -27,10 +27,10 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.ade.contenteditor.CmsWidgetUtil;
 import org.opencms.main.CmsLog;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.Messages;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.I_CmsXmlContentValueVisitor;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -147,7 +147,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
             if ((useLocale && (value.getLocale().equals(getLocale()))) || (!useLocale)) {
                 try {
                     // get widget for value
-                    I_CmsWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
+                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
                     if (!m_uniqueWidgets.contains(widget)) {
                         m_uniqueWidgets.add(widget);
                     }
@@ -157,7 +157,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
                         LOG.debug(
                             Messages.get().getBundle().key(Messages.LOG_DEBUG_WIDGETCOLLECTOR_ADD_1, value.getPath()));
                     }
-                } catch (CmsXmlException e) {
+                } catch (Exception e) {
                     // should usually not happen
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(Messages.ERR_WIDGETCOLLECTOR_ADD_1, value), e);

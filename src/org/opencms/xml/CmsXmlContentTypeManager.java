@@ -185,19 +185,22 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
-                classClazz.getName()), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
+                    classClazz.getName()),
+                e);
             return;
         }
 
         // add the editor widget for the schema type
         I_CmsWidget widget = getWidget(defaultWidget);
         if (widget == null) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2,
-                defaultWidget,
-                type.getTypeName()));
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2,
+                    defaultWidget,
+                    type.getTypeName()));
             return;
         }
 
@@ -501,6 +504,8 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns the editor widget for the specified XML content type.<p>
+     *
+     * This will always return a fresh instance if it doesn't return null.
      *
      * @param typeName the name of the XML content type to get the widget for
      * @return the editor widget for the specified XML content type

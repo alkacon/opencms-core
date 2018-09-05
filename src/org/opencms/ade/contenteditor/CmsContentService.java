@@ -1748,11 +1748,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     LOG.error(Messages.get().getBundle().key(Messages.ERROR_FAILED_READING_CATEGORIES_1), e);
                 }
                 I_CmsWidget widget = null;
-                try {
-                    widget = value.getContentDefinition().getContentHandler().getWidget(value);
-                } catch (CmsXmlException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
+                widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
                 if ((null != widget) && (widget instanceof CmsCategoryWidget)) {
                     String mainCategoryPath = ((CmsCategoryWidget)widget).getStartingCategory(
                         getCmsObject(),
@@ -2541,12 +2537,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             List<I_CmsXmlContentValue> values = content.getValues(locale);
             for (I_CmsXmlContentValue value : values) {
                 if (value.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)) {
-                    I_CmsWidget widget = null;
-                    try {
-                        widget = value.getContentDefinition().getContentHandler().getWidget(value);
-                    } catch (CmsXmlException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
+                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
                     List<CmsCategory> categories = new ArrayList<CmsCategory>(0);
                     try {
                         categories = CmsCategoryService.getInstance().readResourceCategories(cms, file);

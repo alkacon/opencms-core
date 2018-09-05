@@ -1214,6 +1214,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             String path = i.next();
             I_CmsXmlContentValue value = m_content.getValue(path, locale);
             if (value.isSimpleType()) {
+                // We don't care about the old editor for the 'inheritable' widget configuration,
+                // so we're using the old getWidget method here
                 I_CmsWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
                 widget.setEditorValue(
                     getCms(),
@@ -1823,9 +1825,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         }
 
                         result.append("<div style=\"padding: 3px;\"><strong>");
-                        result.append(key(
-                            Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
-                            new Object[] {locale.getLanguage()}));
+                        result.append(
+                            key(
+                                Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
+                                new Object[] {locale.getLanguage()}));
                         result.append("</strong></div>\n");
                         result.append("<ul>");
 
@@ -2033,6 +2036,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         }
                     }
 
+                    // We don't care about the old editor for the 'inheritable' widget configuration,
+                    // so we're using the old getWidget method here
                     I_CmsWidget widget = value.isSimpleType()
                     ? contentDefinition.getContentHandler().getWidget(value)
                     : null;

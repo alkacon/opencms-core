@@ -27,6 +27,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.ade.contenteditor.CmsWidgetUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -939,19 +940,19 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         I_CmsXmlContentHandler handler = definition.getContentHandler();
 
         // make sure the selected widgets are of the configured "non-standard" type
-        widget = handler.getWidget(xmlcontent.getValue("Title", Locale.ENGLISH));
+        widget = CmsWidgetUtil.collectWidgetInfo(xmlcontent.getValue("Title", Locale.ENGLISH)).getWidget();
         assertNotNull(widget);
         assertEquals(CmsCheckboxWidget.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Title", handler.getConfiguration(xmlcontent.getValue("Title", Locale.ENGLISH)));
 
         // make sure the alias name works
-        widget = handler.getWidget(xmlcontent.getValue("Test", Locale.ENGLISH));
+        widget = CmsWidgetUtil.collectWidgetInfo(xmlcontent.getValue("Test", Locale.ENGLISH)).getWidget();
         assertNotNull(widget);
         assertEquals(CmsHtmlWidget.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Test", handler.getConfiguration(xmlcontent.getValue("Test", Locale.ENGLISH)));
 
         // make sure the custom class name works
-        widget = handler.getWidget(xmlcontent.getValue("Toast", Locale.ENGLISH));
+        widget = CmsWidgetUtil.collectWidgetInfo(xmlcontent.getValue("Toast", Locale.ENGLISH)).getWidget();
         assertNotNull(widget);
         assertEquals(TestCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Toast", handler.getConfiguration(xmlcontent.getValue("Toast", Locale.ENGLISH)));

@@ -28,6 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.ade.configuration.CmsConfigurationReader;
+import org.opencms.ade.contenteditor.CmsWidgetUtil;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.log.CmsLogEntry;
@@ -848,6 +849,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getConfiguration(org.opencms.xml.types.I_CmsXmlSchemaType)
+     */
+    public String getConfiguration(String path) {
+
+        return m_configurationValues.get(path);
+
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getConfiguredDisplayType(java.lang.String, org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType)
+     */
+    public DisplayType getConfiguredDisplayType(String path, DisplayType defaultValue) {
+
+        DisplayType result = m_displayTypes.get(path);
+        if (result == null) {
+            result = defaultValue;
+        }
+        return result;
+
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getCSSHeadIncludes()
      */
     public Set<String> getCSSHeadIncludes() {
@@ -1314,8 +1337,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getUnconfiguredWidget(java.lang.String)
+     */
+    public I_CmsWidget getUnconfiguredWidget(String path) {
+
+        return m_elementWidgets.get(path);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.xml.types.I_CmsXmlSchemaType)
      */
+    @Deprecated
     public I_CmsWidget getWidget(I_CmsXmlSchemaType value) {
 
         // try the specific widget settings first
@@ -1838,7 +1870,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * Adds a configuration value for an element widget.<p>
      *
      * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name to map
+     * @param elementName the element name
      * @param configurationValue the configuration value to use
      *
      * @throws CmsXmlException in case an unknown element name is used
@@ -1849,7 +1881,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String configurationValue)
     throws CmsXmlException {
 
-        if (contentDefinition.getSchemaType(elementName) == null) {
+        if (!elementName.contains("/") && (contentDefinition.getSchemaType(elementName) == null)) {
             throw new CmsXmlException(
                 Messages.get().container(Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1, elementName));
         }
@@ -2173,7 +2205,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String widgetClassOrAlias)
     throws CmsXmlException {
 
-        if (contentDefinition.getSchemaType(elementName) == null) {
+        if (!elementName.contains("/") && (contentDefinition.getSchemaType(elementName) == null)) {
             throw new CmsXmlException(
                 Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1, elementName));
         }
@@ -2514,10 +2546,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             widget = mapper.getWidget();
             widgetConfig = mapper.getConfig();
             addWidget(contentDef, name, widget);
-            if (widgetConfig != null) {
-                widgetConfig = widgetConfig.trim();
-                addConfiguration(contentDef, name, widgetConfig);
-            }
+
+        }
+        if (widgetConfig != null) {
+            widgetConfig = widgetConfig.trim();
+            addConfiguration(contentDef, name, widgetConfig);
         }
 
         String niceName = elem.elementText(CmsConfigurationReader.N_DISPLAY_NAME);
@@ -3520,13 +3553,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             return errorHandler;
         }
         I_CmsWidget widget = null;
-        try {
-            widget = value.getContentDefinition().getContentHandler().getWidget(value);
-        } catch (CmsXmlException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
+
+        widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
         if (!(widget instanceof CmsCategoryWidget)) {
             // do not validate widget that are not category widgets
             return errorHandler;
@@ -3669,13 +3697,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         if (validateLink(cms, value, errorHandler)) {
             return errorHandler;
         }
-        try {
-            if (value.getContentDefinition().getContentHandler().getWidget(value) instanceof CmsDisplayWidget) {
-                // display widgets should not be validated
-                return errorHandler;
-            }
-        } catch (CmsXmlException e) {
-            errorHandler.addError(value, e.getMessage());
+
+        if (CmsWidgetUtil.collectWidgetInfo(value).getWidget() instanceof CmsDisplayWidget) {
+            // display widgets should not be validated
             return errorHandler;
         }
 

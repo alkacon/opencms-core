@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.comparison;
 
+import org.opencms.ade.contenteditor.CmsWidgetUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -59,7 +60,6 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsResourceInfoDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsMultiListDialog;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -123,17 +123,14 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     m_locales.add(locale);
                 }
                 m_buffer.append("\n\n[").append(value.getPath()).append("]\n\n");
-                try {
-                    I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(
-                        value);
-                    m_buffer.append(
-                        widget.getWidgetStringValue(
-                            getCms(),
-                            new CmsResourceInfoDialog(getJsp()),
-                            (I_CmsWidgetParameter)value));
-                } catch (CmsXmlException e) {
-                    LOG.error(e.getMessage(), e);
-                }
+
+                I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
+                m_buffer.append(
+                    widget.getWidgetStringValue(
+                        getCms(),
+                        new CmsResourceInfoDialog(getJsp()),
+                        (I_CmsWidgetParameter)value));
+
             }
         }
     }
@@ -704,6 +701,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      * @param xmlDoc the xml document to extract the elements from
      * @return the content of all elements of an xml document appended
      */
+    @Deprecated
     private String extractElements(I_CmsXmlDocument xmlDoc) {
 
         StringBuffer result = new StringBuffer();
@@ -725,16 +723,14 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     // output value of name attribute
                     result.append(value.getElement().attribute(0).getValue());
                     result.append("]\n\n");
-                    try {
-                        I_CmsWidget widget = value.getDocument().getHandler().getWidget(value);
-                        result.append(
-                            widget.getWidgetStringValue(
-                                getCms(),
-                                new CmsResourceInfoDialog(getJsp()),
-                                (I_CmsWidgetParameter)value));
-                    } catch (CmsXmlException e) {
-                        LOG.error(e.getMessage(), e);
-                    }
+
+                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
+                    result.append(
+                        widget.getWidgetStringValue(
+                            getCms(),
+                            new CmsResourceInfoDialog(getJsp()),
+                            (I_CmsWidgetParameter)value));
+
                 }
                 firstIter = false;
             }

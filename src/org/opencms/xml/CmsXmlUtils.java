@@ -39,7 +39,9 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -76,6 +78,7 @@ public final class CmsXmlUtils {
          * Constructor.<p>
          */
         ParserImpl() {
+
             super();
         }
 
@@ -144,7 +147,7 @@ public final class CmsXmlUtils {
         if (prefix != null) {
             StringBuffer result = new StringBuffer(32);
             result.append(prefix);
-            if (!CmsResource.isFolder(prefix)) {
+            if (!CmsResource.isFolder(prefix) && (suffix.length() > 0)) {
                 result.append('/');
             }
             result.append(suffix);
@@ -668,6 +671,21 @@ public final class CmsXmlUtils {
     }
 
     /**
+     * Splits a content value path into its components, ignoring leading or trailing slashes.<p>
+     *
+     * Note: this does not work for XPaths in general, only for the paths used to identify values in OpenCms contents.<p>
+     *
+     * @param xpath the xpath
+     *
+     * @return the path components
+     */
+    public static List<String> splitXpath(String xpath) {
+
+        return Arrays.stream(xpath.split("/")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+
+    }
+
+    /**
      * Helper to unmarshal (read) xml contents from a byte array into a document.<p>
      *
      * Using this method ensures that the OpenCms XML entity resolver is used.<p>
@@ -749,10 +767,9 @@ public final class CmsXmlUtils {
      */
     public static Document unmarshalHelper(InputSource source, EntityResolver resolver, boolean validate)
     throws CmsXmlException {
+
         if (null == source) {
-            throw new CmsXmlException(
-                    Messages.get().container(
-                            Messages.ERR_UNMARSHALLING_XML_DOC_1,"source==null!"));
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_1, "source==null!"));
         }
 
         try {

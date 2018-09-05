@@ -62,6 +62,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 import org.apache.commons.logging.Log;
 
@@ -86,12 +87,12 @@ public class CmsXmlContentDefinition implements Cloneable {
      * Enumeration of possible sequence types in a content definition.
      */
     public enum SequenceType {
-        /** A <code>xsd:choice</code> where the choice elements can appear more than once in a mix. */
-        MULTIPLE_CHOICE,
-        /** A simple <code>xsd:sequence</code>. */
-        SEQUENCE,
-        /** A <code>xsd:choice</code> where only one choice element can be selected. */
-        SINGLE_CHOICE
+    /** A <code>xsd:choice</code> where the choice elements can appear more than once in a mix. */
+    MULTIPLE_CHOICE,
+    /** A simple <code>xsd:sequence</code>. */
+    SEQUENCE,
+    /** A <code>xsd:choice</code> where only one choice element can be selected. */
+    SINGLE_CHOICE
     }
 
     /** Constant for the XML schema attribute "mapto". */
@@ -390,7 +391,11 @@ public class CmsXmlContentDefinition implements Cloneable {
                 source = resolver.resolveEntity(null, schemaLocation);
                 result = unmarshalInternal(CmsXmlUtils.unmarshalHelper(source, resolver), schemaLocation, resolver);
             } catch (IOException e) {
-                throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_SCHEMA_NOT_FOUND_2,resourcename, schemaLocation));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_UNMARSHALLING_XML_SCHEMA_NOT_FOUND_2,
+                        resourcename,
+                        schemaLocation));
             }
         }
         return result;
@@ -434,15 +439,16 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public static CmsXmlContentDefinition unmarshal(InputSource source, String schemaLocation, EntityResolver resolver)
     throws CmsXmlException {
+
         schemaLocation = translateSchema(schemaLocation);
         CmsXmlContentDefinition result = getCachedContentDefinition(schemaLocation, resolver);
         if (result == null) {
             // content definition was not found in the cache, unmarshal the XML document
             if (null == source) {
                 throw new CmsXmlException(
-                        Messages.get().container(
-                                Messages.ERR_UNMARSHALLING_XML_DOC_1,
-                                String.format("schemaLocation: '%s'. source: null!", schemaLocation)));
+                    Messages.get().container(
+                        Messages.ERR_UNMARSHALLING_XML_DOC_1,
+                        String.format("schemaLocation: '%s'. source: null!", schemaLocation)));
             }
             Document doc = CmsXmlUtils.unmarshalHelper(source, resolver);
             result = unmarshalInternal(doc, schemaLocation, resolver);
@@ -502,9 +508,10 @@ public class CmsXmlContentDefinition implements Cloneable {
                 result = unmarshalInternal(doc, schemaLocation, resolver);
             } catch (CmsXmlException e) {
                 throw new CmsXmlException(
-                        Messages.get().container(
-                                Messages.ERR_UNMARSHALLING_XML_DOC_1,
-                                String.format("schemaLocation: '%s'. xml: '%s'", schemaLocation, xmlData)), e);
+                    Messages.get().container(
+                        Messages.ERR_UNMARSHALLING_XML_DOC_1,
+                        String.format("schemaLocation: '%s'. xml: '%s'", schemaLocation, xmlData)),
+                    e);
             }
         }
         return result;
@@ -932,19 +939,21 @@ public class CmsXmlContentDefinition implements Cloneable {
                         source = resolver.resolveEntity(null, schemaLoc);
                     } catch (Exception e) {
                         throw new CmsXmlException(
-                                Messages.get().container(Messages.ERR_CD_BAD_INCLUDE_3,
-                                        schemaLoc,
-                                        schemaLocation,
-                                        document.asXML()),
-                                e);
+                            Messages.get().container(
+                                Messages.ERR_CD_BAD_INCLUDE_3,
+                                schemaLoc,
+                                schemaLocation,
+                                document.asXML()),
+                            e);
                     }
                     // Couldn't resolve the entity?
                     if (null == source) {
                         throw new CmsXmlException(
-                                Messages.get().container(Messages.ERR_CD_BAD_INCLUDE_3,
-                                        schemaLoc,
-                                        schemaLocation,
-                                        document.asXML()));
+                            Messages.get().container(
+                                Messages.ERR_CD_BAD_INCLUDE_3,
+                                schemaLoc,
+                                schemaLocation,
+                                document.asXML()));
                     }
                     CmsXmlContentDefinition xmlContentDefinition = unmarshal(source, schemaLoc, resolver);
                     nestedDefinitions.add(xmlContentDefinition);
@@ -1256,6 +1265,45 @@ public class CmsXmlContentDefinition implements Cloneable {
             return false;
         }
         return m_typeSequence.equals(other.m_typeSequence);
+    }
+
+    /**
+     * Iterates over all schema types along a given xpath, starting from a root content definition.<p>
+     *
+     * @param path the path
+     * @param consumer a handler that consumes both the schema type and the remaining suffix of the path, relative to the schema type
+     *
+     * @return true if for all path components a schema type could be found
+     */
+    public boolean findSchemaTypesForPath(String path, BiConsumer<I_CmsXmlSchemaType, String> consumer) {
+
+        path = CmsXmlUtils.removeAllXpathIndices(path);
+        List<String> pathComponents = CmsXmlUtils.splitXpath(path);
+        List<I_CmsXmlSchemaType> result = new ArrayList<>();
+        CmsXmlContentDefinition currentContentDef = this;
+        for (int i = 0; i < pathComponents.size(); i++) {
+            String pathComponent = pathComponents.get(i);
+
+            if (currentContentDef == null) {
+                return false;
+            }
+            I_CmsXmlSchemaType schemaType = currentContentDef.getSchemaType(pathComponent);
+            if (schemaType == null) {
+                return false;
+            } else {
+                String remainingPath = CmsStringUtil.listAsString(
+                    pathComponents.subList(i + 1, pathComponents.size()),
+                    "/");
+                consumer.accept(schemaType, remainingPath);
+                result.add(schemaType);
+                if (schemaType instanceof CmsXmlNestedContentDefinition) {
+                    currentContentDef = ((CmsXmlNestedContentDefinition)schemaType).getNestedContentDefinition();
+                } else {
+                    currentContentDef = null; //
+                }
+            }
+        }
+        return true;
     }
 
     /**
