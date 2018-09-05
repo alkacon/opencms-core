@@ -139,7 +139,7 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             }
         }
         // Add timezone query parameter to allow for correct date/time handling if not already present.
-        if (!query.getMap().entrySet().contains("TZ")) {
+        if (!query.getMap().keySet().contains("TZ")) {
             query.add("TZ", TimeZone.getDefault().getID());
         }
     }
