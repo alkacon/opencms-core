@@ -133,8 +133,8 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      * @see #init(String, Map, int, Locale)
      */
     public CmsJspNavElement(String sitePath, CmsResource resource, Map<String, String> properties, int navTreeLevel) {
-        this(sitePath, resource, properties, navTreeLevel, null);
 
+        this(sitePath, resource, properties, navTreeLevel, null);
     }
 
     /**
@@ -593,7 +593,29 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
-     * Returns the site path of the target resource. This may not be the same as the navigation resource.<p>
+     * Sets the navigation text.<p>
+     *
+     * @param text the text to set
+     */
+    public void setNavText(String text) {
+
+        m_text = text;
+    }
+
+    /**
+     * Sets the navigation tree level.<p>
+     *
+     * @param navTreeLevel the navigation tree level to set
+     */
+    public void setNavTreeLevel(int navTreeLevel) {
+
+        m_navTreeLevel = navTreeLevel;
+    }
+
+    /**
+     * Returns the site path of the target resource.<p>
+     * 
+     * This may not be the same as the navigation resource.<p>
      *
      * @return the target resource site path
      */
@@ -614,6 +636,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /**
      * Helper to get locale specific properties.
+     * 
      * @return the locale specific properties map.
      */
     private Map<String, String> getLocaleProperties() {
