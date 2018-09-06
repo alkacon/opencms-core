@@ -675,7 +675,7 @@ public class CmsJspNavBuilder {
      */
     public void init(CmsObject cms) {
 
-        init(cms, null);
+        init(cms, null, cms.getRequestContext().getUri());
     }
 
     /**
@@ -686,9 +686,21 @@ public class CmsJspNavBuilder {
      */
     public void init(CmsObject cms, Locale locale) {
 
+        init(cms, locale, cms.getRequestContext().getUri());
+    }
+
+    /**
+     * Initializes this bean.<p>
+     *
+     * @param cms the current cms context
+     * @param locale the locale for which properties should be read
+     * @param requestUri the request URI
+     */
+    public void init(CmsObject cms, Locale locale, String requestUri) {
+
         m_cms = cms;
         m_locale = locale;
-        m_requestUri = m_cms.getRequestContext().getUri();
+        m_requestUri = requestUri;
         m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
     }
 

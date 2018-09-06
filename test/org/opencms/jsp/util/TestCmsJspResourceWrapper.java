@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.List;
 import java.util.Map;
 
 import junit.extensions.TestSetup;
@@ -175,10 +176,10 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
 
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
 
-        CmsJspNavElement navElemTop = topFolderRes.getNavInfo();
+        CmsJspNavElement navElemTop = topFolderRes.getNavigation();
         assertEquals(-1, navElemTop.getNavTreeLevel());
 
-        CmsJspNavElement navElemSub = subFolderRes.getNavInfo();
+        CmsJspNavElement navElemSub = subFolderRes.getNavigation();
         assertEquals(0, navElemSub.getNavTreeLevel());
 
         CmsJspNavElement navElemBuildTop = navBuilder.getNavigationForResource("/");
@@ -186,10 +187,22 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         assertEquals(-1, navElemBuildTop.getNavTreeLevel());
         assertEquals(navElemBuildTop.getNavTreeLevel(), navElemTop.getNavTreeLevel());
 
+        assertEquals(navElemSub, subFolderRes.getNavBuilder().getNavigationForResource());
+        assertEquals(navElemTop, topFolderRes.getNavBuilder().getNavigationForResource());
+
         CmsJspNavElement navElemBuildSub = navBuilder.getNavigationForResource("/folder1/");
         assertEquals(navElemBuildSub, navElemSub);
         assertEquals(0, navElemBuildSub.getNavTreeLevel());
         assertEquals(navElemBuildSub.getNavTreeLevel(), navElemSub.getNavTreeLevel());
+
+        // default file access
+        CmsJspResourceWrapper indexRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/index.html"));
+        assertNotNull(indexRes);
+        assertEquals(indexRes, subFolderRes.getNavigationDefaultFile());
+
+        // navigation in folder access
+        List<CmsJspNavElement> subFolderNav = subFolderRes.getNavigationForFolder();
+        assertEquals(7, subFolderNav.size());
     }
 
     /**

@@ -613,6 +613,29 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        StringBuffer result = new StringBuffer();
+
+        result.append("[");
+        result.append(this.getClass().getName());
+        result.append(", sitePath: ");
+        result.append(m_sitePath);
+        result.append(", navPosition: ");
+        result.append(getNavPosition());
+        result.append(", navText ");
+        result.append(getNavText());
+        result.append(", navTreeLevel: ");
+        result.append(getNavTreeLevel());
+        result.append("]");
+
+        return result.toString();
+    }
+
+    /**
      * Returns the site path of the target resource.<p>
      *
      * This may not be the same as the navigation resource.<p>

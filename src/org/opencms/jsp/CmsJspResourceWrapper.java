@@ -31,8 +31,10 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleGroup;
@@ -41,6 +43,7 @@ import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTrans
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
@@ -108,6 +111,18 @@ public class CmsJspResourceWrapper extends CmsResource {
 
     /** The parent folder of this resource in the current site. */
     private CmsJspResourceWrapper m_parentFolder;
+
+    /** The default file of this resource, assumed that this resource is a folder. */
+    CmsJspResourceWrapper m_navigationDefaultFile;
+
+    /** The navigation builder for this resource. */
+    CmsJspNavBuilder m_navBuilder;
+
+    /** The navigation info elements in this resource, assuming that this resource is a folder. */
+    private List<CmsJspNavElement> m_navigationForFolder;
+
+    /** The navigation info element for this resource. */
+    private CmsJspNavElement m_navigation;
 
     /**
      * Creates a new instance.<p>
@@ -335,13 +350,81 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
-     * Returns the navigation info element for this resource.
+     * Returns the navigation builder for this resource.<p>
+     *
+     * This will be initialized with this resource as default URI.<p>
+     *
+     * @return the navigation builder for this resource
+     */
+    public CmsJspNavBuilder getNavBuilder() {
+
+        if (m_navBuilder == null) {
+            m_navBuilder = new CmsJspNavBuilder();
+            m_navBuilder.init(m_cms, null, getSitePath());
+        }
+        return m_navBuilder;
+    }
+
+    /**
+     * Returns the navigation info element for this resource.<p>
      *
      * @return the navigation info element for this resource
      */
-    public CmsJspNavElement getNavInfo() {
+    public CmsJspNavElement getNavigation() {
 
-        return new CmsJspNavElement(getSitePath(), this, getProperty(), getSitePathLevel() - 1);
+        if (m_navigation == null) {
+            m_navigation = getNavBuilder().getNavigationForResource();
+        }
+        return m_navigation;
+    }
+
+    /**
+     * Returns the default resource for this resource.<p>
+     *
+     * If this resource is a file, then this file is returned.<p>
+     *
+     * Otherwise, in case this resource is a folder:<br>
+     * <ol>
+     *   <li>the {@link CmsPropertyDefinition#PROPERTY_DEFAULT_FILE} is checked, and
+     *   <li>if still no file could be found, the configured default files in the
+     *       <code>opencms-vfs.xml</code> configuration are iterated until a match is
+     *       found, and
+     *   <li>if still no file could be found, <code>null</code> is returned
+     * </ol>
+     *
+     * @return the default file for the given folder
+     *
+     * @see CmsObject#readDefaultFile(CmsResource, CmsResourceFilter)
+     */
+    public CmsJspResourceWrapper getNavigationDefaultFile() {
+
+        if (m_navigationDefaultFile == null) {
+            if (isFolder()) {
+                try {
+                    m_navigationDefaultFile = wrap(m_cms, m_cms.readDefaultFile(this, CmsResourceFilter.DEFAULT));
+                } catch (CmsSecurityException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getMessage(), e);
+                    }
+                }
+            }
+        } else {
+            m_navigationDefaultFile = this;
+        }
+        return m_navigationDefaultFile;
+    }
+
+    /**
+     * Returns the navigation info elements in this resource, assuming that this resource is a folder.<p>
+     *
+     * @return the navigation info elements in this resource, assuming that this resource is a folder
+     */
+    public List<CmsJspNavElement> getNavigationForFolder() {
+
+        if (m_navigationForFolder == null) {
+            m_navigationForFolder = getNavBuilder().getNavigationForFolder();
+        }
+        return m_navigationForFolder;
     }
 
     /**
