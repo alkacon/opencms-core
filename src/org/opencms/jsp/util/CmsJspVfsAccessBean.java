@@ -612,7 +612,7 @@ public final class CmsJspVfsAccessBean {
                 String path = (String)arg;
                 try {
                     CmsResource res = m_cms.readResource(path);
-                    CmsJspResourceWrapper wrapper = new CmsJspResourceWrapper(m_cms, res);
+                    CmsJspResourceWrapper wrapper = CmsJspResourceWrapper.wrap(m_cms, res);
                     return wrapper.getLocaleResource();
                 } catch (Exception e) {
                     LOG.warn(e.getLocalizedMessage(), e);
@@ -664,7 +664,7 @@ public final class CmsJspVfsAccessBean {
      * @param obj a CmsResource or a String representing a resource name
      *
      * @see CmsResource#getParentFolder(String)
-     * @see org.opencms.jsp.CmsJspResourceWrapper#getSiteParentFolder()
+     * @see org.opencms.jsp.CmsJspResourceWrapper#getSitePathParentFolder()
      */
     public String getParentFolder(Object obj) {
 
@@ -1123,7 +1123,7 @@ public final class CmsJspVfsAccessBean {
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
             m_cms,
             m_cms.getRequestContext().addSiteRoot(path));
-        return new CmsJspResourceWrapper(
+        return CmsJspResourceWrapper.wrap(
             m_cms,
             m_cms.readResource(m_cms.getRequestContext().removeSiteRoot(config.getBasePath())));
     }

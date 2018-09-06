@@ -360,10 +360,10 @@ public final class CmsJspElFunctions {
     public static CmsJspResourceWrapper convertResource(CmsObject cms, Object input) throws CmsException {
 
         CmsJspResourceWrapper result;
-        if (input instanceof CmsJspResourceWrapper) {
-            result = (CmsJspResourceWrapper)input;
+        if (input instanceof CmsResource) {
+            result = CmsJspResourceWrapper.wrap(cms, (CmsResource)input);
         } else {
-            result = new CmsJspResourceWrapper(cms, convertRawResource(cms, input));
+            result = CmsJspResourceWrapper.wrap(cms, convertRawResource(cms, input));
         }
         return result;
     }
@@ -380,11 +380,7 @@ public final class CmsJspElFunctions {
 
         List<CmsJspResourceWrapper> result = new ArrayList<CmsJspResourceWrapper>(list.size());
         for (CmsResource res : list) {
-            if (res instanceof CmsJspResourceWrapper) {
-                result.add((CmsJspResourceWrapper)res);
-            } else {
-                result.add(new CmsJspResourceWrapper(cms, res));
-            }
+            result.add(CmsJspResourceWrapper.wrap(cms, res));
         }
         return result;
     }

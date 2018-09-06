@@ -742,7 +742,7 @@ public final class CmsJspStandardContextBean {
     private CmsContainerPageBean m_page;
 
     /** The current container page resource, lazy initialized. */
-    private CmsResource m_pageResource;
+    private CmsJspResourceWrapper m_pageResource;
 
     /** The parent containers to the given element instance ids. */
     private Map<String, CmsContainerBean> m_parentContainers;
@@ -752,9 +752,6 @@ public final class CmsJspStandardContextBean {
 
     /** Lazily initialized map from the root path of a resource to all categories assigned to the resource. */
     private Map<String, CmsJspCategoryAccessBean> m_resourceCategories;
-
-    /** The resource wrapper for the current page. */
-    private CmsJspResourceWrapper m_resourceWrapper;
 
     /** Map from root paths to site relative paths. */
     private Map<String, String> m_sitePaths;
@@ -913,9 +910,9 @@ public final class CmsJspStandardContextBean {
      *
      * @return the current detail content, or <code>null</code> if no detail content is requested.<p>
      */
-    public CmsResource getDetailContent() {
+    public CmsJspResourceWrapper getDetailContent() {
 
-        return m_detailContentResource;
+        return CmsJspResourceWrapper.wrap(m_cms, m_detailContentResource);
     }
 
     /**
@@ -945,9 +942,9 @@ public final class CmsJspStandardContextBean {
      *
      * @return the detai function page
      */
-    public CmsResource getDetailFunctionPage() {
+    public CmsJspResourceWrapper getDetailFunctionPage() {
 
-        return m_detailFunctionPage;
+        return CmsJspResourceWrapper.wrap(m_cms, m_detailFunctionPage);
     }
 
     /**
@@ -1149,7 +1146,7 @@ public final class CmsJspStandardContextBean {
      */
     public Map<String, CmsJspResourceWrapper> getLocaleResource() {
 
-        Map<String, CmsJspResourceWrapper> result = getResourceWrapperForPage().getLocaleResource();
+        Map<String, CmsJspResourceWrapper> result = getPageResource().getLocaleResource();
         List<Locale> locales = CmsLocaleGroupService.getPossibleLocales(m_cms, getPageResource());
         for (Locale locale : locales) {
             if (!result.containsKey(locale.toString())) {
@@ -1166,7 +1163,7 @@ public final class CmsJspStandardContextBean {
      */
     public Locale getMainLocale() {
 
-        return getResourceWrapperForPage().getMainLocale();
+        return getPageResource().getMainLocale();
     }
 
     /**
@@ -1195,14 +1192,18 @@ public final class CmsJspStandardContextBean {
      *
      * @return the current container page resource
      */
-    public CmsResource getPageResource() {
+    public CmsJspResourceWrapper getPageResource() {
 
         try {
             if (m_pageResource == null) {
                 // get the container page itself, checking the history first
-                m_pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(m_request);
+                m_pageResource = CmsJspResourceWrapper.wrap(
+                    m_cms,
+                    (CmsResource)CmsHistoryResourceHandler.getHistoryResource(m_request));
                 if (m_pageResource == null) {
-                    m_pageResource = m_cms.readResource(m_cms.getRequestContext().getUri());
+                    m_pageResource = CmsJspResourceWrapper.wrap(
+                        m_cms,
+                        m_cms.readResource(m_cms.getRequestContext().getUri()));
                 }
             }
         } catch (CmsException e) {
@@ -1631,7 +1632,7 @@ public final class CmsJspStandardContextBean {
             if ((obj instanceof A_CmsJspValueWrapper) || (obj instanceof CmsJspResourceWrapper)) {
                 return obj;
             } else if (obj instanceof CmsResource) {
-                return new CmsJspResourceWrapper(m_cms, (CmsResource)obj);
+                return CmsJspResourceWrapper.wrap(m_cms, (CmsResource)obj);
             } else {
                 return CmsJspObjectValueWrapper.createWrapper(m_cms, obj);
             }
@@ -2036,20 +2037,6 @@ public final class CmsJspStandardContextBean {
         Object attribute = m_request.getAttribute(name);
 
         return attribute != null ? (A)attribute : null;
-    }
-
-    /**
-     * Gets the resource wrapper for the current page, initializing it if necessary.<p>
-     *
-     * @return the resource wrapper for the current page
-     */
-    private CmsJspResourceWrapper getResourceWrapperForPage() {
-
-        if (m_resourceWrapper != null) {
-            return m_resourceWrapper;
-        }
-        m_resourceWrapper = new CmsJspResourceWrapper(m_cms, getPageResource());
-        return m_resourceWrapper;
     }
 
     /**

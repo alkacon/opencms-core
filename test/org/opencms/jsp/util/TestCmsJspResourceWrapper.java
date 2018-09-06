@@ -27,8 +27,12 @@
 
 package org.opencms.jsp.util;
 
+import static org.junit.Assert.assertNotEquals;
+
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspResourceWrapper;
@@ -68,8 +72,12 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsJspResourceWrapper.class.getName());
 
-        suite.addTest(new TestCmsJspResourceWrapper("testWrapper"));
+        suite.addTest(new TestCmsJspResourceWrapper("testBasics"));
         suite.addTest(new TestCmsJspResourceWrapper("testNavElements"));
+        suite.addTest(new TestCmsJspResourceWrapper("testParentFolders"));
+        suite.addTest(new TestCmsJspResourceWrapper("testProperties"));
+        suite.addTest(new TestCmsJspResourceWrapper("testResourceIdentities"));
+        suite.addTest(new TestCmsJspResourceWrapper("testXml"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -90,51 +98,20 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
     }
 
     /**
-     * Tests for nav elements with wrapper.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testNavElements() throws Exception {
-
-        CmsObject cms = getCmsObject();
-
-        CmsJspResourceWrapper topFolderRes = new CmsJspResourceWrapper(cms, cms.readResource("/"));
-        CmsJspResourceWrapper subFolderRes = new CmsJspResourceWrapper(cms, cms.readResource("/folder1/"));
-
-        CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
-
-        CmsJspNavElement navElemTop = topFolderRes.getNavInfo();
-        assertEquals(-1, navElemTop.getNavTreeLevel());
-
-        CmsJspNavElement navElemSub = subFolderRes.getNavInfo();
-        assertEquals(0, navElemSub.getNavTreeLevel());
-
-        CmsJspNavElement navElemBuildTop = navBuilder.getNavigationForResource("/");
-        assertEquals(navElemBuildTop, navElemTop);
-        assertEquals(-1, navElemBuildTop.getNavTreeLevel());
-        assertEquals(navElemBuildTop.getNavTreeLevel(), navElemTop.getNavTreeLevel());
-
-        CmsJspNavElement navElemBuildSub = navBuilder.getNavigationForResource("/folder1/");
-        assertEquals(navElemBuildSub, navElemSub);
-        assertEquals(0, navElemBuildSub.getNavTreeLevel());
-        assertEquals(navElemBuildSub.getNavTreeLevel(), navElemSub.getNavTreeLevel());
-    }
-
-    /**
      * Tests for basic wrapper methods.<p>
      *
      * @throws Exception if the test fails
      */
-    public void testWrapper() throws Exception {
+    public void testBasics() throws Exception {
 
         CmsObject cms = getCmsObject();
 
-        CmsJspResourceWrapper topFolderRes = new CmsJspResourceWrapper(cms, cms.readResource("/"));
-        CmsJspResourceWrapper topFileRes = new CmsJspResourceWrapper(cms, cms.readResource("/index.html"));
-        CmsJspResourceWrapper folderRes = new CmsJspResourceWrapper(cms, cms.readResource("/folder1/"));
-        CmsJspResourceWrapper fileRes = new CmsJspResourceWrapper(cms, cms.readResource("/folder1/index.html"));
-        CmsJspResourceWrapper subFolderRes = new CmsJspResourceWrapper(cms, cms.readResource("/folder1/subfolder12/"));
-        CmsJspResourceWrapper subFileRes = new CmsJspResourceWrapper(
+        CmsJspResourceWrapper topFolderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/"));
+        CmsJspResourceWrapper topFileRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/index.html"));
+        CmsJspResourceWrapper folderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/"));
+        CmsJspResourceWrapper fileRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/index.html"));
+        CmsJspResourceWrapper subFolderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/subfolder12/"));
+        CmsJspResourceWrapper subFileRes = CmsJspResourceWrapper.wrap(
             cms,
             cms.readResource("/folder1/subfolder12/index.html"));
 
@@ -161,12 +138,6 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         assertEquals(folderRes, fileRes.getFolder());
         assertEquals(subFolderRes, subFileRes.getFolder());
 
-        // Property access
-        Map<String, String> props = topFileRes.getProperties();
-        assertNotNull(props);
-        String title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
-        assertEquals("Index page", title);
-
         // Site path access
         assertEquals("/", folderRes.getParentFolder().getSitePath());
         assertEquals("/folder1/", fileRes.getParentFolder().getSitePath());
@@ -188,5 +159,219 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         // File names
         assertEquals("index.html", subFileRes.getName());
         assertEquals(subFileRes.getName(), subFileRes.getResourceName());
+    }
+
+    /**
+     * Tests for nav elements with wrapper.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testNavElements() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        CmsJspResourceWrapper topFolderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/"));
+        CmsJspResourceWrapper subFolderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/"));
+
+        CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
+
+        CmsJspNavElement navElemTop = topFolderRes.getNavInfo();
+        assertEquals(-1, navElemTop.getNavTreeLevel());
+
+        CmsJspNavElement navElemSub = subFolderRes.getNavInfo();
+        assertEquals(0, navElemSub.getNavTreeLevel());
+
+        CmsJspNavElement navElemBuildTop = navBuilder.getNavigationForResource("/");
+        assertEquals(navElemBuildTop, navElemTop);
+        assertEquals(-1, navElemBuildTop.getNavTreeLevel());
+        assertEquals(navElemBuildTop.getNavTreeLevel(), navElemTop.getNavTreeLevel());
+
+        CmsJspNavElement navElemBuildSub = navBuilder.getNavigationForResource("/folder1/");
+        assertEquals(navElemBuildSub, navElemSub);
+        assertEquals(0, navElemBuildSub.getNavTreeLevel());
+        assertEquals(navElemBuildSub.getNavTreeLevel(), navElemSub.getNavTreeLevel());
+    }
+
+    /**
+     * Tests for parent folder access.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testParentFolders() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        CmsJspResourceWrapper topFolderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/"));
+        CmsJspResourceWrapper folderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/subfolder12/"));
+        CmsJspResourceWrapper fileRes = CmsJspResourceWrapper.wrap(
+            cms,
+            cms.readResource("/folder1/subfolder12/index.html"));
+
+        assertNull(topFolderRes.getParentFolder());
+        assertEquals(2, folderRes.getParentFolders().size());
+        assertEquals(3, fileRes.getParentFolders().size());
+        assertEquals(folderRes, fileRes.getParentFolders().get(0));
+        assertEquals(topFolderRes, fileRes.getParentFolders().get(2));
+
+        assertTrue(topFolderRes.isParentFolderOf(fileRes.getSitePath()));
+        assertTrue(topFolderRes.isParentFolderOf(folderRes.getSitePath()));
+        assertTrue(folderRes.isParentFolderOf(fileRes.getSitePath()));
+        assertTrue(folderRes.isParentFolderOf("/folder1/subfolder12/iDontExist.butWhoCares"));
+
+        assertTrue(topFolderRes.isParentFolderOf(fileRes));
+        assertTrue(topFolderRes.isParentFolderOf(folderRes));
+        assertTrue(folderRes.isParentFolderOf(fileRes));
+
+        assertFalse(folderRes.isParentFolderOf(topFolderRes));
+        assertFalse(fileRes.isParentFolderOf(folderRes));
+        assertFalse(folderRes.isParentFolderOf("/folder1/subfolder12/"));
+        assertFalse(folderRes.isParentFolderOf((String)null));
+        assertFalse(folderRes.isParentFolderOf((CmsResource)null));
+
+        assertTrue(fileRes.isChildResourceOf(topFolderRes.getSitePath()));
+        assertTrue(folderRes.isChildResourceOf(topFolderRes.getSitePath()));
+        assertTrue(fileRes.isChildResourceOf(folderRes.getSitePath()));
+        assertTrue(fileRes.isChildResourceOf("/folder1/subfolder12"));
+        assertFalse(fileRes.isChildResourceOf((String)null));
+        assertFalse(fileRes.isChildResourceOf((CmsResource)null));
+
+        assertTrue(fileRes.isChildResourceOf(topFolderRes));
+        assertTrue(folderRes.isChildResourceOf(topFolderRes));
+        assertTrue(fileRes.isChildResourceOf(folderRes));
+    }
+
+    /**
+     * Tests for wrapper access to properties.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testProperties() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsJspResourceWrapper res1 = CmsJspResourceWrapper.wrap(cms, cms.readResource("/index.html"));
+
+        // Property access
+        Map<String, String> props = res1.getProperty();
+        assertNotNull(props);
+        String title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+        assertEquals("Index page", title);
+
+        // Localized properties
+        String[] testLocales = TestCmsJspVfsAccessBean.setupPropertyLocaleTest(cms);
+        CmsJspResourceWrapper wrap1 = CmsJspResourceWrapper.wrap(
+            cms,
+            cms.readResource("/test_read_property_locale/test.txt"));
+        String[] expectedPostfix = new String[] {"", "_de", "_de_DE", "_en", "_en", ""};
+        String directPropertyName = "direct";
+        String searchedPropertyName = "searched";
+        for (int i = 0; i < testLocales.length; i++) {
+            // without search
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                wrap1.getPropertyLocale().get(testLocales[i]).get(directPropertyName));
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                wrap1.getPropertyLocale().get(testLocales[i]).get(directPropertyName));
+            assertEquals(
+                CmsProperty.getNullProperty().getValue(),
+                wrap1.getPropertyLocale().get(testLocales[i]).get(searchedPropertyName));
+            assertEquals(
+                CmsProperty.getNullProperty().getValue(),
+                wrap1.getPropertyLocale().get(testLocales[i]).get(searchedPropertyName));
+            // with search
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                wrap1.getPropertyLocaleSearch().get(testLocales[i]).get(directPropertyName));
+            assertEquals(
+                directPropertyName + expectedPostfix[i],
+                wrap1.getPropertyLocaleSearch().get(testLocales[i]).get(directPropertyName));
+            assertEquals(
+                searchedPropertyName + expectedPostfix[i],
+                wrap1.getPropertyLocaleSearch().get(testLocales[i]).get(searchedPropertyName));
+            assertEquals(
+                searchedPropertyName + expectedPostfix[i],
+                wrap1.getPropertyLocaleSearch().get(testLocales[i]).get(searchedPropertyName));
+        }
+    }
+
+    /**
+     * Tests for resource wrapper identities.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testResourceIdentities() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsResource res1 = cms.readResource("/folder1/index.html");
+        CmsJspResourceWrapper wrap1 = CmsJspResourceWrapper.wrap(cms, res1);
+
+        // wrapping a wrapper returns the wrapper
+        assertSame(wrap1, CmsJspResourceWrapper.wrap(cms, wrap1));
+        // wrapping a resource returns a new wrapper
+        assertNotSame(wrap1, CmsJspResourceWrapper.wrap(cms, res1));
+        // new wrapper and exiting wrapper of same resource must be equal
+        assertEquals(wrap1, CmsJspResourceWrapper.wrap(cms, res1));
+        // also same hash code
+        assertEquals(wrap1.hashCode(), CmsJspResourceWrapper.wrap(cms, res1).hashCode());
+
+        // new context with same URI
+        CmsObject cms2 = getCmsObject();
+        CmsResource res2 = cms2.readResource("/folder1/index.html");
+        CmsJspResourceWrapper wrap2 = CmsJspResourceWrapper.wrap(cms2, res2);
+        // wrapper created from different contexts with same URI are not the same, but must be equal
+        assertNotSame(wrap1, wrap2);
+        assertEquals(wrap1, wrap2);
+        assertEquals(wrap1.hashCode(), wrap2.hashCode());
+
+        // new context with different URI
+        CmsObject cms3 = getCmsObject();
+        assertNotSame(cms, cms3);
+        cms3.getRequestContext().setSiteRoot("/sites/default/folder1/");
+        assertNotEquals(cms3.getRequestContext().getSiteRoot(), cms.getRequestContext().getSiteRoot());
+
+        CmsResource res3 = cms3.readResource("/index.html");
+        CmsJspResourceWrapper wrap3 = CmsJspResourceWrapper.wrap(cms3, res3);
+        // wrapper created from different contexts with different URI are not the same, but must be equal
+        assertNotSame(wrap1, wrap3);
+        assertEquals(wrap1, wrap3);
+        assertEquals(wrap1.hashCode(), wrap3.hashCode());
+
+        // wrapping a wrapper with a different context URI must create a different wrapper
+        CmsJspResourceWrapper wrap4 = CmsJspResourceWrapper.wrap(cms3, wrap1);
+        assertNotSame(wrap1, wrap4);
+    }
+
+    /**
+     * Tests for the {@link CmsJspVfsAccessBean#getReadXml()} method.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testXml() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        // access XML content
+        CmsJspResourceWrapper res1 = CmsJspResourceWrapper.wrap(cms, cms.readResource("/xmlcontent/article_0001.html"));
+        CmsJspContentAccessBean content = res1.getXml();
+        assertTrue(res1.isXml());
+        assertEquals("Alkacon Software", content.getValue().get("Author").toString());
+
+        // access XML page
+        CmsJspResourceWrapper res2 = CmsJspResourceWrapper.wrap(cms, cms.readResource("/index.html"));
+        content = res2.getXml();
+        assertTrue(res2.isXml());
+        assertEquals(Boolean.TRUE, content.getHasValue().get("body"));
+        assertEquals(Boolean.FALSE, content.getHasValue().get("element"));
+        System.out.println(content.getValue().get("body"));
+
+        // access folder as XML
+        CmsJspResourceWrapper folderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/"));
+        assertFalse(folderRes.isXml());
+        assertNull(folderRes.getXml());
+
+        // access file as XML
+        CmsJspResourceWrapper fileRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/image1.gif"));
+        assertFalse(fileRes.isXml());
+        assertNull(fileRes.getXml());
     }
 }
