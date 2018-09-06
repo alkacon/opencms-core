@@ -40,6 +40,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.sitemanager.CmsSitesTable.TableProperty;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsInfoButton;
@@ -104,10 +105,10 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     static final String PATH_SITES = "/sites/";
 
     /** The site table. */
-    CmsSitesTable m_sitesTable;
+    protected I_CmsSitesTable m_sitesTable;
 
     /** The currently opened dialog window. */
-    private Window m_dialogWindow;
+    protected Window m_dialogWindow;
 
     /** The root cms object. */
     private CmsObject m_rootCms;
@@ -209,15 +210,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      */
     public void openDeleteDialog(Set<String> data) {
 
-        if (m_dialogWindow != null) {
-            m_dialogWindow.close();
-        }
-        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
         CmsDeleteSiteDialog form = new CmsDeleteSiteDialog(this, data);
-        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_DELETE_0));
-        m_dialogWindow.setContent(form);
-        A_CmsUI.get().addWindow(m_dialogWindow);
-        m_dialogWindow.center();
+        openDialog(form, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_DELETE_0));
     }
 
     /**
@@ -227,25 +221,18 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      */
     public void openEditDailog(String siteRoot) {
 
-        if (m_dialogWindow != null) {
-            m_dialogWindow.close();
-        }
-
-        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsEditSiteForm form;
+        String caption;
         if (siteRoot != null) {
             form = new CmsEditSiteForm(m_rootCms, this, siteRoot);
-            m_dialogWindow.setCaption(
-                CmsVaadinUtils.getMessageText(
-                    Messages.GUI_SITE_CONFIGURATION_EDIT_1,
-                    m_sitesTable.getItem(siteRoot).getItemProperty(CmsSitesTable.PROP_TITLE).getValue()));
+            caption = CmsVaadinUtils.getMessageText(
+                Messages.GUI_SITE_CONFIGURATION_EDIT_1,
+                m_sitesTable.getContainer().getItem(siteRoot).getItemProperty(TableProperty.Title).getValue());
         } else {
             form = new CmsEditSiteForm(m_rootCms, this);
-            m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
+            caption = CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0);
         }
-        m_dialogWindow.setContent(form);
-        A_CmsUI.get().addWindow(m_dialogWindow);
-        m_dialogWindow.center();
+        openDialog(form, caption);
     }
 
     /**
@@ -253,16 +240,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      */
     public void openSettingsDailog() {
 
-        if (m_dialogWindow != null) {
-            m_dialogWindow.close();
-        }
-
-        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsGlobalForm form = new CmsGlobalForm(this);
-        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_CONFIGURATION_0));
-        m_dialogWindow.setContent(form);
-        A_CmsUI.get().addWindow(m_dialogWindow);
-        m_dialogWindow.center();
+        openDialog(form, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_GLOBAL_CONFIGURATION_0));
     }
 
     /**
@@ -270,16 +249,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      */
     public void openUpdateServerConfigDailog() {
 
-        if (m_dialogWindow != null) {
-            m_dialogWindow.close();
-        }
-
-        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsWebServerConfigForm form = new CmsWebServerConfigForm(this);
-        m_dialogWindow.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
-        m_dialogWindow.setContent(form);
-        A_CmsUI.get().addWindow(m_dialogWindow);
-        m_dialogWindow.center();
+        openDialog(form, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
     }
 
     /**
@@ -300,9 +271,9 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      * @return a vaadin table component
      */
 
-    protected CmsSitesTable createSitesTable() {
+    protected I_CmsSitesTable createSitesTable() {
 
-        CmsSitesTable table = new CmsSitesTable(this);
+        I_CmsSitesTable table = new CmsSitesTable(this);
         table.loadSites();
         return table;
     }
@@ -339,7 +310,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
             public void textChange(TextChangeEvent event) {
 
-                m_sitesTable.filterTable(event.getText());
+                m_sitesTable.filter(event.getText());
             }
         });
         m_infoLayout.addComponent(m_siteTableFilter);
@@ -370,6 +341,20 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
+    }
+
+    protected void openDialog(CmsBasicDialog dialog, String windowCaption) {
+
+        if (m_dialogWindow != null) {
+            m_dialogWindow.close();
+        }
+
+        m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        m_dialogWindow.setContent(dialog);
+        m_dialogWindow.setCaption(windowCaption);
+
+        A_CmsUI.get().addWindow(m_dialogWindow);
+        m_dialogWindow.center();
     }
 
     /**

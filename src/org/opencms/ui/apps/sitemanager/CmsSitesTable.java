@@ -30,6 +30,7 @@ package org.opencms.ui.apps.sitemanager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
@@ -55,6 +56,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
@@ -71,46 +74,18 @@ import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  *  Class to create Vaadin Table object with all available sites.<p>
  */
-public class CmsSitesTable extends Table {
-
-    /**
-     * The delete project context menu entry.<p>
-     */
-    class DeleteEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        public void executeAction(final Set<String> data) {
-
-            m_manager.openDeleteDialog(data);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DELETE_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-    }
+public class CmsSitesTable extends Table implements I_CmsSitesTable {
 
     /**
      * The edit project context menu entry.<p>
      */
-    class EditEntry implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
+    public class EditEntry
+    implements I_CmsSimpleContextMenuEntry<Set<String>>, I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
@@ -142,9 +117,133 @@ public class CmsSitesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            return (data != null) && (data.size() == 1)
-            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            if ((data == null) || (data.size() != 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            if (OpenCms.getSiteManager().getSiteForSiteRoot(data.iterator().next()) == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        }
+    }
+
+    /**Table properties. */
+    protected enum TableProperty {
+
+        /**Icon. */
+        Icon(null, Label.class, new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML)),
+        /**Path. */
+        Path(Messages.GUI_SITE_PATH_0, String.class, ""),
+        /**Name. */
+        Title(Messages.GUI_SITE_TITLE_0, String.class, ""),
+        /**Description. */
+        Server(Messages.GUI_SITE_SERVER_0, String.class, ""),
+        /**OU. */
+        Favicon("", Image.class, null),
+        /**Last login. */
+        Is_Webserver("", Boolean.class, new Boolean(true)),
+        /**IsIndirect?. */
+        New("", Boolean.class, new Boolean(false)),
+        /**From Other ou?. */
+        SSL("", Integer.class, new Integer(1)),
+        /**Is the user disabled? */
+        OK("", Boolean.class, new Boolean(true)),
+        /**Is the user new? */
+        Under_Other_Site("", Boolean.class, new Boolean(false)),
+        /**Status. */
+        Changed("", Boolean.class, new Boolean(false)),
+        /**Status. */
+        CmsSite("", CmsSite.class, null);
+
+        /**Default value for column.*/
+        private Object m_defaultValue;
+
+        /**Header Message key.*/
+        private String m_headerMessage;
+
+        /**Type of column property.*/
+        private Class<?> m_type;
+
+        /**
+         * constructor.<p>
+         *
+         * @param name Name
+         * @param type type
+         * @param defaultValue value
+         */
+        TableProperty(String name, Class<?> type, Object defaultValue) {
+
+            m_headerMessage = name;
+            m_type = type;
+            m_defaultValue = defaultValue;
+        }
+
+        /**
+         * The default value.<p>
+         *
+         * @return the default value object
+         */
+        Object getDefault() {
+
+            return m_defaultValue;
+        }
+
+        /**
+         * Gets the name of the property.<p>
+         *
+         * @return a name
+         */
+        String getName() {
+
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_headerMessage)) {
+                return CmsVaadinUtils.getMessageText(m_headerMessage);
+            }
+            return "";
+        }
+
+        /**
+         * Gets the type of property.<p>
+         *
+         * @return the type
+         */
+        Class<?> getType() {
+
+            return m_type;
+        }
+
+    }
+
+    /**
+     * The delete project context menu entry.<p>
+     */
+    class DeleteEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(final Set<String> data) {
+
+            m_manager.openDeleteDialog(data);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_DELETE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if (OpenCms.getSiteManager().getSiteForSiteRoot(data.iterator().next()) == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
     }
 
@@ -191,7 +290,8 @@ public class CmsSitesTable extends Table {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
 
-            if (!((Boolean)getItem(data.iterator().next()).getItemProperty(PROP_OK).getValue()).booleanValue()) {
+            if (!((Boolean)getItem(data.iterator().next()).getItemProperty(
+                TableProperty.OK).getValue()).booleanValue()) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
 
@@ -255,8 +355,11 @@ public class CmsSitesTable extends Table {
             if (data.size() > 1) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
-
-            if (!((Boolean)getItem(data.iterator().next()).getItemProperty(PROP_OK).getValue()).booleanValue()) {
+            String siteRoot = data.iterator().next();
+            if (OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot) == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+            if (!((Boolean)getItem(siteRoot).getItemProperty(TableProperty.OK).getValue()).booleanValue()) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
 
@@ -295,66 +398,35 @@ public class CmsSitesTable extends Table {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            return (data != null) && (data.size() == 1)
-            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            if ((data == null) || (data.size() != 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            String siteRoot = data.iterator().next();
+            if (OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot) == null) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
     }
 
-    /**Site aliases property.*/
-    private static final String PROP_ALIASES = "aliases";
-
-    /** Favicon property. */
-    private static final String PROP_FAVICON = "favicon";
-
-    /**Site icon property. */
-    private static final String PROP_ICON = "icon";
-
-    /**boolean property for webserver option. Used for style generator.*/
-    private static final String PROP_IS_WEBSERVER = "isweb";
-
-    /**Site path property  (is id for site row in table).*/
-    private static final String PROP_PATH = "path";
-
-    /**Site securesites property.*/
-    private static final String PROP_SECURESITES = "securesites";
-
-    /**Site server property.*/
-    private static final String PROP_SERVER = "server";
-
-    /**Site title property.*/
-    public static final String PROP_TITLE = "title";
-
-    /**Is site new? */
-    public static final String PROP_NEW = "new";
-
-    /**SSL Mode. */
-    public static final String PROP_SSL = "ssl";
-
-    /**Is site config ok? */
-    public static final String PROP_OK = "ok";
-
-    /**Is site path below other existing site? */
-    public static final String PROP_UNDER_OTHER_SITE = "othersite";
-
-    /**Were site root moved or renamed? */
-    public static final String PROP_CHANGED = "changed";
-
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4655464609332605219L;
 
+    /** The logger for this class. */
+    protected static Log LOG = CmsLog.getLog(CmsSitesTable.class.getName());
+
     /** The project manager instance. */
-    CmsSiteManager m_manager;
+    protected CmsSiteManager m_manager;
 
     /** The data container. */
-    IndexedContainer m_container;
+    private IndexedContainer m_container;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
 
     /** The available menu entries. */
-    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+    protected List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**Counter for valid sites.*/
     private int m_siteCounter;
@@ -369,40 +441,20 @@ public class CmsSitesTable extends Table {
         m_manager = manager;
 
         m_container = new IndexedContainer();
-        m_container.addContainerProperty(
-            PROP_ICON,
-            Label.class,
-            new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML));
-        m_container.addContainerProperty(PROP_FAVICON, Image.class, null);
-        m_container.addContainerProperty(PROP_SERVER, String.class, "");
-        m_container.addContainerProperty(PROP_TITLE, String.class, "");
-        m_container.addContainerProperty(PROP_IS_WEBSERVER, Boolean.class, new Boolean(true));
-        m_container.addContainerProperty(PROP_PATH, String.class, "");
-        m_container.addContainerProperty(PROP_ALIASES, String.class, "");
-        m_container.addContainerProperty(PROP_SECURESITES, String.class, "");
-        m_container.addContainerProperty(PROP_OK, Boolean.class, new Boolean(true));
-        m_container.addContainerProperty(PROP_UNDER_OTHER_SITE, Boolean.class, new Boolean(false));
-        m_container.addContainerProperty(PROP_CHANGED, Boolean.class, new Boolean(false));
-        m_container.addContainerProperty(PROP_NEW, Boolean.class, new Boolean(false));
-        m_container.addContainerProperty(PROP_SSL, Integer.class, new Integer(1));
+        for (TableProperty prop : TableProperty.values()) {
+            m_container.addContainerProperty(prop, prop.getType(), prop.getDefault());
+            setColumnHeader(prop, prop.getName());
+        }
 
         setContainerDataSource(m_container);
-        setColumnHeader(PROP_SSL, "");
-        setColumnHeader(PROP_ICON, "");
-        setColumnHeader(PROP_FAVICON, "");
-        setColumnHeader(PROP_SERVER, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_0));
-        setColumnHeader(PROP_TITLE, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_TITLE_0));
-        setColumnHeader(PROP_PATH, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PATH_0));
-        setColumnHeader(PROP_ALIASES, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIASES_0));
-        setColumnHeader(PROP_SECURESITES, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SECURESERVER_0));
-        setColumnAlignment(PROP_FAVICON, Align.CENTER);
-        setColumnExpandRatio(PROP_SERVER, 2);
-        setColumnExpandRatio(PROP_TITLE, 2);
-        setColumnExpandRatio(PROP_PATH, 2);
-        setColumnWidth(PROP_FAVICON, 40);
-        setColumnWidth(PROP_SSL, 130);
 
-        setColumnAlignment(PROP_FAVICON, Align.CENTER);
+        setColumnAlignment(TableProperty.Favicon, Align.CENTER);
+        setColumnExpandRatio(TableProperty.Server, 2);
+        setColumnExpandRatio(TableProperty.Title, 2);
+        setColumnExpandRatio(TableProperty.Path, 2);
+        setColumnWidth(TableProperty.Favicon, 40);
+        setColumnWidth(TableProperty.SSL, 130);
+
         setSelectable(true);
         setMultiSelect(true);
         m_menu = new CmsContextMenu();
@@ -424,26 +476,32 @@ public class CmsSitesTable extends Table {
 
                 String styles = "";
 
-                if (PROP_SSL.equals(propertyId)) {
-                    styles += " " + getSSLStyle(OpenCms.getSiteManager().getSiteForSiteRoot((String)itemId));
+                if (TableProperty.SSL.equals(propertyId)) {
+                    styles += " "
+                        + getSSLStyle(
+                            (CmsSite)source.getItem(itemId).getItemProperty(TableProperty.CmsSite).getValue());
                 }
 
-                if (PROP_SERVER.equals(propertyId)) {
+                if (TableProperty.Server.equals(propertyId)) {
                     styles += " " + OpenCmsTheme.HOVER_COLUMN;
-                    if (!((Boolean)source.getItem(itemId).getItemProperty(PROP_OK).getValue()).booleanValue()) {
-                        if (((Boolean)source.getItem(itemId).getItemProperty(PROP_CHANGED).getValue()).booleanValue()) {
+                    if (!((Boolean)source.getItem(itemId).getItemProperty(
+                        TableProperty.OK).getValue()).booleanValue()) {
+                        if (((Boolean)source.getItem(itemId).getItemProperty(
+                            TableProperty.Changed).getValue()).booleanValue()) {
                             styles += " " + OpenCmsTheme.STATE_CHANGED;
                         } else {
                             styles += " " + OpenCmsTheme.EXPIRED;
                         }
                     } else {
-                        if (((Boolean)source.getItem(itemId).getItemProperty(PROP_NEW).getValue()).booleanValue()) {
+                        if (((Boolean)source.getItem(itemId).getItemProperty(
+                            TableProperty.New).getValue()).booleanValue()) {
                             styles += " " + OpenCmsTheme.STATE_NEW;
                         }
                     }
                 }
-                if (PROP_TITLE.equals(propertyId)
-                    & ((Boolean)source.getItem(itemId).getItemProperty(PROP_IS_WEBSERVER).getValue()).booleanValue()) {
+                if (TableProperty.Title.equals(propertyId)
+                    & ((Boolean)source.getItem(itemId).getItemProperty(
+                        TableProperty.Is_Webserver).getValue()).booleanValue()) {
                     styles += " " + OpenCmsTheme.IN_NAVIGATION;
                 }
                 if (styles.isEmpty()) {
@@ -454,18 +512,18 @@ public class CmsSitesTable extends Table {
             }
         });
 
-        addGeneratedColumn(PROP_SSL, new ColumnGenerator() {
+        addGeneratedColumn(TableProperty.SSL, new ColumnGenerator() {
 
             private static final long serialVersionUID = -2144476865774782965L;
 
             public Object generateCell(Table source, Object itemId, Object columnId) {
 
-                return getSSLStatus(OpenCms.getSiteManager().getSiteForSiteRoot((String)itemId));
+                return getSSLStatus((CmsSite)source.getItem(itemId).getItemProperty(TableProperty.CmsSite).getValue());
 
             }
 
         });
-        addGeneratedColumn(PROP_FAVICON, new FavIconColumn());
+        addGeneratedColumn(TableProperty.Favicon, new FavIconColumn());
 
         setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
@@ -473,57 +531,61 @@ public class CmsSitesTable extends Table {
 
             public String generateDescription(Component source, Object itemId, Object propertyId) {
 
-                if (PROP_SSL.equals(propertyId)) {
+                if (TableProperty.Favicon.equals(propertyId)) {
 
-                    return OpenCms.getSiteManager().getSiteForSiteRoot(
-                        (String)itemId).getSSLMode().getLocalizedMessage();
+                    return ((CmsSite)(((Table)source).getItem(itemId).getItemProperty(
+                        TableProperty.CmsSite).getValue())).getSSLMode().getLocalizedMessage();
                 }
                 return null;
             }
         });
 
-        setColumnCollapsingAllowed(true);
-        setColumnCollapsible(PROP_ALIASES, true);
-        setColumnCollapsible(PROP_SECURESITES, true);
-        setColumnCollapsible(PROP_PATH, false);
-        setColumnCollapsible(PROP_SERVER, false);
-        setColumnCollapsible(PROP_TITLE, false);
-        setColumnCollapsible(PROP_FAVICON, false);
-        setColumnCollapsible(PROP_ICON, false);
+        setColumnCollapsingAllowed(false);
 
         setVisibleColumns(
-            PROP_ICON,
-            PROP_SSL,
-            PROP_FAVICON,
-            PROP_SERVER,
-            PROP_TITLE,
-            PROP_PATH,
-            PROP_SECURESITES,
-            PROP_ALIASES);
+            TableProperty.Icon,
+            TableProperty.SSL,
+            TableProperty.Favicon,
+            TableProperty.Server,
+            TableProperty.Title,
+            TableProperty.Path);
 
-        setColumnCollapsed(PROP_ALIASES, true);
-        setColumnCollapsed(PROP_SECURESITES, true);
-        setColumnWidth(PROP_ICON, 40);
+        setColumnWidth(TableProperty.Icon, 40);
     }
 
-    /**
-     * Filters the table according to given search string.<p>
-     *
-     * @param search string to be looked for.
-     */
-    public void filterTable(String search) {
+    public static String getSSLStyle(CmsSite site) {
+
+        if ((site != null) && site.getSSLMode().isSecure()) {
+            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
+        }
+        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
+    }
+
+    public void filter(String search) {
 
         m_container.removeAllContainerFilters();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
             m_container.addContainerFilter(
                 new Or(
-                    new SimpleStringFilter(PROP_TITLE, search, true, false),
-                    new SimpleStringFilter(PROP_PATH, search, true, false),
-                    new SimpleStringFilter(PROP_SERVER, search, true, false)));
+                    new SimpleStringFilter(TableProperty.Title, search, true, false),
+                    new SimpleStringFilter(TableProperty.Path, search, true, false),
+                    new SimpleStringFilter(TableProperty.Server, search, true, false)));
         }
         if ((getValue() != null) & !((Set<String>)getValue()).isEmpty()) {
             setCurrentPageFirstItemId(((Set<String>)getValue()).iterator().next());
         }
+
+    }
+
+    public IndexedContainer getContainer() {
+
+        return m_container;
+    }
+
+    public VerticalLayout getEmptyLayout() {
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
@@ -551,23 +613,21 @@ public class CmsSitesTable extends Table {
             if (site.getSiteMatcher() != null) {
                 m_siteCounter++;
                 Item item = m_container.addItem(site.getSiteRoot());
-
-                item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
-                item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
-                item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
-                item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
-                item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
+                item.getItemProperty(TableProperty.CmsSite).setValue(site);
+                item.getItemProperty(TableProperty.Server).setValue(site.getUrl());
+                item.getItemProperty(TableProperty.Title).setValue(site.getTitle());
+                item.getItemProperty(TableProperty.Is_Webserver).setValue(new Boolean(site.isWebserver()));
+                item.getItemProperty(TableProperty.Path).setValue(site.getSiteRoot());
                 if (OpenCms.getSiteManager().isOnlyOfflineSite(site)) {
-                    item.getItemProperty(PROP_NEW).setValue(new Boolean(true));
-                    item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
+                    item.getItemProperty(TableProperty.New).setValue(new Boolean(true));
+                    item.getItemProperty(TableProperty.Icon).setValue(
+                        new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
                     showPublishButton = true;
                 } else {
-                    item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtml(), ContentMode.HTML));
+                    item.getItemProperty(TableProperty.Icon).setValue(new Label(icon.getHtml(), ContentMode.HTML));
                 }
-                if (site.hasSecureServer()) {
-                    item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
-                }
-                item.getItemProperty(PROP_OK).setValue(new Boolean(!OpenCms.getSiteManager().isSiteUnderSite(site)));
+                item.getItemProperty(TableProperty.OK).setValue(
+                    new Boolean(!OpenCms.getSiteManager().isSiteUnderSite(site)));
             }
         }
 
@@ -577,17 +637,17 @@ public class CmsSitesTable extends Table {
 
             //Make sure item doesn't exist in table yet.. should never happen
             if (item != null) {
-                item.getItemProperty(PROP_ICON).setValue(new Label(icon.getHtml(), ContentMode.HTML));
-                item.getItemProperty(PROP_SERVER).setValue(site.getUrl());
-                item.getItemProperty(PROP_TITLE).setValue(site.getTitle());
-                item.getItemProperty(PROP_IS_WEBSERVER).setValue(new Boolean(site.isWebserver()));
-                item.getItemProperty(PROP_PATH).setValue(site.getSiteRoot());
-                item.getItemProperty(PROP_ALIASES).setValue(getNiceStringFormList(site.getAliases()));
-                item.getItemProperty(PROP_OK).setValue(new Boolean(false));
+                item.getItemProperty(TableProperty.CmsSite).setValue(site);
+                item.getItemProperty(TableProperty.Icon).setValue(new Label(icon.getHtml(), ContentMode.HTML));
+                item.getItemProperty(TableProperty.Server).setValue(site.getUrl());
+                item.getItemProperty(TableProperty.Title).setValue(site.getTitle());
+                item.getItemProperty(TableProperty.Is_Webserver).setValue(new Boolean(site.isWebserver()));
+                item.getItemProperty(TableProperty.Path).setValue(site.getSiteRoot());
+                item.getItemProperty(TableProperty.OK).setValue(new Boolean(false));
                 if (!site.getSiteRootUUID().isNullUUID()) {
                     if (m_manager.getRootCmsObject().existsResource(site.getSiteRootUUID())) {
-                        item.getItemProperty(PROP_CHANGED).setValue(new Boolean(true));
-                        item.getItemProperty(PROP_ICON).setValue(
+                        item.getItemProperty(TableProperty.Changed).setValue(new Boolean(true));
+                        item.getItemProperty(TableProperty.Icon).setValue(
                             new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
                         showPublishButton = true;
                     } else {
@@ -595,28 +655,35 @@ public class CmsSitesTable extends Table {
 
                     }
                 }
-                if (site.hasSecureServer()) {
-                    item.getItemProperty(PROP_SECURESITES).setValue(site.getSecureUrl());
-                }
             }
         }
         m_manager.showPublishButton(showPublishButton);
     }
 
+    /**
+     * Returns the available menu entries.<p>
+     *
+     * @return the menu entries
+     */
+    protected List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
+
+        if (m_menuEntries == null) {
+            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
+            m_menuEntries.add(new EditEntry());
+            m_menuEntries.add(new DeleteEntry());
+            m_menuEntries.add(new ExplorerEntry());
+            //            m_menuEntries.add(new SitemapEntry()); //TODO add when sitemap issue fixed
+            m_menuEntries.add(new PageEditorEntry());
+        }
+        return m_menuEntries;
+    }
+
     protected String getSSLStatus(CmsSite site) {
 
-        if (site.getSSLMode().isSecure()) {
+        if ((site != null) && site.getSSLMode().isSecure()) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ENCRYPTED_0);
         }
         return CmsVaadinUtils.getMessageText(Messages.GUI_SITE_UNENCRYPTED_0);
-    }
-
-    protected String getSSLStyle(CmsSite site) {
-
-        if (site.getSSLMode().isSecure()) {
-            return OpenCmsTheme.TABLE_COLUMN_BOX_CYAN;
-        }
-        return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
     }
 
     /**
@@ -641,7 +708,7 @@ public class CmsSitesTable extends Table {
 
                 public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
 
-                    onItemClick(event, itemId, PROP_FAVICON);
+                    onItemClick(event, itemId, TableProperty.Favicon);
 
                 }
             });
@@ -650,24 +717,6 @@ public class CmsSitesTable extends Table {
         } else {
             return null;
         }
-    }
-
-    /**
-     * Returns the available menu entries.<p>
-     *
-     * @return the menu entries
-     */
-    List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
-
-        if (m_menuEntries == null) {
-            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
-            m_menuEntries.add(new EditEntry());
-            m_menuEntries.add(new DeleteEntry());
-            m_menuEntries.add(new ExplorerEntry());
-            //            m_menuEntries.add(new SitemapEntry()); //TODO add when sitemap issue fixed
-            m_menuEntries.add(new PageEditorEntry());
-        }
-        return m_menuEntries;
     }
 
     /**
@@ -685,11 +734,11 @@ public class CmsSitesTable extends Table {
             changeValueIfNotMultiSelect(itemId);
 
             // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == PROP_ICON)) {
+            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == TableProperty.Icon)) {
 
                 m_menu.setEntries(getMenuEntries(), (Set<String>)getValue());
                 m_menu.openForTable(event, itemId, propertyId, this);
-            } else if (event.getButton().equals(MouseButton.LEFT) && PROP_SERVER.equals(propertyId)) {
+            } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.Server.equals(propertyId)) {
                 String siteRoot = (String)itemId;
                 m_manager.openEditDailog(siteRoot);
             }

@@ -690,6 +690,39 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**Layout for the report widget. */
     private FormLayout m_threadReport;
 
+    public CmsEditSiteForm(CmsObject cms, CmsSite site, CmsSiteManager manager, boolean editable) {
+
+        m_clonedCms = cms;
+        m_site = site;
+        m_manager = manager;
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        setUpComboBoxPosition();
+        setUpComboBoxTemplate();
+        setUpComboBoxSSL();
+        setUpOUComboBox(m_fieldSelectOU);
+        setUpOUComboBox(m_fieldSelectParentOU);
+        m_tab.setHeight("400px");
+        m_report.setVisible(false);
+        m_ok.setVisible(editable);
+        m_infoSiteRoot.setVisible(false);
+        if (editable) {
+            m_aliasGroup = new CmsEditableGroup(m_aliases, new Supplier<Component>() {
+
+                public Component get() {
+
+                    Component c = createAliasComponent("", true);
+                    c.setEnabled(false);
+                    return c;
+
+                }
+
+            }, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_ALIAS_0));
+            m_aliasGroup.init();
+        }
+        setFieldsForSite(editable);
+        m_cancel.addClickListener(e -> CmsVaadinUtils.getWindow(CmsEditSiteForm.this).close());
+    }
+
     /**
      * Constructor.<p>
      * Use this to create a new site.<p>
@@ -909,102 +942,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager, String siteRoot) {
 
         this(cms, manager);
-        try {
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)) {
-                CmsProperty prop = m_clonedCms.readPropertyObject(
-                    siteRoot,
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                    false);
-                if (!prop.isNullProperty()) {
-                    if (!m_templates.contains(prop.getValue())) {
-                        m_simpleFieldTemplate.addItem(prop.getValue());
-                    }
-                    m_simpleFieldTemplate.select(prop.getValue());
-                } else {
-                    if (!m_templates.isEmpty()) {
-                        m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error("Unable to read template property.", e);
-        }
-        m_simpleFieldSiteRoot.setVisible(true);
-        m_simpleFieldSiteRoot.setValue(siteRoot);
-        m_simpleFieldSiteRoot.setCmsObject(m_clonedCms);
-        m_simpleFieldSiteRoot.addValidator(new SiteRootValidator());
-        m_simpleFieldSiteRoot.addValueChangeListener(new ValueChangeListener() {
-
-            /**vaadin serial id. */
-            private static final long serialVersionUID = 4680456758446195524L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                setTemplateField();
-                checkOnOfflineSiteRoot();
-            }
-
-        });
-        m_simpleFieldParentFolderName.setVisible(false);
-        m_simpleFieldFolderName.setVisible(false);
-
         m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-
-        displayResourceInfoDirectly(
-            Collections.singletonList(
-                new CmsResourceInfo(m_site.getTitle(), m_site.getSiteRoot(), m_manager.getFavIcon(siteRoot))));
-
-        m_tab.removeTab(m_tab.getTab(4));
-        m_simpleFieldTitle.removeTextChangeListener(null);
-
-        m_simpleFieldParentFolderName.setEnabled(false);
-        m_simpleFieldParentFolderName.setValue(
-            siteRoot.substring(0, siteRoot.length() - siteRoot.split("/")[siteRoot.split("/").length - 1].length()));
-
-        m_simpleFieldFolderName.removeAllValidators(); //can not be changed
-
-        m_fieldCreateOU.setVisible(false);
-
-        disableOUComboBox();
-
-        m_alreadyUsedURL.remove(m_site.getSiteMatcher()); //Remove current url to avoid validation problem
-
-        setFieldTitle(m_site.getTitle());
-        setFieldFolder(getFolderNameFromSiteRoot(siteRoot));
-        m_simpleFieldFolderName.setEnabled(false);
-
-        setFieldServer(m_site.getUrl());
-        if (m_site.hasSecureServer()) {
-            m_fieldSecureServer.setValue(m_site.getSecureUrl());
-        }
-        if (m_site.getErrorPage() != null) {
-            m_fieldErrorPage.setValue(m_site.getErrorPage());
-        }
-        m_fieldWebServer.setValue(new Boolean(m_site.isWebserver()));
-        m_fieldExclusiveURL.setValue(new Boolean(m_site.isExclusiveUrl()));
-        m_fieldExclusiveError.setValue(new Boolean(m_site.isExclusiveError()));
-
-        Map<String, String> siteParameters = m_site.getParameters();
-        for (Entry<String, String> parameter : siteParameters.entrySet()) {
-            addParameter(getParameterString(parameter));
-        }
-
-        List<CmsSiteMatcher> siteAliases = m_site.getAliases();
-        for (CmsSiteMatcher siteMatcher : siteAliases) {
-            m_aliasGroup.addRow(createAliasComponent(siteMatcher.getUrl(), siteMatcher.isRedirect()));
-        }
-        setTemplateField();
-
-        setUpComboBoxPosition();
-
-        if (!m_fieldSecureServer.isEmpty()) {
-            m_fieldExclusiveURL.setEnabled(true);
-            m_fieldExclusiveError.setEnabled(true);
-        }
-        setFaviconIfExist();
-        checkOnOfflineSiteRoot();
-        m_simpleFieldEncryption.setContainerDataSource(getSSLModeContainer("caption", true, m_site.getSSLMode()));
-        m_simpleFieldEncryption.select(m_site.getSSLMode());
+        setFieldsForSite(true);
 
     }
 
@@ -1908,6 +1847,130 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private void setFieldServer(String newValue) {
 
         m_simpleFieldServer.setValue(newValue);
+    }
+
+    private void setFieldsForSite(boolean enableAll) {
+
+        try {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getSiteRoot())) {
+                CmsProperty prop = m_clonedCms.readPropertyObject(
+                    m_site.getSiteRoot(),
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    false);
+                if (!prop.isNullProperty()) {
+                    if (!m_templates.contains(prop.getValue())) {
+                        m_simpleFieldTemplate.addItem(prop.getValue());
+                    }
+                    m_simpleFieldTemplate.select(prop.getValue());
+                } else {
+                    if (!m_templates.isEmpty()) {
+                        m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
+                    }
+                }
+                m_simpleFieldTemplate.setEnabled(enableAll);
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to read template property.", e);
+        }
+        m_simpleFieldSiteRoot.setVisible(true);
+        m_simpleFieldSiteRoot.setValue(m_site.getSiteRoot());
+        m_simpleFieldSiteRoot.setCmsObject(m_clonedCms);
+        m_simpleFieldSiteRoot.addValidator(new SiteRootValidator());
+        m_simpleFieldSiteRoot.setEnabled(enableAll);
+        m_simpleFieldSiteRoot.addValueChangeListener(new ValueChangeListener() {
+
+            /**vaadin serial id. */
+            private static final long serialVersionUID = 4680456758446195524L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setTemplateField();
+                checkOnOfflineSiteRoot();
+            }
+
+        });
+        m_simpleFieldParentFolderName.setVisible(false);
+        m_simpleFieldFolderName.setVisible(false);
+
+        displayResourceInfoDirectly(
+            Collections.singletonList(
+                new CmsResourceInfo(
+                    m_site.getTitle(),
+                    m_site.getSiteRoot(),
+                    m_manager.getFavIcon(m_site.getSiteRoot()))));
+
+        m_tab.removeTab(m_tab.getTab(4));
+        m_simpleFieldTitle.removeTextChangeListener(null);
+        m_simpleFieldTitle.setEnabled(enableAll);
+        m_simpleFieldParentFolderName.setEnabled(false);
+        m_simpleFieldParentFolderName.setValue(
+            m_site.getSiteRoot().substring(
+                0,
+                m_site.getSiteRoot().length()
+                    - m_site.getSiteRoot().split("/")[m_site.getSiteRoot().split("/").length - 1].length()));
+
+        m_simpleFieldFolderName.removeAllValidators(); //can not be changed
+        m_fieldCreateOU.setVisible(false);
+
+        disableOUComboBox();
+
+        m_alreadyUsedURL.remove(m_site.getSiteMatcher()); //Remove current url to avoid validation problem
+
+        setFieldTitle(m_site.getTitle());
+        setFieldFolder(getFolderNameFromSiteRoot(m_site.getSiteRoot()));
+        m_simpleFieldFolderName.setEnabled(false);
+        m_simpleFieldTitle.setEnabled(enableAll);
+
+        setFieldServer(m_site.getUrl());
+        m_simpleFieldServer.setEnabled(enableAll);
+        if (m_site.hasSecureServer()) {
+            m_fieldSecureServer.setValue(m_site.getSecureUrl());
+        }
+        if (m_site.getErrorPage() != null) {
+            m_fieldErrorPage.setValue(m_site.getErrorPage());
+        }
+        m_fieldWebServer.setValue(new Boolean(m_site.isWebserver()));
+        m_fieldWebServer.setEnabled(enableAll);
+        m_fieldExclusiveURL.setValue(new Boolean(m_site.isExclusiveUrl()));
+        m_fieldExclusiveURL.setEnabled(enableAll);
+        m_fieldExclusiveError.setValue(new Boolean(m_site.isExclusiveError()));
+        m_fieldExclusiveError.setEnabled(enableAll);
+
+        Map<String, String> siteParameters = m_site.getParameters();
+        for (Entry<String, String> parameter : siteParameters.entrySet()) {
+            addParameter(getParameterString(parameter));
+        }
+
+        List<CmsSiteMatcher> siteAliases = m_site.getAliases();
+
+        for (CmsSiteMatcher siteMatcher : siteAliases) {
+            if (enableAll) {
+                m_aliasGroup.addRow(createAliasComponent(siteMatcher.getUrl(), siteMatcher.isRedirect()));
+            } else {
+                Component c = createAliasComponent(siteMatcher.getUrl(), siteMatcher.isRedirect());
+                c.setEnabled(false);
+                m_aliases.addComponent(c);
+            }
+        }
+
+        setTemplateField();
+
+        setUpComboBoxPosition();
+
+        if (!m_fieldSecureServer.isEmpty()) {
+            m_fieldExclusiveURL.setEnabled(true && enableAll);
+            m_fieldExclusiveError.setEnabled(true && enableAll);
+        }
+        setFaviconIfExist();
+        checkOnOfflineSiteRoot();
+        m_fieldUploadFavIcon.setVisible(false);
+        m_simpleFieldEncryption.setContainerDataSource(getSSLModeContainer("caption", true, m_site.getSSLMode()));
+        m_simpleFieldEncryption.select(m_site.getSSLMode());
+        m_simpleFieldEncryption.setEnabled(enableAll);
+
+        m_fieldErrorPage.setEnabled(enableAll);
+        m_addParameter.setVisible(enableAll);
+        m_fieldPosition.setEnabled(enableAll);
     }
 
     /**

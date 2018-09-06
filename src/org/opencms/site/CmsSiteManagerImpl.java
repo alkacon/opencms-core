@@ -497,7 +497,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                     }
                 }
             }
-
+            project = m_clone.readProject(CmsProject.ONLINE_PROJECT_ID);
+            m_clone.getRequestContext().setCurrentProject(project);
             Map<CmsSite, CmsSite> updateMap = new HashMap<CmsSite, CmsSite>();
 
             for (CmsPublishedResource r : foundSites) {
