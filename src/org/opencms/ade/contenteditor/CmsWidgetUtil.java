@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor;
 
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
@@ -38,6 +39,8 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Utility methods for getting widget informations out of content definitions.<p>
@@ -54,6 +57,19 @@ public final class CmsWidgetUtil {
 
         /** A widget instance. */
         private I_CmsWidget m_widget;
+
+        /** The complex widget. */
+        private I_CmsComplexWidget m_complexWidget;
+
+        /**
+         * Gets the complex widget.<p>
+         *
+         * @return the complex widget
+         */
+        public I_CmsComplexWidget getComplexWidget() {
+
+            return m_complexWidget;
+        }
 
         /**
          * Gets the display type.<p>
@@ -73,6 +89,17 @@ public final class CmsWidgetUtil {
         public I_CmsWidget getWidget() {
 
             return m_widget;
+        }
+
+        /**
+         * Sets the complex widget.<p>
+         *
+         * @param complexWidget the complex widget to set
+         */
+        public void setComplexWidget(I_CmsComplexWidget complexWidget) {
+
+            m_complexWidget = complexWidget;
+
         }
 
         /**
@@ -113,48 +140,64 @@ public final class CmsWidgetUtil {
      */
     public static WidgetInfo collectWidgetInfo(CmsXmlContentDefinition rootContentDefinition, String path) {
 
-        String widgetConfig;
+        String widgetConfig = null;
         DisplayType configuredType = DisplayType.none;
+        I_CmsXmlSchemaType schemaType = rootContentDefinition.getSchemaType(path);
 
         I_CmsWidget widget = null;
+        I_CmsComplexWidget complexWidget = null;
+        I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
         final List<I_CmsWidget> configuredWidgets = new ArrayList<>();
         final List<String> configuredWidgetConfigs = new ArrayList<>();
         final List<DisplayType> configuredDisplayTypes = new ArrayList<>();
-        final List<I_CmsXmlSchemaType> schemaTypes = new ArrayList<>();
+        final List<I_CmsComplexWidget> configuredComplexWidgets = new ArrayList<>();
+
+        // Use lists to store found widget configurations, and then use the first elements of each list.
+        // Because we iterate from the top level schema down to the nested schema, configurations in higher level schemas
+        // will have precedence over those in lower level schemas for the same element.
+
         rootContentDefinition.findSchemaTypesForPath(path, (nestedType, remainingPath) -> {
-            schemaTypes.add(nestedType);
             remainingPath = CmsXmlUtils.concatXpath(nestedType.getName(), remainingPath);
             I_CmsXmlContentHandler handler = nestedType.getContentDefinition().getContentHandler();
-            I_CmsWidget confWidget = handler.getUnconfiguredWidget(remainingPath);
-            String config = handler.getConfiguration(remainingPath);
+            CollectionUtils.addIgnoreNull(configuredWidgets, handler.getUnconfiguredWidget(remainingPath));
+            CollectionUtils.addIgnoreNull(configuredWidgetConfigs, handler.getConfiguration(remainingPath));
+            CollectionUtils.addIgnoreNull(
+                configuredDisplayTypes,
+                handler.getConfiguredDisplayType(remainingPath, null));
+            CollectionUtils.addIgnoreNull(
+                configuredComplexWidgets,
+                handler.getUnconfiguredComplexWidget(remainingPath));
 
-            DisplayType type = handler.getConfiguredDisplayType(remainingPath, null);
-            if (confWidget != null) {
-                configuredWidgets.add(confWidget);
-            }
-            if (config != null) {
-                configuredWidgetConfigs.add(config);
-            }
-            if (type != null) {
-                configuredDisplayTypes.add(type);
-            }
         });
         if (!configuredWidgets.isEmpty()) {
             widget = configuredWidgets.get(0).newInstance();
         } else {
-            widget = OpenCms.getXmlContentTypeManager().getWidgetDefault(
-                schemaTypes.get(schemaTypes.size() - 1).getTypeName());
+            widget = OpenCms.getXmlContentTypeManager().getWidgetDefault(schemaType.getTypeName());
         }
         if (!configuredDisplayTypes.isEmpty()) {
             configuredType = configuredDisplayTypes.get(0);
         }
         if (!configuredWidgetConfigs.isEmpty()) {
             widgetConfig = configuredWidgetConfigs.get(0);
-        } else {
+        } else if (widget != null) {
             widgetConfig = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(widget);
         }
-        widget.setConfiguration(widgetConfig);
+        if (widget != null) {
+            widget.setConfiguration(widgetConfig);
+        }
+        // default complex widget and default c. widget config have lower priorities than those directly defined, so put them at the end of the list
+        CollectionUtils.addIgnoreNull(configuredComplexWidgets, contentHandler.getDefaultComplexWidget());
+        List<String> complexWidgetConfigs = new ArrayList<>(configuredWidgetConfigs);
+        CollectionUtils.addIgnoreNull(complexWidgetConfigs, contentHandler.getDefaultComplexWidgetConfiguration());
+        if (!configuredComplexWidgets.isEmpty()) {
+            String config = "";
+            if (!complexWidgetConfigs.isEmpty()) {
+                config = complexWidgetConfigs.get(0);
+            }
+            complexWidget = configuredComplexWidgets.get(0).configure(config);
+        }
         WidgetInfo result = new WidgetInfo();
+        result.setComplexWidget(complexWidget);
         result.setDisplayType(configuredType);
         result.setWidget(widget);
         return result;

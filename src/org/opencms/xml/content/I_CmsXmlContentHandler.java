@@ -465,6 +465,14 @@ public interface I_CmsXmlContentHandler {
     String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
+     * Gets the unconfigured complex widget defined for the given path.<p>
+     *
+     * @param path the value path
+     * @return the complex widget
+     */
+    I_CmsComplexWidget getUnconfiguredComplexWidget(String path);
+
+    /**
      * Gets an unconfigured widget for a given sub-path, i.e. one without a configuration string.<p>
      *
      * @param path the sub-path

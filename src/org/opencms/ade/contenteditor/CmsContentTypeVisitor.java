@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor;
 import org.opencms.acacia.shared.CmsAttributeConfiguration;
 import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.acacia.shared.CmsType;
+import org.opencms.ade.contenteditor.CmsWidgetUtil.WidgetInfo;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;
@@ -47,7 +48,6 @@ import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
@@ -619,44 +619,11 @@ public class CmsContentTypeVisitor {
         DisplayType defaultType = DisplayType.none;
         EvaluationRule rule = EvaluationRule.none;
         try {
-            I_CmsWidget widget = null;
+            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(m_rootContentDefinition, path);
+            I_CmsWidget widget = widgetInfo.getWidget();
+            I_CmsComplexWidget complexWidget = widgetInfo.getComplexWidget();
+            configuredType = widgetInfo.getDisplayType();
             I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
-            final List<I_CmsWidget> configuredWidgets = new ArrayList<>();
-            final List<String> configuredWidgetConfigs = new ArrayList<>();
-            final List<DisplayType> configuredDisplayTypes = new ArrayList<>();
-            m_rootContentDefinition.findSchemaTypesForPath(path, (nestedType, remainingPath) -> {
-                remainingPath = CmsXmlUtils.concatXpath(nestedType.getName(), remainingPath);
-                I_CmsXmlContentHandler handler = nestedType.getContentDefinition().getContentHandler();
-                I_CmsWidget confWidget = handler.getUnconfiguredWidget(remainingPath);
-                String config = handler.getConfiguration(remainingPath);
-                DisplayType type = handler.getConfiguredDisplayType(remainingPath, null);
-                if (confWidget != null) {
-                    configuredWidgets.add(confWidget);
-                }
-                if (config != null) {
-                    configuredWidgetConfigs.add(config);
-                }
-                if (type != null) {
-                    configuredDisplayTypes.add(type);
-                }
-            });
-            if (!configuredWidgets.isEmpty()) {
-                widget = configuredWidgets.get(0).newInstance();
-            } else {
-                widget = OpenCms.getXmlContentTypeManager().getWidgetDefault(schemaType.getTypeName());
-            }
-            if (!configuredDisplayTypes.isEmpty()) {
-                configuredType = configuredDisplayTypes.get(0);
-            }
-            if (!configuredWidgetConfigs.isEmpty()) {
-                widgetConfig = configuredWidgetConfigs.get(0);
-            } else {
-                widgetConfig = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(widget);
-            }
-            if (widget != null) {
-                widget.setConfiguration(widgetConfig);
-            }
-
             if (configuredType.equals(DisplayType.none) && schemaType.isSimpleType()) {
                 // check the type is on the root level of the document, those will be displayed 'wide'
                 // the path will always have a leading '/'
@@ -705,8 +672,8 @@ public class CmsContentTypeVisitor {
 
                 }
                 m_widgets.add(widget);
-            } else if (contentHandler.getComplexWidget(schemaType) != null) {
-                I_CmsComplexWidget complexWidget = contentHandler.getComplexWidget(schemaType);
+            }
+            if (complexWidget != null) {
                 CmsComplexWidgetData widgetData = complexWidget.getWidgetData(m_cms);
                 CmsExternalWidgetConfiguration externalConfig = widgetData.getExternalWidgetConfiguration();
                 if (externalConfig != null) {

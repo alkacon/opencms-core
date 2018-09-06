@@ -1337,6 +1337,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getUnconfiguredComplexWidget(java.lang.String)
+     */
+    public I_CmsComplexWidget getUnconfiguredComplexWidget(String path) {
+
+        return m_complexWidgets.get(path);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getUnconfiguredWidget(java.lang.String)
      */
     public I_CmsWidget getUnconfiguredWidget(String path) {
