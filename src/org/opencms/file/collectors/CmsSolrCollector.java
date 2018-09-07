@@ -189,6 +189,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         if (numResults > 0) {
             q.setRows(Integer.valueOf(numResults));
         }
+        // Do only return the minimal set of fields, since on can never access the solr result at all, but only the resource itself
+        q.setFields(CmsSolrQuery.MINIMUM_FIELDS);
         CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
         return new ArrayList<CmsResource>(index.search(cms, q, true));
     }
