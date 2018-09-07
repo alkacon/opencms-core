@@ -624,6 +624,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin component.*/
     private CheckBox m_fieldExclusiveURL;
 
+    private CheckBox m_fieldKeepTemplate;
+
     /**vaadin component. */
     private Image m_fieldFavIcon;
 
@@ -759,6 +761,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         }
 
+        m_fieldKeepTemplate.setVisible(false);
+        m_fieldKeepTemplate.setValue(Boolean.FALSE);
+
         m_simpleFieldParentFolderName.setValue(CmsSiteManager.PATH_SITES);
         m_simpleFieldParentFolderName.setUseRootPaths(true);
         m_simpleFieldParentFolderName.setCmsObject(m_clonedCms);
@@ -888,6 +893,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public void blur(BlurEvent event) {
 
+                checkTemplate();
                 setFolderNameState(null);
 
             }
@@ -901,7 +907,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public void valueChange(ValueChangeEvent event) {
 
-                clearMessageBundle();
+                resetFields();
                 loadMessageBundle();
                 m_manager.centerWindow();
 
@@ -1015,6 +1021,26 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
         m_ok.setEnabled(true);
         m_infoSiteRoot.setVisible(false);
+    }
+
+    protected void checkTemplate() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_simpleFieldFolderName.getValue())) {
+            return;
+        }
+        if (!m_clonedCms.existsResource(getSiteRoot())) {
+            return;
+        }
+        try {
+            String templateValue = m_clonedCms.readPropertyObject(
+                getSiteRoot(),
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                false).getValue();
+            m_simpleFieldTemplate.addItem(templateValue);
+            m_simpleFieldTemplate.setValue(templateValue);
+        } catch (CmsException e) {
+            //
+        }
     }
 
     /**
@@ -1136,21 +1162,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_0));
         row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_HELP_0));
         m_parameter.addComponent(row);
-    }
-
-    /**
-     * Clears the message bundle and removes related text fields from UI.<p>
-     */
-    void clearMessageBundle() {
-
-        if (m_bundleComponentKeyMap != null) {
-            Set<TextField> setBundles = m_bundleComponentKeyMap.keySet();
-
-            for (TextField field : setBundles) {
-                m_bundleValues.removeComponent(field);
-            }
-            m_bundleComponentKeyMap.clear();
-        }
     }
 
     /**
@@ -1349,6 +1360,24 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         } catch (CmsException | IOException e) {
             LOG.error("Error reading bundle", e);
         }
+    }
+
+    /**
+     * Clears the message bundle and removes related text fields from UI.<p>
+     */
+    void resetFields() {
+
+        if (m_bundleComponentKeyMap != null) {
+            Set<TextField> setBundles = m_bundleComponentKeyMap.keySet();
+
+            for (TextField field : setBundles) {
+                m_bundleValues.removeComponent(field);
+            }
+            m_bundleComponentKeyMap.clear();
+        }
+        m_fieldKeepTemplate.setVisible(!CmsStringUtil.isEmptyOrWhitespaceOnly(m_fieldLoadSiteTemplate.getValue()));
+        m_fieldKeepTemplate.setValue(
+            Boolean.valueOf(!CmsStringUtil.isEmptyOrWhitespaceOnly(m_fieldLoadSiteTemplate.getValue())));
     }
 
     /**
@@ -1695,6 +1724,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private String getFieldTemplate() {
 
+        if (m_fieldKeepTemplate.getValue()) {
+            return ""; //No template property will be changed
+        }
         Object value = m_simpleFieldTemplate.getValue();
         if (value != null) {
             return (String)value;
@@ -1799,6 +1831,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
     /**
      * Gets the site root.<p>
+     * Usable for new sites and for existing sites.
      *
      * @return site root string
      */
@@ -1872,6 +1905,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         } catch (CmsException e) {
             LOG.error("Unable to read template property.", e);
         }
+
         m_simpleFieldSiteRoot.setVisible(true);
         m_simpleFieldSiteRoot.setValue(m_site.getSiteRoot());
         m_simpleFieldSiteRoot.setCmsObject(m_clonedCms);
