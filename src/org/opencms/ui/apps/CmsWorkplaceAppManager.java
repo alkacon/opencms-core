@@ -60,6 +60,7 @@ import org.opencms.ui.apps.filehistory.CmsFileHistoryClearConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryFolder;
 import org.opencms.ui.apps.git.CmsGitAppConfiguration;
+import org.opencms.ui.apps.linkvalidation.CmsLinkInFolderValidationConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationExternalConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationFolder;
@@ -789,6 +790,7 @@ public class CmsWorkplaceAppManager {
                 new CmsFileHistoryClearConfiguration(),
                 new CmsLinkValidationConfiguration(),
                 new CmsLinkValidationExternalConfiguration(),
+                new CmsLinkInFolderValidationConfiguration(),
                 new CmsDbManagerConfiguration(),
                 new CmsDbImportHTTPConfiguration(),
                 new CmsDbImportServerConfiguration(),

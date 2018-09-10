@@ -61,11 +61,11 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
@@ -111,6 +111,7 @@ public class CmsDeleteDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsDeleteDialog(I_CmsDialogContext context) {
+
         m_context = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_deleteSiblings.addItem(CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -187,7 +188,7 @@ public class CmsDeleteDialog extends CmsBasicDialog {
      *
      * @throws CmsException if something goes wrong
      */
-    public Multimap<CmsResource, CmsResource> getBrokenLinks(
+    public static Multimap<CmsResource, CmsResource> getBrokenLinks(
         CmsObject cms,
         List<CmsResource> selectedResources,
         boolean includeSiblings)

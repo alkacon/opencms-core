@@ -27,14 +27,20 @@
 
 package org.opencms.ui.apps.linkvalidation;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.CmsRemovableFormRow;
+import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.editablegroup.CmsEditableGroup;
+import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Supplier;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -48,8 +54,8 @@ public class CmsInternalResources extends VerticalLayout {
     /**vaadin serial id.*/
     private static final long serialVersionUID = 6880701403593873461L;
 
-    /**Button to add new field.*/
-    Button m_addResource;
+    /**Editable resource group. */
+    CmsEditableGroup m_resourcesGroup;
 
     /**Button to update table.*/
     Button m_okButton;
@@ -63,19 +69,9 @@ public class CmsInternalResources extends VerticalLayout {
      * @param table linked table to be updated if button was pressed
      */
     public CmsInternalResources(final I_CmsUpdatableComponent table) {
+
         setHeightUndefined();
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        addEmptyPathFieldToLayout("/");
-
-        m_addResource.addClickListener(new Button.ClickListener() {
-
-            private static final long serialVersionUID = -1837905731879184454L;
-
-            public void buttonClick(ClickEvent event) {
-
-                addEmptyPathFieldToLayout("");
-            }
-        });
 
         m_okButton.addClickListener(new Button.ClickListener() {
 
@@ -87,6 +83,43 @@ public class CmsInternalResources extends VerticalLayout {
             }
         });
 
+        m_resourcesGroup = new CmsEditableGroup(m_resources, new Supplier<Component>() {
+
+            public Component get() {
+
+                return getResourceComponent(null);
+            }
+
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_LINKVALIDATION_LINKS_ADDRESOURCES_0));
+
+        m_resourcesGroup.init();
+
+        m_resourcesGroup.addRow(getResourceComponent(null));
+
+    }
+
+    /**
+     * Get vaadin component with given path.<p>
+     *
+     * @param path of resource
+     * @return Vaadin component
+     */
+    protected Component getResourceComponent(String path) {
+
+        try {
+            CmsPathSelectField field = new CmsPathSelectField();
+            field.setUseRootPaths(true);
+            CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            field.setCmsObject(cms);
+            if (path != null) {
+                field.setValue(path);
+            }
+            return field;
+        } catch (CmsException e) {
+            //
+        }
+        return null;
     }
 
     /**
@@ -96,11 +129,7 @@ public class CmsInternalResources extends VerticalLayout {
      */
     void addEmptyPathFieldToLayout(String defaultValue) {
 
-        CmsPathSelectField field = new CmsPathSelectField();
-        field.setValue(defaultValue);
-        CmsRemovableFormRow<CmsPathSelectField> pathField = new CmsRemovableFormRow<CmsPathSelectField>(field, "");
-        pathField.setWidth("100%");
-        m_resources.addComponent(pathField);
+        m_resourcesGroup.addRow(getResourceComponent(defaultValue));
     }
 
     /**
@@ -111,14 +140,8 @@ public class CmsInternalResources extends VerticalLayout {
     List<String> getResources() {
 
         List<String> res = new ArrayList<String>();
-        Iterator<Component> resourceIterator = m_resources.iterator();
-
-        while (resourceIterator.hasNext()) {
-            String fieldText = ((CmsPathSelectField)((CmsRemovableFormRow<CmsPathSelectField>)resourceIterator.next()).getComponent(
-                0)).getValue();
-            if (!fieldText.isEmpty() & !res.contains(fieldText)) {
-                res.add(fieldText);
-            }
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            res.add(((CmsPathSelectField)row.getComponent()).getValue());
         }
         return res;
     }

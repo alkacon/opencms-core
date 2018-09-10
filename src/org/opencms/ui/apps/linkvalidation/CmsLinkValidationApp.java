@@ -27,12 +27,21 @@
 
 package org.opencms.ui.apps.linkvalidation;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsInternalLinksValidator;
+import org.opencms.relations.CmsRelation;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -45,6 +54,84 @@ import com.vaadin.v7.ui.VerticalLayout;
  * Class for the Link validation app.<p>
  */
 public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
+
+    public class InternalValidator extends A_CmsLinkValidator {
+
+        CmsInternalLinksValidator validator;
+
+        @Override
+        public List<CmsResource> failedResources(List<String> resources) {
+
+            validator = new CmsInternalLinksValidator(A_CmsUI.getCmsObject(), resources);
+            return validator.getResourcesWithBrokenLinks();
+        }
+
+        @Override
+        public String failMessage(CmsResource resource) {
+
+            String res = "";
+            List<CmsRelation> brokenLinks = validator.getBrokenLinksForResource(resource.getRootPath());
+            if (brokenLinks != null) {
+                Iterator<CmsRelation> j = brokenLinks.iterator();
+                while (j.hasNext()) {
+                    res += getBrokenLinkString(j.next().getTargetPath());
+                }
+            }
+            return res;
+        }
+
+        @Override
+        public String getValidationName() {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0);
+        }
+
+        /**
+         * get string to show for broken link.<p>
+         *
+         * 1:1 the same like old workplace app<p>
+         *
+         * @param rootPath to get Broken links for.
+         * @return broken link string
+         */
+        private String getBrokenLinkString(String rootPath) {
+
+            String ret = "";
+
+            CmsObject rootCms;
+            try {
+                rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+
+                rootCms.getRequestContext().setSiteRoot("");
+
+                String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+                String siteName = siteRoot;
+                if (siteRoot != null) {
+                    try {
+
+                        siteName = rootCms.readPropertyObject(
+                            siteRoot,
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            false).getValue(siteRoot);
+                    } catch (CmsException e) {
+                        siteName = siteRoot;
+                    }
+                    ret = rootPath.substring(siteRoot.length());
+                } else {
+                    siteName = "/";
+                }
+                if (!A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(siteRoot)) {
+                    ret = CmsVaadinUtils.getMessageText(
+                        org.opencms.workplace.commons.Messages.GUI_DELETE_SITE_RELATION_2,
+                        new Object[] {siteName, rootPath});
+                }
+            } catch (CmsException e1) {
+                //
+            }
+            return ret;
+        }
+
+    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -100,7 +187,10 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
         VerticalLayout nullResult = CmsVaadinUtils.getInfoLayout(Messages.GUI_LINKVALIDATION_NO_BROKEN_LINKS_0);
 
         nullResult.setVisible(false);
-        CmsLinkValidationInternalTable table = new CmsLinkValidationInternalTable(intro, nullResult);
+        CmsLinkValidationInternalTable table = new CmsLinkValidationInternalTable(
+            intro,
+            nullResult,
+            new InternalValidator());
         table.setVisible(false);
         table.setSizeFull();
         table.setWidth("100%");

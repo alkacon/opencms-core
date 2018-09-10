@@ -27,13 +27,11 @@
 
 package org.opencms.ui.apps.linkvalidation;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsInternalLinksValidator;
-import org.opencms.relations.CmsRelation;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
@@ -45,25 +43,25 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.event.ItemClickEvent;
-import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.event.ItemClickEvent;
+import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.v7.ui.Table;
 
 /**
@@ -117,9 +115,6 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
      */
     enum TableProperty {
 
-        /**Broken links column. */
-        BrokenLinks(Messages.GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0, String.class, "", false),
-
         /**Date of expiration column. */
         DateExpired(Messages.GUI_LINKVALIDATION_EXPIRED_DATE_0, Date.class, null, true),
 
@@ -165,6 +160,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
          * @param collapsable should this column be collapsable?
          */
         TableProperty(String headerMessage, Class<?> type, Object defaultValue, boolean collapsable) {
+
             m_headerMessage = headerMessage;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -241,7 +237,6 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     private Component m_nullComponent;
 
     /**Internal link validator instance. */
-    CmsInternalLinksValidator m_validator;
 
     /**Indexed Container.*/
     private IndexedContainer m_container;
@@ -252,13 +247,19 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
+    private A_CmsLinkValidator m_linkValidator;
+
     /**
      * Constructor for table.<p>
      */
-    protected CmsLinkValidationInternalTable(Component introComponent, Component nullComponent) {
+    protected CmsLinkValidationInternalTable(
+        Component introComponent,
+        Component nullComponent,
+        A_CmsLinkValidator linkValidator) {
 
         m_container = new IndexedContainer();
 
+        m_linkValidator = linkValidator;
         m_introComponent = introComponent;
         m_nullComponent = nullComponent;
 
@@ -274,6 +275,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
                 setColumnCollapsed(prop, prop.isCollapsable());
             }
         }
+        m_container.addContainerProperty(m_linkValidator.getValidationName(), String.class, "");
 
         setVisibleColumns(
             TableProperty.Path,
@@ -283,7 +285,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
             TableProperty.DateReleased,
             TableProperty.DateExpired,
             TableProperty.LastModified,
-            TableProperty.BrokenLinks);
+            m_linkValidator.getValidationName());
         setItemIconPropertyId(TableProperty.Icon);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnWidth(null, 40);
@@ -323,9 +325,7 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     public void update(List<String> resourcePaths) {
 
         m_container.removeAllItems();
-
-        getValidator(resourcePaths);
-        List<CmsResource> broken = m_validator.getResourcesWithBrokenLinks();
+        List<CmsResource> broken = m_linkValidator.failedResources(resourcePaths);
 
         if (broken.size() > 0) {
             setVisible(true);
@@ -370,13 +370,12 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
             } catch (CmsException e) {
                 //
             }
-            List<CmsRelation> brokenLinks = m_validator.getBrokenLinksForResource(res.getRootPath());
-            if (brokenLinks != null) {
-                Iterator<CmsRelation> j = brokenLinks.iterator();
-                while (j.hasNext()) {
-                    item.getItemProperty(TableProperty.BrokenLinks).setValue(
-                        getBrokenLinkString(j.next().getTargetPath()));
-                }
+            String brokenLinks = (String)m_linkValidator.failMessage(res);
+
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(brokenLinks)) {
+
+                item.getItemProperty(m_linkValidator.getValidationName()).setValue(brokenLinks);
+
             }
         }
     }
@@ -435,6 +434,10 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
 
         String parentPath = CmsResource.getParentFolder(rootPath);
 
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(parentPath);
+
+        A_CmsUI.getCmsObject().getRequestContext().setSiteRoot(site == null ? "" : site.getSiteRoot());
+
         CmsAppWorkplaceUi.get().getNavigator().navigateTo(
             CmsFileExplorerConfiguration.APP_ID
                 + "/"
@@ -449,51 +452,6 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     }
 
     /**
-     * get string to show for broken link.<p>
-     *
-     * 1:1 the same like old workplace app<p>
-     *
-     * @param rootPath to get Broken links for.
-     * @return broken link string
-     */
-    private String getBrokenLinkString(String rootPath) {
-
-        String ret = "";
-
-        CmsObject rootCms;
-        try {
-            rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-
-            rootCms.getRequestContext().setSiteRoot("");
-
-            String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
-            String siteName = siteRoot;
-            if (siteRoot != null) {
-                try {
-
-                    siteName = rootCms.readPropertyObject(
-                        siteRoot,
-                        CmsPropertyDefinition.PROPERTY_TITLE,
-                        false).getValue(siteRoot);
-                } catch (CmsException e) {
-                    siteName = siteRoot;
-                }
-                ret = rootPath.substring(siteRoot.length());
-            } else {
-                siteName = "/";
-            }
-            if (!A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().equals(siteRoot)) {
-                ret = CmsVaadinUtils.getMessageText(
-                    org.opencms.workplace.commons.Messages.GUI_DELETE_SITE_RELATION_2,
-                    new Object[] {siteName, rootPath});
-            }
-        } catch (CmsException e1) {
-            //
-        }
-        return ret;
-    }
-
-    /**
      * Returns image for type of resource.<p>
      *
      * @param resource to get icon for
@@ -502,18 +460,5 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
     private Resource getTypeImage(final CmsResource resource) {
 
         return CmsResourceIcon.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resource, IconMode.localeCompare);
-    }
-
-    /**
-     * Returns the link validator class.<p>
-     *
-     * @param resources to be validated.
-     * @return the link validator class
-     */
-    private CmsInternalLinksValidator getValidator(List<String> resources) {
-
-        m_validator = new CmsInternalLinksValidator(A_CmsUI.getCmsObject(), resources);
-
-        return m_validator;
     }
 }
