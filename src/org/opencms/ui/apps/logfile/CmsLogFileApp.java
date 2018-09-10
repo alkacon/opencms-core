@@ -192,7 +192,9 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
                     }
                 }
             }
-            definedLoggers.add(log);
+            if (!definedLoggers.contains(log)) {
+                definedLoggers.add(log);
+            }
         }
 
         Iterator<Logger> it_logger = packageLoggers.iterator();

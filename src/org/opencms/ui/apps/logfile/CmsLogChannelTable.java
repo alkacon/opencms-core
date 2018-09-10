@@ -54,15 +54,15 @@ import org.apache.logging.log4j.core.appender.FileAppender.Builder;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.MouseEvents;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
 
 /**
@@ -587,17 +587,19 @@ public class CmsLogChannelTable extends Table {
     /**
      * Populate table.<p>
      */
+    @SuppressWarnings("deprecation")
     private void fillTable() {
 
         List<Logger> loggerList = CmsLogFileApp.getLoggers();
-
         for (Logger logger : loggerList) {
             Item item = m_container.addItem(logger);
-            item.getItemProperty(TableColumn.Channel).setValue(logger.getName());
-            item.getItemProperty(TableColumn.ParentChannel).setValue(
-                logger.getParent() != null ? logger.getParent().getName() : "none");
-            item.getItemProperty(TableColumn.File).setValue(getLogFiles(logger));
-            item.getItemProperty(TableColumn.Level).setValue(LoggerLevel.fromLogger(logger));
+            if (item != null) {
+                item.getItemProperty(TableColumn.Channel).setValue(logger.getName());
+                item.getItemProperty(TableColumn.ParentChannel).setValue(
+                    logger.getParent() != null ? logger.getParent().getName() : "none");
+                item.getItemProperty(TableColumn.File).setValue(getLogFiles(logger));
+                item.getItemProperty(TableColumn.Level).setValue(LoggerLevel.fromLogger(logger));
+            }
         }
     }
 
