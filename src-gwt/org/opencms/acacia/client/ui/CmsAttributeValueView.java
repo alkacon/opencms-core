@@ -50,6 +50,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -633,7 +634,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         } else {
             // only deactivate the widget and restore the default value
             m_widget.setActive(false);
-            m_widget.setValue("", false);
+            m_widget.setValue(m_defaultValue != null ? m_defaultValue : "", false);
+            CmsDebugLog.consoleLog("Setting default value to: " + m_defaultValue);
             addActivationHandler();
         }
         addStyleName(formCss().emptyValue());
@@ -770,7 +772,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         if (active) {
             m_widget.setValue(value, false);
         } else {
-            m_widget.setValue("", false);
+            m_widget.setValue(defaultValue != null ? defaultValue : "", false);
+            CmsDebugLog.consoleLog("Setting default value to: " + defaultValue);
         }
         m_widgetHolder.add(m_widget);
         m_widget.setName(getHandler().getAttributeName());

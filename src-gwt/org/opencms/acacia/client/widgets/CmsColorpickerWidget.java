@@ -164,9 +164,6 @@ public class CmsColorpickerWidget extends Composite implements I_CmsEditWidget {
                 org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().inActive());
             m_colorPicker.getColorfield().getElement().getStyle().setBackgroundColor("#FFFFFF");
         }
-        if (!active) {
-            m_colorPicker.getColorValueBox().setText("");
-        }
         if (active) {
             fireChangeEvent();
         }

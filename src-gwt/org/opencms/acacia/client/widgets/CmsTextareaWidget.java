@@ -206,9 +206,6 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
         } else {
             getElement().addClassName(org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().inActive());
         }
-        if (!active) {
-            m_textarea.setFormValueAsString("");
-        }
         if (active) {
             fireChangeEvent();
         }

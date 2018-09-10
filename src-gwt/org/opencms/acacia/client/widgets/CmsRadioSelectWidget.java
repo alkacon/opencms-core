@@ -212,10 +212,7 @@ public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
             // set the radio button active / inactive.
             radiobutton.setEnabled(active);
             // if this widget is set inactive.
-            if (!active) {
-                // deselect all radio button.
-                radiobutton.setChecked(active);
-            } else {
+            if (active) {
                 // select the default value if set.
                 if (m_defaultRadioButton != null) {
                     m_defaultRadioButton.setChecked(active);

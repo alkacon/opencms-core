@@ -166,9 +166,6 @@ public class CmsPasswordWidget extends Composite implements I_CmsEditWidget {
             getElement().setAttribute("contentEditable", "false");
             getElement().addClassName(org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().inActive());
         }
-        if (!active) {
-            m_passwordTextBox.setText("");
-        }
         if (active) {
             fireChangeEvent();
         }

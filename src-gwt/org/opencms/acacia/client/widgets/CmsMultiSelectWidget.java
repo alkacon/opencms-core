@@ -243,10 +243,7 @@ public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
             // set the checkbox active / inactive.
             checkbox.setEnabled(active);
             // if this widget is set inactive.
-            if (!active) {
-                // deselect all checkboxes.
-                checkbox.setChecked(active);
-            } else {
+            if (active) {
                 // select the default value if set.
                 if (m_defaultCheckBox != null) {
                     Iterator<CmsCheckBox> it = m_defaultCheckBox.iterator();

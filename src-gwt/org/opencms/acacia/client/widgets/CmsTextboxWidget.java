@@ -212,9 +212,6 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
         } else {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.form().inActive());
         }
-        if (!active) {
-            m_textbox.setText("");
-        }
         if (active) {
             fireChangeEvent();
         }

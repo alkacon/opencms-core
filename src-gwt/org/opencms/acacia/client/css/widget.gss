@@ -152,8 +152,8 @@ input[type="text"].displayTextBox{
 	border: medium none;
 }
 
-input[type="text"].displayTextBox:disabled{
-	color: value("constants.css.textColorDisabled");
+div.inActive input[type="text"], input[type="text"].displayTextBox:disabled{
+	color: value("constants.css.textColorDisabled") !important;
 }
 
 div.displayTextBoxPanel{

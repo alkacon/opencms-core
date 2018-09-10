@@ -149,9 +149,6 @@ public class CmsDisplayWidget extends Composite implements I_CmsEditWidget {
             return;
         }
         m_textbox.setEnabled(active);
-        if (!active) {
-            m_textbox.setFormValueAsString("");
-        }
         m_active = active;
         if (active) {
             fireChangeEvent();
