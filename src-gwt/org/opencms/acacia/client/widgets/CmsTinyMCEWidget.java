@@ -101,7 +101,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     private boolean m_hasBeenAttached;
 
     /** Flag indicating the editor has been initialized. */
-    private boolean m_initialized;
+    boolean m_initialized;
 
     /** Flag indicating if in line editing is used. */
     private boolean m_inline;
@@ -265,7 +265,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
         if (fireEvents) {
             fireValueChange(true);
         }
-
     }
 
     /**
@@ -405,8 +404,10 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
      */
     protected void propagateFocusEvent() {
 
-        NativeEvent nativeEvent = Document.get().createFocusEvent();
-        DomEvent.fireNativeEvent(nativeEvent, this, getElement());
+        if (m_initialized) {
+            NativeEvent nativeEvent = Document.get().createFocusEvent();
+            DomEvent.fireNativeEvent(nativeEvent, this, getElement());
+        }
     }
 
     /**
@@ -456,6 +457,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
             @Override
             public void run() {
 
+                m_initialized = true;
                 refocusInlineEditor();
             }
         };
@@ -635,7 +637,12 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 									// ensure the body height is set to 'auto', otherwise the autoresize plugin will not work
 									ed.getDoc().body.style.height = 'auto';
 								}
-								self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_initialized = true;
+							});
+			ed
+					.on(
+							'init',
+							function() {
+								self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::scheduleInitializationDone()();
 							});
 
 			if (!self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
@@ -691,6 +698,20 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     }
 
     /**
+     * Scheduling to set the initialized flag.<p>
+     */
+    void scheduleInitializationDone() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                m_initialized = true;
+            }
+        });
+    }
+
+    /**
      * Sets the default zIndex for overlay panels.<p>
      * May not work immediately as the TinyMCE initialization takes some time.<p>
      *
@@ -729,7 +750,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     private void fireChangeFromNative() {
 
         // skip firing the change event, if the external flag is set
-        if (m_initialized && !m_externalValueChange) {
+        if (m_initialized && !m_externalValueChange && m_active) {
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                 public void execute() {
