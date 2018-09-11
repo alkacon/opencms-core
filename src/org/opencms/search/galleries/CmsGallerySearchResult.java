@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
@@ -179,6 +180,10 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
         if (null == doc) {
             throw new IllegalArgumentException();
+        }
+
+        if (doc.getType().equals(CmsResourceTypeFunctionConfig.TYPE_NAME)) {
+            locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         }
 
         m_score = score; //(int)doc.getScore();
