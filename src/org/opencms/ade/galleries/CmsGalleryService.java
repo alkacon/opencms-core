@@ -53,6 +53,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -1715,6 +1716,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             bean.addAdditionalInfo(
                 Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
                 description);
+            if (sResult.getResourceType().equals(CmsResourceTypeFunctionConfig.TYPE_NAME)) {
+                bean.setSubTitle(description);
+            }
         } else {
             bean.setDescription(resourceTypeDisplayName);
         }
