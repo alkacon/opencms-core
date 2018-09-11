@@ -7,13 +7,13 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/meta_mapping.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/parameter.xsd"  />
     <xsd:element name="FunctionConfigs" type="OpenCmsFunctionConfigs" />
-    
+
     <xsd:complexType name="OpenCmsFunctionConfigs">
         <xsd:sequence>
             <xsd:element name="FunctionConfig" type="OpenCmsFunctionConfig" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsFunctionConfig">
         <xsd:sequence>
         	<xsd:element name="NiceName" type="OpenCmsString" />
@@ -35,9 +35,11 @@
         <resourcebundle name="org.opencms.xml.containerpage.messages"/>
         <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.FunctionConfig:label.NewFormatter" />
         <defaults>
+            <default element="NiceName" value="" resolveMacros="false" />
 		</defaults>
 		<mappings>
 				<mapping element="NiceName" mapto="property:Title" />
+                <mapping element="Description" mapto="property:Description" />
 		</mappings>
         <layouts>
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
@@ -47,6 +49,6 @@
 			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
 			<tab element="Parameter" name="TabParams" collapse="false" />
 		</tabs>
-        </xsd:appinfo> 
-    </xsd:annotation>    
+        </xsd:appinfo>
+    </xsd:annotation>
 </xsd:schema>
