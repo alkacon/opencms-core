@@ -2822,7 +2822,9 @@ public final class CmsContainerpageController {
 
         return element.hasViewPermission()
             && (!element.hasModelGroupParent() || getData().isModelGroup())
-            && (matchRootView(element.getElementView()) || isGroupcontainerEditing())
+            && (matchRootView(element.getElementView())
+                || isGroupcontainerEditing()
+                || shouldShowModelgroupOptionBar(element))
             && isContainerEditable(dragParent)
             && matchesCurrentEditLevel(dragParent);
     }
@@ -4064,6 +4066,27 @@ public final class CmsContainerpageController {
             m_editButtonsPositionTimer.cancel();
             m_editButtonsPositionTimer = null;
         }
+    }
+
+    /**
+     * Checks whether given element is a model group and it's option bar edit points should be visible.<p>
+     *
+     * @param element the element to check
+     *
+     * @return <code>true</code> in case the current page is not a model group page,
+     *  the given element is a model group and it is inside a view visible to the current user
+     */
+    private boolean shouldShowModelgroupOptionBar(CmsContainerPageElementPanel element) {
+
+        if (!getData().isModelGroup() && element.isModelGroup()) {
+            for (CmsElementViewInfo info : getData().getElementViews()) {
+                if (info.getElementViewId().equals(element.getElementView())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
