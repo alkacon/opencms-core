@@ -1,6 +1,6 @@
 @external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, 
 	cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, 
-	mce-opencmsDialog, mce-window, mce-window-head, mce-panel, mce-caret;
+	mce-opencmsDialog, mce-window, mce-window-head, mce-panel, mce-caret, mce-notification, mce-widget;
 
 /* TinyMCE plugin popup dialog styles, all used classes are external. */
 div.mce-opencmsDialog.mce-window{
@@ -9,6 +9,10 @@ div.mce-opencmsDialog.mce-window{
 
 .mce-opencmsDialog.mce-window .mce-window-head{
 	display: none;
+}
+
+.mce-widget.mce-notification{
+	z-index: value("constants.css.zIndexPopup") !important;
 }
 
 div.radioButtonPanel {
