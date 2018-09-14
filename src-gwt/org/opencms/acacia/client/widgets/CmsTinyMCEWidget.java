@@ -64,6 +64,9 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     /** Use as option to disallow any HTML or formatting the content. */
     public static final String NO_HTML_EDIT = "no_html_edit";
 
+    /** The disabled style element id. */
+    private static final String DISABLED_STYLE_ID = "editorDisabledStyle";
+
     /** The minimum editor height. */
     private static final int MIN_EDITOR_HEIGHT = 70;
 
@@ -91,6 +94,9 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     /** The editor height to set. */
     int m_editorHeight;
 
+    /** Flag indicating the editor has been initialized. */
+    boolean m_initialized;
+
     /** The element to store the widget content in. */
     private Element m_contentElement;
 
@@ -99,9 +105,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /** Indicating if the widget has been attached yet. */
     private boolean m_hasBeenAttached;
-
-    /** Flag indicating the editor has been initialized. */
-    boolean m_initialized;
 
     /** Flag indicating if in line editing is used. */
     private boolean m_inline;
@@ -153,6 +156,16 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
             // using a child DIV as content element
             m_contentElement = getElement().appendChild(DOM.createDiv());
         }
+    }
+
+    /**
+     * Returns the disabled text color.<p>
+     *
+     * @return the disabled text color
+     */
+    private static String getDisabledTextColor() {
+
+        return I_CmsLayoutBundle.INSTANCE.constants().css().textColorDisabled();
     }
 
     /**
@@ -222,9 +235,11 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
         if (m_editor != null) {
             if (m_active) {
                 getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.form().inActive());
+                removeEditorDisabledStyle();
                 fireValueChange(true);
             } else {
                 getElement().addClassName(I_CmsLayoutBundle.INSTANCE.form().inActive());
+                setEditorDisabledStyle();
             }
         }
     }
@@ -690,6 +705,20 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     }-*/;
 
     /**
+     * Removes the disabled editor styling.<p>
+     */
+    native void removeEditorDisabledStyle()/*-{
+		var ed = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editor;
+		var styleEl = ed
+				.getDoc()
+				.getElementById(
+						@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::DISABLED_STYLE_ID);
+		if (styleEl != null) {
+			ed.getDoc().head.removeChild(styleEl);
+		}
+    }-*/;
+
+    /**
      * Resets the attached flag.<p>
      */
     void resetAtachedFlag() {
@@ -707,9 +736,38 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
             public void execute() {
 
                 m_initialized = true;
+                if (m_active) {
+                    removeEditorDisabledStyle();
+                } else {
+                    setEditorDisabledStyle();
+                }
             }
         });
     }
+
+    /**
+     * Sets the editor disabled styling.<p>
+     */
+    native void setEditorDisabledStyle()/*-{
+		var ed = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editor;
+		if (ed
+				.getDoc()
+				.getElementById(
+						@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::DISABLED_STYLE_ID) == null) {
+			var styleEl = ed.getDoc().createElement("style");
+			styleEl
+					.setAttribute("id",
+							@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::DISABLED_STYLE_ID);
+			var styleText = ed
+					.getDoc()
+					.createTextNode(
+							"body, body *{ color: "
+									+ @org.opencms.acacia.client.widgets.CmsTinyMCEWidget::getDisabledTextColor()()
+									+ " !important;}");
+			styleEl.appendChild(styleText);
+			ed.getDoc().head.appendChild(styleEl);
+		}
+    }-*/;
 
     /**
      * Sets the default zIndex for overlay panels.<p>
