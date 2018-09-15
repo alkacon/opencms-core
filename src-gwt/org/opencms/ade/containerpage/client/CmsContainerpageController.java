@@ -558,6 +558,9 @@ public final class CmsContainerpageController {
             } else {
                 if (reloadMarkerFound) {
                     CmsContainerpageController.get().reloadPage();
+                } else {
+                    long loadTime = result.values().iterator().next().getLoadTime();
+                    setLoadTime(Long.valueOf(loadTime));
                 }
             }
             m_handler.updateClipboard(result);
@@ -639,6 +642,8 @@ public final class CmsContainerpageController {
 
             if (result != null) {
                 addElements(result);
+                long loadTime = result.get(m_clientId).getLoadTime();
+                setLoadTime(Long.valueOf(loadTime));
                 m_callback.execute(result.get(m_clientId));
             }
         }
