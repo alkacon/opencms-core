@@ -41,6 +41,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
@@ -692,6 +694,14 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**Layout for the report widget. */
     private FormLayout m_threadReport;
 
+    /**
+     * Public constructor.<p>
+     *
+     * @param cms CmsObject
+     * @param site Site to be shown / edited
+     * @param manager calling the dialog
+     * @param editable flag indicates if fields should be editable
+     */
     public CmsEditSiteForm(CmsObject cms, CmsSite site, CmsSiteManager manager, boolean editable) {
 
         m_clonedCms = cms;
@@ -1023,6 +1033,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_infoSiteRoot.setVisible(false);
     }
 
+    /**
+     * Checks the Template Property of the site root and fills the form field.<p>
+     */
     protected void checkTemplate() {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_simpleFieldFolderName.getValue())) {
@@ -1091,14 +1104,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             newString = "http:";
         }
         m_simpleFieldServer.setValue(m_simpleFieldServer.getValue().replaceAll(toBeReplaced, newString));
-        for (Component c : m_aliases) {
-            if (c instanceof CmsRemovableFormRow<?>) {
-                String curValue = (String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue();
-                ((TextField)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput()).setValue(
-                    curValue.replaceAll(toBeReplaced, newString));
-            }
-        }
-
         m_fieldSecureServer.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
         m_fieldExclusiveError.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
         m_fieldExclusiveURL.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
@@ -1123,26 +1128,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         } catch (CmsException e) {
             m_simpleFieldTemplate.setValue(null);
         }
-    }
-
-    /**
-     * Adds a given alias String to the aliase-Vaadin form.<p>
-     *
-     * @param aliasString alias string which should be added.
-     */
-    void addAlias(String aliasString) {
-
-        TextField textField = new TextField();
-        if (aliasString != null) {
-            textField.setValue(aliasString);
-        }
-        CmsRemovableFormRow<TextField> row = new CmsRemovableFormRow<TextField>(
-            textField,
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REMOVE_ALIAS_0));
-        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_0));
-        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_HELP_0));
-        m_aliases.addComponent(row);
-
     }
 
     /**
@@ -1283,10 +1268,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     boolean isValidAliase() {
 
         boolean ret = true;
-        for (Component c : m_aliases) {
-            if (c instanceof CmsRemovableFormRow<?>) {
-                ret = ret & ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().isValid();
-            }
+
+        for (CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            TextField field = (TextField)layout.getComponent(0);
+            ret = ret & field.isValid();
         }
         return ret;
     }
@@ -1466,22 +1452,31 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     void setUpOUComboBox(ComboBox combo) {
 
         combo.removeAllItems();
-        combo.addItem("/");
         try {
-            m_clonedCms.getRequestContext().setSiteRoot("");
-            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
-                m_clonedCms,
-                "/",
-                true);
+            if (m_site != null) {
+                String siteOu = getSiteOU();
+                combo.addItem(siteOu);
+                combo.select(siteOu);
+                combo.setEnabled(false);
+            } else {
+                combo.addItem("/");
 
-            for (CmsOrganizationalUnit ou : ous) {
+                m_clonedCms.getRequestContext().setSiteRoot("");
+                List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                    m_clonedCms,
+                    "/",
+                    true);
 
-                if (ouIsOK(ou)) {
-                    combo.addItem(ou.getName());
+                for (CmsOrganizationalUnit ou : ous) {
+
+                    if (ouIsOK(ou)) {
+                        combo.addItem(ou.getName());
+                    }
+
                 }
-
+                combo.select("/");
             }
-            combo.setNewItemsAllowed(false);
+
         } catch (CmsException e) {
             LOG.error("Error on reading OUs", e);
         }
@@ -1489,7 +1484,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         combo.setTextInputAllowed(true);
         combo.setFilteringMode(FilteringMode.CONTAINS);
         combo.setNewItemsAllowed(false);
-        combo.select("/");
+
     }
 
     /**
@@ -1497,11 +1492,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     void setupValidatorAliase() {
 
-        for (Component c : m_aliases) {
-            if (c instanceof CmsRemovableFormRow<?>) {
-                ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().removeAllValidators();
-                ((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().addValidator(new AliasValidator());
-            }
+        for (CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent(0));
+            TextField field = (TextField)layout.getComponent(0);
+            field.removeAllValidators();
+            field.addValidator(new AliasValidator());
         }
     }
 
@@ -1611,34 +1606,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_fieldSelectOU.setEnabled(!create);
         m_fieldSelectParentOU.setEnabled(create);
         m_fieldSelectOU.select("/");
-    }
-
-    /**
-     * Selects the OU of the site (if site has an OU), and disables the ComboBox.<p>
-     */
-    private void disableOUComboBox() {
-
-        try {
-            m_clonedCms.getRequestContext().setSiteRoot("");
-            List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
-                m_clonedCms,
-                "/",
-                true);
-            for (CmsOrganizationalUnit ou : ous) {
-                List<CmsResource> res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                    m_clonedCms,
-                    ou.getName());
-                for (CmsResource resource : res) {
-                    if (resource.getRootPath().equals(m_site.getSiteRoot() + "/")) {
-                        m_fieldSelectOU.select(ou.getName());
-                    }
-                }
-            }
-
-        } catch (CmsException e) {
-            LOG.error("Error on reading OUs", e);
-        }
-        m_fieldSelectOU.setEnabled(false);
     }
 
     /**
@@ -1830,6 +1797,28 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Get ou name for current site.<p>
+     *
+     * @return Full ou name
+     */
+    private String getSiteOU() {
+
+        try {
+            m_clonedCms.getRequestContext().setSiteRoot("");
+            CmsResource resource = m_clonedCms.readResource(m_site.getSiteRoot());
+            List<CmsRelation> relations = m_clonedCms.getRelationsForResource(resource, CmsRelationFilter.SOURCES);
+            for (CmsRelation relation : relations) {
+                if (relation.getSourcePath().startsWith("/system/orgunits/")) {
+                    return (relation.getSourcePath().substring("/system/orgunits/".length()));
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Error on reading OUs", e);
+        }
+        return "/";
+    }
+
+    /**
      * Gets the site root.<p>
      * Usable for new sites and for existing sites.
      *
@@ -1882,6 +1871,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_simpleFieldServer.setValue(newValue);
     }
 
+    /**
+     * Sets the fields for a given site (m_site).<p>
+     *
+     * @param enableAll if true, the site is editable
+     */
     private void setFieldsForSite(boolean enableAll) {
 
         try {
@@ -1945,8 +1939,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         m_simpleFieldFolderName.removeAllValidators(); //can not be changed
         m_fieldCreateOU.setVisible(false);
-
-        disableOUComboBox();
 
         m_alreadyUsedURL.remove(m_site.getSiteMatcher()); //Remove current url to avoid validation problem
 
