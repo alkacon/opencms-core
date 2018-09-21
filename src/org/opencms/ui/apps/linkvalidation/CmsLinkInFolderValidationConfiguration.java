@@ -111,6 +111,6 @@ public class CmsLinkInFolderValidationConfiguration extends A_CmsWorkplaceAppCon
     @Override
     public int getOrder() {
 
-        return 20;
+        return 0;
     }
 }

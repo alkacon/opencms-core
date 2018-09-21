@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	 	<meta name="package-mapping" content="u:org.opencms.ui" />
+	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+	  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+	</head>
+	<body>
+		<o-cms-basic-dialog>
+			<content>
+				<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+					<v-panel width="100%" style-name="o-report o-state-changed" _id="m_infoSiteRoot">
+						<vaadin7-label width="100%">%(key.GUI_SHOW_RESOURCES_TOO_MANY_0)</vaadin7-label>
+					</v-panel>
+				</vaadin7-vertical-layout>
+			</content>
+			<buttons>
+				<v-button _id="m_cancel" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+	</body>
+</html>

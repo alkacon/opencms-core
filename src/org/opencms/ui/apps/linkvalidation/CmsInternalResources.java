@@ -99,6 +99,42 @@ public class CmsInternalResources extends VerticalLayout {
     }
 
     /**
+     * Adds a resource to the form.<p>
+     *
+     * @param resource to be added
+     */
+    public void addResource(String resource) {
+
+        m_resourcesGroup.addRow(getResourceComponent(resource));
+
+    }
+
+    /**
+     * Clear resources.<p>
+     *
+     */
+    public void clearResources() {
+
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            m_resourcesGroup.remove(row);
+        }
+    }
+
+    /**
+     * Reads out resource paths from Layout.<p>
+     *
+     * @return List of Strings with all entered paths
+     */
+    public List<String> getResources() {
+
+        List<String> res = new ArrayList<String>();
+        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            res.add(((CmsPathSelectField)row.getComponent()).getValue());
+        }
+        return res;
+    }
+
+    /**
      * Get vaadin component with given path.<p>
      *
      * @param path of resource
@@ -130,19 +166,5 @@ public class CmsInternalResources extends VerticalLayout {
     void addEmptyPathFieldToLayout(String defaultValue) {
 
         m_resourcesGroup.addRow(getResourceComponent(defaultValue));
-    }
-
-    /**
-     * Reads out resource paths from Layout.<p>
-     *
-     * @return List of Strings with all entered paths
-     */
-    List<String> getResources() {
-
-        List<String> res = new ArrayList<String>();
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
-            res.add(((CmsPathSelectField)row.getComponent()).getValue());
-        }
-        return res;
     }
 }

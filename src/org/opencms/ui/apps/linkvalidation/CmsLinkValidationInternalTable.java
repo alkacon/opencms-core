@@ -27,295 +27,99 @@
 
 package org.opencms.ui.apps.linkvalidation;
 
-import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
-import org.opencms.ui.apps.CmsFileExplorerConfiguration;
-import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.CmsResourceIcon;
-import org.opencms.ui.components.CmsResourceIcon.IconMode;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.I_CmsContextProvider;
+import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
+import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsFileTableDialogContext;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
-import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
-import com.vaadin.event.MouseEvents;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.event.ItemClickEvent;
-import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Table.CellStyleGenerator;
 
 /**
  * Result table for broken internal relations.<p>
  */
-public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdatableComponent {
-
-    /**
-     * The menu entry to switch to the explorer of concerning site.<p>
-     */
-    class ExplorerEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        public void executeAction(Set<String> data) {
-
-            CmsUUID uuid = new CmsUUID(data.iterator().next());
-            CmsResource res;
-            try {
-                res = A_CmsUI.getCmsObject().readResource(uuid);
-                openExplorerForParent(res.getRootPath(), res.getStructureId().getStringValue());
-            } catch (CmsException e) {
-                //
-            }
-
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        public String getTitle(Locale locale) {
-
-            return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_TITLE_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
-
-            return (data != null) && (data.size() == 1)
-            ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-            : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
-
-    }
-
-    /**
-     * All table properties.<p>
-     */
-    enum TableProperty {
-
-        /**Date of expiration column. */
-        DateExpired(Messages.GUI_LINKVALIDATION_EXPIRED_DATE_0, Date.class, null, true),
-
-        /**Date of release column.*/
-        DateReleased(Messages.GUI_LINKVALIDATION_RELEASE_DATE_0, Date.class, null, true),
-
-        /**Icon column.*/
-        Icon(null, Resource.class, null, false),
-
-        /**Last modified column. */
-        LastModified(Messages.GUI_LINKVALIDATION_LASTMODIFIED_0, Date.class, null, false),
-
-        /**Path column.*/
-        Path(Messages.GUI_LINKVALIDATION_PATH_0, String.class, "", false),
-
-        /**Size of file column. */
-        Size(Messages.GUI_LINKVALIDATION_SIZE_0, String.class, "", false),
-
-        /**Title column. */
-        Title(Messages.GUI_LINKVALIDATION_TITLE_0, String.class, "", false),
-
-        /**Type column. */
-        Type(Messages.GUI_LINKVALIDATION_TYPE_0, String.class, "", false);
-
-        /**Indicates if column is collapsable.*/
-        private boolean m_collapsable;
-
-        /**Default value for column.*/
-        private Object m_defaultValue;
-
-        /**Header Message key.*/
-        private String m_headerMessage;
-
-        /**Type of column property.*/
-        private Class<?> m_type;
-
-        /**
-         * constructor.
-         *
-         * @param headerMessage key
-         * @param type to property
-         * @param defaultValue of column
-         * @param collapsable should this column be collapsable?
-         */
-        TableProperty(String headerMessage, Class<?> type, Object defaultValue, boolean collapsable) {
-
-            m_headerMessage = headerMessage;
-            m_type = type;
-            m_defaultValue = defaultValue;
-            m_collapsable = collapsable;
-        }
-
-        /**
-         * Returns list of all properties with non-empty header.<p>
-         *
-         * @return list of properties
-         */
-        static List<TableProperty> withHeader() {
-
-            List<TableProperty> props = new ArrayList<TableProperty>();
-
-            for (TableProperty prop : TableProperty.values()) {
-                if (prop.m_headerMessage != null) {
-                    props.add(prop);
-                }
-            }
-            return props;
-        }
-
-        /**
-         * Returns the default value of property.<p>
-         *
-         * @return object
-         */
-        Object getDefaultValue() {
-
-            return m_defaultValue;
-        }
-
-        /**
-         * Returns localized header.<p>
-         *
-         * @return string for header
-         */
-        String getLocalizedMessage() {
-
-            if (m_headerMessage == null) {
-                return "";
-            }
-            return CmsVaadinUtils.getMessageText(m_headerMessage);
-        }
-
-        /**
-         * Returns tye of value for given property.<p>
-         *
-         * @return type
-         */
-        Class<?> getType() {
-
-            return m_type;
-        }
-
-        /**
-         * Indicates if column is collapsable.<p>
-         *
-         * @return boolean, true = is collapsable
-         */
-        boolean isCollapsable() {
-
-            return m_collapsable;
-        }
-
-    }
+public class CmsLinkValidationInternalTable extends CmsFileTable implements I_CmsUpdatableComponent {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5023815553518761192L;
 
+    /**CmsObject. */
+    private CmsObject m_cms;
+
+    /**Intro Component. */
     private Component m_introComponent;
 
+    /**Empty result component. */
     private Component m_nullComponent;
-
-    /**Internal link validator instance. */
-
-    /**Indexed Container.*/
-    private IndexedContainer m_container;
-
-    /** The context menu. */
-    private CmsContextMenu m_menu;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
+    /**Link Validator to provide validation logic. */
     private A_CmsLinkValidator m_linkValidator;
+
+    /** Resources to check.*/
+    private List<String> m_resourcesToCheck;
 
     /**
      * Constructor for table.<p>
+     * @param introComponent Intro Component
+     * @param nullComponent  null component
+     * @param linkValidator provider for validation methods
      */
-    protected CmsLinkValidationInternalTable(
+    public CmsLinkValidationInternalTable(
         Component introComponent,
         Component nullComponent,
         A_CmsLinkValidator linkValidator) {
 
-        m_container = new IndexedContainer();
+        super(null, linkValidator.getTableProperties());
+        applyWorkplaceAppSettings();
+        setContextProvider(new I_CmsContextProvider() {
 
+            /**
+             * @see org.opencms.ui.apps.I_CmsContextProvider#getDialogContext()
+             */
+            public I_CmsDialogContext getDialogContext() {
+
+                CmsFileTableDialogContext context = new CmsFileTableDialogContext(
+                    CmsProjectManagerConfiguration.APP_ID,
+                    ContextType.fileTable,
+                    CmsLinkValidationInternalTable.this,
+                    CmsLinkValidationInternalTable.this.getSelectedResources());
+                context.setEditableProperties(CmsFileExplorer.INLINE_EDIT_PROPERTIES);
+                return context;
+            }
+        });
+        setSizeFull();
+        addPropertyProvider(linkValidator);
+        if (linkValidator.getClickListener() != null) {
+            CmsLinkValidationInternalTable.this.m_fileTable.addItemClickListener(linkValidator.getClickListener());
+            addAdditionalStyleGenerator(new CellStyleGenerator() {
+
+                public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                    if (linkValidator.getTableProperty().equals(propertyId)) {
+                        return " " + OpenCmsTheme.HOVER_COLUMN;
+                    }
+                    return "";
+                }
+            });
+        }
         m_linkValidator = linkValidator;
         m_introComponent = introComponent;
         m_nullComponent = nullComponent;
-
-        setContainerDataSource(m_container);
-        setHeight("0px");
-        setColumnCollapsingAllowed(true);
-
-        for (TableProperty prop : TableProperty.values()) {
-            m_container.addContainerProperty(prop, prop.getType(), prop.getDefaultValue());
-            setColumnHeader(prop, prop.getLocalizedMessage());
-            setColumnCollapsible(prop, prop.isCollapsable());
-            if (prop.isCollapsable()) {
-                setColumnCollapsed(prop, prop.isCollapsable());
-            }
-        }
-        m_container.addContainerProperty(m_linkValidator.getValidationName(), String.class, "");
-
-        setVisibleColumns(
-            TableProperty.Path,
-            TableProperty.Title,
-            TableProperty.Type,
-            TableProperty.Size,
-            TableProperty.DateReleased,
-            TableProperty.DateExpired,
-            TableProperty.LastModified,
-            m_linkValidator.getValidationName());
-        setItemIconPropertyId(TableProperty.Icon);
-        setRowHeaderMode(RowHeaderMode.ICON_ONLY);
-        setColumnWidth(null, 40);
-        setSelectable(true);
-        setMultiSelect(true);
-        m_menu = new CmsContextMenu();
-        m_menu.setAsTableContextMenu(this);
-        addItemClickListener(new ItemClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void itemClick(ItemClickEvent event) {
-
-                onItemClick(event, event.getItemId(), event.getPropertyId());
-            }
-        });
-
-        setCellStyleGenerator(new CellStyleGenerator() {
-
-            private static final long serialVersionUID = 1L;
-
-            public String getStyle(Table source, Object itemId, Object propertyId) {
-
-                if (TableProperty.Path.equals(propertyId)) {
-                    return " " + OpenCmsTheme.HOVER_COLUMN;
-                }
-
-                return null;
-            }
-        });
 
     }
 
@@ -324,8 +128,17 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
      */
     public void update(List<String> resourcePaths) {
 
-        m_container.removeAllItems();
-        List<CmsResource> broken = m_linkValidator.failedResources(resourcePaths);
+        m_resourcesToCheck = resourcePaths;
+        reload();
+
+    }
+
+    /**
+     * Reloads the table.<p>
+     */
+    void reload() {
+
+        List<CmsResource> broken = m_linkValidator.failedResources(m_resourcesToCheck);
 
         if (broken.size() > 0) {
             setVisible(true);
@@ -336,129 +149,21 @@ public class CmsLinkValidationInternalTable extends Table implements I_CmsUpdata
             m_introComponent.setVisible(false);
             m_nullComponent.setVisible(true);
         }
-        for (CmsResource res : broken) {
-            Item item = m_container.addItem(res);
+        fillTable(getRootCms(), broken);
+    }
 
-            item.getItemProperty(TableProperty.Path).setValue(
-                A_CmsUI.getCmsObject().getRequestContext().getSitePath(res));
+    /**
+     * Creates a root- cms object.<p>
+     *
+     * @return CmsObject
+     */
+    private CmsObject getRootCms() {
 
-            item.getItemProperty(TableProperty.Type).setValue(
-                OpenCms.getResourceManager().getResourceType(res).getTypeName());
-
-            item.getItemProperty(TableProperty.Icon).setValue(getTypeImage(res));
-
-            if (res.getDateExpired() < CmsResource.DATE_RELEASED_DEFAULT) {
-                item.getItemProperty(TableProperty.DateExpired).setValue(new Date(res.getDateExpired()));
-            }
-            if (res.getDateReleased() > 0) {
-                item.getItemProperty(TableProperty.DateReleased).setValue(new Date(res.getDateReleased()));
-            }
-            item.getItemProperty(TableProperty.LastModified).setValue(new Date(res.getDateLastModified()));
-
-            if (res.getLength() > 0) {
-                item.getItemProperty(TableProperty.Size).setValue(
-                    CmsFileUtil.formatFilesize(
-                        res.getLength(),
-                        A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-            }
-            try {
-                item.getItemProperty(TableProperty.Title).setValue(
-                    A_CmsUI.getCmsObject().readPropertyObject(
-                        res,
-                        CmsPropertyDefinition.PROPERTY_TITLE,
-                        false).getValue());
-            } catch (CmsException e) {
-                //
-            }
-            String brokenLinks = (String)m_linkValidator.failMessage(res);
-
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(brokenLinks)) {
-
-                item.getItemProperty(m_linkValidator.getValidationName()).setValue(brokenLinks);
-
-            }
+        if (m_cms == null) {
+            m_cms = A_CmsUI.getCmsObject();
+            m_cms.getRequestContext().setSiteRoot("");
         }
+        return m_cms;
     }
 
-    /**
-     * Returns the available menu entries.<p>
-     *
-     * @return the menu entries
-     */
-    List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
-
-        if (m_menuEntries == null) {
-            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
-            m_menuEntries.add(new ExplorerEntry());
-        }
-        return m_menuEntries;
-    }
-
-    /**
-     * Handles the table item clicks, including clicks on images inside of a table item.<p>
-     *
-     * @param event the click event
-     * @param itemId of the clicked row
-     * @param propertyId column id
-     */
-    void onItemClick(MouseEvents.ClickEvent event, Object itemId, Object propertyId) {
-
-        if (!event.isCtrlKey() && !event.isShiftKey()) {
-
-            setValue(null);
-            select(itemId);
-
-            // don't interfere with multi-selection using control key
-            if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
-
-                m_menu.setEntries(
-                    getMenuEntries(),
-                    Collections.singleton(((CmsResource)itemId).getStructureId().getStringValue()));
-                m_menu.openForTable(event, itemId, propertyId, this);
-            } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.Path.equals(propertyId)) {
-                openExplorerForParent(
-                    ((CmsResource)itemId).getRootPath(),
-                    ((CmsResource)itemId).getStructureId().toString());
-            }
-
-        }
-    }
-
-    /**
-     * Opens the explorer for given path and selected resource.<p>
-     *
-     * @param rootPath to be opened
-     * @param uuid to be selected
-     */
-    void openExplorerForParent(String rootPath, String uuid) {
-
-        String parentPath = CmsResource.getParentFolder(rootPath);
-
-        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(parentPath);
-
-        A_CmsUI.getCmsObject().getRequestContext().setSiteRoot(site == null ? "" : site.getSiteRoot());
-
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-            CmsFileExplorerConfiguration.APP_ID
-                + "/"
-                + A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
-                + "!!"
-                + A_CmsUI.getCmsObject().getRequestContext().getSiteRoot()
-                + "!!"
-                + parentPath.substring(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().length())
-                + "!!"
-                + uuid
-                + "!!");
-    }
-
-    /**
-     * Returns image for type of resource.<p>
-     *
-     * @param resource to get icon for
-     * @return icon
-     */
-    private Resource getTypeImage(final CmsResource resource) {
-
-        return CmsResourceIcon.getSitemapResourceIcon(A_CmsUI.getCmsObject(), resource, IconMode.localeCompare);
-    }
 }

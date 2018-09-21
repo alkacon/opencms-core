@@ -32,6 +32,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -63,17 +64,17 @@ public class CmsBasicDialog extends VerticalLayout {
     /** The available window widths. */
     public enum DialogWidth {
 
-        /** Depending on the content. */
-        content,
+    /** Depending on the content. */
+    content,
 
-        /** The maximum width of 90% of the window width. */
-        max,
+    /** The maximum width of 90% of the window width. */
+    max,
 
-        /** The default width of 600px. */
-        narrow,
+    /** The default width of 600px. */
+    narrow,
 
-        /** The wide width of 800px. */
-        wide
+    /** The wide width of 800px. */
+    wide
     }
 
     /** Serial version id. */
@@ -241,6 +242,18 @@ public class CmsBasicDialog extends VerticalLayout {
      */
     public void displayResourceInfo(List<CmsResource> resources) {
 
+        displayResourceInfo(resources, Messages.GUI_SELECTED_0);
+
+    }
+
+    /**
+     * Display the resource indos panel with panel message.<p>
+     *
+     * @param resources to show info for
+     * @param messageKey of the panel
+     */
+    public void displayResourceInfo(List<CmsResource> resources, String messageKey) {
+
         m_infoResources = Lists.newArrayList(resources);
         if (m_infoComponent != null) {
             m_mainPanel.removeComponent(m_infoComponent);
@@ -252,7 +265,7 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_mainPanel.addComponent(m_infoComponent, 0);
             } else {
                 m_infoComponent = createResourceListPanel(
-                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_SELECTED_0),
+                    messageKey == null ? null : Messages.get().getBundle(A_CmsUI.get().getLocale()).key(messageKey),
                     resources);
                 m_mainPanel.addComponent(m_infoComponent, 0);
                 m_mainPanel.setExpandRatio(m_infoComponent, 1);
@@ -430,6 +443,16 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
+     * Sets the visibility of the content panel.<o>
+     *
+     * @param visible visibility of the content.
+     */
+    public void setContentVisibility(boolean visible) {
+
+        m_contentPanel.setVisible(visible);
+    }
+
+    /**
      * Sets the window which contains this dialog to full height with a given minimal height in pixel.<p>
      *
      * @param minHeight minimal height in pixel
@@ -486,7 +509,12 @@ public class CmsBasicDialog extends VerticalLayout {
      */
     protected Panel createResourceListPanel(String caption, List<CmsResource> resources) {
 
-        Panel result = new Panel(caption);
+        Panel result = null;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(caption)) {
+            result = new Panel();
+        } else {
+            result = new Panel(caption);
+        }
         result.addStyleName("v-scrollable");
         result.setSizeFull();
         VerticalLayout resourcePanel = new VerticalLayout();

@@ -194,6 +194,29 @@ public class CmsDeleteDialog extends CmsBasicDialog {
         boolean includeSiblings)
     throws CmsException {
 
+        return getBrokenLinks(cms, selectedResources, includeSiblings, false);
+
+    }
+
+    /**
+     * Gets the broken links.<p>
+     *
+     * @param cms the CMS context
+     * @param selectedResources the selected resources
+     * @param includeSiblings <code>true</code> if siblings would be deleted too
+     * @param reverse <code>true</code> if the resulting map should be reverted
+     *
+     * @return multimap of broken links, with sources as keys and targets as values
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static Multimap<CmsResource, CmsResource> getBrokenLinks(
+        CmsObject cms,
+        List<CmsResource> selectedResources,
+        boolean includeSiblings,
+        boolean reverse)
+    throws CmsException {
+
         Set<CmsResource> descendants = new HashSet<CmsResource>();
         for (CmsResource root : selectedResources) {
             descendants.add(root);
@@ -229,10 +252,15 @@ public class CmsDeleteDialog extends CmsBasicDialog {
             }
             List<CmsResource> linkSources = result1;
             for (CmsResource source : linkSources) {
-                linkMap.put(source, resource);
+                if (reverse) {
+                    linkMap.put(resource, source);
+                } else {
+                    linkMap.put(source, resource);
+                }
             }
         }
         return linkMap;
+
     }
 
     /**

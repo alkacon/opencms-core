@@ -39,15 +39,19 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -55,10 +59,17 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
 
+    /**
+     * Validator.<p>
+     */
     public class InternalValidator extends A_CmsLinkValidator {
 
+        /**Link validator. */
         CmsInternalLinksValidator validator;
 
+        /**
+         * @see org.opencms.ui.apps.linkvalidation.A_CmsLinkValidator#failedResources(java.util.List)
+         */
         @Override
         public List<CmsResource> failedResources(List<String> resources) {
 
@@ -66,6 +77,9 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
             return validator.getResourcesWithBrokenLinks();
         }
 
+        /**
+         * @see org.opencms.ui.apps.linkvalidation.A_CmsLinkValidator#failMessage(org.opencms.file.CmsResource)
+         */
         @Override
         public String failMessage(CmsResource resource) {
 
@@ -80,10 +94,42 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
             return res;
         }
 
+        /**
+         * @see org.opencms.ui.apps.linkvalidation.A_CmsLinkValidator#getClickListener()
+         */
         @Override
-        public String getValidationName() {
+        public ItemClickListener getClickListener() {
 
-            return CmsVaadinUtils.getMessageText(Messages.GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0);
+            return null;
+        }
+
+        /**
+         * @see org.opencms.ui.apps.linkvalidation.A_CmsLinkValidator#getPropertyName()
+         */
+        @Override
+        public String getPropertyName() {
+
+            return "BrokenLinks";
+        }
+
+        /**
+         * @see org.opencms.ui.apps.linkvalidation.A_CmsLinkValidator#getTableProperties()
+         */
+        @Override
+        public Map<CmsResourceTableProperty, Integer> getTableProperties() {
+
+            property = new CmsResourceTableProperty(
+                getPropertyName(),
+                String.class,
+                "",
+                org.opencms.ui.apps.Messages.GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0,
+                true,
+                0,
+                200);
+            Map<CmsResourceTableProperty, Integer> res = new LinkedHashMap<CmsResourceTableProperty, Integer>(
+                CmsFileTable.DEFAULT_TABLE_PROPERTIES);
+            res.put(property, Integer.valueOf(0));
+            return res;
         }
 
         /**

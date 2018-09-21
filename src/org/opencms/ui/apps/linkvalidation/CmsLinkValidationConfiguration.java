@@ -27,11 +27,9 @@
 
 package org.opencms.ui.apps.linkvalidation;
 
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
@@ -68,7 +66,7 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public String getButtonStyle() {
 
-        return FontOpenCms.FOLDER.getButtonOverlayStyle() + " " + OpenCmsTheme.BUTTON_OVERLAY_ORANGE;
+        return null;
     }
 
     /**
@@ -111,6 +109,6 @@ public class CmsLinkValidationConfiguration extends A_CmsWorkplaceAppConfigurati
     @Override
     public int getOrder() {
 
-        return 0;
+        return 1;
     }
 }

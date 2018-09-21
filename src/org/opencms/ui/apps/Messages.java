@@ -42,6 +42,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_RESOURCES_TOO_MANY_0 = "GUI_SHOW_RESOURCES_TOO_MANY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_CHECK_FOLDER_RELATIONS_COLUMN_HEADER_0 = "GUI_LINKVALIDATION_CHECK_FOLDER_RELATIONS_COLUMN_HEADER_0";
 
     /** Message constant for key in the resource bundle. */

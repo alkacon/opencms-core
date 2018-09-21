@@ -47,6 +47,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOUHandler;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -877,6 +878,16 @@ public final class CmsVaadinUtils {
         return cnt.containsId(path) || cnt.containsId(CmsFileUtil.toggleTrailingSeparator(path));
     }
 
+    public static boolean isButtonPressed(Button button) {
+
+        if (button == null) {
+            return false;
+        }
+        List<String> styles = Arrays.asList(button.getStyleName().split(" "));
+
+        return styles.contains(OpenCmsTheme.BUTTON_PRESSED);
+    }
+
     /**
      * Uses the currently set locale to resolve localization macros in the input string using workplace message bundles.<p>
      *
@@ -1102,6 +1113,15 @@ public final class CmsVaadinUtils {
         return new OptionGroupBuilder();
     }
 
+    public static void toggleButton(Button button) {
+
+        if (isButtonPressed(button)) {
+            button.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
+        } else {
+            button.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
+        }
+    }
+
     /**
      * Updates the component error of a component, but only if it differs from the currently set
      * error.<p>
@@ -1149,7 +1169,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

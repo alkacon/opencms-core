@@ -59,7 +59,6 @@ import org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -646,12 +645,15 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             table = m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.USER)) {
-            m_table = new CmsUserTable(m_stateBean.getPath(), this, isPressed(m_toggleButtonUser));
+            m_table = new CmsUserTable(m_stateBean.getPath(), this, CmsVaadinUtils.isButtonPressed(m_toggleButtonUser));
             table = m_table;
         }
         if (m_stateBean.getType().equals(CmsOuTreeType.GROUP)) {
             if (m_stateBean.getGroupID() == null) {
-                m_table = new CmsGroupTable(m_stateBean.getPath(), this, isPressed(m_toggleButtonGroups));
+                m_table = new CmsGroupTable(
+                    m_stateBean.getPath(),
+                    this,
+                    CmsVaadinUtils.isButtonPressed(m_toggleButtonGroups));
                 table = m_table;
             } else {
                 m_table = new CmsUserTable(
@@ -672,7 +674,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                     m_stateBean.getPath(),
                     m_stateBean.getGroupID(),
                     m_stateBean.getType(),
-                    isPressed(m_toggleButtonRole),
+                    CmsVaadinUtils.isButtonPressed(m_toggleButtonRole),
                     this);
                 table = m_table;
             }
@@ -759,12 +761,8 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     void toggleTable(Button toggleButton) {
 
         I_CmsToggleTable table = (I_CmsToggleTable)m_table;
-        table.toggle(!isPressed(toggleButton));
-        if (isPressed(toggleButton)) {
-            toggleButton.removeStyleName(OpenCmsTheme.BUTTON_PRESSED);
-        } else {
-            toggleButton.addStyleName(OpenCmsTheme.BUTTON_PRESSED);
-        }
+        table.toggle(!CmsVaadinUtils.isButtonPressed(toggleButton));
+        CmsVaadinUtils.toggleButton(toggleButton);
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_filterTable.getValue())) {
             filterTable(m_filterTable.getValue());
         }
@@ -895,24 +893,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             m_filter.select(m_filter.getItemIds().iterator().next());
             m_doNotChange = change;
         }
-    }
-
-    /**
-     * Checks if a given button is pressed.<p>
-     *
-     * Check works via style OpenCms.BUTTON_PRESSED.<p>
-     *
-     * @param button to be checked
-     * @return true if button is checked
-     */
-    private boolean isPressed(Button button) {
-
-        if (button == null) {
-            return false;
-        }
-        List<String> styles = Arrays.asList(button.getStyleName().split(" "));
-
-        return styles.contains(OpenCmsTheme.BUTTON_PRESSED);
     }
 
 }

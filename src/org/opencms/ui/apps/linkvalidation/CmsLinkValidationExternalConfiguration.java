@@ -111,6 +111,6 @@ public class CmsLinkValidationExternalConfiguration extends A_CmsWorkplaceAppCon
     @Override
     public int getOrder() {
 
-        return 1;
+        return 2;
     }
 }
