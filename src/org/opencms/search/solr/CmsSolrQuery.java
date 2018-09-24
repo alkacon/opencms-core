@@ -452,6 +452,19 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+     * Sets the requested return fields, but ensures that at least the 'path' and the 'type', 'id' and 'solr_id'
+     * are part of the fields returned field list.<p>
+     *
+     * @param returnFields the really requested return fields.
+     *
+     * @see CommonParams#FL
+     */
+    public void setReturnFields(String returnFields) {
+
+        ensureReturnFields(new String[] {returnFields});
+    }
+
+    /**
      * Sets the search roots only if not set as query parameter.<p>
      *
      * @param searchRoots the searchRoots to set
@@ -579,7 +592,7 @@ public class CmsSolrQuery extends SolrQuery {
     /**
      * Creates a OR combined 'q' parameter.<p>
      *
-     * @param text
+     * @param text the query string.
      *
      * @return returns the 'q' parameter
      */
@@ -626,16 +639,27 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Ensures that at least the 'path' and the 'type' are part of the fields returned field list.<p>
+     * Ensures that at least the 'path' and the 'type', 'id' and 'solr_id' are part of the fields returned field list.<p>
      *
      * @see CommonParams#FL
      */
     private void ensureReturnFields() {
 
-        String[] fl = getParams(CommonParams.FL);
-        if ((fl != null) && (fl.length > 0)) {
+        ensureReturnFields(getParams(CommonParams.FL));
+    }
+
+    /**
+     * Ensures that at least the 'path' and the 'type', 'id' and 'solr_id' are part of the fields returned field list.<p>
+     *
+     * @param requestedReturnFields the really requested return fields.
+     *
+     * @see CommonParams#FL
+     */
+    private void ensureReturnFields(String[] requestedReturnFields) {
+
+        if ((requestedReturnFields != null) && (requestedReturnFields.length > 0)) {
             List<String> result = new ArrayList<String>();
-            for (String field : fl) {
+            for (String field : requestedReturnFields) {
                 String commasep = field.replaceAll(" ", ",");
                 List<String> list = CmsStringUtil.splitAsList(commasep, ',');
                 if (!list.contains("*")) {
