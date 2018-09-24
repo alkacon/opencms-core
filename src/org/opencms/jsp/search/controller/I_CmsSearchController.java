@@ -38,7 +38,7 @@ import java.util.Map;
 public interface I_CmsSearchController {
 
     /** Solr query params that can have only one value. */
-    List<String> SET_VARIABLES = Arrays.asList(new String[] {"q", "rows", "start", "sort"});
+    List<String> SET_VARIABLES = Arrays.asList(new String[] {"q", "rows", "start", "sort", "fl"});
 
     /** Add the request parameters that reflect the controllers current state (useful for link generation outside of a form).
      * @param parameters The request parameters reflecting the controllers currents state.
