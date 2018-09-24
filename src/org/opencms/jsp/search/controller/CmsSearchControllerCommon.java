@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.params.CommonParams;
 
 /** Search controller for the common search options. */
 public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
@@ -103,7 +104,11 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             for (String key : extraParamsMap.keySet()) {
                 for (String value : Arrays.asList(extraParamsMap.get(key))) {
                     if (SET_VARIABLES.contains(key)) {
-                        query.set(key, value);
+                        if (key.equals(CommonParams.FL)) {
+                            query.setReturnFields(value);
+                        } else {
+                            query.set(key, value);
+                        }
                     } else {
                         query.add(key, value);
                     }
