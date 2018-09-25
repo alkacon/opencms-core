@@ -97,7 +97,7 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
             public void refreshResource(CmsUUID structureId) {
 
-                getHoverbar().getController().loadCategories(true);
+                getHoverbar().getController().loadCategories(true, null);
             }
 
             public void unlockResource(CmsUUID structureId) {

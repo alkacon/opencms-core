@@ -315,8 +315,33 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      *
      * @param categoryData the category data
      * @param openLocalCategories true if the local category tree should be opened
+     * @param openItemId the id of the item to open
      */
-    public void displayCategoryData(CmsSitemapCategoryData categoryData, final boolean openLocalCategories) {
+    public void displayCategoryData(
+        CmsSitemapCategoryData categoryData,
+        final boolean openLocalCategories,
+        CmsUUID openItemId) {
+
+        final Set<CmsUUID> openIds = new HashSet<CmsUUID>();
+        if (openLocalCategories) {
+            if (openItemId != null) {
+                openIds.add(openItemId);
+            }
+            for (Widget item : m_categoryTree) {
+                if (item instanceof CmsTreeItem) {
+                    ((CmsTreeItem)item).visit(new Function<CmsTreeItem, Boolean>() {
+
+                        public Boolean apply(CmsTreeItem input) {
+
+                            if (input.isOpen() && (input instanceof CmsCategoryTreeItem)) {
+                                openIds.add(((CmsCategoryTreeItem)input).getStructureId());
+                            }
+                            return null;
+                        }
+                    });
+                }
+            }
+        }
 
         m_categoryTree.clear();
 
@@ -416,7 +441,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                             }
                         });
                     }
-                    if (((finalRoot == localRoot) && openLocalCategories)
+                    if (((finalRoot == localRoot) && openLocalCategories && openIds.contains(id))
                         || (input == nonlocalRoot)
                         || (input == localRoot)) {
                         input.setOpen(true);
@@ -1260,7 +1285,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     m_localeComparison.setVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
-                    getController().loadCategories(false);
+                    getController().loadCategories(false, null);
                     break;
                 case compareLocales:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
@@ -1440,7 +1465,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      *
      * @return the widget for that category bean, with widgets for its descendants attached
      */
-    CmsTreeItem createCategoryTreeItem(CmsCategoryTreeEntry entry) {
+    CmsCategoryTreeItem createCategoryTreeItem(CmsCategoryTreeEntry entry) {
 
         CmsCategoryTreeItem result = new CmsCategoryTreeItem(entry);
         for (CmsCategoryTreeEntry child : entry.getChildren()) {
@@ -1681,8 +1706,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-                                     $wnd.initVaadin();
-                                     }-*/;
+		$wnd.initVaadin();
+    }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>
