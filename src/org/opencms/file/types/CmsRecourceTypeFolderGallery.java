@@ -43,6 +43,9 @@ public class CmsRecourceTypeFolderGallery extends CmsResourceTypeFolderExtended 
     /** Configuration key for the optional folder class name. */
     public static final String CONFIGURATION_FOLDER_CONTENT_TYPES = "folder.content.types";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 2506038491426404878L;
+
     /** The resource-types of the folder content. */
     private String m_folderContentTypes;
 

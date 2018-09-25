@@ -29,12 +29,17 @@ package org.opencms.db;
 
 import org.opencms.main.OpenCms;
 
+import java.io.Serializable;
+
 /**
  * Contains the data of a single export point.<p>
  *
  * @since 6.0.0
  */
-public class CmsExportPoint {
+public class CmsExportPoint implements Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -4743473053188740993L;
 
     /** The configured destination path. */
     private String m_configuredDestination;

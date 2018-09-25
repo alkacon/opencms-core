@@ -27,12 +27,19 @@
 
 package org.opencms.search.fields;
 
+import org.opencms.file.CmsPropertyDefinition;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
-import org.opencms.file.CmsPropertyDefinition;
-
-import java.util.*;
 
 /**
  * Describes a configuration of fields that are used in building a search index.<p>
@@ -54,6 +61,9 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /** The fields that will be returned by a regular search (all stored and not lazy fields). */
     private static Set<String> m_returnFields = new HashSet<String>();
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 8011265789649614792L;
 
     static {
         m_returnFields.add(CmsSearchField.FIELD_CATEGORY);

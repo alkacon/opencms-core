@@ -62,6 +62,9 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "plain";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -4496210486951893369L;
+
     /** JSP Loader instance. */
     protected CmsJspLoader m_jspLoader;
 
@@ -113,7 +116,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceDeleteMode siblingMode) throws CmsException {
+        CmsResourceDeleteMode siblingMode)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.deleteResource(cms, securityManager, resource, siblingMode);
@@ -175,7 +179,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        String destination) throws CmsException, CmsIllegalArgumentException {
+        String destination)
+    throws CmsException, CmsIllegalArgumentException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.moveResource(cms, securityManager, resource, destination);
@@ -192,7 +197,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.replaceResource(cms, securityManager, resource, type, content, properties);
@@ -220,7 +226,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateExpired,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateExpired(cms, securityManager, resource, dateExpired, recursive);
@@ -236,7 +243,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateLastModified(cms, securityManager, resource, dateLastModified, recursive);
@@ -252,7 +260,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateReleased,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateReleased(cms, securityManager, resource, dateReleased, recursive);
@@ -267,7 +276,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceUndoMode mode) throws CmsException {
+        CmsResourceUndoMode mode)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.undoChanges(cms, securityManager, resource, mode);

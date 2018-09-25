@@ -32,6 +32,8 @@ import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.util.CmsMacroResolver;
 
+import java.io.Serializable;
+
 /**
  * Describes a resource to copy during the creation of a new resource.<p>
  *
@@ -40,7 +42,7 @@ import org.opencms.util.CmsMacroResolver;
  *
  * @since 6.0.0
  */
-public class CmsConfigurationCopyResource {
+public class CmsConfigurationCopyResource implements Serializable {
 
     /** Indicates "copy resources" should be copied with type {@link CmsResource#COPY_AS_NEW}. */
     public static final String COPY_AS_NEW = "new";
@@ -50,6 +52,9 @@ public class CmsConfigurationCopyResource {
 
     /** Indicates "copy resources" should be copied with type {@link CmsResource#COPY_AS_SIBLING}. */
     public static final String COPY_AS_SIBLING = "sibling";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 3698327414935524194L;
 
     /** The source resource. */
     private String m_source;

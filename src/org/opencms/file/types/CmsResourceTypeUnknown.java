@@ -48,6 +48,9 @@ public class CmsResourceTypeUnknown extends A_CmsResourceType {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeUnknown.class);
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -7084002492077515553L;
+
     /**
      * Default constructor, used to initialize member variables.<p>
      */

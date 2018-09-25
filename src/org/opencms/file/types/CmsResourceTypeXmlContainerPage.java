@@ -97,6 +97,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** Fixed schema for container pages. */
     private static final String SCHEMA = "/system/modules/org.opencms.ade.containerpage/schemas/container_page.xsd";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -6211941269510267155L;
+
     /**
      * Default constructor that sets the fixed schema for container pages.<p>
      */

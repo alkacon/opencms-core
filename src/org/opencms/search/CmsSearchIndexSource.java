@@ -32,6 +32,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,7 +47,10 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.0.0
  */
-public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource> {
+public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -3869627913906693823L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);
@@ -55,7 +59,7 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource> {
     private List<String> m_documentTypes;
 
     /** The indexer. */
-    private I_CmsIndexer m_indexer;
+    private transient I_CmsIndexer m_indexer;
 
     /** The class name of the indexer. */
     private String m_indexerClassName;

@@ -38,17 +38,20 @@ import org.opencms.main.OpenCms;
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
+    /** Indicates that the static configuration of the resource type has been frozen. */
+    private static boolean m_staticFrozen;
+
+    /** The static type id of this resource type. */
+    private static int m_staticTypeId;
+
     /** The type id of this resource type. */
     private static final int RESOURCE_TYPE_ID = 5;
 
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "pointer";
 
-    /** Indicates that the static configuration of the resource type has been frozen. */
-    private static boolean m_staticFrozen;
-
-    /** The static type id of this resource type. */
-    private static int m_staticTypeId;
+    /** The serial version id. */
+    private static final long serialVersionUID = 5527965382328041491L;
 
     /**
      * Default constructor, used to initialize member variables.<p>

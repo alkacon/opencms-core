@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +53,7 @@ import com.google.common.collect.Maps;
  *
  * @since 6.0.0
  */
-public final class CmsSite implements Cloneable, Comparable<CmsSite> {
+public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializable {
 
     /**
      * The site localization modes.<p>
@@ -79,6 +80,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /** Log instance. */
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 815429861399510277L;
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 
@@ -90,6 +94,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /** If set to true, secure resources will only be available using the configured secure url. */
     private boolean m_exclusiveUrl;
+
+    /**Indicates is this site was published once to the online repo. */
+    private boolean m_isOnlineUpdated;
 
     /** The localization mode. */
     private LocalizationMode m_localizationMode;
@@ -112,6 +119,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /** UUID of this site's root directory in the OpenCms VFS. */
     private CmsUUID m_siteRootUUID;
 
+    /**The SSL Mode of the site. */
+    private CmsSSLMode m_sslMode = CmsSSLMode.SECURE_SERVER;
+
     /** Display title of this site. */
     private String m_title;
 
@@ -120,12 +130,6 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;
-
-    /**Indicates is this site was published once to the online repo. */
-    private boolean m_isOnlineUpdated;
-
-    /**The SSL Mode of the site. */
-    private CmsSSLMode m_sslMode = CmsSSLMode.SECURE_SERVER;
 
     /**
      * Constructs a new site object without title and id information,

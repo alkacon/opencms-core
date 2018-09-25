@@ -36,6 +36,9 @@ import org.opencms.relations.I_CmsLinkParseable;
  */
 public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType implements I_CmsLinkParseable {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 2171311306285390833L;
+
     /**
      * Default constructor.<p>
      */

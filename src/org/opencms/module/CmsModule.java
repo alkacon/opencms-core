@@ -42,6 +42,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +66,7 @@ import com.google.common.collect.Lists;
  * @see org.opencms.module.I_CmsModuleAction
  * @see org.opencms.module.A_CmsModuleAction
  */
-public class CmsModule implements Comparable<CmsModule> {
+public class CmsModule implements Comparable<CmsModule>, Serializable {
 
     /** The available module export modes. */
     public enum ExportMode {
@@ -99,11 +100,14 @@ public class CmsModule implements Comparable<CmsModule> {
     /** Character to separate additional resources specified in the module properties.  */
     private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -2639349161445831665L;
+
     /** The module action class name. */
     private String m_actionClass;
 
     /** Initialized module action instance. */
-    private I_CmsModuleAction m_actionInstance;
+    private transient I_CmsModuleAction m_actionInstance;
 
     /** The email of the author of this module. */
     private String m_authorEmail;
@@ -118,28 +122,31 @@ public class CmsModule implements Comparable<CmsModule> {
     private long m_checkpointTime;
 
     /** Flag to create the classes folders when creating the module. */
-    private boolean m_createClassesFolder;
+    private transient boolean m_createClassesFolder;
 
     /** Flag to create the elements folder when creating the module. */
-    private boolean m_createElementsFolder;
+    private transient boolean m_createElementsFolder;
 
     /** Flag to create the formatters folder when creating the module. */
-    private boolean m_createFormattersFolder;
+    private transient boolean m_createFormattersFolder;
+
+    /** Flag to create the i18n folder when creating the module. */
+    private transient boolean m_createI18NFolder;
 
     /** Flag to create the lib folder when creating the module. */
-    private boolean m_createLibFolder;
+    private transient boolean m_createLibFolder;
 
     /** Flag to create the module folder when creating the module. */
-    private boolean m_createModuleFolder;
+    private transient boolean m_createModuleFolder;
 
     /** Flag to create the resources folder when creating the module. */
-    private boolean m_createResourcesFolder;
+    private transient boolean m_createResourcesFolder;
 
     /** Flag to create the schemas folder when creating the module. */
-    private boolean m_createSchemasFolder;
+    private transient boolean m_createSchemasFolder;
 
     /** Flag to create the template folder when creating the module. */
-    private boolean m_createTemplateFolder;
+    private transient boolean m_createTemplateFolder;
 
     /** The date this module was created by the author. */
     private long m_dateCreated;
@@ -168,7 +175,7 @@ public class CmsModule implements Comparable<CmsModule> {
     private List<CmsExportPoint> m_exportPoints;
 
     /** Indicates if this modules configuration has already been frozen. */
-    private boolean m_frozen;
+    private transient boolean m_frozen;
 
     /** The group of the module. */
     private String m_group;
@@ -205,8 +212,6 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /** The version of this module. */
     private CmsModuleVersion m_version;
-
-    private boolean m_createI18NFolder;
 
     /**
      * Creates a new, empty CmsModule object.<p>
@@ -553,7 +558,7 @@ public class CmsModule implements Comparable<CmsModule> {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public CmsModule clone() {
 
         // create a copy of the module
         CmsModule result = new CmsModule(

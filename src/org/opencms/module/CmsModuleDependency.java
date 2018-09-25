@@ -27,6 +27,8 @@
 
 package org.opencms.module;
 
+import java.io.Serializable;
+
 /**
  * Describes an OpenCms module dependency.<p>
  *
@@ -37,7 +39,10 @@ package org.opencms.module;
  *
  * @since 6.0.0
  */
-public class CmsModuleDependency implements Comparable<Object> {
+public class CmsModuleDependency implements Comparable<Object>, Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -464911120361037953L;
 
     /** The hash code of the module dependency. */
     private int m_hashCode;

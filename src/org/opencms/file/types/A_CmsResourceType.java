@@ -106,6 +106,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsResourceType.class);
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 2131071233840674874L;
+
     /** Flag for showing that this is an additional resource type which is defined in a module. */
     protected boolean m_addititionalModuleResourceType;
 
@@ -124,6 +127,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Indicates that the configuration of the resource type has been frozen. */
     protected boolean m_frozen;
 
+    /** The gallery preview provider. */
+    protected String m_galleryPreviewProvider;
+
     /**  Contains the file extensions mapped to this resource type. */
     protected List<String> m_mappings;
 
@@ -138,9 +144,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The folder for which links should be adjusted after copying the copy-resources. */
     private String m_adjustLinksFolder;
-
-    /** The gallery preview provider. */
-    protected String m_galleryPreviewProvider;
 
     /** The gallery type name for this resource type. */
     private String m_galleryTypeNames;
@@ -316,7 +319,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode)
+    throws CmsException {
 
         securityManager.copyResource(
             cms.getRequestContext(),
@@ -344,7 +348,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         // initialize a macro resolver with the current user OpenCms context
         CmsMacroResolver resolver = getMacroResolver(cms, resourcename);
@@ -381,7 +386,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         CmsResource sibling = securityManager.createSibling(
             cms.getRequestContext(),
@@ -400,7 +406,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
+        CmsResource.CmsResourceDeleteMode siblingMode)
+    throws CmsException {
 
         securityManager.deleteResource(cms.getRequestContext(), resource, siblingMode);
     }
@@ -609,7 +616,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         // this triggers the internal "is touched" state
         // and prevents the security manager from inserting the current time
@@ -752,7 +760,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        String destination) throws CmsException, CmsIllegalArgumentException {
+        String destination)
+    throws CmsException, CmsIllegalArgumentException {
 
         String dest = cms.getRequestContext().addSiteRoot(destination);
         if (resource.getRootPath().equals(dest)) {
@@ -795,7 +804,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsResource resource,
         I_CmsResourceType type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         // TODO: Refactor driver layer to use resource type id classes (or names) instead of int
         replaceResource(cms, securityManager, resource, type.getTypeId(), content, properties);
@@ -816,7 +826,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         securityManager.replaceResource(cms.getRequestContext(), resource, type, content, properties);
         // type may have changed from non link parseable to link parseable
@@ -858,7 +869,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateExpired,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         securityManager.setDateExpired(cms.getRequestContext(), resource, dateExpired);
     }
@@ -871,7 +883,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         securityManager.setDateLastModified(cms.getRequestContext(), resource, dateLastModified);
     }
@@ -884,7 +897,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateReleased,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         securityManager.setDateReleased(cms.getRequestContext(), resource, dateReleased);
     }
@@ -931,7 +945,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResource.CmsResourceUndoMode mode) throws CmsException {
+        CmsResource.CmsResourceUndoMode mode)
+    throws CmsException {
 
         securityManager.undoChanges(cms.getRequestContext(), resource, mode);
         updateRelationForUndo(cms, securityManager, resource);
@@ -976,7 +991,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsProperty property) throws CmsException {
+        CmsProperty property)
+    throws CmsException {
 
         securityManager.writePropertyObject(cms.getRequestContext(), resource, property);
     }
@@ -988,7 +1004,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         securityManager.writePropertyObjects(cms.getRequestContext(), resource, properties);
     }

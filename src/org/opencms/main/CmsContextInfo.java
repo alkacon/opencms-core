@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSiteMatcher;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -44,7 +45,7 @@ import java.util.Locale;
  *
  * @since 6.0.0
  */
-public class CmsContextInfo {
+public class CmsContextInfo implements Serializable {
 
     /** Name of the http session attribute the request time is stored in. */
     public static final String ATTRIBUTE_REQUEST_TIME = "__org.opencms.main.CmsContextInfo#m_requestTime";
@@ -54,6 +55,9 @@ public class CmsContextInfo {
 
     /** Localhost ip used in fallback cases. */
     public static final String LOCALHOST = "127.0.0.1";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -2906001878274166112L;
 
     /** The detail content resource, if available. */
     private CmsResource m_detailResource;
@@ -88,6 +92,9 @@ public class CmsContextInfo {
     /** The request URI to create the context with. */
     private String m_requestedUri;
 
+    /** the matcher for the current request, that is the host part of the URI from the original http request. */
+    private CmsSiteMatcher m_requestMatcher;
+
     /** The time for the request, used for resource publication and expiration dates. */
     private long m_requestTime;
 
@@ -99,9 +106,6 @@ public class CmsContextInfo {
 
     /** The user name to create the context with. */
     private String m_userName;
-
-    /** the matcher for the current request, that is the host part of the URI from the original http request. */
-    private CmsSiteMatcher m_requestMatcher;
 
     /**
      * Creates a new instance, initializing the variables with some reasonable default values.<p>
@@ -123,9 +127,10 @@ public class CmsContextInfo {
         setProjectName(CmsProject.ONLINE_PROJECT_NAME);
         setRequestedUri("/");
         setSiteRoot("/");
-        setRequestMatcher(OpenCms.getSiteManager() != null
-        ? OpenCms.getSiteManager().getWorkplaceSiteMatcher()
-        : CmsSiteMatcher.DEFAULT_MATCHER);
+        setRequestMatcher(
+            OpenCms.getSiteManager() != null
+            ? OpenCms.getSiteManager().getWorkplaceSiteMatcher()
+            : CmsSiteMatcher.DEFAULT_MATCHER);
         setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(CmsContextInfo.LOCALHOST);

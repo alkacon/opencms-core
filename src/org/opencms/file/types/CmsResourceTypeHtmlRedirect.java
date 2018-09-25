@@ -34,6 +34,9 @@ import org.opencms.loader.CmsRedirectLoader;
  */
 public class CmsResourceTypeHtmlRedirect extends CmsResourceTypeXmlAdeConfiguration {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 2757710991033290640L;
+
     /**
      * @see org.opencms.file.types.CmsResourceTypeXmlContent#getLoaderId()
      */

@@ -49,6 +49,9 @@ import java.util.Locale;
  */
 public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPrincipal> {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -323281048875786320L;
+
     /** The description of this principal. */
     protected String m_description;
 

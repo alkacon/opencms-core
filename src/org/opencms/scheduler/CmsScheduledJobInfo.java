@@ -37,6 +37,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.SortedMap;
@@ -190,7 +191,7 @@ import org.quartz.Trigger;
  *
  * <p>
  * The '#' character is allowed for the day-of-week field. This character is
- * used to specify "the nth" XXX day of the month. For example, the value of
+ * used to specify "the nth" day of the month. For example, the value of
  * "6#3" in the day-of-week field means the third Friday of the month (day 6 =
  * Friday and "#3" = the 3rd one in the month). Other examples: "2#1" = the
  * first Monday of the month and "4#5" = the fifth Wednesday of the month. Note
@@ -343,10 +344,13 @@ import org.quartz.Trigger;
  *
  * @since 6.0.0
  */
-public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
+public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler, Serializable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsScheduledJobInfo.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 7621446065755519582L;
 
     /** Indicates if this job is currently active in the scheduler or not. */
     private boolean m_active;
@@ -367,7 +371,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     private String m_id;
 
     /** Instance object of the scheduled job (only required when instance is re-used). */
-    private I_CmsScheduledJob m_jobInstance;
+    private transient I_CmsScheduledJob m_jobInstance;
 
     /** The name of the job (for information purposes). */
     private String m_jobName;
@@ -479,7 +483,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public CmsScheduledJobInfo clone() {
 
         CmsScheduledJobInfo result = new CmsScheduledJobInfo();
 

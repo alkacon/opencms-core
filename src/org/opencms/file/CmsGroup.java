@@ -45,6 +45,9 @@ import java.util.Locale;
  */
 public class CmsGroup extends CmsPrincipal {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 468957888179396857L;
+
     /** The parent id of the group. */
     private CmsUUID m_parentId;
 

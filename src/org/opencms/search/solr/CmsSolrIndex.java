@@ -114,6 +114,9 @@ import org.apache.solr.util.FastWriter;
  */
 public class CmsSolrIndex extends CmsSearchIndex {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -1570077792574476721L;
+
     /** The name of the default Solr Offline index. */
     public static final String DEFAULT_INDEX_NAME_OFFLINE = "Solr Offline";
 
@@ -169,13 +172,13 @@ public class CmsSolrIndex extends CmsSearchIndex {
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     /** The embedded Solr client for this index. */
-    SolrClient m_solr;
+    transient SolrClient m_solr;
 
     /** The post document manipulator. */
-    private I_CmsSolrPostSearchProcessor m_postProcessor;
+    private transient I_CmsSolrPostSearchProcessor m_postProcessor;
 
     /** The core name for the index. */
-    private String m_coreName;
+    private transient String m_coreName;
 
     /**
      * Default constructor.<p>

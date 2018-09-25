@@ -211,7 +211,9 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
                 try {
                     length = Double.parseDouble(prefix);
                     break;
-                } catch (NumberFormatException e) {}
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
             }
             if (length < 0) {
                 LOG.warn("Invalid string for SVG size: " + s);
@@ -254,9 +256,6 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         }
     }
 
-    /** The default image preview provider. */
-    private static final String GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.CmsImagePreviewProvider";
-
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(CmsResourceTypeImage.class);
 
@@ -265,6 +264,9 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
      * a folder should never be downscaled.<p>
      */
     public static final String PROPERTY_VALUE_UNLIMITED = "unlimited";
+
+    /** The default image preview provider. */
+    private static final String GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.CmsImagePreviewProvider";
 
     /** The image scaler for the image downscale operation (if configured). */
     private static CmsImageScaler m_downScaler;
@@ -283,6 +285,9 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "image";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -8708850913653288684L;
 
     /**
      * Default constructor, used to initialize member variables.<p>

@@ -42,11 +42,14 @@ import java.util.List;
  */
 public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtended {
 
+    /** The type name for subsitemaps. */
+    public static final String TYPE_SUBSITEMAP = "subsitemap";
+
     /** The registered sub site map resource type id's.    */
     private static List<Integer> m_subSitemapResourceTypeIds = new ArrayList<Integer>();
 
-    /** The type name for subsitemaps. */
-    public static final String TYPE_SUBSITEMAP = "subsitemap";
+    /** The serial version id. */
+    private static final long serialVersionUID = 3152961195421254155L;
 
     /**
      * Returns the registered sub site map resource type id's.<p>

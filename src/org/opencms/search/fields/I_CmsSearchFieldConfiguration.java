@@ -35,6 +35,7 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ import org.apache.solr.uninverting.UninvertingReader.Type;
  * Interface for search field configurations used by {@link org.opencms.search.I_CmsSearchIndex} and configured in the
  * opencms-search.xml (see {@link org.opencms.configuration.CmsSearchConfiguration}).
  */
-public interface I_CmsSearchFieldConfiguration extends Comparable<I_CmsSearchFieldConfiguration> {
+public interface I_CmsSearchFieldConfiguration extends Comparable<I_CmsSearchFieldConfiguration>, Serializable {
 
     /**
      * Adds a field to this search field configuration.<p>

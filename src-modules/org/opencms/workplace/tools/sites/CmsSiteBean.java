@@ -39,6 +39,7 @@ import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -51,10 +52,13 @@ import org.apache.commons.logging.Log;
  *
  * @since 9.0.0
  */
-public class CmsSiteBean {
+public class CmsSiteBean implements Serializable {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteBean.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 7202674198996429791L;
 
     /** The aliases. */
     private List<String> m_aliases = new ArrayList<String>();
@@ -75,7 +79,7 @@ public class CmsSiteBean {
     private String m_mode;
 
     /** The original site. */
-    private CmsSite m_originalSite;
+    private transient CmsSite m_originalSite;
 
     /** The parameters. */
     private SortedMap<String, String> m_parameters = new TreeMap<String, String>();

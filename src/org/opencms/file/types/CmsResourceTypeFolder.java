@@ -54,6 +54,9 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -6627448037959709694L;
+
     /** The configured list of resource types to show as available index page types. */
     private String m_indexPageTypes;
 

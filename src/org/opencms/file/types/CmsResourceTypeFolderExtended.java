@@ -46,6 +46,9 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /** Configuration key for the optional folder class parameters. */
     public static final String CONFIGURATION_FOLDER_CLASS_PARAMS = "folder.class.params";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -3354434293847996599L;
+
     /** The configured folder class name for this folder type. */
     private String m_folderClassName;
 

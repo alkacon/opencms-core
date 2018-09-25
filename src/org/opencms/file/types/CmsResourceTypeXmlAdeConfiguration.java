@@ -40,6 +40,9 @@ import java.util.Locale;
  */
 public class CmsResourceTypeXmlAdeConfiguration extends CmsResourceTypeXmlContent {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -1526417534440614766L;
+
     /**
      * This overridden method ensures that configurations will always be created with an english locale node.<p>
      *

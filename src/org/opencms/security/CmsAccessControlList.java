@@ -31,6 +31,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,8 +56,10 @@ import java.util.Map;
  *
  * @since 6.0.0
  */
-public class CmsAccessControlList {
+public class CmsAccessControlList implements Serializable {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -8772251229957990081L;
     /**
      * Collected permissions of a principal on this resource .
      */

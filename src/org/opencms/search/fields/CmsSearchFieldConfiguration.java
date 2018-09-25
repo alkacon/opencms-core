@@ -65,13 +65,16 @@ public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
     /** The name for the standard field configuration. */
     public static final String STR_STANDARD = "standard";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -7581572963583498549L;
+
     static {
         LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
         LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
     }
 
     /** The current index. */
-    private CmsSearchIndex m_index;
+    private transient CmsSearchIndex m_index;
 
     /**
      * Creates a new, empty field configuration.<p>

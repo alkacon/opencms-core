@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -65,7 +66,7 @@ import java.util.List;
  *
  * @since 6.0.0
  */
-public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
+public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler, Serializable {
 
     /** Resource formatter. */
     enum Formatter {
@@ -278,7 +279,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException, CmsIllegalArgumentException;
+        CmsResource.CmsResourceCopyMode siblingMode)
+    throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Copies a resource to the current project of the user.<p>
@@ -325,7 +327,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException;
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Creates a new sibling of the source resource.<p>
@@ -348,7 +351,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        List<CmsProperty> properties) throws CmsException;
+        List<CmsProperty> properties)
+    throws CmsException;
 
     /**
      * Deletes a resource given its name.<p>
@@ -375,7 +379,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException;
+        CmsResource.CmsResourceDeleteMode siblingMode)
+    throws CmsException;
 
     /**
      * Gets the folder for which the links should be adjusted after processing the copy resources.<p>
@@ -521,7 +526,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException;
+        List<CmsProperty> properties)
+    throws CmsException;
 
     /**
      * Special version of the configuration initialization used with resource types
@@ -685,7 +691,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         I_CmsResourceType type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException;
+        List<CmsProperty> properties)
+    throws CmsException;
 
     /**
      * Replaces the content, type and properties of a resource.<p>
@@ -714,7 +721,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException;
+        List<CmsProperty> properties)
+    throws CmsException;
 
     /**
      * Restores a resource in the current project with a version from the historical archive.<p>
@@ -764,7 +772,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateExpired,
-        boolean recursive) throws CmsException;
+        boolean recursive)
+    throws CmsException;
 
     /**
      * Changes the "last modified" date of a resource.<p>
@@ -785,7 +794,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException;
+        boolean recursive)
+    throws CmsException;
 
     /**
      * Changes the "release" date of a resource.<p>
@@ -806,7 +816,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateReleased,
-        boolean recursive) throws CmsException;
+        boolean recursive)
+    throws CmsException;
 
     /**
      * Sets the module name if this is an additional resource type which is defined in a module, or <code>null</code>.<p>
@@ -856,7 +867,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResource.CmsResourceUndoMode mode) throws CmsException;
+        CmsResource.CmsResourceUndoMode mode)
+    throws CmsException;
 
     /**
      * Unlocks a resource.<p>
@@ -908,7 +920,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsProperty property) throws CmsException;
+        CmsProperty property)
+    throws CmsException;
 
     /**
      * Writes a list of properties for a specified resource.<p>
@@ -931,5 +944,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        List<CmsProperty> properties) throws CmsException;
+        List<CmsProperty> properties)
+    throws CmsException;
 }

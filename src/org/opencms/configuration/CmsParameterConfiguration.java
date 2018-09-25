@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ import org.dom4j.Element;
  *      commas.escaped = Hi\, what'up?
  * </pre>
  */
-public class CmsParameterConfiguration extends AbstractMap<String, String> {
+public class CmsParameterConfiguration extends AbstractMap<String, String> implements Serializable {
 
     /**
      * Used to read parameter lines from a property file.<p>
@@ -217,10 +218,13 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
      */
     public static final CmsParameterConfiguration EMPTY_PARAMETERS = new CmsParameterConfiguration(
         Collections.<String, String> emptyMap(),
-        Collections.<String, Object> emptyMap());
+        Collections.<String, Serializable> emptyMap());
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 294679648036460877L;
 
     /** The parsed map of parameters where the Strings may have become Objects. */
-    private Map<String, Object> m_configurationObjects;
+    private transient Map<String, Serializable> m_configurationObjects;
 
     /** The original map of parameters that contains only String values. */
     private Map<String, String> m_configurationStrings;
@@ -230,7 +234,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
      */
     public CmsParameterConfiguration() {
 
-        this(new TreeMap<String, String>(), new TreeMap<String, Object>());
+        this(new TreeMap<String, String>(), new TreeMap<String, Serializable>());
     }
 
     /**
@@ -296,7 +300,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
      * @param strings the String map
      * @param objects the object map
      */
-    private CmsParameterConfiguration(Map<String, String> strings, Map<String, Object> objects) {
+    private CmsParameterConfiguration(Map<String, String> strings, Map<String, Serializable> objects) {
 
         m_configurationStrings = strings;
         m_configurationObjects = objects;
@@ -422,7 +426,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
      */
     public Element appendToXml(Element parentNode, List<String> parametersToIgnore) {
 
-        for (Map.Entry<String, Object> entry : m_configurationObjects.entrySet()) {
+        for (Map.Entry<String, Serializable> entry : m_configurationObjects.entrySet()) {
             String name = entry.getKey();
             // check if the parameter should be ignored
             if ((parametersToIgnore == null) || !parametersToIgnore.contains(name)) {
@@ -598,7 +602,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
             return new ArrayList<String>(result);
 
         } else if (value instanceof String) {
-            List<String> values = new ArrayList<String>(1);
+            ArrayList<String> values = new ArrayList<String>(1);
             values.add((String)value);
             m_configurationObjects.put(key, values);
             return values;
@@ -624,6 +628,49 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
     public Object getObject(String key) {
 
         return m_configurationObjects.get(key);
+    }
+
+    /**
+     * Creates a new <tt>Properties</tt> object from the existing configuration
+     * extracting all key-value pars whose key are prefixed
+     * with <tt>keyPrefix</tt>. <p>
+     *
+     * For this example config:
+     *
+     * <pre>
+     *      # lines starting with # are comments
+     *      db.pool.default.jdbcDriver=net.bull.javamelody.JdbcDriver
+     *      db.pool.default.connectionProperties.driver=org.gjt.mm.mysql.Driver
+     * </pre>
+     *
+     * <tt>getPrefixedProperties("db.pool.default.connectionProperties")</tt>
+     * will return a <tt>Properties</tt> object with one single entry:
+     * <pre>
+     *      key:"driver", value:"org.gjt.mm.mysql.Driver"
+     * </pre>
+     *
+     * @param keyPrefix prefix to match. If it isn't already, it will be
+     *           terminated with a dot.  If <tt>null</tt>, it will return
+     *           an empty <tt>Properties</tt> instance
+     * @return a new <tt>Properties</tt> object with all the entries from this
+     *          configuration whose keys math the prefix
+     */
+    public Properties getPrefixedProperties(String keyPrefix) {
+
+        Properties props = new Properties();
+        if (null == keyPrefix) {
+            return props;
+        }
+
+        String dotTerminatedKeyPrefix = keyPrefix + (keyPrefix.endsWith(".") ? "" : ".");
+        for (Map.Entry<String, String> e : entrySet()) {
+            String key = e.getKey();
+            if ((null != key) && key.startsWith(dotTerminatedKeyPrefix)) {
+                String subKey = key.substring(dotTerminatedKeyPrefix.length());
+                props.put(subKey, e.getValue());
+            }
+        }
+        return props;
     }
 
     /**
@@ -815,7 +862,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
 
         if (currentObj instanceof String) {
             // one object already in map - convert it to a list
-            List<String> values = new ArrayList<String>(2);
+            ArrayList<String> values = new ArrayList<String>(2);
             values.add(currentStr);
             values.add(value);
             m_configurationObjects.put(key, values);
@@ -830,48 +877,5 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
             m_configurationObjects.put(key, value);
             m_configurationStrings.put(key, value);
         }
-    }
-
-    /**
-     * Creates a new <tt>Properties</tt> object from the existing configuration
-     * extracting all key-value pars whose key are prefixed
-     * with <tt>keyPrefix</tt>. <p>
-     *
-     * For this example config:
-     *
-     * <pre>
-     *      # lines starting with # are comments
-     *      db.pool.default.jdbcDriver=net.bull.javamelody.JdbcDriver
-     *      db.pool.default.connectionProperties.driver=org.gjt.mm.mysql.Driver
-     * </pre>
-     *
-     * <tt>getPrefixedProperties("db.pool.default.connectionProperties")</tt>
-     * will return a <tt>Properties</tt> object with one single entry:
-     * <pre>
-     *      key:"driver", value:"org.gjt.mm.mysql.Driver"
-     * </pre>
-     *
-     * @param keyPrefix prefix to match. If it isn't already, it will be
-     *           terminated with a dot.  If <tt>null</tt>, it will return
-     *           an empty <tt>Properties</tt> instance
-     * @return a new <tt>Properties</tt> object with all the entries from this
-     *          configuration whose keys math the prefix
-     */
-    public Properties getPrefixedProperties(String keyPrefix) {
-
-        Properties props = new Properties();
-        if (null == keyPrefix) {
-            return props;
-        }
-
-        String dotTerminatedKeyPrefix = keyPrefix + (keyPrefix.endsWith(".") ? "" : ".");
-        for (Map.Entry<String, String> e : entrySet()) {
-            String key = e.getKey();
-            if ((null != key) && key.startsWith(dotTerminatedKeyPrefix)) {
-                String subKey = key.substring(dotTerminatedKeyPrefix.length());
-                props.put(subKey, e.getValue());
-            }
-        }
-        return props;
     }
 }

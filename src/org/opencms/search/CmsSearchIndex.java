@@ -203,8 +203,11 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 8461682478204452718L;
+
     /** The configured Lucene analyzer used for this index. */
-    private Analyzer m_analyzer;
+    private transient Analyzer m_analyzer;
 
     /** Indicates if backup re-indexing is used by this index. */
     private boolean m_backupReindexing;
@@ -219,7 +222,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
     private boolean m_createExcerpt;
 
     /** Map of display query filters to use. */
-    private Map<String, Query> m_displayFilters;
+    private transient Map<String, Query> m_displayFilters;
 
     /**
      * Signals whether expiration dates should be ignored when checking permissions or not.<p>
@@ -228,7 +231,10 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
     private boolean m_ignoreExpiration;
 
     /** The Lucene index searcher to use. */
-    private IndexSearcher m_indexSearcher;
+    private transient IndexSearcher m_indexSearcher;
+
+    /** The Lucene index RAM buffer size, see {@link IndexWriterConfig#setRAMBufferSizeMB(double)}. */
+    private Double m_luceneRAMBufferSizeMB;
 
     /** Indicates how many hits are loaded at maximum. */
     private int m_maxHits;
@@ -239,11 +245,8 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
     /** Controls if a resource requires view permission to be displayed in the result list. */
     private boolean m_requireViewPermission;
 
-    /** The Lucene index RAM buffer size, see {@link IndexWriterConfig#setRAMBufferSizeMB(double)}. */
-    private Double m_luceneRAMBufferSizeMB;
-
     /** The cms specific Similarity implementation. */
-    private final Similarity m_sim = new CmsSearchSimilarity();
+    private transient final Similarity m_sim = new CmsSearchSimilarity();
 
     /**
      * Default constructor only intended to be used by the XML configuration. <p>

@@ -41,6 +41,9 @@ import org.apache.solr.uninverting.UninvertingReader.Type;
  */
 public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldConfiguration {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 7948072454782743591L;
+
     /** Description of the field configuration. */
     private String m_description;
     /** Name of the field configuration. */

@@ -43,6 +43,9 @@ import java.util.Map;
  */
 public class CmsResourceTypeLocaleIndependentXmlContent extends CmsResourceTypeXmlContent {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 412954667403869580L;
+
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguredDefaultProperties()
      */

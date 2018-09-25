@@ -34,6 +34,9 @@ import org.opencms.loader.CmsSeoFileLoader;
  */
 public class CmsResourceTypeSeoFile extends CmsResourceTypeXmlAdeConfiguration {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 5672681204848648111L;
+
     /**
      * @see org.opencms.file.types.CmsResourceTypeXmlContent#getLoaderId()
      */

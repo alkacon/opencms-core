@@ -50,6 +50,9 @@ import java.util.List;
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -698470184142645873L;
+
     /**
      * Default constructor, used to initialize member variables.<p>
      */
@@ -82,7 +85,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        CmsResource.CmsResourceCopyMode siblingMode) throws CmsIllegalArgumentException, CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode)
+    throws CmsIllegalArgumentException, CmsException {
 
         // first validate the destination name
         destination = validateFoldername(destination);
@@ -103,12 +107,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             CmsResource childResource = resources.get(i);
             String childDestination = destination.concat(childResource.getName());
             // handle child resources
-            getResourceType(childResource).copyResource(
-                cms,
-                securityManager,
-                childResource,
-                childDestination,
-                siblingMode);
+            getResourceType(
+                childResource).copyResource(cms, securityManager, childResource, childDestination, siblingMode);
         }
     }
 
@@ -121,7 +121,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         resourcename = validateFoldername(resourcename);
         return super.createResource(cms, securityManager, resourcename, content, properties);
@@ -154,7 +155,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        String destination) throws CmsException, CmsIllegalArgumentException {
+        String destination)
+    throws CmsException, CmsIllegalArgumentException {
 
         String dest = cms.getRequestContext().addSiteRoot(destination);
         if (!CmsResource.isFolder(dest)) {
@@ -205,7 +207,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsDataNotImplementedException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsDataNotImplementedException {
 
         if (type != getTypeId()) {
             // it is not possible to replace a folder with a different type
@@ -225,7 +228,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         // handle the folder itself
         super.setDateExpired(cms, securityManager, resource, dateLastModified, recursive);
@@ -243,12 +247,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = resources.get(i);
                 // handle child resources
-                getResourceType(childResource).setDateExpired(
-                    cms,
-                    securityManager,
-                    childResource,
-                    dateLastModified,
-                    recursive);
+                getResourceType(
+                    childResource).setDateExpired(cms, securityManager, childResource, dateLastModified, recursive);
             }
         }
     }
@@ -262,7 +262,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         // handle the folder itself
         super.setDateLastModified(cms, securityManager, resource, dateLastModified, recursive);
@@ -299,7 +300,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         // handle the folder itself
         super.setDateReleased(cms, securityManager, resource, dateLastModified, recursive);
@@ -317,12 +319,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = resources.get(i);
                 // handle child resources
-                getResourceType(childResource).setDateReleased(
-                    cms,
-                    securityManager,
-                    childResource,
-                    dateLastModified,
-                    recursive);
+                getResourceType(
+                    childResource).setDateReleased(cms, securityManager, childResource, dateLastModified, recursive);
             }
         }
     }
@@ -363,7 +361,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResource.CmsResourceUndoMode mode) throws CmsException {
+        CmsResource.CmsResourceUndoMode mode)
+    throws CmsException {
 
         boolean recursive = mode.isRecursive();
         if (mode == CmsResource.UNDO_MOVE_CONTENT) {

@@ -50,6 +50,9 @@ import org.apache.lucene.document.StringField;
  */
 public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneFieldConfiguration {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -8513437470793639802L;
+
     /**
      * Default constructor.<p>
      */

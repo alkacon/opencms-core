@@ -38,6 +38,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.0.0
  */
-public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettings> {
+public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettings>, Serializable {
 
     /** The default big file type icon style class. */
     public static final String ICON_STYLE_DEFAULT_BIG = "oc-icon-24-default";
@@ -122,6 +123,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         }
     };
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 7014251115525259136L;
+
     /** The explorer type access. */
     private CmsExplorerTypeAccess m_access;
 
@@ -141,10 +145,10 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     private String m_bigIconStyle;
 
     /** The context menu. */
-    private CmsExplorerContextMenu m_contextMenu;
+    private transient CmsExplorerContextMenu m_contextMenu;
 
     /** The context menu entries. */
-    private List<CmsExplorerContextMenuItem> m_contextMenuEntries;
+    private transient List<CmsExplorerContextMenuItem> m_contextMenuEntries;
 
     /** The description image. */
     private String m_descriptionImage;

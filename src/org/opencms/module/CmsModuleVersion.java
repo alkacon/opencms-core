@@ -31,6 +31,8 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
+
 /**
  * A version number for an OpenCms module.<p>
  *
@@ -52,10 +54,13 @@ import org.opencms.util.CmsStringUtil;
  *
  * @since 6.0.0
  */
-public class CmsModuleVersion implements Comparable<Object> {
+public class CmsModuleVersion implements Comparable<Object>, Serializable {
 
     /** Default version for new modules. */
     public static final String DEFAULT_VERSION = "0.1";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 5871716904011659917L;
 
     /** The dot count of the version. */
     private int m_dots;

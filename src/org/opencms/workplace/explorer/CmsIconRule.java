@@ -27,6 +27,8 @@
 
 package org.opencms.workplace.explorer;
 
+import java.io.Serializable;
+
 /**
  * An icon configuration rule for an explorer type.<p>
  *
@@ -35,7 +37,10 @@ package org.opencms.workplace.explorer;
  *
  * @since 8.0.0
  */
-public class CmsIconRule {
+public class CmsIconRule implements Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1379752428451267503L;
 
     /** The big icon. */
     private String m_bigIcon;

@@ -29,6 +29,7 @@ package org.opencms.security;
 
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.Locale;
 
@@ -38,7 +39,7 @@ import java.util.Locale;
  *
  * @since 6.0.0
  */
-public interface I_CmsPrincipal extends Principal {
+public interface I_CmsPrincipal extends Principal, Serializable {
 
     /** Upper limit for core flags, any principal object with flags greater than this value will be filtered out. */
     int FLAG_CORE_LIMIT = 65536; // 2^16

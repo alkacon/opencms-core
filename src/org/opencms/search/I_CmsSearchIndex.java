@@ -36,13 +36,14 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Interface for search indizes that should be handled by the {@link org.opencms.search.CmsSearchManager}.
  */
-public interface I_CmsSearchIndex extends I_CmsConfigurationParameterHandler {
+public interface I_CmsSearchIndex extends I_CmsConfigurationParameterHandler, Serializable {
 
     /** Automatic ("auto") index rebuild mode. */
     static final String REBUILD_MODE_AUTO = "auto";

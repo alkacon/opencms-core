@@ -86,14 +86,17 @@ import com.google.common.collect.Lists;
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
-    /** The name for the choose model file form action. */
-    public static final String DIALOG_CHOOSEMODEL = "choosemodel";
-
     /** Configuration key for the (optional) schema. */
     public static final String CONFIGURATION_SCHEMA = "schema";
 
+    /** The name for the choose model file form action. */
+    public static final String DIALOG_CHOOSEMODEL = "choosemodel";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 2271469830431937731L;
 
     /** The (optional) schema of this resource. */
     private String m_schema;

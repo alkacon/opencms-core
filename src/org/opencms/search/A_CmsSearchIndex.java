@@ -65,9 +65,6 @@ import org.apache.commons.logging.Log;
  */
 public abstract class A_CmsSearchIndex implements I_CmsSearchIndex {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsSearchIndex.class);
-
     /** Special value for the search.exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
 
@@ -77,14 +74,14 @@ public abstract class A_CmsSearchIndex implements I_CmsSearchIndex {
     /** The use all locale. */
     public static final String USE_ALL_LOCALE = "all";
 
-    /** The name of this index. */
-    private String m_name;
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsSearchIndex.class);
 
-    /** The list of configured index source names. */
-    private List<String> m_sourceNames;
+    /** The serial version id. */
+    private static final long serialVersionUID = 5831386499514765251L;
 
-    /** The list of configured index sources. */
-    private List<CmsSearchIndexSource> m_sources;
+    /** Document types of folders/channels. */
+    private Map<String, List<String>> m_documenttypes;
 
     /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
     private boolean m_enabled;
@@ -92,14 +89,23 @@ public abstract class A_CmsSearchIndex implements I_CmsSearchIndex {
     /** The content extraction mode for this index. */
     private boolean m_extractContent;
 
-    /** Document types of folders/channels. */
-    private Map<String, List<String>> m_documenttypes;
+    /** The search field configuration of this index. */
+    private I_CmsSearchFieldConfiguration m_fieldConfiguration;
+
+    /** The name of the search field configuration used by this index. */
+    private String m_fieldConfigurationName;
+
+    /** The index writer to use. */
+    private transient I_CmsIndexWriter m_indexWriter;
 
     /** Signals whether the language detection. */
     private boolean m_languageDetection;
 
     /** The locale of this index. */
     private Locale m_locale;
+
+    /** The name of this index. */
+    private String m_name;
 
     /** The path where this index stores it's data in the "real" file system. */
     private String m_path;
@@ -110,14 +116,11 @@ public abstract class A_CmsSearchIndex implements I_CmsSearchIndex {
     /** The rebuild mode for this index. */
     private String m_rebuild;
 
-    /** The search field configuration of this index. */
-    private I_CmsSearchFieldConfiguration m_fieldConfiguration;
+    /** The list of configured index source names. */
+    private List<String> m_sourceNames;
 
-    /** The name of the search field configuration used by this index. */
-    private String m_fieldConfigurationName;
-
-    /** The index writer to use. */
-    private I_CmsIndexWriter m_indexWriter;
+    /** The list of configured index sources. */
+    private List<CmsSearchIndexSource> m_sources;
 
     /**
      * Default constructor only intended to be used by the XML configuration. <p>

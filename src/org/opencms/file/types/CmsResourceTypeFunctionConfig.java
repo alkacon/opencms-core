@@ -47,6 +47,9 @@ public class CmsResourceTypeFunctionConfig extends CmsResourceTypeXmlAdeConfigur
     /** The type name. */
     public static final String TYPE_NAME = "function_config";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -2378978201570511075L;
+
     /**
      * Returns the static type name of this (default) resource type.<p>
      *

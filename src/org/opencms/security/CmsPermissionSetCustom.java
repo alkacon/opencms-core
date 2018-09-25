@@ -36,6 +36,9 @@ import java.util.StringTokenizer;
  */
 public class CmsPermissionSetCustom extends CmsPermissionSet {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -8537313517987611085L;
+
     /**
      * Constructor to create an empty permission set.<p>
      */

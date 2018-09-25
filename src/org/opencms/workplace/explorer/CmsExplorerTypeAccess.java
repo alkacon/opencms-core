@@ -43,6 +43,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.0.0
  */
-public class CmsExplorerTypeAccess {
+public class CmsExplorerTypeAccess implements Serializable {
 
     /** Principal key name for the default permission settings. */
     public static final String PRINCIPAL_DEFAULT = "DEFAULT";
@@ -65,6 +66,9 @@ public class CmsExplorerTypeAccess {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1119068085158682112L;
 
     static {
         flushListener = new CmsExplorerTypeAccessFlushListener();

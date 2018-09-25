@@ -79,6 +79,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /** Flag indicating a changed last login date. */
     public static final int FLAG_LAST_LOGIN = 2;
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 4812858003805477345L;
+
     /** Storage for additional user information. */
     private Map<String, Object> m_additionalInfo;
 

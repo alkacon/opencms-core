@@ -100,8 +100,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "jsp";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 6852747481533451911L;
+
     /** JSP Loader instance. */
-    protected CmsJspLoader m_jspLoader;
+    protected transient CmsJspLoader m_jspLoader;
 
     /**
      * Returns the type id of the containerpage_template resource type.<p>
@@ -205,7 +208,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceDeleteMode siblingMode) throws CmsException {
+        CmsResourceDeleteMode siblingMode)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.deleteResource(cms, securityManager, resource, siblingMode);
@@ -303,7 +307,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        String destination) throws CmsException, CmsIllegalArgumentException {
+        String destination)
+    throws CmsException, CmsIllegalArgumentException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.moveResource(cms, securityManager, resource, destination);
@@ -332,7 +337,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsResource resource,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException {
+        List<CmsProperty> properties)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.replaceResource(cms, securityManager, resource, type, content, properties);
@@ -360,7 +366,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateExpired,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateExpired(cms, securityManager, resource, dateExpired, recursive);
@@ -376,7 +383,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateLastModified(cms, securityManager, resource, dateLastModified, recursive);
@@ -392,7 +400,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateReleased,
-        boolean recursive) throws CmsException {
+        boolean recursive)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateReleased(cms, securityManager, resource, dateReleased, recursive);
@@ -407,7 +416,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceUndoMode mode) throws CmsException {
+        CmsResourceUndoMode mode)
+    throws CmsException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.undoChanges(cms, securityManager, resource, mode);

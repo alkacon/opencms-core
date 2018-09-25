@@ -55,6 +55,9 @@ public class CmsResourceTypeUnknownFile extends A_CmsResourceType {
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -2985191622939935673L;
+
     /**
      * Default constructor, used to initialize member variables.<p>
      */

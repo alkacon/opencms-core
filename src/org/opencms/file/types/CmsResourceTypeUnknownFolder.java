@@ -54,6 +54,9 @@ public class CmsResourceTypeUnknownFolder extends A_CmsResourceTypeFolderBase {
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 1623371480810407019L;
+
     /**
      * Default constructor, used to initialize member variables.<p>
      */

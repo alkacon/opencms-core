@@ -86,6 +86,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "xmlpage";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 4218077530657122699L;
+
     /**
      * Default constructor, used to initialize member variables.<p>
      */

@@ -34,6 +34,9 @@ import org.opencms.loader.CmsMacroFormatterLoader;
  */
 public class CmsResourceTypeMacroFormatter extends CmsResourceTypeXmlAdeConfiguration {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 1059327929431712085L;
+
     /**
      * @see org.opencms.file.types.CmsResourceTypeXmlContent#getCachePropertyDefault()
      */

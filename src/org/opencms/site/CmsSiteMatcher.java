@@ -30,6 +30,7 @@ package org.opencms.site;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.net.URI;
 
 import org.apache.commons.logging.Log;
@@ -39,7 +40,10 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.0.0
  */
-public final class CmsSiteMatcher implements Cloneable {
+public final class CmsSiteMatcher implements Cloneable, Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -3988887650237005342L;
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteMatcher.class);

@@ -27,6 +27,7 @@
 
 package org.opencms.security;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ import java.util.Set;
  *
  * @since 6.0.0
  */
-public class CmsPermissionSet {
+public class CmsPermissionSet implements Serializable {
 
     /** Permission set to check control access. */
     public static final CmsPermissionSet ACCESS_CONTROL = new CmsPermissionSet(CmsPermissionSet.PERMISSION_CONTROL);
@@ -89,6 +90,9 @@ public class CmsPermissionSet {
 
     /** HashMap of all available permissions. */
     private static Map<String, Integer> m_permissions;
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -8374511370934922020L;
 
     /** The set of allowed permissions. */
     protected int m_allowed;
