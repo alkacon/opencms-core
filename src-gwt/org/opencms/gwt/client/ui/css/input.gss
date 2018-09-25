@@ -546,13 +546,8 @@ div.formRow {
 	min-height: value("constants.css.inputHeight");
 }
 
-@def formLabelWidth eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth()");
-@def openerWidth eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth()");
-@def widgetContainerWidth eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth()");
-@def widgetContainerMargin eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin()");  
-
 div.formOpener {
-	width: openerWidth;
+	width: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth()");
 	float: left;
 	vertical-align: top; 
 }
@@ -565,7 +560,7 @@ div.formInfo {
 }
 
 div.formLabel { 
-	width: formLabelWidth;
+	width: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth()");
 	overflow: hidden;
 	vertical-align: top;
 	margin-top: 3px;
@@ -575,8 +570,8 @@ div.formLabel {
 
 
 div.formWidgetContainer {
-	width: widgetContainerWidth;
-	margin-left: widgetContainerMargin;
+	width: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth()");
+	margin-left: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin()");
 }
 
 div.separator {
