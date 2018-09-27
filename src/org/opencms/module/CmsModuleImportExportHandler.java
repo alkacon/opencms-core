@@ -348,7 +348,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             0,
             true,
             false,
-            module.getExportMode());
+            module.getExportMode(),
+            // provide the extra resources only in case of excluded resources, otherwise not needed
+            ((null == module.getExcludeResources()) || module.getExcludeResources().isEmpty())
+            ? null
+            : module.getResources());
 
         // export the module using the standard export
         CmsObject exportCms = cms;

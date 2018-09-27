@@ -85,6 +85,11 @@ public class CmsExportParameters {
     /** The export mode that should be used for the export. */
     private ExportMode m_exportMode = ExportMode.DEFAULT;
 
+    /** Resources for with meta data should be exported, even if not in the resources to export.
+     * That are super-folders of exported resources, where meta data should be kept in the export.
+     */
+    private List<String> m_additionalResourcesToExportWithMetaData;
+
     /**
      * Constructor.<p>
      */
@@ -136,6 +141,56 @@ public class CmsExportParameters {
         setInProject(inProject);
         setExportAsFiles(false);
         setExportMode(exportMode);
+        setAdditionalResourcesToExportWithMetaData(null);
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param exportFile the zip file to export to
+     * @param moduleElement module informations in a Node for module export
+     * @param exportResourceData if the resource data has also to be exported
+     * @param exportUserdata if the account data has also to be exported
+     * @param exportProjectData if the project data has also to be exported
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if <code>true</code>, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param contentAge export contents changed after this date/time
+     * @param recursive recursive flag
+     * @param inProject if only resources in the current project are exported
+     * @param exportMode the export mode to use
+     * @param additionalResourcesToExportWithMetaData the list of export-site relative paths of folders/files for
+     *      which meta data should be exported, even if they do not belong the the resourcesToExport.
+     */
+    public CmsExportParameters(
+        String exportFile,
+        Element moduleElement,
+        boolean exportResourceData,
+        boolean exportUserdata,
+        boolean exportProjectData,
+        List<String> resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        long contentAge,
+        boolean recursive,
+        boolean inProject,
+        ExportMode exportMode,
+        List<String> additionalResourcesToExportWithMetaData) {
+
+        setPath(exportFile);
+        setResources(resourcesToExport);
+        setIncludeSystemFolder(includeSystem);
+        setIncludeUnchangedResources(includeUnchanged);
+        setModuleInfo(moduleElement);
+        setExportAccountData(exportUserdata);
+        setContentAge(contentAge);
+        setRecursive(recursive);
+        setExportResourceData(exportResourceData);
+        setExportProjectData(exportProjectData);
+        setInProject(inProject);
+        setExportAsFiles(false);
+        setExportMode(exportMode);
+        setAdditionalResourcesToExportWithMetaData(additionalResourcesToExportWithMetaData);
     }
 
     /**
@@ -193,6 +248,18 @@ public class CmsExportParameters {
             return Collections.emptyList();
         }
         return m_resources;
+    }
+
+    /**
+     * Returns the resources to export with (some additional) meta-data, even for reduced meta-data export.
+     * @return the resources to export with (some additional) meta-data, even for reduced meta-data export.
+     */
+    public List<String> getResourcesToExportWithMetaData() {
+
+        return null != m_additionalResourcesToExportWithMetaData
+        ? m_additionalResourcesToExportWithMetaData
+        : Collections.emptyList();
+
     }
 
     /**
@@ -284,6 +351,18 @@ public class CmsExportParameters {
     public boolean isXmlValidation() {
 
         return m_xmlValidation;
+    }
+
+    /**
+     * The resources (folders) that should be exported with some metadata, even if not listed in the resources to export.
+     * If a folder is listed, the folder and all resources in the folder is exported with meta data.
+     *
+     * @param resourcesToExportWithMetaData the vfs paths of the resources.
+     */
+    public void setAdditionalResourcesToExportWithMetaData(List<String> resourcesToExportWithMetaData) {
+
+        m_additionalResourcesToExportWithMetaData = resourcesToExportWithMetaData;
+
     }
 
     /**

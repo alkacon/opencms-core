@@ -547,13 +547,15 @@ public class CmsExport {
             }
 
             boolean isReducedExportMode = m_parameters.getExportMode().equals(ExportMode.REDUCED);
+            boolean isMinimalMetaData = isReducedExportMode && isSuperFolder && exportWithMinimalMetaData(fileName);
+
             // <destination>
             fileElement.addElement(CmsImportVersion10.N_DESTINATION).addText(fileName);
             // <type>
             fileElement.addElement(CmsImportVersion10.N_TYPE).addText(
                 OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
 
-            if (!(isReducedExportMode && isSuperFolder)) {
+            if (!isMinimalMetaData) {
                 //  <uuidstructure>
                 fileElement.addElement(CmsImportVersion10.N_UUIDSTRUCTURE).addText(
                     resource.getStructureId().toString());
@@ -577,7 +579,7 @@ public class CmsExport {
                 }
                 fileElement.addElement(CmsImportVersion10.N_USERLASTMODIFIED).addText(userNameLastModified);
             }
-            if (!(isReducedExportMode && isSuperFolder)) {
+            if (!isMinimalMetaData) {
                 // <datecreated>
                 fileElement.addElement(CmsImportVersion10.N_DATECREATED).addText(
                     CmsDateUtil.getHeaderDate(resource.getDateCreated()));
@@ -592,7 +594,7 @@ public class CmsExport {
                 }
                 fileElement.addElement(CmsImportVersion10.N_USERCREATED).addText(userNameCreated);
             }
-            if (!(isReducedExportMode && isSuperFolder)) {
+            if (!isMinimalMetaData) {
                 // <release>
                 if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
                     fileElement.addElement(CmsImportVersion10.N_DATERELEASED).addText(
@@ -1334,6 +1336,26 @@ public class CmsExport {
             }
             throw new CmsImportExportException(e.getMessageContainer(), e);
         }
+    }
+
+    /**
+     * Check, if the resource should be exported with minimal meta-data.
+     * This holds for resources that are not part of the export, but must be
+     * exported as super-folders.
+     *
+     * @param path export-site relative path of the resource to check.
+     *
+     * @return flag, indicating if the resource should be exported with minimal meta data.
+     */
+    protected boolean exportWithMinimalMetaData(String path) {
+
+        String checkPath = path.startsWith("/") ? path + "/" : "/" + path + "/";
+        for (String p : m_parameters.getResourcesToExportWithMetaData()) {
+            if (checkPath.startsWith(p)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
