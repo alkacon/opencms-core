@@ -118,12 +118,12 @@ public class CmsADEManager {
 
     /** JSON property name constant. */
     protected enum FavListProp {
-    /** element property. */
-    ELEMENT,
-    /** formatter property. */
-    FORMATTER,
-    /** properties property. */
-    PROPERTIES;
+        /** element property. */
+        ELEMENT,
+        /** formatter property. */
+        FORMATTER,
+        /** properties property. */
+        PROPERTIES;
     }
 
     /**
@@ -459,20 +459,7 @@ public class CmsADEManager {
                 return pageInfo.get(0).getUri();
             }
         }
-        // find the default detail page if present
-        String path = null;
-        //        if (targetFirst) {
-        //            path = findDefaultDetailPage(cms, targetConfigData);
-        //            if (path == null) {
-        //                path = findDefaultDetailPage(cms, configData);
-        //            }
-        //        } else {
-        //            path = findDefaultDetailPage(cms, configData);
-        //            if (path == null) {
-        //                path = findDefaultDetailPage(cms, targetConfigData);
-        //            }
-        //        }
-        return path;
+        return null;
     }
 
     /**
