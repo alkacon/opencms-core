@@ -143,35 +143,25 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     @Override
     public Map<String, Map<String, I_CmsSearchStateParameters>> getCheckFacetItem() {
 
-        if (m_uncheckFacetMap == null) {
-            m_uncheckFacetMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+        if (m_checkFacetMap == null) {
+            m_checkFacetMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
                 @Override
                 public Object transform(final Object facet) {
 
-                    Map<String, I_CmsSearchStateParameters> m_uncheckEntries = CmsCollectionsGenericWrapper.createLazyMap(
+                    Map<String, I_CmsSearchStateParameters> m_checkEntries = CmsCollectionsGenericWrapper.createLazyMap(
                         new Transformer() {
 
                             @Override
                             public Object transform(final Object facetItem) {
 
                                 final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
-                                String facetParamKey = null;
-                                try {
-                                    facetParamKey = getFacetParamKey((String)facet);
-                                } catch (Exception e) {
-                                    // Facet did not exist
-                                    LOG.warn(
-                                        Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet),
-                                        e);
-                                }
-                                if (facetParamKey != null) {
+                                String facetParamKey = getFacetParamKey((String)facet);
+                                if (facetParamKey != null) { // otherwise the facet was not configured, thus no item can be added
                                     if (parameters.containsKey(facetParamKey)) {
                                         String[] values = parameters.get(facetParamKey);
-                                        Arrays.asList(values).contains(facetItem);
-                                        if (Arrays.asList(values).contains(facetItem)) {
+                                        if (!Arrays.asList(values).contains(facetItem)) {
                                             String[] newValues = new String[Arrays.asList(values).size() + 1];
-                                            int j = 0;
                                             for (int i = 0; i < (values.length); i++) {
                                                 newValues[i] = values[i];
                                             }
@@ -186,11 +176,11 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                                 return new CmsSearchStateParameters(m_result, parameters);
                             }
                         });
-                    return m_uncheckEntries;
+                    return m_checkEntries;
                 }
             });
         }
-        return m_uncheckFacetMap;
+        return m_checkFacetMap;
 
     }
 
@@ -360,13 +350,13 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     @Override
     public Map<String, Map<String, I_CmsSearchStateParameters>> getUncheckFacetItem() {
 
-        if (m_checkFacetMap == null) {
-            m_checkFacetMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+        if (m_uncheckFacetMap == null) {
+            m_uncheckFacetMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
                 @Override
                 public Object transform(final Object facet) {
 
-                    Map<String, I_CmsSearchStateParameters> m_checkEntries = CmsCollectionsGenericWrapper.createLazyMap(
+                    Map<String, I_CmsSearchStateParameters> m_uncheckEntries = CmsCollectionsGenericWrapper.createLazyMap(
                         new Transformer() {
 
                             @Override
@@ -392,11 +382,11 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                                 return new CmsSearchStateParameters(m_result, parameters);
                             }
                         });
-                    return m_checkEntries;
+                    return m_uncheckEntries;
                 }
             });
         }
-        return m_checkFacetMap;
+        return m_uncheckFacetMap;
     }
 
     /**
