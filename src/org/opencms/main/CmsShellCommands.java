@@ -1351,9 +1351,11 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void replaceModule(String importFile) throws Exception {
 
-        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importFile);
-        String moduleName = module.getName();
-        replaceModule(moduleName, importFile);
+        OpenCms.getModuleManager().replaceModule(
+            m_cms,
+            importFile,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
+
     }
 
     /**
@@ -1366,15 +1368,19 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void replaceModule(String moduleName, String importFile) throws Exception {
 
-        if (OpenCms.getModuleManager().getModule(moduleName) != null) {
-            OpenCms.getModuleManager().deleteModule(
-                m_cms,
-                moduleName,
-                true,
-                new CmsShellReport(m_cms.getRequestContext().getLocale()));
+        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importFile);
+        if (moduleName.equals(module.getName())) {
+            replaceModule(importFile);
+        } else {
+            if (OpenCms.getModuleManager().getModule(moduleName) != null) {
+                OpenCms.getModuleManager().deleteModule(
+                    m_cms,
+                    moduleName,
+                    true,
+                    new CmsShellReport(m_cms.getRequestContext().getLocale()));
+            }
+            importModule(importFile);
         }
-
-        importModule(importFile);
     }
 
     /**

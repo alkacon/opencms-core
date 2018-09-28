@@ -28,11 +28,9 @@
 package org.opencms.ui.apps.modules;
 
 import org.opencms.file.CmsObject;
-import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
@@ -64,6 +62,7 @@ public class CmsModuleImportThread extends A_CmsReportThread {
      * @param path the module file path
      */
     public CmsModuleImportThread(CmsObject cms, CmsModule module, String path) {
+
         super(cms, "Import of " + path);
         m_module = module;
         m_path = path;
@@ -86,19 +85,13 @@ public class CmsModuleImportThread extends A_CmsReportThread {
     @Override
     public void run() {
 
+        LOG.info("Starting import thread for " + m_module.getName() + ", import =  " + m_path);
         I_CmsReport report = getReport();
 
         try {
             CmsObject cms = m_cms;
             CmsModuleManager manager = OpenCms.getModuleManager();
-
-            if (manager.hasModule(m_module.getName())) {
-                manager.deleteModule(cms, m_module.getName(), true, report);
-            }
-            CmsModuleImportExportHandler importHandler = new CmsModuleImportExportHandler();
-            CmsImportParameters params = new CmsImportParameters(m_path, "/", false);
-            importHandler.setImportParameters(params);
-            importHandler.importData(cms, report);
+            manager.replaceModule(cms, m_path, report);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             report.addError(e);

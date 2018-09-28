@@ -34,6 +34,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.util.CmsUUID;
@@ -95,6 +97,9 @@ public class OpenCmsTestResourceStorageEntry {
 
     /** The properties of the resource. */
     private List<CmsProperty> m_properties;
+
+    /** The stored relations. */
+    private List<CmsRelation> m_relations;
 
     /** The ID of the resource database record. */
     private CmsUUID m_resourceId;
@@ -169,6 +174,7 @@ public class OpenCmsTestResourceStorageEntry {
         }
 
         m_accessControlList = cms.getAccessControlList(resourceName);
+        m_relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(m_structureId));
         m_accessControlEntries = cms.getAccessControlEntries(resourceName);
     }
 
@@ -253,15 +259,6 @@ public class OpenCmsTestResourceStorageEntry {
     }
 
     /**
-     * Gets the id of the file content database entry.<p>
-     *
-     * @return the ID of the file content database entry
-     */
-    /* public CmsUUID getFileId() {
-     return m_contentId;
-     } */
-
-    /**
      * Returns the flags of this resource.<p>
      *
      * @return the flags of this resource
@@ -270,6 +267,15 @@ public class OpenCmsTestResourceStorageEntry {
 
         return m_flags;
     }
+
+    /**
+     * Gets the id of the file content database entry.<p>
+     *
+     * @return the ID of the file content database entry
+     */
+    /* public CmsUUID getFileId() {
+     return m_contentId;
+     } */
 
     /**
      * Gets the length of the content (i.e. the file size).<p>
@@ -341,6 +347,16 @@ public class OpenCmsTestResourceStorageEntry {
     public List<CmsProperty> getProperties() {
 
         return m_properties;
+    }
+
+    /**
+     * Gets the stored relations.
+     *
+     * @return the stored relations
+     */
+    public List<CmsRelation> getRelations() {
+
+        return m_relations;
     }
 
     /**

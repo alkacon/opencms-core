@@ -152,6 +152,9 @@ public abstract class OpenCmsTestResourceFilter {
     /** Flag to enable/disable name tests. */
     protected boolean m_name;
 
+    /** Flag to enable/disable comparison of non-content relations. */
+    protected boolean m_nonContentRelations;
+
     /** Flag to enable/disable project last modified tests. */
     protected boolean m_projectLastModified;
 
@@ -712,6 +715,16 @@ public abstract class OpenCmsTestResourceFilter {
     public boolean testName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns true if non-content relations should be compared.<p>
+     *
+     * @return true if non-content relations should be compared
+     */
+    public boolean testNonContentRelations() {
+
+        return m_nonContentRelations;
     }
 
     /**

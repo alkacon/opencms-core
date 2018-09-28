@@ -64,6 +64,7 @@ public final class AllTests {
         suite.addTest(TestModuleIssues.suite());
         suite.addTest(TestModuleDeleteThread.suite());
         suite.addTest(TestModuleExcludeResources.suite());
+        suite.addTest(TestModuleUpdate.suite());
         //$JUnit-END$
         return suite;
     }

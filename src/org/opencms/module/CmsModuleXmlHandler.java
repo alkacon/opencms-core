@@ -69,11 +69,11 @@ public class CmsModuleXmlHandler {
      * opencms-modules.xml.
      */
     public enum XmlWriteMode {
-        /** Generating XML for the configuration. */
-        config,
+    /** Generating XML for the configuration. */
+    config,
 
-        /** Generating XML for a manifest. */
-        manifest
+    /** Generating XML for a manifest. */
+    manifest
     }
 
     /** The "name" attribute. */
@@ -219,7 +219,6 @@ public class CmsModuleXmlHandler {
 
         // NOTE: If you change the order of parameters here or add new ones, you may
         // also need to change the corresponding parameter indexes in the method addXmlDigesterRulesForVersion5Modules.
-
         digester.addCallMethod("*/" + N_MODULE, "createdModule", 15);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);

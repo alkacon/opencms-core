@@ -71,6 +71,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
@@ -193,8 +194,18 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // add this class to the Digester
         CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
+        final String[] version = new String[] {null};
         digester.push(handler);
 
+        digester.addRule("*/export_version", new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                version[0] = text.trim();
+            }
+
+        });
         CmsModuleXmlHandler.addXmlDigesterRules(digester);
 
         InputStream stream = null;
@@ -243,14 +254,37 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         }
 
         CmsModule importedModule = handler.getModule();
-
         // the digester must have set the module now
         if (importedModule == null) {
             throw new CmsConfigurationException(
                 Messages.get().container(Messages.ERR_IMPORT_MOD_ALREADY_INSTALLED_1, importResource));
+        } else {
+            importedModule.setExportVersion(version[0]);
         }
 
         return importedModule;
+    }
+
+    public static void reportBeginImport(I_CmsReport report, String modulePackageName) {
+
+        report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+        if (report instanceof CmsHtmlReport) {
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    "<i>" + modulePackageName + "</i>"));
+        } else {
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    modulePackageName));
+        }
+        report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+    }
+
+    public static void reportEndImport(I_CmsReport report) {
+
+        report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -442,19 +476,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
 
-            report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-            if (report instanceof CmsHtmlReport) {
-                report.print(
-                    org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        "<i>" + modulePackageName + "</i>"));
-            } else {
-                report.print(
-                    org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        modulePackageName));
-            }
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            reportBeginImport(report, modulePackageName);
             importModule(cms, report, parameters);
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             // now unlock and publish the project
@@ -463,7 +485,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             OpenCms.getPublishManager().waitWhileRunning();
 
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
-            report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
+            reportEndImport(report);
         } finally {
             cms.getRequestContext().setCurrentProject(previousProject);
         }

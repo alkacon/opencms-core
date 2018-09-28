@@ -2008,13 +2008,8 @@ public final class CmsObject {
         List<CmsProperty> properties)
     throws CmsException {
 
-        return getResourceType(resource).importResource(
-            this,
-            m_securityManager,
-            resourcename,
-            resource,
-            content,
-            properties);
+        return getResourceType(
+            resource).importResource(this, m_securityManager, resourcename, resource, content, properties);
     }
 
     /**

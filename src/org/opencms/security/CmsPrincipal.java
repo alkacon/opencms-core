@@ -190,6 +190,24 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     }
 
     /**
+     * Gets the type of a principal.<p>
+     *
+     * @param principal the principal
+     * @return the principal type
+     */
+    public static String getType(I_CmsPrincipal principal) {
+
+        if (principal == null) {
+            return null;
+        }
+        if (principal.isGroup()) {
+            return I_CmsPrincipal.PRINCIPAL_GROUP;
+        } else {
+            return I_CmsPrincipal.PRINCIPAL_USER;
+        }
+    }
+
+    /**
      * Utility function to read a prefixed principal from the OpenCms database using the
      * provided OpenCms user context.<p>
      *

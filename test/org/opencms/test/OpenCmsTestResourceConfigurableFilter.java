@@ -59,6 +59,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
         m_properties = true;
         m_acl = true;
         m_ace = true;
+        m_nonContentRelations = true;
         m_dateCreatedSec = false;
         m_dateLastModifiedSec = false;
     }
@@ -93,6 +94,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
         m_ace = baseFilter.testAce();
         m_acl = baseFilter.testAcl();
         m_dateCreatedSec = baseFilter.testDateCreatedSec();
+        m_nonContentRelations = baseFilter.testNonContentRelations();
         m_dateLastModifiedSec = baseFilter.testDateLastModifiedSec();
     }
 

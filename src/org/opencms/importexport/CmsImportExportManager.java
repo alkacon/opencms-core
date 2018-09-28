@@ -72,12 +72,12 @@ public class CmsImportExportManager {
 
     /** Time modes to specify how time stamps should be handled. */
     public static enum TimestampMode {
-        /** Use the time of import for the timestamp. */
-        IMPORTTIME,
-        /** Use the timestamp of the imported file. */
-        FILETIME,
-        /** The timestamp is explicitly given. */
-        VFSTIME;
+    /** Use the timestamp of the imported file. */
+    FILETIME,
+    /** Use the time of import for the timestamp. */
+    IMPORTTIME,
+    /** The timestamp is explicitly given. */
+    VFSTIME;
 
         /** Returns the default timestamp mode.
          * @return the default timestamp mode
@@ -120,7 +120,7 @@ public class CmsImportExportManager {
     public static final String EXPORT_MANIFEST = "manifest.xml";
 
     /** The current version of the OpenCms export (appears in the {@link #EXPORT_MANIFEST} header). */
-    public static final String EXPORT_VERSION = "" + CmsImportVersion10.IMPORT_VERSION10;
+    public static final String EXPORT_VERSION = "" + CmsImportVersion10.IMPORT_VERSION10; //TODO: when changing this to a newer import version, need to refactor the module updater so it dynamically uses the correct import version
 
     /**
      * The name of the XML manifest file used for the description of exported OpenCms VFS properties and attributes.<p>
@@ -247,6 +247,9 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST}, starts the manifest info header. */
     public static final String N_INFO = "info";
 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "infoproject" node, appears in the manifest info header. */
+    public static final String N_INFO_PROJECT = "infoproject";
+
     /** Tag in the {@link #EXPORT_MANIFEST} for the "lastmodified" node, only required for backward compatibility with import version 2.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
@@ -265,6 +268,11 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST} for the "opencms_version" node, appears in the manifest info header. */
     public static final String N_OC_VERSION = "opencms_version";
 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "orgunitdatas" node, starts the organizational unit data.
+     * @deprecated Use the appropriate tag from latest import class instead*/
+    @Deprecated
+    public static final String N_ORGUNITDATA = A_CmsImport.N_ORGUNITDATA;
+
     /** Tag in the {@link #EXPORT_MANIFEST} for the "parentgroup" node, contains a groups parent group name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
@@ -274,9 +282,6 @@ public class CmsImportExportManager {
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PASSWORD = A_CmsImport.N_PASSWORD;
-
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "infoproject" node, appears in the manifest info header. */
-    public static final String N_INFO_PROJECT = "infoproject";
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "properties" node, starts the list of properties of a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
@@ -358,11 +363,6 @@ public class CmsImportExportManager {
     @Deprecated
     public static final String N_USERGROUPDATA = A_CmsImport.N_USERGROUPDATA;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "orgunitdatas" node, starts the organizational unit data.
-     * @deprecated Use the appropriate tag from latest import class instead*/
-    @Deprecated
-    public static final String N_ORGUNITDATA = A_CmsImport.N_ORGUNITDATA;
-
     /** Tag in the {@link #EXPORT_MANIFEST} for the "usergroups" node, starts the users group data.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
@@ -407,11 +407,11 @@ public class CmsImportExportManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
 
-    /** The configured temporary export point paths. */
-    private List<String> m_tempExportpointPaths = Lists.newArrayList();
-
     /** Boolean flag whether imported pages should be converted into XML pages. */
     private boolean m_convertToXmlPage;
+
+    /** Map from resource types to default timestamp modes. */
+    private Map<String, TimestampMode> m_defaultTimestampModes;
 
     /** The default values of the HTML->OpenCms Template converter. */
     private CmsExtendedHtmlImportDefault m_extendedHtmlImportDefault;
@@ -419,14 +419,8 @@ public class CmsImportExportManager {
     /** List of property keys that should be removed from imported resources. */
     private List<String> m_ignoredProperties;
 
-    /** Map from resource types to default timestamp modes. */
-    private Map<String, TimestampMode> m_defaultTimestampModes;
-
     /** List of immutable resources that should remain unchanged when resources are imported. */
     private List<String> m_immutableResources;
-
-    /** List of resourcetypes. Only used as helper for initializing the default timestamp modes. */
-    private List<String> m_resourcetypes;
 
     /** The initialized import/export handlers. */
     private List<I_CmsImportExportHandler> m_importExportHandlers;
@@ -442,6 +436,12 @@ public class CmsImportExportManager {
 
     /** Boolean flag whether colliding resources should be overwritten during the import. */
     private boolean m_overwriteCollidingResources;
+
+    /** List of resourcetypes. Only used as helper for initializing the default timestamp modes. */
+    private List<String> m_resourcetypes;
+
+    /** The configured temporary export point paths. */
+    private List<String> m_tempExportpointPaths = Lists.newArrayList();
 
     /** The user export settings. */
     private CmsUserExportSettings m_userExportSettings;

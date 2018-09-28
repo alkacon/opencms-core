@@ -30,7 +30,6 @@ package org.opencms.ui.apps.git;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.importexport.CmsImportExportException;
-import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -81,7 +80,7 @@ import com.google.common.collect.Sets;
  *  Which modules are exported to and checked in to which git repository is configured in the file
  *  <code>/WEB-INF/git-scripts/module-checkin.sh</code>.
  *   */
-public class CmsGitCheckin {
+public class CmsGitCheckin { 
 
     /** The log file for the git check in. */
     private static final String DEFAULT_LOGFILE_PATH = OpenCms.getSystemInfo().getWebInfRfsPath() + "logs/git.log";
@@ -152,6 +151,7 @@ public class CmsGitCheckin {
      * @param cms the CMS context to use
      */
     public CmsGitCheckin(CmsObject cms) {
+
         m_cms = cms;
         m_configurations = readConfigFiles();
         for (CmsGitConfiguration config : m_configurations) {
@@ -754,19 +754,11 @@ public class CmsGitCheckin {
     private boolean importModule(File file) throws CmsException {
 
         m_logStream.println("Trying to import module from " + file.getAbsolutePath());
-        CmsModuleImportExportHandler importHandler = new CmsModuleImportExportHandler();
-        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(file.getAbsolutePath());
-        String moduleName = module.getName();
         I_CmsReport report = new CmsPrintStreamReport(
             m_logStream,
             OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()),
             false);
-        if (OpenCms.getModuleManager().hasModule(moduleName)) {
-            OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true /*replace module*/, report);
-        }
-        CmsImportParameters params = new CmsImportParameters(file.getAbsolutePath(), "/", false);
-        importHandler.setImportParameters(params);
-        importHandler.importData(m_cms, report);
+        OpenCms.getModuleManager().replaceModule(m_cms, file.getAbsolutePath(), report);
         file.delete();
         if (report.hasError() || report.hasWarning()) {
             m_logStream.println("Import failed, see opencms.log for details");

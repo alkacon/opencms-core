@@ -54,6 +54,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -75,11 +76,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
@@ -802,11 +806,8 @@ public class OpenCmsTestCase extends TestCase {
      * @param moduleName the name of the module to import
      *
      * @throws CmsException can be thrown for several reasons
-     * @throws InterruptedException
-     * @throws IOException
      */
-    public static void importModule(CmsObject cms, String moduleName)
-    throws CmsException, IOException, InterruptedException {
+    public static void importModule(CmsObject cms, String moduleName) throws CmsException {
 
         importModule(cms, moduleName, "", "");
     }
@@ -820,13 +821,10 @@ public class OpenCmsTestCase extends TestCase {
      * @param subfolder a subfolder of the package path, where the module .zip is located (without leading and trailing "/")
      *
      * @throws CmsException can be thrown for several reasons
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static void importModule(CmsObject cms, String moduleName, String suffix, String subfolder)
-    throws CmsException, IOException, InterruptedException {
+    throws CmsException {
 
-        String defaultModulesFolder = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
         String path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages"
                 + File.separator
@@ -836,17 +834,8 @@ public class OpenCmsTestCase extends TestCase {
             + ".zip";
         try {
             OpenCms.getSearchManager().pauseOfflineIndexing();
-            if (OpenCms.getModuleManager().hasModule(moduleName)) {
-                OpenCms.getModuleManager().deleteModule(
-                    cms,
-                    moduleName,
-                    true,
-                    new CmsShellReport(cms.getRequestContext().getLocale()));
-            }
-            OpenCms.getImportExportManager().importData(
-                cms,
-                new CmsShellReport(cms.getRequestContext().getLocale()),
-                new CmsImportParameters(path, "/", true));
+            CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+            OpenCms.getModuleManager().replaceModule(cms, path, report);
         } finally {
             OpenCms.getSearchManager().resumeOfflineIndexing();
         }
@@ -2465,7 +2454,7 @@ public class OpenCmsTestCase extends TestCase {
             // compare the state if necessary
             if (filter.testState()) {
                 if (!storedResource.getState().equals(res.getState())) {
-                    noMatches += "[State " + storedResource.getState() + " != " + res.getState() + "]\n";
+                    noMatches += "[State " + storedResource.getState() + " (stored) != " + res.getState() + "]\n";
                 }
             }
             // compare the structure id if necessary
@@ -2511,6 +2500,28 @@ public class OpenCmsTestCase extends TestCase {
                         res.getUserLastModified());
                     noMatches += "\n";
                 }
+            }
+            if (filter.testNonContentRelations()) {
+                List<CmsRelation> relations = cms.readRelations(
+                    CmsRelationFilter.relationsFromStructureId(res.getStructureId()));
+                List<CmsRelation> storedRelations = storedResource.getRelations();
+                Set<String> storedRel = getNonContentRelationStrings(storedRelations);
+                Set<String> vfsRel = getNonContentRelationStrings(relations);
+                if (!storedRel.equals(vfsRel)) {
+                    StringBuilder relMessage = new StringBuilder();
+                    for (String rel : storedRel) {
+                        if (!vfsRel.contains(rel)) {
+                            relMessage.append("Missing relation: " + rel + "\n");
+                        }
+                    }
+                    for (String rel : vfsRel) {
+                        if (!storedRel.contains(rel)) {
+                            relMessage.append("Relation not stored: " + rel + "\n");
+                        }
+                    }
+                    noMatches += relMessage.toString() + "\n";
+                }
+
             }
 
             // now see if we have collected any no-matches
@@ -3540,6 +3551,23 @@ public class OpenCmsTestCase extends TestCase {
     public String getDatabaseProduct() {
 
         return m_dbProduct;
+    }
+
+    /**
+     * Helper method to get a string representation of the set of non-content relations from a given list.<p>
+     *
+     * @param relations the input relations
+     * @return the string representation for the non-content relatiosn
+     */
+    public Set<String> getNonContentRelationStrings(Collection<CmsRelation> relations) {
+
+        Set<String> result = new HashSet<String>();
+        for (CmsRelation rel : relations) {
+            if (!rel.getType().isDefinedInContent()) {
+                result.add(rel.toString());
+            }
+        }
+        return result;
     }
 
     /**

@@ -70,10 +70,10 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
 
     /** The available module export modes. */
     public enum ExportMode {
-        /** Default export mode. */
-        DEFAULT,
-        /** Reduced export, that omits last modification information (dates and users). */
-        REDUCED;
+    /** Default export mode. */
+    DEFAULT,
+    /** Reduced export, that omits last modification information (dates and users). */
+    REDUCED;
 
         /**
          * @see java.lang.Enum#toString()
@@ -174,6 +174,9 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     /** List of export points added by this module. */
     private List<CmsExportPoint> m_exportPoints;
 
+    /** The export version (this is only used for module objects which have been read from a zip file). */
+    private String m_exportVersion;
+
     /** Indicates if this modules configuration has already been frozen. */
     private transient boolean m_frozen;
 
@@ -223,6 +226,8 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
         m_excluderesources = Collections.emptyList();
         m_exportPoints = Collections.emptyList();
         m_dependencies = Collections.emptyList();
+        m_resourceTypes = Collections.emptyList();
+        m_explorerTypeSettings = Collections.emptyList();
         m_parameters = new TreeMap<String, String>();
         m_exportMode = ExportMode.DEFAULT;
     }
@@ -380,7 +385,7 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
                 result.add(resource);
             } else {
                 // cannot add the complete resource (i.e., including the whole sub-tree)
-                if (sitePath.equals(excludedSubResources.get(0))) {
+                if (CmsStringUtil.comparePaths(sitePath, excludedSubResources.get(0))) {
                     // the resource itself is excluded -> do not add it and check the next resource
                     continue;
                 }
@@ -491,7 +496,7 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
 
         List<String> result = new ArrayList<String>();
         for (String exclude : excluded) {
-            if (exclude.startsWith(sitePath)) {
+            if (CmsStringUtil.isPrefixPath(sitePath, exclude)) {
                 result.add(exclude);
             }
         }
@@ -508,7 +513,7 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
 
         List<String> result = new ArrayList<String>(sitePaths.size());
         for (String sitePath : sitePaths) {
-            if (cms.existsResource(sitePath, CmsResourceFilter.ALL)) {
+            if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 result.add(sitePath);
             }
         }
@@ -817,6 +822,18 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     }
 
     /**
+     * Gets the export version.<p>
+     *
+     * This is only used for module objects which have been read from a zip file.
+     *
+     * @return the export version
+     */
+    public String getExportVersion() {
+
+        return m_exportVersion;
+    }
+
+    /**
      * Returns the group name of this module.<p>
      *
      * @return the group name of this module
@@ -1026,6 +1043,21 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
             }
         }
         return false;
+    }
+
+    /**
+     * Check if all module resources are under /system or the shared folder.<p>
+     *
+     * @return true if the module only has resources under system or the shared folder
+     */
+    public boolean hasOnlySystemAndSharedResources() {
+
+        for (String modRes : getResources()) {
+            if (!CmsStringUtil.isPrefixPath("/system/", modRes) && !OpenCms.getSiteManager().startsWithShared(modRes)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1437,6 +1469,17 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     }
 
     /**
+     * Sets the export version.<p>
+     *
+     * @param exportVersion the export version
+     */
+    public void setExportVersion(String exportVersion) {
+
+        m_exportVersion = exportVersion;
+
+    }
+
+    /**
      * Sets the group name of this module.<p>
      *
      *
@@ -1651,6 +1694,18 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
             }
         }
         return false;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        if (m_name != null) {
+            return "[CmsModule: " + m_name + "]";
+        }
+        return super.toString();
     }
 
     /**

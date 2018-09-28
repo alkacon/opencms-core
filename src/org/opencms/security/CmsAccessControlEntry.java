@@ -32,6 +32,8 @@ import org.opencms.util.CmsUUID;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
+import com.google.common.base.Objects;
+
 /**
  * An access control entry defines the permissions of a user or group for a distinct resource.<p>
  *
@@ -315,7 +317,7 @@ public class CmsAccessControlEntry {
             if (other.getPermissions().getDeniedPermissions() != getPermissions().getDeniedPermissions()) {
                 return false;
             }
-            if (!other.m_resource.equals(m_resource)) {
+            if (!Objects.equal(other.m_resource, m_resource)) {
                 return false;
             }
             if (!other.m_principal.equals(m_principal)) {
@@ -545,5 +547,20 @@ public class CmsAccessControlEntry {
             + m_permissions.toString()
             + ", Flags="
             + m_flags;
+    }
+
+    /**
+     * Returns a copy of the access control entry with the resource id nulled.<p>
+     *
+     * @return a copy of this entry with a nulled resource id
+     */
+    public CmsAccessControlEntry withNulledResource() {
+
+        return new CmsAccessControlEntry(
+            null,
+            m_principal,
+            m_permissions.getAllowedPermissions(),
+            m_permissions.getDeniedPermissions(),
+            m_flags);
     }
 }

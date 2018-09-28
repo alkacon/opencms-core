@@ -33,7 +33,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.importexport.CmsImportExportException;
-import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -81,14 +80,14 @@ public class CmsModuleImportExportRepository {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleImportExportRepository.class);
 
-    /** Module log. */
-    private CmsModuleLog m_moduleLog = new CmsModuleLog();
-
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
     /** Cache for module hashes, used to detect changes in modules. */
     private Map<CmsModule, String> m_moduleHashCache = new ConcurrentHashMap<CmsModule, String>();
+
+    /** Module log. */
+    private CmsModuleLog m_moduleLog = new CmsModuleLog();
 
     /** Timed cache for newly calculated module hashes, used to avoid very frequent recalculation. */
     private Map<CmsModule, String> m_newModuleHashCache = CacheBuilder.newBuilder().expireAfterWrite(
@@ -258,16 +257,10 @@ public class CmsModuleImportExportRepository {
                     throw new CmsImportExportException(
                         Messages.get().container(Messages.ERR_FILE_IO_1, targetFilePath));
                 }
-                CmsModuleImportExportHandler importHandler = new CmsModuleImportExportHandler();
                 CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(targetFilePath);
                 moduleName = module.getName();
                 I_CmsReport report = createReport();
-                if (OpenCms.getModuleManager().hasModule(moduleName)) {
-                    OpenCms.getModuleManager().deleteModule(m_adminCms, moduleName, true /*replace module*/, report);
-                }
-                CmsImportParameters params = new CmsImportParameters(targetFilePath, "/", false);
-                importHandler.setImportParameters(params);
-                importHandler.importData(m_adminCms, report);
+                OpenCms.getModuleManager().replaceModule(m_adminCms, targetFilePath, report);
                 new File(targetFilePath).delete();
                 if (report.hasError() || report.hasWarning()) {
                     ok = false;

@@ -36,6 +36,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockFilter;
@@ -60,6 +61,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -883,6 +885,43 @@ public class CmsModuleManager {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
         }
+    }
+
+    /**
+     * Replaces an existing module with the one read from an import ZIP file.<p>
+     *
+     * If there is not already a module with the same name installed, then the module will just be imported normally.
+     *
+     * @param cms the CMS context
+     * @param importFile the import file
+     * @param report the report
+     *
+     * @return the module replacement status
+     * @throws CmsException if something goes wrong
+     */
+    public CmsReplaceModuleInfo replaceModule(CmsObject cms, String importFile, I_CmsReport report)
+    throws CmsException {
+
+        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importFile);
+
+        boolean hasModule = hasModule(module.getName());
+        boolean usedNewUpdate = false;
+        if (hasModule) {
+            Optional<CmsModuleUpdater> optModuleUpdater = CmsModuleUpdater.create(cms, importFile, report);
+            if (optModuleUpdater.isPresent()) {
+                usedNewUpdate = true;
+                optModuleUpdater.get().run();
+            } else {
+                deleteModule(cms, module.getName(), true, report);
+                CmsImportParameters params = new CmsImportParameters(importFile, "/", true);
+                OpenCms.getImportExportManager().importData(cms, report, params);
+            }
+
+        } else {
+            CmsImportParameters params = new CmsImportParameters(importFile, "/", true);
+            OpenCms.getImportExportManager().importData(cms, report, params);
+        }
+        return new CmsReplaceModuleInfo(module, usedNewUpdate);
     }
 
     /**
