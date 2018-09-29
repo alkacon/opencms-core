@@ -101,6 +101,11 @@ configurations {
         transitive = false
         extendsFrom compile
     }
+    
+    moduleDeps {
+    	description = 'additional dependencies required by external modules'
+    	transitive = false
+    }
 
     testCompile{
         transitive = false
@@ -183,7 +188,12 @@ sourceSets{
 
 // import dependencies
 apply from: 'dependencies.gradle'
-
+if (project.hasProperty('external_directories')){
+    dependencies{
+	    moduleDeps fileTree(dir: external_directories).matching { include '**/lib/*.jar' }
+	    moduleDeps fileTree(dir: external_directories).matching { include '**/libext/*.jar' }
+    }
+}
 
 // The  Eclipse Buildship gradle integration for some reason assigns output folder test/bin to the .classpath entry for
 // the src folder, so we fix it here manually.
@@ -746,14 +756,11 @@ allModuleNames.split(',').each{ moduleName ->
          	version moduleVersion
         }
         destinationDir modulesDistsDir
-        // include the jar file if necessary
-        if (requiresJar.toBoolean()&&isExternal.toBoolean()){
-        	from( "${project.buildDir}/libs") {
-                include "${moduleName}.jar"
-                into "/system/modules/${moduleName}/lib/"
-            }
+        
+        // excluding jars from modules, jars will be placed in the WEB-INF lib folder through the moduleDeps configuration
+        from("${moduleFolder}/resources"){
+        	exclude '**/lib*/*.jar'
         }
-        from "${moduleFolder}/resources"
 
         // TODO: set the module version to match the manifest.xml
         baseName moduleName
@@ -786,17 +793,8 @@ allModuleNames.split(',').each{ moduleName ->
 	        }
 
 	        sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
-	        def libFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/lib")
-	        if (libFolder.exists()){
-	        	println("Detecting lib folder for module $moduleName")
-	        	sourceSets[moduleName].compileClasspath+= fileTree(libFolder){ include '**/*.jar' }
 
-	        }
-	        def libExtFolder=file("${moduleFolder}/resources/system/modules/${moduleName}/libext")
-	        if (libExtFolder.exists()){
-	        	println("Detecting libext folder for module $moduleName")
-	        	sourceSets[moduleName].compileClasspath+= fileTree(libExtFolder){ include '**/*.jar' }
-	        }
+	        sourceSets[moduleName].compileClasspath+= configurations.moduleDeps
 		}
         task "jar_$moduleName" (type: Jar) {
         	ext.gwtModule = gwtModule
@@ -1040,6 +1038,7 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
     }
 
     into ('/WEB-INF/lib') { from configurations.distribution }
+    into ('/WEB-INF/lib') { from configurations.moduleDeps }
 
     fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
         // copy the database drivers into the lib folder
