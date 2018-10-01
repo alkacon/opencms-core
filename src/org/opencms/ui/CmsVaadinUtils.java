@@ -91,6 +91,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.UI;
@@ -1168,8 +1169,26 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Waggle the component.<p>
+     *
+     * @param component to be waggled
+     */
+    public static void waggleMeOnce(Component component) {
+
+        //TODO Until now, the component gets a waggler class which can not be removed again here..
+        component.addStyleName("waggler");
+        //Add JavaScript code, which adds the waggle class and removes it after a short time.
+        JavaScript.getCurrent().execute(
+            "waggler=document.querySelectorAll(\".waggler\")[0];"
+                + "waggler.className=waggler.className + \" waggle\";"
+                + "setTimeout(function () {\n"
+                + "waggler.className=waggler.className.replace(/\\bwaggle\\b/g, \"\");"
+                + "    }, 1500);");
+    }
+
+    /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

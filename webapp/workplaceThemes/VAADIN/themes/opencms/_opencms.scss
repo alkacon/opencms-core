@@ -1291,14 +1291,13 @@
 	}
 }
 
-.wiggle{
-	animation: wiggle 0.4s 3;
+.waggle{
+	animation: waggle 0.1s 2;
 }
 
-@keyframes wiggle {
+@keyframes waggle {
     0% { transform: rotate(0deg); }
-   80% { transform: rotate(0deg); }
-   85% { transform: rotate(5deg); }
-   95% { transform: rotate(-5deg); }
+   33% { transform: rotate(3deg); }
+   66% { transform: rotate(-3deg); }
   100% { transform: rotate(0deg); }
 }

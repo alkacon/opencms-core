@@ -33,6 +33,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.components.CmsFakeWindow;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +45,6 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.JavaScript;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
@@ -77,6 +77,9 @@ public class CmsLoginForm extends VerticalLayout {
 
     /** Button for opening the "forgot password" dialog. */
     private Button m_forgotPasswordButton;
+
+    /**Fake window. */
+    private CmsFakeWindow m_fakeWindow;
 
     /** Label showing an optional configurable message.*/
     private Label m_additionalMessage;
@@ -183,26 +186,6 @@ public class CmsLoginForm extends VerticalLayout {
     }
 
     /**
-     * Displays the given login error.<p>
-     *
-     * @param messageHTML the error message
-     */
-    void displayError(String messageHTML) {
-
-        m_error.setValue(messageHTML);
-        m_error.setVisible(true);
-
-        //Add JavaScript code, which adds the wiggle class and removes it after a short time.
-        JavaScript.getCurrent().execute(
-            "wiggleElement=document.querySelectorAll(\".wiggler\")[0];\n"
-                + "wiggleElement.className=wiggleElement.className + \" wiggle\";\n"
-                + "setTimeout(function () {\n"
-                + "element=document.querySelectorAll(\".wiggle\")[0];\n"
-                + "element.className=element.className.replace(/\\bwiggle\\b/g, \"\");"
-                + "    }, 1500);");
-    }
-
-    /**
      * Gets the OU.<p>
      *
      * @return the OU
@@ -295,6 +278,28 @@ public class CmsLoginForm extends VerticalLayout {
     public void toggleOptionsVisible() {
 
         setOptionsVisible(!m_optionsVisible);
+    }
+
+    /**
+     * Displays the given login error.<p>
+     *
+     * @param messageHTML the error message
+     */
+    void displayError(String messageHTML) {
+
+        // m_fakeWindow.addStyleName("waggler");
+        m_error.setValue(messageHTML);
+        m_error.setVisible(true);
+        CmsVaadinUtils.waggleMeOnce(m_fakeWindow);
+        //
+        //Add JavaScript code, which adds the wiggle class and removes it after a short time.
+        //        JavaScript.getCurrent().execute(
+        //            "wiggleElement=document.querySelectorAll(\".waggler\")[0];\n"
+        //                + "wiggleElement.className=wiggleElement.className + \" waggle\";\n"
+        //                + "setTimeout(function () {\n"
+        //                + "element=document.querySelectorAll(\".waggle\")[0];\n"
+        //                + "element.className=element.className.replace(/\\bwaggle\\b/g, \"\");"
+        //                + "    }, 1500);");
     }
 
 }
