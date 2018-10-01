@@ -2132,7 +2132,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         } else if ("disptitle".equals(value)) {
             try {
                 Document doc = DocumentHelper.parseText(
-                    "<searchsettings containerPageOnly=\"false\">\n"
+                    "<searchsettings>\n"
                         + "                <searchsetting element=\""
                         + CmsEncoder.escapeXml(name)
                         + "\">\n"
@@ -2146,7 +2146,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         } else if ("instancedate".equals(value)) {
             try {
                 Document doc = DocumentHelper.parseText(
-                    "<searchsettings containerPageOnly=\"false\">\n"
+                    "<searchsettings>\n"
                         + "                <searchsetting element=\""
                         + CmsEncoder.escapeXml(name)
                         + "\" searchcontent=\"false\">\n"
@@ -3009,8 +3009,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void initSearchSettings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
         String containerPageOnly = root.attributeValue(APPINFO_ATTR_CONTAINER_PAGE_ONLY);
-        m_containerPageOnly = (!CmsStringUtil.isEmpty(containerPageOnly))
-            && (Boolean.valueOf(containerPageOnly).booleanValue());
+        if (!CmsStringUtil.isEmpty(containerPageOnly)) {
+            m_containerPageOnly = Boolean.valueOf(containerPageOnly).booleanValue();
+        }
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_SEARCHSETTING);
         while (i.hasNext()) {
             Element element = i.next();
