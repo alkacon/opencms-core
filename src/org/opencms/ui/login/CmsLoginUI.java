@@ -71,13 +71,13 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Version;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * The UI class for the Vaadin-based login dialog.<p>
@@ -197,15 +197,6 @@ public class CmsLoginUI extends A_CmsUI {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /** The login controller. */
-    private CmsLoginController m_controller;
-
-    /** The login form. */
-    private CmsLoginForm m_loginForm;
-
-    /** The widget used to open the login target. */
-    private CmsLoginTargetOpener m_targetOpener;
 
     /**
      * Returns the initial HTML for the Vaadin based login dialog.<p>
@@ -342,16 +333,6 @@ public class CmsLoginUI extends A_CmsUI {
     }
 
     /**
-     * Sets the admin CMS object.<p>
-     *
-     * @param cms the admin cms object
-     */
-    public static void setAdminCmsObject(CmsObject cms) {
-
-        m_adminCms = cms;
-    }
-
-    /**
      * Returns the current users workplace settings.<p>
      *
      * @param cms the CMS context
@@ -375,6 +356,25 @@ public class CmsLoginUI extends A_CmsUI {
         }
         return settings;
     }
+
+    /**
+     * Sets the admin CMS object.<p>
+     *
+     * @param cms the admin cms object
+     */
+    public static void setAdminCmsObject(CmsObject cms) {
+
+        m_adminCms = cms;
+    }
+
+    /** The login controller. */
+    private CmsLoginController m_controller;
+
+    /** The login form. */
+    private CmsLoginForm m_loginForm;
+
+    /** The widget used to open the login target. */
+    private CmsLoginTargetOpener m_targetOpener;
 
     /**
      * Gets the selected org unit.<p>
@@ -423,6 +423,29 @@ public class CmsLoginUI extends A_CmsUI {
     public String getUser() {
 
         return m_loginForm.getUser();
+    }
+
+    /**
+     * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
+     */
+    @Override
+    protected void init(VaadinRequest request) {
+
+        addStyleName("login-dialog");
+        LoginParameters params = (LoginParameters)(request.getWrappedSession().getAttribute(INIT_DATA_SESSION_ATTR));
+        if (params == null) {
+            params = CmsLoginHelper.getLoginParameters(getCmsObject(), (HttpServletRequest)request, true);
+            request.getWrappedSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
+        }
+        VaadinSession.getCurrent().setErrorHandler(new CmsVaadinErrorHandler());
+        m_controller = new CmsLoginController(m_adminCms, params);
+        m_controller.setUi(this);
+        setLocale(params.getLocale());
+        m_loginForm = new CmsLoginForm(m_controller, params.getLocale());
+        m_controller.onInit();
+        getPage().setTitle(
+            CmsAppWorkplaceUi.WINDOW_TITLE_PREFIX
+                + CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LOGIN_HEADLINE_0));
     }
 
     /**
@@ -563,28 +586,5 @@ public class CmsLoginUI extends A_CmsUI {
         window.center();
         VerticalLayout vl = result;
         vl.addComponent(forgotPassword);
-    }
-
-    /**
-     * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
-     */
-    @Override
-    protected void init(VaadinRequest request) {
-
-        addStyleName("login-dialog");
-        LoginParameters params = (LoginParameters)(request.getWrappedSession().getAttribute(INIT_DATA_SESSION_ATTR));
-        if (params == null) {
-            params = CmsLoginHelper.getLoginParameters(getCmsObject(), (HttpServletRequest)request, true);
-            request.getWrappedSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
-        }
-        VaadinSession.getCurrent().setErrorHandler(new CmsVaadinErrorHandler());
-        m_controller = new CmsLoginController(m_adminCms, params);
-        m_controller.setUi(this);
-        setLocale(params.getLocale());
-        m_loginForm = new CmsLoginForm(m_controller, params.getLocale());
-        m_controller.onInit();
-        getPage().setTitle(
-            CmsAppWorkplaceUi.WINDOW_TITLE_PREFIX
-                + CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LOGIN_HEADLINE_0));
     }
 }

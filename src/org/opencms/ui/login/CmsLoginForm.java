@@ -44,6 +44,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
@@ -182,6 +183,26 @@ public class CmsLoginForm extends VerticalLayout {
     }
 
     /**
+     * Displays the given login error.<p>
+     *
+     * @param messageHTML the error message
+     */
+    void displayError(String messageHTML) {
+
+        m_error.setValue(messageHTML);
+        m_error.setVisible(true);
+
+        //Add JavaScript code, which adds the wiggle class and removes it after a short time.
+        JavaScript.getCurrent().execute(
+            "wiggleElement=document.querySelectorAll(\".wiggler\")[0];\n"
+                + "wiggleElement.className=wiggleElement.className + \" wiggle\";\n"
+                + "setTimeout(function () {\n"
+                + "element=document.querySelectorAll(\".wiggle\")[0];\n"
+                + "element.className=element.className.replace(/\\bwiggle\\b/g, \"\");"
+                + "    }, 1500);");
+    }
+
+    /**
      * Gets the OU.<p>
      *
      * @return the OU
@@ -274,17 +295,6 @@ public class CmsLoginForm extends VerticalLayout {
     public void toggleOptionsVisible() {
 
         setOptionsVisible(!m_optionsVisible);
-    }
-
-    /**
-     * Displays the given login error.<p>
-     *
-     * @param messageHTML the error message
-     */
-    void displayError(String messageHTML) {
-
-        m_error.setValue(messageHTML);
-        m_error.setVisible(true);
     }
 
 }
