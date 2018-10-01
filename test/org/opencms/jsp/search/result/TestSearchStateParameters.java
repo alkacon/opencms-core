@@ -119,14 +119,18 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
     public void testCheckAndUncheckFacetItems() throws CmsException, IOException, URISyntaxException, JSONException {
 
         I_CmsSearchResultWrapper result = search();
+
+        String cat1_0 = "cat1";
+        String cat1_1 = "cat123".substring(0, 4);
+
         I_CmsSearchStateParameters stateParams = result.getStateParameters();
         assertFalse(stateParams.toString().contains("facet_Keywords_prop="));
-        stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get("cat1");
+        stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get(cat1_0);
         assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat1"));
         stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get("cat2");
         assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat1"));
         assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat2"));
-        stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get("cat1");
+        stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get(cat1_1);
         assertFalse(stateParams.toString().contains("facet_Keywords_prop=cat1"));
         assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat2"));
         stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get("cat2");
