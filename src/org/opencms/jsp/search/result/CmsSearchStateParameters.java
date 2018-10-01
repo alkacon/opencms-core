@@ -372,7 +372,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                                         String[] newValues = new String[valueList.size() - 1];
                                         int i = 0;
                                         for (String value : valueList) {
-                                            if (value != item) {
+                                            if (!value.equals(item)) {
                                                 newValues[i++] = value;
                                             }
                                         }
