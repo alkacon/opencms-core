@@ -59,6 +59,16 @@ import junit.framework.TestSuite;
 public class TestSearchStateParameters extends OpenCmsTestCase {
 
     /**
+     * Default JUnit constructor.<p>
+     *
+     * @param arg0 JUnit parameters
+     */
+    public TestSearchStateParameters(String arg0) {
+
+        super(arg0);
+    }
+
+    /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
@@ -98,13 +108,30 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
     }
 
     /**
-     * Default JUnit constructor.<p>
+     * Test if adding and removing facet items in the state parameters works.
      *
-     * @param arg0 JUnit parameters
+     * @throws CmsException ...
+     * @throws IOException ...
+     * @throws URISyntaxException ...
+     * @throws JSONException ...
      */
-    public TestSearchStateParameters(String arg0) {
+    @org.junit.Test
+    public void testCheckAndUncheckFacetItems() throws CmsException, IOException, URISyntaxException, JSONException {
 
-        super(arg0);
+        I_CmsSearchResultWrapper result = search();
+        I_CmsSearchStateParameters stateParams = result.getStateParameters();
+        assertFalse(stateParams.toString().contains("facet_Keywords_prop="));
+        stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get("cat1");
+        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat1"));
+        stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get("cat2");
+        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat1"));
+        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat2"));
+        stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get("cat1");
+        assertFalse(stateParams.toString().contains("facet_Keywords_prop=cat1"));
+        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat2"));
+        stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get("cat2");
+        assertFalse(stateParams.toString().contains("facet_Keywords_prop="));
+
     }
 
     /**
@@ -156,37 +183,6 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
             searchResult = new CmsSearchResultWrapper(searchController, solrResultList, query, getCmsObject(), null);
         }
         return searchResult;
-    }
-
-    /**
-     * Test if adding and removing facet items in the state parameters works.
-     *
-     * @throws CmsException ...
-     * @throws IOException ...
-     * @throws URISyntaxException ...
-     * @throws JSONException ...
-     */
-    @org.junit.Test
-    public void testCheckAndUncheckFacetItems() throws CmsException, IOException, URISyntaxException, JSONException {
-
-        I_CmsSearchResultWrapper result = search();
-        I_CmsSearchStateParameters stateParams = result.getStateParameters();
-        assertFalse(stateParams.toString().contains("facet_Keywords_prop="));
-        //To make sure Strings are not the same (==)
-        String cat = "cat1";
-        String cat2 = "cat123".substring(0, 4);
-        stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get(cat);
-        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat1"));
-        stateParams = stateParams.getCheckFacetItem().get("Keywords_prop").get("cat2");
-
-        assertTrue(stateParams.toString().contains("facet_Keywords_prop=" + cat));
-        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat2"));
-        stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get(cat2);
-        assertFalse(stateParams.toString().contains("facet_Keywords_prop=cat1"));
-        assertTrue(stateParams.toString().contains("facet_Keywords_prop=cat2"));
-        stateParams = stateParams.getUncheckFacetItem().get("Keywords_prop").get("cat2");
-        assertFalse(stateParams.toString().contains("facet_Keywords_prop="));
-
     }
 
 }

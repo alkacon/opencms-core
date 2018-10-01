@@ -51,6 +51,38 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     /** Logger for the class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchStateParameters.class);
 
+    /** Map of request parameters, representing the search's state. */
+    Map<String, String[]> m_params;
+    /** The result of the search. */
+    I_CmsSearchResultWrapper m_result;
+
+    /** Map with page numbers as keys and the according state parameters as values. */
+    Map<String, I_CmsSearchStateParameters> m_paginationMap;
+    /** Map from sort options to state parameters. */
+    Map<String, I_CmsSearchStateParameters> m_sortingMap;
+    /** Map from facet names to state parameters without the filter queries for the facet. */
+    Map<String, I_CmsSearchStateParameters> m_resetFacetMap;
+    /** Map from facet names to state parameters with parameters for ignoring the facet's limit added. */
+    Map<String, I_CmsSearchStateParameters> m_ignoreLimitFacetMap;
+    /** Map new queries to state parameters with the query replaced by the new query. */
+    Map<String, I_CmsSearchStateParameters> m_newQueryMap;
+    /** Map from facet names to state parameters with parameters for ignoring the facet's limit removed. */
+    Map<String, I_CmsSearchStateParameters> m_respectLimitFacetMap;
+    /** Map from facet names to a map from facet items to state parameters with the item unchecked. */
+    Map<String, Map<String, I_CmsSearchStateParameters>> m_uncheckFacetMap;
+    /** Map from facet names to a map from facet items to state parameters with the item checked. */
+    Map<String, Map<String, I_CmsSearchStateParameters>> m_checkFacetMap;
+
+    /** Constructor for a state parameters object.
+     * @param result The search result, according to which the parameters are manipulated.
+     * @param params The original parameter set.
+     */
+    CmsSearchStateParameters(final I_CmsSearchResultWrapper result, final Map<String, String[]> params) {
+
+        m_params = params;
+        m_result = result;
+    }
+
     /** Converts a parameter map to the parameter string.
      * @param parameters the parameter map.
      * @return the parameter string.
@@ -73,39 +105,6 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
             result.setLength(result.length() - 1);
         }
         return result.toString();
-    }
-
-    /** Map of request parameters, representing the search's state. */
-    Map<String, String[]> m_params;
-
-    /** The result of the search. */
-    I_CmsSearchResultWrapper m_result;
-    /** Map with page numbers as keys and the according state parameters as values. */
-    Map<String, I_CmsSearchStateParameters> m_paginationMap;
-    /** Map from sort options to state parameters. */
-    Map<String, I_CmsSearchStateParameters> m_sortingMap;
-    /** Map from facet names to state parameters without the filter queries for the facet. */
-    Map<String, I_CmsSearchStateParameters> m_resetFacetMap;
-    /** Map from facet names to state parameters with parameters for ignoring the facet's limit added. */
-    Map<String, I_CmsSearchStateParameters> m_ignoreLimitFacetMap;
-    /** Map new queries to state parameters with the query replaced by the new query. */
-    Map<String, I_CmsSearchStateParameters> m_newQueryMap;
-    /** Map from facet names to state parameters with parameters for ignoring the facet's limit removed. */
-    Map<String, I_CmsSearchStateParameters> m_respectLimitFacetMap;
-    /** Map from facet names to a map from facet items to state parameters with the item unchecked. */
-    Map<String, Map<String, I_CmsSearchStateParameters>> m_uncheckFacetMap;
-
-    /** Map from facet names to a map from facet items to state parameters with the item checked. */
-    Map<String, Map<String, I_CmsSearchStateParameters>> m_checkFacetMap;
-
-    /** Constructor for a state parameters object.
-     * @param result The search result, according to which the parameters are manipulated.
-     * @param params The original parameter set.
-     */
-    CmsSearchStateParameters(final I_CmsSearchResultWrapper result, final Map<String, String[]> params) {
-
-        m_params = params;
-        m_result = result;
     }
 
     /**
@@ -183,34 +182,6 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
         }
         return m_checkFacetMap;
 
-    }
-
-    /**
-     * Returns the parameter key of the facet with the given name.
-     * @param facet the facet's name.
-     * @return the parameter key for the facet.
-     */
-    String getFacetParamKey(String facet) {
-
-        I_CmsSearchControllerFacetField fieldFacet = m_result.getController().getFieldFacets().getFieldFacetController().get(
-            facet);
-        if (fieldFacet != null) {
-            return fieldFacet.getConfig().getParamKey();
-        }
-        I_CmsSearchControllerFacetRange rangeFacet = m_result.getController().getRangeFacets().getRangeFacetController().get(
-            facet);
-        if (rangeFacet != null) {
-            return rangeFacet.getConfig().getParamKey();
-        }
-        I_CmsSearchControllerFacetQuery queryFacet = m_result.getController().getQueryFacet();
-        if ((queryFacet != null) && queryFacet.getConfig().getName().equals(facet)) {
-            return queryFacet.getConfig().getParamKey();
-        }
-
-        // Facet did not exist
-        LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), new Throwable());
-
-        return null;
     }
 
     /**
@@ -401,7 +372,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                                         String[] newValues = new String[valueList.size() - 1];
                                         int i = 0;
                                         for (String value : valueList) {
-                                            if (!(value.equals(item))) {
+                                            if (value != item) {
                                                 newValues[i++] = value;
                                             }
                                         }
@@ -425,6 +396,34 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     public String toString() {
 
         return paramMapToString(m_params);
+    }
+
+    /**
+     * Returns the parameter key of the facet with the given name.
+     * @param facet the facet's name.
+     * @return the parameter key for the facet.
+     */
+    String getFacetParamKey(String facet) {
+
+        I_CmsSearchControllerFacetField fieldFacet = m_result.getController().getFieldFacets().getFieldFacetController().get(
+            facet);
+        if (fieldFacet != null) {
+            return fieldFacet.getConfig().getParamKey();
+        }
+        I_CmsSearchControllerFacetRange rangeFacet = m_result.getController().getRangeFacets().getRangeFacetController().get(
+            facet);
+        if (rangeFacet != null) {
+            return rangeFacet.getConfig().getParamKey();
+        }
+        I_CmsSearchControllerFacetQuery queryFacet = m_result.getController().getQueryFacet();
+        if ((queryFacet != null) && queryFacet.getConfig().getName().equals(facet)) {
+            return queryFacet.getConfig().getParamKey();
+        }
+
+        // Facet did not exist
+        LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), new Throwable());
+
+        return null;
     }
 
 }
