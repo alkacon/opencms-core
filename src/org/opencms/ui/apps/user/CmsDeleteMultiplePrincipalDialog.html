@@ -9,7 +9,11 @@
   			<content>
   			<vaadin7-vertical-layout>
   				<vaadin7-vertical-layout _id="m_mainContent" size-full style-name="o-error-dialog">
-  					<vaadin7-horizontal-layout height="70px" width="100%">
+  					<vaadin7-horizontal-layout _id="m_label_deleteDefault" height="70px" width="100%">
+  						<vaadin7-label width="60px" _id="m_icon2" style-name="o-warning-icon" :middle />
+  						<vaadin7-label style-name="o-error-message" :expand :middle>%(key.GUI_USERMANAGEMENT_DELETE_DEFAULT_PRINCIPALS_0)</vaadin7-label>
+					</vaadin7-horizontal-layout>
+  					<vaadin7-horizontal-layout _id="m_deleteConfirm" height="70px" width="100%">
 						<vaadin7-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
 						<vaadin7-label _id="m_label" :expand style-name="o-error-message" :middle ></vaadin7-label>
 					</vaadin7-horizontal-layout>

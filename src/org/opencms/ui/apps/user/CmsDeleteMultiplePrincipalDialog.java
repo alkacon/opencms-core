@@ -31,6 +31,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.CmsVaadinUtils;
@@ -57,6 +58,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
 
 /**
@@ -72,6 +74,9 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
 
     /**The icon. */
     private Label m_icon;
+
+    /**The icon. */
+    private Label m_icon2;
 
     /**Vaadin component. */
     Button m_okButton;
@@ -97,6 +102,12 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
     /**vaadin component. */
     private Panel m_dependencyPanel;
 
+    /**The label shown in case of trying to delete a default user or group.*/
+    private HorizontalLayout m_label_deleteDefault;
+
+    /**Confirmation layout. */
+    private HorizontalLayout m_deleteConfirm;
+
     /**vaadin component. */
     private CmsPrincipalSelect m_principalSelect;
 
@@ -114,12 +125,21 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
     public CmsDeleteMultiplePrincipalDialog(CmsObject cms, Set<String> context, Window window, CmsAccountsApp app) {
 
         init(cms, window, app);
+        boolean defaultUser = false;
         m_ids = context;
         m_groupIDs = new HashSet<CmsUUID>();
         m_userIDs = new HashSet<CmsUUID>();
+        List<CmsResourceInfo> infos = new ArrayList<CmsResourceInfo>();
         for (String id : m_ids) {
             try {
-                if (CmsPrincipal.readPrincipal(cms, new CmsUUID(id)) instanceof CmsGroup) {
+                CmsPrincipal principal = (CmsPrincipal)CmsPrincipal.readPrincipal(cms, new CmsUUID(id));
+                if (OpenCms.getDefaultUsers().isDefaultUser(principal.getName())
+                    || OpenCms.getDefaultUsers().isDefaultGroup(principal.getName())) {
+                    defaultUser = true;
+                    continue;
+                }
+                infos.add(CmsAccountsApp.getPrincipalInfo(CmsPrincipal.readPrincipal(cms, new CmsUUID(id))));
+                if (principal instanceof CmsGroup) {
                     m_groupIDs.add(new CmsUUID(id));
                 } else {
                     m_userIDs.add(new CmsUUID(id));
@@ -128,37 +148,32 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
                 LOG.error("Unable to read Principal.", e);
             }
         }
-        try {
-            List<CmsResourceInfo> infos = new ArrayList<CmsResourceInfo>();
-            for (String id : context) {
-                infos.add(CmsAccountsApp.getPrincipalInfo(CmsPrincipal.readPrincipal(cms, new CmsUUID(id))));
-            }
-            displayResourceInfoDirectly(infos);
-            String labelMessage = m_userIDs.isEmpty()
-            ? Messages.GUI_USERMANAGEMENT_GROUP_DELETE_MULTIPLE_0
-            : Messages.GUI_USERMANAGEMENT_USER_DELETE_MULTIPLE_0;
-            m_label.setValue(CmsVaadinUtils.getMessageText(labelMessage));
-            CmsResourceInfoTable table = new CmsResourceInfoTable(m_cms, m_userIDs, m_groupIDs);
-            table.setHeight("300px");
-            table.setWidth("100%");
-            m_dependencyPanel.setVisible(table.size() > 0);
-            m_principalSelectLayout.setVisible(table.size() > 0);
-            if (m_dependencyPanel.isVisible()) {
-                m_dependencyPanel.setContent(table);
-                m_principalSelect.setRealPrincipalsOnly(true);
 
-                if ((m_userIDs.size() == 0) | (m_groupIDs.size() == 0)) {
-                    m_principalSelect.setWidgetType(
-                        m_userIDs.size() > 0 ? WidgetType.userwidget : WidgetType.groupwidget);
-                    m_principalSelect.setPrincipalType(
-                        m_userIDs.size() > 0 ? I_CmsPrincipal.PRINCIPAL_USER : I_CmsPrincipal.PRINCIPAL_GROUP);
-                } else {
-                    m_principalSelect.setWidgetType(WidgetType.principalwidget);
-                }
+        displayResourceInfoDirectly(infos);
+        String labelMessage = m_userIDs.isEmpty()
+        ? Messages.GUI_USERMANAGEMENT_GROUP_DELETE_MULTIPLE_0
+        : Messages.GUI_USERMANAGEMENT_USER_DELETE_MULTIPLE_0;
+        m_label_deleteDefault.setVisible(defaultUser);
+        m_label.setValue(CmsVaadinUtils.getMessageText(labelMessage));
+        CmsResourceInfoTable table = new CmsResourceInfoTable(m_cms, m_userIDs, m_groupIDs);
+        table.setHeight("300px");
+        table.setWidth("100%");
+        m_dependencyPanel.setVisible(table.size() > 0);
+        m_principalSelectLayout.setVisible(table.size() > 0);
+        m_okButton.setVisible(!m_userIDs.isEmpty() || !m_groupIDs.isEmpty());
+        m_deleteConfirm.setVisible(!m_userIDs.isEmpty() || !m_groupIDs.isEmpty());
+        if (m_dependencyPanel.isVisible()) {
+            m_dependencyPanel.setContent(table);
+            m_principalSelect.setRealPrincipalsOnly(true);
 
+            if ((m_userIDs.size() == 0) | (m_groupIDs.size() == 0)) {
+                m_principalSelect.setWidgetType(m_userIDs.size() > 0 ? WidgetType.userwidget : WidgetType.groupwidget);
+                m_principalSelect.setPrincipalType(
+                    m_userIDs.size() > 0 ? I_CmsPrincipal.PRINCIPAL_USER : I_CmsPrincipal.PRINCIPAL_GROUP);
+            } else {
+                m_principalSelect.setWidgetType(WidgetType.principalwidget);
             }
-        } catch (CmsException e) {
-            LOG.error("Unable to initialize delete principal dialog.", e);
+
         }
     }
 
@@ -197,6 +212,9 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontOpenCms.WARNING.getHtml());
+        m_icon2.setContentMode(ContentMode.HTML);
+        m_icon2.setValue(FontOpenCms.WARNING.getHtml());
+        m_label_deleteDefault.setVisible(false);
         m_cms = cms;
         m_okButton.addClickListener(new ClickListener() {
 
