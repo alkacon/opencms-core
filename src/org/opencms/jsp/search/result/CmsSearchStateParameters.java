@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.result;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetQuery;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
@@ -96,7 +97,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                 result.append(key).append('&');
             } else {
                 for (final String value : parameters.get(key)) {
-                    result.append(key).append('=').append(value).append('&');
+                    result.append(key).append('=').append(CmsEncoder.encode(value)).append('&');
                 }
             }
         }
