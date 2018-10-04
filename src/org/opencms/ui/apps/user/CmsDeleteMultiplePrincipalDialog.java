@@ -54,12 +54,12 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Dialog for delete multiple principal.<p>
@@ -112,7 +112,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
     private CmsPrincipalSelect m_principalSelect;
 
     /**vaadin component. */
-    private FormLayout m_principalSelectLayout;
+    private VerticalLayout m_principalSelectLayout;
 
     /**
      * Public constructor.<p>
@@ -153,7 +153,7 @@ public class CmsDeleteMultiplePrincipalDialog extends CmsBasicDialog {
         String labelMessage = m_userIDs.isEmpty()
         ? Messages.GUI_USERMANAGEMENT_GROUP_DELETE_MULTIPLE_0
         : Messages.GUI_USERMANAGEMENT_USER_DELETE_MULTIPLE_0;
-        m_label_deleteDefault.setVisible(defaultUser);
+        m_label_deleteDefault.setVisible(defaultUser && m_userIDs.isEmpty() && m_groupIDs.isEmpty());
         m_label.setValue(CmsVaadinUtils.getMessageText(labelMessage));
         CmsResourceInfoTable table = new CmsResourceInfoTable(m_cms, m_userIDs, m_groupIDs);
         table.setHeight("300px");
