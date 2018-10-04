@@ -29,9 +29,13 @@ package org.opencms.jsp.util;
 
 import org.opencms.test.OpenCmsTestCase;
 
+import java.util.Date;
+import java.util.Locale;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+/** Test cases for the {@link CmsJspDateSeriesBean}. */
 public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
 
     /**
@@ -55,16 +59,60 @@ public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
         suite.setName(TestCmsJspDateSeriesBean.class.getName());
 
         suite.addTest(new TestCmsJspDateSeriesBean("testGetEventInfo"));
+        suite.addTest(new TestCmsJspDateSeriesBean("testGetSpecialInstances"));
 
         return suite;
     }
 
     /**
-     * Tests if the correct event info is returned.
+     * Tests if the correct event info is returned, specifically if for missing insatncedate, the first instance is returned.
      */
     public void testGetEventInfo() {
 
-        //TODO
+        String config = "{\"from\":\"1508396400000\", \"to\":\"1508511600000\", \"pattern\":{\"type\":\"NONE\"}}";
+        CmsJspDateSeriesBean bean = new CmsJspDateSeriesBean(config, Locale.ENGLISH);
+        Date startDate = new Date(1508396400000L);
+        Date wrongDate = new Date(0L);
+        CmsJspInstanceDateBean expected = new CmsJspInstanceDateBean(startDate, bean);
+        CmsJspInstanceDateBean actual = bean.getInstanceInfo().get(null);
+        assertEquals(expected.getStart(), actual.getStart());
+        actual = bean.getInstanceInfo().get("");
+        assertEquals(expected.getStart(), actual.getStart());
+        actual = bean.getInstanceInfo().get(wrongDate);
+        assertEquals(expected.getStart(), actual.getStart());
+        actual = bean.getInstanceInfo().get(startDate);
+        assertEquals(expected.getStart(), actual.getStart());
     }
 
+    /**
+     * Test the methods to get specific instances of a date series.
+     */
+    public void testGetSpecialInstances() {
+
+        long currentTime = new Date().getTime();
+        long dayInMs = 86400000L;
+        long oneDayAgo = currentTime - dayInMs;
+        long twoDaysAgo = oneDayAgo - dayInMs;
+        long oneDayAfter = currentTime + dayInMs;
+        long twoDaysAfter = oneDayAfter + dayInMs;
+        String config = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"INDIVIDUAL\", \"dates\":[\""
+            + twoDaysAgo
+            + "\",\""
+            + oneDayAgo
+            + "\",\""
+            + oneDayAfter
+            + "\",\""
+            + twoDaysAfter
+            + "\"]}}";
+        CmsJspDateSeriesBean bean = new CmsJspDateSeriesBean(config, Locale.ENGLISH);
+        assertEquals(bean.getFirst().getStart().getTime(), twoDaysAgo);
+        assertEquals(bean.getLast().getStart().getTime(), twoDaysAfter);
+        assertEquals(bean.getNext().getStart().getTime(), oneDayAfter);
+        assertEquals(bean.getPrevious().getStart().getTime(), oneDayAgo);
+        assertEquals(bean.getPreviousFor(new Date(oneDayAfter)).getStart().getTime(), oneDayAfter);
+        assertEquals(bean.getNextFor(new Date(oneDayAfter)).getStart().getTime(), oneDayAfter);
+        assertEquals(bean.getPreviousFor(new Date(currentTime)).getStart().getTime(), oneDayAgo);
+        assertEquals(bean.getNextFor(new Date(currentTime)).getStart().getTime(), oneDayAfter);
+
+    }
 }

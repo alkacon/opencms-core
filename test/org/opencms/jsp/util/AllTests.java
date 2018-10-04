@@ -63,6 +63,8 @@ public final class AllTests {
         suite.addTest(TestCmsJspNavigationBean.suite());
         suite.addTest(TestCmsJspResourceAccessBean.suite());
         suite.addTest(TestCmsStringTemplateResolver.suite());
+        suite.addTest(TestCmsJspDateSeriesBean.suite());
+        suite.addTest(TestCmsJspInstanceDateBean.suite());
         //$JUnit-END$
         return suite;
     }
