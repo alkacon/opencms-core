@@ -2460,6 +2460,10 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         for (String attributeName : m_entityBackend.getType(target.getTypeName()).getAttributeNames()) {
             CmsAttributeHandler handler = getAttributeHandler(attributeName, parentPathElements);
+            if (handler == null) {
+                // non visible attribute, skip it
+                continue;
+            }
             if (previous.hasAttribute(attributeName)
                 && updated.hasAttribute(attributeName)
                 && target.hasAttribute(attributeName)) {
