@@ -62,6 +62,9 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      */
     public static CmsGalleryConfigurationJSO parseConfiguration(String conf) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(conf)) {
+            conf = "{}";
+        }
         return (CmsGalleryConfigurationJSO)CmsDomUtil.parseJSON(conf);
     }
 
@@ -123,23 +126,23 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getImageFormatNames()
      */
     public native String getImageFormatNames()/*-{
-                                              if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES] != 'undefined') {
-                                              return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES]
-                                              .toString();
-                                              }
-                                              return null;
-                                              }-*/;
+		if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES] != 'undefined') {
+			return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES]
+					.toString();
+		}
+		return null;
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getImageFormats()
      */
     public native String getImageFormats()/*-{
-                                          if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS] != 'undefined') {
-                                          return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS]
-                                          .toString();
-                                          }
-                                          return null;
-                                          }-*/;
+		if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS] != 'undefined') {
+			return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS]
+					.toString();
+		}
+		return null;
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getLocale()
@@ -191,11 +194,11 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getStartSite()
      */
     public native String getStartSite()/*-{
-                                       if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE] != 'undefined') {
-                                       return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE];
-                                       }
-                                       return null;
-                                       }-*/;
+		if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE] != 'undefined') {
+			return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE];
+		}
+		return null;
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getTabConfiguration()
@@ -231,6 +234,14 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()
+     */
+    public boolean isIncludeFiles() {
+
+        return getTabConfiguration().getTabs().contains(GalleryTabId.cms_tab_results);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isResultsSelectable()
      */
     public boolean isResultsSelectable() {
@@ -243,45 +254,37 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()
-     */
-    public boolean isIncludeFiles() {
-
-        return getTabConfiguration().getTabs().contains(GalleryTabId.cms_tab_results);
-    }
-
-    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isShowSiteSelector()
      */
     public native boolean isShowSiteSelector()/*-{
-                                              // defaults to true
-                                              return 'false' != ''
-                                              + this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_SHOW_SITE_SELECTOR]
-                                              }-*/;
+		// defaults to true
+		return 'false' != ''
+				+ this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_SHOW_SITE_SELECTOR]
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isUseFormats()
      */
     public native boolean isUseFormats()/*-{
-                                        // defaults to false
-                                        return 'true' == ''
-                                        + this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_USE_FORMATS]
-                                        }-*/;
+		// defaults to false
+		return 'true' == ''
+				+ this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_USE_FORMATS]
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#setCurrentElement(java.lang.String)
      */
     public native void setCurrentElement(String currentElement)/*-{
-                                                               this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_CURRENT_ELEMENT] = currentElement;
-                                                               }-*/;
+		this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_CURRENT_ELEMENT] = currentElement;
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#setStartFolder(java.lang.String)
      */
     public native void setStartFolder(String startFolder)/*-{
 
-                                                         this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER]=startFolder;
-                                                         }-*/;
+		this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER] = startFolder;
+    }-*/;
 
     /**
      * Gets a string-valued attribute.<p>
@@ -291,11 +294,11 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @return the value of the attribute
      */
     private native String getString(String key) /*-{
-                                                if (typeof this[key] != 'undefined') {
-                                                return this[key];
-                                                }
-                                                return null;
-                                                }-*/;
+		if (typeof this[key] != 'undefined') {
+			return this[key];
+		}
+		return null;
+    }-*/;
 
     /**
      * Gets the tab configuration string.<p>
