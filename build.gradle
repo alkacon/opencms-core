@@ -46,6 +46,12 @@ repositories {
     }
     jcenter()
     maven {
+    	url "http://maven.nuiton.org/release/"
+    }
+    maven {
+    	url "http://software.rescarta.org/nexus/content/repositories/thirdparty/"
+    }
+    maven {
         url "http://maven.vaadin.com/vaadin-addons"
     }
 }

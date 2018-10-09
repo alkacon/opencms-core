@@ -97,6 +97,7 @@ dependencies {
     distribution group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
     distribution group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3'
     distribution group: 'commons-io', name: 'commons-io', version: '2.6'
+    distribution group: 'cryptix.jce', name: 'crytix-jce-provider', version: '20050328'
     distribution group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.6'
     distribution group: 'de.malkusch.whois-server-list', name: 'public-suffix-list', version: '2.2.0'
     distribution group: 'javax.activation', name: 'activation', version: '1.1.1'
@@ -195,6 +196,7 @@ dependencies {
     distribution group: 'org.hibernate', name: 'jtidy', version: 'r8-20060801'
     distribution group: 'org.htmlparser', name: 'htmlparser', version: '2.1'
     distribution group: 'org.htmlparser', name: 'htmllexer', version: '2.1'
+    distribution group: 'org.jpedal.jpedal-lgpl', name: 'jpedal-lgpl', version: '4.92b23'
     distribution group: 'org.jsoup', name: 'jsoup', version: '1.11.2'
     distribution group: 'org.jvnet.mimepull', name: 'mimepull', version: '1.9.7'
     distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6'
@@ -221,9 +223,7 @@ dependencies {
     // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/
     // Revision r55007
     distribution files('lib/runtime/jlan.jar')
-    distribution files('lib/runtime/cryptix-jce-provider.jar')
-    distribution files("lib/runtime/jpedal_lgpl.jar")
-
+    
     testCompile group: 'dumbster', name: 'dumbster', version: '1.6'
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
