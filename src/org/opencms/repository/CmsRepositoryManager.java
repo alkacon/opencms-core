@@ -71,6 +71,9 @@ public class CmsRepositoryManager {
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
 
+    /** Flag indicating that a JLan repository is configured and enabled. */
+    private boolean m_hasJlan;
+
     /** The JLAN thread manager. */
     private CmsJlanThreadManager m_jlanThreadManager;
 
@@ -90,7 +93,6 @@ public class CmsRepositoryManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_REPOSITORY_CONFIG_0));
         }
         m_repositoryMap = new HashMap<String, I_CmsRepository>();
-        m_jlanThreadManager = new CmsJlanThreadManager();
         m_frozen = false;
         m_configured = true;
     }
@@ -207,10 +209,12 @@ public class CmsRepositoryManager {
     public Map<String, Object> getAdditionalInfoForLogin(String userName, String password) {
 
         Map<String, Object> additionalInfos = new HashMap<String, Object>();
-        try {
-            additionalInfos.put(CmsJlanUsers.JLAN_HASH, CmsJlanUsers.hashPassword(password));
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        if (m_hasJlan) {
+            try {
+                additionalInfos.put(CmsJlanUsers.JLAN_HASH, CmsJlanUsers.hashPassword(password));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         return additionalInfos;
     }
@@ -327,9 +331,10 @@ public class CmsRepositoryManager {
         for (String removeRepo : toRemove) {
             m_repositoryMap.remove(removeRepo);
         }
-
-        CmsJlanUsers.setAdminCms(cms);
-        if (!CmsShell.isJlanDisabled() && !getRepositories(CmsJlanRepository.class).isEmpty()) {
+        m_hasJlan = !CmsShell.isJlanDisabled() && !getRepositories(CmsJlanRepository.class).isEmpty();
+        if (m_hasJlan) {
+            CmsJlanUsers.setAdminCms(cms);
+            m_jlanThreadManager = new CmsJlanThreadManager();
             m_jlanThreadManager.start();
         }
 

@@ -121,7 +121,6 @@ import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -148,8 +147,6 @@ import org.apache.commons.logging.Log;
 import org.antlr.stringtemplate.StringTemplate;
 
 import com.google.common.base.Optional;
-
-import cryptix.jce.provider.CryptixCrypto;
 
 /**
  * The internal implementation of the core OpenCms "operating system" functions.<p>
@@ -1303,7 +1300,6 @@ public final class OpenCmsCore {
             // security manager is active, but we will try other options before giving up
             LOG.debug("Security manager preventing access to file.encoding system property.", se);
         }
-        Security.addProvider(new CryptixCrypto());
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
         }

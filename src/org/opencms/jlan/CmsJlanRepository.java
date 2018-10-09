@@ -49,6 +49,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +63,8 @@ import org.alfresco.jlan.server.filesys.DiskSharedDevice;
 import org.alfresco.jlan.server.filesys.TreeConnection;
 
 import com.google.common.collect.Lists;
+
+import cryptix.jce.provider.CryptixCrypto;
 
 /**
  * Repository class for configuring repositories for Alfresco JLAN.<p>
@@ -82,6 +85,9 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJlanRepository.class);
+
+    /** Indicates whether the cryptix security provider has been added yet. */
+    private static boolean m_securityProviderAdded;
 
     /** Flag which controls whether the CmsObjectWrapper should add byte order marks for plain files. */
     private boolean m_addByteOrderMark;
@@ -176,6 +182,17 @@ public class CmsJlanRepository implements I_CmsRepository {
                     }
                 }
             });
+    }
+
+    /**
+     * Adds the cryptix security provider required for JLAN.<p>
+     */
+    private static void addSecurityProvider() {
+
+        if (!m_securityProviderAdded) {
+            Security.addProvider(new CryptixCrypto());
+            m_securityProviderAdded = true;
+        }
     }
 
     /**
@@ -328,6 +345,7 @@ public class CmsJlanRepository implements I_CmsRepository {
         if (CmsShell.isJlanDisabled()) {
             return;
         }
+        addSecurityProvider();
         m_project = m_cms.readProject(m_projectName);
         m_device = new DiskSharedDevice(getName(), getDiskInterface(), getDeviceContext(), 0);
         m_device.addAccessControl(new CmsRepositoryAccessControl(this));
