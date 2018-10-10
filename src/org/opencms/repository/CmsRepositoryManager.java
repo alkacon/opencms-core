@@ -331,8 +331,8 @@ public class CmsRepositoryManager {
         for (String removeRepo : toRemove) {
             m_repositoryMap.remove(removeRepo);
         }
-        m_hasJlan = !CmsShell.isJlanDisabled() && !getRepositories(CmsJlanRepository.class).isEmpty();
-        if (m_hasJlan) {
+        m_hasJlan = !getRepositories(CmsJlanRepository.class).isEmpty();
+        if (!CmsShell.isJlanDisabled() && m_hasJlan) {
             CmsJlanUsers.setAdminCms(cms);
             m_jlanThreadManager = new CmsJlanThreadManager();
             m_jlanThreadManager.start();
