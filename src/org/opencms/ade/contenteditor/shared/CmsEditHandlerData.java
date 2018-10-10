@@ -52,6 +52,7 @@ public class CmsEditHandlerData implements IsSerializable {
      * Default constructor for serialization.<p>
      */
     public CmsEditHandlerData() {
+
         // hidden default constructor for serialization
     }
 

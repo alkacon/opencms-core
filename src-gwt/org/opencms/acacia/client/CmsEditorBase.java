@@ -100,11 +100,11 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
     /** The localized dictionary. */
     private static Dictionary m_dictionary;
 
-    /** The id of the edited entity. */
-    protected String m_entityId;
-
     /** The entity back-end instance. */
     protected I_CmsEntityBackend m_entityBackend;
+
+    /** The id of the edited entity. */
+    protected String m_entityId;
 
     /** The in-line edit overlay hiding other content. */
     private CmsInlineEditOverlay m_editOverlay;
@@ -369,7 +369,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * @param tabInfos the tab informations
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
-    
+
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 
@@ -388,12 +388,8 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
                 m_rootHandler.clearHandlers();
             }
             m_tabInfos = tabInfos;
-            m_formTabs = m_widgetService.getRendererForType(type).renderForm(
-                m_entity,
-                m_tabInfos,
-                m_formPanel,
-                m_rootHandler,
-                0);
+            m_formTabs = m_widgetService.getRendererForType(
+                type).renderForm(m_entity, m_tabInfos, m_formPanel, m_rootHandler, 0);
             m_validationHandler.registerEntity(m_entity);
             m_validationHandler.setRootHandler(m_rootHandler);
             m_validationHandler.setFormTabPanel(m_formTabs);
@@ -480,12 +476,8 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
             int currentTab = m_formTabs.getSelectedIndex();
             m_formPanel.clear();
             m_rootHandler.clearHandlers();
-            m_formTabs = m_widgetService.getRendererForType(type).renderForm(
-                m_entity,
-                m_tabInfos,
-                m_formPanel,
-                m_rootHandler,
-                0);
+            m_formTabs = m_widgetService.getRendererForType(
+                type).renderForm(m_entity, m_tabInfos, m_formPanel, m_rootHandler, 0);
             m_formTabs.selectTab(currentTab);
         } else {
             m_formPanel.clear();

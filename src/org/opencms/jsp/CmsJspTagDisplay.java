@@ -156,7 +156,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             try {
                 if (formatter != null) {
                     element.initResource(cms);
-                    element.initSettings(cms, formatter, locale, request);
+                    element.initSettings(cms, formatter, locale, request, null);
                     boolean openedEditable = false;
                     contextBean.setElement(element);
                     if (editable && contextBean.getIsEditMode()) {

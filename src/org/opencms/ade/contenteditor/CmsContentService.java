@@ -72,6 +72,7 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -447,7 +448,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         handler.handleChange(cms, content, locale, changedScopes);
                     }
                 }
-                result = readContentDefinition(file, content, entityId, null, locale, false, null, editedLocaleEntity);
+                result = readContentDefinition(
+                    file,
+                    content,
+                    entityId,
+                    null,
+                    locale,
+                    false,
+                    null,
+                    editedLocaleEntity,
+                    Collections.emptyMap());
             } catch (Exception e) {
                 error(e);
             }
@@ -508,7 +518,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String entityId,
         String clientId,
         CmsEntity editedLocaleEntity,
-        Collection<String> skipPaths)
+        Collection<String> skipPaths,
+        Map<String, String> settingPresets)
     throws CmsRpcException {
 
         CmsContentDefinition definition = null;
@@ -529,7 +540,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 contentLocale,
                 false,
                 null,
-                editedLocaleEntity);
+                editedLocaleEntity,
+                settingPresets);
         } catch (Exception e) {
             error(e);
         }
@@ -548,7 +560,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String mainLocale,
         String mode,
         String postCreateHandler,
-        CmsEditHandlerData editHandlerDataForNew)
+        CmsEditHandlerData editHandlerDataForNew,
+        Map<String, String> settingPresets)
     throws CmsRpcException {
 
         CmsContentDefinition result = null;
@@ -567,7 +580,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     contentLocale,
                     mode,
                     postCreateHandler,
-                    editHandlerDataForNew);
+                    editHandlerDataForNew,
+                    settingPresets);
             } else {
                 CmsFile file = getCmsObject().readFile(resource);
                 CmsXmlContent content = getContentDocument(file, false);
@@ -579,7 +593,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     contentLocale,
                     false,
                     mainLocale != null ? CmsLocaleManager.getLocale(mainLocale) : null,
-                    null);
+                    null,
+                    settingPresets);
             }
         } catch (Throwable t) {
             error(t);
@@ -594,7 +609,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String entityId,
         String clientId,
         CmsEntity editedLocaleEntity,
-        Collection<String> skipPaths)
+        Collection<String> skipPaths,
+        Map<String, String> settingPresets)
     throws CmsRpcException {
 
         CmsContentDefinition definition = null;
@@ -613,7 +629,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 contentLocale,
                 true,
                 null,
-                editedLocaleEntity);
+                editedLocaleEntity,
+                settingPresets);
         } catch (Exception e) {
             error(e);
         }
@@ -670,7 +687,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             locale,
                             mode,
                             postCreateHandler,
-                            null);
+                            null,
+                            Collections.emptyMap());
                     } else {
 
                         CmsFile file = cms.readFile(resource);
@@ -682,7 +700,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                 resource,
                                 content);
                         }
-                        result = readContentDefinition(file, content, null, null, locale, false, null, null);
+                        result = readContentDefinition(
+                            file,
+                            content,
+                            null,
+                            null,
+                            locale,
+                            false,
+                            null,
+                            null,
+                            Collections.emptyMap());
                     }
                     result.setDirectEdit(isDirectEdit);
                     return result;
@@ -873,6 +900,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     int containerWidth = contextInfo.getInt(CmsCntPageData.JSONKEY_WIDTH);
                     int maxElements = contextInfo.getInt(CmsCntPageData.JSONKEY_MAXELEMENTS);
                     boolean detailView = contextInfo.getBoolean(CmsCntPageData.JSONKEY_DETAILVIEW);
+                    JSONObject presets = contextInfo.getJSONObject(CmsCntPageData.JSONKEY_PRESETS);
+                    HashMap<String, String> presetsMap = new HashMap<String, String>();
+                    for (String key : presets.keySet()) {
+                        String val = presets.getString(key);
+                        presetsMap.put(key, val);
+                    }
                     CmsContainer container = new CmsContainer(
                         containerName,
                         containerType,
@@ -883,7 +916,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         true,
                         Collections.<CmsContainerElement> emptyList(),
                         null,
-                        null);
+                        null,
+                        presetsMap);
                     CmsUUID detailContentId = null;
                     if (contextInfo.has(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID)) {
                         detailContentId = new CmsUUID(contextInfo.getString(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID));
@@ -1316,13 +1350,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param messages the messages
      * @param contentLocale the content locale
      */
-    private void addSettingsAttributes(
+    private List<String> addSettingsAttributes(
         Map<String, CmsAttributeConfiguration> attributeConfiguration,
         Map<String, CmsXmlContentProperty> settingsConfig,
         List<I_CmsFormatterBean> nestedFormatters,
         CmsMessages messages,
-        Locale contentLocale) {
+        Locale contentLocale,
+        Map<String, String> settingPresets) {
 
+        String attrName;
+        List<String> attributes = new ArrayList<String>();
         attributeConfiguration.put(
             SETTINGS_CLIENT_ID_ATTRIBUTE,
             new CmsAttributeConfiguration(
@@ -1337,23 +1374,36 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 false));
         for (Entry<String, CmsXmlContentProperty> entry : settingsConfig.entrySet()) {
             CmsXmlContentProperty prop = entry.getValue();
+            String niceName = prop.getNiceName();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(niceName)) {
+                niceName = prop.getName();
+            }
+            attrName = getSettingsAttributeName(entry.getKey());
+            boolean visible = !HIDDEN_SETTINGS_WIDGET_NAME.equals(prop.getWidget())
+                && !settingPresets.containsKey(prop.getName());
+            if (visible) {
+                attributes.add(attrName);
+            }
+
             attributeConfiguration.put(
-                getSettingsAttributeName(entry.getKey()),
+                attrName,
                 new CmsAttributeConfiguration(
-                    prop.getNiceName(),
+                    niceName,
                     prop.getDescription(),
                     getWidgetName(prop.getWidget()),
                     getWidgetConfig(prop.getWidget(), prop.getWidgetConfiguration(), messages, contentLocale),
                     prop.getDefault(),
                     DisplayType.singleline.name(),
-                    !HIDDEN_SETTINGS_WIDGET_NAME.equals(prop.getWidget()),
+                    visible,
                     false,
                     false));
         }
         if (nestedFormatters != null) {
             for (I_CmsFormatterBean formatter : nestedFormatters) {
+                attrName = getSettingsAttributeName(formatter.getId());
+                attributes.add(attrName);
                 attributeConfiguration.put(
-                    getSettingsAttributeName(formatter.getId()),
+                    attrName,
                     new CmsAttributeConfiguration(
                         formatter.getNiceName(m_workplaceLocale),
                         "",
@@ -1367,6 +1417,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
             }
         }
+        return attributes;
     }
 
     /**
@@ -1955,7 +2006,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Locale locale,
         boolean newLocale,
         Locale mainLocale,
-        CmsEntity editedLocaleEntity)
+        CmsEntity editedLocaleEntity,
+        Map<String, String> settingPresets)
     throws CmsException {
 
         long timer = 0;
@@ -2098,7 +2150,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     locale,
                     getRequest());
 
-                addSettingsAttributes(attrConfig, settingsConfig, nestedFormatters, messages, locale);
+                List<String> addedVisibleAttrs = addSettingsAttributes(
+                    attrConfig,
+                    settingsConfig,
+                    nestedFormatters,
+                    messages,
+                    locale,
+                    settingPresets);
                 addSettingsTypes(entity.getTypeName(), types, settingsConfig, nestedFormatters);
                 if (editedLocaleEntity != null) {
                     transferSettingValues(editedLocaleEntity, entity);
@@ -2108,13 +2166,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 if (tabInfos.isEmpty()) {
                     tabInfos.add(new CmsTabInfo("Content", "content", null, false, null));
                 }
-                tabInfos.add(
-                    new CmsTabInfo(
-                        Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_LABEL_0),
-                        "###formattersettings###",
-                        SETTINGS_ATTRIBUTE_NAME_PREFIX + formatter.getSettings().keySet().iterator().next(),
-                        false,
-                        Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0)));
+                if (addedVisibleAttrs.size() > 0) {
+                    tabInfos.add(
+                        new CmsTabInfo(
+                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_LABEL_0),
+                            "###formattersettings###",
+                            CmsFileUtil.removeLeadingSeparator(addedVisibleAttrs.iterator().next()),
+                            false,
+                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0)));
+                }
             }
 
         }
@@ -2165,7 +2225,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Locale locale,
         String mode,
         String postCreateHandler,
-        CmsEditHandlerData editHandlerData)
+        CmsEditHandlerData editHandlerData,
+        Map<String, String> settingPresets)
     throws CmsException {
 
         String sitePath = getCmsObject().getSitePath(referenceResource);
@@ -2216,7 +2277,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             locale,
             false,
             null,
-            null);
+            null,
+            settingPresets);
         contentDefinition.setDeleteOnCancel(true);
         return contentDefinition;
     }
@@ -2570,7 +2632,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                     locale,
                                     false,
                                     null,
-                                    null);
+                                    null,
+                                    Collections.emptyMap());
                                 entity = definition.getEntity();
                             } catch (CmsException e) {
                                 LOG.error(e.getLocalizedMessage(), e);

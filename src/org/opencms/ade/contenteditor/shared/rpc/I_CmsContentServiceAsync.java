@@ -35,6 +35,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -75,6 +76,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
+     * @param settingPresets the presets for container element settings
      * @param callback the asynchronous callback
      */
     void loadDefinition(
@@ -82,6 +84,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         String clientId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
+        Map<String, String> settingPresets,
         AsyncCallback<CmsContentDefinition> callback);
 
     /**
@@ -96,6 +99,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
      * @param editHandlerData the edit handler data, if an edit handler is used for creating a new resource; null otherwise
+     * @param settingPresets the presets for container element settings
      * @param callback the asynchronous callback
      */
     void loadInitialDefinition(
@@ -108,6 +112,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         String mode,
         String postCreateHandler,
         CmsEditHandlerData editHandlerData,
+        Map<String, String> settingPresets,
         AsyncCallback<CmsContentDefinition> callback);
 
     /**
@@ -118,6 +123,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
+     * @param settingPresets the presets for container element settings
      * @param callback the asynchronous callback
      */
     void loadNewDefinition(
@@ -125,6 +131,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         String clientId,
         CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
+        Map<String, String> settingPresets,
         AsyncCallback<CmsContentDefinition> callback);
 
     /**

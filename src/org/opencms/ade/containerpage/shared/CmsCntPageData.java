@@ -44,14 +44,14 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The element delte modes. */
     public enum ElementDeleteMode {
-        /** Don't ask, delete no longer referenced element resources. */
-        alwaysDelete,
-        /** Don't ask, keep no longer referenced element resources. */
-        alwaysKeep,
-        /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
-        askDelete,
-        /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
-        askKeep
+    /** Don't ask, delete no longer referenced element resources. */
+    alwaysDelete,
+    /** Don't ask, keep no longer referenced element resources. */
+    alwaysKeep,
+    /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
+    askDelete,
+    /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
+    askKeep
     }
 
     /** Enum representing the different ways dropping elements on a container page can be handled. */
@@ -91,6 +91,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Key 'name' used within the JSON representation of a container object. */
     public static final String JSONKEY_NAME = "name";
 
+    /** JSON key for presets. */
+    public static final String JSONKEY_PRESETS = "presets";
+
     /** Key 'type' used within the JSON representation of a container object. */
     public static final String JSONKEY_TYPE = "type";
 
@@ -99,6 +102,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
+
+    /** Temporary flag to disable the option to edit settings in content editor. */
+    private boolean m_allowSettingsInEditor;
 
     /** The app title to display in the toolbar. */
     private String m_appTitle;
@@ -174,9 +180,6 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
-
-    /** Temporary flag to disable the option to edit settings in content editor. */
-    private boolean m_allowSettingsInEditor;
 
     /**
      * Constructor.<p>

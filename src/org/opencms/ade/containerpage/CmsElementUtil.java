@@ -969,6 +969,7 @@ public class CmsElementUtil {
         boolean allowNested) {
 
         String content = null;
+
         I_CmsFormatterBean formatter = getFormatterForContainer(
             m_cms,
             element,
@@ -977,7 +978,8 @@ public class CmsElementUtil {
             allowNested,
             CmsADESessionCache.getCache(m_req, m_cms));
         if (formatter != null) {
-            element.initSettings(m_cms, formatter, m_locale, m_req);
+            element = element.clone(); // clone element because presets for different containers may be different
+            element.initSettings(m_cms, formatter, m_locale, m_req, container.getSettingPresets());
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
                 //                }

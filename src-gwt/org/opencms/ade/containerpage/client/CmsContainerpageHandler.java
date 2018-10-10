@@ -396,12 +396,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         // the client id may have changed, update the element widget
                         elementWidget.setId(elementBean.getClientId());
                     }
-
+                    Map<String, String> settingPresets = getSettingPresets(elementWidget);
                     try {
                         CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
                             m_controller,
                             elementWidget,
-                            settingsConfig);
+                            settingsConfig,
+                            settingPresets);
                         dialog.center();
                     } catch (NoFormatterException e) {
                         String ctype = "???";
@@ -417,15 +418,28 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                                 ctype = cpc.getContainerType();
                                 cname = cpc.getContainerId();
                             }
-                        } catch (Exception e2) { /*ignore*/ }
+                        } catch (Exception e2) {
+                            /*ignore*/ }
                         String path = "???";
                         try {
                             path = elementBean.getSitePath();
-                        } catch (Exception e2) { /*ignore*/ }
+                        } catch (Exception e2) {
+                            /*ignore*/ }
                         CmsAlertDialog alert = new CmsAlertDialog(
                             org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0),
                             Messages.get().key(Messages.GUI_NO_FORMATTER_4, path, cname, ctype, schema));
                         alert.center();
+                    }
+                }
+
+                private Map<String, String> getSettingPresets(CmsContainerPageElementPanel elementWidget) {
+
+                    I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
+                    if (dropContainer instanceof CmsContainerPageContainer) {
+                        CmsContainerPageContainer container = (CmsContainerPageContainer)dropContainer;
+                        return container.getSettingPresets();
+                    } else {
+                        return new HashMap<String, String>();
                     }
                 }
             });

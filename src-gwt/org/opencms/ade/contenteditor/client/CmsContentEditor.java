@@ -239,6 +239,9 @@ public final class CmsContentEditor extends CmsEditorBase {
     /** The container element client id if available. */
     String m_clientId;
 
+    /** Indicates if any settings attributes have been changed. */
+    boolean m_hasChangedSettings;
+
     /** Flag indicating that we need to collect changed values. */
     boolean m_needsValueChangeProcessing;
 
@@ -346,9 +349,6 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The undo redo event handler registration. */
     private HandlerRegistration m_undoRedoHandlerRegistration;
-
-    /** Indicates if any settings attributes have been changed. */
-    boolean m_hasChangedSettings;
 
     /**
      * Constructor.<p>
@@ -540,17 +540,17 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeScope the change scope
      */
     static native void addNativeListener(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-		var instance = changeListener;
-		var nat = {
-			onChange : function(entity) {
-				var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
-				instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
-			}
-		}
-		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-		if (typeof method == 'function') {
-			method(nat, changeScope);
-		}
+        var instance = changeListener;
+        var nat = {
+            onChange : function(entity) {
+                var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
+                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
+            }
+        }
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            method(nat, changeScope);
+        }
     }-*/;
 
     /**
@@ -559,12 +559,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-		var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-		if (typeof method == 'function') {
-			return true;
-		} else {
-			return false;
-		}
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            return true;
+        } else {
+            return false;
+        }
     }-*/;
 
     /**
@@ -573,8 +573,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-		return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-				();
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+                ();
     }-*/;
 
     /**
@@ -653,7 +653,13 @@ public final class CmsContentEditor extends CmsEditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadDefinition(entityId, m_clientId, editedEntity, getSkipPaths(), this);
+                getService().loadDefinition(
+                    entityId,
+                    m_clientId,
+                    editedEntity,
+                    getSkipPaths(),
+                    m_context.getSettingPresets(),
+                    this);
             }
 
             @Override
@@ -685,6 +691,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param mode the content creation mode
      * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param editHandlerData the data for the edit handler, if one is used to create a new content; null otherwise
+     * @param settingPresets the presets for container element settings
      * @param callback the callback
      */
     public void loadInitialDefinition(
@@ -695,6 +702,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final String mode,
         final String mainLocale,
         final CmsEditHandlerData editHandlerData,
+        Map<String, String> settingPresets,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -713,6 +721,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     postCreateHandler,
                     mode,
                     editHandlerData,
+                    settingPresets,
                     this);
             }
 
@@ -752,13 +761,17 @@ public final class CmsContentEditor extends CmsEditorBase {
         final CmsEntity editedEntity,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
+        final Map<String, String> presets = new HashMap<>();
+        if ((m_context != null) && (m_context.getSettingPresets() != null)) {
+            presets.putAll(m_context.getSettingPresets());
+        }
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
             @Override
             public void execute() {
 
                 start(0, true);
-                getService().loadNewDefinition(entityId, m_clientId, editedEntity, getSkipPaths(), this);
+                getService().loadNewDefinition(entityId, m_clientId, editedEntity, getSkipPaths(), presets, this);
             }
 
             @Override
@@ -826,6 +839,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         postCreateHandler,
                         mainLocale,
                         editHandlerData,
+                        context.getSettingPresets(),
                         new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                             public void execute(CmsContentDefinition contentDefinition) {
@@ -888,6 +902,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         null,
                         mainLocale,
                         null,
+                        Collections.emptyMap(),
                         new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                             public void execute(CmsContentDefinition contentDefinition) {
@@ -2082,14 +2097,14 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-		if ($wnd.top.cms_ade_closeEditorDialog) {
-			$wnd.top.cms_ade_closeEditorDialog();
-		} else {
-			var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-			if (backlink) {
-				$wnd.top.location.href = backlink;
-			}
-		}
+        if ($wnd.top.cms_ade_closeEditorDialog) {
+            $wnd.top.cms_ade_closeEditorDialog();
+        } else {
+            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+            if (backlink) {
+                $wnd.top.location.href = backlink;
+            }
+        }
     }-*/;
 
     /**
@@ -2123,18 +2138,18 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-		var self = this;
-		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-				listener, scope) {
-			var wrapper = {
-				onChange : listener.onChange
-			}
-			self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-		}
-		$wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-			return new $wnd.acacia.CmsEntityWrapper(
-					self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
-		}
+        var self = this;
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+                listener, scope) {
+            var wrapper = {
+                onChange : listener.onChange
+            }
+            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+        }
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+            return new $wnd.acacia.CmsEntityWrapper(
+                    self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
+        }
     }-*/;
 
     /**
@@ -2428,9 +2443,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changed if the content has been changed
      */
     private native void setEditorState(boolean changed)/*-{
-		if (typeof $wnd.cmsSetEditorChangedState === 'function') {
-			$wnd.cmsSetEditorChangedState(changed);
-		}
+        if (typeof $wnd.cmsSetEditorChangedState === 'function') {
+            $wnd.cmsSetEditorChangedState(changed);
+        }
     }-*/;
 
     /**
@@ -2440,8 +2455,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-		$wnd._editResource = sitePath;
-		$wnd._editLanguage = locale;
+        $wnd._editResource = sitePath;
+        $wnd._editLanguage = locale;
     }-*/;
 
     /**

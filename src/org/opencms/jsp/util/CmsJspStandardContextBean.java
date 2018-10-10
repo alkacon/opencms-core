@@ -294,9 +294,10 @@ public final class CmsJspStandardContextBean {
             CmsObject cms,
             I_CmsFormatterBean formatterBean,
             Locale locale,
-            ServletRequest request) {
+            ServletRequest request,
+            Map<String, String> settingPresets) {
 
-            m_wrappedElement.initSettings(cms, formatterBean, locale, request);
+            m_wrappedElement.initSettings(cms, formatterBean, locale, request, settingPresets);
         }
 
         /**

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ public class CmsEditorContext {
 
     /** The parameters for the publish function in the Acacia editor. */
     private Map<String, String> m_publishParameters = new HashMap<String, String>();
+
+    /** The setting presets. */
+    private Map<String, String> m_settingPresets = Collections.emptyMap();
 
     /**
      * Default constructor.<p>
@@ -69,6 +73,11 @@ public class CmsEditorContext {
         return m_publishParameters;
     }
 
+    public Map<String, String> getSettingPresets() {
+
+        return m_settingPresets;
+    }
+
     /**
      * Sets the HTML context info.<p>
      *
@@ -87,5 +96,10 @@ public class CmsEditorContext {
     public void setPublishParameters(Map<String, String> publishParams) {
 
         m_publishParameters = publishParams;
+    }
+
+    public void setSettingPresets(Map<String, String> settingPresets) {
+
+        m_settingPresets = settingPresets;
     }
 }

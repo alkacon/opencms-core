@@ -36,6 +36,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The content editor service interface.<p>
@@ -84,6 +85,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
+     * @param settingPresets the presets for container element settings
      *
      * @return the content definition
      *
@@ -93,7 +95,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String entityId,
         String clientId,
         CmsEntity editedLocaleEntity,
-        Collection<String> skipPaths)
+        Collection<String> skipPaths,
+        Map<String, String> settingPresets)
     throws Exception;
 
     /**
@@ -108,6 +111,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
      * @param editHandlerData the edit handler data, if an edit handler is used for creating a new element; null otherwise
+     * @param settingPresets the presets for container element settings
      *
      * @return the content definition
      *
@@ -122,7 +126,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String mainLocale,
         String mode,
         String postCreateHandler,
-        CmsEditHandlerData editHandlerData)
+        CmsEditHandlerData editHandlerData,
+        Map<String, String> settingPresets)
     throws CmsRpcException;
 
     /**
@@ -133,6 +138,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param clientId the container element client id if available
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
+     * @param settingPresets the presets for container element settings
      *
      * @return the content definition
      *
@@ -142,7 +148,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String entityId,
         String clientId,
         CmsEntity editedLocaleEntity,
-        Collection<String> skipPaths)
+        Collection<String> skipPaths,
+        Map<String, String> settingPresets)
     throws CmsRpcException;
 
     /**

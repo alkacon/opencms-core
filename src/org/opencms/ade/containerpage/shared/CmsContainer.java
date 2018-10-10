@@ -28,7 +28,9 @@
 package org.opencms.ade.containerpage.shared;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -74,6 +76,8 @@ public class CmsContainer implements IsSerializable {
     /** The parent instance id. */
     private String m_parentInstanceId;
 
+    private Map<String, String> m_settingPresets = new HashMap<String, String>();
+
     /** The container type. */
     private String m_type;
 
@@ -93,6 +97,7 @@ public class CmsContainer implements IsSerializable {
      * @param elements the container elements id's
      * @param parentContainerName the parent container name
      * @param parentInstanceId the parent instance id
+     * @param settingPresets the presets for container element settings
      */
     public CmsContainer(
         String name,
@@ -104,7 +109,8 @@ public class CmsContainer implements IsSerializable {
         boolean editable,
         List<CmsContainerElement> elements,
         String parentContainerName,
-        String parentInstanceId) {
+        String parentInstanceId,
+        Map<String, String> settingPresets) {
 
         m_elements = elements;
         m_name = name;
@@ -116,6 +122,7 @@ public class CmsContainer implements IsSerializable {
         m_editable = editable;
         m_parentContainerName = parentContainerName;
         m_parentInstanceId = parentInstanceId;
+        m_settingPresets = settingPresets != null ? settingPresets : new HashMap<String, String>();
     }
 
     /**
@@ -197,6 +204,11 @@ public class CmsContainer implements IsSerializable {
     public String getParentInstanceId() {
 
         return m_parentInstanceId;
+    }
+
+    public Map<String, String> getSettingPresets() {
+
+        return m_settingPresets;
     }
 
     /**

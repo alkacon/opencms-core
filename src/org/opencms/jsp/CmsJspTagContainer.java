@@ -88,6 +88,7 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.TryCatchFinally;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -167,6 +168,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
 
     /** The container width as a string. */
     private String m_width;
+
+    private HashMap<String, String> m_settingPresets;
 
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
@@ -834,6 +837,24 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     }
 
     /**
+     * Sets the setting presets.<p>
+     *
+     * @param presets a map with string keys and values, or null
+     */
+    @SuppressWarnings("unchecked")
+    public void setPresets(Object presets) {
+
+        if (presets == null) {
+            m_settingPresets = null;
+        } else if (!(presets instanceof Map)) {
+            throw new IllegalArgumentException(
+                "cms:container -- presets should be a map, but is " + ClassUtils.getCanonicalName(presets));
+        } else {
+            m_settingPresets = new HashMap<>((Map<String, String>)presets);
+        }
+    }
+
+    /**
      * Sets the tag attribute.<p>
      *
      * @param tag the createTag to set
@@ -904,7 +925,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             isEditable(cms),
             null,
             m_parentContainer != null ? m_parentContainer.getName() : null,
-            m_parentElement != null ? m_parentElement.getInstanceId() : null);
+            m_parentElement != null ? m_parentElement.getInstanceId() : null,
+            m_settingPresets);
         cont.setDeatilOnly(isDetailOnly);
         String result = "";
         try {
@@ -1366,7 +1388,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 containerType,
                 containerWidth,
                 true);
-            element.initSettings(cms, formatterConfig, locale, request);
+            element.initSettings(cms, formatterConfig, locale, request, m_settingPresets);
         }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
         if (m_editableRequest) {
@@ -1403,7 +1425,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         containerType,
                         containerWidth,
                         false);
-                    subelement.initSettings(cms, subElementFormatterConfig, locale, request);
+                    subelement.initSettings(cms, subElementFormatterConfig, locale, request, m_settingPresets);
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (m_editableRequest) {
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);

@@ -45,7 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -85,6 +85,7 @@ public final class CmsDetailOnlyContainerUtil {
      * Private constructor.<p>
      */
     private CmsDetailOnlyContainerUtil() {
+
         // do nothing
     }
 
@@ -359,7 +360,7 @@ public final class CmsDetailOnlyContainerUtil {
                     folderName,
                     new CmsProperty(
                         CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-                        CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
+                        A_CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
                         null));
                 CmsLockUtil.tryUnlock(rootCms, parentRes);
             }

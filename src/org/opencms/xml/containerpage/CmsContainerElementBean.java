@@ -572,8 +572,14 @@ public class CmsContainerElementBean implements Cloneable {
      * @param formatterBean the formatter configuration bean
      * @param locale the content locale
      * @param request the current request, if available
+     * @param presets the presets for container element settings
      */
-    public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean, Locale locale, ServletRequest request) {
+    public void initSettings(
+        CmsObject cms,
+        I_CmsFormatterBean formatterBean,
+        Locale locale,
+        ServletRequest request,
+        Map<String, String> presets) {
 
         Map<String, String> mergedSettings;
         if (formatterBean == null) {
@@ -588,6 +594,9 @@ public class CmsContainerElementBean implements Cloneable {
                 cms,
                 OpenCms.getADEManager().getFormatterSettings(cms, formatterBean, getResource(), locale, request),
                 getIndividualSettings());
+        }
+        if ((presets != null) && (presets.size() > 0)) {
+            mergedSettings.putAll(presets);
         }
         if (m_settings == null) {
             setSettings(mergedSettings);

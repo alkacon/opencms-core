@@ -44,6 +44,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -205,11 +206,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Name of a special property for the container id. */
     public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
-    /** The container level. */
-    private int m_containerLevel;
-
     /** The container data. */
     private CmsContainer m_containerData;
+
+    /** The container level. */
+    private int m_containerLevel;
 
     /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
     private List<I_CmsDropTarget> m_dnDChildren;
@@ -523,6 +524,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public CmsPositionBean getPositionInfo() {
 
         return m_ownPosition;
+    }
+
+    public Map<String, String> getSettingPresets() {
+
+        return m_containerData.getSettingPresets();
     }
 
     /**

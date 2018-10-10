@@ -140,6 +140,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
          * Creates a new instance.<p>
          */
         public NoFormatterException() {
+
             // nothing here
         }
     }
@@ -210,17 +211,19 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     /** The element panel. */
     private CmsContainerPageElementPanel m_elementWidget;
 
+    /** Id of currently selected formatter. */
+    private String m_formatter;
+
     /** The formatter select widget. */
     private CmsSelectBox m_formatterSelect;
 
     /** The break up model group checkbox. */
     private CmsCheckBox m_modelGroupBreakUp;
 
+    private Map<String, String> m_presets;
+
     /** The element setting values. */
     private Map<String, String> m_settings;
-
-    /** Id of currently selected formatter. */
-    private String m_formatter;
 
     /**
      * Constructor.<p>
@@ -228,16 +231,19 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      * @param controller the container page controller
      * @param elementWidget the element panel
      * @param settingsConfig the element setting configuration
+     * @param settingPresets
      *
      * @throws NoFormatterException if no formatter configuration is found for the element
      */
     public CmsElementSettingsDialog(
         CmsContainerpageController controller,
         CmsContainerPageElementPanel elementWidget,
-        CmsElementSettingsConfig settingsConfig)
+        CmsElementSettingsConfig settingsConfig,
+        Map<String, String> settingPresets)
     throws NoFormatterException {
 
         super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), 700);
+        m_presets = settingPresets != null ? settingPresets : new HashMap<String, String>();
         CmsContainerElementData elementBean = settingsConfig.getElementData();
         m_elementWidget = elementWidget;
         m_controller = controller;
@@ -517,6 +523,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         Map<String, CmsXmlContentProperty> settingsConfig,
         Map<String, String> nestedFormatterPrefixes) {
 
+        Map<String, String> presets = m_presets;
+        if (presets == null) {
+            presets = new HashMap<String, String>();
+        }
         List<String> groups = new ArrayList<String>(getForm().getGroups());
         for (String group : groups) {
             getForm().removeGroup(group);
@@ -537,6 +547,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         // using LinkedHashMap to preserve the order
         Map<String, I_CmsFormField> formFields = new LinkedHashMap<String, I_CmsFormField>();
         for (CmsXmlContentProperty propConfig : settingsConfig.values()) {
+            if (m_presets.containsKey(propConfig.getName())) {
+                // settings configured as presets on the container are not user-editable
+                continue;
+            }
             CmsBasicFormField currentField = CmsBasicFormField.createField(
                 propConfig,
                 propConfig.getName(),
@@ -544,6 +558,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 Collections.<String, String> emptyMap(),
                 false);
             formFields.put(propConfig.getName(), currentField);
+
         }
         for (I_CmsFormField field : formFields.values()) {
 

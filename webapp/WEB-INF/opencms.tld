@@ -2037,6 +2037,14 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+           <description><![CDATA[
+			    A map containing setting presets for elements in this container. If settings are passed in this map, they will not be user-editable on elements in the container.
+            ]]></description>
+            <name>presets</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description><![CDATA[
                 A type assigned to the container, e.g. "content" or "top-wide" or "left".</P>
                 The type can be used to select the formatter that is used to render a content in the container.
@@ -2900,6 +2908,21 @@
         <tag-class>org.opencms.jsp.CmsJspTagAddParams</tag-class>
         <body-content>JSP</body-content>
     </tag>
+    
+      <tag>
+        <description><![CDATA[Can be used to create a java.util.Map with string keys and values using nested <cms:param> tags.]]></description>
+        <name>map</name>
+        <tag-class>org.opencms.jsp.CmsJspTagMap</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description><![CDATA[
+                The page context variable to store the map in.
+            ]]></description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 
     <function>
         <description><![CDATA[
@@ -3468,4 +3491,6 @@
             boolean validateRegex(java.lang.String, java.lang.String)
         </function-signature>
     </function>
+    
+    
 </taglib>

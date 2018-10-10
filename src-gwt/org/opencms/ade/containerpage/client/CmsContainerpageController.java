@@ -124,14 +124,14 @@ public final class CmsContainerpageController {
      * Enum which is used to control how elements are removed from the page.<p>
      */
     public enum ElementRemoveMode {
-        /** Reference checks are performed and the user is asked for confirmation whether they really want to remove the element before the page is saved. */
-        confirmRemove,
+    /** Reference checks are performed and the user is asked for confirmation whether they really want to remove the element before the page is saved. */
+    confirmRemove,
 
-        /** Reference checks are only performed after the page or group has been saved. */
-        saveAndCheckReferences,
+    /** Reference checks are only performed after the page or group has been saved. */
+    saveAndCheckReferences,
 
-        /** Element is just removed, no checks are performed. */
-        silent;
+    /** Element is just removed, no checks are performed. */
+    silent;
     }
 
     /**
@@ -274,7 +274,8 @@ public final class CmsContainerpageController {
                 true,
                 m_currentElements,
                 m_currentContainer.getParentContainerName(),
-                m_currentContainer.getParentInstanceId());
+                m_currentContainer.getParentInstanceId(),
+                m_currentContainer.getSettingPresets());
             container.setDeatilOnly(m_currentContainer.isDetailOnly());
             container.setRootContainer(isRootContainer(m_currentContainer));
             m_resultContainers.add(container);
@@ -356,7 +357,8 @@ public final class CmsContainerpageController {
                 true,
                 m_currentElements,
                 m_currentContainer.getParentContainerName(),
-                m_currentContainer.getParentInstanceId());
+                m_currentContainer.getParentInstanceId(),
+                m_currentContainer.getSettingPresets());
 
             container.setRootContainer(isRootContainer(m_currentContainer));
             m_resultContainers.add(container);
@@ -715,6 +717,9 @@ public final class CmsContainerpageController {
     /** Flag indicating that a content element is being edited. */
     private boolean m_isContentEditing;
 
+    /** The container page load time. */
+    private long m_loadTime;
+
     /** The lock error message. */
     private String m_lockErrorMessage;
 
@@ -738,9 +743,6 @@ public final class CmsContainerpageController {
 
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
-
-    /** The container page load time. */
-    private long m_loadTime;
 
     /**
      * Constructor.<p>
@@ -1714,6 +1716,7 @@ public final class CmsContainerpageController {
             }
 
             public void endContainer() {
+
                 // do nothing
             }
 
@@ -2101,10 +2104,12 @@ public final class CmsContainerpageController {
         AsyncCallback<Void> doNothing = new AsyncCallback<Void>() {
 
             public void onFailure(Throwable caught) {
+
                 // nothing to do
             }
 
             public void onSuccess(Void result) {
+
                 // nothing to do
             }
         };
