@@ -213,6 +213,13 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                                 } else {
                                     resource = hisRes;
                                 }
+                                if (resource instanceof CmsHistoryFile) {
+                                    try {
+                                        resource = cms.readFile(resource);
+                                    } catch (Exception e) {
+                                        LOG.info(e.getLocalizedMessage(), e);
+                                    }
+                                }
                             }
                             if (res != null) {
                                 // store a request attribute to indicate that this is in fact a historical version
