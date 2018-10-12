@@ -444,7 +444,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1669,12 +1669,10 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_shell.getOut().println("Previous version '" + oldVersion + "' detected");
             if (!oldVersion.equals(moduleVersion)) {
                 // the import version does not equal the present module version, replace the module
-                OpenCms.getModuleManager().deleteModule(
+                OpenCms.getModuleManager().replaceModule(
                     m_cms,
-                    moduleName,
-                    true,
+                    importFile,
                     new CmsShellReport(m_cms.getRequestContext().getLocale()));
-                importModule(importFile);
             }
         } else {
             importModule(importFile);
