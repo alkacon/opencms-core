@@ -1050,23 +1050,6 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.base/copyresources/sample-formatter.xml</source>
-			<destination>system/modules/org.opencms.base/copyresources/sample-formatter.xml</destination>
-			<type>formatter_config</type>
-			<uuidstructure>198be7c2-75f0-11e8-8736-8715041bae26</uuidstructure>
-			<uuidresource>198be7c3-75f0-11e8-8736-8715041bae26</uuidresource>
-			<datecreated>Fri, 22 Jun 2018 07:44:31 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[Sample formatter configurations]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.base/copyresources/sample-schema.xsd</source>
 			<destination>system/modules/org.opencms.base/copyresources/sample-schema.xsd</destination>
 			<type>plain</type>

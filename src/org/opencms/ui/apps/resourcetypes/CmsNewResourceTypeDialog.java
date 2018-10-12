@@ -238,9 +238,6 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
     /** Message bundle file name suffix. */
     private static final String SUFFIX_BUNDLE_FILE = ".messages";
 
-    /** Sample formatter config. */
-    private static final String SAMPLE_FORMATTER_CONFIG = PATH_SAMPLE + "sample-formatter.xml";
-
     /** Sample schema. */
     private static final String SAMPLE_SCHEMA = PATH_SAMPLE + "sample-schema.xsd";
 
@@ -384,7 +381,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
 
         Window window = CmsVaadinUtils.getWindow(dialog);
         window.setContent(this);
-        m_module = (CmsModule)OpenCms.getModuleManager().getModule(moduleName).clone();
+        m_module = OpenCms.getModuleManager().getModule(moduleName).clone();
         CmsResourceInfo resInfo = new CmsResourceInfo(
             m_module.getName(),
             m_module.getNiceName(),
