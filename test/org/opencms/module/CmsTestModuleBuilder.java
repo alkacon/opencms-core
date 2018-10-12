@@ -117,6 +117,8 @@ public class CmsTestModuleBuilder {
     /** The type entries. */
     private List<TypeEntry> m_typeEntries = new ArrayList<>();
 
+    private CmsUUID m_nextResourceId;
+
     /**
      * Creates a new instance.<p>
      *
@@ -184,10 +186,12 @@ public class CmsTestModuleBuilder {
         String path = moduleToAbsolutePath(relPath);
         String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
         CmsUUID structureId = createStructureId(name);
-        CmsUUID resourceId = CmsUUID.getConstantUUID("r-" + name);
+        CmsUUID resourceId = createResourceId(name);
+
         long dummyTime = 1000000;
         CmsUUID userId = m_cms.getRequestContext().getCurrentUser().getId();
         byte[] data = getBytes(text);
+        int length = data == null ? 0 : data.length;
         // create a new CmsResource
         CmsResource resource = new CmsResource(
             structureId,
@@ -204,7 +208,7 @@ public class CmsTestModuleBuilder {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            data.length, // size
+            length, // size
             System.currentTimeMillis(),
             0);
         return importResource(path, resource, data, new ArrayList<>());
@@ -415,6 +419,16 @@ public class CmsTestModuleBuilder {
     }
 
     /**
+     * Sets the next resource id.<p>
+     *
+     * @param nextResourceId the next resource id
+     */
+    public void setNextResourceId(CmsUUID nextResourceId) {
+
+        m_nextResourceId = nextResourceId;
+    }
+
+    /**
      * Sets the next structure id (if not set, it will be automatically generated).<p>
      *
      * @param cmsUUID the next structure id
@@ -432,12 +446,34 @@ public class CmsTestModuleBuilder {
      */
     byte[] getBytes(String str) {
 
+        if (str == null) {
+            return null;
+        }
         try {
             return str.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             // shouldn't happen
             return null;
         }
+    }
+
+    /**
+     * Gets the next resource id.<p>
+     *
+     * If a resource id  has been set, it will be returned and cleared, otherwise the resource id will be generated from the parameter passed in.
+     *
+     * @param name the resource name
+     * @return the new resource id
+     */
+    private CmsUUID createResourceId(String name) {
+
+        CmsUUID result = m_nextResourceId;
+        if (result == null) {
+            result = CmsUUID.getConstantUUID("r-" + name);
+        }
+        m_nextResourceId = null;
+        return result;
+
     }
 
     /**

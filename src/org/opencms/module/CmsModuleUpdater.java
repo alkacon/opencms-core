@@ -135,28 +135,34 @@ public class CmsModuleUpdater {
         }
 
         try {
+            Map<CmsUUID, CmsResourceImportData> importResourcesById = new HashMap<>();
+            for (CmsResourceImportData resData : moduleData.getResourceData()) {
+                if (resData.hasStructureId()) {
+                    importResourcesById.put(resData.getResource().getStructureId(), resData);
+                }
+            }
             cms = moduleData.getCms();
             CmsObject onlineCms = OpenCms.initCmsObject(cms);
             CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_NAME);
             onlineCms.getRequestContext().setCurrentProject(online);
             for (CmsResourceImportData resData : moduleData.getResourceData()) {
-                if (resData.getResource().isFile() && (!resData.hasContent())) {
-                    LOG.info(
-                        "Module is not updateable because the update of files without content in imports (siblings) is not supported.");
-                    return false;
-                }
                 String importPath = normalizePath(resData.getResource().getRootPath());
                 if (resData.hasStructureId()) {
                     CmsUUID importId = resData.getResource().getStructureId();
                     for (CmsObject cmsToRead : Arrays.asList(cms, onlineCms)) {
                         try {
-                            CmsResource resourceFromVfs = cmsToRead.readResource(
-                                importPath,
-                                CmsResourceFilter.IGNORE_EXPIRATION);
+                            CmsResource resourceFromVfs = cmsToRead.readResource(importPath, CmsResourceFilter.ALL);
                             if (!resourceFromVfs.getStructureId().equals(importId)) {
                                 LOG.info(
-                                    "Module is not updateable because the same path is maps to different ids in the import and in the VFS for "
+                                    "Module is not updateable because the same path is mapped to different structure ids in the import and in the VFS: "
                                         + importPath);
+                                return false;
+                            }
+                            if (resData.getResource().isFile()
+                                && !(resData.getResource().getResourceId().equals(resourceFromVfs.getResourceId()))) {
+                                LOG.info(
+                                    "Module is not updateable because of a resource id conflict for "
+                                        + resData.getResource().getRootPath());
                                 return false;
                             }
                         } catch (CmsVfsResourceNotFoundException e) {
@@ -262,7 +268,6 @@ public class CmsModuleUpdater {
         CmsImportResourceDataReader importer = new CmsImportResourceDataReader(result);
         CmsImportParameters params = new CmsImportParameters(importFile, "/", false);
         importer.importData(cms, report, params); // This only reads the module data into Java objects
-        result.getResourceData();
         return result;
 
     }
@@ -380,7 +385,14 @@ public class CmsModuleUpdater {
             }
             Set<CmsResource> oldModuleResources = getAllResourcesInModule(cms, oldModule);
             List<CmsResource> toDelete = new ArrayList<>();
+            Set<String> immutables = OpenCms.getImportExportManager().getImmutableResources().stream().flatMap(
+                path -> Arrays.asList(
+                    CmsFileUtil.removeTrailingSeparator(path),
+                    CmsFileUtil.addTrailingSeparator(path)).stream()).collect(Collectors.toSet());
             for (CmsResource oldRes : oldModuleResources) {
+                if (immutables.contains(oldRes.getRootPath())) {
+                    continue;
+                }
                 CmsResourceImportData newRes = importResourcesById.get(oldRes.getStructureId());
                 if (newRes == null) {
                     toDelete.add(oldRes);
@@ -431,7 +443,7 @@ public class CmsModuleUpdater {
                         if (!resData.hasStructureId()) {
                             needsImport = false;
                         } else if (!needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
-                            if (oldRes.isFile()) {
+                            if (oldRes.isFile() && (content != null)) {
                                 CmsFile file = cms.readFile(oldRes);
                                 if (Arrays.equals(file.getContents(), content)) {
                                     needsImport = false;
@@ -490,6 +502,10 @@ public class CmsModuleUpdater {
                     org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         deleteRes.getRootPath()));
+                CmsLock lock = cms.getLock(deleteRes);
+                if (lock.isUnlocked()) {
+                    cms.lockResourceTemporary(deleteRes);
+                }
                 cms.deleteResource(deleteRes, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),

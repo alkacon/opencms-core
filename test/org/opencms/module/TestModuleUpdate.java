@@ -137,7 +137,11 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.publish();
         }
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
@@ -259,6 +263,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
+
         assertTrue("Export point has not been exported", target.exists());
         assertTrue("Module update should have been used", info.usedUpdater());
     }
@@ -293,7 +298,11 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.publish();
         }
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         cms.readResource("/system/testImportScriptFolder");
     }
 
@@ -343,10 +352,12 @@ public class TestModuleUpdate extends OpenCmsTestCase {
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
         filter.disableDateLastModifiedTest();
-        filter.disableResourceIdTest();
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
-
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
         resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
@@ -390,7 +401,11 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.publish();
         }
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         // assertTrue("New updater should have been used", info.usedUpdater());
         CmsResource testJsp = cms.readResource("/system/modules/org.test.foo/test.jsp");
         List<CmsRelation> relations = cms.readRelations(
@@ -439,12 +454,16 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.publish();
         }
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
         filter.disableDateLastModifiedTest();
-        filter.disableResourceIdTest();
+
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
         resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
@@ -503,12 +522,16 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.publish();
         }
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
         filter.disableDateLastModifiedTest();
-        filter.disableResourceIdTest();
+        //filter.disableResourceIdTest();
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
         resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
@@ -520,6 +543,88 @@ public class TestModuleUpdate extends OpenCmsTestCase {
         }
         assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
 
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
+    public void testSiblings() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+
+        File export = null;
+        // use custom resource storage so there is no interference from other tests
+        newStorage();
+        CmsUUID resId = new CmsUUID();
+
+        // use blocks so we don't accidentally use wrong object
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+
+            builder.setNextResourceId(resId);
+            String content = "content1";
+            builder.addTextFile("file1.txt", content);
+            builder.setNextResourceId(resId);
+            builder.addTextFile("file2.txt", null);
+            builder.publish();
+            assertEquals(
+                "file content doesn't match",
+                "content1",
+                new String(cms.readFile(MODULE_PATH + "/file1.txt").getContents(), "UTF-8"));
+            assertEquals(
+                "file content doesn't match",
+                "content1",
+                new String(cms.readFile(MODULE_PATH + "/file2.txt").getContents(), "UTF-8"));
+
+            export = tempExport();
+            builder.export(export.getAbsolutePath());
+            storeResources(cms, MODULE_PATH);
+            builder.delete();
+        }
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+            builder.setNextResourceId(resId);
+            String content = "content2";
+            builder.addTextFile("file1.txt", content);
+            builder.setNextResourceId(resId);
+            builder.addTextFile("file2.txt", null);
+            assertEquals(
+                "file content doesn't match",
+                "content2",
+                new String(cms.readFile(MODULE_PATH + "/file1.txt").getContents(), "UTF-8"));
+            assertEquals(
+                "file content doesn't match",
+                "content2",
+                new String(cms.readFile(MODULE_PATH + "/file2.txt").getContents(), "UTF-8"));
+
+            builder.publish();
+        }
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+        filter.disableProjectLastModifiedTest();
+        filter.disableDateContentTest();
+        filter.disableDateLastModifiedTest();
+
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
+        List<CmsResource> resources = new ArrayList<>();
+        resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
+        resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
+
+        // first test that existing resources match their stored version, then check that there are no extra resources
+        for (CmsResource resource : resources) {
+            System.out.println("Comparing " + resource.getRootPath());
+            assertFilter(cms, resource.getRootPath(), filter);
+        }
+        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
     }
 
     /**
@@ -559,7 +664,11 @@ public class TestModuleUpdate extends OpenCmsTestCase {
         filter.disableDateLastModifiedTest();
         filter.disableResourceIdTest();
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         CmsResource mainFolder = cms.readResource(MODULE_PATH);
         assertEquals(CmsResource.STATE_UNCHANGED, mainFolder.getState());
         assertEquals(CmsResource.STATE_UNCHANGED, cms.readResource(MODULE_PATH + "/bar.txt").getState());
@@ -653,7 +762,11 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.addModule();
         }
 
-        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("should have used update mechanism", result.usedUpdater());
         assertNull(
             "explorer type secondtype should have been removed",
             OpenCms.getWorkplaceManager().getExplorerTypeSetting("secondtype"));
@@ -718,6 +831,61 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             new CmsShellReport(Locale.ENGLISH));
         assertFalse("new module update mechanism should not have been used", replaceInfo.usedUpdater());
 
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
+    public void testUseOldReplaceIfSiblingStructureIsDifferent() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+
+        File export = null;
+        // use custom resource storage so there is no interference from other tests
+        newStorage();
+        CmsUUID resId = new CmsUUID();
+
+        // use blocks so we don't accidentally use wrong object
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+
+            builder.setNextResourceId(resId);
+            String content = "content1";
+            builder.addTextFile("file1.txt", content);
+            builder.setNextResourceId(resId);
+            builder.addTextFile("file2.txt", null);
+            builder.publish();
+
+            export = tempExport();
+            builder.export(export.getAbsolutePath());
+            storeResources(cms, MODULE_PATH);
+            builder.delete();
+        }
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+            builder.setNextResourceId(resId);
+            String content = "content2";
+            builder.addTextFile("file1.txt", content);
+            builder.addTextFile("file2.txt", null);
+
+            builder.publish();
+        }
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+        filter.disableProjectLastModifiedTest();
+        filter.disableDateContentTest();
+        filter.disableDateLastModifiedTest();
+
+        CmsReplaceModuleInfo result = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertFalse("should have used old replace mechanism", result.usedUpdater());
     }
 
     /**
