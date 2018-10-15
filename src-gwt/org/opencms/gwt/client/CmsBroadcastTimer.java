@@ -113,7 +113,9 @@ public class CmsBroadcastTimer {
         result.append("<em>" + message.getTime() + "</em><br/>");
         result.append(Messages.get().key(Messages.GUI_BROADCAST_SEND_BY_1, message.getUser()));
         result.append("</p>").append("<p>\n");
-        result.append(message.getMessage().replaceAll("\\n", "<br/>"));
+        result.append(
+            message.getMessage().replaceAll("\\n", "<br/>").replaceAll("<div>", "<br>").replaceAll("</div>", ""));
+
         result.append("\n</p>");
         return result.toString();
     }

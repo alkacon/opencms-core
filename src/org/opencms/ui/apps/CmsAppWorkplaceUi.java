@@ -254,13 +254,13 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
                         String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
                             broadcastMessage.getSendTime());
                         String content = broadcastMessage.getMessage();
-                        content = content.replaceAll("\\n", "<br />");
+                        content = content.replaceAll("\\n", "<br />").replaceAll("<div>", "<br><div>");
                         broadcasts.append("<p>" + getImgHTML(picPath) + "<em>").append(date).append("</em><br />");
                         broadcasts.append(
                             CmsVaadinUtils.getMessageText(
                                 org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
                                     from).append("</b>:</p><p>");
-                        broadcasts.append(stripper.stripHtml(content)).append("<br /></p>");
+                        broadcasts.append(stripper.stripHtml(content)).append("<br/></p>");
                         if (broadcastMessage.isRepeat()) {
                             repeatedBroadcasts.add(
                                 new CmsBroadcast(
