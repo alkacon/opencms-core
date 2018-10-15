@@ -236,6 +236,9 @@ public class CmsFormatterBeanParser {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
 
+    /** Node name for the 'use meta mappings for normal elements' check box. */
+    public static final String N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS = "UseMetaMappingsForNormalElements";
+
     /** Parsed field. */
     int m_width;
 
@@ -405,6 +408,9 @@ public class CmsFormatterBeanParser {
         String nestedFormatterSettings = getString(root, N_NESTED_FORMATTER_SETTINGS, "false");
         boolean nestedFormatters = Boolean.parseBoolean(nestedFormatterSettings);
 
+        String useMetaMappinsForNormalElementsStr = getString(root, N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS, "false");
+        boolean useMetaMappingsForNormalElements = Boolean.parseBoolean(useMetaMappinsForNormalElementsStr);
+
         // Functions which just have been created don't have any matching rules, but should fit anywhere
         boolean strictMode = !isFunction;
         parseMatch(root, strictMode);
@@ -456,7 +462,8 @@ public class CmsFormatterBeanParser {
                     placeholderMacroInput,
                     referencedFormatters,
                     m_cms.getRequestContext().getCurrentProject().isOnlineProject(),
-                    mappings);
+                    mappings,
+                    useMetaMappingsForNormalElements);
             } else {
                 String stringTemplate = getString(root, N_STRING_TEMPLATE, "");
                 String placeholder = getString(root, N_PLACEHOLDER_STRING_TEMPLATE, "");
@@ -481,7 +488,8 @@ public class CmsFormatterBeanParser {
                     isDisplay,
                     stringTemplate,
                     placeholder,
-                    mappings);
+                    mappings,
+                    useMetaMappingsForNormalElements);
             }
         } else {
             I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
@@ -572,7 +580,8 @@ public class CmsFormatterBeanParser {
                     hasNestedContainers,
                     isStrictContainers,
                     nestedFormatters,
-                    mappings);
+                    mappings,
+                    useMetaMappingsForNormalElements);
             }
         }
 

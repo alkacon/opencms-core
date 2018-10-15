@@ -77,6 +77,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
      * @param stringTemplate the string template
      * @param placeholderStringTemplate the placeholder string template
      * @param metaMappings the meta mappings
+     * @param useMetaMappingsForNormalElements if true, meta mappings will be evaluated for normal container elements, not just detail elements
      */
     public CmsFlexFormatterBean(
         Set<String> containerTypes,
@@ -99,7 +100,9 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
         boolean isDisplay,
         String stringTemplate,
         String placeholderStringTemplate,
-        List<CmsMetaMapping> metaMappings) {
+        List<CmsMetaMapping> metaMappings,
+        boolean useMetaMappingsForNormalElements) {
+
         super(
             containerTypes,
             jspRootPath,
@@ -126,7 +129,8 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             false,
             false,
             false,
-            metaMappings);
+            metaMappings,
+            useMetaMappingsForNormalElements);
         m_stringTemplate = stringTemplate;
         m_placeholderStringTemplate = placeholderStringTemplate;
         m_defaultContentRootPath = defaultContentRootPath;

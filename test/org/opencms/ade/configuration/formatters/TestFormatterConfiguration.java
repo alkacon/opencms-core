@@ -593,7 +593,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             hasNestedContainers,
             false,
             false,
-            null);
+            null,
+            false);
 
         return result;
 
@@ -709,7 +710,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             hasNestedContainers,
             false,
             false,
-            null);
+            null,
+            false);
 
         return result;
     }
@@ -772,7 +774,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             hasNestedContainers,
             false,
             false,
-            null);
+            null,
+            false);
         return result;
     }
 

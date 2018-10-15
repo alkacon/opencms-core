@@ -258,4 +258,11 @@ public interface I_CmsFormatterBean {
      */
     void setJspStructureId(CmsUUID structureId);
 
+    /**
+     * Returns true if meta mappings should be evaluated for normal container elements using this formatter, not just detail elements.<p>
+     *
+     * @return true if meta mappings should be evaluated for normal container elements
+     */
+    boolean useMetaMappingsForNormalElements();
+
 }

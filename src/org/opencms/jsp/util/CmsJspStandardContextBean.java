@@ -2068,7 +2068,9 @@ public final class CmsJspStandardContextBean {
                                 m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                                     new CmsUUID(formatterConfigId));
                         }
-                        if ((formatterBean != null) && m_cms.existsResource(element.getId(), filter)) {
+                        if ((formatterBean != null)
+                            && formatterBean.useMetaMappingsForNormalElements()
+                            && m_cms.existsResource(element.getId(), filter)) {
                             addMappingsForFormatter(formatterBean, element.getId(), resolver, false);
                         }
 

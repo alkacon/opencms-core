@@ -148,6 +148,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicating if this formatter will always render all nested containers. */
     protected boolean m_strictContainers;
 
+    private boolean m_useMetaMappingsForNormalElements;
+
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
      *
@@ -177,6 +179,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param strictContainers <code>true</code> if this formatter will always render all nested containers
      * @param nestedFormatterSettings indicates whether nested formatter settings should be displayed
      * @param metaMappings the meta mappings
+     * @param useMetaMappingsForNormalElements if true, meta mappings will be evaluated for normal container elements, not just detail elements
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -204,7 +207,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean nestedContainers,
         boolean strictContainers,
         boolean nestedFormatterSettings,
-        List<CmsMetaMapping> metaMappings) {
+        List<CmsMetaMapping> metaMappings,
+        boolean useMetaMappingsForNormalElements) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -234,6 +238,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_nestedFormatterSettings = nestedFormatterSettings;
         m_strictContainers = strictContainers;
         m_metaMappings = metaMappings;
+        m_useMetaMappingsForNormalElements = useMetaMappingsForNormalElements;
     }
 
     /**
@@ -284,7 +289,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             false,
-            null);
+            null,
+            false);
 
     }
 
@@ -378,7 +384,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             false,
-            null);
+            null,
+            false);
         m_matchAll = true;
     }
 
@@ -694,5 +701,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public String toString() {
 
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#useMetaMappingsForNormalElements()
+     */
+    @Override
+    public boolean useMetaMappingsForNormalElements() {
+
+        return m_useMetaMappingsForNormalElements;
     }
 }

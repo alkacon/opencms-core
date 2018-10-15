@@ -88,6 +88,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
      * @param referencedFormatters the referenced formatters
      * @param online if this is the online version
      * @param metaMappings the meta mappings
+     * @param useMetaMappingsForNormalElements if true, meta mappings will be evaluated for normal container elements, not just detail elements
      */
     public CmsMacroFormatterBean(
         Set<String> containerTypes,
@@ -112,7 +113,9 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
         String placeholderMacroInput,
         Map<String, CmsUUID> referencedFormatters,
         boolean online,
-        List<CmsMetaMapping> metaMappings) {
+        List<CmsMetaMapping> metaMappings,
+        boolean useMetaMappingsForNormalElements) {
+
         super(
             containerTypes,
             jspRootPath,
@@ -139,7 +142,8 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             false,
             false,
             false,
-            metaMappings);
+            metaMappings,
+            useMetaMappingsForNormalElements);
         m_macroInput = macroInput;
         m_placeholderMacroInput = placeholderMacroInput;
         m_referencedFormatters = Collections.unmodifiableMap(referencedFormatters);

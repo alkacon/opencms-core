@@ -330,4 +330,10 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
         m_wrappedFormatter.setJspStructureId(jspStructureId);
     }
 
+    @Override
+    public boolean useMetaMappingsForNormalElements() {
+
+        return false;
+    }
+
 }
