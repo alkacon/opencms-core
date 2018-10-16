@@ -51,8 +51,6 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsPrincipal;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -578,6 +576,7 @@ public class CmsModuleUpdater {
 
         boolean changed = false;
         Map<CmsUUID, CmsAccessControlEntry> importAces = buildAceMap(resData.getAccessControlEntries());
+
         String path = cms.getSitePath(resource);
         List<CmsAccessControlEntry> existingAcl = cms.getAccessControlEntries(path, false);
         Map<CmsUUID, CmsAccessControlEntry> existingAces = buildAceMap(existingAcl);
@@ -586,44 +585,13 @@ public class CmsModuleUpdater {
         for (CmsUUID key : keys) {
             CmsAccessControlEntry existingEntry = existingAces.get(key);
             CmsAccessControlEntry newEntry = importAces.get(key);
-
-            if (existingEntry == null) {
-                I_CmsPrincipal principal = CmsPrincipal.readPrincipal(cms, newEntry.getPrincipal());
-
-                cms.chacc(
-                    path,
-                    CmsPrincipal.getType(principal),
-                    "" + newEntry.getPrincipal(),
-                    newEntry.getAllowedPermissions(),
-                    newEntry.getDeniedPermissions(),
-                    newEntry.getFlags());
+            if ((existingEntry == null)
+                || (newEntry == null)
+                || !existingEntry.withNulledResource().equals(newEntry.withNulledResource())) {
+                cms.importAccessControlEntries(resource, resData.getAccessControlEntries());
                 changed = true;
-
-            } else if (newEntry == null) {
-
-                cms.rmacc(path, null, "" + existingEntry.getPrincipal());
-                changed = true;
-
-            } else {
-                existingEntry = existingEntry.withNulledResource();
-                newEntry = newEntry.withNulledResource();
-                // we null the resource so that equals() returning false means they differ in their other fields
-                if (!existingEntry.equals(newEntry)) {
-                    I_CmsPrincipal principal = CmsPrincipal.readPrincipal(cms, newEntry.getPrincipal());
-
-                    cms.rmacc(path, null, "" + existingEntry.getPrincipal());
-                    cms.chacc(
-                        path,
-                        CmsPrincipal.getType(principal),
-                        "" + newEntry.getPrincipal(),
-                        newEntry.getAllowedPermissions(),
-                        newEntry.getDeniedPermissions(),
-                        newEntry.getFlags());
-                    changed = true;
-                }
-
+                break;
             }
-
         }
         return changed;
     }
