@@ -36,6 +36,8 @@ import org.opencms.util.CmsRequestUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.params.CommonParams;
@@ -67,6 +69,10 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             parameters.put(m_config.getQueryParam(), new String[] {m_state.getQuery()});
         }
         parameters.put(m_config.getReloadedParam(), null);
+        for (Entry<String, String> e : m_state.getAdditionalParameters().entrySet()) {
+            parameters.put(e.getKey(), new String[] {e.getValue()});
+        }
+
     }
 
     /**
@@ -116,8 +122,10 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             }
         }
         for (String additionalParam : m_state.getAdditionalParameters().keySet()) {
+            String solrValue = m_config.getAdditionalParameters().get(additionalParam);
+            if (null != solrValue) {
             String additionalParamString = resolveMacros(
-                m_config.getAdditionalParameters().get(additionalParam),
+                    solrValue,
                 m_state.getAdditionalParameters().get(additionalParam));
             Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(additionalParamString);
             for (String key : extraParamsMap.keySet()) {
@@ -129,6 +137,11 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
                     }
                 }
             }
+        }
+    }
+        // Add timezone query parameter to allow for correct date/time handling if not already present.
+        if (!query.getMap().keySet().contains("TZ")) {
+            query.add("TZ", TimeZone.getDefault().getID());
         }
     }
 
