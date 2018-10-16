@@ -1,419 +1,448 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <export>
-	<info>
-		<infoproject>Offline</infoproject>
-		<export_version>10</export_version>
-	</info>
-	<module>
-		<name>org.opencms.configuration</name>
-		<nicename><![CDATA[OpenCms configuration module]]></nicename>
-		<group>OpenCms Editors</group>
-		<class/>
-		<export-mode name="reduced"/>
-		<description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>
+    <info>
+        <infoproject>Offline</infoproject>
+        <export_version>10</export_version>
+    </info>
+    <module>
+        <name>org.opencms.configuration</name>
+        <nicename><![CDATA[OpenCms configuration module]]></nicename>
+        <group>OpenCms Editors</group>
+        <class />
+        <site>/</site>
+        <export-mode name="reduced" />
+        <description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>
 <p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
-		<version>11.0.0</version>
-		<authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
-		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated/>
-		<userinstalled/>
-		<dateinstalled/>
-		<dependencies>
-			<dependency name="org.opencms.base" version="11.0.0" />
-		</dependencies>
-		<exportpoints/>
-		<resources>
-			<resource uri="/system/config/linkexcludes"/>
-			<resource uri="/system/config/page.dtd"/>
-			<resource uri="/system/config/decoration/"/>
-			<resource uri="/system/config/showversion"/>
-			<resource uri="/system/config/templatecontexts.json"/>
-			<resource uri="/system/config/notification/notification"/>
-			<resource uri="/system/config/notification/publish-notification"/>
-			<resource uri="/system/config/notification/workflow-notification"/>
-			<resource uri="/system/config/notification/password-change-notification"/>
-			<resource uri="/system/config/notification/password-new-password-from-admin-notification"/>
-			<resource uri="/system/config/notification/password-new-user-notification"/>
-			<resource uri="/system/config/wysiwyg/"/>
-		</resources>
-		<excluderesources/>
-		<parameters/>
-	</module>
-	<files>
-		<file>
-			<destination>system</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<destination>system/config</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/config/linkexcludes</source>
-			<destination>system/config/linkexcludes</destination>
-			<type>xmlcontent</type>
-			<datecreated>Wed, 17 Dec 2008 11:07:08 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Link excludes for internal link check]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/config/decoration</destination>
-			<type>folder</type>
-			<datecreated>Tue, 08 Nov 2005 14:03:22 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[HTML Decoration]]></value>
-				</property>
-				<property>
-					<name>locale</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/decoration/configuration.xml</source>
-			<destination>system/config/decoration/configuration.xml</destination>
-			<type>xmlcontent</type>
-			<datecreated>Tue, 08 Nov 2005 15:35:44 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Decoration]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/decoration/decoration.xsd</source>
-			<destination>system/config/decoration/decoration.xsd</destination>
-			<type>plain</type>
-			<datecreated>Tue, 08 Nov 2005 15:20:44 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Nested XSD for decoration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/decoration/decorationconfiguration.xsd</source>
-			<destination>system/config/decoration/decorationconfiguration.xsd</destination>
-			<type>plain</type>
-			<datecreated>Tue, 08 Nov 2005 15:21:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[XSD for decoration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/page.dtd</source>
-			<destination>system/config/page.dtd</destination>
-			<type>plain</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[true]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/showversion</source>
-			<destination>system/config/showversion</destination>
-			<type>plain</type>
-			<datecreated>Thu, 01 Sep 2005 14:47:40 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-				<file>
-			<source>system/config/templatecontexts.json</source>
-			<destination>system/config/templatecontexts.json</destination>
-			<type>plain</type>
-			<datecreated>Wed, 25 Sep 2013 07:33:36 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Template device contexts]]></value>
-				</property>
-			</properties>
-			<relations />
-			<accesscontrol />
-		</file>
-		<file>
-			<destination>system/config/notification</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/config/notification/notification</source>
-			<destination>system/config/notification/notification</destination>
-			<type>xmlcontent</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Content Notification]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/notification/password-change-notification</source>
-			<destination>system/config/notification/password-change-notification</destination>
-			<type>xmlcontent</type>
-			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Change password for OpenCms user: %(user)]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-			<file>
-			<source>system/config/notification/password-new-password-from-admin-notification</source>
-			<destination>system/config/notification/password-new-password-from-admin-notification</destination>
-			<type>xmlcontent</type>
-			<uuidstructure>1f88f566-f76b-11e7-a6cf-5b9ef2cddbe8</uuidstructure>
-			<uuidresource>1f88f567-f76b-11e7-a6cf-5b9ef2cddbe8</uuidresource>
-			<datecreated>Fri, 12 Jan 2018 07:35:12 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[New password for OpenCms user: %(user)]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<source>system/config/notification/password-new-user-notification</source>
-			<destination>system/config/notification/password-new-user-notification</destination>
-			<type>xmlcontent</type>
-			<uuidstructure>dec1d49a-f76d-11e7-a6cf-5b9ef2cddbe8</uuidstructure>
-			<uuidresource>dec1d49b-f76d-11e7-a6cf-5b9ef2cddbe8</uuidresource>
-			<datecreated>Fri, 12 Jan 2018 07:54:51 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome %(user) to OpenCms]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<source>system/config/notification/publish-notification</source>
-			<destination>system/config/notification/publish-notification</destination>
-			<type>xmlcontent</type>
-			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Publish Notification]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<source>system/config/notification/workflow-notification</source>
-			<destination>system/config/notification/workflow-notification</destination>
-			<type>xmlcontent</type>
-			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Workflow: %(release.project)]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<destination>system/config/wysiwyg</destination>
-			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Editor display options]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/wysiwyg/options_all</source>
-			<destination>system/config/wysiwyg/options_all</destination>
-			<type>plain</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[20]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Common options enabled]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/config/wysiwyg/options_extended</source>
-			<destination>system/config/wysiwyg/options_extended</destination>
-			<type>plain</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[10]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Most options enabled]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>516</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-	</files>
+        <version>11.0.0</version>
+        <authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
+        <authoremail><![CDATA[info@alkacon.com]]></authoremail>
+        <datecreated />
+        <userinstalled />
+        <dateinstalled />
+        <dependencies>
+            <dependency name="org.opencms.base" version="11.0.0" />
+        </dependencies>
+        <exportpoints />
+        <resources>
+            <resource uri="/system/config/linkexcludes" />
+            <resource uri="/system/config/page.dtd" />
+            <resource uri="/system/config/decoration/" />
+            <resource uri="/system/config/showversion" />
+            <resource uri="/system/config/templatecontexts.json" />
+            <resource uri="/system/config/notification/notification" />
+            <resource uri="/system/config/notification/publish-notification" />
+            <resource uri="/system/config/notification/workflow-notification" />
+            <resource uri="/system/config/notification/password-change-notification" />
+            <resource uri="/system/config/notification/password-new-password-from-admin-notification" />
+            <resource uri="/system/config/notification/password-new-user-notification" />
+            <resource uri="/system/config/wysiwyg/" />
+        </resources>
+        <excluderesources />
+        <parameters />
+    </module>
+    <files>
+        <file>
+            <destination>system</destination>
+            <type>folder</type>
+            <properties />
+        </file>
+        <file>
+            <destination>system/config</destination>
+            <type>folder</type>
+            <properties />
+        </file>
+        <file>
+            <destination>system/config/decoration</destination>
+            <type>folder</type>
+            <uuidstructure>726ff728-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <datecreated>Tue, 08 Nov 2005 14:03:22 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[HTML Decoration]]></value>
+                </property>
+                <property>
+                    <name>locale</name>
+                    <value><![CDATA[en]]></value>
+                </property>
+                <property>
+                    <name>locale-available</name>
+                    <value><![CDATA[en]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/decoration/configuration.xml</source>
+            <destination>system/config/decoration/configuration.xml</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>72721a0d-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>72721a0e-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Tue, 08 Nov 2005 15:35:44 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[OpenCms Decoration]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/decoration/decoration.xsd</source>
+            <destination>system/config/decoration/decoration.xsd</destination>
+            <type>plain</type>
+            <uuidstructure>727415e1-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>727415e2-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Tue, 08 Nov 2005 15:20:44 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Nested XSD for decoration]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/decoration/decorationconfiguration.xsd</source>
+            <destination>system/config/decoration/decorationconfiguration.xsd</destination>
+            <type>plain</type>
+            <uuidstructure>7275eaa4-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>7275eaa5-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Tue, 08 Nov 2005 15:21:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[XSD for decoration]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <destination>system/config/wysiwyg</destination>
+            <type>folder</type>
+            <uuidstructure>7289c0e4-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Editor display options]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/wysiwyg/options_all</source>
+            <destination>system/config/wysiwyg/options_all</destination>
+            <type>plain</type>
+            <uuidstructure>728c31e7-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>728c31e8-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <value><![CDATA[20]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Common options enabled]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/wysiwyg/options_extended</source>
+            <destination>system/config/wysiwyg/options_extended</destination>
+            <type>plain</type>
+            <uuidstructure>728ddf9b-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>728ddf9c-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <value><![CDATA[10]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Most options enabled]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+                    <flags>516</flags>
+                    <permissionset>
+                        <allowed>0</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/linkexcludes</source>
+            <destination>system/config/linkexcludes</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>726d8624-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>726d8625-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Wed, 17 Dec 2008 11:07:08 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Link excludes for internal link check]]></value>
+                </property>
+                <property>
+                    <name>locale-available</name>
+                    <value><![CDATA[en]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <destination>system/config/notification</destination>
+            <type>folder</type>
+            <properties />
+        </file>
+        <file>
+            <source>system/config/notification/notification</source>
+            <destination>system/config/notification/notification</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>727e4f21-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>727e4f22-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[OpenCms Content Notification]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/notification/password-change-notification</source>
+            <destination>system/config/notification/password-change-notification</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>728023e5-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>728023e6-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Change password for OpenCms user: %(receiver.simplename)]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+                    <flags>518</flags>
+                    <permissionset>
+                        <allowed>1</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/notification/password-new-password-from-admin-notification</source>
+            <destination>system/config/notification/password-new-password-from-admin-notification</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>1f88f566-f76b-11e7-a6cf-5b9ef2cddbe8</uuidstructure>
+            <uuidresource>1f88f567-f76b-11e7-a6cf-5b9ef2cddbe8</uuidresource>
+            <datecreated>Fri, 12 Jan 2018 07:35:12 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[New password for OpenCms user: %(receiver.fullname)]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+                    <flags>518</flags>
+                    <permissionset>
+                        <allowed>1</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/notification/password-new-user-notification</source>
+            <destination>system/config/notification/password-new-user-notification</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>dec1d49a-f76d-11e7-a6cf-5b9ef2cddbe8</uuidstructure>
+            <uuidresource>dec1d49b-f76d-11e7-a6cf-5b9ef2cddbe8</uuidresource>
+            <datecreated>Fri, 12 Jan 2018 07:54:51 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Welcome %(username) to OpenCms]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+                    <flags>518</flags>
+                    <permissionset>
+                        <allowed>1</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/notification/publish-notification</source>
+            <destination>system/config/notification/publish-notification</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>7286175c-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>7286175d-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[OpenCms Publish Notification]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+                    <flags>518</flags>
+                    <permissionset>
+                        <allowed>1</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/notification/workflow-notification</source>
+            <destination>system/config/notification/workflow-notification</destination>
+            <type>xmlcontent</type>
+            <uuidstructure>7287ec20-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>7287ec21-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[OpenCms Workflow: %(release.project)]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+                    <flags>518</flags>
+                    <permissionset>
+                        <allowed>1</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/page.dtd</source>
+            <destination>system/config/page.dtd</destination>
+            <type>plain</type>
+            <uuidstructure>72794607-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>72794608-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>export</name>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/showversion</source>
+            <destination>system/config/showversion</destination>
+            <type>plain</type>
+            <uuidstructure>727a7e8a-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>727a7e8b-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Thu, 01 Sep 2005 14:47:40 GMT</datecreated>
+            <flags>0</flags>
+            <properties />
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ALL_OTHERS</uuidprincipal>
+                    <flags>134</flags>
+                    <permissionset>
+                        <allowed>0</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
+        </file>
+        <file>
+            <source>system/config/templatecontexts.json</source>
+            <destination>system/config/templatecontexts.json</destination>
+            <type>plain</type>
+            <uuidstructure>727bb70c-d14c-11e8-9434-b90516ef3600</uuidstructure>
+            <uuidresource>727bb70d-d14c-11e8-9434-b90516ef3600</uuidresource>
+            <datecreated>Wed, 25 Sep 2013 07:33:36 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Template device contexts]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol />
+        </file>
+    </files>
 </export>
