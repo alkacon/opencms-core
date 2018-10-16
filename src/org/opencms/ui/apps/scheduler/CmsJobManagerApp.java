@@ -27,15 +27,21 @@
 
 package org.opencms.ui.apps.scheduler;
 
+import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.scheduler.CmsSchedulerException;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 
@@ -51,7 +57,7 @@ import com.vaadin.ui.Window;
 /**
  * The scheduled jobs manager app.<p>
  */
-public class CmsJobManagerApp extends A_CmsWorkplaceApp {
+public class CmsJobManagerApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<CmsScheduledJobInfo> {
 
     /** Parameter copy. */
     public static final String PARAM_COPY = "copy";
@@ -66,7 +72,7 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
     protected CmsJobTable m_jobTable;
 
     /** The current dialog window. */
-    private Window m_dialogWindow;
+    protected Window m_dialogWindow;
 
     /**
      * Closes the currently opened window.<p>
@@ -85,6 +91,56 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#createElement(java.lang.Object)
+     */
+    public void createElement(CmsScheduledJobInfo element) {
+
+        writeElement(element);
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#defaultAction(java.lang.String)
+     */
+    public void defaultAction(String elelemntId) {
+
+        openEditDialog(elelemntId, false);
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#deleteElements(java.util.List)
+     */
+    public void deleteElements(List<String> jobIds) {
+
+        try {
+            for (String jobId : jobIds) {
+                OpenCms.getScheduleManager().unscheduleJob(A_CmsUI.getCmsObject(), jobId);
+            }
+            OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
+        } catch (CmsRoleViolationException e) {
+            CmsErrorDialog.showErrorDialog(e);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getAllElements()
+     */
+    public List<CmsScheduledJobInfo> getAllElements() {
+
+        return OpenCms.getScheduleManager().getJobs();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getElement(java.lang.String)
+     */
+    public CmsScheduledJobInfo getElement(String elementId) {
+
+        return OpenCms.getScheduleManager().getJob(elementId);
+    }
+
+    /**
      * Creates the edit view for the given job id.<p>
      *
      * @param jobId the id of the job to edit, or null to create a new job
@@ -100,7 +156,7 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
         m_dialogWindow = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         CmsScheduledJobInfo job = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(jobId)) {
-            job = OpenCms.getScheduleManager().getJob(jobId);
+            job = getElement(jobId);
         }
         CmsScheduledJobInfo jobCopy;
         if (job == null) {
@@ -110,7 +166,7 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
                 CmsVaadinUtils.getMessageText(
                     org.opencms.workplace.tools.scheduler.Messages.GUI_NEWJOB_ADMIN_TOOL_NAME_0));
         } else {
-            jobCopy = (CmsScheduledJobInfo)job.clone();
+            jobCopy = job.clone();
             jobCopy.setActive(job.isActive());
             if (copy) {
                 jobCopy.clearId();
@@ -140,6 +196,34 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
     public void restoreMainView() {
 
         openSubView("", true);
+    }
+
+    /**
+     * Executes the given schedule job.<p>
+     *
+     * @param job to be executed
+     */
+    public void runJob(CmsScheduledJobInfo job) {
+
+        CmsScheduleManager scheduler = OpenCms.getScheduleManager();
+        scheduler.executeDirectly(job.getId());
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#writeElement(java.lang.Object)
+     */
+    public void writeElement(CmsScheduledJobInfo jobInfo) {
+
+        // schedule the edited job
+        try {
+            OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), jobInfo);
+        } catch (CmsRoleViolationException | CmsSchedulerException e) {
+            //
+        }
+        // update the XML configuration
+        OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
+
     }
 
     /**
@@ -181,26 +265,26 @@ public class CmsJobManagerApp extends A_CmsWorkplaceApp {
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
-     */
-    @Override
-    protected List<NavEntry> getSubNavEntries(String state) {
-
-        return null;
-    }
-
-    /**
      * Returns the job table instance.<p>
      *
      * @return the job table instance
      */
-    private CmsJobTable getJobTable() {
+    protected CmsJobTable getJobTable() {
 
         if (m_jobTable == null) {
             m_jobTable = new CmsJobTable(this);
             m_jobTable.setWidth("100%");
         }
         return m_jobTable;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
+     */
+    @Override
+    protected List<NavEntry> getSubNavEntries(String state) {
+
+        return null;
     }
 
 }

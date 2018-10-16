@@ -27,13 +27,10 @@
 
 package org.opencms.ui.apps.scheduler;
 
-import org.opencms.configuration.CmsSchedulerConfiguration;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
 import org.opencms.relations.CmsExternalLinksValidator;
@@ -51,7 +48,6 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.util.CmsComboNullToEmptyConverter;
@@ -65,21 +61,21 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Validator;
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.v7.shared.ui.combobox.FilteringMode;
-import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
+import com.vaadin.v7.ui.AbstractField;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Form used to edit a scheduled job.<p>
@@ -187,6 +183,7 @@ public class CmsJobEditView extends CmsBasicDialog {
          * @param content the initial content of the text field
          */
         public ParamLine(String content) {
+
             setWidth("100%");
             TextField input = new TextField();
             m_input = input;
@@ -297,6 +294,7 @@ public class CmsJobEditView extends CmsBasicDialog {
      * @param job the job to be edited
      */
     public CmsJobEditView(CmsJobManagerApp manager, CmsScheduledJobInfo job) {
+
         m_manager = manager;
         m_job = job;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
@@ -310,22 +308,9 @@ public class CmsJobEditView extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                try {
-                    if (trySaveToBean()) {
-                        OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), m_job);
-                        OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
-                        m_manager.closeDialogWindow(true);
-                    }
-
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                    CmsErrorDialog.showErrorDialog(e, new Runnable() {
-
-                        public void run() {
-
-                            m_manager.closeDialogWindow(true);
-                        }
-                    });
+                if (trySaveToBean()) {
+                    m_manager.writeElement(m_job);
+                    m_manager.closeDialogWindow(true);
                 }
 
             }
