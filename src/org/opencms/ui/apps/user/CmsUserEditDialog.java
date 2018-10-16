@@ -1136,12 +1136,17 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 }
                 m_project.select(projString);
             } else {
+
                 Iterator<?> it = m_project.getItemIds().iterator();
-                String p = (String)it.next();
-                while (p.equals(CmsProject.ONLINE_PROJECT_NAME) & it.hasNext()) {
-                    p = (String)it.next();
+                if (m_project.containsId("Offline")) {
+                    m_project.select("Offline");
+                } else {
+                    String p = (String)it.next();
+                    while (p.equals(CmsProject.ONLINE_PROJECT_NAME) & it.hasNext()) {
+                        p = (String)it.next();
+                    }
+                    m_project.select(p);
                 }
-                m_project.select(p);
             }
         } catch (CmsException e) {
             LOG.error("Unable to read projects", e);
