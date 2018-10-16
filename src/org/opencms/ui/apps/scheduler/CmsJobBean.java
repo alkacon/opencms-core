@@ -49,7 +49,7 @@ public class CmsJobBean {
     private CmsUUID m_id = new CmsUUID();
 
     /** The wrapped scheduled job info. */
-    private CmsScheduledJobInfo m_jobInfo;
+    protected CmsScheduledJobInfo m_jobInfo;
 
     /**
      * Creates a new instance.<p>
@@ -57,6 +57,7 @@ public class CmsJobBean {
      * @param info the scheduled job info to wrap
      */
     public CmsJobBean(CmsScheduledJobInfo info) {
+
         m_jobInfo = info;
     }
 
