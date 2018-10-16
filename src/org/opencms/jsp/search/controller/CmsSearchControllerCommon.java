@@ -37,6 +37,7 @@ import org.opencms.util.CmsRequestUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -74,6 +75,9 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             parameters.put(m_config.getQueryParam(), new String[] {m_state.getQuery()});
         }
         parameters.put(m_config.getReloadedParam(), null);
+        for (Entry<String, String> e : m_state.getAdditionalParameters().entrySet()) {
+            parameters.put(e.getKey(), new String[] {e.getValue()});
+        }
     }
 
     /**
@@ -128,17 +132,20 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             }
         }
         for (String additionalParam : m_state.getAdditionalParameters().keySet()) {
-            String additionalParamString = resolveMacro(
-                m_config.getAdditionalParameters().get(additionalParam),
-                MACRO_VALUE,
-                m_state.getAdditionalParameters().get(additionalParam));
-            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(additionalParamString);
-            for (String key : extraParamsMap.keySet()) {
-                for (String value : Arrays.asList(extraParamsMap.get(key))) {
-                    if (SET_VARIABLES.contains(key)) {
-                        query.set(key, value);
-                    } else {
-                        query.add(key, value);
+            String solrValue = m_config.getAdditionalParameters().get(additionalParam);
+            if (null != solrValue) {
+                String additionalParamString = resolveMacro(
+                    solrValue,
+                    MACRO_VALUE,
+                    m_state.getAdditionalParameters().get(additionalParam));
+                Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(additionalParamString);
+                for (String key : extraParamsMap.keySet()) {
+                    for (String value : Arrays.asList(extraParamsMap.get(key))) {
+                        if (SET_VARIABLES.contains(key)) {
+                            query.set(key, value);
+                        } else {
+                            query.add(key, value);
+                        }
                     }
                 }
             }
