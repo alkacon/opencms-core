@@ -76,7 +76,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -605,7 +607,9 @@ public class OpenCmsTestCase extends TestCase {
         TestSuite suite = new TestSuite();
         suite.setName(testClass.getName());
         Constructor<? extends Test> constructor = testClass.getConstructor(String.class);
-        for (Method method : testClass.getMethods()) {
+        List<Method> methods = new ArrayList<>(Arrays.asList(testClass.getMethods()));
+        Collections.sort(methods, (a, b) -> a.getName().compareTo(b.getName()));
+        for (Method method : methods) {
             String methodName = method.getName();
             if (methodName.startsWith("test") && (method.getParameterTypes().length == 0)) {
                 Test test = constructor.newInstance(method.getName());
