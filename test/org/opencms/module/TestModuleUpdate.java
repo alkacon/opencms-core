@@ -122,6 +122,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.addFolder("");
             builder.addTextFile("test.txt", "test");
             cms.chacc(MODULE_PATH + "/test.txt", "USER", username, "+w+v+c");
+            cms.chacc(MODULE_PATH + "/test.txt", "USER", "ALL_OTHERS", "-r");
             builder.addTextFile("test2.txt", "test");
             builder.publish();
             export = tempExport();
