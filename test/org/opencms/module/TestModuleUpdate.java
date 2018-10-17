@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -43,6 +44,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsZipBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -837,6 +839,76 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    public void testUseOldReplaceIfModuleResourcesHaveNoStructureId() throws Exception {
+
+        String manifest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "\n"
+            + "<export>\n"
+            + "    <info>\n"
+            + "        <infoproject>Offline</infoproject>\n"
+            + "        <export_version>10</export_version>\n"
+            + "    </info>\n"
+            + "    <module>\n"
+            + "        <name>org.opencms.configtest</name>\n"
+            + "        <nicename><![CDATA[OpenCms configuration module]]></nicename>\n"
+            + "        <group>OpenCms Editors</group>\n"
+            + "        <class />\n"
+            + "        <site>/</site>\n"
+            + "        <export-mode name=\"reduced\" />\n"
+            + "        <description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>\n"
+            + "<p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>\n"
+            + "        <version>11.0.0</version>\n"
+            + "        <authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>\n"
+            + "        <authoremail><![CDATA[info@alkacon.com]]></authoremail>\n"
+            + "        <datecreated />\n"
+            + "        <userinstalled />\n"
+            + "        <dateinstalled />\n"
+            + "        <dependencies />\n"
+            + "        <exportpoints />\n"
+            + "        <resources>\n"
+            + "            <resource uri=\"/system/test123\" />\n"
+            + "        </resources>\n"
+            + "        <excluderesources />\n"
+            + "        <parameters />\n"
+            + "    </module>\n"
+            + "    <files>\n"
+            + "        <file>\n"
+            + "            <destination>system</destination>\n"
+            + "            <type>folder</type>\n"
+            + "            <properties />\n"
+            + "        </file>\n"
+            + "        <file>\n"
+            + "            <source>system/test123</source>\n"
+            + "            <destination>system/test123</destination>\n"
+            + "            <type>plain</type>\n"
+            + "            <datecreated>Tue, 08 Nov 2005 15:35:44 GMT</datecreated>\n"
+            + "            <flags>0</flags>\n"
+            + "            <properties />\n"
+            + "            <relations />\n"
+            + "            <accesscontrol />\n"
+            + "        </file>\n"
+            + "   </files>\n"
+            + "</export>\n"
+            + "";
+        CmsZipBuilder zipBuilder = new CmsZipBuilder();
+        zipBuilder.addFile("manifest.xml", manifest);
+        zipBuilder.addFile("system/test123", "test123");
+        File importZip = zipBuilder.writeZip();
+        importZip.deleteOnExit();
+        CmsObject cms = cms();
+        CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+        CmsImportParameters params = new CmsImportParameters(importZip.getCanonicalPath(), "/", true);
+        OpenCms.getImportExportManager().importData(cms, report, params);
+
+        CmsReplaceModuleInfo info = OpenCms.getModuleManager().replaceModule(cms, importZip.getCanonicalPath(), report);
+        assertFalse("Should have not used new module update", info.usedUpdater());
+
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
     public void testUseOldReplaceIfSiblingStructureIsDifferent() throws Exception {
 
         CmsObject cms = cms();
@@ -872,7 +944,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.setNextResourceId(resId);
             String content = "content2";
             builder.addTextFile("file1.txt", content);
-            builder.addTextFile("file2.txt", null);
+            builder.addTextFile("file2.txt", "othercontent");
 
             builder.publish();
         }

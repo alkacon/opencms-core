@@ -178,7 +178,29 @@ public class CmsModuleUpdater {
                     } catch (CmsVfsResourceNotFoundException e) {
                         // ignore
                     }
+                } else {
+                    CmsModule module = moduleData.getModule();
+                    boolean included = false;
+                    boolean excluded = false;
+                    for (String res : module.getResources()) {
+                        if (CmsStringUtil.isPrefixPath(res, resData.getPath())) {
+                            included = true;
+                            break;
+                        }
+                    }
+                    for (String res : module.getExcludeResources()) {
+                        if (CmsStringUtil.isPrefixPath(res, resData.getPath())) {
+                            excluded = true;
+                            break;
+                        }
+                    }
+                    if (included && !excluded) {
+                        LOG.info(
+                            "Module is not updateable because one of the resource entries included in the module resources has no structure id in the manifest.");
+                        return false;
+                    }
                 }
+
             }
             return true;
         } catch (CmsException e) {
