@@ -32,6 +32,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsLuceneField;
@@ -503,7 +504,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 m_search = new CmsSearch();
             }
         }
-        m_searchParams.setSearchIndex(getSearchIndexIndex());
+        m_searchParams.setSearchIndex((CmsSearchIndex)getSearchIndexIndex());
     }
 
     /**

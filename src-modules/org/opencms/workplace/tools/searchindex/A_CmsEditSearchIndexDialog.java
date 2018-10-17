@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
@@ -81,7 +82,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     public static final String PARAM_INDEXNAME = "indexname";
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchIndex m_index;
+    protected A_CmsSearchIndex m_index;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
@@ -178,7 +179,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Initializes the user object (a <code>{@link CmsSearchIndex}</code> instance.<p>
+     * Initializes the user object (a <code>{@link A_CmsSearchIndex}</code> instance.<p>
      *
      * Implementation always have to call <code>"super.defineWidgets()"</code> first as
      * this action may only be done here (relies on filled request parameters, the next
@@ -209,7 +210,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      *
      * @return the search index
      */
-    protected CmsSearchIndex getSearchIndexIndex() {
+    protected A_CmsSearchIndex getSearchIndexIndex() {
 
         return m_index;
     }
@@ -282,9 +283,9 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
 
         // save the current search index
         @SuppressWarnings("unchecked")
-        Map<String, CmsSearchIndex> dialogObject = (Map<String, CmsSearchIndex>)getDialogObject();
+        Map<String, A_CmsSearchIndex> dialogObject = (Map<String, A_CmsSearchIndex>)getDialogObject();
         if (dialogObject == null) {
-            dialogObject = new HashMap<String, CmsSearchIndex>();
+            dialogObject = new HashMap<String, A_CmsSearchIndex>();
             dialogObject.put(PARAM_INDEXNAME, m_index);
             setDialogObject(dialogObject);
         }
