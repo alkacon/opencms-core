@@ -310,8 +310,13 @@ public final class CmsJspElFunctions {
             // input is already a resource
             result = (CmsResource)input;
         } else if (input instanceof String) {
-            // input is a String
-            result = cms.readResource((String)input);
+            if (CmsUUID.isValidUUID((String)input)) {
+                // input is a UUID as String
+                result = cms.readResource(CmsUUID.valueOf((String)input));
+            } else {
+                // input is a path as String
+                result = cms.readResource(cms.getRequestContext().removeSiteRoot((String)input));
+            }
         } else if (input instanceof CmsUUID) {
             // input is a UUID
             result = cms.readResource((CmsUUID)input);
