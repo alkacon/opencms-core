@@ -33,12 +33,14 @@ import org.opencms.letsencrypt.CmsLetsEncryptConfiguration.Trigger;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.sitemanager.CmsSitesTable.TableProperty;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -72,7 +74,9 @@ import com.vaadin.v7.ui.TextField;
  * Manager class for the Site manager app.
  */
 
-public class CmsSiteManager extends A_CmsWorkplaceApp {
+public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<CmsSite> {
+
+    //TODO use CRUD methods from interface
 
     /**Bundel name for the sites which are used as templates for new sites.*/
     public static final String BUNDLE_NAME = "siteMacroBundle";
@@ -105,7 +109,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     static final String PATH_SITES = "/sites/";
 
     /** The site table. */
-    protected I_CmsSitesTable m_sitesTable;
+    protected CmsSitesTable m_sitesTable;
 
     /** The currently opened dialog window. */
     protected Window m_dialogWindow;
@@ -182,6 +186,71 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#createElement(java.lang.Object)
+     */
+    public void createElement(CmsSite element) {
+
+        try {
+            OpenCms.getSiteManager().addSite(getRootCmsObject(), element);
+        } catch (CmsException e) {
+            LOG.error("unable to save site", e);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#defaultAction(java.lang.String)
+     */
+    public void defaultAction(String elementId) {
+
+        openEditDialog(elementId);
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#deleteElements(java.util.List)
+     */
+    public void deleteElements(List<String> elementId) {
+
+        for (String siteRoot : elementId) {
+            try {
+                CmsSite site = getElement(siteRoot);
+                if (site != null) {
+                    OpenCms.getSiteManager().removeSite(getRootCmsObject(), site);
+                }
+            } catch (CmsException e) {
+                LOG.error("Unable to delete site", e);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getAllElements()
+     */
+    public List<CmsSite> getAllElements() {
+
+        return OpenCms.getSiteManager().getAvailableSites(getRootCmsObject(), false);
+    }
+
+    /**
+     * Get corrupted sites.<p>
+     *
+     * @return List<CmsSite>
+     */
+    public List<CmsSite> getCorruptedSites() {
+
+        return OpenCms.getSiteManager().getAvailableCorruptedSites(getRootCmsObject(), true);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getElement(java.lang.String)
+     */
+    public CmsSite getElement(String elementId) {
+
+        return OpenCms.getSiteManager().getSiteForSiteRoot(elementId);
+    }
+
+    /**
      * Returns the fav icon path for the given site.<p>
      *
      * @param siteRoot the site root
@@ -219,7 +288,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
      *
      * @param siteRoot the site root of the site to edit, if <code>null</code>
      */
-    public void openEditDailog(String siteRoot) {
+    public void openEditDialog(String siteRoot) {
 
         CmsEditSiteForm form;
         String caption;
@@ -267,6 +336,19 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#writeElement(java.lang.Object)
+     */
+    public void writeElement(CmsSite element) {
+
+        try {
+            OpenCms.getSiteManager().updateSite(m_rootCms, getElement(element.getSiteRoot()), element);
+        } catch (CmsException e) {
+            LOG.error("Unabel to update site", e);
+        }
+        m_sitesTable.loadSites();
+    }
+
+    /**
      * Creates the table holdings all available sites.
      * @return a vaadin table component
      */
@@ -295,7 +377,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        m_sitesTable = createSitesTable();
+        m_sitesTable = (CmsSitesTable)createSitesTable();
 
         m_rootLayout.setMainHeightFull(true);
         m_siteTableFilter = new TextField();
@@ -343,6 +425,12 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
         return null;
     }
 
+    /**
+     * Opens a given dialog.<p>
+     *
+     * @param dialog to be shown
+     * @param windowCaption caption of window
+     */
     protected void openDialog(CmsBasicDialog dialog, String windowCaption) {
 
         if (m_dialogWindow != null) {
@@ -378,7 +466,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp {
 
             public void buttonClick(ClickEvent event) {
 
-                openEditDailog(null);
+                openEditDialog(null);
             }
         });
         m_uiContext.addToolbarButton(add);

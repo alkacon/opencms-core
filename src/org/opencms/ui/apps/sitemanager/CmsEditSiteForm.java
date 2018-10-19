@@ -377,7 +377,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         private static final long serialVersionUID = -911831798529729185L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -958,7 +958,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     public CmsEditSiteForm(CmsObject cms, CmsSiteManager manager, String siteRoot) {
 
         this(cms, manager);
-        m_site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+        m_site = manager.getElement(siteRoot);
         setFieldsForSite(true);
 
     }
@@ -1525,44 +1525,43 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     void submit() {
 
-        //Show report field and hide form fields
-        m_report.setVisible(true);
-        m_tab.setVisible(false);
-        m_ok.setEnabled(false);
-        m_cancel.setEnabled(false);
-
         // switch to root site
         m_clonedCms.getRequestContext().setSiteRoot("");
 
         CmsSite site = getSiteFromForm();
 
-        Map<String, String> bundle = getBundleMap();
-
-        boolean createOU = m_fieldCreateOU.isEnabled() & m_fieldCreateOU.getValue().booleanValue();
-
-        CmsCreateSiteThread createThread = new CmsCreateSiteThread(
-            m_clonedCms,
-            site,
-            m_site,
-            m_fieldLoadSiteTemplate.getValue(),
-            getFieldTemplate(),
-            createOU,
-            (String)m_fieldSelectParentOU.getValue(),
-            (String)m_fieldSelectOU.getValue(),
-            m_os,
-            bundle,
-            new Runnable() {
-
-                public void run() {
-
-                    setOkButtonEnabled();
-                }
-
-            });
-
-        createThread.start();
-
         if (m_site == null) {
+
+            //Show report field and hide form fields
+            m_report.setVisible(true);
+            m_tab.setVisible(false);
+            m_ok.setEnabled(false);
+            m_cancel.setEnabled(false);
+
+            Map<String, String> bundle = getBundleMap();
+
+            boolean createOU = m_fieldCreateOU.isEnabled() & m_fieldCreateOU.getValue().booleanValue();
+            CmsCreateSiteThread createThread = new CmsCreateSiteThread(
+                m_clonedCms,
+                site,
+                m_site,
+                m_fieldLoadSiteTemplate.getValue(),
+                getFieldTemplate(),
+                createOU,
+                (String)m_fieldSelectParentOU.getValue(),
+                (String)m_fieldSelectOU.getValue(),
+                m_os,
+                bundle,
+                new Runnable() {
+
+                    public void run() {
+
+                        setOkButtonEnabled();
+                    }
+
+                });
+
+            createThread.start();
 
             CmsReportWidget report = new CmsReportWidget(createThread);
 
@@ -1570,16 +1569,18 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             report.setHeight("350px");
 
             m_threadReport.addComponent(report);
-        } else {
             try {
                 createThread.join();
             } catch (InterruptedException e) {
                 //
             }
-
-            closeDailog(true);
+        } else {
+            if (!site.getSiteRoot().equals(m_site.getSiteRoot())) {
+                m_manager.deleteElements(Collections.singletonList(m_site.getSiteRoot()));
+            }
+            m_manager.writeElement(site);
         }
-
+        m_manager.closeDialogWindow(true);
     }
 
     /**

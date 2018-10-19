@@ -31,7 +31,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -46,10 +45,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -91,7 +90,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
         m_manager = manager;
 
         for (String site : data) {
-            m_sitesToDelete.add(OpenCms.getSiteManager().getSiteForSiteRoot(site));
+            m_sitesToDelete.add(manager.getElement(site));
         }
 
         displayResourceInfoDirectly(getResourceInfos());
@@ -129,19 +128,16 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
      */
     void submit() {
 
+        List<String> siteRootsToDelete = new ArrayList<String>();
         for (CmsSite site : m_sitesToDelete) {
-            try {
 
-                String currentSite = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
-                OpenCms.getSiteManager().removeSite(A_CmsUI.getCmsObject(), site);
-                if (currentSite.equals(site.getSiteRoot())) {
-                    A_CmsUI.getCmsObject().getRequestContext().setSiteRoot("");
-                }
-
-            } catch (CmsException e) {
-                LOG.error("Error deleting site " + site.getTitle(), e);
+            String currentSite = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+            if (currentSite.equals(site.getSiteRoot())) {
+                A_CmsUI.getCmsObject().getRequestContext().setSiteRoot("");
             }
+            siteRootsToDelete.add(site.getSiteRoot());
         }
+        m_manager.deleteElements(siteRootsToDelete);
         CmsAppWorkplaceUi.get().reload();
         if (m_deleteResources.getValue().booleanValue()) {
             for (CmsSite site : m_sitesToDelete) {

@@ -33,7 +33,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteMatcher;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -93,7 +92,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         public void executeAction(Set<String> data) {
 
             String siteRoot = data.iterator().next();
-            m_manager.openEditDailog(siteRoot);
+            m_manager.openEditDialog(siteRoot);
         }
 
         /**
@@ -120,7 +119,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
             if ((data == null) || (data.size() != 1)) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
-            if (OpenCms.getSiteManager().getSiteForSiteRoot(data.iterator().next()) == null) {
+            if (m_manager.getElement(data.iterator().next()) == null) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
 
@@ -240,7 +239,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            if (OpenCms.getSiteManager().getSiteForSiteRoot(data.iterator().next()) == null) {
+            if (m_manager.getElement(data.iterator().next()) == null) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -309,7 +308,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         private static final long serialVersionUID = -3772456970393398685L;
 
         /**
-         * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+         * @see com.vaadin.v7.ui.Table.ColumnGenerator#generateCell(com.vaadin.v7.ui.Table, java.lang.Object, java.lang.Object)
          */
         public Object generateCell(Table source, Object itemId, Object columnId) {
 
@@ -356,7 +355,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
             String siteRoot = data.iterator().next();
-            if (OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot) == null) {
+            if (m_manager.getElement(siteRoot) == null) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
             if (!((Boolean)getItem(siteRoot).getItemProperty(TableProperty.OK).getValue()).booleanValue()) {
@@ -402,7 +401,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
             String siteRoot = data.iterator().next();
-            if (OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot) == null) {
+            if (m_manager.getElement(siteRoot) == null) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -553,6 +552,12 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         setColumnWidth(TableProperty.Icon, 40);
     }
 
+    /**
+     * Gets the style for ssl badget.<p>
+     *
+     * @param site to get style for
+     * @return style string
+     */
     public static String getSSLStyle(CmsSite site) {
 
         if ((site != null) && site.getSSLMode().isSecure()) {
@@ -561,6 +566,9 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsFilterableTable#filter(java.lang.String)
+     */
     public void filter(String search) {
 
         m_container.removeAllContainerFilters();
@@ -577,15 +585,37 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
 
     }
 
+    /**
+     * @see org.opencms.ui.apps.sitemanager.I_CmsSitesTable#getContainer()
+     */
     public IndexedContainer getContainer() {
 
         return m_container;
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsFilterableTable#getEmptyLayout()
+     */
     public VerticalLayout getEmptyLayout() {
 
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * Returns the available menu entries.<p>
+     *
+     * @return the menu entries
+     */
+    public List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
+
+        if (m_menuEntries == null) {
+            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
+            m_menuEntries.add(new EditEntry());
+            m_menuEntries.add(new DeleteEntry());
+            m_menuEntries.add(new ExplorerEntry());
+            m_menuEntries.add(new PageEditorEntry());
+        }
+        return m_menuEntries;
     }
 
     /**
@@ -604,7 +634,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     public void loadSites() {
 
         m_container.removeAllItems();
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(m_manager.getRootCmsObject(), true);
+        List<CmsSite> sites = m_manager.getAllElements();
         m_siteCounter = 0;
         CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_SITE);
         icon.setOverlay(OpenCmsTheme.STATE_CHANGED + " " + CmsResourceIcon.ICON_CLASS_CHANGED);
@@ -631,7 +661,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
             }
         }
 
-        for (CmsSite site : OpenCms.getSiteManager().getAvailableCorruptedSites(m_manager.getRootCmsObject(), true)) {
+        for (CmsSite site : m_manager.getCorruptedSites()) {
 
             Item item = m_container.addItem(site.getSiteRoot());
 
@@ -661,23 +691,21 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     }
 
     /**
-     * Returns the available menu entries.<p>
+     * Sets the menu entries.<p>
      *
-     * @return the menu entries
+     * @param newEntries to be set
      */
-    protected List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
+    public void setMenuEntries(List<I_CmsSimpleContextMenuEntry<Set<String>>> newEntries) {
 
-        if (m_menuEntries == null) {
-            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
-            m_menuEntries.add(new EditEntry());
-            m_menuEntries.add(new DeleteEntry());
-            m_menuEntries.add(new ExplorerEntry());
-            //            m_menuEntries.add(new SitemapEntry()); //TODO add when sitemap issue fixed
-            m_menuEntries.add(new PageEditorEntry());
-        }
-        return m_menuEntries;
+        m_menuEntries = newEntries;
     }
 
+    /**
+     * Get the ssl status label.<p>
+     *
+     * @param site to get ssl status for
+     * @return Label for status
+     */
     protected String getSSLStatus(CmsSite site) {
 
         if ((site != null) && site.getSSLMode().isSecure()) {
@@ -740,7 +768,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                 m_menu.openForTable(event, itemId, propertyId, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && TableProperty.Server.equals(propertyId)) {
                 String siteRoot = (String)itemId;
-                m_manager.openEditDailog(siteRoot);
+                m_manager.defaultAction(siteRoot);
             }
         }
     }
@@ -790,23 +818,4 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
             return null;
         }
     }
-
-    /**
-     * Makes a String from aliases (comma separated).<p>
-     *
-     * @param aliases List of aliases.
-     * @return nice string.
-     */
-    private String getNiceStringFormList(List<CmsSiteMatcher> aliases) {
-
-        if (aliases.isEmpty()) {
-            return "";
-        }
-        String ret = "";
-        for (CmsSiteMatcher alias : aliases) {
-            ret += alias.getServerName() + ", ";
-        }
-        return ret.substring(0, ret.length() - ", ".length());
-    }
-
 }

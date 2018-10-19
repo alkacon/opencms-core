@@ -45,7 +45,7 @@ public interface I_CmsCRUDApp<T> {
     /**
      * Performs a default action.
      *
-     * @param elementId id of elment
+     * @param elementId id of element
      */
     void defaultAction(String elementId);
 
