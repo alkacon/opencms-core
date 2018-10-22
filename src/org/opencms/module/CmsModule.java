@@ -70,10 +70,10 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
 
     /** The available module export modes. */
     public enum ExportMode {
-    /** Default export mode. */
-    DEFAULT,
-    /** Reduced export, that omits last modification information (dates and users). */
-    REDUCED;
+        /** Default export mode. */
+        DEFAULT,
+        /** Reduced export, that omits last modification information (dates and users). */
+        REDUCED;
 
         /**
          * @see java.lang.Enum#toString()
@@ -205,7 +205,7 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     private List<String> m_resources;
 
     /** The list of additional resource types. */
-    private List<I_CmsResourceType> m_resourceTypes;
+    private transient List<I_CmsResourceType> m_resourceTypes;
 
     /** The module site. */
     private String m_site;

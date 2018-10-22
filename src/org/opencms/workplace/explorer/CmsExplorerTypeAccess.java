@@ -82,7 +82,7 @@ public class CmsExplorerTypeAccess implements Serializable {
     private CmsAccessControlList m_accessControlList;
 
     /** Cached permissions based on roles. */
-    private Map<String, CmsPermissionSetCustom> m_permissionsCache;
+    private transient Map<String, CmsPermissionSetCustom> m_permissionsCache;
 
     /**
      * Constructor, creates an empty, CmsExplorerTypeAccess object.<p>
