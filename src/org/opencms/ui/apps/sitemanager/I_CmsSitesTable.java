@@ -31,12 +31,21 @@ import org.opencms.ui.apps.user.I_CmsFilterableTable;
 
 import com.vaadin.v7.data.util.IndexedContainer;
 
-public interface I_CmsSitesTable extends I_CmsFilterableTable
+/**
+ * Interface for sites table.<p>
+ */
+public interface I_CmsSitesTable extends I_CmsFilterableTable {
 
-{
+    /**
+     * Get the container.<p>
+     *
+     * @return IndexedContainer
+     */
+    IndexedContainer getContainer();
 
-    public IndexedContainer getContainer();
-
-    public void loadSites();
+    /**
+     * Loads the sites.<p>
+     */
+    void loadSites();
 
 }

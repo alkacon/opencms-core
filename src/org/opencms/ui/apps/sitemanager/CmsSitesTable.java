@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -45,6 +46,7 @@ import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -116,11 +118,8 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
-            if ((data == null) || (data.size() != 1)) {
+            if ((data == null) || (data.size() != 1) || (m_manager.getElement(data.iterator().next()) == null)) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-            }
-            if (m_manager.getElement(data.iterator().next()) == null) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
 
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -130,30 +129,30 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     /**Table properties. */
     protected enum TableProperty {
 
-        /**Icon. */
-        Icon(null, Label.class, new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML)),
-        /**Path. */
-        Path(Messages.GUI_SITE_PATH_0, String.class, ""),
-        /**Name. */
-        Title(Messages.GUI_SITE_TITLE_0, String.class, ""),
-        /**Description. */
-        Server(Messages.GUI_SITE_SERVER_0, String.class, ""),
+        /**Status. */
+        Changed("", Boolean.class, new Boolean(false)),
+        /**Status. */
+        CmsSite("", CmsSite.class, null),
         /**OU. */
         Favicon("", Image.class, null),
+        /**Icon. */
+        Icon(null, Label.class, new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML)),
         /**Last login. */
         Is_Webserver("", Boolean.class, new Boolean(true)),
         /**IsIndirect?. */
         New("", Boolean.class, new Boolean(false)),
-        /**From Other ou?. */
-        SSL("", Integer.class, new Integer(1)),
         /**Is the user disabled? */
         OK("", Boolean.class, new Boolean(true)),
+        /**Path. */
+        Path(Messages.GUI_SITE_PATH_0, String.class, ""),
+        /**Description. */
+        Server(Messages.GUI_SITE_SERVER_0, String.class, ""),
+        /**From Other ou?. */
+        SSL("", Integer.class, new Integer(1)),
+        /**Name. */
+        Title(Messages.GUI_SITE_TITLE_0, String.class, ""),
         /**Is the user new? */
-        Under_Other_Site("", Boolean.class, new Boolean(false)),
-        /**Status. */
-        Changed("", Boolean.class, new Boolean(false)),
-        /**Status. */
-        CmsSite("", CmsSite.class, null);
+        Under_Other_Site("", Boolean.class, new Boolean(false));
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -240,7 +239,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             if (m_manager.getElement(data.iterator().next()) == null) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
@@ -288,13 +287,16 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
             if (data.size() > 1) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
-
-            if (!((Boolean)getItem(data.iterator().next()).getItemProperty(
-                TableProperty.OK).getValue()).booleanValue()) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            try {
+                CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                if (cms.existsResource(data.iterator().next())) {
+                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                }
+            } catch (CmsException e) {
+                LOG.error("Unable to inti OpenCms Object", e);
             }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
 
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
     }
@@ -356,7 +358,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
             }
             String siteRoot = data.iterator().next();
             if (m_manager.getElement(siteRoot) == null) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
             if (!((Boolean)getItem(siteRoot).getItemProperty(TableProperty.OK).getValue()).booleanValue()) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
@@ -409,23 +411,23 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
 
     }
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = 4655464609332605219L;
-
     /** The logger for this class. */
     protected static Log LOG = CmsLog.getLog(CmsSitesTable.class.getName());
 
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 4655464609332605219L;
+
     /** The project manager instance. */
-    protected CmsSiteManager m_manager;
+    public CmsSiteManager m_manager;
+
+    /** The available menu entries. */
+    protected List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /** The data container. */
     private IndexedContainer m_container;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
-
-    /** The available menu entries. */
-    protected List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
 
     /**Counter for valid sites.*/
     private int m_siteCounter;
@@ -656,8 +658,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                 } else {
                     item.getItemProperty(TableProperty.Icon).setValue(new Label(icon.getHtml(), ContentMode.HTML));
                 }
-                item.getItemProperty(TableProperty.OK).setValue(
-                    new Boolean(!OpenCms.getSiteManager().isSiteUnderSite(site)));
+                item.getItemProperty(TableProperty.OK).setValue(!isSiteUnderSite(site, sites));
             }
         }
 
@@ -817,5 +818,23 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         } catch (CmsException e) {
             return null;
         }
+    }
+
+    /**
+     * Is site in other site?<p>
+     *
+     * @param site to check
+     * @param sites to check
+     * @return Boolean
+     */
+    private Boolean isSiteUnderSite(CmsSite site, List<CmsSite> sites) {
+
+        for (CmsSite s : sites) {
+            if ((site.getSiteRoot().length() > s.getSiteRoot().length())
+                & site.getSiteRoot().startsWith(CmsFileUtil.addTrailingSeparator(s.getSiteRoot()))) {
+                return Boolean.TRUE;
+            }
+        }
+        return Boolean.FALSE;
     }
 }

@@ -51,6 +51,7 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
+import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -87,17 +88,29 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
     /** Constant. */
     private static final String NEW = ".templates/";
 
+    /**Map holding key, values for macros.*/
+    private Map<String, String> m_bundle;
+
     /**CmsObject(root-site).*/
     private CmsObject m_cms;
 
     /**CmsObject(root-site,online). */
     private CmsObject m_cmsOnline;
 
-    /**Site to save. */
-    private CmsSite m_site;
+    /**Indicates if a OU should be created. */
+    private boolean m_createOU;
+
+    /**Runnable which gets used after finishing thread.*/
+    private Runnable m_finished;
+
+    /**Manager app. */
+    private I_CmsCRUDApp<CmsSite> m_manager;
 
     /**Old version of site to overwrite. */
     private CmsSite m_oldSite;
+
+    /**FavIcon byte data. */
+    private ByteArrayOutputStream m_os;
 
     /**Parent OU. */
     private String m_parentOU;
@@ -105,28 +118,20 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
     /**Selected OU.*/
     private String m_selectedOU;
 
+    /**Site to save. */
+    private CmsSite m_site;
+
     /**Source to copy resources from. */
     private String m_source;
 
-    /**Indicates if a OU should be created. */
-    private boolean m_createOU;
-
     /**Template to set as property for the site. */
     private String m_template;
-
-    /**Runnable which gets used after finishing thread.*/
-    private Runnable m_finished;
-
-    /**FavIcon byte data. */
-    private ByteArrayOutputStream m_os;
-
-    /**Map holding key, values for macros.*/
-    private Map<String, String> m_bundle;
 
     /**
      * Constructor for Class.
      *
      * @param cms CmsObject
+     * @param manager manager
      * @param site to be saved
      * @param oldSite to be overwritten
      * @param source to copy resources from
@@ -140,6 +145,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
      */
     protected CmsCreateSiteThread(
         CmsObject cms,
+        I_CmsCRUDApp<CmsSite> manager,
         CmsSite site,
         CmsSite oldSite,
         String source,
@@ -150,6 +156,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
         ByteArrayOutputStream os,
         Map<String, String> bundle,
         Runnable finished) {
+
         super(cms, "createSite");
         m_cms = cms;
         m_cmsOnline = getOnlineCmsObject(cms);
@@ -164,6 +171,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
         m_selectedOU = selectedOU;
         m_os = os;
         m_finished = finished;
+        m_manager = manager;
         initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getRequestContext()));
     }
 
@@ -230,7 +238,8 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
 
             handleOU(siteRootResource);
 
-            OpenCms.getSiteManager().updateSite(m_cms, m_oldSite, m_site);
+            m_manager.writeElement(m_site);
+
             try {
                 m_cms.unlockResource(siteRootResource);
             } catch (CmsLockException e) {

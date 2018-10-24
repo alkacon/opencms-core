@@ -172,7 +172,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         private static final long serialVersionUID = 9014118214418269697L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -447,12 +447,12 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         private static final long serialVersionUID = 7499390905843603642L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
+        @Deprecated
         public void validate(Object value) throws InvalidValueException {
 
-            CmsSite parentSite = OpenCms.getSiteManager().getSiteForRootPath(
-                CmsFileUtil.removeTrailingSeparator((String)value));
+            CmsSite parentSite = m_manager.getElement(CmsFileUtil.removeTrailingSeparator((String)value));
             if (parentSite != null) {
                 if (!parentSite.equals(m_site)) {
                     throw new InvalidValueException(
@@ -563,23 +563,32 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -1011525709082939562L;
 
+    /**Flag to block change events. */
+    protected boolean m_blockChange;
+
     /**List of all folder names already used for sites. */
     List<String> m_alreadyUsedFolderPath = new ArrayList<String>();
 
     /**List of all urls already used for sites.*/
     Set<CmsSiteMatcher> m_alreadyUsedURL = new HashSet<CmsSiteMatcher>();
 
-    /**Edit group for workplace servers.*/
-    private CmsEditableGroup m_aliasGroup;
-
     /**cloned cms obejct.*/
     CmsObject m_clonedCms;
+
+    /**vaadin component.*/
+    ComboBox m_fieldSelectOU;
+
+    /**vaadin coponent.*/
+    ComboBox m_fieldSelectParentOU;
 
     /**vaadin component. */
     Upload m_fieldUploadFavIcon;
 
     /**Needed to check if favicon was changed. */
     int m_imageCounter;
+
+    /** The site manager instance.*/
+    CmsSiteManager m_manager;
 
     /**OutputStream to store the uploaded favicon temporarily. */
     ByteArrayOutputStream m_os = new ByteArrayOutputStream(5500);
@@ -596,11 +605,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin component.*/
     private VerticalLayout m_aliases;
 
+    /**Edit group for workplace servers.*/
+    private CmsEditableGroup m_aliasGroup;
+
     /**automatic setted folder name.*/
     private String m_autoSetFolderName;
-
-    /**vaadin component. */
-    private Panel m_infoSiteRoot;
 
     /**Map to connect vaadin text fields with bundle keys.*/
     private Map<TextField, String> m_bundleComponentKeyMap;
@@ -620,16 +629,14 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin component.*/
     private CheckBox m_fieldExclusiveError;
 
-    /**List of templates. */
-    private List<CmsResource> m_templates;
-
     /**vaadin component.*/
     private CheckBox m_fieldExclusiveURL;
 
-    private CheckBox m_fieldKeepTemplate;
-
     /**vaadin component. */
     private Image m_fieldFavIcon;
+
+    /**vaadin component. */
+    private CheckBox m_fieldKeepTemplate;
 
     /**vaadin component.*/
     private CmsPathSelectField m_fieldLoadSiteTemplate;
@@ -641,25 +648,13 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private TextField m_fieldSecureServer;
 
     /**vaadin component.*/
-    ComboBox m_fieldSelectOU;
-
-    /**vaadin coponent.*/
-    ComboBox m_fieldSelectParentOU;
-
-    /**vaadin component.*/
     private CheckBox m_fieldWebServer;
+
+    /**vaadin component. */
+    private Panel m_infoSiteRoot;
 
     /**boolean indicates if folder name was changed by user.*/
     private boolean m_isFolderNameTouched;
-
-    /**vaadin component.*/
-    private CmsPathSelectField m_simpleFieldSiteRoot;
-
-    /** The site manager instance.*/
-    CmsSiteManager m_manager;
-
-    /**Vaadin component. */
-    private ComboBox m_simpleFieldEncryption;
 
     /**vaadin component.*/
     private Button m_ok;
@@ -673,8 +668,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**Panel holding the report widget.*/
     private Panel m_report;
 
-    /**Flag to block change events. */
-    protected boolean m_blockChange;
+    /**Vaadin component. */
+    private ComboBox m_simpleFieldEncryption;
 
     /**vaadin component.*/
     private TextField m_simpleFieldFolderName;
@@ -686,10 +681,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private TextField m_simpleFieldServer;
 
     /**vaadin component.*/
+    private CmsPathSelectField m_simpleFieldSiteRoot;
+
+    /**vaadin component.*/
     private ComboBox m_simpleFieldTemplate;
 
     /**vaadin component.*/
     private TextField m_simpleFieldTitle;
+
+    /**List of templates. */
+    private List<CmsResource> m_templates;
 
     /**Layout for the report widget. */
     private FormLayout m_threadReport;
@@ -749,8 +750,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_autoSetFolderName = "";
         m_clonedCms = cms;
 
-        List<CmsSite> allSites = OpenCms.getSiteManager().getAvailableSites(m_clonedCms, true);
-        allSites.addAll(OpenCms.getSiteManager().getAvailableCorruptedSites(m_clonedCms, true));
+        List<CmsSite> allSites = manager.getAllElements();
+        allSites.addAll(manager.getCorruptedSites());
 
         for (CmsSite site : allSites) {
             if (site.getSiteMatcher() != null) {
@@ -1543,6 +1544,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             boolean createOU = m_fieldCreateOU.isEnabled() & m_fieldCreateOU.getValue().booleanValue();
             CmsCreateSiteThread createThread = new CmsCreateSiteThread(
                 m_clonedCms,
+                m_manager,
                 site,
                 m_site,
                 m_fieldLoadSiteTemplate.getValue(),
@@ -1561,26 +1563,21 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
                 });
 
-            createThread.start();
-
             CmsReportWidget report = new CmsReportWidget(createThread);
 
             report.setWidth("100%");
             report.setHeight("350px");
 
             m_threadReport.addComponent(report);
-            try {
-                createThread.join();
-            } catch (InterruptedException e) {
-                //
-            }
+            createThread.start();
         } else {
             if (!site.getSiteRoot().equals(m_site.getSiteRoot())) {
                 m_manager.deleteElements(Collections.singletonList(m_site.getSiteRoot()));
             }
             m_manager.writeElement(site);
+            m_manager.closeDialogWindow(true);
         }
-        m_manager.closeDialogWindow(true);
+
     }
 
     /**
@@ -1692,7 +1689,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private String getFieldTemplate() {
 
-        if (m_fieldKeepTemplate.getValue()) {
+        if (m_fieldKeepTemplate.getValue().booleanValue()) {
             return ""; //No template property will be changed
         }
         Object value = m_simpleFieldTemplate.getValue();
@@ -1941,7 +1938,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_simpleFieldFolderName.removeAllValidators(); //can not be changed
         m_fieldCreateOU.setVisible(false);
 
-        m_alreadyUsedURL.remove(m_site.getSiteMatcher()); //Remove current url to avoid validation problem
+        m_alreadyUsedURL.remove(m_site.getSiteMatcher().forDifferentScheme("https")); //Remove current url to avoid validation problem
+        m_alreadyUsedURL.remove(m_site.getSiteMatcher().forDifferentScheme("http"));
 
         setFieldTitle(m_site.getTitle());
         setFieldFolder(getFolderNameFromSiteRoot(m_site.getSiteRoot()));

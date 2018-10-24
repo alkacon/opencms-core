@@ -108,23 +108,26 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
     /**Path to the sites folder.*/
     static final String PATH_SITES = "/sites/";
 
-    /** The site table. */
-    protected CmsSitesTable m_sitesTable;
-
     /** The currently opened dialog window. */
     protected Window m_dialogWindow;
 
-    /** The root cms object. */
-    private CmsObject m_rootCms;
+    /** The site table. */
+    protected CmsSitesTable m_sitesTable;
 
     /** The file table filter input. */
-    private TextField m_siteTableFilter;
+    protected TextField m_siteTableFilter;
+
+    /**Info Button. */
+    private CmsInfoButton m_infoButton;
+
+    /**Is or should the publish button be visible.*/
+    private boolean m_isPublishVisible;
 
     /**The publish button.*/
     private Button m_publishButton;
 
-    /**Is or should the publish button be visible.*/
-    private boolean m_isPublishVisible;
+    /** The root cms object. */
+    private CmsObject m_rootCms;
 
     /**
      * Method to check if a folder under given path contains a bundle for macro resolving.<p>
@@ -222,6 +225,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
                 LOG.error("Unable to delete site", e);
             }
         }
+        updateInfo();
     }
 
     /**
@@ -229,7 +233,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
      */
     public List<CmsSite> getAllElements() {
 
-        return OpenCms.getSiteManager().getAvailableSites(getRootCmsObject(), false);
+        List<CmsSite> res = OpenCms.getSiteManager().getAvailableSites(getRootCmsObject(), false);
+        return res;
     }
 
     /**
@@ -345,6 +350,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
         } catch (CmsException e) {
             LOG.error("Unabel to update site", e);
         }
+        updateInfo();
         m_sitesTable.loadSites();
     }
 
@@ -446,6 +452,14 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
     }
 
     /**
+     * Update the info button.<p>
+     */
+    protected void updateInfo() {
+
+        m_infoButton.replaceData(getInfoMap());
+    }
+
+    /**
      * Adds the toolbar buttons.<p>
      */
     private void addToolbarButtons() {
@@ -500,23 +514,32 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
             m_uiContext.addToolbarButton(webServer);
         }
 
+        m_infoButton = new CmsInfoButton(getInfoMap());
+
+        m_infoButton.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_CAPTION_0));
+        m_infoButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_CAPTION_0));
+        m_uiContext.addToolbarButton(m_infoButton);
+    }
+
+    /**
+     * Get info map.<p>
+     *
+     * @return map of sites info
+     */
+    private Map<String, String> getInfoMap() {
+
         Map<String, String> infos = new LinkedHashMap<String, String>();
-        int corruptedSites = OpenCms.getSiteManager().getAvailableCorruptedSites(m_rootCms, false).size();
+        int corruptedSites = getCorruptedSites().size();
         infos.put(
             CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_WEBSITES_0),
-            String.valueOf(OpenCms.getSiteManager().getAvailableSites(m_rootCms, false).size() + corruptedSites));
+            String.valueOf(getAllElements().size() + corruptedSites));
 
         if (corruptedSites > 0) {
             infos.put(
                 CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_CORRUPTED_WEBSITES_0),
                 String.valueOf(corruptedSites));
         }
-        infos.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_NUM_WORKPLACESERVER_0),
-            String.valueOf(OpenCms.getSiteManager().getWorkplaceServers().size()));
-        CmsInfoButton infoButton = new CmsInfoButton(infos);
-        infoButton.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_CAPTION_0));
-        infoButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_STATISTICS_CAPTION_0));
-        m_uiContext.addToolbarButton(infoButton);
+
+        return infos;
     }
 }

@@ -34,7 +34,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
@@ -58,14 +57,14 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public class CmsDeleteSiteDialog extends CmsBasicDialog {
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = 4861877088383896218L;
-
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsDeleteSiteDialog.class.getName());
 
-    /**ok button.*/
-    private Button m_okButton;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 4861877088383896218L;
+
+    /** The site manager instance.*/
+    CmsSiteManager m_manager;
 
     /**cancel button.*/
     private Button m_cancelButton;
@@ -73,11 +72,11 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
     /**check box: should resources be deleted?*/
     private CheckBox m_deleteResources;
 
+    /**ok button.*/
+    private Button m_okButton;
+
     /**sites to delete.*/
     private final List<CmsSite> m_sitesToDelete = new ArrayList<CmsSite>();
-
-    /** The site manager instance.*/
-    CmsSiteManager m_manager;
 
     /**
      * Public constructor.<p>
@@ -138,7 +137,6 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
             siteRootsToDelete.add(site.getSiteRoot());
         }
         m_manager.deleteElements(siteRootsToDelete);
-        CmsAppWorkplaceUi.get().reload();
         if (m_deleteResources.getValue().booleanValue()) {
             for (CmsSite site : m_sitesToDelete) {
                 try {
