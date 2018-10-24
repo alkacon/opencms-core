@@ -238,8 +238,6 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
 
             handleOU(siteRootResource);
 
-            m_manager.writeElement(m_site);
-
             try {
                 m_cms.unlockResource(siteRootResource);
             } catch (CmsLockException e) {
@@ -258,6 +256,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
         }
         getReport().println(Messages.get().container(Messages.RPT_SITE_FINISH_0), I_CmsReport.FORMAT_OK);
         m_finished.run();
+        m_manager.writeElement(m_site);
     }
 
     /**
