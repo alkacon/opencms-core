@@ -51,6 +51,7 @@ public class CmsModuleRow {
      * @param module the module for which this is a row
      */
     public CmsModuleRow(CmsModule module) {
+
         m_module = module;
     }
 
@@ -68,7 +69,7 @@ public class CmsModuleRow {
      *
      * @return the module group
      */
-    @Column(header = Messages.GUI_MODULES_HEADER_GROUP_0, order = 10, width = 200)
+    @Column(header = Messages.GUI_MODULES_HEADER_GROUP_0, order = 40, width = 200)
     public String getGroup() {
 
         return Strings.nullToEmpty(m_module.getGroup());
@@ -99,7 +100,7 @@ public class CmsModuleRow {
      *
      * @return the module name
      */
-    @Column(header = Messages.GUI_MODULES_HEADER_NAME_0, styleName = OpenCmsTheme.HOVER_COLUMN, width = 350, order = 1)
+    @Column(header = Messages.GUI_MODULES_HEADER_NAME_0, styleName = OpenCmsTheme.HOVER_COLUMN, width = 350, order = 10)
     public String getName() {
 
         return m_module.getName();
@@ -110,7 +111,7 @@ public class CmsModuleRow {
      *
      * @return the nice name of the module
      */
-    @Column(header = Messages.GUI_MODULES_HEADER_TITLE_0, expandRatio = 1.0f, order = 2)
+    @Column(header = Messages.GUI_MODULES_HEADER_TITLE_0, expandRatio = 1.0f, order = 20)
     public String getTitle() {
 
         return Strings.nullToEmpty(m_module.getNiceName());
@@ -121,7 +122,7 @@ public class CmsModuleRow {
      *
      * @return the number of resource types
      */
-    @Column(header = Messages.GUI_MODULES_HEADER_TYPES_0, order = 15)
+    @Column(header = Messages.GUI_MODULES_HEADER_TYPES_0, order = 50)
     public int getTypes() {
 
         return m_module.getResourceTypes().size();
@@ -132,7 +133,7 @@ public class CmsModuleRow {
      *
      * @return the module version
      */
-    @Column(header = Messages.GUI_MODULES_HEADER_VERSION_0, width = 80, order = 3)
+    @Column(header = Messages.GUI_MODULES_HEADER_VERSION_0, width = 80, order = 30)
     public String getVersion() {
 
         return m_module.getVersion().toString();

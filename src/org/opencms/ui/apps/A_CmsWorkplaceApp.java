@@ -48,9 +48,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
-import com.vaadin.ui.UI;
 
 /**
  * Super class for workplace apps to help implementing the app navigation and layout.<p>
@@ -83,6 +83,7 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
          * @param targetState the target state
          */
         public NavEntry(String name, String description, Resource icon, String targetState) {
+
             m_name = name;
             m_description = description;
             m_icon = icon;

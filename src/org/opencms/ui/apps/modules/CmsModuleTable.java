@@ -27,37 +27,23 @@
 
 package org.opencms.ui.apps.modules;
 
-import org.opencms.file.CmsObject;
-import org.opencms.gwt.CmsCoreService;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.module.CmsModuleImportExportHandler;
-import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsAttributeAwareApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.modules.edit.CmsEditModuleForm;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
-import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.contextmenu.CmsContextMenu;
-import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.ui.util.table.CmsBeanTableBuilder;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -82,359 +68,10 @@ import com.vaadin.v7.ui.TextField;
 
 /**
  * Overview list for module information.<p>
+ *
+ * @param <T> the row type
  */
-public class CmsModuleTable extends Table {
-
-    /**
-     * Context menu entry for deleting a module.<p>
-     */
-    class DeleteModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        @SuppressWarnings("synthetic-access")
-        @Override
-        public void executeAction(final String context) {
-
-            try {
-                final CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-                final CmsModule module = OpenCms.getModuleManager().getModule(context);
-
-                Runnable okAction = new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        final A_CmsReportThread thread = new A_CmsReportThread(cms, "Delete module " + context) {
-
-                            @Override
-                            public String getReportUpdate() {
-
-                                return getReport().getReportUpdate();
-                            }
-
-                            @Override
-                            public void run() {
-
-                                initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
-                                try {
-                                    OpenCms.getModuleManager().deleteModule(cms, context, false, getReport());
-                                } catch (Exception e) {
-                                    getReport().println(e);
-                                    LOG.error(e.getLocalizedMessage(), e);
-                                }
-
-                            }
-                        };
-                        if (module.hasModuleResourcesWithUndefinedSite()) {
-                            CmsSiteSelectDialog.openDialogInWindow(new CmsSiteSelectDialog.I_Callback() {
-
-                                @Override
-                                public void onCancel() {
-
-                                    // TODO Auto-generated method stub
-
-                                }
-
-                                @Override
-                                public void onSiteSelect(String site) {
-
-                                    cms.getRequestContext().setSiteRoot(site);
-                                    m_app.openReport(
-                                        CmsModuleApp.States.DELETE_REPORT,
-                                        thread,
-                                        CmsVaadinUtils.getMessageText(
-                                            Messages.GUI_MODULES_REPORT_DELETE_MODULE_1,
-                                            context));
-                                }
-                            }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_SITE_SELECT_0));
-
-                        } else {
-                            m_app.openReport(
-                                CmsModuleApp.States.DELETE_REPORT,
-                                thread,
-                                CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_DELETE_MODULE_1, context));
-                        }
-                    }
-                };
-                CmsConfirmationDialog.show(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONFIRM_DELETE_TITLE_1, context),
-                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_DELETE_CONFIRMATION_0),
-                    okAction);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        @Override
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_DELETE_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-
-    }
-
-    /**
-     * Context menu entry for editng a module.
-     */
-    class EditModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        @Override
-        public void executeAction(String context) {
-
-            CmsModule module = OpenCms.getModuleManager().getModule(context);
-            editModule(
-                module,
-                false,
-                CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_EDIT_MODULE_1, module.getName()));
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        @Override
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EDIT_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-
-    }
-
-    /**
-     * Context menu entry for editng a module.
-     */
-    class ExplorerEntry implements I_CmsSimpleContextMenuEntry<String> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        @Override
-        public void executeAction(String context) {
-
-            String path = getModuleFolder(context);
-            if (path != null) {
-                String link = CmsCoreService.getVaadinWorkplaceLink(A_CmsUI.getCmsObject(), path);
-                A_CmsUI.get().getPage().setLocation(link);
-                A_CmsUI.get().getPage().reload();
-            }
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        @Override
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EXPLORER_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
-
-            if (getModuleFolder(context) != null) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-            } else {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-            }
-        }
-
-        /**
-         * Tries to find the module folder under /system/modules for a given module.<p>
-         *
-         * @param moduleName the name of the module
-         *
-         * @return the module folder, or null if this module doesn't have one
-         */
-        private String getModuleFolder(String moduleName) {
-
-            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-            if (module != null) {
-                for (String resource : module.getResources()) {
-                    if (CmsStringUtil.comparePaths("/system/modules/" + moduleName, resource)) {
-                        return resource;
-                    }
-                }
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Context menu entry for exporting a module.
-     */
-    class ExportModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        @Override
-        public void executeAction(final String context) {
-
-            final CmsObject cms = A_CmsUI.getCmsObject();
-            final String handlerDesc = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context);
-
-            final A_CmsReportThread thread = new A_CmsReportThread(cms, "Export module " + context) {
-
-                @Override
-                public String getReportUpdate() {
-
-                    return getReport().getReportUpdate();
-                }
-
-                /**
-                 * @see java.lang.Thread#run()
-                 */
-                @SuppressWarnings("synthetic-access")
-                @Override
-                public void run() {
-
-                    initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
-                    try {
-                        CmsModuleImportExportHandler handler = CmsModuleImportExportHandler.getExportHandler(
-                            cms,
-                            OpenCms.getModuleManager().getModule(context),
-                            handlerDesc);
-                        OpenCms.getImportExportManager().exportData(cms, handler, getReport());
-                    } catch (Exception e) {
-                        getReport().println(e);
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-
-                }
-            };
-            CmsModule module = OpenCms.getModuleManager().getModule(context);
-            if (module.hasModuleResourcesWithUndefinedSite()) {
-                CmsSiteSelectDialog.openDialogInWindow(new CmsSiteSelectDialog.I_Callback() {
-
-                    @Override
-                    public void onCancel() {
-
-                        // TODO Auto-generated method stub
-
-                    }
-
-                    @Override
-                    public void onSiteSelect(String site) {
-
-                        cms.getRequestContext().setSiteRoot(site);
-                        m_app.openReport(
-                            CmsModuleApp.States.EXPORT_REPORT,
-                            thread,
-                            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
-                    }
-                }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_SITE_SELECT_0));
-
-            } else {
-                m_app.openReport(
-                    CmsModuleApp.States.EXPORT_REPORT,
-                    thread,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
-            }
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        @Override
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EXPORT_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-
-    }
-
-    /**
-     * Context menu entry for displaying the type list.<p>
-     */
-    class ModuleInfoEntry
-    implements I_CmsSimpleContextMenuEntry<String>,
-    org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles {
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
-         */
-        @Override
-        public void executeAction(String module) {
-
-            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-
-            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module, CmsModuleTable.this::editModule);
-
-            window.setContent(typeList);
-            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_0));
-            A_CmsUI.get().addWindow(window);
-            window.center();
-
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
-         */
-        public String getStyles() {
-
-            return ValoTheme.LABEL_BOLD;
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
-         */
-        @Override
-        public String getTitle(Locale locale) {
-
-            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_LIST_TYPES_0);
-        }
-
-        /**
-         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
-         */
-        @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
-
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-
-    }
-
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsModuleTable.class);
+public class CmsModuleTable<T> extends Table {
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
@@ -443,7 +80,7 @@ public class CmsModuleTable extends Table {
     protected CmsModuleApp m_app;
 
     /** The table builder. */
-    protected CmsBeanTableBuilder<CmsModuleRow> m_tableBuilder;
+    protected CmsBeanTableBuilder<T> m_tableBuilder;
 
     /** The row counter label. */
     private CmsInfoButton m_counter;
@@ -458,10 +95,10 @@ public class CmsModuleTable extends Table {
      * Creates a new instance.<p>
      *
      * @param app the module manager app instance.<p>
-     *
+     * @param rowType the row type
      * @param rows the module rows
      */
-    public CmsModuleTable(CmsModuleApp app, List<CmsModuleRow> rows) {
+    public CmsModuleTable(CmsModuleApp app, Class<T> rowType, List<T> rows) {
 
         m_menu.setAsTableContextMenu(this);
         m_app = app;
@@ -518,9 +155,7 @@ public class CmsModuleTable extends Table {
             @Override
             public void buttonClick(ClickEvent event) {
 
-                CmsModule module = new CmsModule();
-                module.setSite("/");
-                editModule(module, true, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_NEW_MODULE_0));
+                m_app.editNewModule(CmsModuleTable.this::reload);
             }
         });
         buttons.add(addModule);
@@ -545,7 +180,7 @@ public class CmsModuleTable extends Table {
         buttons.add(m_counter);
         attributes.put(CmsModuleApp.Attributes.BUTTONS, buttons);
         setData(attributes);
-        CmsBeanTableBuilder<CmsModuleRow> builder = CmsBeanTableBuilder.newInstance(CmsModuleRow.class);
+        CmsBeanTableBuilder<T> builder = CmsBeanTableBuilder.newInstance(rowType);
         m_tableBuilder = builder;
         builder.buildTable(this, rows);
         setCellStyleGenerator(builder.getDefaultCellStyleGenerator());
@@ -555,30 +190,6 @@ public class CmsModuleTable extends Table {
         setMultiSelect(false);
         sort(new Object[] {"name"}, new boolean[] {true});
         updateCounter();
-    }
-
-    /**
-     * Opens the module editor for the given module.<p>
-     *
-     * @param module the edited module
-     * @param isNew true if this is a new module
-     * @param caption the caption for the module editor dialog
-     */
-    public void editModule(CmsModule module, boolean isNew, String caption) {
-
-        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        CmsEditModuleForm form = new CmsEditModuleForm(module, isNew, new Runnable() {
-
-            @Override
-            public void run() {
-
-                reload();
-            }
-        });
-        window.setContent(form);
-        window.setCaption(caption);
-        A_CmsUI.get().addWindow(window);
-        window.center();
     }
 
     /**
@@ -614,23 +225,6 @@ public class CmsModuleTable extends Table {
     }
 
     /**
-     * Returns the available menu entries.<p>
-     *
-     * @return the menu entries
-     */
-    List<I_CmsSimpleContextMenuEntry<String>> getMenuEntries() {
-
-        List<I_CmsSimpleContextMenuEntry<String>> result = Lists.newArrayList();
-
-        result.add(new ModuleInfoEntry());
-        result.add(new EditModuleEntry());
-        result.add(new DeleteModuleEntry());
-        result.add(new ExportModuleEntry());
-        result.add(new ExplorerEntry());
-        return result;
-    }
-
-    /**
      * Handles the table item clicks.<p>
      *
      * @param event the click event
@@ -641,24 +235,14 @@ public class CmsModuleTable extends Table {
             if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
                 CmsModuleRow moduleRow = (CmsModuleRow)(event.getItemId());
                 select(moduleRow);
-                m_menu.setEntries(getMenuEntries(), moduleRow.getModule().getName());
+                m_menu.setEntries(m_app.getMenuEntries(), moduleRow.getModule().getName());
                 m_menu.openForTable(event, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && "name".equals(event.getPropertyId())) {
                 BeanItem<?> item = (BeanItem<?>)event.getItem();
                 CmsModuleRow row = (CmsModuleRow)(item.getBean());
-                (new ModuleInfoEntry()).executeAction(row.getModule().getName());
+                m_app.openModuleInfo(row.getModule().getName());
             }
         }
-    }
-
-    /**
-     * Opens the editor for the module with the given name.<p>
-     *
-     * @param moduleName the module name
-     */
-    private void editModule(String moduleName) {
-
-        (new EditModuleEntry()).executeAction(moduleName);
     }
 
     /**

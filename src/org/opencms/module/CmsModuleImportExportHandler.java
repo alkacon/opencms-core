@@ -57,6 +57,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlErrorHandler;
 import org.opencms.xml.CmsXmlException;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -265,6 +266,71 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         return importedModule;
     }
 
+    /**
+     * Reads a module object from an external file source.<p>
+     *
+     * @param manifest the manifest data
+     *
+     * @return the imported module
+     *
+     * @throws CmsConfigurationException if the module could not be imported
+     */
+    public static CmsModule readModuleFromManifest(byte[] manifest) throws CmsConfigurationException {
+
+        // instantiate Digester and enable XML validation
+        Digester digester = new Digester();
+        digester.setUseContextClassLoader(true);
+        digester.setValidating(false);
+        digester.setRuleNamespaceURI(null);
+        digester.setErrorHandler(new CmsXmlErrorHandler("manifest data"));
+
+        // add this class to the Digester
+        CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
+        final String[] version = new String[] {null};
+        digester.push(handler);
+
+        digester.addRule("*/export_version", new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                version[0] = text.trim();
+            }
+
+        });
+        CmsModuleXmlHandler.addXmlDigesterRules(digester);
+
+        InputStream stream = new ByteArrayInputStream(manifest);
+
+        try {
+            digester.parse(stream);
+        } catch (IOException e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_1, "manifest data");
+            LOG.error(message.key(), e);
+            throw new CmsConfigurationException(message, e);
+        } catch (SAXException e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_SAX_MODULE_IMPORT_1, "manifest data");
+            LOG.error(message.key(), e);
+            throw new CmsConfigurationException(message, e);
+        }
+        CmsModule importedModule = handler.getModule();
+        // the digester must have set the module now
+        if (importedModule == null) {
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_IMPORT_MOD_ALREADY_INSTALLED_1, "manifest data"));
+        } else {
+            importedModule.setExportVersion(version[0]);
+        }
+
+        return importedModule;
+    }
+
+    /**
+     * Writes the messages for starting an import to the given report.<p>
+     *
+     * @param report the report to write to
+     * @param modulePackageName the module name
+     */
     public static void reportBeginImport(I_CmsReport report, String modulePackageName) {
 
         report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
@@ -282,6 +348,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
     }
 
+    /**
+     * Writes the messages for finishing an import to the given report.<p>
+     *
+     * @param report the report to write to
+     */
     public static void reportEndImport(I_CmsReport report) {
 
         report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);

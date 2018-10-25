@@ -70,10 +70,10 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
 
     /** The available module export modes. */
     public enum ExportMode {
-        /** Default export mode. */
-        DEFAULT,
-        /** Reduced export, that omits last modification information (dates and users). */
-        REDUCED;
+    /** Default export mode. */
+    DEFAULT,
+    /** Reduced export, that omits last modification information (dates and users). */
+    REDUCED;
 
         /**
          * @see java.lang.Enum#toString()
@@ -1797,4 +1797,5 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
         }
         return a.equals(b);
     }
+
 }

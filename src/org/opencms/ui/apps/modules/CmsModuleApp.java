@@ -27,9 +27,15 @@
 
 package org.opencms.ui.apps.modules;
 
+import org.opencms.file.CmsObject;
+import org.opencms.gwt.CmsCoreService;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -39,20 +45,31 @@ import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.modules.edit.CmsEditModuleForm;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsBasicReportPage;
+import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Main module manager app class.<p>
@@ -76,14 +93,14 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         /** Icon for the module manager app. */
         public static Resource APP = new CmsCssIcon("oc-icon-32-module");
 
-        /** Icon for resource info boxes. */
-        public static Resource RESINFO_ICON = new CmsCssIcon("oc-icon-24-module");
-
         /** Icon for the 'import via http' button. */
         public static Resource IMPORT = FontOpenCms.UPLOAD;
 
         /** Icon for the module list. */
         public static final Resource LIST_ICON = new CmsCssIcon("oc-icon-24-module");
+
+        /** Icon for resource info boxes. */
+        public static Resource RESINFO_ICON = new CmsCssIcon("oc-icon-24-module");
 
     }
 
@@ -108,17 +125,359 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         public static final String MAIN = "";
     }
 
+    /**
+     * Context menu entry for deleting a module.<p>
+     */
+    class DeleteModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        @Override
+        public void executeAction(final String context) {
+
+            try {
+                final CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                final CmsModule module = OpenCms.getModuleManager().getModule(context);
+
+                Runnable okAction = new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        final A_CmsReportThread thread = new A_CmsReportThread(cms, "Delete module " + context) {
+
+                            @Override
+                            public String getReportUpdate() {
+
+                                return getReport().getReportUpdate();
+                            }
+
+                            @Override
+                            public void run() {
+
+                                initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                                try {
+                                    OpenCms.getModuleManager().deleteModule(cms, context, false, getReport());
+                                } catch (Exception e) {
+                                    getReport().println(e);
+                                    LOG.error(e.getLocalizedMessage(), e);
+                                }
+
+                            }
+                        };
+                        if (module.hasModuleResourcesWithUndefinedSite()) {
+                            CmsSiteSelectDialog.openDialogInWindow(new CmsSiteSelectDialog.I_Callback() {
+
+                                @Override
+                                public void onCancel() {
+
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                                @Override
+                                public void onSiteSelect(String site) {
+
+                                    cms.getRequestContext().setSiteRoot(site);
+                                    openReport(
+                                        CmsModuleApp.States.DELETE_REPORT,
+                                        thread,
+                                        CmsVaadinUtils.getMessageText(
+                                            Messages.GUI_MODULES_REPORT_DELETE_MODULE_1,
+                                            context));
+                                }
+                            }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_SITE_SELECT_0));
+
+                        } else {
+                            openReport(
+                                CmsModuleApp.States.DELETE_REPORT,
+                                thread,
+                                CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_DELETE_MODULE_1, context));
+                        }
+                    }
+                };
+                CmsConfirmationDialog.show(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONFIRM_DELETE_TITLE_1, context),
+                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_DELETE_CONFIRMATION_0),
+                    okAction);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        @Override
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_DELETE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @Override
+        public CmsMenuItemVisibilityMode getVisibility(String context) {
+
+            return visibilityCheckHasModule(context);
+        }
+
+    }
+
+    /**
+     * Context menu entry for editng a module.
+     */
+    class EditModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @Override
+        public void executeAction(String context) {
+
+            CmsModuleApp.this.editModule(context);
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        @Override
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EDIT_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @Override
+        public CmsMenuItemVisibilityMode getVisibility(String context) {
+
+            return visibilityCheckHasModule(context);
+        }
+
+    }
+
+    /**
+     * Context menu entry for editng a module.
+     */
+    static class ExplorerEntry implements I_CmsSimpleContextMenuEntry<String> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @Override
+        public void executeAction(String context) {
+
+            String path = getModuleFolder(context);
+            if (path != null) {
+                String link = CmsCoreService.getVaadinWorkplaceLink(A_CmsUI.getCmsObject(), path);
+                A_CmsUI.get().getPage().setLocation(link);
+                A_CmsUI.get().getPage().reload();
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        @Override
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EXPLORER_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @Override
+        public CmsMenuItemVisibilityMode getVisibility(String context) {
+
+            if (getModuleFolder(context) != null) {
+                return visibilityCheckHasModule(context);
+            } else {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+        }
+
+        /**
+         * Tries to find the module folder under /system/modules for a given module.<p>
+         *
+         * @param moduleName the name of the module
+         *
+         * @return the module folder, or null if this module doesn't have one
+         */
+        private String getModuleFolder(String moduleName) {
+
+            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+            if (module != null) {
+                for (String resource : module.getResources()) {
+                    if (CmsStringUtil.comparePaths("/system/modules/" + moduleName, resource)) {
+                        return resource;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Context menu entry for exporting a module.
+     */
+    class ExportModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @Override
+        public void executeAction(final String context) {
+
+            final CmsObject cms = A_CmsUI.getCmsObject();
+            final String handlerDesc = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context);
+
+            final A_CmsReportThread thread = new A_CmsReportThread(cms, "Export module " + context) {
+
+                @Override
+                public String getReportUpdate() {
+
+                    return getReport().getReportUpdate();
+                }
+
+                /**
+                 * @see java.lang.Thread#run()
+                 */
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void run() {
+
+                    initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                    try {
+                        CmsModuleImportExportHandler handler = CmsModuleImportExportHandler.getExportHandler(
+                            cms,
+                            OpenCms.getModuleManager().getModule(context),
+                            handlerDesc);
+                        OpenCms.getImportExportManager().exportData(cms, handler, getReport());
+                    } catch (Exception e) {
+                        getReport().println(e);
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+
+                }
+            };
+            CmsModule module = OpenCms.getModuleManager().getModule(context);
+            if (module.hasModuleResourcesWithUndefinedSite()) {
+                CmsSiteSelectDialog.openDialogInWindow(new CmsSiteSelectDialog.I_Callback() {
+
+                    @Override
+                    public void onCancel() {
+
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void onSiteSelect(String site) {
+
+                        cms.getRequestContext().setSiteRoot(site);
+                        openReport(
+                            CmsModuleApp.States.EXPORT_REPORT,
+                            thread,
+                            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+                    }
+                }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_SITE_SELECT_0));
+
+            } else {
+                openReport(
+                    CmsModuleApp.States.EXPORT_REPORT,
+                    thread,
+                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        @Override
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_EXPORT_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @Override
+        public CmsMenuItemVisibilityMode getVisibility(String context) {
+
+            return visibilityCheckHasModule(context);
+        }
+
+    }
+
+    /**
+     * Context menu entry for displaying the type list.<p>
+     */
+    class ModuleInfoEntry
+    implements I_CmsSimpleContextMenuEntry<String>,
+    org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        @Override
+        public void executeAction(String module) {
+
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+
+            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module, CmsModuleApp.this::editModule);
+
+            window.setContent(typeList);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_0));
+            A_CmsUI.get().addWindow(window);
+            window.center();
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles#getStyles()
+         */
+        public String getStyles() {
+
+            return ValoTheme.LABEL_BOLD;
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        @Override
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_CONTEXTMENU_LIST_TYPES_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        @Override
+        public CmsMenuItemVisibilityMode getVisibility(String context) {
+
+            return visibilityCheckHasModule(context);
+        }
+
+    }
+
     /** The 'module' parameter. */
     public static final String PARAM_MODULE = "module";
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleApp.class);
+
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /** The currently active report. */
-    protected A_CmsReportThread m_currentReport;
-
-    /** The currently running report thread. */
-    private A_CmsReportThread m_currentReportThread;
 
     /** Contains labels for the running reports. */
     private IdentityHashMap<A_CmsReportThread, String> m_labels = new IdentityHashMap<A_CmsReportThread, String>();
@@ -135,21 +494,82 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     }
 
     /**
-     * Gets the current report thread.<p>
+     * Opens the module editor for the given module.<p>
      *
-     * @return the current report thread
+     * @param module the edited module
+     * @param isNew true if this is a new module
+     * @param caption the caption for the module editor dialog
+     * @param callback the callback to call after the edit dialog is done
      */
-    public A_CmsReportThread getReportThread() {
+    public static void editModule(CmsModule module, boolean isNew, String caption, Runnable callback) {
 
-        return m_currentReportThread;
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        CmsEditModuleForm form = new CmsEditModuleForm(module, isNew, callback);
+        window.setContent(form);
+        window.setCaption(caption);
+        A_CmsUI.get().addWindow(window);
+        window.center();
     }
 
     /**
-     * Goes to the main view.<p>
+     * Returns VISIBILITY_ACTIVE if a module with the given name exists, and VISIBILITY_INVISIBLE otherwise
+     *
+     * @param name a module name
+     * @return the visibility
      */
-    public void goToMainView() {
+    public static CmsMenuItemVisibilityMode visibilityCheckHasModule(String name) {
 
-        openSubView("", true);
+        if (OpenCms.getModuleManager().hasModule(name)) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        } else {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+    }
+
+    /**
+     * Opens the edit dialog for the given module.<p>
+     *
+     * @param moduleName the name of the module
+     */
+    public void editModule(String moduleName) {
+
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        editModule(
+            module,
+            false,
+            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_EDIT_MODULE_1, module.getName()),
+            this::reload);
+    }
+
+    /**
+     * Opens module edit dialog for a new module.<p>
+     *
+     * @param callback the callback to call after finishing
+     */
+    public void editNewModule(Runnable callback) {
+
+        CmsModule module = new CmsModule();
+        module.setSite("/");
+
+        editModule(module, true, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_NEW_MODULE_0), callback);
+
+    }
+
+    /**
+     * Returns the available menu entries.<p>
+     *
+     * @return the menu entries
+     */
+    public List<I_CmsSimpleContextMenuEntry<String>> getMenuEntries() {
+
+        List<I_CmsSimpleContextMenuEntry<String>> result = Lists.newArrayList();
+
+        result.add(new ModuleInfoEntry());
+        result.add(new EditModuleEntry());
+        result.add(new DeleteModuleEntry());
+        result.add(new ExportModuleEntry());
+        result.add(new ExplorerEntry());
+        return result;
     }
 
     /**
@@ -178,6 +598,17 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         View view = CmsAppWorkplaceUi.get().getCurrentView();
         ((CmsAppView)view).setCacheStatus(CacheStatus.cache);
         super.onStateChange(state);
+
+    }
+
+    /**
+     * Opens the module info dialog.<p>
+     *
+     * @param name the name of the module
+     */
+    public void openModuleInfo(String name) {
+
+        new ModuleInfoEntry().executeAction(name);
 
     }
 
@@ -276,16 +707,24 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
             reportForm.setHeight("100%");
             return reportForm;
         } else {
-            List<CmsModuleRow> rows = Lists.newArrayList();
-            for (CmsModule module : OpenCms.getModuleManager().getAllInstalledModules()) {
-                CmsModuleRow row = new CmsModuleRow(module);
-                rows.add(row);
-            }
-            m_rootLayout.setMainHeightFull(true);
-
-            CmsModuleTable table = new CmsModuleTable(this, rows);
-            return table;
+            return getModuleTable();
         }
+    }
+
+    /**
+     * Gets the module table.<p>
+     *
+     * @return the module table
+     */
+    protected Component getModuleTable() {
+
+        List<CmsModuleRow> rows = Lists.newArrayList();
+        for (CmsModule module : OpenCms.getModuleManager().getAllInstalledModules()) {
+            CmsModuleRow row = new CmsModuleRow(module);
+            rows.add(row);
+        }
+        CmsModuleTable<CmsModuleRow> table = new CmsModuleTable<CmsModuleRow>(this, CmsModuleRow.class, rows);
+        return table;
     }
 
     /**
@@ -306,6 +745,15 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
+    }
+
+    /**
+     * Reloads the table.
+     */
+    protected void reload() {
+
+        A_CmsUI.get().reload();
+
     }
 
     /**

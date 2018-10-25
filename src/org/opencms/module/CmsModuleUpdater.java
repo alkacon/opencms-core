@@ -467,6 +467,8 @@ public class CmsModuleUpdater {
                                 CmsFile file = cms.readFile(oldRes);
                                 if (Arrays.equals(file.getContents(), content)) {
                                     needsImport = false;
+                                } else {
+                                    LOG.debug("Content mismatch for " + file.getRootPath());
                                 }
                             } else {
                                 needsImport = false;

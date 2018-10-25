@@ -70,10 +70,7 @@ public abstract class A_CmsAttributeAwareApp extends A_CmsWorkplaceApp {
         }
         Component comp = getComponentForState(state);
         if (comp != null) {
-            comp.setSizeFull();
-            m_rootLayout.setMainContent(comp);
-            Map<String, Object> attributes = getAttributesForComponent(comp);
-            updateAppAttributes(attributes);
+            updateMainComponent(comp);
         } else {
             m_rootLayout.setMainContent(new Label("Malformed path, tool not available for path: " + state));
             updateAppAttributes(Collections.<String, Object> emptyMap());
@@ -81,6 +78,22 @@ public abstract class A_CmsAttributeAwareApp extends A_CmsWorkplaceApp {
         updateSubNav(getSubNavEntries(state));
         updateBreadCrumb(getBreadCrumbForState(state));
 
+    }
+
+    /**
+     * Replaces the app's  main component with the given component.<p>
+     *
+     * This also handles the attributes for the component, just as if the given component was returned by an app's
+     * getComponentForState method.
+     *
+     * @param comp the component to set as the main component
+     */
+    public void updateMainComponent(Component comp) {
+
+        comp.setSizeFull();
+        m_rootLayout.setMainContent(comp);
+        Map<String, Object> attributes = getAttributesForComponent(comp);
+        updateAppAttributes(attributes);
     }
 
     /**
