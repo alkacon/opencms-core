@@ -53,18 +53,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table showong content of flex cache.<p>
@@ -281,7 +281,7 @@ public class CmsFlexCacheTable extends Table {
      */
     void showVariationsWindow(String resource) {
 
-        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
         CmsVariationsDialog variationsDialog = new CmsVariationsDialog(resource, new Runnable() {
 
             public void run() {

@@ -40,8 +40,8 @@ import java.util.Set;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -59,10 +59,10 @@ public class CmsVariationsDialog extends CmsBasicDialog {
     private FormLayout m_layout;
 
     /**vaadin component.*/
-    private Panel m_panel;
+    private VerticalLayout m_outerlayout;
 
     /**vaadin component.*/
-    private VerticalLayout m_outerlayout;
+    private Panel m_panel;
 
     /**
      * public constructor.<p>
@@ -95,8 +95,8 @@ public class CmsVariationsDialog extends CmsBasicDialog {
 
             m_panel.setSizeFull();
 
-            m_layout.setHeight("700px");
-            m_outerlayout.setHeight("700px");
+            m_layout.setHeight("100%");
+            m_outerlayout.setHeight("100%");
 
             m_layout.addStyleName("v-scrollable");
 

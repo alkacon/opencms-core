@@ -57,19 +57,19 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table to show entries of image cache.<p>
@@ -188,11 +188,11 @@ public class CmsImageCacheTable extends Table {
 
     }
 
+    /**Image cache helper instance. */
+    protected static CmsImageCacheHolder HELPER;
+
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsImageCacheTable.class.getName());
-
-    /**column for image dimension.*/
-    private static final String PROP_VARIATIONS = "variations";
 
     /**Column for icon.*/
     private static final String PROP_ICON = "icon";
@@ -200,11 +200,11 @@ public class CmsImageCacheTable extends Table {
     /**column for name of image.*/
     private static final String PROP_NAME = "name";
 
+    /**column for image dimension.*/
+    private static final String PROP_VARIATIONS = "variations";
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5559186186646954045L;
-
-    /**Image cache helper instance. */
-    protected static CmsImageCacheHolder HELPER;
 
     /** The context menu. */
     CmsContextMenu m_menu;
@@ -212,17 +212,17 @@ public class CmsImageCacheTable extends Table {
     /**Indexed container.*/
     private IndexedContainer m_container;
 
-    /** The available menu entries. */
-    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
-
-    /**CmsObject at root.*/
-    private CmsObject m_rootCms;
-
     /**intro result view.*/
     private VerticalLayout m_intro;
 
+    /** The available menu entries. */
+    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+
     /**null result view. */
     private VerticalLayout m_nullResult;
+
+    /**CmsObject at root.*/
+    private CmsObject m_rootCms;
 
     /**Filter text field for table. */
     private TextField m_siteTableFilter;
@@ -410,7 +410,7 @@ public class CmsImageCacheTable extends Table {
      */
     void showVariationsWindow(String resource) {
 
-        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        final Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
         CmsVariationsDialog variationsDialog = new CmsVariationsDialog(resource, new Runnable() {
 
             public void run() {
