@@ -421,7 +421,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             pageContext.getOut().print(
                 "\n<link rel=\"stylesheet\" href=\""
                     + CmsJspTagLink.linkTagAction(cssUri.trim(), req)
-                    + generateReqParams()
+                    + generateReqParams(cms, cssUri.trim())
                     + "\" type=\"text/css\" ");
             if (shouldCloseTags()) {
                 pageContext.getOut().print("/>");
@@ -523,7 +523,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             pageContext.getOut().print(
                 "\n<script type=\"text/javascript\" src=\""
                     + CmsJspTagLink.linkTagAction(jsUri.trim(), req)
-                    + generateReqParams()
+                    + generateReqParams(cms, jsUri.trim())
                     + "\"></script>");
         }
         if (!inlineJS.isEmpty()) {
@@ -651,14 +651,26 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Generates the request parameter string.<p>
+     * @param cms the current cms context
+     * @param target the link that should be calculated, can be relative or absolute
      *
      * @return the request parameter string
      *
      * @throws UnsupportedEncodingException if something goes wrong encoding the request parameters
      */
-    private String generateReqParams() throws UnsupportedEncodingException {
+    private String generateReqParams(CmsObject cms, String target) throws UnsupportedEncodingException {
 
         String params = "";
+        try {
+            // Add the latest release time of the resource
+            // to the URI of the (static) resource
+            // as the version number identifier.
+            CmsResource targetRes = cms.readResource(target);
+            params = "?ver=" + targetRes.getDateLastModified();
+        } catch (CmsException e) {
+            // This should never happen
+        }
+        
         if ((m_parameterMap != null) && !m_parameterMap.isEmpty()) {
             for (Entry<String, String[]> paramEntry : m_parameterMap.entrySet()) {
                 if (paramEntry.getValue() != null) {
