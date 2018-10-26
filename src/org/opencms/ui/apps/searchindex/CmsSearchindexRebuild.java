@@ -27,20 +27,21 @@
 
 package org.opencms.ui.apps.searchindex;
 
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.report.CmsReportWidget;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -52,37 +53,41 @@ public class CmsSearchindexRebuild extends VerticalLayout {
     private static final long serialVersionUID = -3306537840428458751L;
 
     /**vaadin component.*/
-    private Panel m_reportPanel;
-
-    /**vaadin component.*/
-    private Panel m_startPanel;
-
-    /**vaadin component.*/
     private Label m_confirm;
+
+    /**List of indexes to rebuild.*/
+    private List<String> m_indexList;
+
+    /**vaadin component.*/
+    private FormLayout m_layout;
+
+    /**Instance of calling app.*/
+    private CmsSearchindexApp m_manager;
 
     /**vaadin component.*/
     private Button m_ok;
 
     /**vaadin component.*/
-    private FormLayout m_layout;
+    private Panel m_reportPanel;
 
-    /**List of indexes to rebuild.*/
-    private List<String> m_indexList;
+    /**vaadin component.*/
+    private Panel m_startPanel;
 
     /**
      * public constructor.<p>
-     *
-     * @param indexes to be updated
+     * @param app instance
+     * @param data indexes to be updated
      */
-    public CmsSearchindexRebuild(String indexes) {
+    public CmsSearchindexRebuild(CmsSearchindexApp app, Set<String> data) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        setHeight("570px");
+        m_manager = app;
         m_reportPanel.setVisible(false);
         m_confirm.setValue(
-            CmsVaadinUtils.getMessageText(
-                Messages.GUI_SEARCHINDEX_REBUILD_CONFIRM_1,
-                getCommaSeperatedIndexes(indexes)));
+            CmsVaadinUtils.getMessageText(Messages.GUI_SEARCHINDEX_REBUILD_CONFIRM_1, getCommaSeperatedIndexes(data)));
 
-        m_indexList = Arrays.asList(indexes.split(CmsSearchindexApp.SEPERATOR_INDEXNAMES));
+        m_indexList = new ArrayList<String>(data);
 
         m_ok.addClickListener(new ClickListener() {
 
@@ -104,9 +109,7 @@ public class CmsSearchindexRebuild extends VerticalLayout {
 
         m_reportPanel.setVisible(true);
         m_startPanel.setVisible(false);
-        final CmsIndexingReportThread thread = new CmsIndexingReportThread(A_CmsUI.getCmsObject(), m_indexList);
-        thread.start();
-        CmsReportWidget report = new CmsReportWidget(thread);
+        Component report = m_manager.getUpdateThreadComponent(m_indexList);
         report.setHeight("500px");
         report.setWidth("100%");
         m_layout.removeAllComponents();
@@ -116,18 +119,19 @@ public class CmsSearchindexRebuild extends VerticalLayout {
     /**
      * Creates a comma seperated string with all indexes represented by a string using the CmsSearchindexApp.SEPERATOR_INDEXNAMES.<p>
      *
-     * @param indexes list of indexes seperated by CmsSearchindexApp.SEPERATOR_INDEXNAMES
+     * @param data list of indexes seperated by CmsSearchindexApp.SEPERATOR_INDEXNAMES
      * @return string representation of indexes
      */
-    private String getCommaSeperatedIndexes(String indexes) {
+    private String getCommaSeperatedIndexes(Set<String> data) {
 
-        String[] indexArray = indexes.split(CmsSearchindexApp.SEPERATOR_INDEXNAMES);
-        if (indexArray.length == 1) {
-            return indexArray[0];
+        Iterator<String> it = data.iterator();
+        String res = it.next();
+        if (data.size() == 1) {
+            return res;
         }
-        String res = "";
-        for (String index : indexArray) {
-            res += index + ", ";
+        res += ", ";
+        while (it.hasNext()) {
+            res += it.next() + ", ";
         }
         res = res.substring(0, res.length() - 2);
         return res;

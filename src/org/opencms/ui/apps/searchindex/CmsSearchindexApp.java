@@ -27,9 +27,15 @@
 
 package org.opencms.ui.apps.searchindex;
 
+import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.search.I_CmsSearchIndex;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
@@ -40,16 +46,68 @@ import com.vaadin.ui.Component;
 /**
  * Class for the search index app.<p>
  */
-public class CmsSearchindexApp extends A_CmsWorkplaceApp {
-
-    /**Name of indexes to submit with state.*/
-    protected static final String INDEXNAMES = "indexnames";
+public class CmsSearchindexApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<I_CmsSearchIndex> {
 
     /**Path to show sources.*/
     protected static final String PATH_REBUILD = "rebuild";
 
     /**Seperator used when several index names are submitted.*/
     protected static final String SEPERATOR_INDEXNAMES = ";";
+
+    /**Table. */
+    protected CmsSearchIndexTable m_table;
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#createElement(java.lang.Object)
+     */
+    public void createElement(I_CmsSearchIndex element) {
+
+        return;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#defaultAction(java.lang.String)
+     */
+    public void defaultAction(String elementId) {
+
+        return;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#deleteElements(java.util.List)
+     */
+    public void deleteElements(List<String> elementId) {
+
+        return;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getAllElements()
+     */
+    public List<I_CmsSearchIndex> getAllElements() {
+
+        return OpenCms.getSearchManager().getSearchIndexesAll();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getElement(java.lang.String)
+     */
+    public I_CmsSearchIndex getElement(String elementId) {
+
+        //TODO maybe put getIDFromElement to I_CmsCRUDApp..
+        return OpenCms.getSearchManager().getIndex(elementId);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#writeElement(java.lang.Object)
+     */
+    public void writeElement(I_CmsSearchIndex element) {
+
+        return;
+    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -60,12 +118,6 @@ public class CmsSearchindexApp extends A_CmsWorkplaceApp {
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SEARCHINDEX_ADMIN_TOOL_NAME_SHORT_0));
-        }
-        if (state.startsWith(PATH_REBUILD)) {
-            crumbs.put(
-                CmsSearchindexAppConfiguration.APP_ID,
-                CmsVaadinUtils.getMessageText(Messages.GUI_SEARCHINDEX_ADMIN_TOOL_NAME_SHORT_0));
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_SEARCHINDEX_REBUILD_0));
         }
         return crumbs;
     }
@@ -78,10 +130,9 @@ public class CmsSearchindexApp extends A_CmsWorkplaceApp {
 
         if (state.isEmpty()) {
             m_rootLayout.setMainHeightFull(true);
-            return new CmsSearchIndexTable(this);
-        }
-        if (state.startsWith(PATH_REBUILD)) {
-            return new CmsSearchindexRebuild(getIndexesFromState(state));
+            m_table = new CmsSearchIndexTable(this);
+            m_table.loadTable();
+            return m_table;
         }
         return null;
     }
@@ -96,13 +147,15 @@ public class CmsSearchindexApp extends A_CmsWorkplaceApp {
     }
 
     /**
-     * Reads the index names from state.<p>
+     * Gets the thread to update given indexes.<p>
      *
-     * @param state to be read
-     * @return the string representation of the index name list
+     * @param elementIds to be updated
+     * @return A_CmsReportThread
      */
-    private String getIndexesFromState(String state) {
+    protected Component getUpdateThreadComponent(List<String> elementIds) {
 
-        return A_CmsWorkplaceApp.getParamFromState(state, INDEXNAMES);
+        final A_CmsReportThread thread = new CmsIndexingReportThread(A_CmsUI.getCmsObject(), elementIds);
+        thread.start();
+        return new CmsReportWidget(thread);
     }
 }

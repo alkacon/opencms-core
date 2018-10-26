@@ -27,11 +27,10 @@
 
 package org.opencms.ui.apps.searchindex;
 
-import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchIndex;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -49,6 +48,9 @@ import java.util.Set;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
@@ -73,14 +75,28 @@ public class CmsSearchIndexTable extends Table {
          */
         public void executeAction(Set<String> data) {
 
-            String names = "";
-            for (String name : data) {
-                names += name + CmsSearchindexApp.SEPERATOR_INDEXNAMES;
-            }
-            names = names.substring(0, names.length() - 1);
-            m_manager.openSubView(
-                A_CmsWorkplaceApp.addParamToState(CmsSearchindexApp.PATH_REBUILD, CmsSearchindexApp.INDEXNAMES, names),
-                true);
+            final Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+            CmsBasicDialog dialog = new CmsBasicDialog();
+
+            dialog.setContent(new CmsSearchindexRebuild(m_manager, data));
+            Button closeButton = new Button(CmsVaadinUtils.messageClose());
+            closeButton.addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = -1043776488459785433L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    window.close();
+
+                }
+
+            });
+            dialog.addButton(closeButton, true);
+            window.setContent(dialog);
+
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SEARCHINDEX_ADMIN_TOOL_NAME_SHORT_0));
+            A_CmsUI.get().addWindow(window);
+            window.center();
         }
 
         /**
@@ -297,7 +313,6 @@ public class CmsSearchIndexTable extends Table {
         setItemIconPropertyId(TableProperty.Icon);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setColumnWidth(null, 40);
-        List<I_CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexesAll();
 
         addItemClickListener(new ItemClickListener() {
 
@@ -314,15 +329,6 @@ public class CmsSearchIndexTable extends Table {
         setSelectable(true);
         setMultiSelect(true);
 
-        for (I_CmsSearchIndex index : indexes) {
-            Item item = m_container.addItem(index);
-            item.getItemProperty(TableProperty.Name).setValue(index.getName());
-            item.getItemProperty(TableProperty.FieldConfig).setValue(index.getFieldConfiguration().getName());
-            item.getItemProperty(TableProperty.Locale).setValue(index.getLocale().getDisplayName());
-            item.getItemProperty(TableProperty.Project).setValue(index.getProject());
-            item.getItemProperty(TableProperty.Rebuild).setValue(index.getRebuildMode());
-        }
-
         setCellStyleGenerator(new CellStyleGenerator() {
 
             private static final long serialVersionUID = 1L;
@@ -336,6 +342,24 @@ public class CmsSearchIndexTable extends Table {
             }
         });
 
+    }
+
+    /**
+     * (Re)loads the table.<p>
+     */
+    public void loadTable() {
+
+        m_container.removeAllItems();
+        List<I_CmsSearchIndex> indexes = m_manager.getAllElements();
+
+        for (I_CmsSearchIndex index : indexes) {
+            Item item = m_container.addItem(index);
+            item.getItemProperty(TableProperty.Name).setValue(index.getName());
+            item.getItemProperty(TableProperty.FieldConfig).setValue(index.getFieldConfiguration().getName());
+            item.getItemProperty(TableProperty.Locale).setValue(index.getLocale().getDisplayName());
+            item.getItemProperty(TableProperty.Project).setValue(index.getProject());
+            item.getItemProperty(TableProperty.Rebuild).setValue(index.getRebuildMode());
+        }
     }
 
     /**
@@ -384,7 +408,7 @@ public class CmsSearchIndexTable extends Table {
     void showSourcesWindow(String resource) {
 
         final Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        CmsSourceDialog sourceDialog = new CmsSourceDialog(new Runnable() {
+        CmsSourceDialog sourceDialog = new CmsSourceDialog(m_manager, new Runnable() {
 
             public void run() {
 

@@ -76,8 +76,6 @@ import com.vaadin.v7.ui.TextField;
 
 public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<CmsSite> {
 
-    //TODO use CRUD methods from interface
-
     /**Bundel name for the sites which are used as templates for new sites.*/
     public static final String BUNDLE_NAME = "siteMacroBundle";
 
