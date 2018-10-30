@@ -639,7 +639,12 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 CmsSolrQuery query = new CmsSolrQuery(
                     null,
                     CmsRequestUtil.createParameterMap(m_settings.getQuery() + "&fl=path,type"));
-                query.setSearchRoots(m_settings.getPaths());
+                List<String> rootPaths = new ArrayList<>(m_settings.getPaths().size());
+                String siteRoot = getCms().getRequestContext().getSiteRoot();
+                for (String path : m_settings.getPaths()) {
+                    rootPaths.add(path.startsWith(siteRoot) ? path : getCms().addSiteRoot(path));
+                }
+                query.setSearchRoots(rootPaths);
                 if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                     query.setResourceTypes(m_settings.getTypesArray());
                 }
