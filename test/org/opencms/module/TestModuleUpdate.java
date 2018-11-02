@@ -787,6 +787,154 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    public void testUpdateWithSimpleFileIdConflict() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+        File export = null;
+        // use custom resource storage so there is no interference from other tests
+        newStorage();
+
+        // use blocks so we don't accidentally use wrong object
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+            builder.addTextFile("foo.txt", "this is the modified foo file");
+            builder.publish();
+            export = tempExport();
+            builder.export(export.getAbsolutePath());
+            storeResources(cms, MODULE_PATH);
+            builder.delete();
+        }
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+            builder.setNextStructureId(new CmsUUID());
+            builder.addTextFile("foo.txt", "this is the original foo file");
+            builder.publish();
+        }
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+        filter.disableProjectLastModifiedTest();
+        filter.disableDateContentTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableResourceIdTest();
+
+        CmsReplaceModuleInfo info = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertTrue("Should have used new module updater", info.usedUpdater());
+
+        List<CmsResource> resources = new ArrayList<>();
+        resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
+        resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
+
+        // first test that existing resources match their stored version, then check that there are no extra resources
+        for (CmsResource resource : resources) {
+            System.out.println("Comparing " + resource.getRootPath());
+            assertFilter(cms, resource.getRootPath(), filter);
+        }
+        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
+    public void testUpdateWithSimpleFileIdConflict2() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+        CmsResource res = cms.createResource("/system/anotherfile", 1);
+        CmsUUID sid = res.getStructureId();
+        CmsUUID rid = res.getResourceId();
+
+        CmsUUID[][] idSeqs = new CmsUUID[][] {{new CmsUUID(), new CmsUUID()}, {sid, rid}};
+        // First create a module, then try to update it with a module containing the same resource path but with
+        // a structure id that occurs elsewhere in the system
+
+        for (int i = 0; i < 2; i++) {
+            String manifest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "\n"
+                + "<export>\n"
+                + "    <info>\n"
+                + "        <infoproject>Offline</infoproject>\n"
+                + "        <export_version>10</export_version>\n"
+                + "    </info>\n"
+                + "    <module>\n"
+                + "        <name>org.opencms.configtest2</name>\n"
+                + "        <nicename><![CDATA[OpenCms configuration module]]></nicename>\n"
+                + "        <group>OpenCms Editors</group>\n"
+                + "        <class />\n"
+                + "        <site>/</site>\n"
+                + "        <export-mode name=\"reduced\" />\n"
+                + "        <description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>\n"
+                + "<p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>\n"
+                + "        <version>11.0.0</version>\n"
+                + "        <authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>\n"
+                + "        <authoremail><![CDATA[info@alkacon.com]]></authoremail>\n"
+                + "        <datecreated />\n"
+                + "        <userinstalled />\n"
+                + "        <dateinstalled />\n"
+                + "        <dependencies />\n"
+                + "        <exportpoints />\n"
+                + "        <resources>\n"
+                + "            <resource uri=\"/system/test1234\" />\n"
+                + "        </resources>\n"
+                + "        <excluderesources />\n"
+                + "        <parameters />\n"
+                + "    </module>\n"
+                + "    <files>\n"
+                + "        <file>\n"
+                + "            <destination>system</destination>\n"
+                + "            <type>folder</type>\n"
+                + "            <properties />\n"
+                + "        </file>\n"
+                + "        <file>\n"
+                + "            <source>system/test1234</source>\n"
+                + "            <destination>system/test1234</destination>\n"
+                + "            <uuidstructure>"
+                + idSeqs[i][0]
+                + "</uuidstructure>\n"
+                + "            <uuidresource>"
+                + idSeqs[i][1]
+                + "</uuidresource>\n"
+                + "            <type>plain</type>\n"
+                + "            <datecreated>Tue, 08 Nov 2005 15:35:44 GMT</datecreated>\n"
+                + "            <flags>0</flags>\n"
+                + "            <properties />\n"
+                + "            <relations />\n"
+                + "            <accesscontrol />\n"
+                + "        </file>\n"
+                + "   </files>\n"
+                + "</export>\n"
+                + "";
+
+            CmsZipBuilder zipBuilder = new CmsZipBuilder();
+            zipBuilder.addFile("manifest.xml", manifest);
+            zipBuilder.addFile("system/test1234", "test1234");
+            File importZip = zipBuilder.writeZip();
+            importZip.deleteOnExit();
+
+            CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+
+            CmsReplaceModuleInfo info = OpenCms.getModuleManager().replaceModule(
+                cms,
+                importZip.getCanonicalPath(),
+                report);
+            if (i == 1) {
+                assertFalse("Should have not used new module update", info.usedUpdater());
+            }
+        }
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
     public void testUseOldModuleReplaceWhenIdsCollide() throws Exception {
 
         CmsObject cms = cms();

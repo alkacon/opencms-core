@@ -109,104 +109,21 @@ public class CmsModuleUpdater {
     }
 
     /**
-     * Checks if the installed module is updatable with the version from the import zip file.<p>
+     * Checks whether the module resources and sites of the two module versions are suitable for updating.<p>
      *
-     * @param cms the current CMS context
-     * @param moduleData the data read from the ZIP file
+     * @param installedModule the installed module
+     * @param newModule the module to import
      *
-     * @return true if the module is updatable
+     * @return true if the module resources are compatible
      */
-    public static boolean checkUpdatable(CmsObject cms, CmsModuleImportData moduleData) {
+    public static boolean checkCompatibleModuleResources(CmsModule installedModule, CmsModule newModule) {
 
-        CmsModule newModule = moduleData.getModule();
-        LOG.info("Checking if module " + newModule.getName() + " is updateable");
-        String exportVersion = newModule.getExportVersion();
-        CmsModule installedModule = OpenCms.getModuleManager().getModule(moduleData.getModule().getName());
-        if (!checkCompatibleModuleResources(installedModule, newModule)) {
-            LOG.info("Module is not updateable because of incompatible module resources. ");
-            return false;
-        }
-
-        if ((exportVersion == null) || !exportVersion.equals("" + CmsImportVersion10.IMPORT_VERSION10)) {
-            LOG.info("Module is not updateable because the export version is not 10.");
-            return false;
-        }
-
-        try {
-            Map<CmsUUID, CmsResourceImportData> importResourcesById = new HashMap<>();
-            for (CmsResourceImportData resData : moduleData.getResourceData()) {
-                if (resData.hasStructureId()) {
-                    importResourcesById.put(resData.getResource().getStructureId(), resData);
-                }
-            }
-            cms = moduleData.getCms();
-            CmsObject onlineCms = OpenCms.initCmsObject(cms);
-            CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_NAME);
-            onlineCms.getRequestContext().setCurrentProject(online);
-            for (CmsResourceImportData resData : moduleData.getResourceData()) {
-                String importPath = normalizePath(resData.getResource().getRootPath());
-                if (resData.hasStructureId()) {
-                    CmsUUID importId = resData.getResource().getStructureId();
-                    for (CmsObject cmsToRead : Arrays.asList(cms, onlineCms)) {
-                        try {
-                            CmsResource resourceFromVfs = cmsToRead.readResource(importPath, CmsResourceFilter.ALL);
-                            if (!resourceFromVfs.getStructureId().equals(importId)) {
-                                LOG.info(
-                                    "Module is not updateable because the same path is mapped to different structure ids in the import and in the VFS: "
-                                        + importPath);
-                                return false;
-                            }
-                            if (resData.getResource().isFile()
-                                && !(resData.getResource().getResourceId().equals(resourceFromVfs.getResourceId()))) {
-                                LOG.info(
-                                    "Module is not updateable because of a resource id conflict for "
-                                        + resData.getResource().getRootPath());
-                                return false;
-                            }
-                        } catch (CmsVfsResourceNotFoundException e) {
-                            // ignore
-                        }
-                    }
-
-                    try {
-                        CmsResource vfsResource = cms.readResource(importId, CmsResourceFilter.ALL);
-                        if (vfsResource.isFolder() != resData.getResource().isFolder()) {
-                            LOG.info(
-                                "Module is not updateable because the same id belongs to a file in the import and a folder in the VFS, or vice versa");
-                            return false;
-                        }
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore
-                    }
-                } else {
-                    CmsModule module = moduleData.getModule();
-                    boolean included = false;
-                    boolean excluded = false;
-                    for (String res : module.getResources()) {
-                        if (CmsStringUtil.isPrefixPath(res, resData.getPath())) {
-                            included = true;
-                            break;
-                        }
-                    }
-                    for (String res : module.getExcludeResources()) {
-                        if (CmsStringUtil.isPrefixPath(res, resData.getPath())) {
-                            excluded = true;
-                            break;
-                        }
-                    }
-                    if (included && !excluded) {
-                        LOG.info(
-                            "Module is not updateable because one of the resource entries included in the module resources has no structure id in the manifest.");
-                        return false;
-                    }
-                }
-
-            }
+        if (installedModule.hasOnlySystemAndSharedResources() && newModule.hasOnlySystemAndSharedResources()) {
             return true;
-        } catch (CmsException e) {
-            LOG.info("Module is not updateable because of error: " + e.getLocalizedMessage(), e);
-            return false;
         }
+        String oldSite = installedModule.getSite();
+        String newSite = newModule.getSite();
+        return (oldSite != null) && (newSite != null) && CmsStringUtil.comparePaths(oldSite, newSite);
     }
 
     /**
@@ -225,7 +142,7 @@ public class CmsModuleUpdater {
     throws CmsException {
 
         CmsModuleImportData moduleData = readModuleData(cms, importFile, report);
-        if (checkUpdatable(cms, moduleData)) {
+        if (moduleData.checkUpdatable(cms)) {
             return Optional.of(new CmsModuleUpdater(moduleData, report));
         } else {
             return Optional.empty();
@@ -255,6 +172,18 @@ public class CmsModuleUpdater {
             result |= existingRes.getDateLastModified() != newRes.getDateLastModified();
         }
         return result;
+    }
+
+    /**
+     * Normalizes the path.<p>
+     *
+     * @param pathComponents the path components
+     *
+     * @return the normalized path
+     */
+    public static String normalizePath(String... pathComponents) {
+
+        return CmsFileUtil.removeTrailingSeparator(CmsStringUtil.joinPaths(pathComponents));
     }
 
     /**
@@ -306,24 +235,6 @@ public class CmsModuleUpdater {
     }
 
     /**
-     * Checks whether the module resources and sites of the two module versions are suitable for updating.<p>
-     *
-     * @param installedModule the installed module
-     * @param newModule the module to import
-     *
-     * @return true if the module resources are compatible
-     */
-    private static boolean checkCompatibleModuleResources(CmsModule installedModule, CmsModule newModule) {
-
-        if (installedModule.hasOnlySystemAndSharedResources() && newModule.hasOnlySystemAndSharedResources()) {
-            return true;
-        }
-        String oldSite = installedModule.getSite();
-        String newSite = newModule.getSite();
-        return (oldSite != null) && (newSite != null) && CmsStringUtil.comparePaths(oldSite, newSite);
-    }
-
-    /**
      * Gets all resources in the module.<p>
      *
      * @param cms the current CMS context
@@ -341,18 +252,6 @@ public class CmsModuleUpdater {
             }
         }
         return result;
-    }
-
-    /**
-     * Normalizes the path.<p>
-     *
-     * @param pathComponents the path components
-     *
-     * @return the normalized path
-     */
-    private static String normalizePath(String... pathComponents) {
-
-        return CmsFileUtil.removeTrailingSeparator(CmsStringUtil.joinPaths(pathComponents));
     }
 
     /**
@@ -385,6 +284,24 @@ public class CmsModuleUpdater {
             CmsObject cms = m_moduleData.getCms();
             CmsModule module = m_moduleData.getModule();
             CmsModule oldModule = OpenCms.getModuleManager().getModule(module.getName());
+            Map<CmsUUID, CmsUUID> conflictingIds = m_moduleData.getConflictingIds();
+            if (!m_moduleData.getConflictingIds().isEmpty()) {
+                CmsProject conflictProject = cms.createProject(
+                    "Deletion of conflicting resources for " + module.getName(),
+                    "Deletion of conflicting resources for " + module.getName(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    CmsProject.PROJECT_TYPE_TEMPORARY);
+                CmsObject deleteCms = OpenCms.initCmsObject(cms);
+                deleteCms.getRequestContext().setCurrentProject(conflictProject);
+                for (CmsUUID vfsId : conflictingIds.values()) {
+                    CmsResource toDelete = deleteCms.readResource(vfsId, CmsResourceFilter.ALL);
+                    lock(deleteCms, toDelete);
+                    deleteCms.deleteResource(toDelete, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                }
+                OpenCms.getPublishManager().publishProject(deleteCms);
+                OpenCms.getPublishManager().waitWhileRunning();
+            }
             CmsProject importProject = cms.createProject(
                 org.opencms.module.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                     org.opencms.module.Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
@@ -487,7 +404,7 @@ public class CmsModuleUpdater {
                         currentRes = cms.readResource(oldRes.getStructureId(), CmsResourceFilter.ALL);
                         CmsLock lock = cms.getLock(currentRes);
                         if (lock.isUnlocked()) {
-                            cms.lockResourceTemporary(currentRes);
+                            lock(cms, currentRes);
                             toUnlock.add(currentRes);
                         }
 
@@ -526,7 +443,7 @@ public class CmsModuleUpdater {
                         deleteRes.getRootPath()));
                 CmsLock lock = cms.getLock(deleteRes);
                 if (lock.isUnlocked()) {
-                    cms.lockResourceTemporary(deleteRes);
+                    lock(cms, deleteRes);
                 }
                 cms.deleteResource(deleteRes, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 m_report.println(
@@ -705,6 +622,23 @@ public class CmsModuleUpdater {
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeId);
         return type instanceof I_CmsLinkParseable;
 
+    }
+
+    /**
+     * Locks a resource, or steals the lock if it's already locked.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the resource to lock
+     * @throws CmsException if something goes wrong
+     */
+    private void lock(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsLock lock = cms.getLock(resource);
+        if (lock.isUnlocked()) {
+            cms.lockResourceTemporary(resource);
+        } else {
+            cms.changeLock(resource);
+        }
     }
 
     /**
