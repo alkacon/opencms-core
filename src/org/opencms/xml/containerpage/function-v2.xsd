@@ -38,8 +38,7 @@
             <default element="NiceName" value="" resolveMacros="false" />
 		</defaults>
 		<mappings>
-				<mapping element="NiceName" mapto="property:Title" />
-                <mapping element="Description" mapto="property:Description" />
+				<mapping element="NiceName" mapto="galleryName" />
 		</mappings>
         <layouts>
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
