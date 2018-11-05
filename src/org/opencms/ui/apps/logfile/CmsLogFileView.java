@@ -31,6 +31,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.util.CmsLog4jUtil;
 import org.opencms.util.CmsRfsException;
 import org.opencms.util.CmsRfsFileViewer;
 
@@ -60,9 +61,6 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public class CmsLogFileView extends VerticalLayout {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLogFileView.class);
-
     /**Session attribute to store charset setting.*/
     protected static String ATTR_FILE_VIEW_CHARSET = "log-file-char";
 
@@ -75,6 +73,9 @@ public class CmsLogFileView extends VerticalLayout {
     /**Window size.*/
     protected static int WINDOW_SIZE = 1000;
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLogFileView.class);
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = -6323034856756469160L;
 
@@ -84,13 +85,13 @@ public class CmsLogFileView extends VerticalLayout {
     /**Vaadin component. */
     private Label m_fileContent;
 
-    private Panel m_panelComp;
-
     /**Vaadin component. */
     private ComboBox m_logfile;
 
     /**RfsFileView holding data for log to show. */
     private CmsRfsFileViewer m_logView;
+
+    private Panel m_panelComp;
 
     /**
      * constructor.<p>
@@ -104,7 +105,7 @@ public class CmsLogFileView extends VerticalLayout {
         } else {
             CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
-            List<Logger> allLogger = CmsLogFileApp.getLoggers();
+            List<Logger> allLogger = CmsLog4jUtil.getAllLoggers();
             List<Appender> allAppender = new ArrayList<Appender>();
 
             allLogger.add(0, (Logger)LogManager.getRootLogger());
