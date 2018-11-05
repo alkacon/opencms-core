@@ -30,6 +30,7 @@ package org.opencms.workplace.tools.workplace.logging;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsLog4jUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -42,13 +43,10 @@ import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.log4j.Appender;
@@ -211,46 +209,13 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     }
 
     /**
-     * Ensures that the given logger and all of its ancestors are added to the given map.
-     *
-     * @param loggers the target map, with logger names as keys
-     * @param loggerName the name of the logger whose ancestors should be added to the map
-     */
-    public static void ensureLoggerAndAncestors(Map<String, Logger> loggers, String loggerName) {
-
-        while (loggerName != null) {
-            if (!loggers.containsKey(loggerName)) {
-                Logger currentLogger = (LogManager.getLogger(loggerName));
-                loggers.put(loggerName, currentLogger);
-            }
-            loggerName = getParentLoggerName(loggerName);
-
-        }
-
-    }
-
-    /**
      * Gets list of all configured loggers and their ancestors.
      *
      * @return the list of all loggers
      */
     public static List<Logger> getAllLoggers() {
 
-        @SuppressWarnings("unchecked")
-        List<Logger> loggers = Collections.list(LogManager.getCurrentLoggers());
-        Map<String, Logger> loggersByName = new TreeMap<String, Logger>();
-        for (Logger logger : loggers) {
-            String loggerName = logger.getName();
-            while (loggerName != null) {
-                if (!loggersByName.containsKey(loggerName)) {
-                    Logger currentLogger = LogManager.getLogger(loggerName);
-                    loggersByName.put(loggerName, currentLogger);
-                }
-                loggerName = getParentLoggerName(loggerName);
-
-            }
-        }
-        return new ArrayList<Logger>(loggersByName.values());
+        return CmsLog4jUtil.getAllLoggers();
 
     }
 
