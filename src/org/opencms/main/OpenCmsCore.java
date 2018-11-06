@@ -457,6 +457,12 @@ public final class OpenCmsCore {
      */
     protected I_CmsCredentialsResolver getCredentialsResolver() {
 
+        if (m_credentialsResolver == null) {
+            CmsSystemConfiguration systemConfig = (CmsSystemConfiguration)m_configurationManager.getConfiguration(
+                CmsSystemConfiguration.class);
+            return systemConfig.getCredentialsResolver();
+        }
+
         return m_credentialsResolver;
     }
 
