@@ -90,6 +90,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
 
+    /** The system property name for the search directory. */
+    public static final String SEARCH_DIRECTORY_PROPERTY = "opencms.search.directory";
+
     /** Node name constant. */
     public static final String N_ANALYZER = "analyzer";
 
@@ -244,7 +247,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext(XPATH_SEARCH, "setSearchManager");
 
         // directory rule
-        digester.addCallMethod(XPATH_SEARCH + "/" + N_DIRECTORY, "setDirectory", 0);
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_DIRECTORY, "setDirectoryOnlyIfUndefined", 0);
 
         // timeout rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);

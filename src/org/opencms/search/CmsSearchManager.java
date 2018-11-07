@@ -29,6 +29,7 @@ package org.opencms.search;
 
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
@@ -723,7 +724,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The maximal time to wait for re-indexing after a content is edited (in milliseconds). */
     private long m_maxIndexWaitTime;
 
-    /** Path to index files below WEB-INF/. */
+    /** The name of the directory under which the data folder of the search indexes (in Solr jargon,
+     * '{@code dataDir}') are stored. This is usually {@code .../WEB-INF/index}. */
     private String m_path;
 
     /** The Solr configuration. */
@@ -752,6 +754,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_fieldConfigurations = new HashMap<String, I_CmsSearchFieldConfiguration>();
         // make sure we have a "standard" field configuration
         addFieldConfiguration(CmsLuceneFieldConfiguration.DEFAULT_STANDARD);
+
+        m_path = System.getProperty(CmsSearchConfiguration.SEARCH_DIRECTORY_PROPERTY);
+        if ((null != m_path) && CmsLog.INIT.isDebugEnabled()) {
+            CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.LOG_SEARCH_SET_DIRECTORY_FROM_SYSPROP_1,
+                    CmsSearchConfiguration.SEARCH_DIRECTORY_PROPERTY + " = '" + m_path + "'"));
+        }
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
@@ -1084,9 +1092,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns the name of the directory below WEB-INF/ where the search indexes are stored.<p>
+     * Returns the name of the directory under which the data folder of the search indexes (in Solr jargon,
+     * '{@code dataDir}') are stored. This is usually {@code .../WEB-INF/index}
      *
-     * @return the name of the directory below WEB-INF/ where the search indexes are stored
+     * @return the name of the directory under which the data folder of the search indexes are stored
      */
     public String getDirectory() {
 
@@ -1772,25 +1781,23 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         // load the core to the container
         File dataDir = new File(index.getPath());
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(
-                    Messages.get().getBundle().key(
-                        Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
-                        index.getName(),
-                        index.getPath()));
-            }
-        }
         File instanceDir = new File(m_solrConfig.getHome() + FileSystems.getDefault().getSeparator() + index.getName());
-        if (!instanceDir.exists()) {
-            instanceDir.mkdirs();
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(
-                    Messages.get().getBundle().key(
-                        Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
-                        index.getName(),
-                        index.getPath()));
+        for (File dir: new File[]{dataDir, instanceDir}) {
+            if (!dir.exists()) {
+                if (!dir.mkdirs()) {
+                    throw new CmsConfigurationException(
+                        Messages.get().container(
+                                Messages.ERR_SOLR_SERVER_CANNOT_CREATE_DIR_2,
+                                dir, "dataDir = \"" + dataDir + "\"; instanceDir = \"" + instanceDir + "\"")
+                    );
+                }
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(
+                            Messages.get().getBundle().key(
+                                    Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
+                                    index.getName(),
+                                    index.getPath()));
+                }
             }
         }
 
@@ -2038,13 +2045,33 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Sets the name of the directory below WEB-INF/ where the search indexes are stored.<p>
+     * Sets the name of the directory under which the data folder of the search indexes (in Solr jargon,
+     * '{@code dataDir}') are stored. This is usually {@code .../WEB-INF/index}.<p>
      *
-     * @param value the name of the directory below WEB-INF/ where the search indexes are stored
+     * @param value the name of the directory under which the data folder of the search indexes are stored
      */
     public void setDirectory(String value) {
 
         m_path = value;
+    }
+
+    /**
+     * <strong>Only if not previously set</strong>, sets the name of the directory under which the data folder of
+     * the search indexes (in Solr jargon, '{@code dataDir}') are stored. This is usually {@code .../WEB-INF/index}.<p>
+     *
+     * @param path the name of the directory under which the data folder of the search indexes are stored
+     */
+    public void setDirectoryOnlyIfUndefined(String path) {
+
+        if (null == m_path) {
+            setDirectory(path);
+        } else {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_PARSE_DIRECTORY_IGNORED_3,
+                        CmsSearchConfiguration.SEARCH_DIRECTORY_PROPERTY, m_path, path));
+            }
+        }
     }
 
     /**
