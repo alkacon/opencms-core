@@ -28,6 +28,7 @@
 package org.opencms.gwt.client;
 
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -72,6 +73,14 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     public native String getEditId() /*-{
         return this.editId ? this.editId : "";
     }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getElementId()
+     */
+    public String getElementId() {
+
+        return getString(CmsGwtConstants.ATTR_ELEMENT_ID);
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getElementLanguage()

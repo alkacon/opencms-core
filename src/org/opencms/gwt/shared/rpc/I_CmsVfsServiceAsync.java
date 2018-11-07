@@ -259,6 +259,7 @@ public interface I_CmsVfsServiceAsync {
      * @param locale the locale for which we want the resource information
      * @param includeTargets flag to control whether relation targets should also be fetched
      * @param detailContentId the structure id of the detail content if present
+     * @param context a map of context-dependent parameters used to provide additional information
      * @param callback the callback for the results
      */
     void getResourceStatus(
@@ -266,6 +267,7 @@ public interface I_CmsVfsServiceAsync {
         String locale,
         boolean includeTargets,
         CmsUUID detailContentId,
+        Map<String, String> context,
         AsyncCallback<CmsResourceStatusBean> callback);
 
     /**

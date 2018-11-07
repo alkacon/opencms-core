@@ -27,6 +27,7 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.containerpage.CmsRelationTargetListBean;
 import org.opencms.file.CmsFile;
@@ -41,6 +42,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -64,6 +66,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -78,6 +81,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -158,23 +163,27 @@ public class CmsDefaultResourceStatusProvider {
     /**
      * Collects all the data to display in the resource status dialog.<p>
      *
+     * @param request the current request
      * @param cms the current CMS context
      * @param structureId the structure id of the resource for which we want the information
      * @param contentLocale the content locale
      * @param includeTargets true if relation targets should be included
      * @param detailContentId the structure id of the detail content if present
      * @param additionalStructureIds structure ids of additional resources to include with the relation targets
+     * @param context context parameters used for displaying additional infos
      *
      * @return the resource status information
      * @throws CmsException if something goes wrong
      */
     public CmsResourceStatusBean getResourceStatus(
+        HttpServletRequest request,
         CmsObject cms,
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
         CmsUUID detailContentId,
-        List<CmsUUID> additionalStructureIds)
+        List<CmsUUID> additionalStructureIds,
+        Map<String, String> context)
     throws CmsException {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -209,6 +218,11 @@ public class CmsDefaultResourceStatusProvider {
         result.setLastProject(lastProject);
 
         result.setListInfo(CmsVfsService.getPageInfo(cms, resource));
+        Map<String, String> contextualAttrs = createContextInfos(cms, request, resource, context);
+        for (Map.Entry<String, String> entry : contextualAttrs.entrySet()) {
+            result.getListInfo().addAdditionalInfo(entry.getKey(), entry.getValue());
+        }
+
         CmsLock lock = cms.getLock(resource);
         CmsUser lockOwner = null;
         if (!lock.isUnlocked()) {
@@ -268,6 +282,7 @@ public class CmsDefaultResourceStatusProvider {
                 Messages.get().getBundle(locale).key(Messages.GUI_STATUS_RESOURCE_ID_0),
                 resource.getResourceId().toString());
         }
+
         result.setAdditionalAttributes(additionalAttributes);
 
         List<CmsRelation> relations = cms.readRelations(
@@ -592,4 +607,62 @@ public class CmsDefaultResourceStatusProvider {
         return relationBean;
     }
 
+    /**
+     * Creates the additional infos from the context parameters.<p>
+     *
+     * @param cms the current CMS object
+     * @param request the current request
+     * @param resource the resource for which to generate additional infos
+     * @param context the context parameters
+     * @return the additional infos (keys are labels)
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private Map<String, String> createContextInfos(
+        CmsObject cms,
+        HttpServletRequest request,
+        CmsResource resource,
+        Map<String, String> context)
+    throws CmsException {
+
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        Map<String, String> additionalAttributes = new LinkedHashMap<String, String>();
+        try {
+            CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(resource.getStructureId()).filterType(
+                CmsRelationType.XSD);
+            for (CmsRelation relation : cms.readRelations(filter)) {
+                CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
+                    org.opencms.ade.containerpage.Messages.GUI_ADDINFO_SCHEMA_0);
+                additionalAttributes.put(label, target.getRootPath());
+                break;
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        String elementId = context.get(CmsGwtConstants.ATTR_ELEMENT_ID);
+        String pageRootPath = context.get(CmsGwtConstants.ATTR_PAGE_ROOT_PATH);
+
+        if ((elementId != null) && (pageRootPath != null)) {
+            CmsContainerpageService pageService = new CmsContainerpageService();
+            pageService.setCms(cms);
+            pageService.setRequest(request);
+            CmsContainerElementBean elementBean = pageService.getCachedElement(elementId, pageRootPath);
+            CmsUUID formatterId = elementBean.getFormatterId();
+            try {
+                CmsResource formatterRes = cms.readResource(formatterId, CmsResourceFilter.IGNORE_EXPIRATION);
+                String path = formatterRes.getRootPath();
+                String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
+                    org.opencms.ade.containerpage.Messages.GUI_ADDINFO_FORMATTER_0);
+                additionalAttributes.put(label, path);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ignore
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        return additionalAttributes;
+    }
 }

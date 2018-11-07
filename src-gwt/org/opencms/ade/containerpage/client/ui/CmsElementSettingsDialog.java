@@ -220,6 +220,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     /** The break up model group checkbox. */
     private CmsCheckBox m_modelGroupBreakUp;
 
+    /** Setting presets. */
     private Map<String, String> m_presets;
 
     /** The element setting values. */
@@ -231,7 +232,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      * @param controller the container page controller
      * @param elementWidget the element panel
      * @param settingsConfig the element setting configuration
-     * @param settingPresets
+     * @param settingPresets the presets for settings
      *
      * @throws NoFormatterException if no formatter configuration is found for the element
      */
@@ -255,7 +256,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         infoBean.setTitle(elementBean.getTitle());
         infoBean.setSubTitle(elementBean.getSitePath());
         infoBean.setResourceType(elementBean.getResourceType());
-        m_elementBean.getFormatters();
         infoBean.setBigIconClasses(elementBean.getBigIconClasses());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;

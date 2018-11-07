@@ -41,6 +41,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MISSING_CACHED_ELEMENT_0 = "ERR_MISSING_CACHED_ELEMENT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_0 = "GUI_ADDINFO_FORMATTER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_SCHEMA_0 = "GUI_ADDINFO_SCHEMA_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1 = "GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -54,9 +60,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_PATH_0 = "GUI_LABEL_PATH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADDINFO_SCHEMA_0 = "GUI_ADDINFO_SCHEMA_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKED_BY_1 = "GUI_LOCKED_BY_1";

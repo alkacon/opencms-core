@@ -109,6 +109,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -139,6 +140,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
+
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -150,9 +154,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
-
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -790,25 +791,31 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String, boolean, org.opencms.util.CmsUUID)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String, boolean, org.opencms.util.CmsUUID, java.util.Map)
      */
     public CmsResourceStatusBean getResourceStatus(
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        CmsUUID detailContentId)
+        CmsUUID detailContentId,
+        Map<String, String> context)
     throws CmsRpcException {
 
+        if (context == null) {
+            context = new HashMap<>();
+        }
         try {
             CmsObject cms = getCmsObject();
             CmsDefaultResourceStatusProvider provider = new CmsDefaultResourceStatusProvider();
             return provider.getResourceStatus(
+                getRequest(),
                 cms,
                 structureId,
                 contentLocale,
                 includeTargets,
                 detailContentId,
-                detailContentId != null ? Collections.singletonList(detailContentId) : null);
+                detailContentId != null ? Collections.singletonList(detailContentId) : null,
+                context);
         } catch (Throwable e) {
             error(e);
             return null;

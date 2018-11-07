@@ -99,6 +99,12 @@ public final class CmsGwtConstants {
     /** Entity id data attribute name. */
     public static final String ATTR_DATA_ID = "data-oc-id";
 
+    /** Key for the element id attribute. */
+    public static final String ATTR_ELEMENT_ID = "ATTR_ELEMENT_ID";
+
+    /** Key for the page root path attribute. */
+    public static final String ATTR_PAGE_ROOT_PATH = "ATTR_PAGE_ROOT_PATH";
+
     /** Name of the Javascript callback used to handle property changes triggered from the locale compare view. */
     public static final String CALLBACK_HANDLE_CHANGED_PROPERTIES = "cmsHandleChangedProperties";
 

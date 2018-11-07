@@ -51,6 +51,13 @@ public interface I_CmsEditableData {
     String getEditId();
 
     /**
+     * Gets the element id.<p>
+     *
+     * @return the element id
+     */
+    String getElementId();
+
+    /**
      * Returns the element language.<p>
      *
      * @return the element language

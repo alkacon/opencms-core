@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsDialogOptions;
 import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
@@ -44,8 +45,11 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -217,6 +221,25 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             result.put(Integer.valueOf(160), createInfoButton());
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getInfoContext()
+     */
+    @Override
+    protected Map<String, String> getInfoContext() {
+
+        Map<String, String> result = new HashMap<>();
+        String elementId = m_editableData.getElementId();
+        if (elementId != null) {
+            result.put(CmsGwtConstants.ATTR_ELEMENT_ID, elementId);
+        }
+        String uri = CmsCoreProvider.get().getUri();
+        String siteRoot = CmsCoreProvider.get().getSiteRoot();
+        String pageRootPath = CmsStringUtil.joinPaths(siteRoot, uri);
+        result.put(CmsGwtConstants.ATTR_PAGE_ROOT_PATH, pageRootPath);
+        return result;
+
     }
 
     /**

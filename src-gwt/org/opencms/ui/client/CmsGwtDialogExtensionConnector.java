@@ -60,6 +60,7 @@ import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -287,13 +288,19 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
      */
     public void openInfoDialog(String string, String startTab) {
 
-        CmsResourceInfoDialog.load(new CmsUUID(string), true, null, startTab, new CloseHandler<PopupPanel>() {
+        CmsResourceInfoDialog.load(
+            new CmsUUID(string),
+            true,
+            null,
+            startTab,
+            new HashMap<String, String>(),
+            new CloseHandler<PopupPanel>() {
 
-            public void onClose(CloseEvent<PopupPanel> event) {
+                public void onClose(CloseEvent<PopupPanel> event) {
 
-                close(0);
-            }
-        });
+                    close(0);
+                }
+            });
 
     }
 

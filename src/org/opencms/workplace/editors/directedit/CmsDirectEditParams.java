@@ -27,12 +27,20 @@
 
 package org.opencms.workplace.editors.directedit;
 
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+
 /**
  * A parameter set to start a direct edit element, for internal use only.<p>
  *
  * @since 6.2.3
  */
 public class CmsDirectEditParams {
+
+    /** The collector name. */
+    protected String m_collectorName;
+
+    /** The collector params. */
+    protected String m_collectorParams;
 
     /** The selected element in the target content.*/
     protected String m_element;
@@ -52,11 +60,8 @@ public class CmsDirectEditParams {
     /** The edit target VFS resource name. */
     protected String m_resourceName;
 
-    /** The collector name. */
-    protected String m_collectorName;
-
-    /** The collector params. */
-    protected String m_collectorParams;
+    /** The 'container' element (when using display tag). */
+    private CmsContainerElementBean m_containerElement;
 
     /** ID to identify the contentload instance. */
     private String m_id;
@@ -145,6 +150,16 @@ public class CmsDirectEditParams {
     public String getCollectorParams() {
 
         return m_collectorParams;
+    }
+
+    /**
+     * Gets the container element (used for display formatters).<p>
+     *
+     * @return the container element
+     */
+    public CmsContainerElementBean getContainerElement() {
+
+        return m_containerElement;
     }
 
     /**
@@ -255,6 +270,16 @@ public class CmsDirectEditParams {
     public void setCollectorParams(String collectorParams) {
 
         m_collectorParams = collectorParams;
+    }
+
+    /**
+     * Sets the container element bean.<p>
+     *
+     * @param element the container element
+     */
+    public void setContainerElement(CmsContainerElementBean element) {
+
+        m_containerElement = element;
     }
 
     /**

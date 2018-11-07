@@ -71,6 +71,7 @@ public class CmsUndelete implements I_CmsHasContextMenuCommand, I_CmsContextMenu
                     CmsCoreProvider.get().getLocale(),
                     false,
                     null,
+                    null,
                     this);
 
             }

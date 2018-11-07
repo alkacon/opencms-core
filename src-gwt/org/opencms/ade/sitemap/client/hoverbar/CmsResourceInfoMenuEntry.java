@@ -31,6 +31,8 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 
+import java.util.HashMap;
+
 /**
  * Sitemap context menu resource info entry.<p>
  *
@@ -56,7 +58,7 @@ public class CmsResourceInfoMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsResourceInfoDialog.load(getHoverbar().getEntry().getId(), true, null, null);
+        CmsResourceInfoDialog.load(getHoverbar().getEntry().getId(), true, null, new HashMap<String, String>(), null);
     }
 
     /**

@@ -296,6 +296,7 @@ public interface I_CmsVfsService extends RemoteService {
      * @param locale the locale for which we want the resource information
      * @param includeTargets true if relation targets should also be fetched
      * @param detailContentId the structure id of the detail content if present
+     * @param context additional context-dependent parameters used for providing additional information
      *
      * @return the resource status
      *
@@ -305,7 +306,8 @@ public interface I_CmsVfsService extends RemoteService {
         CmsUUID structureId,
         String locale,
         boolean includeTargets,
-        CmsUUID detailContentId)
+        CmsUUID detailContentId,
+        Map<String, String> context)
     throws CmsRpcException;
 
     /**

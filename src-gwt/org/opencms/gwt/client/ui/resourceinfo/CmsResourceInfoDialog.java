@@ -181,15 +181,17 @@ public class CmsResourceInfoDialog extends CmsPopup {
      * @param structureId the structure id of the resource for which the resource info should be loaded
      * @param includeTargets true if relation targets should also be displayed
      * @param detailContentId the structure id of the detail content if present
+     * @param context additional parameters from the context used for displaying additional infos
      * @param closeHandler the close handler for the dialog (may be null if no close handler is needed)
      */
     public static void load(
         final CmsUUID structureId,
         final boolean includeTargets,
         final CmsUUID detailContentId,
+        Map<String, String> context,
         final CloseHandler<PopupPanel> closeHandler) {
 
-        load(structureId, includeTargets, detailContentId, null, closeHandler);
+        load(structureId, includeTargets, detailContentId, null, context, closeHandler);
     }
 
     /**
@@ -199,6 +201,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
      * @param includeTargets true if relation targets should also be displayed
      * @param detailContentId the structure id of the detail content if present
      * @param startTab the start tab id
+     * @param context additional parameters from the context used for displaying additional infos
      * @param closeHandler the close handler for the dialog (may be null if no close handler is needed)
      */
     public static void load(
@@ -206,6 +209,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
         final boolean includeTargets,
         final CmsUUID detailContentId,
         final String startTab,
+        final Map<String, String> context,
         final CloseHandler<PopupPanel> closeHandler) {
 
         CmsRpcAction<CmsResourceStatusBean> action = new CmsRpcAction<CmsResourceStatusBean>() {
@@ -219,6 +223,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     CmsCoreProvider.get().getLocale(),
                     includeTargets,
                     detailContentId,
+                    context,
                     this);
             }
 
@@ -300,6 +305,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     CmsCoreProvider.get().getLocale(),
                     m_includeTargets,
                     m_detailContentId,
+                    null,
                     this);
             }
 

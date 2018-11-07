@@ -432,9 +432,15 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     }
                 }
 
-                private Map<String, String> getSettingPresets(CmsContainerPageElementPanel elementWidget) {
+                /**
+                 * Gets the map of setting presets.<p>
+                 *
+                 * @param elementWidget2 the element widget
+                 * @return the setting presets
+                 */
+                private Map<String, String> getSettingPresets(CmsContainerPageElementPanel elementWidget2) {
 
-                    I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
+                    I_CmsDropContainer dropContainer = elementWidget2.getParentTarget();
                     if (dropContainer instanceof CmsContainerPageContainer) {
                         CmsContainerPageContainer container = (CmsContainerPageContainer)dropContainer;
                         return container.getSettingPresets();
@@ -789,6 +795,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             CmsCoreProvider.get().getStructureId(),
             true,
             CmsContainerpageController.get().getData().getDetailId(),
+            new HashMap<String, String>(),
             new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
@@ -1027,13 +1034,18 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             structureId = element.getStructureId();
         }
-        CmsResourceInfoDialog.load(structureId, true, null, new CloseHandler<PopupPanel>() {
+        CmsResourceInfoDialog.load(
+            structureId,
+            true,
+            null,
+            new HashMap<String, String>(),
+            new CloseHandler<PopupPanel>() {
 
-            public void onClose(CloseEvent<PopupPanel> event) {
+                public void onClose(CloseEvent<PopupPanel> event) {
 
-                reloadElements(element.getId());
-            }
-        });
+                    reloadElements(element.getId());
+                }
+            });
     }
 
     /**

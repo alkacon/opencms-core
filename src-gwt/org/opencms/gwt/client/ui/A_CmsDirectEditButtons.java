@@ -40,6 +40,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -282,7 +283,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
             public void onClick(ClickEvent event) {
 
-                CmsResourceInfoDialog.load(m_editableData.getStructureId(), true, null, null);
+                CmsResourceInfoDialog.load(m_editableData.getStructureId(), true, null, getInfoContext(), null);
             }
         });
         return infoButton;
@@ -394,6 +395,16 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
         return Collections.emptyMap();
 
+    }
+
+    /**
+     * Provides context parameters for the resource info dialog.<p>
+     *
+     * @return the map of context parameters
+     */
+    protected Map<String, String> getInfoContext() {
+
+        return new HashMap<String, String>();
     }
 
     /**

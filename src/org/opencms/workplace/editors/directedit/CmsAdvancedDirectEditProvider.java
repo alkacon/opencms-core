@@ -251,6 +251,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
                     CmsContainerElementBean element = contextBean.getElement();
                     if ((element != null) && element.getId().equals(resourceInfo.getResource().getStructureId())) {
                         params.m_element = element.editorHash();
+                        params.setContainerElement(element);
                     }
                     content = startDirectEditEnabled(params, resourceInfo);
                 } catch (JSONException e) {
@@ -341,6 +342,11 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             }
         }
         editableData.put("editId", editId);
+        CmsContainerElementBean containerElement = params.getContainerElement();
+        if (containerElement != null) {
+            editableData.put(CmsGwtConstants.ATTR_ELEMENT_ID, containerElement.editorHash());
+        }
+
         editableData.put("structureId", resourceInfo.getResource().getStructureId());
         editableData.put("sitePath", params.getResourceName());
         editableData.put("elementlanguage", editLocale);

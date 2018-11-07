@@ -41,6 +41,10 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /** The edit id. */
     private String m_editId;
+
+    /** The element id. */
+    private String m_elementId;
+
     /** The element language. */
     private String m_elementLanguage;
 
@@ -105,6 +109,7 @@ public class CmsEditableData implements I_CmsEditableData {
         m_structureId = source.getStructureId();
         m_unreleaseOrExpired = source.isUnreleasedOrExpired();
         m_hasResource = source.hasResource();
+        m_elementId = source.getElementId();
     }
 
     /**
@@ -121,6 +126,14 @@ public class CmsEditableData implements I_CmsEditableData {
     public String getEditId() {
 
         return m_editId;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getElementId()
+     */
+    public String getElementId() {
+
+        return m_elementId;
     }
 
     /**
