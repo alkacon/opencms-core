@@ -81,6 +81,9 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_VIEW_ONLINE = "viewonline";
 
+    /** Attribute for container id. */
+    public static final String ATTR_CONTAINER_ID = "ATTR_CONTAINER_ID";
+
     /** Collector data attribute name. */
     public static final String ATTR_DATA_COLLECTOR = "data-oc-collector";
 

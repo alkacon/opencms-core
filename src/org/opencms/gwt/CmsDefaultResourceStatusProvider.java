@@ -67,6 +67,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -218,8 +219,8 @@ public class CmsDefaultResourceStatusProvider {
         result.setLastProject(lastProject);
 
         result.setListInfo(CmsVfsService.getPageInfo(cms, resource));
-        Map<String, String> contextualAttrs = createContextInfos(cms, request, resource, context);
-        for (Map.Entry<String, String> entry : contextualAttrs.entrySet()) {
+        Map<String, String> contextualAddInfos = createContextInfos(cms, request, resource, context);
+        for (Map.Entry<String, String> entry : contextualAddInfos.entrySet()) {
             result.getListInfo().addAdditionalInfo(entry.getKey(), entry.getValue());
         }
 
@@ -616,51 +617,79 @@ public class CmsDefaultResourceStatusProvider {
      * @param context the context parameters
      * @return the additional infos (keys are labels)
      *
-     * @throws CmsException if something goes wrong
      */
     private Map<String, String> createContextInfos(
         CmsObject cms,
         HttpServletRequest request,
         CmsResource resource,
-        Map<String, String> context)
-    throws CmsException {
+        Map<String, String> context) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         Map<String, String> additionalAttributes = new LinkedHashMap<String, String>();
         try {
-            CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(resource.getStructureId()).filterType(
-                CmsRelationType.XSD);
-            for (CmsRelation relation : cms.readRelations(filter)) {
-                CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+            try {
+                CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(
+                    resource.getStructureId()).filterType(CmsRelationType.XSD);
+                String schema = null;
                 String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
                     org.opencms.ade.containerpage.Messages.GUI_ADDINFO_SCHEMA_0);
-                additionalAttributes.put(label, target.getRootPath());
-                break;
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
 
-        String elementId = context.get(CmsGwtConstants.ATTR_ELEMENT_ID);
-        String pageRootPath = context.get(CmsGwtConstants.ATTR_PAGE_ROOT_PATH);
-
-        if ((elementId != null) && (pageRootPath != null)) {
-            CmsContainerpageService pageService = new CmsContainerpageService();
-            pageService.setCms(cms);
-            pageService.setRequest(request);
-            CmsContainerElementBean elementBean = pageService.getCachedElement(elementId, pageRootPath);
-            CmsUUID formatterId = elementBean.getFormatterId();
-            try {
-                CmsResource formatterRes = cms.readResource(formatterId, CmsResourceFilter.IGNORE_EXPIRATION);
-                String path = formatterRes.getRootPath();
-                String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
-                    org.opencms.ade.containerpage.Messages.GUI_ADDINFO_FORMATTER_0);
-                additionalAttributes.put(label, path);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ignore
+                for (CmsRelation relation : cms.readRelations(filter)) {
+                    CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                    schema = target.getRootPath();
+                    break;
+                }
+                if (schema != null) {
+                    additionalAttributes.put(label, schema);
+                }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+
+            String elementId = context.get(CmsGwtConstants.ATTR_ELEMENT_ID);
+            String pageRootPath = context.get(CmsGwtConstants.ATTR_PAGE_ROOT_PATH);
+            String containr = context.get(CmsGwtConstants.ATTR_CONTAINER_ID);
+            // We need to handle the case of normal formatter element vs display formatter differently,
+            // because in the former case the jsp id is sometimes incorrect (i.e. inconsistent with the formatter configured in the settings)
+            if ((elementId != null) && (containr != null)) {
+                CmsContainerpageService pageService = new CmsContainerpageService();
+                pageService.setCms(cms);
+                pageService.setRequest(request);
+                CmsContainerElementBean elementBean = pageService.getCachedElement(elementId, pageRootPath);
+                for (Map.Entry<String, String> entry : elementBean.getSettings().entrySet()) {
+                    if (entry.getKey().contains(containr)) {
+                        String formatterId = entry.getValue();
+                        if (CmsUUID.isValidUUID(formatterId)) {
+                            I_CmsFormatterBean formatter = OpenCms.getADEManager().getCachedFormatters(
+                                false).getFormatters().get(new CmsUUID(formatterId));
+                            if (formatter != null) {
+                                String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
+                                    org.opencms.ade.containerpage.Messages.GUI_ADDINFO_FORMATTER_0);
+                                additionalAttributes.put(label, formatter.getJspRootPath());
+                            }
+                        }
+                    }
+                }
+            } else if ((elementId != null) && (pageRootPath != null)) {
+                CmsContainerpageService pageService = new CmsContainerpageService();
+                pageService.setCms(cms);
+                pageService.setRequest(request);
+                CmsContainerElementBean elementBean = pageService.getCachedElement(elementId, pageRootPath);
+                CmsUUID formatterId = elementBean.getFormatterId();
+                try {
+                    CmsResource formatterRes = cms.readResource(formatterId, CmsResourceFilter.IGNORE_EXPIRATION);
+                    String path = formatterRes.getRootPath();
+                    String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
+                        org.opencms.ade.containerpage.Messages.GUI_ADDINFO_FORMATTER_0);
+                    additionalAttributes.put(label, path);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ignore
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         return additionalAttributes;

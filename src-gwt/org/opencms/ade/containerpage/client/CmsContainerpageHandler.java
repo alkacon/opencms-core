@@ -1034,18 +1034,26 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             structureId = element.getStructureId();
         }
-        CmsResourceInfoDialog.load(
-            structureId,
-            true,
-            null,
-            new HashMap<String, String>(),
-            new CloseHandler<PopupPanel>() {
+        I_CmsDropContainer dropContainer = element.getParentTarget();
+        Map<String, String> contextParams = new HashMap<>();
+        if (dropContainer instanceof CmsContainerPageContainer) {
+            CmsContainerPageContainer cnt = (CmsContainerPageContainer)dropContainer;
+            String containerId = cnt.getContainerId();
+            String elemId = element.getId();
+            contextParams.put(CmsGwtConstants.ATTR_ELEMENT_ID, elemId);
+            contextParams.put(CmsGwtConstants.ATTR_CONTAINER_ID, containerId);
+            String pageRootPath = CmsStringUtil.joinPaths(
+                CmsCoreProvider.get().getSiteRoot(),
+                CmsCoreProvider.get().getUri());
+            contextParams.put(CmsGwtConstants.ATTR_PAGE_ROOT_PATH, pageRootPath);
+        }
+        CmsResourceInfoDialog.load(structureId, true, null, contextParams, new CloseHandler<PopupPanel>() {
 
-                public void onClose(CloseEvent<PopupPanel> event) {
+            public void onClose(CloseEvent<PopupPanel> event) {
 
-                    reloadElements(element.getId());
-                }
-            });
+                reloadElements(element.getId());
+            }
+        });
     }
 
     /**
