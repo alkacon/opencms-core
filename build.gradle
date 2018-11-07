@@ -1199,6 +1199,12 @@ test {
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
+    if (project.hasProperty('solr.solr.home')) {
+        systemProperties['solr.solr.home'] = project.getProperty('solr.solr.home')
+    }
+    if (project.hasProperty('opencms.search.directory')) {
+        systemProperties['opencms.search.directory'] = project.getProperty('opencms.search.directory')
+    }
     maxHeapSize = max_heap_size
     jvmArgs '-XX:MaxPermSize=256m'
     testLogging.showStandardStreams = true
@@ -1225,6 +1231,13 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
+    if (project.hasProperty('solr.solr.home')) {
+        systemProperties['solr.solr.home'] = project.getProperty('solr.solr.home')
+    }
+    if (project.hasProperty('opencms.search.directory')) {
+        systemProperties['opencms.search.directory'] = project.getProperty('opencms.search.directory')
+    }
+    
     maxHeapSize = max_heap_size
     jvmArgs '-XX:MaxPermSize=256m'
     testLogging.showStandardStreams = true
