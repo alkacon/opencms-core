@@ -6,7 +6,7 @@
 
 CREATE USER ${user} 
   PASSWORD '${password}'
-  CREATEDB CREATEUSER;
+  CREATEDB CREATEROLE;
 
 #create the database
 
