@@ -15,6 +15,61 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 11.0.0 beta - November 11, 2018
+! Added Java 11 support.
+! Updated most external libraries.
+! Improved Gradle build to better support IDEs like Eclipse and IntelliJ IDEA.
+! Rewritten workplace apps: Accounts, Modules, Sessions, Websites, Log files, Database, Search indexes, Caches, Versioning, Link validation.
+! Added new apps: List manager, Resource types, Shell-script.
+! Workplace using vector graphics instead of bitmaps for better 'Retina'-display support.
+! Added update module option to avoid delete and import for changed modules.
+! Added auto versioning for modules, incrementing the version number on export only in case of module changes. 
+! Reorganized core modules.
+! Reorganized OpenCms core JARs.
+! Reorganized OpenCms XML configuration files placing site-, scheduler- and variables-configuration (login message) in separate files.
+! Added option to execute OpenCms shell commands through RMI within the running OpenCms instance.
+! Added option to provide a return code when executing OpenCms shell commands. 
+! Added support for text area and select combo widget within the property dialog.
+! Added new copy mode 'Copy files and adjust internal links'.
+! Added alternative notation to resource type schemas grouping content field configuration similar to the formatter settings configuration.
+! Added option to provide a model formatter settings file, containing commonly used settings.
+! Added replacement type for dynamic functions, providing the same options as a formatter configuration.
+! Added a flex formatter type, allowing to use a string template as a simple HTML rendering logic.
+! Added <cms:addparams>-tag to inherit parameters into nested container levels.
+! Improved container page editor to inject less HTML-markup for more readable HTML source code.
+! Added meta mapping feature, to allow using content field values of container page elements in the HTML-head element for meta tags like keywords or Facebook meta info.
+! Improved EL API for rendering img/picture tags to provide device specific resolutions and formats.
+! Added EL functions to provide image variants and image meta info.
+! Added image focal point feature to improve automatic image cropping.
+! Improved SVG support.
+! Added flex-cache bucket feature to allow selective flex-cache purging.
+! Added template mapper to help transfer old template structure into a new one, mapping old containers and formatters to new ones.
+! Added option to integrate external SOLR indexes.
+! Added option to reuse detail only contents within different sites.
+! Added option to provide default detail pages to reduce detail page configuration efforts.
+! Added protected export feature, to allow access control for exported resources.
+! Added serial date widget and specific support within the container page editor.
+
+
+OpenCms 10.5.4 - May 17, 2018
+! Updated CodeMirror to version 5.37.0.
+! Updated TinyMCE to version 4.7.12.
+! Added 'publish scheduled' option to page editor context menu.
+! Improved security by always starting a new HttpSession on login.
+! Improved security by using a client id token to prevent session hijacking.
+* Fixed issue where sitemap modified and deleted lists could exceed the user "additional info" DB size limit. 
+* Fixing potential memory leak during PDF extraction.
+* Fixed issue #513 where XML contents with locales not configured in opencms-system.xml would jeopardize the locale handling.
+* Fixed issue #547 where selecting a date with the date picker failed.
+* Fixed issue #548 where missing detail pages would lead to null pointer exceptions.
+* Fixed issue #553 where adding a model group to a page failed, PR by koronchik.
+* Fixed issue #558 where flying saucer PDF library was updated to improve security, PR by andreasrosdal.
+* Fixed issue #564 with improved handling of invalid formatter configurations, PR by gallardo.
+* Fixed issue #565 with improved logging in XML entity resolver, PR by gallardo.
+* Fixed issue #570 with improved logging when creating of SOLR containers failed, PR by gallardo.
+* Fixed issue #573 where displaying the gallery dialog failed due to missing explorer types.
+* Fixed issue #590 where request parameters configured in the jsp-search configuration where not taken into account.
+
 OpenCms 10.5.3 - October 18, 2017
 * Fixed issue #535 with UI element positioning in Chrome 61.
 * Fixed performance issue with relations in PostgreSQL DB.
