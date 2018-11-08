@@ -44,14 +44,14 @@ import java.util.Set;
  */
 public class CmsFunctionFormatterBean extends CmsFormatterBean {
 
+    /** The standard function formatter structure id. */
+    private CmsUUID m_functionFormatterId;
+
     /** The request parameters to add for the included JSP. */
     private Map<String, String[]> m_parameters = new HashMap<>();
 
     /** The real path of the configured jsp. */
     private String m_realJspRootPath;
-
-    /** The standard function formatter structure id. */
-    private CmsUUID m_functionFormatterId;
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
@@ -71,7 +71,6 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
      * @param description the description text for the formatter
      * @param id the configuration id
      * @param settings the settings configuration
-     * @param hasNestedContainers <code>true</code> if this formatter has nested containers
      * @param isStrictContainers <code>true</code> if this formatter will always render all nested containers
      * @param parameters the request parameters to add for the included JSP
      */
@@ -91,7 +90,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
         String description,
         String id,
         Map<String, CmsXmlContentProperty> settings,
-        boolean hasNestedContainers,
+
         boolean isStrictContainers,
         Map<String, String[]> parameters) {
 
@@ -118,7 +117,6 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             true, // isAutoEnabled
             false, // isDetail
             false, // isDisplay
-            hasNestedContainers,
             isStrictContainers,
             false, // nestedFormatterSettings
             Collections.<CmsMetaMapping> emptyList(),

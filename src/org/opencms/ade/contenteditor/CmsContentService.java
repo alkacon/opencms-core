@@ -176,6 +176,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
 
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
+    /** The current users workplace locale. */
+    private Locale m_workplaceLocale;
+
     static {
         WIDGET_MAPPINGS.put("string", CmsInputWidget.class);
         WIDGET_MAPPINGS.put("select", CmsSelectWidget.class);
@@ -189,12 +195,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         WIDGET_MAPPINGS.put("radio", CmsRadioSelectWidget.class);
         WIDGET_MAPPINGS.put("groupselection", CmsGroupWidget.class);
     }
-
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
-
-    /** The current users workplace locale. */
-    private Locale m_workplaceLocale;
 
     /**
      * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
@@ -512,7 +512,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection, java.util.Map)
      */
     public CmsContentDefinition loadDefinition(
         String entityId,
@@ -549,7 +549,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.opencms.ade.contenteditor.shared.CmsEditHandlerData)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.opencms.ade.contenteditor.shared.CmsEditHandlerData, java.util.Map)
      */
     public CmsContentDefinition loadInitialDefinition(
         String entityId,
@@ -603,7 +603,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection, java.util.Map)
      */
     public CmsContentDefinition loadNewDefinition(
         String entityId,
@@ -932,8 +932,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     htmlContent = elementUtil.getContentByContainer(
                         file,
                         contextInfo.getString(CmsCntPageData.JSONKEY_ELEMENT_ID),
-                        container,
-                        true);
+                        container);
                 }
                 return new CmsEntityHtml(htmlContent, validationResult);
 
@@ -1349,6 +1348,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param nestedFormatters the nested formatters
      * @param messages the messages
      * @param contentLocale the content locale
+     * @param settingPresets the setting presets
+     *
+     * @return the list of names of added attributes
      */
     private List<String> addSettingsAttributes(
         Map<String, CmsAttributeConfiguration> attributeConfiguration,
@@ -1993,6 +1995,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param newLocale if the locale content should be created as new
      * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param editedLocaleEntity the edited locale entity
+     * @param settingPresets the presets for settings
      *
      * @return the content definition
      *
@@ -2213,6 +2216,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param mode the content creation mode
      * @param postCreateHandler the class name for the post-create handler
      * @param editHandlerData the edit handler data, in case the 'new' function is handled by an edit handler
+     * @param settingPresets the presets for settings
      *
      * @return the content definition
      *

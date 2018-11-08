@@ -64,17 +64,17 @@ public class CmsDetailOnlyContainerPageBuilder {
      */
     public static class ContainerInfo {
 
+        /** The list of resources to use as container elements. */
+        private List<CmsResource> m_elements = Lists.newArrayList();
+
+        /** The container name. */
+        private String m_name;
+
         /** Container type. */
         private String m_type;
 
         /** Container width. */
         private String m_width;
-
-        /** The container name. */
-        private String m_name;
-
-        /** The list of resources to use as container elements. */
-        private List<CmsResource> m_elements = Lists.newArrayList();
 
         /**
          * Creates a new instance.<p>
@@ -82,6 +82,7 @@ public class CmsDetailOnlyContainerPageBuilder {
          * @param name the container name
          */
         public ContainerInfo(String name) {
+
             m_name = name;
         }
 
@@ -184,14 +185,14 @@ public class CmsDetailOnlyContainerPageBuilder {
         }
     }
 
-    /** The map of container info beans, with container names as keys. */
-    private TreeMap<String, ContainerInfo> m_containerInfos = Maps.newTreeMap();
-
     /** The current CMS context. */
     private CmsObject m_cms;
 
     /** The sitemap configuration to use for automatically trying to determine the correct formatter. */
     private CmsADEConfigData m_config;
+
+    /** The map of container info beans, with container names as keys. */
+    private TreeMap<String, ContainerInfo> m_containerInfos = Maps.newTreeMap();
 
     /**
      * Creates a new instance.<p>
@@ -200,6 +201,7 @@ public class CmsDetailOnlyContainerPageBuilder {
      * @param config the sitemap configuration which should be used to determine the
      */
     public CmsDetailOnlyContainerPageBuilder(CmsObject cms, CmsADEConfigData config) {
+
         m_cms = cms;
         m_config = config;
     }
@@ -281,8 +283,7 @@ public class CmsDetailOnlyContainerPageBuilder {
 
         I_CmsFormatterBean formatter = m_config.getFormatters(m_cms, resource).getDefaultFormatter(
             cnt.getEffectiveType(),
-            cnt.getEffectiveWidth(),
-            true);
+            cnt.getEffectiveWidth());
         CmsUUID formatterId = formatter.getJspStructureId();
         CmsContainerElementBean elementBean = new CmsContainerElementBean(
             resource.getStructureId(),

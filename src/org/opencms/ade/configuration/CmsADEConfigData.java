@@ -851,7 +851,7 @@ public class CmsADEConfigData {
             CmsFormatterConfiguration formatters = getFormatters(cms, resType, schemaFormatters);
             for (CmsContainer cont : containers) {
                 if (cont.isEditable()
-                    && (formatters.getAllMatchingFormatters(cont.getType(), cont.getWidth(), true).size() > 0)) {
+                    && (formatters.getAllMatchingFormatters(cont.getType(), cont.getWidth()).size() > 0)) {
                     return true;
                 }
             }

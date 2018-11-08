@@ -133,9 +133,6 @@ public final class CmsFormatterConfiguration {
      */
     private class MatchesTypeOrWidth implements Predicate<I_CmsFormatterBean> {
 
-        /** If nested containers are allowed. */
-        private boolean m_allowNested;
-
         /** The set of container types to match. */
         private Set<String> m_types = Sets.newHashSet();
 
@@ -147,16 +144,14 @@ public final class CmsFormatterConfiguration {
          *
          * @param type the container type
          * @param width the container width
-         * @param allowNested if nested containers are allowed
          */
-        public MatchesTypeOrWidth(String type, int width, boolean allowNested) {
+        public MatchesTypeOrWidth(String type, int width) {
 
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
                 // split with comma and optionally spaces to the left/right of the comma as separator
                 m_types.addAll(Arrays.asList(type.trim().split(" *, *")));
             }
             m_width = width;
-            m_allowNested = allowNested;
         }
 
         /**
@@ -164,7 +159,7 @@ public final class CmsFormatterConfiguration {
          */
         public boolean apply(I_CmsFormatterBean formatter) {
 
-            return matchFormatter(formatter, m_types, m_width, m_allowNested);
+            return matchFormatter(formatter, m_types, m_width);
         }
     }
 
@@ -248,19 +243,11 @@ public final class CmsFormatterConfiguration {
      * @param formatter the formatter bean
      * @param types the container types
      * @param width the container width
-     * @param allowNested whether nested containers are allowed
      *
      * @return <code>true</code> in case the formatter matches
      */
-    public static boolean matchFormatter(
-        I_CmsFormatterBean formatter,
-        Set<String> types,
-        int width,
-        boolean allowNested) {
+    public static boolean matchFormatter(I_CmsFormatterBean formatter, Set<String> types, int width) {
 
-        if (!allowNested && formatter.hasNestedContainers()) {
-            return false;
-        }
         if (formatter.isMatchAll()) {
             return true;
         }
@@ -287,17 +274,13 @@ public final class CmsFormatterConfiguration {
      *
      * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
-     * @param allowNested if nested containers are allowed
      *
      * @return the list of available formatters
      */
-    public List<I_CmsFormatterBean> getAllMatchingFormatters(
-        String containerTypes,
-        int containerWidth,
-        boolean allowNested) {
+    public List<I_CmsFormatterBean> getAllMatchingFormatters(String containerTypes, int containerWidth) {
 
         return new ArrayList<I_CmsFormatterBean>(
-            Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested)));
+            Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(containerTypes, containerWidth)));
 
     }
 
@@ -309,18 +292,14 @@ public final class CmsFormatterConfiguration {
      *
      * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
-     * @param allowNested if nested containers are allowed
      *
      * @return the matching formatter, or <code>null</code> if none was found
      */
-    public I_CmsFormatterBean getDefaultFormatter(
-        final String containerTypes,
-        final int containerWidth,
-        final boolean allowNested) {
+    public I_CmsFormatterBean getDefaultFormatter(final String containerTypes, final int containerWidth) {
 
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(
             m_allFormatters,
-            new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested));
+            new MatchesTypeOrWidth(containerTypes, containerWidth));
         return result.orNull();
     }
 
@@ -336,7 +315,7 @@ public final class CmsFormatterConfiguration {
 
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(
             m_allFormatters,
-            Predicates.and(new IsSchemaFormatter(), new MatchesTypeOrWidth(containerTypes, containerWidth, false)));
+            Predicates.and(new IsSchemaFormatter(), new MatchesTypeOrWidth(containerTypes, containerWidth)));
         return result.orNull();
     }
 
@@ -352,7 +331,7 @@ public final class CmsFormatterConfiguration {
 
         // detail formatters must still match the type or width
         Predicate<I_CmsFormatterBean> checkValidDetailFormatter = Predicates.and(
-            new MatchesTypeOrWidth(types, containerWidth, true),
+            new MatchesTypeOrWidth(types, containerWidth),
             new IsDetail());
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, checkValidDetailFormatter);
         return result.orNull();
@@ -411,19 +390,15 @@ public final class CmsFormatterConfiguration {
      *
      * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
-     * @param allowNested if nested containers are allowed
      *
      * @return the list of available formatters
      */
-    public Map<String, I_CmsFormatterBean> getFormatterSelection(
-        String containerTypes,
-        int containerWidth,
-        boolean allowNested) {
+    public Map<String, I_CmsFormatterBean> getFormatterSelection(String containerTypes, int containerWidth) {
 
         Map<String, I_CmsFormatterBean> result = new LinkedHashMap<String, I_CmsFormatterBean>();
         for (I_CmsFormatterBean formatter : Collections2.filter(
             m_allFormatters,
-            new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested))) {
+            new MatchesTypeOrWidth(containerTypes, containerWidth))) {
             if (formatter.isFromFormatterConfigFile()) {
                 result.put(formatter.getId(), formatter);
             } else {
@@ -488,14 +463,13 @@ public final class CmsFormatterConfiguration {
      *
      * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
-     * @param allowNested if nested containers are allowed
      *
      * @return the provided <code>true</code> in case this configuration has a formatter
      *      for the given type / width parameters.
      */
-    public boolean hasFormatter(String containerTypes, int containerWidth, boolean allowNested) {
+    public boolean hasFormatter(String containerTypes, int containerWidth) {
 
-        return getDefaultFormatter(containerTypes, containerWidth, allowNested) != null;
+        return getDefaultFormatter(containerTypes, containerWidth) != null;
     }
 
     /**

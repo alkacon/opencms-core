@@ -41,17 +41,17 @@ import java.util.Set;
  */
 public class CmsFlexFormatterBean extends CmsFormatterBean {
 
-    /** The macro input. */
-    private String m_stringTemplate;
-
-    /** The placeholder macro input. */
-    private String m_placeholderStringTemplate;
-
     /** The root path to the default content. */
     private String m_defaultContentRootPath;
 
     /** The UUID of the default content resource. */
     private CmsUUID m_defaultContentStructureId;
+
+    /** The placeholder macro input. */
+    private String m_placeholderStringTemplate;
+
+    /** The macro input. */
+    private String m_stringTemplate;
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
@@ -126,7 +126,6 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             isAutoEnabled,
             isDetail,
             isDisplay,
-            false,
             false,
             false,
             metaMappings,

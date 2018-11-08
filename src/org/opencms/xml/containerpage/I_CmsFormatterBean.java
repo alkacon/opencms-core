@@ -180,13 +180,6 @@ public interface I_CmsFormatterBean {
     Map<String, CmsXmlContentProperty> getSettings();
 
     /**
-     * Returns if this formatter has nested containers.<p>
-     *
-     * @return <code>true</code> if this formatter has nested containers
-     */
-    boolean hasNestedContainers();
-
-    /**
      * Returns if nested formatter settings should be displayed.<p>
      *
      * @return <code>true</code> if nested formatter settings should be displayed

@@ -44,20 +44,20 @@ import java.util.Set;
  */
 public class CmsMacroFormatterBean extends CmsFormatterBean {
 
-    /** The macro input. */
-    private String m_macroInput;
-
-    /** The placeholder macro input. */
-    private String m_placeholderMacroInput;
-
     /** The root path to the default content. */
     private String m_defaultContentRootPath;
 
     /** The UUID of the default content resource. */
     private CmsUUID m_defaultContentStructureId;
 
+    /** The macro input. */
+    private String m_macroInput;
+
     /** The online flag. */
     private boolean m_online;
+
+    /** The placeholder macro input. */
+    private String m_placeholderMacroInput;
 
     /** The referenced formatters. */
     private Map<String, CmsUUID> m_referencedFormatters;
@@ -139,7 +139,6 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             isAutoEnabled,
             isDetail,
             isDisplay,
-            false,
             false,
             false,
             metaMappings,

@@ -457,7 +457,6 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     m_clientIds,
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     false,
                     null,
                     getLocale(),
@@ -517,7 +516,6 @@ public final class CmsContainerpageController {
                 getRequestParams(),
                 m_clientIds,
                 getPageState(),
-                !isGroupcontainerEditing(),
                 false,
                 null,
                 getLocale(),
@@ -619,7 +617,6 @@ public final class CmsContainerpageController {
                 getRequestParams(),
                 clientIds,
                 getPageState(),
-                !isGroupcontainerEditing(),
                 m_alwaysCopy,
                 m_dndContainer,
                 getLocale(),
@@ -1551,7 +1548,6 @@ public final class CmsContainerpageController {
                     clientId,
                     containerId,
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
 
@@ -1611,7 +1607,6 @@ public final class CmsContainerpageController {
                     clientId,
                     settings,
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
 
@@ -1749,7 +1744,6 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     resourceType,
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }
@@ -2283,7 +2277,6 @@ public final class CmsContainerpageController {
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }
@@ -2322,7 +2315,6 @@ public final class CmsContainerpageController {
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }
@@ -2586,7 +2578,6 @@ public final class CmsContainerpageController {
                                     clientId,
                                     settings,
                                     getPageState(),
-                                    !isGroupcontainerEditing(),
                                     getLocale(),
                                     this);
                             }
@@ -2770,7 +2761,6 @@ public final class CmsContainerpageController {
                     elementWidget.getId(),
                     elementId,
                     getPageState(),
-                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }

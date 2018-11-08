@@ -82,6 +82,7 @@ public final class CmsADESessionCache {
          * @param detailId the detail content id (may be null)
          */
         public LastPageBean(String siteRoot, CmsUUID pageId, CmsUUID detailId) {
+
             super();
             m_siteRoot = siteRoot;
             m_pageId = pageId;
@@ -325,16 +326,11 @@ public final class CmsADESessionCache {
      *
      * @param resType the resource type
      * @param container the container to match
-     * @param allowNested in case nested containers are allowed
      * @param config the config data
      *
      * @return the formatter if any
      */
-    public I_CmsFormatterBean getRecentFormatter(
-        String resType,
-        CmsContainer container,
-        boolean allowNested,
-        CmsADEConfigData config) {
+    public I_CmsFormatterBean getRecentFormatter(String resType, CmsContainer container, CmsADEConfigData config) {
 
         I_CmsFormatterBean result = null;
         List<CmsUUID> formatterIds = m_recentFormatters.get(resType);
@@ -344,7 +340,7 @@ public final class CmsADESessionCache {
             for (CmsUUID id : formatterIds) {
                 I_CmsFormatterBean formatter = availableFormatters.get(id);
                 if ((formatter != null)
-                    && CmsFormatterConfiguration.matchFormatter(formatter, types, container.getWidth(), allowNested)) {
+                    && CmsFormatterConfiguration.matchFormatter(formatter, types, container.getWidth())) {
                     result = formatter;
                     break;
                 }

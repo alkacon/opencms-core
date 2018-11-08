@@ -183,9 +183,6 @@ public class CmsFormatterBeanParser {
     public static final String N_META_MAPPING = "MetaMapping";
 
     /** Content value node name. */
-    public static final String N_NESTED_CONTAINERS = "NestedContainers";
-
-    /** Content value node name. */
     public static final String N_NESTED_FORMATTER_SETTINGS = "NestedFormatterSettings";
 
     /** Content value node name. */
@@ -528,8 +525,6 @@ public class CmsFormatterBeanParser {
 
             String searchableStr = getString(root, N_SEARCH_CONTENT, "true");
             m_extractContent = Boolean.parseBoolean(searchableStr);
-            String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
-            hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
             parseHeadIncludes(root);
             if (isFunction) {
                 CmsResource functionFormatter = m_cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
@@ -550,7 +545,6 @@ public class CmsFormatterBeanParser {
                     description,
                     id,
                     m_settings,
-                    hasNestedContainers,
                     isStrictContainers,
                     params);
             } else {
@@ -577,7 +571,6 @@ public class CmsFormatterBeanParser {
                     m_autoEnabled,
                     isDetail,
                     isDisplay,
-                    hasNestedContainers,
                     isStrictContainers,
                     nestedFormatters,
                     mappings,

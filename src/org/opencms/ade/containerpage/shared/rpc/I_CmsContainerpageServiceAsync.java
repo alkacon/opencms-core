@@ -194,7 +194,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param alwaysCopy <code>true</code> in case reading data for a clipboard element used as a copy group
      * @param dndSource in the DND case, the id of the origin container from which the element is dragged
      * @param locale the content locale
@@ -206,7 +205,6 @@ public interface I_CmsContainerpageServiceAsync {
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         boolean alwaysCopy,
         String dndSource,
         String locale,
@@ -219,7 +217,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the requested element id
      * @param containerId the parent container id
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -228,7 +225,6 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         String containerId,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<CmsElementSettingsConfig> callback);
 
@@ -241,7 +237,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the requested element ids
      * @param settings the settings for which the element data should be loaded
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the callback for receiving the element data
      */
@@ -252,7 +247,6 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         Map<String, String> settings,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<CmsContainerElementData> callback);
 
@@ -262,7 +256,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param pageStructureId the container page structure id
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -270,7 +263,6 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<List<CmsContainerElementData>> callback);
 
@@ -298,7 +290,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param reqParams optional request parameters
      * @param resourceType the requested element resource type name
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -308,7 +299,6 @@ public interface I_CmsContainerpageServiceAsync {
         String reqParams,
         String resourceType,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<CmsContainerElementData> callback);
 
@@ -332,7 +322,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param pageStructureId the container page structure id
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -340,7 +329,6 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<List<CmsContainerElementData>> callback);
 
@@ -409,7 +397,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the id of the element to replace
      * @param replaceId the id of the replacing element
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the async callback
      */
@@ -420,7 +407,6 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         String replaceId,
         Collection<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<CmsContainerElementData> callback);
 
@@ -465,7 +451,6 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientId the requested element ids
      * @param settings the settings for which the element data should be loaded
      * @param containers the containers of the current page
-     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the callback for receiving the element data
      */
@@ -476,7 +461,6 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         Map<String, String> settings,
         List<CmsContainer> containers,
-        boolean allowNested,
         String locale,
         AsyncCallback<CmsContainerElementData> callback);
 

@@ -157,6 +157,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /** The parent element to this container. */
     private CmsContainerElementBean m_parentElement;
 
+    private HashMap<String, String> m_settingPresets;
+
     /** The tag attribute value. */
     private String m_tag;
 
@@ -169,8 +171,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /** The container width as a string. */
     private String m_width;
 
-    private HashMap<String, String> m_settingPresets;
-
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
      *
@@ -180,7 +180,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      * @param containerName the container name
      * @param containerType the container type
      * @param containerWidth the container width
-     * @param allowNested if nested containers are allowed
      *
      * @return the formatter configuration bean, may be <code>null</code> if no formatter available or a schema formatter is used
      */
@@ -190,8 +189,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         CmsADEConfigData adeConfig,
         String containerName,
         String containerType,
-        int containerWidth,
-        boolean allowNested) {
+        int containerWidth) {
 
         I_CmsFormatterBean formatterBean = getFormatterConfigurationForElement(
             cms,
@@ -199,8 +197,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             adeConfig,
             containerName,
             containerType,
-            containerWidth,
-            allowNested);
+            containerWidth);
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
         if (formatterBean != null) {
             String formatterConfigId = formatterBean.getId();
@@ -223,7 +220,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      * @param containerName the container name
      * @param containerType the container type
      * @param containerWidth the container width
-     * @param allowNested if nested containers are allowed
      *
      * @return the formatter configuration
      */
@@ -233,8 +229,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         CmsADEConfigData adeConfig,
         String containerName,
         String containerType,
-        int containerWidth,
-        boolean allowNested) {
+        int containerWidth) {
 
         I_CmsFormatterBean formatterBean = null;
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
@@ -244,7 +239,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 || element.getSettings().get(settingsKey).startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
                     cms,
-                    element.getResource()).getAllMatchingFormatters(containerType, containerWidth, allowNested)) {
+                    element.getResource()).getAllMatchingFormatters(containerType, containerWidth)) {
                     if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                         String formatterConfigId = formatter.getId();
                         if (formatterConfigId == null) {
@@ -275,8 +270,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             if (formatterBean == null) {
                 formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
                     containerType,
-                    containerWidth,
-                    allowNested);
+                    containerWidth);
             }
         }
         return formatterBean;
@@ -1386,8 +1380,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 adeConfig,
                 getName(),
                 containerType,
-                containerWidth,
-                true);
+                containerWidth);
             element.initSettings(cms, formatterConfig, locale, request, m_settingPresets);
         }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
@@ -1423,8 +1416,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         adeConfig,
                         getName(),
                         containerType,
-                        containerWidth,
-                        false);
+                        containerWidth);
                     subelement.initSettings(cms, subElementFormatterConfig, locale, request, m_settingPresets);
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (m_editableRequest) {
@@ -1526,8 +1518,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
                     I_CmsFormatterBean elementFormatterBean = elementFormatters.getDefaultFormatter(
                         containerType,
-                        containerWidth,
-                        true);
+                        containerWidth);
                     if (elementFormatterBean == null) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(
