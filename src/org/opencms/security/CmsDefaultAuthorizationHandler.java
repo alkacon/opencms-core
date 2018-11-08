@@ -194,6 +194,13 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         }
         try {
             CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            if (OpenCms.getSystemInfo().getHttpAuthenticationSettings().getBrowserBasedAuthenticationMechanism() == null) {
+                // browser base authorization is not enabled, return Guest user CmsObject
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Browser based authorization not enabled.");
+                }
+                return cms;
+            }
             // no user identified from the session and basic authentication is enabled
             String auth = req.getHeader(HEADER_AUTHORIZATION);
             if ((auth == null) || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
