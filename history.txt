@@ -15,41 +15,48 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 11.0.0 beta - November 11, 2018
-! Added Java 11 support.
-! Updated most external libraries.
-! Improved Gradle build to better support IDEs like Eclipse and IntelliJ IDEA.
-! Rewritten workplace apps: Accounts, Modules, Sessions, Websites, Log files, Database, Search indexes, Caches, Versioning, Link validation.
-! Added new apps: List manager, Resource types, Shell-script.
-! Workplace using vector graphics instead of bitmaps for better 'Retina'-display support.
-! Added update module option to avoid delete and import for changed modules.
-! Added auto versioning for modules, incrementing the version number on export only in case of module changes. 
-! Reorganized core modules.
-! Reorganized OpenCms core JARs.
-! Reorganized OpenCms XML configuration files placing site-, scheduler- and variables-configuration (login message) in separate files.
-! Added option to execute OpenCms shell commands through RMI within the running OpenCms instance.
-! Added option to provide a return code when executing OpenCms shell commands. 
-! Added support for text area and select combo widget within the property dialog.
-! Added new copy mode 'Copy files and adjust internal links'.
-! Added alternative notation to resource type schemas grouping content field configuration similar to the formatter settings configuration.
-! Added option to provide a model formatter settings file, containing commonly used settings.
-! Added replacement type for dynamic functions, providing the same options as a formatter configuration.
-! Added a flex formatter type, allowing to use a string template as a simple HTML rendering logic.
-! Added <cms:addparams>-tag to inherit parameters into nested container levels.
-! Improved container page editor to inject less HTML-markup for more readable HTML source code.
-! Added meta mapping feature, to allow using content field values of container page elements in the HTML-head element for meta tags like keywords or Facebook meta info.
-! Improved EL API for rendering img/picture tags to provide device specific resolutions and formats.
-! Added EL functions to provide image variants and image meta info.
-! Added image focal point feature to improve automatic image cropping.
-! Improved SVG support.
-! Added flex-cache bucket feature to allow selective flex-cache purging.
-! Added template mapper to help transfer old template structure into a new one, mapping old containers and formatters to new ones.
-! Added option to integrate external SOLR indexes.
-! Added option to reuse detail only contents within different sites.
-! Added option to provide default detail pages to reduce detail page configuration efforts.
-! Added protected export feature, to allow access control for exported resources.
-! Added serial date widget and specific support within the container page editor.
-
+OpenCms 11.0 beta - November 11, 2018
+! Workplace: Completely restructured the workplace for improved usability using a modern GUI.
+! Workplace: All images are now vector graphics with high resolution (retina) display support.
+! Workplace: New 'Lists' app for management of default 'List configuration' based content lists using SOLR.
+! Workplace: New 'Resource types' app allows to create, read, edit and delete individual resource types.
+! Workplace: New 'Script terminal' app allows to interactively run OpenCms shell scripts in the workplace.
+! Workplace: New 'Sessions' app allows to manage current user sessions and send messages to users.
+! Workplace: Improved 'Accounts' app for user and group management.
+! Workplace: Improved 'Websites' app for site and sub-site management with extended https support.
+! Workplace: Improved 'Modules' app for module management.
+! Workplace: Improved 'Source search' app with several search options in the OpenCms database.
+! Workplace: Improved 'Scheduled jobs', 'Log files', 'Database', 'Caches' and 'Versioning' apps.
+! Workplace: New resource copy mode 'Copy files and adjust internal links' in the Explorer.
+! Editor: Added image 'focal point' feature to allow automatic image cropping around this point.
+! Editor: The new 'List configuration' setting dialog can inherit settings from the display formatters used in the list.
+! Editor: Added support for SVG files in images galleries.
+! Editor: Added support for WYSIWYG text and select combo widgets in the resource property dialog.
+! Editor: Container page editor now injects less markup in the HTML, resulting in better readable HTML source code.
+! Template API: New meta mapping feature allows to inherit values from XML contents to the page template (for SEO meta infos).
+! Template API: Image variations for 'srcset' or 'picture' can now be generated using a simple EL API.
+! Template API: The new 'List configuration' type provides standard filter and sort options for title / date / category / folder.
+! Template API: Added <cms:addparams>-tag to inherit parameters into nested container levels.
+! Template API: Alternative notation for resource type schemas, grouping content fields configuration similar to formatter settings.
+! Template API: Added option to provide a default formatter settings file, containing commonly used settings.
+! Template API: Updated dynamic function configurations to use the same notation as formatter configurations.
+! Template API: Added new 'Flex formatter' type, allowing to use a StringTemplate for simple HTML rendering logic.
+! Template API: Added option to reuse detail only contents from different sites.
+! Template API: Added a 'serial date' widget with extended functionality in the page editor.
+! Template API: Added optional mapper to transfer an old template structure into a new one, mapping containers and formatters.
+! Template API: Added option to provide default detail pages to reduce manual detail page configuration.
+! Setup: Updating a module will now import only the changes instead of deleting and reinstalling the module.
+! Setup: Added auto versioning for modules, incrementing the version number on export only in case of changes.
+! Setup: Improved Gradle build to better support IDEs like Eclipse and IntelliJ IDEA.
+! Setup: Reorganized core modules ans JARs for a streamlined update process with less resources.
+! Setup: Reorganized XML configuration files placing site-, scheduler- and variables-configuration in separate files.
+! Management: New option to execute OpenCms shell commands in a running OpenCms instance using RMI.
+! Management: New option to provide meaningful return codes when executing an OpenCms shell script.
+! Management: Added flex-cache bucket feature to allow selective flex-cache purging.
+! Management: Support for static export of resources in non-public folders.
+! Management: Added option to write content from OpenCms to external SOLR indexes.
+! Updated external library dependencies to current versions.
+! Provided Java 11 support.
 
 OpenCms 10.5.4 - May 17, 2018
 ! Updated CodeMirror to version 5.37.0.
@@ -57,7 +64,7 @@ OpenCms 10.5.4 - May 17, 2018
 ! Added 'publish scheduled' option to page editor context menu.
 ! Improved security by always starting a new HttpSession on login.
 ! Improved security by using a client id token to prevent session hijacking.
-* Fixed issue where sitemap modified and deleted lists could exceed the user "additional info" DB size limit. 
+* Fixed issue where sitemap modified and deleted lists could exceed the user "additional info" DB size limit.
 * Fixing potential memory leak during PDF extraction.
 * Fixed issue #513 where XML contents with locales not configured in opencms-system.xml would jeopardize the locale handling.
 * Fixed issue #547 where selecting a date with the date picker failed.
