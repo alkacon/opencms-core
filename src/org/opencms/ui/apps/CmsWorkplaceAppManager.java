@@ -229,6 +229,8 @@ public class CmsWorkplaceAppManager {
     /** Legacy apps explicitly hidden from new workplace. */
     private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(
         Arrays.asList(
+            "/accounts",
+            "/contenttools",
             "/git",
             "/scheduler",
             "/galleryoverview",
