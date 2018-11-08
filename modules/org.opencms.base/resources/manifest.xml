@@ -13,6 +13,7 @@
 		<import-script><![CDATA[# sets access control entries  and properties on folders not exclusively belonging to this module
 chacc '/system/' 'ROLE' 'WORKPLACE_USER' '+I+R'
 chacc '/system/modules/' 'ROLE' 'WORKPLACE_USER' '+I+R+V'
+createFolder '/system/' 'config'
 writeProperty '/system/config/' 'export' 'false'
 writeProperty '/system/workplace/' 'content-encoding' 'UTF-8'
 writeProperty '/system/workplace/' 'export' 'false'
@@ -69,7 +70,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<resource uri="/system/workplace/resources/filetypes/resourceNotFoundSmall.png"/>
 		</resources>
 		<excluderesources/>
-		<parameters/>
+		<parameters><param name="allowSettingsInEditor">false</param></parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
 				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp</param>
