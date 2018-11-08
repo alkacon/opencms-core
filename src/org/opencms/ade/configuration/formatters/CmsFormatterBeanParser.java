@@ -228,7 +228,7 @@ public class CmsFormatterBeanParser {
     public static final String N_TYPES = "Types";
 
     /** Node name for the 'use meta mappings for normal elements' check box. */
-    public static final String N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS = "UseMetaMappingsForNormalElements";
+    public static final String N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS = "AlwaysApplyMetaMappings";
 
     /** Content value node name. */
     public static final String N_VALUE = "Value";
