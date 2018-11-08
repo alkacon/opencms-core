@@ -112,7 +112,7 @@ public interface I_CmsButton {
         INHERITED(SITEMAP, Messages.get().key(Messages.GUI_TOOLBAR_INHERITED_0)),
 
         /** The list manager button. */
-        LIST("opencms-icon-list", "List manager"),
+        LIST("opencms-icon-list", Messages.get().key(Messages.GUI_TOOLBAR_LIST_0)),
 
         /** Toolbar button. */
         MOVE("opencms-icon-move", Messages.get().key(Messages.GUI_TOOLBAR_MOVE_IN_0)),
@@ -197,16 +197,20 @@ public interface I_CmsButton {
     public enum ButtonStyle {
 
         /** Font icon button. */
-        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), ICON_FONT),
+        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(),
+        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), ICON_FONT),
 
         /** Menu button. */
-        MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
+        MENU(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMenuButton(),
+        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()),
 
         /** Default button. */
-        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(), I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
+        TEXT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton(),
+        I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll()),
 
         /** Transparent button. */
-        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(), I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        TRANSPARENT(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton(),
+        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
         /** The list of additional style class names for this button style. */
         private String[] m_additionalClasses;
