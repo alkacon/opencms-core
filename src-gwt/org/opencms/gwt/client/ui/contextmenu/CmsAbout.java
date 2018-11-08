@@ -64,7 +64,7 @@ public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCom
 
         final CmsPopup popup = new CmsPopup(Messages.get().key(Messages.GUI_ABOUT_DIALOG_TITLE_0));
         FlowPanel container = new FlowPanel();
-        int height = 350;
+        int height = 450;
         if (Window.getClientHeight() < height) {
             height = Math.max(300, Window.getClientHeight() - 50);
         }
