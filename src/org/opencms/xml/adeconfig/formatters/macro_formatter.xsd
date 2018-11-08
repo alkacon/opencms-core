@@ -19,16 +19,19 @@
         	<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Rank" type="OpenCmsString"/>
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
+            
         	<xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
-        	<xsd:element name="Detail" type="OpenCmsBoolean" />
-        	<xsd:element name="Display" type="OpenCmsBoolean" />
+        	<xsd:element name="Detail" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="UseMetaMappingsForNormalElements" type="OpenCmsBoolean" minOccurs="0" />
+        	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0" />
+            
         	<xsd:element name="Macro" type="OpenCmsString" />
         	<xsd:element name="Formatters" type="OpenCmsFormatterReference" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="PlaceholderMacro" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
         	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="UseMetaMappingsForNormalElements" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+
         	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -58,7 +61,7 @@
 			<tab element="Macro" name="TabMacro" collapse="false" />
 			<tab element="PlaceholderMacro" name="TabNewContent" collapse="false" />
 			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
-			<tab element="UseMetaMappingsForNormalElements" name="TabMetaMappings" collapse="false" />
+			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
 		</tabs>
         </xsd:appinfo> 
     </xsd:annotation>    

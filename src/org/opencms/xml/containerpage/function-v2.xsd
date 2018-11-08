@@ -20,8 +20,10 @@
     	    <xsd:element name="Jsp" type="OpenCmsVfsFile" />
     	    <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
-        	<xsd:element name="NestedContainers" type="OpenCmsBoolean" />
-        	<xsd:element name="StrictContainers" type="OpenCmsBoolean" minOccurs="0" />
+            
+        	<xsd:element name="StrictContainers" type="OpenCmsBoolean"  />
+         	<xsd:element name="NestedContainers" type="OpenCmsBoolean" />
+            
 	       	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
@@ -35,6 +37,7 @@
         <resourcebundle name="org.opencms.xml.containerpage.messages"/>
         <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.FunctionConfig:label.NewFormatter" />
         <defaults>
+            <default element="StrictContainers" value="true" />
             <default element="NiceName" value="" resolveMacros="false" />
 		</defaults>
 		<mappings>

@@ -21,19 +21,22 @@
     	    <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Rank" type="OpenCmsString"/>
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
-        	<xsd:element name="Preview" type="OpenCmsBoolean" />
-        	<xsd:element name="SearchContent" type="OpenCmsBoolean" />
-        	<xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
-        	<xsd:element name="Detail" type="OpenCmsBoolean" />
-        	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0"/>
-        	<xsd:element name="NestedContainers" type="OpenCmsBoolean" />
-        	<xsd:element name="StrictContainers" type="OpenCmsBoolean" minOccurs="0" />
-        	<xsd:element name="NestedFormatterSettings" type="OpenCmsBoolean" minOccurs="0" />
+            
+            <xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
+            <xsd:element name="SearchContent" type="OpenCmsBoolean" />
+            <xsd:element name="StrictContainers" type="OpenCmsBoolean" />
+            <xsd:element name="Detail" type="OpenCmsBoolean" minOccurs="0"/>
+            <xsd:element name="UseMetaMappingsForNormalElements" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="NestedFormatterSettings" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0"/>
+            <xsd:element name="Preview" type="OpenCmsBoolean" minOccurs="0"/>                    	
+            <xsd:element name="NestedContainers" type="OpenCmsBoolean" />
+
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="UseMetaMappingsForNormalElements" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+
         	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -43,11 +46,10 @@
         <resourcebundle name="org.opencms.xml.containerpage.messages"/>
         <defaults>
 			<default element="Rank" value="1000" />
-			<default element="Detail" value="true" />
 			<default element="Display" value="true" />
-			<default element="NestedFormatterSettings" value="false" />
 			<default element="SearchContent" value="true" />
 			<default element="Setting/Visibility" value="both" />
+            <default element="StrictContainers" value="true" />
 		</defaults>
 		<mappings>
 				<mapping element="NiceName" mapto="galleryName" />
@@ -59,7 +61,7 @@
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
-			<tab element="UseMetaMappingsForNormalElements" name="TabMetaMappings" collapse="false" />
+			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
 		</tabs>
         </xsd:appinfo> 
     </xsd:annotation>    

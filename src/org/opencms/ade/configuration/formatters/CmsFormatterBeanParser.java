@@ -227,6 +227,9 @@ public class CmsFormatterBeanParser {
     /** Content value node name. */
     public static final String N_TYPES = "Types";
 
+    /** Node name for the 'use meta mappings for normal elements' check box. */
+    public static final String N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS = "UseMetaMappingsForNormalElements";
+
     /** Content value node name. */
     public static final String N_VALUE = "Value";
 
@@ -235,9 +238,6 @@ public class CmsFormatterBeanParser {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
-
-    /** Node name for the 'use meta mappings for normal elements' check box. */
-    public static final String N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS = "UseMetaMappingsForNormalElements";
 
     /** Parsed field. */
     int m_width;
@@ -391,7 +391,7 @@ public class CmsFormatterBeanParser {
         }
         m_settings = mergedSettings;
 
-        String isDetailStr = getString(root, N_DETAIL, "true");
+        String isDetailStr = getString(root, N_DETAIL, "false");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
         String isDisplayStr = getString(root, N_DISPLAY, "false");
