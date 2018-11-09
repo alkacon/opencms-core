@@ -57,7 +57,7 @@ if [ $OPENCMS_GIT_BRANCH == "HEAD" ]; then
 fi
 OPENCMS_GIT_ID="${GIT_COMMIT:0:7}"
 OPENCMS_GIT_BRANCH_SHOWN="${OpenCmsGitBranchShown:-$OPENCMS_GIT_BRANCH}"
-OPENCMS_GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat)
+OPENCMS_GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | tr '\n' ' ')
 
 #
 # The OpenCms version ID.
