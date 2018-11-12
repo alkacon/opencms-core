@@ -1410,7 +1410,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (deleteMode == null) {
                 deleteMode = ElementDeleteMode.askDelete;
             }
-
+            CmsListInfoBean pageInfo = CmsVfsService.getPageInfo(cms, containerPage);
             data = new CmsCntPageData(
                 onlineLink,
                 noEditReason,
@@ -1421,6 +1421,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContainerPage,
                 lastModified,
                 getLockInfo(containerPage),
+                pageInfo,
                 cms.getRequestContext().getLocale().toString(),
                 useClassicEditor,
                 info,

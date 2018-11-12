@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
@@ -44,14 +45,14 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The element delte modes. */
     public enum ElementDeleteMode {
-    /** Don't ask, delete no longer referenced element resources. */
-    alwaysDelete,
-    /** Don't ask, keep no longer referenced element resources. */
-    alwaysKeep,
-    /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
-    askDelete,
-    /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
-    askKeep
+        /** Don't ask, delete no longer referenced element resources. */
+        alwaysDelete,
+        /** Don't ask, keep no longer referenced element resources. */
+        alwaysKeep,
+        /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
+        askDelete,
+        /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
+        askKeep
     }
 
     /** Enum representing the different ways dropping elements on a container page can be handled. */
@@ -181,6 +182,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The current page info. */
+    private CmsListInfoBean m_pageInfo;
+
     /**
      * Constructor.<p>
      *
@@ -193,6 +197,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param detailContainerPage the detail view container resource path
      * @param lastModified the last modification date of the page
      * @param lockInfo lock information, if the page is locked by another user
+     * @param pageInfo the current page info
      * @param locale the content locale
      * @param useClassicEditor <code>true</code> to use the classic XmlContent editor
      * @param contextInfo the template context information
@@ -219,6 +224,7 @@ public final class CmsCntPageData implements IsSerializable {
         String detailContainerPage,
         long lastModified,
         String lockInfo,
+        CmsListInfoBean pageInfo,
         String locale,
         boolean useClassicEditor,
         CmsTemplateContextInfo contextInfo,
@@ -242,6 +248,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_sitemapManager = sitemapManager;
         m_lastModified = lastModified;
         m_lockInfo = lockInfo;
+        m_pageInfo = pageInfo;
         m_locale = locale;
         m_detailId = detailId;
         m_detailContainerPage = detailContainerPage;
@@ -269,6 +276,11 @@ public final class CmsCntPageData implements IsSerializable {
         // empty
     }
 
+    /**
+     * Returns whether editing settings in the content editor is allowed.<p>
+     *
+     * @return <code>true</code> in case editing settings in the content editor is allowed
+     */
     public boolean allowSettingsInEditor() {
 
         return m_allowSettingsInEditor;
@@ -447,6 +459,16 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Returns the current page info.<p>
+     *
+     * @return the current page info
+     */
+    public CmsListInfoBean getPageInfo() {
+
+        return m_pageInfo;
+    }
+
+    /**
      * Returns the request parameters.<p>
      *
      * @return the request parameters
@@ -536,6 +558,11 @@ public final class CmsCntPageData implements IsSerializable {
         return m_useClassicEditor;
     }
 
+    /**
+     * Sets whether editing settings in the content editor is allowed.<p>
+     *
+     * @param allowSettingsInEditor <code>true</code> to set editing settings in the content editor is allowed
+     */
     public void setAllowSettingsInEditor(boolean allowSettingsInEditor) {
 
         m_allowSettingsInEditor = allowSettingsInEditor;

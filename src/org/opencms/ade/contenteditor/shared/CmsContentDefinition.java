@@ -46,6 +46,9 @@ import java.util.Set;
  */
 public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDefinition {
 
+    /** The id of the element settings tab. */
+    public static final String SETTINGS_TAB_ID = "###formattersettings###";
+
     /** The entity id prefix. */
     private static final String ENTITY_ID_PREFIX = "http://opencms.org/resources/";
 

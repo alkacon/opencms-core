@@ -29,7 +29,6 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -37,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -73,7 +73,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
     public enum CmsTabbedPanelStyle {
 
         /** Button style. */
-        buttonTabs(30, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(), I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
+        buttonTabs(30, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
+        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
 
         /** Classic style. */
         classicTabs(28, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().classicTabs(), null);
@@ -400,6 +401,24 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
             tab.setTitle(m_disabledTabIndexes.get(index));
             m_disabledTabIndexes.remove(index);
         }
+    }
+
+    /**
+     * Returns the id of the selected tab.<p>
+     *
+     * @return the selected tab id
+     */
+    public String getSelectedId() {
+
+        Widget tab = getWidget(m_tabPanel.getSelectedIndex());
+        String tabId = null;
+        for (Entry<String, E> tabEntry : m_tabsById.entrySet()) {
+            if (tabEntry.getValue().equals(tab)) {
+                tabId = tabEntry.getKey();
+                break;
+            }
+        }
+        return tabId;
     }
 
     /**

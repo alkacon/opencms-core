@@ -70,7 +70,7 @@ chacc '/system/userimages/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R']]></import-script>
 			<resource uri="/system/workplace/resources/filetypes/resourceNotFoundSmall.png"/>
 		</resources>
 		<excluderesources/>
-		<parameters><param name="allowSettingsInEditor">false</param></parameters>
+		<parameters/>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
 				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp</param>
