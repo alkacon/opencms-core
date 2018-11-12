@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERROR_FAILED_READING_CATEGORIES_1 = "ERROR_FAILED_READING_CATEGORIES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENT_TAB_LABEL_0 = "GUI_CONTENT_TAB_LABEL_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_EMPTY_EVENT_SERIES_0 = "GUI_SERIALDATE_EMPTY_EVENT_SERIES_0";
 
     /** Message constant for key in the resource bundle. */

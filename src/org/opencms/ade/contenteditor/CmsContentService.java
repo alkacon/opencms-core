@@ -1436,7 +1436,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Map<String, CmsXmlContentProperty> settingsConfig,
         List<I_CmsFormatterBean> nestedFormatters) {
 
-        CmsType baseType = types.get(entityType);
+        CmsType baseType = new CmsType(entityType);
         CmsType settingType = new CmsType(SETTING_TYPE_NAME);
         types.put(settingType.getId(), settingType);
         baseType.addAttribute(SETTINGS_CLIENT_ID_ATTRIBUTE, settingType, 1, 1);
@@ -1472,6 +1472,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
             }
         }
+        // the setting attributes are displayed on the first tab, so they need to be listed before the actual content attributes
+        CmsType oldBase = types.get(entityType);
+        for (String attributeName : oldBase.getAttributeNames()) {
+            baseType.addAttribute(
+                attributeName,
+                oldBase.getAttributeType(attributeName),
+                oldBase.getAttributeMinOccurrence(attributeName),
+                oldBase.getAttributeMaxOccurrence(attributeName));
+        }
+        types.put(entityType, baseType);
     }
 
     /**
@@ -2152,7 +2162,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     containerElement.getResource(),
                     locale,
                     getRequest());
-
+                String firstContentAttributeName = types.get(
+                    entity.getTypeName()).getAttributeNames().iterator().next();
                 List<String> addedVisibleAttrs = addSettingsAttributes(
                     attrConfig,
                     settingsConfig,
@@ -2167,10 +2178,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     addSettingsValues(entity, containerElement, nestedFormatters);
                 }
                 if (tabInfos.isEmpty()) {
-                    tabInfos.add(new CmsTabInfo("Content", "content", null, false, null));
+                    tabInfos.add(
+                        new CmsTabInfo(
+                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_CONTENT_TAB_LABEL_0),
+                            "content",
+                            firstContentAttributeName.substring(entity.getTypeName().length() + 1),
+                            false,
+                            null));
                 }
                 if (addedVisibleAttrs.size() > 0) {
                     tabInfos.add(
+                        0,
                         new CmsTabInfo(
                             Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_LABEL_0),
                             "###formattersettings###",
