@@ -28,3 +28,4 @@
 **/.gradle
 Thumbs.db
 /build/
+/module-export.sh
