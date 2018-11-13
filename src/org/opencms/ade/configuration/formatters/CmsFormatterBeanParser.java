@@ -108,6 +108,9 @@ public class CmsFormatterBeanParser {
     }
 
     /** Content value node name. */
+    public static final String N_ALLOWS_SETTINGS_IN_EDITOR = "AllowsSettingsInEditor";
+
+    /** Content value node name. */
     public static final String N_AUTO_ENABLED = "AutoEnabled";
 
     /** Content value node name. */
@@ -394,6 +397,9 @@ public class CmsFormatterBeanParser {
         String isDisplayStr = getString(root, N_DISPLAY, "false");
         boolean isDisplay = Boolean.parseBoolean(isDisplayStr);
 
+        String isAllowSettingsStr = getString(root, N_ALLOWS_SETTINGS_IN_EDITOR, "false");
+        boolean isAllowSettings = Boolean.parseBoolean(isAllowSettingsStr);
+
         String isStrictContainersStr = getString(root, N_STRICT_CONTAINERS, "false");
         boolean isStrictContainers = Boolean.parseBoolean(isStrictContainersStr);
 
@@ -414,14 +420,12 @@ public class CmsFormatterBeanParser {
 
         List<CmsMetaMapping> mappings = parseMetaMappings(root);
 
-        boolean hasNestedContainers;
         I_CmsFormatterBean formatterBean;
         if (isMacroFromatter || isFlexFormatter) {
             // setting macro formatter defaults
             m_formatterResource = content.getFile();
             m_preview = false;
             m_extractContent = true;
-            hasNestedContainers = false;
             CmsResource defContentRes = null;
             I_CmsXmlContentValueLocation defContentLoc = root.getSubValue(N_DEFAULT_CONTENT);
             if (defContentLoc != null) {
@@ -455,6 +459,7 @@ public class CmsFormatterBeanParser {
                     m_autoEnabled,
                     isDetail,
                     isDisplay,
+                    isAllowSettings,
                     macroInput,
                     placeholderMacroInput,
                     referencedFormatters,
@@ -483,6 +488,7 @@ public class CmsFormatterBeanParser {
                     m_autoEnabled,
                     isDetail,
                     isDisplay,
+                    isAllowSettings,
                     stringTemplate,
                     placeholder,
                     mappings,
@@ -545,6 +551,7 @@ public class CmsFormatterBeanParser {
                     description,
                     id,
                     m_settings,
+                    isAllowSettings,
                     isStrictContainers,
                     params);
             } else {
@@ -571,6 +578,7 @@ public class CmsFormatterBeanParser {
                     m_autoEnabled,
                     isDetail,
                     isDisplay,
+                    isAllowSettings,
                     isStrictContainers,
                     nestedFormatters,
                     mappings,

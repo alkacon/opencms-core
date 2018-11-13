@@ -187,6 +187,13 @@ public interface I_CmsFormatterBean {
     boolean hasNestedFormatterSettings();
 
     /**
+     * Returns whether this formatter allows settings to be edited in the content editor.<p>
+     *
+     * @return <code>true</code> in case editing the settings is allowed in the content editor
+     */
+    boolean isAllowsSettingsInEditor();
+
+    /**
      * Returns true if the formatter is automatically enabled.<p>
      *
      * @return true if the formatter is automatically enabled

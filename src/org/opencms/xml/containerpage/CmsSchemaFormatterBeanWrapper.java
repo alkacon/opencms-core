@@ -249,6 +249,15 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isAllowsSettingsInEditor()
+     */
+    public boolean isAllowsSettingsInEditor() {
+
+        // not supported by schema formatters
+        return false;
+    }
+
+    /**
      *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isAutoEnabled()
      */
@@ -322,6 +331,9 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
         m_wrappedFormatter.setJspStructureId(jspStructureId);
     }
 
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#useMetaMappingsForNormalElements()
+     */
     @Override
     public boolean useMetaMappingsForNormalElements() {
 

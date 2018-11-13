@@ -71,6 +71,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
      * @param description the description text for the formatter
      * @param id the configuration id
      * @param settings the settings configuration
+     * @param isAllowsSettingsInEditor whether this formatter allows settings to be edited in the content editor
      * @param isStrictContainers <code>true</code> if this formatter will always render all nested containers
      * @param parameters the request parameters to add for the included JSP
      */
@@ -90,7 +91,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
         String description,
         String id,
         Map<String, CmsXmlContentProperty> settings,
-
+        boolean isAllowsSettingsInEditor,
         boolean isStrictContainers,
         Map<String, String[]> parameters) {
 
@@ -117,6 +118,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             true, // isAutoEnabled
             false, // isDetail
             false, // isDisplay
+            isAllowsSettingsInEditor,
             isStrictContainers,
             false, // nestedFormatterSettings
             Collections.<CmsMetaMapping> emptyList(),

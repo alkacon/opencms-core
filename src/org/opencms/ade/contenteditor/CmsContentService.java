@@ -2144,7 +2144,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (clientId != null) {
             CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
             I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
-            if ((formatter != null) && (formatter.getSettings() != null) && !formatter.getSettings().isEmpty()) {
+            if ((formatter != null)
+                && formatter.isAllowsSettingsInEditor()
+                && (formatter.getSettings() != null)
+                && !formatter.getSettings().isEmpty()) {
                 Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                     cms,
                     formatter,

@@ -148,6 +148,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicates whether meta mappings should be applied for all elements. */
     protected boolean m_useMetaMappingsForNormalElements;
 
+    /** Flag indicating this formatter allows settings to be edited in the content editor. */
+    private boolean m_isAllowsSettingsInEditor;
+
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
      *
@@ -173,6 +176,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDetail <code>true</code> if detail formatter
      * @param isDisplay the display flag
+     * @param isAllowsSettingsInEditor whether this formatter allows settings to be edited in the content editor
      * @param strictContainers <code>true</code> if this formatter will always render all nested containers
      * @param nestedFormatterSettings indicates whether nested formatter settings should be displayed
      * @param metaMappings the meta mappings
@@ -201,6 +205,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean isAutoEnabled,
         boolean isDetail,
         boolean isDisplay,
+        boolean isAllowsSettingsInEditor,
         boolean strictContainers,
         boolean nestedFormatterSettings,
         List<CmsMetaMapping> metaMappings,
@@ -234,6 +239,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_strictContainers = strictContainers;
         m_metaMappings = metaMappings;
         m_useMetaMappingsForNormalElements = useMetaMappingsForNormalElements;
+        m_isAllowsSettingsInEditor = isAllowsSettingsInEditor;
     }
 
     /**
@@ -280,6 +286,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false,
             false,
             false,
@@ -374,6 +381,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false,
             false,
             false,
@@ -584,6 +592,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public boolean hasNestedFormatterSettings() {
 
         return m_nestedFormatterSettings;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isAllowsSettingsInEditor()
+     */
+    public boolean isAllowsSettingsInEditor() {
+
+        return m_isAllowsSettingsInEditor;
     }
 
     /**

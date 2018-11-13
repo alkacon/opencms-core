@@ -74,6 +74,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
      * @param isDetail <code>true</code> if detail formatter
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDisplay the display flag
+     * @param isAllowsSettingsInEditor whether this formatter allows settings to be edited in the content editor
      * @param stringTemplate the string template
      * @param placeholderStringTemplate the placeholder string template
      * @param metaMappings the meta mappings
@@ -98,6 +99,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
         boolean isAutoEnabled,
         boolean isDetail,
         boolean isDisplay,
+        boolean isAllowsSettingsInEditor,
         String stringTemplate,
         String placeholderStringTemplate,
         List<CmsMetaMapping> metaMappings,
@@ -126,6 +128,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             isAutoEnabled,
             isDetail,
             isDisplay,
+            isAllowsSettingsInEditor,
             false,
             false,
             metaMappings,
