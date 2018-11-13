@@ -87,22 +87,22 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** The copy/move actions. */
     public static enum Action {
 
-        /** Copy container page automatic mode. */
-        container_page_automatic,
-        /** Copy container page including referenced elements. */
-        container_page_copy,
-        /** Copy container page reuse referenced elements. */
-        container_page_reuse,
-        /** Copy resources as new. */
-        copy_all,
-        /** Create siblings. */
-        copy_sibling_all,
-        /** Copy and preserve siblings. */
-        copy_sibling_mixed,
-        /** Move resources. */
-        move,
-        /** Copy sub sitemap, adjust internal links. */
-        sub_sitemap;
+    /** Copy container page automatic mode. */
+    container_page_automatic,
+    /** Copy container page including referenced elements. */
+    container_page_copy,
+    /** Copy container page reuse referenced elements. */
+    container_page_reuse,
+    /** Copy resources as new. */
+    copy_all,
+    /** Create siblings. */
+    copy_sibling_all,
+    /** Copy and preserve siblings. */
+    copy_sibling_mixed,
+    /** Move resources. */
+    move,
+    /** Copy sub sitemap, adjust internal links. */
+    sub_sitemap;
     }
 
     /** The dialog mode. */
@@ -142,6 +142,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     /** Indicates the copy folder has a default file of the type container page. */
     private boolean m_hasContainerPageDefaultFile;
 
+    /**Dialog for editing key value pairs used as macros. Only used for sitemap folder*/
+    private CmsMacroResolverDialog m_macroDialog;
+
     /** The OK button. */
     private Button m_okButton;
 
@@ -156,9 +159,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
     /** The resources to update after dialog close. */
     private Set<CmsUUID> m_updateResources;
-
-    /**Dialog for editing key value pairs used as macros. Only used for sitemap folder*/
-    private CmsMacroResolverDialog m_macroDialog;
 
     /**
      * Constructor.<p>
@@ -410,6 +410,22 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
             CmsResource copyResource = getRootCms().readResource(finalTarget);
             m_updateResources.add(copyResource.getStructureId());
+        }
+    }
+
+    /**
+     * Updates the 'overwrite existing' checkbox state depending on the currently selected mode.<p>
+     */
+    protected void updateOverwriteExisting() {
+
+        if (m_overwriteExisting != null) {
+            boolean move = m_actionCombo.getValue() == Action.move;
+            if (move) {
+                m_overwriteExisting.setValue(false);
+                m_overwriteExisting.setVisible(false);
+            } else {
+                m_overwriteExisting.setVisible(true);
+            }
         }
     }
 
@@ -803,12 +819,16 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                 }
             });
             form.addComponent(m_actionCombo);
+            m_actionCombo.addValueChangeListener(event -> updateOverwriteExisting());
         }
+
         if (m_context.getResources().size() > 1) {
             m_overwriteExisting = new CheckBox(
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MULTI_OVERWRITE_0));
             m_overwriteExisting.setValue(Boolean.FALSE);
             form.addComponent(m_overwriteExisting);
+
+            updateOverwriteExisting();
         }
 
         return form;
