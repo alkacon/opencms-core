@@ -95,10 +95,12 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.DefaultItemSorter;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
@@ -275,35 +277,6 @@ public class CmsFileTable extends CmsResourceTable {
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
 
-    static {
-        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
-        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
-    }
-
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
 
@@ -336,6 +309,9 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The edited property id. */
     private CmsResourceTableProperty m_editProperty;
+
+    /** Saved container filters. */ 
+    private Collection<Filter> m_filters = Collections.emptyList();
 
     /** The folder select handler. */
     private I_FolderSelectHandler m_folderSelectHandler;
@@ -449,6 +425,35 @@ public class CmsFileTable extends CmsResourceTable {
         m_menu.setAsTableContextMenu(m_fileTable);
     }
 
+    static {
+        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
+    }
+
     /**
      * Returns the resource state specific style name.<p>
      *
@@ -530,6 +535,15 @@ public class CmsFileTable extends CmsResourceTable {
         m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_SITE_PATH);
         setActionColumnProperty(CmsResourceTableProperty.PROPERTY_SITE_PATH);
         setMenuBuilder(new CmsResourceContextMenuBuilder());
+    }
+
+    /**
+     * Clears all container filters.
+     */
+    public void clearFilters() {
+
+        IndexedContainer container = (IndexedContainer)m_fileTable.getContainerDataSource();
+        container.removeAllContainerFilters();
     }
 
     /**
@@ -661,6 +675,27 @@ public class CmsFileTable extends CmsResourceTable {
     public void removeAdditionalStyleGenerator(Table.CellStyleGenerator styleGenerator) {
 
         m_additionalStyleGenerators.remove(styleGenerator);
+    }
+
+    /**
+     * Restores container filters to the ones previously saved via saveFilters().
+     */
+    public void restoreFilters() {
+
+        IndexedContainer container = (IndexedContainer)m_fileTable.getContainerDataSource();
+        container.removeAllContainerFilters();
+        for (Filter filter : m_filters) {
+            container.addContainerFilter(filter);
+        }
+    }
+
+    /**
+     * Saves currently active filters.<p>
+     */
+    public void saveFilters() {
+
+        IndexedContainer container = (IndexedContainer)m_fileTable.getContainerDataSource();
+        m_filters = container.getContainerFilters();
     }
 
     /**
