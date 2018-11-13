@@ -164,18 +164,18 @@ public final class CmsResourceBundleLoader {
     /** Singleton cache entry to represent previous failed lookups. */
     private static final ResourceBundle NULL_ENTRY = new CmsListResourceBundle();
 
+    static {
+        m_bundleCache = new ConcurrentHashMap<BundleKey, ResourceBundle>();
+        m_lastDefaultLocale = Locale.getDefault();
+        m_permanentCache = new ConcurrentHashMap<String, I_CmsResourceBundle>();
+    }
+
     /**
      * Hides the public constructor.<p>
      */
     private CmsResourceBundleLoader() {
 
         // noop
-    }
-
-    static {
-        m_bundleCache = new ConcurrentHashMap<BundleKey, ResourceBundle>();
-        m_lastDefaultLocale = Locale.getDefault();
-        m_permanentCache = new ConcurrentHashMap<String, I_CmsResourceBundle>();
     }
 
     /**
@@ -239,15 +239,25 @@ public final class CmsResourceBundleLoader {
                     m_bundleCache = bundleCacheNew;
                 }
                 if (flushPermanent) {
-                    Set<String> keys = new HashSet<String>(m_permanentCache.keySet());
-                    for (String key : keys) {
-                        if ((key.startsWith(baseName)
-                            && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
-                            // entry has a the same base name, remove it
-                            m_permanentCache.remove(key);
-                        }
-                    }
+                    flushPermanentCache(baseName);
                 }
+            }
+        }
+    }
+
+    /**
+     * Removes bundles with the given base name from the permanent cache.<p>
+     *
+     * @param baseName the bundle base name
+     */
+    public static void flushPermanentCache(String baseName) {
+
+        Set<String> keys = new HashSet<String>(m_permanentCache.keySet());
+        for (String key : keys) {
+            if ((key.startsWith(baseName)
+                && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
+                // entry has a the same base name, remove it
+                m_permanentCache.remove(key);
             }
         }
     }
@@ -361,7 +371,10 @@ public final class CmsResourceBundleLoader {
             String resourceName = localizedName.replace('.', '/') + ".properties";
             URL url = CmsResourceBundleLoader.class.getClassLoader().getResource(resourceName);
 
-            if (url != null) {
+            I_CmsResourceBundle additionalBundle = m_permanentCache.get(localizedName);
+            if (additionalBundle != null) {
+                result = additionalBundle.getClone();
+            } else if (url != null) {
                 // the resource was found on the file system
                 InputStream is = null;
                 String path = CmsFileUtil.normalizePath(url);
@@ -383,12 +396,6 @@ public final class CmsResourceBundleLoader {
                 }
                 if (is != null) {
                     result = new CmsPropertyResourceBundle(is);
-                }
-            } else {
-                // no found with class loader, so try the injected list cache
-                I_CmsResourceBundle additionalBundle = m_permanentCache.get(localizedName);
-                if (additionalBundle != null) {
-                    result = additionalBundle.getClone();
                 }
             }
         } catch (IOException ex) {

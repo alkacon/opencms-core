@@ -197,12 +197,11 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                 logError(e, isStartup);
             }
             try {
+
                 synchronized (CmsResourceBundleLoader.class) {
-                    // Although the methods of CmsResourceBundleLoader which manipulate the cache
-                    // are synchronized, we synchronize the whole block to avoid intermediate states
-                    // where bundles have been removed from the cache but not re-added again
+                    CmsResourceBundleLoader.flushBundleCache();
                     for (String baseName : m_bundleBaseNames) {
-                        CmsResourceBundleLoader.flushBundleCache(baseName, true);
+                        CmsResourceBundleLoader.flushPermanentCache(baseName);
                     }
                     m_bundleBaseNames.clear();
                     for (CmsResource xmlBundle : xmlBundles) {
