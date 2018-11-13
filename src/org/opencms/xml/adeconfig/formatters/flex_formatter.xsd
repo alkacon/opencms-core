@@ -18,13 +18,10 @@
         	<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Rank" type="OpenCmsString"/>
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
-        	
             <xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
         	<xsd:element name="Detail" type="OpenCmsBoolean" minOccurs="0" />
-            <xsd:element name="AlwaysApplyMetaMappings" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="AllowsSettingsInEditor" type="OpenCmsBoolean" minOccurs="0" />
         	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0" />
-            
         	<xsd:element name="StringTemplate" type="OpenCmsString" />
         	<xsd:element name="PlaceholderStringTemplate" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
