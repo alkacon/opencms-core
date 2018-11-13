@@ -13,6 +13,7 @@ showUsage() {
     echo "Supported ${bold}[DIRECTION]${normal}s:"
     echo "${bold}  --toRfs     ${normal}Copy from mounted OpenCms VFS to the RFS"
     echo "${bold}  --toVfs     ${normal}Copy from the RFS to the mounted OpenCms VFS"
+    echo "${bold}  --testOnly  ${normal}Don't copy anything, only testing the replacement"
     echo ""
     exit 1
 }
@@ -33,6 +34,10 @@ setOptions() {
             --toRfs )
                 MODE="toRfs"
                 echo "Using direction: --toRfs"
+                shift ;;
+            --testOnly )
+                MODE="testOnly"
+                echo "Only testing the replacement, no actual copy is performed"
                 shift ;;
             --verbose )
                 OPT_VERBOSE="true"
@@ -94,7 +99,7 @@ fi
 
 setOptions "${@:2}"
 
-LOCALE_PREFIX="./modules/org.opencms.locale.${LOCALE}/resources/system/workplace/locales/${LOCALE}/messages"
+LOCALE_PATH="./modules/org.opencms.locale.${LOCALE}/resources/system/workplace/locales/${LOCALE}/messages"
 CORE_BUNDLES=$(find ./src* -name *messages.properties)
 
 readarray -t EN_BUNDLES_RFS <<< "${CORE_BUNDLES}"
@@ -107,13 +112,23 @@ for IDX in "${!EN_BUNDLES_RFS[@]}"
 do
     printf -v NUM "%03d" $IDX
 
+    # replace all / chars in RFS path with a -
     EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_RFS[$IDX]//\//.}
+    # remove .. in path
     EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]//\.\./}
-    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]//\.properties/_en}
+    # remove prefix src-modules. src-setup. and src.
+    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#src-setup\./}
+    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#src-modules\./}
+    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#src\./}
+    # rempace suffix .properties with _en
+    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/%\.properties/_en}
 
+    # replace RFS prefix src-modules and src-setup with src
     LOCALE_BUNDLES_RFS[$IDX]=${EN_BUNDLES_RFS[$IDX]/#\.\/src-modules/./src}
     LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/#\.\/src-setup/./src}
-    LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/#\.\/src/$LOCALE_PREFIX}
+    # now replace src prefix locale path
+    LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/#\.\/src/$LOCALE_PATH}
+    # insert locale before suffix .properties
     LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/%\.properties/_$LOCALE.properties}
 
     LOCALE_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]//_en/_$LOCALE}
