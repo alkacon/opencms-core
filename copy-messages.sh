@@ -100,7 +100,8 @@ fi
 setOptions "${@:2}"
 
 LOCALE_PATH="./modules/org.opencms.locale.${LOCALE}/resources/system/workplace/locales/${LOCALE}/messages"
-CORE_BUNDLES=$(find ./src* -name *messages.properties)
+CORE_BUNDLES=$(find ./src* ./modules/* \( -name *messages.properties -o -name *workplace.properties \))
+CORE_BUNDLES2=$(find ./src* -name *messages.properties)
 
 readarray -t EN_BUNDLES_RFS <<< "${CORE_BUNDLES}"
 
@@ -120,12 +121,18 @@ do
     EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#src-setup\./}
     EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#src-modules\./}
     EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#src\./}
-    # rempace suffix .properties with _en
+    # remove prefix modules ... classes.
+    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/#modules*classes\./}
+    # replace suffix workplace.properties with messages.properties
+    EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/%\workplace.properties/messages.properties}
+    # replace suffix .properties with _en
     EN_BUNDLES_VFS[$IDX]=${EN_BUNDLES_VFS[$IDX]/%\.properties/_en}
 
     # replace RFS prefix src-modules and src-setup with src
     LOCALE_BUNDLES_RFS[$IDX]=${EN_BUNDLES_RFS[$IDX]/#\.\/src-modules/./src}
     LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/#\.\/src-setup/./src}
+    # replace RFS prefix modules ... classes/ with src
+    LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/#\.\/modules*classes/./src}
     # now replace src prefix locale path
     LOCALE_BUNDLES_RFS[$IDX]=${LOCALE_BUNDLES_RFS[$IDX]/#\.\/src/$LOCALE_PATH}
     # insert locale before suffix .properties
