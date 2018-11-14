@@ -594,7 +594,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             false,
             false,
             false,
-            false,
             null,
             false);
 
@@ -710,7 +709,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             false,
             false,
             false,
-            false,
             null,
             false);
 
@@ -770,7 +768,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isFromConfigFile,
             isAutoEnabled,
             isDetail,
-            false,
             false,
             false,
             false,

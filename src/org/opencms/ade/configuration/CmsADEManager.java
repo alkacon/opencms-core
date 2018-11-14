@@ -616,23 +616,22 @@ public class CmsADEManager {
                     result.put(entry.getKey(), entry.getValue());
                 }
             }
-            if (mainFormatter.hasNestedFormatterSettings()) {
-                List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, res, locale, req);
-                if (nestedFormatters != null) {
-                    for (I_CmsFormatterBean formatter : nestedFormatters) {
-                        for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
-                            if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
-                                result.put(entry.getKey(), entry.getValue());
-                            } else if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.both)) {
-                                String settingName = formatter.getId() + "_" + entry.getKey();
-                                CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
+            List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, res, locale, req);
+            if (nestedFormatters != null) {
+                for (I_CmsFormatterBean formatter : nestedFormatters) {
+                    for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
+                        if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
+                            result.put(entry.getKey(), entry.getValue());
+                        } else if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.both)) {
+                            String settingName = formatter.getId() + "_" + entry.getKey();
+                            CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
 
-                                result.put(settingName, settingConf);
-                            }
+                            result.put(settingName, settingConf);
                         }
                     }
                 }
             }
+
         }
         return result;
     }

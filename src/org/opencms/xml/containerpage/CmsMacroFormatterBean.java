@@ -143,7 +143,6 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             isDisplay,
             isAllowsSettingsInEditor,
             false,
-            false,
             metaMappings,
             useMetaMappingsForNormalElements);
         m_macroInput = macroInput;

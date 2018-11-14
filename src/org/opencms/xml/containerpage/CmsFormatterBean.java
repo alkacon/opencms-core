@@ -124,9 +124,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** The formatter min width. */
     protected int m_minWidth;
 
-    /** Indicates whether nested formatter settings should be displayed. */
-    protected boolean m_nestedFormatterSettings;
-
     /** The nice name. */
     protected String m_niceName;
 
@@ -178,7 +175,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isDisplay the display flag
      * @param isAllowsSettingsInEditor whether this formatter allows settings to be edited in the content editor
      * @param strictContainers <code>true</code> if this formatter will always render all nested containers
-     * @param nestedFormatterSettings indicates whether nested formatter settings should be displayed
      * @param metaMappings the meta mappings
      * @param useMetaMappingsForNormalElements if true, meta mappings will be evaluated for normal container elements, not just detail elements
      */
@@ -207,7 +203,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean isDisplay,
         boolean isAllowsSettingsInEditor,
         boolean strictContainers,
-        boolean nestedFormatterSettings,
         List<CmsMetaMapping> metaMappings,
         boolean useMetaMappingsForNormalElements) {
 
@@ -235,7 +230,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isAutoEnabled = isAutoEnabled;
         m_isDetail = isDetail;
         m_isDisplay = isDisplay;
-        m_nestedFormatterSettings = nestedFormatterSettings;
         m_strictContainers = strictContainers;
         m_metaMappings = metaMappings;
         m_useMetaMappingsForNormalElements = useMetaMappingsForNormalElements;
@@ -286,7 +280,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
-            false,
             false,
             false,
             false,
@@ -381,7 +374,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
-            false,
             false,
             false,
             false,
@@ -584,14 +576,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public int hashCode() {
 
         return getContainerTypes().hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
-    }
-
-    /**
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#hasNestedFormatterSettings()
-     */
-    public boolean hasNestedFormatterSettings() {
-
-        return m_nestedFormatterSettings;
     }
 
     /**

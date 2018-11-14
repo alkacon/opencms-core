@@ -120,7 +120,6 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             false, // isDisplay
             isAllowsSettingsInEditor,
             isStrictContainers,
-            false, // nestedFormatterSettings
             Collections.<CmsMetaMapping> emptyList(),
             false);
         m_realJspRootPath = jspRootPath;
