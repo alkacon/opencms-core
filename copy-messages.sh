@@ -11,8 +11,8 @@ showUsage() {
     echo "Copies localization files between the file system and the OpenCms database."
     echo ""
     echo "Supported ${bold}[DIRECTION]${normal}s:"
-    echo "${bold}  --toRfs     ${normal}Copy from mounted OpenCms VFS to the RFS"
-    echo "${bold}  --toVfs     ${normal}Copy from the RFS to the mounted OpenCms VFS"
+    echo "${bold}  --toRfs     ${normal}Copy to the RFS from mounted OpenCms VFS"
+    echo "${bold}  --fromRfs   ${normal}Copy from the RFS to the mounted OpenCms VFS"
     echo "${bold}  --testOnly  ${normal}Don't copy anything, only testing the replacement"
     echo ""
     exit 1
@@ -27,9 +27,9 @@ setOptions() {
 
     while true; do
         case "${1}" in
-            --toVfs )
-                MODE="toVfs"
-                echo "Using direction: --toVfs"
+            --fromRfs )
+                MODE="fromRfs"
+                echo "Using direction: --fromRfs"
                 shift ;;
             --toRfs )
                 MODE="toRfs"
@@ -146,7 +146,7 @@ do
     echo " --> ${EN_BUNDLES_VFS[$IDX]}"
     echo " --> ${LOCALE_BUNDLES_VFS[$IDX]}"
 
-    if [ "${MODE}" == "toVfs" ]; then
+    if [ "${MODE}" == "fromRfs" ]; then
         if [ -f ${EN_BUNDLES_RFS[$IDX]} ]; then
             cp -v ${EN_BUNDLES_RFS[$IDX]} ${VFS_PATH}/${EN_BUNDLES_VFS[$IDX]}
         fi
