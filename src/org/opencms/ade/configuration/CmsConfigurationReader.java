@@ -616,7 +616,9 @@ public class CmsConfigurationReader {
             try {
                 CmsXmlVarLinkValue elementViewValue = (CmsXmlVarLinkValue)elementViewLoc.getValue();
                 String stringValue = elementViewValue.getStringValue(m_cms);
-                if (stringValue.startsWith(VIEW_SCHEME)) {
+                if ("".equals(stringValue)) {
+                    elementView = CmsUUID.getNullUUID();
+                } else if (stringValue.startsWith(VIEW_SCHEME)) {
                     elementView = new CmsUUID(stringValue.substring(VIEW_SCHEME.length()));
                 } else {
                     elementView = elementViewValue.getLink(m_cms).getStructureId();
