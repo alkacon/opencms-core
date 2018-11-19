@@ -41,6 +41,7 @@
 				<default element="CategoryMode" value="OR" />
 			</defaults>
 			<layouts>
+				<layout element="TypesToCollect" widget="DisplayTypeSelectWidget" configuration="template.display.types" />
 				<layout element="SearchFolder" widget="VfsFileWidget" configuration="excludefiles" />
 				<layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
 				<layout element="CategoryMode" widget="SelectorWidget" configuration="AND:%(key.list_config.categoryModeAnd)|OR:%(key.list_config.categoryModeOr)" />

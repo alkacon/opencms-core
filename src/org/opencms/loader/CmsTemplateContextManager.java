@@ -224,12 +224,13 @@ public class CmsTemplateContextManager {
         }
         String cookieName = provider.getOverrideCookieName();
         String forcedValue = null;
-
-        String paramTemplateContext = request.getParameter(CmsGwtConstants.PARAM_TEMPLATE_CONTEXT);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(paramTemplateContext)) {
-            forcedValue = paramTemplateContext;
-        } else if (cookieName != null) {
-            forcedValue = CmsRequestUtil.getCookieValue(request.getCookies(), cookieName);
+        if (request != null) {
+            String paramTemplateContext = request.getParameter(CmsGwtConstants.PARAM_TEMPLATE_CONTEXT);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(paramTemplateContext)) {
+                forcedValue = paramTemplateContext;
+            } else if (cookieName != null) {
+                forcedValue = CmsRequestUtil.getCookieValue(request.getCookies(), cookieName);
+            }
         }
         if (forcedValue != null) {
             Map<String, CmsTemplateContext> contextMap = provider.getAllContexts();

@@ -154,9 +154,9 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         CmsResource resource) {
 
         I_CmsJspDeviceSelector selector = OpenCms.getSystemInfo().getDeviceSelector();
-        String deviceType = selector.getDeviceType(request);
+        String deviceType = request != null ? selector.getDeviceType(request) : null;
         Map<String, CmsTemplateContext> contextMap = getAllContexts();
-        if (contextMap.containsKey(deviceType)) {
+        if ((deviceType != null) && contextMap.containsKey(deviceType)) {
             return contextMap.get(deviceType);
         } else {
             return contextMap.get("desktop");

@@ -31,6 +31,8 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -40,6 +42,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -107,6 +110,21 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDisplayTypeSelectWidget.class);
 
+    /** The display types split regex. */
+    private static final String TYPES_SPLITTER = " *, *";
+
+    /** The widget configuration. */
+    private String m_config;
+
+    /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#getConfiguration()
+     */
+    @Override
+    public String getConfiguration() {
+
+        return m_config;
+    }
+
     /**
      * @see org.opencms.widgets.CmsSelectWidget#newInstance()
      */
@@ -114,6 +132,15 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
     public I_CmsWidget newInstance() {
 
         return new CmsDisplayTypeSelectWidget();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#setConfiguration(java.lang.String)
+     */
+    @Override
+    public void setConfiguration(String configuration) {
+
+        m_config = configuration;
     }
 
     /**
@@ -130,22 +157,55 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         List<FormatterOption> options = new ArrayList<FormatterOption>();
         String resourcePath = getResourcePath(cms, widgetDialog);
         String resourceSitePath = cms.getRequestContext().removeSiteRoot(resourcePath);
-        Set<String> containerTypes = new HashSet<>();
-        try {
-            CmsProperty prop = cms.readPropertyObject(
-                resourceSitePath,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES,
-                true);
-            String propValue = prop.getValue();
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
-                for (String type : propValue.trim().split(" *, *")) {
-                    containerTypes.add(type);
-                }
-            }
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
 
+        Set<String> containerTypes = new HashSet<>();
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_config)) {
+            String types = null;
+
+            if (CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES.equals(m_config)) {
+                try {
+                    CmsProperty prop = cms.readPropertyObject(
+                        resourceSitePath,
+                        CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES,
+                        true);
+                    String propValue = prop.getValue();
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
+                        types = propValue;
+                    } else {
+                        // look up template property
+                        try {
+                            CmsResource resource = cms.readResource(resourceSitePath);
+                            CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
+                                cms,
+                                null,
+                                resource,
+                                CmsPropertyDefinition.PROPERTY_TEMPLATE);
+                            CmsResource template = loaderFacade.getLoaderStartResource();
+                            if (template != null) {
+                                prop = cms.readPropertyObject(
+                                    template,
+                                    CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES,
+                                    false);
+                                propValue = prop.getValue();
+                                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
+                                    types = propValue;
+                                }
+                            }
+                        } catch (Exception ex) {
+                            LOG.debug(ex.getMessage(), ex);
+                        }
+                    }
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            } else {
+                types = m_config;
+            }
+            if (types != null) {
+                containerTypes.addAll(Arrays.asList(types.split(TYPES_SPLITTER)));
+            }
+        }
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resourcePath);
         if (config != null) {
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
