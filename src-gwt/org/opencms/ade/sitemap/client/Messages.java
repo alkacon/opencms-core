@@ -487,9 +487,6 @@ public final class Messages {
     public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARENT_MODEL_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_PARENT_MODEL_PAGE_TREE_ROOT_SUBTITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PARENT_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_PARENT_MODEL_PAGE_TREE_ROOT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

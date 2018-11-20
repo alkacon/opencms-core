@@ -526,7 +526,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             m_parentModelPageRoot = CmsModelPageTreeItem.createRootItem(
                 false,
                 Messages.get().key(Messages.GUI_PARENT_MODEL_PAGE_TREE_ROOT_TITLE_0),
-                Messages.get().key(Messages.GUI_PARENT_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
+                "");
 
             for (CmsModelPageEntry parentModel : modelPageData.getParentModelPages()) {
                 if (parentModel.isDisabled()) {
@@ -1706,8 +1706,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-		$wnd.initVaadin();
-    }-*/;
+                                     $wnd.initVaadin();
+                                     }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>
