@@ -328,30 +328,30 @@ public final class CmsVaadinUtils {
      *
      * @param cms CmsObject
      * @param ouFqn ou name
-     * @param caption property
+     * @param propCaption property
      * @param propIcon property for icon
-     * @param idOu organizational unit
+     * @param propOu organizational unit
      * @param blackList blacklist
-     * @param cmsCssIcon icon
+     * @param iconProvider the icon provider
      * @return indexed container
      */
     public static IndexedContainer getAvailableGroupsContainerWithout(
         CmsObject cms,
         String ouFqn,
-        String caption,
+        String propCaption,
         String propIcon,
-        String idOu,
+        String propOu,
         List<CmsGroup> blackList,
-        CmsCssIcon cmsCssIcon) {
+        java.util.function.Function<CmsGroup, CmsCssIcon> iconProvider) {
 
         if (blackList == null) {
             blackList = new ArrayList<CmsGroup>();
         }
         IndexedContainer res = new IndexedContainer();
-        res.addContainerProperty(caption, String.class, "");
-        res.addContainerProperty(idOu, String.class, "");
+        res.addContainerProperty(propCaption, String.class, "");
+        res.addContainerProperty(propOu, String.class, "");
         if (propIcon != null) {
-            res.addContainerProperty(propIcon, CmsCssIcon.class, cmsCssIcon);
+            res.addContainerProperty(propIcon, CmsCssIcon.class, null);
         }
         try {
             for (CmsGroup group : OpenCms.getRoleManager().getManageableGroups(cms, ouFqn, true)) {
@@ -360,8 +360,11 @@ public final class CmsVaadinUtils {
                     if (item == null) {
                         continue;
                     }
-                    item.getItemProperty(caption).setValue(group.getSimpleName());
-                    item.getItemProperty(idOu).setValue(group.getOuFqn());
+                    if (iconProvider != null) {
+                        item.getItemProperty(propIcon).setValue(iconProvider.apply(group));
+                    }
+                    item.getItemProperty(propCaption).setValue(group.getSimpleName());
+                    item.getItemProperty(propOu).setValue(group.getOuFqn());
                 }
             }
 
@@ -483,7 +486,7 @@ public final class CmsVaadinUtils {
      * @param iconProp property
      * @param ou ou
      * @param propStatus status property
-     * @param cmsCssIcon icon
+     * @param iconProvider the icon provider
      * @return Indexed Container
      */
     public static IndexedContainer getGroupsOfUser(
@@ -493,20 +496,23 @@ public final class CmsVaadinUtils {
         String iconProp,
         String ou,
         String propStatus,
-        CmsCssIcon cmsCssIcon) {
+        Function<CmsGroup, CmsCssIcon> iconProvider) {
 
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty(caption, String.class, "");
         container.addContainerProperty(ou, String.class, "");
         container.addContainerProperty(propStatus, Boolean.class, new Boolean(true));
-        if (cmsCssIcon != null) {
-            container.addContainerProperty(iconProp, CmsCssIcon.class, cmsCssIcon);
+        if (iconProvider != null) {
+            container.addContainerProperty(iconProp, CmsCssIcon.class, null);
         }
         try {
             for (CmsGroup group : cms.getGroupsOfUser(user.getName(), true)) {
                 Item item = container.addItem(group);
                 item.getItemProperty(caption).setValue(group.getSimpleName());
                 item.getItemProperty(ou).setValue(group.getOuFqn());
+                if (iconProvider != null) {
+                    item.getItemProperty(iconProp).setValue(iconProvider.apply(group));
+                }
             }
         } catch (CmsException e) {
             LOG.error("Unable to read groups from user", e);
@@ -879,6 +885,13 @@ public final class CmsVaadinUtils {
         return cnt.containsId(path) || cnt.containsId(CmsFileUtil.toggleTrailingSeparator(path));
     }
 
+    /**
+     * Checks if a button is pressed.<p>
+     *
+     * @param button the button
+     *
+     * @return true if the button is pressed
+     */
     public static boolean isButtonPressed(Button button) {
 
         if (button == null) {
@@ -1114,6 +1127,11 @@ public final class CmsVaadinUtils {
         return new OptionGroupBuilder();
     }
 
+    /**
+     * Sets style of a toggle button depending on its current state.<p>
+     *
+     * @param button the button to update
+     */
     public static void toggleButton(Button button) {
 
         if (isButtonPressed(button)) {
@@ -1188,7 +1206,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

@@ -299,7 +299,7 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
             comp.setSizeFull();
             m_rootLayout.setMainContent(comp);
         } else {
-            m_rootLayout.setMainContent(new Label("Malformed path, tool not availabel for path: " + state));
+            m_rootLayout.setMainContent(new Label("Malformed path, tool not available for path: " + state));
         }
         updateSubNav(getSubNavEntries(state));
         updateBreadCrumb(getBreadCrumbForState(state));

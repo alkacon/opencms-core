@@ -65,20 +65,23 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public abstract class A_CmsEditUserGroupRoleDialog extends CmsBasicDialog {
 
-    /**Vaadin serial id. */
-    private static final long serialVersionUID = -5088800626506962263L;
+    /**Height of table. */
+    private static final String ITEM_HEIGHT = "550px";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsEditUserGroupRoleDialog.class);
 
-    /**Height of table. */
-    private static final String ITEM_HEIGHT = "550px";
+    /**Vaadin serial id. */
+    private static final long serialVersionUID = -5088800626506962263L;
 
-    /**User object to be edited.*/
-    protected CmsPrincipal m_principal;
+    /** The app instance. */
+    protected CmsAccountsApp m_app;
 
     /**CmsObject. */
     protected CmsObject m_cms;
+
+    /**User object to be edited.*/
+    protected CmsPrincipal m_principal;
 
     /**
      * public constructor.<p>
@@ -86,13 +89,13 @@ public abstract class A_CmsEditUserGroupRoleDialog extends CmsBasicDialog {
      * @param cms CmsObject
      * @param userId id of user
      * @param window window
-     * @param app
-     * @param app
+     * @param app the app instance
      */
     public A_CmsEditUserGroupRoleDialog(CmsObject cms, CmsUUID userId, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_cms = cms;
+        m_app = app;
 
         try {
             m_principal = m_cms.readUser(userId);

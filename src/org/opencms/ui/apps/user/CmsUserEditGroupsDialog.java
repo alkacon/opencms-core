@@ -33,10 +33,8 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
-import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
@@ -54,16 +52,16 @@ import com.vaadin.v7.ui.VerticalLayout;
 /**
  * Class for the group edit dialog for users.<p>
  */
-public class CmsUserEditGroupDialog extends A_CmsEditUserGroupRoleDialog {
+public class CmsUserEditGroupsDialog extends A_CmsEditUserGroupRoleDialog {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 7548706839526481814L;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUserEditGroupDialog.class);
+    private static final Log LOG = CmsLog.getLog(CmsUserEditGroupsDialog.class);
 
     /**ID.*/
-    private static final String ID_OU = "ou";
+    public static final String ID_OU = "ou";
 
     /**vaadin component.*/
     Button m_close;
@@ -86,10 +84,9 @@ public class CmsUserEditGroupDialog extends A_CmsEditUserGroupRoleDialog {
      * @param cms CmsObject
      * @param userId id of user
      * @param window window
-     * @param app
-     * @param app
+     * @param app the app instance
      */
-    public CmsUserEditGroupDialog(CmsObject cms, CmsUUID userId, final Window window, CmsAccountsApp app) {
+    public CmsUserEditGroupsDialog(CmsObject cms, CmsUUID userId, final Window window, CmsAccountsApp app) {
 
         super(cms, userId, window, app);
     }
@@ -100,13 +97,15 @@ public class CmsUserEditGroupDialog extends A_CmsEditUserGroupRoleDialog {
     @Override
     public void addItem(Set<String> data) {
 
-        Iterator<String> it = data.iterator();
-        while (it.hasNext()) {
-            String groupName = it.next();
-            try {
-                m_cms.addUserToGroup(m_principal.getName(), groupName);
-            } catch (CmsException e) {
-                LOG.error("Unable to add user to group", e);
+        if (m_app.checkAddGroup((CmsUser)m_principal, data)) {
+            Iterator<String> it = data.iterator();
+            while (it.hasNext()) {
+                String groupName = it.next();
+                try {
+                    m_cms.addUserToGroup(m_principal.getName(), groupName);
+                } catch (CmsException e) {
+                    LOG.error("Unable to add user to group", e);
+                }
             }
         }
     }
@@ -136,14 +135,14 @@ public class CmsUserEditGroupDialog extends A_CmsEditUserGroupRoleDialog {
     public IndexedContainer getAvailableItemsIndexedContainer(String caption, String propIcon) {
 
         try {
-            return CmsVaadinUtils.getAvailableGroupsContainerWithout(
+            return m_app.getAvailableGroupsContainerWithout(
                 m_cms,
                 m_principal.getOuFqn(),
                 caption,
                 propIcon,
                 ID_OU,
                 m_cms.getGroupsOfUser(m_principal.getName(), true),
-                new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
+                m_app::getGroupIcon);
         } catch (CmsException e) {
             LOG.error("Can't read groups of user", e);
             return null;
@@ -210,14 +209,9 @@ public class CmsUserEditGroupDialog extends A_CmsEditUserGroupRoleDialog {
     @Override
     public IndexedContainer getItemsOfUserIndexedContainer(String propName, String propIcon, String propStatus) {
 
-        return CmsVaadinUtils.getGroupsOfUser(
-            m_cms,
-            (CmsUser)m_principal,
-            propName,
-            propIcon,
-            ID_OU,
-            propStatus,
-            new CmsCssIcon(OpenCmsTheme.ICON_GROUP));
+        CmsUser user = (CmsUser)m_principal;
+        IndexedContainer container = m_app.getUserGroupsEditorContainer(user, propName, propIcon, propStatus);
+        return container;
     }
 
     /**
@@ -275,15 +269,18 @@ public class CmsUserEditGroupDialog extends A_CmsEditUserGroupRoleDialog {
     @Override
     public void removeItem(Set<String> items) {
 
-        Iterator<String> iterator = items.iterator();
-        while (iterator.hasNext()) {
-            try {
+        if (m_app.checkRemoveGroups((CmsUser)m_principal, items)) {
+            Iterator<String> iterator = items.iterator();
+            while (iterator.hasNext()) {
+                try {
 
-                m_cms.removeUserFromGroup(m_principal.getName(), iterator.next());
+                    m_cms.removeUserFromGroup(m_principal.getName(), iterator.next());
 
-            } catch (CmsIllegalArgumentException | CmsException e) {
-                //happens if admin group was deleted( = user is deleted at the same time)
+                } catch (CmsIllegalArgumentException | CmsException e) {
+                    //happens if admin group was deleted( = user is deleted at the same time)
+                }
             }
         }
     }
+
 }

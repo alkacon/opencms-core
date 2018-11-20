@@ -65,6 +65,38 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     }
 
     /**
+     * Utilitiy method that returns 'active' if the parameter is true, otherwise inactive.<p>
+     *
+     * @param active - whether return value should be 'active'
+     *
+     * @return the visibility
+     */
+    public static CmsMenuItemVisibilityMode activeInactive(boolean active) {
+
+        if (active) {
+            return VISIBILITY_ACTIVE;
+        } else {
+            return VISIBILITY_INACTIVE;
+        }
+    }
+
+    /**
+     * Utility method that returns 'active' if the parameter is true, otherwise invisible.<p>
+     *
+     * @param active - whether return value should be 'active' rather than 'invisible'
+     *
+     * @return the visibility
+     */
+    public static CmsMenuItemVisibilityMode activeInvisible(boolean active) {
+
+        if (active) {
+            return VISIBILITY_ACTIVE;
+        } else {
+            return VISIBILITY_INVISIBLE;
+        }
+    }
+
+    /**
      * Returns the menu item visibility mode for the given mode value.<p>
      *
      * This is used only for serialization and should not be accessed for other purposes.<p>

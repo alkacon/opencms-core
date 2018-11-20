@@ -41,7 +41,6 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.sessions.CmsKillSessionDialog;
 import org.opencms.ui.apps.sessions.CmsUserInfoDialog;
-import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsConfirmationDialog;
@@ -85,6 +84,91 @@ import com.vaadin.v7.ui.VerticalLayout;
  *
  */
 public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsToggleTable {
+
+    /**Table properties. */
+    public enum TableProperty {
+    /**Last login. */
+    Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
+    /**Is the user disabled? */
+    DISABLED("", Boolean.class, new Boolean(false)),
+    /**From Other ou?. */
+    FROMOTHEROU("", Boolean.class, new Boolean(false)),
+    /**Description. */
+    FullName(Messages.GUI_USERMANAGEMENT_USER_NAME_0, String.class, ""),
+    /**Icon. */
+    Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-user")),
+    /**IsIndirect?. */
+    INDIRECT("", Boolean.class, new Boolean(false)),
+    /**Last login. */
+    LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
+    /**Name. */
+    Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
+    /**Is the user new? */
+    NEWUSER("", Boolean.class, new Boolean(false)),
+    /**OU. */
+    OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
+    /**Status. */
+    STATUS("", Integer.class, new Integer(0)),
+    /**Full system Name. */
+    SystemName("", String.class, "");
+
+        /**Default value for column.*/
+        private Object m_defaultValue;
+
+        /**Header Message key.*/
+        private String m_headerMessage;
+
+        /**Type of column property.*/
+        private Class<?> m_type;
+
+        /**
+         * constructor.<p>
+         *
+         * @param name Name
+         * @param type type
+         * @param defaultValue value
+         */
+        TableProperty(String name, Class<?> type, Object defaultValue) {
+
+            m_headerMessage = name;
+            m_type = type;
+            m_defaultValue = defaultValue;
+        }
+
+        /**
+         * The default value.<p>
+         *
+         * @return the default value object
+         */
+        Object getDefault() {
+
+            return m_defaultValue;
+        }
+
+        /**
+         * Gets the name of the property.<p>
+         *
+         * @return a name
+         */
+        String getName() {
+
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_headerMessage)) {
+                return CmsVaadinUtils.getMessageText(m_headerMessage);
+            }
+            return "";
+        }
+
+        /**
+         * Gets the type of property.<p>
+         *
+         * @return the type
+         */
+        Class<?> getType() {
+
+            return m_type;
+        }
+
+    }
 
     /**
      *Entry to addition info dialog.<p>
@@ -195,10 +279,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (context.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-            }
-            return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
+            CmsUUID id = new CmsUUID(context.iterator().next());
+            return CmsMenuItemVisibilityMode.activeInactive(
+                m_app.canEditUser(id) && onlyVisibleForOU(id) && (context.size() <= 1));
         }
 
     }
@@ -215,7 +298,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
 
-            window.setContent(new CmsUserEditGroupDialog(m_cms, new CmsUUID(context.iterator().next()), window, m_app));
+            window.setContent(
+                new CmsUserEditGroupsDialog(m_cms, new CmsUUID(context.iterator().next()), window, m_app));
             A_CmsUI.get().addWindow(window);
         }
 
@@ -232,10 +316,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (context.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-            }
-            return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
+            return CmsMenuItemVisibilityMode.activeInactive(
+                onlyVisibleForOU(new CmsUUID(context.iterator().next())) && (context.size() <= 1));
         }
 
     }
@@ -270,10 +352,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (context.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-            }
-            return onlyVisibleForOU(new CmsUUID(context.iterator().next()));
+            return CmsMenuItemVisibilityMode.activeInactive(
+                onlyVisibleForOU(new CmsUUID(context.iterator().next())) && (context.size() <= 1));
         }
 
     }
@@ -512,7 +592,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                 String confirmText = "";
                 String caption = "";
                 Runnable okRunnable = null;
-                if (m_type.equals(CmsOuTreeType.GROUP)) {
+                if (m_type.isGroup()) {
                     caption = CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_REMOVE_USER_FROM_GROUP_0);
                     confirmText = CmsVaadinUtils.getMessageText(
                         Messages.GUI_USERMANAGEMENT_REMOVE_USER_FROM_GROUP_CONFIRM_2,
@@ -577,7 +657,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public String getTitle(Locale locale) {
 
-            if (m_type.equals(CmsOuTreeType.GROUP)) {
+            if (m_type.isGroup()) {
                 return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_REMOVE_USER_FROM_GROUP_0);
             }
             return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_REMOVE_USER_FROM_ROLE_0);
@@ -587,6 +667,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
+
+            if (!m_app.canRemoveGroupMemebers(m_group)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
 
             if (context.size() > 1) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
@@ -716,132 +800,32 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
     }
 
-    /**Table properties. */
-    enum TableProperty {
-        /**Icon. */
-        Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-user")),
-        /**Full system Name. */
-        SystemName("", String.class, ""),
-        /**Name. */
-        Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
-        /**Description. */
-        FullName(Messages.GUI_USERMANAGEMENT_USER_NAME_0, String.class, ""),
-        /**OU. */
-        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
-        /**Last login. */
-        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
-        /**Last login. */
-        Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
-        /**IsIndirect?. */
-        INDIRECT("", Boolean.class, new Boolean(false)),
-        /**From Other ou?. */
-        FROMOTHEROU("", Boolean.class, new Boolean(false)),
-        /**Is the user disabled? */
-        DISABLED("", Boolean.class, new Boolean(false)),
-        /**Is the user new? */
-        NEWUSER("", Boolean.class, new Boolean(false)),
-        /**Status. */
-        STATUS("", Integer.class, new Integer(0));
-
-        /**Default value for column.*/
-        private Object m_defaultValue;
-
-        /**Header Message key.*/
-        private String m_headerMessage;
-
-        /**Type of column property.*/
-        private Class<?> m_type;
-
-        /**
-         * constructor.<p>
-         *
-         * @param name Name
-         * @param type type
-         * @param defaultValue value
-         */
-        TableProperty(String name, Class<?> type, Object defaultValue) {
-
-            m_headerMessage = name;
-            m_type = type;
-            m_defaultValue = defaultValue;
-        }
-
-        /**
-         * The default value.<p>
-         *
-         * @return the default value object
-         */
-        Object getDefault() {
-
-            return m_defaultValue;
-        }
-
-        /**
-         * Gets the name of the property.<p>
-         *
-         * @return a name
-         */
-        String getName() {
-
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_headerMessage)) {
-                return CmsVaadinUtils.getMessageText(m_headerMessage);
-            }
-            return "";
-        }
-
-        /**
-         * Gets the type of property.<p>
-         *
-         * @return the type
-         */
-        Class<?> getType() {
-
-            return m_type;
-        }
-
-    }
-
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = 7863356514060544048L;
+    /**Map for password status of user. */
+    protected static final Map<CmsUUID, Boolean> USER_PASSWORD_STATUS = new HashMap<CmsUUID, Boolean>();
 
     /** Log instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsUserTable.class);
 
-    /**Map for password status of user. */
-    protected static final Map<CmsUUID, Boolean> USER_PASSWORD_STATUS = new HashMap<CmsUUID, Boolean>();
-
-    /**Indexed container. */
-    private IndexedContainer m_container;
-
-    /**CmsObject.*/
-    CmsObject m_cms;
-
-    /** The context menu. */
-    CmsContextMenu m_menu;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 7863356514060544048L;
 
     /**Name of group to show user for, or null. */
     protected String m_group;
 
-    /** The available menu entries. */
-    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+    /**Type to be shown. */
+    protected I_CmsOuTreeType m_type;
 
     /**The app.*/
     CmsAccountsApp m_app;
 
-    /**Type to be shown. */
-    protected CmsOuTreeType m_type;
-
-    /**List of user. */
-    private List<CmsUser> m_user;
-
-    /**flag indicates if all indirect items (for roles or sub OUs) are loaded. */
-    private boolean m_fullLoaded;
+    /**CmsObject.*/
+    CmsObject m_cms;
 
     /**List of indirect user. */
     List<CmsUser> m_indirects;
 
-    /**vaadin component.*/
-    private VerticalLayout m_emptyLayout;
+    /** The context menu. */
+    CmsContextMenu m_menu;
 
     /**OU. */
     String m_ou;
@@ -852,32 +836,20 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     /**Set of user with Flag to reset password. */
     private Set<CmsUUID> m_checkedUserPasswordReset;
 
-    /**
-     * public constructor.<p>
-     *
-     * @param ou name
-     * @param app the app
-     * @param showAll boolean
-     */
-    public CmsUserTable(String ou, CmsAccountsApp app, boolean showAll) {
+    /**Indexed container. */
+    private IndexedContainer m_container;
 
-        m_ou = ou.equals("/") ? "" : ou;
-        m_app = app;
-        try {
-            m_cms = getCmsObject();
-            m_type = CmsOuTreeType.USER;
-            List<CmsUser> directs = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(m_cms, ou, false);
-            m_indirects = new ArrayList<CmsUser>();
-            if (showAll) {
-                setAllUser(directs);
-            } else {
-                m_user = directs;
-            }
-            init(showAll);
-        } catch (CmsException e) {
-            LOG.error("Unable to read user.", e);
-        }
-    }
+    /**vaadin component.*/
+    private VerticalLayout m_emptyLayout;
+
+    /**flag indicates if all indirect items (for roles or sub OUs) are loaded. */
+    private boolean m_fullyLoaded;
+
+    /** The available menu entries. */
+    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+
+    /**List of user. */
+    private List<CmsUser> m_users;
 
     /**
      * puiblic constructor.<p>
@@ -888,7 +860,12 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
      * @param showAll show all user including inherited?
      * @param app the app
      */
-    public CmsUserTable(String ou, CmsUUID groupID, CmsOuTreeType cmsOuTreeType, boolean showAll, CmsAccountsApp app) {
+    public CmsUserTable(
+        String ou,
+        CmsUUID groupID,
+        I_CmsOuTreeType cmsOuTreeType,
+        boolean showAll,
+        CmsAccountsApp app) {
 
         m_ou = ou.equals("/") ? "" : ou;
         m_app = app;
@@ -898,12 +875,12 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
             m_type = cmsOuTreeType;
 
             m_indirects = new ArrayList<CmsUser>();
-            if (m_type.equals(CmsOuTreeType.GROUP)) {
+            if (m_type.isGroup()) {
                 m_group = m_cms.readGroup(groupID).getName();
-                m_user = m_cms.getUsersOfGroup(m_group, true);
-                m_fullLoaded = true;
+                m_users = m_cms.getUsersOfGroup(m_group, true);
+                m_fullyLoaded = true;
             }
-            if (m_type.equals(CmsOuTreeType.ROLE)) {
+            if (m_type.isRole()) {
                 m_group = CmsRole.valueOfId(groupID).forOrgUnit(ou).getFqn();
                 List<CmsUser> directs = OpenCms.getRoleManager().getUsersOfRole(
                     m_cms,
@@ -911,15 +888,43 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                     true,
                     true);
                 if (showAll) {
-                    setAllUser(directs);
+                    setAllUsers(directs);
                 } else {
-                    m_user = directs;
+                    m_users = directs;
                 }
             }
 
             init(showAll);
         } catch (CmsException e) {
             LOG.error("Unable to read user", e);
+        }
+    }
+
+    /**
+     * public constructor.<p>
+     *
+     * @param ou name
+     * @param type the tree type
+     * @param app the app
+     * @param showAll boolean
+     */
+    public CmsUserTable(String ou, I_CmsOuTreeType type, CmsAccountsApp app, boolean showAll) {
+
+        m_ou = ou.equals("/") ? "" : ou;
+        m_app = app;
+        try {
+            m_cms = getCmsObject();
+            m_type = type;
+            List<CmsUser> directs = m_app.getUsersWithoutAdditionalInfo(m_cms, type, ou, false);
+            m_indirects = new ArrayList<CmsUser>();
+            if (showAll) {
+                setAllUsers(directs);
+            } else {
+                m_users = directs;
+            }
+            init(showAll);
+        } catch (CmsException e) {
+            LOG.error("Unable to read user.", e);
         }
     }
 
@@ -938,6 +943,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsToggleTable#getCurrentSize()
+     */
     public int getCurrentSize() {
 
         return this.size();
@@ -963,14 +971,29 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
         try {
 
-            if (pressed && !m_fullLoaded) {
-                setAllUser(m_user);
+            if (pressed && !m_fullyLoaded) {
+                setAllUsers(m_users);
             }
         } catch (CmsException e) {
-            m_fullLoaded = false;
+            m_fullyLoaded = false;
             LOG.error("Error loading user", e);
         }
         fillContainer(pressed);
+    }
+
+    /**
+     * Adds given user to given IndexedContainer.<p>
+     *
+     * @param container to add the user to
+     * @param user to add
+     */
+    protected void addUserToContainer(IndexedContainer container, CmsUser user) {
+
+        if (m_blackList.contains(user)) {
+            return;
+        }
+        Item item = container.addItem(user);
+        fillItem(item, user);
     }
 
     /**
@@ -983,7 +1006,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         m_container.removeAllContainerFilters();
         m_container.removeAllItems();
         m_checkedUserPasswordReset = new HashSet<CmsUUID>();
-        for (CmsUser user : m_user) {
+        for (CmsUser user : m_users) {
             if (showIndirect || !m_indirects.contains(user)) {
                 addUserToContainer(m_container, user);
             }
@@ -992,208 +1015,13 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     }
 
     /**
-     * Visibility which is only active if user is in right ou.<p>
+     * Fills the container item for a user.<p>
      *
-     * @param userId to be checked
-     * @return CmsMenuItemVisibilityMode
+     * @param item the item
+     * @param user the user
      */
-    protected CmsMenuItemVisibilityMode onlyVisibleForOU(CmsUUID userId) {
+    protected void fillItem(Item item, CmsUser user) {
 
-        try {
-            if (m_app.isOUManagable(m_cms.readUser(userId).getOuFqn())) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-            }
-        } catch (CmsException e) {
-            //
-        }
-        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-    }
-
-    /**
-     * Checks if all selected items are editable.<p>
-     *
-     * @param context items
-     * @return CmsMenuItemVisibilityMode
-     */
-    protected CmsMenuItemVisibilityMode onlyVisibleForOU(Set<String> context) {
-
-        for (String id : context) {
-            if (onlyVisibleForOU(new CmsUUID(id)).equals(CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE)) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-            }
-        }
-        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-    }
-
-    /**
-     * Opens the user info dialog.<p>
-     *
-     * @param id of user
-     * @throws CmsException exception
-     */
-    protected void openInfoDialog(CmsUUID id) throws CmsException {
-
-        CmsUserInfoDialog.showUserInfo(m_cms.readUser(id));
-    }
-
-    /**
-     * Checks value of table and sets it new if needed:<p>
-     * if multiselect: new itemId is in current Value? -> no change of value<p>
-     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
-     *
-     * @param itemId if of clicked item
-     */
-    void changeValueIfNotMultiSelect(Object itemId) {
-
-        @SuppressWarnings("unchecked")
-        Set<String> value = (Set<String>)getValue();
-        if (value == null) {
-            select(itemId);
-        } else if (!value.contains(itemId)) {
-            setValue(null);
-            select(itemId);
-        }
-    }
-
-    /**
-     * Returns the available menu entries.<p>
-     *
-     * @return the menu entries
-     */
-    List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
-
-        if (m_menuEntries == null) {
-            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
-            m_menuEntries.add(new EntryInfo());
-            m_menuEntries.add(new EntryEdit());
-            m_menuEntries.add(new EntryEditRole());
-            m_menuEntries.add(new EntryEditGroup());
-            m_menuEntries.add(new EntryAddInfos());
-            m_menuEntries.add(new EntryShowResources());
-            m_menuEntries.add(new EntrySwitchUser());
-            m_menuEntries.add(new EntryRemoveFromGroup());
-            m_menuEntries.add(new EntryMoveOU());
-            m_menuEntries.add(new EntryDelete());
-            m_menuEntries.add(new EntryKillSession());
-            m_menuEntries.add(new EntryEnable());
-        }
-        return m_menuEntries;
-    }
-
-    /**
-     * Returns status message.
-     *
-     * @param user CmsUser
-     * @param disabled boolean
-     * @param newUser boolean
-     * @return String
-     */
-    String getStatus(CmsUser user, boolean disabled, boolean newUser) {
-
-        if (disabled) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_0);
-        }
-        if (newUser) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
-        }
-        if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_STATUS_0);
-        }
-        if (isUserPasswordReset(user)) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_0);
-        }
-        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ACTIVE_0);
-    }
-
-    /**
-     * Returns status help message.
-     *
-     * @param user CmsUser
-     * @param disabled boolean
-     * @param newUser boolean
-     * @return String
-     */
-    String getStatusHelp(CmsUser user, boolean disabled, boolean newUser) {
-
-        if (disabled) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_HELP_0);
-        }
-        if (newUser) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0);
-        }
-        if (isUserPasswordReset(user)) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_HELP_0);
-        }
-        long lastLogin = user.getLastlogin();
-        return CmsVaadinUtils.getMessageText(
-            Messages.GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1,
-            CmsDateUtil.getDateTime(new Date(lastLogin), DateFormat.SHORT, A_CmsUI.get().getLocale()));
-    }
-
-    /**
-     * Integer value for status (allows to sort column).
-     *
-     * @param disabled boolean
-     * @param newUser boolean
-     * @return Integer
-     */
-    Integer getStatusInt(boolean disabled, boolean newUser) {
-
-        if (disabled) {
-            return new Integer(2);
-        }
-        if (newUser) {
-            return new Integer(1);
-        }
-        return new Integer(0);
-    }
-
-    /**
-     * Is the user password reset?
-     *
-     * @param user User to check
-     * @return boolean
-     */
-    boolean isUserPasswordReset(CmsUser user) {
-
-        if (USER_PASSWORD_STATUS.containsKey(user.getId())) { //Check if user was checked before
-            if (!USER_PASSWORD_STATUS.get(user.getId()).booleanValue()) { // was false before, false->true is never done without changing map
-                return false;
-            }
-            if (m_checkedUserPasswordReset.contains(user.getId())) { //was true before, true->false happens when user resets password. Only check one time per table load.
-                return true; //Set gets flushed on reloading table
-            }
-        }
-        CmsUser currentUser = user;
-        if (user.getAdditionalInfo().size() < 3) {
-
-            try {
-                currentUser = m_cms.readUser(user.getId());
-            } catch (CmsException e) {
-                LOG.error("Can not read user", e);
-            }
-        }
-        if (currentUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
-            USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(true));
-            m_checkedUserPasswordReset.add(currentUser.getId());
-            return true;
-        }
-        USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(false));
-        return false;
-    }
-
-    /**
-     * Adds given user to given IndexedContainer.<p>
-     *
-     * @param container to add the user to
-     * @param user to add
-     */
-    private void addUserToContainer(IndexedContainer container, CmsUser user) {
-
-        if (m_blackList.contains(user)) {
-            return;
-        }
-        Item item = container.addItem(user);
         item.getItemProperty(TableProperty.Name).setValue(user.getSimpleName());
         item.getItemProperty(TableProperty.FullName).setValue(user.getFullName());
         item.getItemProperty(TableProperty.SystemName).setValue(user.getName());
@@ -1216,46 +1044,10 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     }
 
     /**
-     * Gets list of indirect users to show.<p>
-     *
-     * @param allUser all users
-     * @param directUser direct user
-     * @return indirect user
-     */
-    private List<CmsUser> getAllowedIndirects(List<CmsUser> allUser, List<CmsUser> directUser) {
-
-        List<CmsUser> res = new ArrayList<CmsUser>();
-        for (CmsUser u : allUser) {
-            if (!directUser.contains(u)) {
-                res.add(u);
-            }
-        }
-
-        return res;
-    }
-
-    /**
-     * Gets CmsObject.<p>
-     *
-     * @return cmsobject
-     */
-    private CmsObject getCmsObject() {
-
-        CmsObject cms;
-        try {
-            cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            //m_cms.getRequestContext().setSiteRoot("");
-        } catch (CmsException e) {
-            cms = A_CmsUI.getCmsObject();
-        }
-        return cms;
-    }
-
-    /**
      * initializes table.
      * @param showAll boolean
      */
-    private void init(boolean showAll) {
+    protected void init(boolean showAll) {
 
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
@@ -1266,6 +1058,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
             m_container.addContainerProperty(prop, prop.getType(), prop.getDefault());
             setColumnHeader(prop, prop.getName());
         }
+        m_app.addUserContainerProperties(m_container);
         setContainerDataSource(m_container);
         setItemIconPropertyId(TableProperty.Icon);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
@@ -1432,6 +1225,233 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     }
 
     /**
+     * Visibility which is only active if user is in right ou.<p>
+     *
+     * @param userId to be checked
+     * @return CmsMenuItemVisibilityMode
+     */
+    protected boolean onlyVisibleForOU(CmsUUID userId) {
+
+        try {
+            if (m_app.isOUManagable(m_cms.readUser(userId).getOuFqn())) {
+                return true;
+            }
+        } catch (CmsException e) {
+            //
+        }
+        return false;
+    }
+
+    /**
+     * Checks if all selected items are editable.<p>
+     *
+     * @param context items
+     * @return CmsMenuItemVisibilityMode
+     */
+    protected CmsMenuItemVisibilityMode onlyVisibleForOU(Set<String> context) {
+
+        for (String id : context) {
+            if (onlyVisibleForOU(new CmsUUID(id))) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
+        }
+        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+    }
+
+    /**
+     * Opens the user info dialog.<p>
+     *
+     * @param id of user
+     * @throws CmsException exception
+     */
+    protected void openInfoDialog(CmsUUID id) throws CmsException {
+
+        CmsUserInfoDialog.showUserInfo(m_cms.readUser(id));
+    }
+
+    /**
+     * Checks value of table and sets it new if needed:<p>
+     * if multiselect: new itemId is in current Value? -> no change of value<p>
+     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
+     *
+     * @param itemId if of clicked item
+     */
+    void changeValueIfNotMultiSelect(Object itemId) {
+
+        @SuppressWarnings("unchecked")
+        Set<String> value = (Set<String>)getValue();
+        if (value == null) {
+            select(itemId);
+        } else if (!value.contains(itemId)) {
+            setValue(null);
+            select(itemId);
+        }
+    }
+
+    /**
+     * Returns the available menu entries.<p>
+     *
+     * @return the menu entries
+     */
+    List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
+
+        if (m_menuEntries == null) {
+            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
+            m_menuEntries.add(new EntryInfo());
+            m_menuEntries.add(new EntryEdit());
+            m_menuEntries.add(new EntryEditRole());
+            m_menuEntries.add(new EntryEditGroup());
+            m_menuEntries.add(new EntryAddInfos());
+            m_menuEntries.add(new EntryShowResources());
+            m_menuEntries.add(new EntrySwitchUser());
+            m_menuEntries.add(new EntryRemoveFromGroup());
+            m_menuEntries.add(new EntryMoveOU());
+            m_menuEntries.add(new EntryDelete());
+            m_menuEntries.add(new EntryKillSession());
+            m_menuEntries.add(new EntryEnable());
+        }
+        return m_menuEntries;
+    }
+
+    /**
+     * Returns status message.
+     *
+     * @param user CmsUser
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return String
+     */
+    String getStatus(CmsUser user, boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_0);
+        }
+        if (newUser) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
+        }
+        if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_STATUS_0);
+        }
+        if (isUserPasswordReset(user)) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_0);
+        }
+        return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ACTIVE_0);
+    }
+
+    /**
+     * Returns status help message.
+     *
+     * @param user CmsUser
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return String
+     */
+    String getStatusHelp(CmsUser user, boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_HELP_0);
+        }
+        if (newUser) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_HELP_0);
+        }
+        if (isUserPasswordReset(user)) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_HELP_0);
+        }
+        long lastLogin = user.getLastlogin();
+        return CmsVaadinUtils.getMessageText(
+            Messages.GUI_USERMANAGEMENT_USER_ACTIVE_HELP_1,
+            CmsDateUtil.getDateTime(new Date(lastLogin), DateFormat.SHORT, A_CmsUI.get().getLocale()));
+    }
+
+    /**
+     * Integer value for status (allows to sort column).
+     *
+     * @param disabled boolean
+     * @param newUser boolean
+     * @return Integer
+     */
+    Integer getStatusInt(boolean disabled, boolean newUser) {
+
+        if (disabled) {
+            return new Integer(2);
+        }
+        if (newUser) {
+            return new Integer(1);
+        }
+        return new Integer(0);
+    }
+
+    /**
+     * Is the user password reset?
+     *
+     * @param user User to check
+     * @return boolean
+     */
+    boolean isUserPasswordReset(CmsUser user) {
+
+        if (USER_PASSWORD_STATUS.containsKey(user.getId())) { //Check if user was checked before
+            if (!USER_PASSWORD_STATUS.get(user.getId()).booleanValue()) { // was false before, false->true is never done without changing map
+                return false;
+            }
+            if (m_checkedUserPasswordReset.contains(user.getId())) { //was true before, true->false happens when user resets password. Only check one time per table load.
+                return true; //Set gets flushed on reloading table
+            }
+        }
+        CmsUser currentUser = user;
+        if (user.getAdditionalInfo().size() < 3) {
+
+            try {
+                currentUser = m_cms.readUser(user.getId());
+            } catch (CmsException e) {
+                LOG.error("Can not read user", e);
+            }
+        }
+        if (currentUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
+            USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(true));
+            m_checkedUserPasswordReset.add(currentUser.getId());
+            return true;
+        }
+        USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(false));
+        return false;
+    }
+
+    /**
+     * Gets list of indirect users to show.<p>
+     *
+     * @param allUsers all users
+     * @param directUsers direct user
+     * @return indirect user
+     */
+    private List<CmsUser> getAllowedIndirects(List<CmsUser> allUsers, List<CmsUser> directUsers) {
+
+        List<CmsUser> res = new ArrayList<CmsUser>();
+        for (CmsUser u : allUsers) {
+            if (!directUsers.contains(u)) {
+                res.add(u);
+            }
+        }
+
+        return res;
+    }
+
+    /**
+     * Gets CmsObject.<p>
+     *
+     * @return cmsobject
+     */
+    private CmsObject getCmsObject() {
+
+        CmsObject cms;
+        try {
+            cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            //m_cms.getRequestContext().setSiteRoot("");
+        } catch (CmsException e) {
+            cms = A_CmsUI.getCmsObject();
+        }
+        return cms;
+    }
+
+    /**
      * Checks is it is allown for the current user to see given user.<p>
      *
      * @param user to be checked
@@ -1452,28 +1472,27 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
      * @param directs direct user
      * @throws CmsException exception
      */
-    private void setAllUser(List<CmsUser> directs) throws CmsException {
+    private void setAllUsers(List<CmsUser> directs) throws CmsException {
 
-        m_fullLoaded = true;
-        boolean onlyNormalUser = false;
+        m_fullyLoaded = true;
         if (m_type.equals(CmsOuTreeType.ROLE)) {
-            m_user = OpenCms.getRoleManager().getUsersOfRole(
+            m_users = OpenCms.getRoleManager().getUsersOfRole(
                 m_cms,
                 CmsRole.valueOfRoleName(m_group).forOrgUnit(m_ou),
                 true,
                 false);
         } else if (m_type.equals(CmsOuTreeType.USER)) {
-            m_user = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(m_cms, m_ou, true);
+            m_users = m_app.getUsersWithoutAdditionalInfo(m_cms, m_type, m_ou, true);
 
         }
-        Iterator<CmsUser> it = m_user.iterator();
+        Iterator<CmsUser> it = m_users.iterator();
         while (it.hasNext()) {
             CmsUser u = it.next();
             if (!isAllowedUser(u)) {
                 m_blackList.add(u);
             }
         }
-        m_indirects.addAll(getAllowedIndirects(m_user, directs));
+        m_indirects.addAll(getAllowedIndirects(m_users, directs));
     }
 
     /**

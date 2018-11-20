@@ -36,7 +36,6 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -72,6 +71,75 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsToggleTable {
 
+    /**Table properties.<p>*/
+    public enum TableProperty {
+    /**Desription column. */
+    Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
+    /**Icon column.*/
+    Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_GROUP)),
+    /**IsIndirect?. */
+    INDIRECT("", Boolean.class, new Boolean(false)),
+    /**Name column. */
+    Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
+    /**OU column. */
+    OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, "");
+
+        /**Default value for column.*/
+        private Object m_defaultValue;
+
+        /**Header Message key.*/
+        private String m_headerMessage;
+
+        /**Type of column property.*/
+        private Class<?> m_type;
+
+        /**
+         * constructor.<p>
+         *
+         * @param name Name
+         * @param type type
+         * @param defaultValue value
+         */
+        TableProperty(String name, Class<?> type, Object defaultValue) {
+
+            m_headerMessage = name;
+            m_type = type;
+            m_defaultValue = defaultValue;
+        }
+
+        /**
+         * The default value.<p>
+         *
+         * @return the default value object
+         */
+        Object getDefault() {
+
+            return m_defaultValue;
+        }
+
+        /**
+         * Gets the name of the property.<p>
+         *
+         * @return a name
+         */
+        String getName() {
+
+            return m_headerMessage;
+
+        }
+
+        /**
+         * Gets the type of property.<p>
+         *
+         * @return the type
+         */
+        Class<?> getType() {
+
+            return m_type;
+        }
+
+    }
+
     /**
      * Delete context menu entry.<p>
      */
@@ -106,7 +174,8 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            boolean ok = canDelete(context);
+            return ok ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
 
     }
@@ -267,95 +336,26 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            return CmsMenuItemVisibilityMode.activeInactive(canImportData(context));
 
         }
 
     }
-
-    /**Table properties.<p>*/
-    enum TableProperty {
-        /**Icon column.*/
-        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_GROUP)),
-        /**Name column. */
-        Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
-        /**Desription column. */
-        Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
-        /**OU column. */
-        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, ""),
-        /**IsIndirect?. */
-        INDIRECT("", Boolean.class, new Boolean(false));
-
-        /**Default value for column.*/
-        private Object m_defaultValue;
-
-        /**Header Message key.*/
-        private String m_headerMessage;
-
-        /**Type of column property.*/
-        private Class<?> m_type;
-
-        /**
-         * constructor.<p>
-         *
-         * @param name Name
-         * @param type type
-         * @param defaultValue value
-         */
-        TableProperty(String name, Class<?> type, Object defaultValue) {
-
-            m_headerMessage = name;
-            m_type = type;
-            m_defaultValue = defaultValue;
-        }
-
-        /**
-         * The default value.<p>
-         *
-         * @return the default value object
-         */
-        Object getDefault() {
-
-            return m_defaultValue;
-        }
-
-        /**
-         * Gets the name of the property.<p>
-         *
-         * @return a name
-         */
-        String getName() {
-
-            return m_headerMessage;
-
-        }
-
-        /**
-         * Gets the type of property.<p>
-         *
-         * @return the type
-         */
-        Class<?> getType() {
-
-            return m_type;
-        }
-
-    }
-
-    /**vaadin serial id. */
-    private static final long serialVersionUID = -6511159488669996003L;
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGroupTable.class);
 
-    /**Indexed container. */
-    private IndexedContainer m_container;
+    /**vaadin serial id. */
+    private static final long serialVersionUID = -6511159488669996003L;
+
+    /**Calling app. */
+    protected CmsAccountsApp m_app;
+
+    /**The ou. */
+    protected String m_ou;
 
     /**CmsObject. */
     CmsObject m_cms;
-
-    /** The context menu. */
-    CmsContextMenu m_menu;
 
     /**List of groups. */
     List<CmsGroup> m_groups;
@@ -363,32 +363,37 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
     /**List of indirect groups. */
     List<CmsGroup> m_indirects;
 
-    /**flag indicates if all indirect items (for sub OUs) are loaded. */
-    private boolean m_fullLoaded;
+    /** The context menu. */
+    CmsContextMenu m_menu;
 
-    /**Calling app. */
-    protected CmsAccountsApp m_app;
-
-    /** The available menu entries. */
-    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+    /**Indexed container. */
+    private IndexedContainer m_container;
 
     /**Vaadin component. */
     private VerticalLayout m_emptyLayout;
 
-    /**The ou. */
-    protected String m_ou;
+    /**flag indicates if all indirect items (for sub OUs) are loaded. */
+    private boolean m_fullLoaded;
+
+    /** The available menu entries. */
+    private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
+
+    /** The tree type. */
+    private I_CmsOuTreeType m_type;
 
     /**
      * public constructor.<p>
      *
      * @param ou ou name
      * @param app calling app.
-     * @param showAll
+     * @param type the tree type
+     * @param showAll if all groups should be shown
      */
-    public CmsGroupTable(String ou, CmsAccountsApp app, boolean showAll) {
+    public CmsGroupTable(String ou, CmsAccountsApp app, I_CmsOuTreeType type, boolean showAll) {
 
         m_app = app;
         m_ou = ou;
+        m_type = type;
         m_indirects = new ArrayList<CmsGroup>();
         List<CmsGroup> directs;
         try {
@@ -398,7 +403,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
             m_cms = A_CmsUI.getCmsObject();
         }
         try {
-            directs = OpenCms.getOrgUnitManager().getGroups(m_cms, ou, false);
+            directs = m_app.readGroupsForOu(m_cms, ou, m_type, false);
             m_fullLoaded = false;
             if (showAll) {
                 setAllGroups(directs);
@@ -410,12 +415,18 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
             e.printStackTrace();
         }
         init(ou);
-        setVisibleColumns(TableProperty.Name, TableProperty.Description, TableProperty.OU);
+
     }
 
-    protected static void addGroupToContainer(IndexedContainer container, CmsGroup group, List<CmsGroup> indirects) {
+    /**
+     * Fills the container item representing a group.<p>
+     *
+     * @param item the item
+     * @param group the group
+     * @param indirects the indirect groups
+     */
+    public void fillGroupItem(Item item, CmsGroup group, List<CmsGroup> indirects) {
 
-        Item item = container.addItem(group);
         item.getItemProperty(TableProperty.Name).setValue(group.getName());
         item.getItemProperty(TableProperty.Description).setValue(group.getDescription(A_CmsUI.get().getLocale()));
         item.getItemProperty(TableProperty.OU).setValue(group.getOuFqn());
@@ -441,6 +452,9 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
 
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsToggleTable#getCurrentSize()
+     */
     public int getCurrentSize() {
 
         return size();
@@ -473,6 +487,29 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
     }
 
     /**
+     * Returns true if the given group can be deleted.<p>
+     *
+     * @param groupIds the set of groups
+     * @return true if the set of groups can be deleted
+     */
+    protected boolean canDelete(Set<String> groupIds) {
+
+        return true;
+    }
+
+    /**
+     * Return true if the CSV import should be enabled for a set of groups
+     *
+     * @param groupIds the set of group ids
+     *
+     * @return true if the CSV import should be enabled
+     */
+    protected boolean canImportData(Set<String> groupIds) {
+
+        return groupIds.size() == 1;
+    }
+
+    /**
      * Fills the container.<p>
      *
      * @param showIndirect true-> show all user, false -> only direct user
@@ -483,67 +520,16 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         m_container.removeAllItems();
         for (CmsGroup group : m_groups) {
             if (!m_indirects.contains(group)) {
-                addGroupToContainer(m_container, group, m_indirects);
+                Item item = m_container.addItem(group);
+                m_app.fillGroupItem(item, group, m_indirects);
             }
         }
         if (showIndirect) {
             for (CmsGroup group : m_indirects) {
-                addGroupToContainer(m_container, group, m_indirects);
+                Item item = m_container.addItem(group);
+                m_app.fillGroupItem(item, group, m_indirects);
             }
         }
-    }
-
-    /**
-     * Updates the app.<p>
-     *
-     * @param uuid of current group
-     */
-    protected void updateApp(String uuid) {
-
-        try {
-            CmsGroup group = m_cms.readGroup(new CmsUUID(uuid));
-            m_app.update(group.getOuFqn(), CmsOuTreeType.GROUP, group.getId(), "");
-        } catch (CmsException e) {
-            LOG.error("unable to read group.", e);
-        }
-    }
-
-    /**
-     * Checks value of table and sets it new if needed:<p>
-     * if multiselect: new itemId is in current Value? -> no change of value<p>
-     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
-     *
-     * @param itemId if of clicked item
-     */
-    void changeValueIfNotMultiSelect(Object itemId) {
-
-        @SuppressWarnings("unchecked")
-        Set<String> value = (Set<String>)getValue();
-        if (value == null) {
-            select(itemId);
-        } else if (!value.contains(itemId)) {
-            setValue(null);
-            select(itemId);
-        }
-    }
-
-    /**
-     * Returns the available menu entries.<p>
-     *
-     * @return the menu entries
-     */
-    List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
-
-        if (m_menuEntries == null) {
-            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
-            m_menuEntries.add(new EntryOpen());
-            m_menuEntries.add(new EntryEdit());
-            m_menuEntries.add(new EntryShowResources());
-            m_menuEntries.add(new ImExport());
-            m_menuEntries.add(new EntryDelete());
-
-        }
-        return m_menuEntries;
     }
 
     /**
@@ -551,7 +537,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
      *
      * @param ou name
      */
-    private void init(String ou) {
+    protected void init(String ou) {
 
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
@@ -562,6 +548,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
             m_container.addContainerProperty(prop, prop.getType(), prop.getDefault());
             setColumnHeader(prop, prop.getName());
         }
+        m_app.addGroupContainerProperties(m_container);
         setContainerDataSource(m_container);
         setItemIconPropertyId(TableProperty.Icon);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
@@ -569,10 +556,10 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         setColumnWidth(null, 40);
         setSelectable(true);
         setMultiSelect(true);
-        setVisibleColumns(TableProperty.Name, TableProperty.OU);
 
         for (CmsGroup group : m_groups) {
-            addGroupToContainer(m_container, group, m_indirects);
+            Item item = m_container.addItem(group);
+            m_app.fillGroupItem(item, group, m_indirects);
         }
 
         addItemClickListener(new ItemClickListener() {
@@ -617,12 +604,73 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
                 return css;
             }
         });
+        setVisibleColumns(TableProperty.Name, TableProperty.Description, TableProperty.OU);
     }
 
+    /**
+     * Updates the app.<p>
+     *
+     * @param uuid of current group
+     */
+    protected void updateApp(String uuid) {
+
+        try {
+            CmsGroup group = m_cms.readGroup(new CmsUUID(uuid));
+            m_app.update(group.getOuFqn(), m_type, group.getId(), "");
+        } catch (CmsException e) {
+            LOG.error("unable to read group.", e);
+        }
+    }
+
+    /**
+     * Checks value of table and sets it new if needed:<p>
+     * if multiselect: new itemId is in current Value? -> no change of value<p>
+     * no multiselect and multiselect, but new item not selected before: set value to new item<p>
+     *
+     * @param itemId if of clicked item
+     */
+    void changeValueIfNotMultiSelect(Object itemId) {
+
+        @SuppressWarnings("unchecked")
+        Set<String> value = (Set<String>)getValue();
+        if (value == null) {
+            select(itemId);
+        } else if (!value.contains(itemId)) {
+            setValue(null);
+            select(itemId);
+        }
+    }
+
+    /**
+     * Returns the available menu entries.<p>
+     *
+     * @return the menu entries
+     */
+    List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
+
+        if (m_menuEntries == null) {
+            m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
+            m_menuEntries.add(new EntryOpen());
+            m_menuEntries.add(new EntryEdit());
+            m_menuEntries.add(new EntryShowResources());
+            m_menuEntries.add(new ImExport());
+            m_menuEntries.add(new EntryDelete());
+
+        }
+        return m_menuEntries;
+    }
+
+    /**
+     * Sets all groups.<p>
+     *
+     * @param directs the direct groups
+     *
+     * @throws CmsException if something goes wrong
+     */
     private void setAllGroups(List<CmsGroup> directs) throws CmsException {
 
         m_fullLoaded = true;
-        m_groups = OpenCms.getOrgUnitManager().getGroups(m_cms, m_ou, true);
+        m_groups = m_app.readGroupsForOu(m_cms, m_ou, m_type, true);
         m_indirects.clear();
         for (CmsGroup group : m_groups) {
             if (!directs.contains(group)) {

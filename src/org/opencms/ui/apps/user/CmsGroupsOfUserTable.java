@@ -35,6 +35,7 @@ import org.opencms.ui.apps.user.CmsGroupTable.TableProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.Table;
 
@@ -43,18 +44,26 @@ import com.vaadin.v7.ui.Table;
  */
 public class CmsGroupsOfUserTable extends Table {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** The app instance. */
+    private CmsAccountsApp m_app;
+
     /**Data container. */
     private IndexedContainer m_container;
 
     /**
      * Init method.<p>
      *
+     * @param app the app instance
      * @param cms CmsObject
      * @param user CmsUser
      * @param groups list of groups
      */
-    public void init(CmsObject cms, CmsUser user, List<CmsGroup> groups) {
+    public void init(CmsAccountsApp app, CmsObject cms, CmsUser user, List<CmsGroup> groups) {
 
+        m_app = app;
         if (m_container == null) {
             m_container = new IndexedContainer();
 
@@ -62,6 +71,7 @@ public class CmsGroupsOfUserTable extends Table {
                 m_container.addContainerProperty(prop, prop.getType(), prop.getDefault());
                 setColumnHeader(prop, prop.getName());
             }
+            m_app.addGroupContainerProperties(m_container);
             setContainerDataSource(m_container);
             setItemIconPropertyId(TableProperty.Icon);
             setRowHeaderMode(RowHeaderMode.ICON_ONLY);
@@ -75,7 +85,8 @@ public class CmsGroupsOfUserTable extends Table {
         m_container.removeAllItems();
 
         for (CmsGroup group : groups) {
-            CmsGroupTable.addGroupToContainer(m_container, group, new ArrayList<CmsGroup>());
+            Item item = m_container.addItem(group);
+            m_app.fillGroupItem(item, group, new ArrayList<CmsGroup>());
         }
 
     }

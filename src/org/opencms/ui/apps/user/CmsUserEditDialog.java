@@ -54,6 +54,7 @@ import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsUserDataFormLayout;
+import org.opencms.ui.components.CmsUserDataFormLayout.EditLevel;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
@@ -360,6 +361,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**User data form.<p>*/
     private CmsUserDataFormLayout m_userdata;
 
+    private CmsUserEditParameters m_editParams = new CmsUserEditParameters();
+
     /**
      * public constructor.<p>
      * @param callingOu
@@ -377,6 +380,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_cms = OpenCms.initCmsObject(cms);
             m_startfolder.disableSiteSwitch();
             m_user = m_cms.readUser(userId);
+            m_editParams = app.getUserEditParameters(m_user);
             if (m_user.isWebuser()) {
                 m_sendEmail.setVisible(false);
                 m_sendEmail.setValue(Boolean.FALSE);
@@ -400,7 +404,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_selfmanagement.setValue(new Boolean(!m_user.isManaged()));
             m_enabled.setValue(new Boolean(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
-            init(window, app, settings);
+            init(window, app, settings, m_editParams.isEditEnabled());
             m_sendEmail.setEnabled(false);
             m_forceResetPassword.setValue(
                 CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()) == null
@@ -410,6 +414,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             setupStartFolder(settings.getStartFolder());
 
             m_loginname.setEnabled(false);
+
+            if (!m_editParams.isEditEnabled()) {
+                m_description.setEnabled(false);
+            }
+            if (!m_editParams.isPasswordChangeEnabled()) {
+                m_pw.setVisible(false);
+                m_forceResetPassword.setVisible(false);
+                m_sendEmail.setVisible(false);
+                m_generateButton.setVisible(false);
+            }
 
         } catch (CmsException e) {
             LOG.error("Can't read user", e);
@@ -466,7 +480,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         m_enabled.setValue(Boolean.TRUE);
 
-        init(window, app, null);
+        init(window, app, null, true);
         setupStartFolder(null);
 
         m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
@@ -1160,9 +1174,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * @param app
      * @param settings user settings, null if new user
      */
-    private void init(final Window window, final CmsAccountsApp app, final CmsUserSettings settings) {
+    private void init(final Window window, final CmsAccountsApp app, final CmsUserSettings settings, boolean enabled) {
 
-        m_userdata.initFields(m_user, true);
+        m_userdata.initFields(m_user, enabled ? EditLevel.all : EditLevel.none);
         if (m_user != null) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getFirstname())
                 | CmsStringUtil.isEmptyOrWhitespaceOnly(m_user.getLastname())

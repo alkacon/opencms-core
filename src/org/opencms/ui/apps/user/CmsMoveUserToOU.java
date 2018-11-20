@@ -91,35 +91,35 @@ public class CmsMoveUserToOU extends CmsBasicDialog {
 
     }
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = 1L;
-
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsMoveUserToOU.class.getName());
 
-    /**Vaadin component. */
-    private Button m_ok;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 1L;
 
-    /**Vaadin component. */
-    private Button m_cancel;
+    /**CmsObject. */
+    protected CmsObject m_cms;
 
     /**User. */
     CmsUser m_user;
 
     /**Vaadin component. */
-    private ComboBox m_ou;
-
-    /**Vaadin component. */
-    private CheckBox m_removeAll;
-
-    /**CmsObject. */
-    protected CmsObject m_cms;
+    private Button m_cancel;
 
     /**Vaadin component. */
     private VerticalLayout m_error;
 
     /**Vaadin component. */
     private CmsGroupsOfUserTable m_groupTable;
+
+    /**Vaadin component. */
+    private Button m_ok;
+
+    /**Vaadin component. */
+    private ComboBox m_ou;
+
+    /**Vaadin component. */
+    private CheckBox m_removeAll;
 
     /**
      * Public constructor.<p>
@@ -139,7 +139,7 @@ public class CmsMoveUserToOU extends CmsBasicDialog {
             List<CmsGroup> groups = cms.getGroupsOfUser(m_user.getName(), true);
             if (!groups.isEmpty()) {
                 m_error.setVisible(true);
-                m_groupTable.init(m_cms, m_user, groups);
+                m_groupTable.init(app, m_cms, m_user, groups);
                 m_ok.setEnabled(false);
                 m_removeAll.addValueChangeListener(new ValueChangeListener() {
 

@@ -36,16 +36,14 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
-import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.v7.data.Item;
@@ -58,137 +56,6 @@ import com.vaadin.v7.ui.Tree;
  * Class for the OU Tree.<p>
  */
 public class CmsOuTree extends Tree {
-
-    /**Type of element.*/
-    protected enum CmsOuTreeType {
-
-        /**Group. */
-        GROUP(Messages.GUI_USERMANAGEMENT_GROUPS_0, "g", true, new CmsCssIcon(OpenCmsTheme.ICON_GROUP),
-        Messages.GUI_USERMANAGEMENT_NO_GROUPS_0),
-        /**OU. */
-        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, "o", true, new CmsCssIcon(OpenCmsTheme.ICON_OU), ""),
-        /**Role. */
-        ROLE(Messages.GUI_USERMANAGEMENT_ROLES_0, "r", true, new CmsCssIcon(OpenCmsTheme.ICON_ROLE),
-        Messages.GUI_USERMANAGEMENT_NO_USER_0),
-        /**User.*/
-        USER(Messages.GUI_USERMANAGEMENT_USER_0, "u", false, new CmsCssIcon(OpenCmsTheme.ICON_USER),
-        Messages.GUI_USERMANAGEMENT_NO_USER_0);
-
-        /**Name of entry. */
-        private String m_name;
-
-        /**ID for entry. */
-        private String m_id;
-
-        /**Is expandable?*/
-        private boolean m_isExpandable;
-
-        /**Icon for type. */
-        private CmsCssIcon m_icon;
-
-        /**Bundle key for empty message.*/
-        private String m_emptyMessageKey;
-
-        /**
-         * constructor.<p>
-         *
-         * @param name name
-         * @param id id
-         * @param isExpandable boolean
-         * @param icon icon
-         * @param empty empty string
-         */
-        CmsOuTreeType(String name, String id, boolean isExpandable, CmsCssIcon icon, String empty) {
-
-            m_name = name;
-            m_id = id;
-            m_isExpandable = isExpandable;
-            m_icon = icon;
-            m_emptyMessageKey = empty;
-        }
-
-        /**
-         * Returns tree type from id.<p>
-         *
-         * @param id of type
-         * @return CmsOuTreeType
-         */
-        public static CmsOuTreeType fromID(String id) {
-
-            for (CmsOuTreeType ty : values()) {
-                if (ty.getID().equals(id)) {
-                    return ty;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Returns tree type from name.<p>
-         *
-         * @param name of type
-         * @return CmsOuTreeType
-         */
-        public static CmsOuTreeType fromName(String name) {
-
-            for (CmsOuTreeType ty : values()) {
-                if (ty.getName().equals(name)) {
-                    return ty;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Returns the key for the empty-message.<p>
-         *
-         * @return key as string
-         */
-        public String getEmptyMessageKey() {
-
-            return m_emptyMessageKey;
-        }
-
-        /**
-         * Get the icon.<p>
-         *
-         * @return CmsCssIcon
-         */
-        public CmsCssIcon getIcon() {
-
-            return m_icon;
-        }
-
-        /**
-         * Gets the id of the type.<p>
-         *
-         * @return id string
-         */
-        public String getID() {
-
-            return m_id;
-        }
-
-        /**
-         * Gets the name of the element.<p>
-         *
-         * @return name
-         */
-        public String getName() {
-
-            return CmsVaadinUtils.getMessageText(m_name);
-        }
-
-        /**
-         * Checks if type is expandable.<p>
-         *
-         * @return true if expandable
-         */
-        public boolean isExpandable() {
-
-            return m_isExpandable;
-        }
-    }
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsOuTree.class);
@@ -204,6 +71,8 @@ public class CmsOuTree extends Tree {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -3532367333216144806L;
+
+    private static final String PROP_SID = "sid";
 
     /**Calling app. */
     private CmsAccountsApp m_app;
@@ -238,7 +107,8 @@ public class CmsOuTree extends Tree {
         setWidth("100%");
         m_treeContainer = new HierarchicalContainer();
         m_treeContainer.addContainerProperty(PROP_NAME, String.class, "");
-        m_treeContainer.addContainerProperty(PROP_TYPE, CmsOuTreeType.class, null);
+        m_treeContainer.addContainerProperty(PROP_TYPE, I_CmsOuTreeType.class, null);
+        m_treeContainer.addContainerProperty(PROP_SID, CmsUUID.class, null);
         setContainerDataSource(m_treeContainer);
 
         m_rootOu = null;
@@ -253,7 +123,7 @@ public class CmsOuTree extends Tree {
         setItemCaptionPropertyId(PROP_NAME);
         setHtmlContentAllowed(true);
         setNullSelectionAllowed(false);
-        addChildForOU(m_rootOu);
+        addChildrenForOUNode(m_rootOu);
         expandItem(m_rootOu);
         addItemClickListener(new ItemClickListener() {
 
@@ -284,7 +154,7 @@ public class CmsOuTree extends Tree {
      * @param type type (ou,group or user)
      * @param groupID id of group (optional)
      */
-    public void openPath(String path, CmsOuTreeType type, CmsUUID groupID) {
+    public void openPath(String path, I_CmsOuTreeType type, CmsUUID groupID) {
 
         if (type == null) {
             return;
@@ -296,12 +166,12 @@ public class CmsOuTree extends Tree {
             for (String subP : pathP) {
                 complPath += subP + "/";
                 CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, complPath);
-                addChildForOU(ou);
+                addChildrenForOUNode(ou);
                 expandItem(ou);
             }
 
-            if (type.equals(CmsOuTreeType.GROUP) | type.equals(CmsOuTreeType.ROLE)) {
-                String itemId = type.getID()
+            if (type.isGroup() || type.isRole()) {
+                String itemId = type.getId()
                     + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName();
                 expandItem(itemId);
                 if (groupID == null) {
@@ -311,8 +181,8 @@ public class CmsOuTree extends Tree {
                 setValue(groupID);
                 return;
             }
-            if (type.equals(CmsOuTreeType.USER)) {
-                setValue(type.getID() + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName());
+            if (type.isUser()) {
+                setValue(type.getId() + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, path).getName());
                 return;
             }
 
@@ -330,7 +200,7 @@ public class CmsOuTree extends Tree {
      */
     protected void handleExpand(Object itemId) {
 
-        CmsOuTreeType type = (CmsOuTreeType)getItem(itemId).getItemProperty(PROP_TYPE).getValue();
+        I_CmsOuTreeType type = (I_CmsOuTreeType)getItem(itemId).getItemProperty(PROP_TYPE).getValue();
         loadAndExpand(itemId, type);
     }
 
@@ -341,12 +211,16 @@ public class CmsOuTree extends Tree {
      */
     protected void handleItemClick(Object itemId) {
 
-        CmsOuTreeType type = (CmsOuTreeType)getItem(itemId).getItemProperty(PROP_TYPE).getValue();
+        Item item = getItem(itemId);
+        I_CmsOuTreeType type = (I_CmsOuTreeType)getItem(itemId).getItemProperty(PROP_TYPE).getValue();
         CmsUUID roleOrGroupID = null;
+        boolean idInItem = false;
         if (itemId instanceof CmsUUID) {
-
             roleOrGroupID = (CmsUUID)itemId;
-
+            idInItem = true;
+        } else if (item.getItemProperty(PROP_SID).getValue() != null) {
+            roleOrGroupID = (CmsUUID)(item.getItemProperty(PROP_SID).getValue());
+            idInItem = true;
         }
         if (type.equals(CmsOuTreeType.ROLE)) {
             String ou = getOuFromItem(itemId, CmsOuTreeType.ROLE);
@@ -359,7 +233,6 @@ public class CmsOuTree extends Tree {
                     if (((String)itemId).length() > (ou.length() + 1)) {
                         roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 1));
                     }
-
                 } else {
                     roleOrGroupID = new CmsUUID(((String)itemId).substring(ou.length() + 2));
                 }
@@ -367,7 +240,7 @@ public class CmsOuTree extends Tree {
         }
 
         m_app.update(getOuFromItem(itemId, type), type, roleOrGroupID, "");
-        if (isExpanded(itemId) | (itemId instanceof CmsUUID)) {
+        if (isExpanded(itemId) || idInItem) {
             return;
         }
         loadAndExpand(itemId, type);
@@ -378,21 +251,25 @@ public class CmsOuTree extends Tree {
     /**
      * Add groups for given group parent item.
      *
+     * @param type the tree type
      * @param ouItem group parent item
      */
-    private void addChildForGroup(String ouItem) {
+    private void addChildrenForGroupsNode(I_CmsOuTreeType type, String ouItem) {
 
         try {
-            List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(m_cms, ouItem.substring(1), false);
+            // Cut of type-specific prefix from ouItem with substring()
+            List<CmsGroup> groups = m_app.readGroupsForOu(m_cms, ouItem.substring(1), type, false);
             for (CmsGroup group : groups) {
-                Item groupItem = m_treeContainer.addItem(group.getId());
+                Pair<String, CmsUUID> key = Pair.of(type.getId(), group.getId());
+                Item groupItem = m_treeContainer.addItem(key);
                 if (groupItem == null) {
-                    groupItem = getItem(group.getId());
+                    groupItem = getItem(key);
                 }
+                groupItem.getItemProperty(PROP_SID).setValue(group.getId());
                 groupItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(group, CmsOuTreeType.GROUP));
-                groupItem.getItemProperty(PROP_TYPE).setValue(CmsOuTreeType.GROUP);
-                setChildrenAllowed(group.getId(), false);
-                m_treeContainer.setParent(group.getId(), ouItem);
+                groupItem.getItemProperty(PROP_TYPE).setValue(type);
+                setChildrenAllowed(key, false);
+                m_treeContainer.setParent(key, ouItem);
             }
         } catch (CmsException e) {
             LOG.error("Can not read group", e);
@@ -404,7 +281,7 @@ public class CmsOuTree extends Tree {
      *
      * @param item ou item
      */
-    private void addChildForOU(CmsOrganizationalUnit item) {
+    private void addChildrenForOUNode(CmsOrganizationalUnit item) {
 
         List<Object> itemsToRemove = new ArrayList<Object>();
 
@@ -415,9 +292,13 @@ public class CmsOuTree extends Tree {
 
         try {
             if (m_app.isOUManagable(item.getName())) {
-                List<CmsOuTreeType> types = Arrays.asList(CmsOuTreeType.GROUP, CmsOuTreeType.ROLE, CmsOuTreeType.USER);
-                for (CmsOuTreeType type : types) {
-                    String itemId = type.getID() + item.getName();
+
+                List<I_CmsOuTreeType> types = m_app.getTreeTypeProvider().getTreeTypes();
+                for (I_CmsOuTreeType type : types) {
+                    if (type.isOrgUnit()) {
+                        continue;
+                    }
+                    String itemId = type.getId() + item.getName();
                     Item newItem = m_treeContainer.addItem(itemId);
                     itemsToRemove.remove(itemId);
                     if (newItem != null) {
@@ -462,7 +343,7 @@ public class CmsOuTree extends Tree {
      *
      * @param ouItem group parent item
      */
-    private void addChildForRole(String ouItem) {
+    private void addChildrenForRolesNode(String ouItem) {
 
         try {
             List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, ouItem.substring(1), false);
@@ -508,11 +389,11 @@ public class CmsOuTree extends Tree {
      * @param type type
      * @return html
      */
-    private String getIconCaptionHTML(Object item, CmsOuTreeType type) {
+    private String getIconCaptionHTML(Object item, I_CmsOuTreeType type) {
 
         CmsCssIcon icon = type.getIcon();
         String caption = type.getName();
-        if (type.equals(CmsOuTreeType.OU)) {
+        if (item instanceof CmsOrganizationalUnit) {
             CmsOrganizationalUnit ou = (CmsOrganizationalUnit)item;
             if (ou.hasFlagWebuser()) {
                 icon = new CmsCssIcon(OpenCmsTheme.ICON_OU_WEB);
@@ -523,6 +404,7 @@ public class CmsOuTree extends Tree {
         if (item instanceof CmsGroup) {
             //Real group shown under groups
             caption = ((CmsGroup)item).getName();
+            icon = m_app.getGroupIcon((CmsGroup)item);
         }
 
         if (item instanceof CmsRole) {
@@ -548,7 +430,7 @@ public class CmsOuTree extends Tree {
      * @param type of given item
      * @return name of ou
      */
-    private String getOuFromItem(Object itemId, CmsOuTreeType type) {
+    private String getOuFromItem(Object itemId, I_CmsOuTreeType type) {
 
         if (type.equals(CmsOuTreeType.OU)) {
             return ((CmsOrganizationalUnit)itemId).getName();
@@ -566,16 +448,16 @@ public class CmsOuTree extends Tree {
      * @param itemId to be expanded
      * @param type of item
      */
-    private void loadAndExpand(Object itemId, CmsOuTreeType type) {
+    private void loadAndExpand(Object itemId, I_CmsOuTreeType type) {
 
-        if (type.equals(CmsOuTreeType.OU)) {
-            addChildForOU((CmsOrganizationalUnit)itemId);
+        if (type.isOrgUnit()) {
+            addChildrenForOUNode((CmsOrganizationalUnit)itemId);
         }
-        if (type.equals(CmsOuTreeType.GROUP)) {
-            addChildForGroup((String)itemId);
+        if (type.isGroup()) {
+            addChildrenForGroupsNode(type, (String)itemId);
         }
-        if (type.equals(CmsOuTreeType.ROLE)) {
-            addChildForRole((String)itemId);
+        if (type.isRole()) {
+            addChildrenForRolesNode((String)itemId);
         }
         expandItem(itemId);
     }

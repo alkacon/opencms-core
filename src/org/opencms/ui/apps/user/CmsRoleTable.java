@@ -36,7 +36,6 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.user.CmsOuTree.CmsOuTreeType;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;

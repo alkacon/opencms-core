@@ -52,6 +52,9 @@ public class CmsPasswordForm extends VerticalLayout {
     /** Label with additional text. */
     private Label m_additionalText;
 
+    /**Label for the head message.*/
+    private Label m_headMessage;
+
     /** Field for the old password. */
     private PasswordField m_oldPasswordField;
 
@@ -79,9 +82,6 @@ public class CmsPasswordForm extends VerticalLayout {
     /** Second password field. */
     private PasswordField m_passwordField2;
 
-    /**Label for the head message.*/
-    private Label m_headMessage;
-
     /** Label to display the security hint. */
     private Label m_securityHint;
 
@@ -89,6 +89,7 @@ public class CmsPasswordForm extends VerticalLayout {
      * Constructor.<p>
      */
     public CmsPasswordForm() {
+
         this(A_CmsUI.get().getLocale());
     }
 
@@ -98,6 +99,7 @@ public class CmsPasswordForm extends VerticalLayout {
      * @param locale the user locale
      */
     public CmsPasswordForm(Locale locale) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, OpenCms.getWorkplaceManager().getMessages(locale), null);
         m_securityHint.setVisible(false);
         m_password1Style = new CmsStyleVariable(m_password1Wrapper);
@@ -186,6 +188,13 @@ public class CmsPasswordForm extends VerticalLayout {
             m_additionalText.setValue(text);
             m_additionalText.setVisible(true);
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+
+        m_passwordField1.setEnabled(enabled);
+        m_passwordField2.setEnabled(enabled);
+        m_oldPasswordField.setEnabled(enabled);
     }
 
     /**

@@ -45,20 +45,24 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.UI;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.v7.data.util.ObjectProperty;
 import com.vaadin.v7.data.util.PropertysetItem;
 import com.vaadin.v7.data.validator.AbstractStringValidator;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.UI;
 
 /**
  * Form Layout for user data.<p>
  */
 public class CmsUserDataFormLayout extends FormLayout {
+
+    public enum EditLevel {
+        all, configured, none;
+    }
 
     /**
      * Validator employing the configured OpenCms validation handler.<p>
@@ -116,19 +120,19 @@ public class CmsUserDataFormLayout extends FormLayout {
         }
     }
 
-    /**Vaadin serial id.*/
-    private static final long serialVersionUID = 4893705558720239863L;
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserDataFormLayout.class);
 
-    /** The property item. */
-    private PropertysetItem m_infos;
+    /**Vaadin serial id.*/
+    private static final long serialVersionUID = 4893705558720239863L;
 
     /** The field binder. */
     private FieldGroup m_binder;
 
-    private boolean m_isAllEditable;
+    private EditLevel m_editLevel;
+
+    /** The property item. */
+    private PropertysetItem m_infos;
 
     /**
      * empty constructor.<p>
@@ -144,12 +148,12 @@ public class CmsUserDataFormLayout extends FormLayout {
      */
     public void initFields(CmsUser user) {
 
-        initFields(user, false);
+        initFields(user, EditLevel.configured);
     }
 
-    public void initFields(CmsUser user, boolean allEditable) {
+    public void initFields(CmsUser user, EditLevel editLevel) {
 
-        m_isAllEditable = allEditable;
+        m_editLevel = editLevel;
         m_infos = new PropertysetItem();
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
             String value = "";
@@ -164,7 +168,7 @@ public class CmsUserDataFormLayout extends FormLayout {
 
         m_binder = new FieldGroup(m_infos);
         for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-            addComponent(buildField(getLabel(info), info, allEditable));
+            addComponent(buildField(getLabel(info), info));
         }
     }
 
@@ -214,7 +218,9 @@ public class CmsUserDataFormLayout extends FormLayout {
                 m_binder.commit();
                 PropertyUtilsBean propUtils = new PropertyUtilsBean();
                 for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
-                    if (info.isEditable() | m_isAllEditable) {
+                    boolean editable = (m_editLevel == EditLevel.all)
+                        || ((m_editLevel == EditLevel.configured) && info.isEditable());
+                    if (editable) {
                         if (info.isAdditionalInfo()) {
                             user.setAdditionalInfo(info.getAddInfoKey(), m_infos.getItemProperty(info).getValue());
                         } else {
@@ -245,13 +251,15 @@ public class CmsUserDataFormLayout extends FormLayout {
      *
      * @return the field
      */
-    private TextField buildField(String label, CmsAccountInfo info, boolean allEdit) {
+    private TextField buildField(String label, CmsAccountInfo info) {
 
         TextField field = (TextField)m_binder.buildAndBind(label, info);
         field.setConverter(new CmsNullToEmptyConverter());
         field.setWidth("100%");
-        field.setEnabled(info.isEditable() | allEdit);
-        if (info.isEditable() | allEdit) {
+        boolean editable = (m_editLevel == EditLevel.all)
+            || (info.isEditable() && (m_editLevel == EditLevel.configured));
+        field.setEnabled(editable);
+        if (editable) {
             field.addValidator(new FieldValidator(info.getField()));
         }
         field.setImmediate(true);

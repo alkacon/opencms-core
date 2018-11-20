@@ -55,29 +55,23 @@ import com.vaadin.v7.ui.TextField;
  */
 public class CmsGroupEditDialog extends CmsBasicDialog {
 
-    /**vaadin serial id.*/
-    private static final long serialVersionUID = 6633733627052633351L;
-
     /** The logger for this class. */
     static Log LOG = CmsLog.getLog(CmsGroupEditDialog.class.getName());
 
-    /**CmsGroup.*/
-    private CmsGroup m_group;
-
-    /**CmsObject.*/
-    private CmsObject m_cms;
-
-    /**vaadin component.*/
-    private TextField m_name;
+    /**vaadin serial id.*/
+    private static final long serialVersionUID = 6633733627052633351L;
 
     /**vaadin component.*/
     Button m_ok;
 
+    /** The app instance. */
+    private CmsAccountsApp m_app;
+
     /**vaadin component.*/
     private Button m_cancel;
 
-    /**vaadin component.*/
-    private Label m_ou;
+    /**CmsObject.*/
+    private CmsObject m_cms;
 
     /**vaadin component.*/
     private TextArea m_description;
@@ -85,22 +79,36 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
     /**vaadin component.*/
     private CheckBox m_enabled;
 
+    /**CmsGroup.*/
+    private CmsGroup m_group;
+
+    /** The group edit parameters. */
+    private CmsGroupEditParameters m_groupEditParameters = new CmsGroupEditParameters();
+
+    /**vaadin component.*/
+    private TextField m_name;
+
+    /**vaadin component.*/
+    private Label m_ou;
+
     /**
      * public constructor.<p>
      *
      * @param cms CmsObject
      * @param groupId id of group edit, null if groud should be created
      * @param window window holding the dialog
-     * @param app
+     * @param app the app instance
      */
     public CmsGroupEditDialog(CmsObject cms, CmsUUID groupId, final Window window, final CmsAccountsApp app) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_cms = cms;
+        m_app = app;
 
         try {
             if (groupId != null) {
                 m_group = m_cms.readGroup(groupId);
+                m_groupEditParameters = m_app.getGroupEditParameters(m_group);
                 displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_group)));
                 m_ou.setValue(m_group.getOuFqn());
                 m_name.setValue(m_group.getSimpleName());
@@ -155,15 +163,20 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
         m_enabled.addValueChangeListener(listener);
         m_description.addValueChangeListener(listener);
         m_name.addValueChangeListener(listener);
+        if (!m_groupEditParameters.isEditable()) {
+            m_description.setEnabled(false);
+            m_enabled.setEnabled(false);
+        }
 
     }
 
     /**
-     * public constructor.<p>
+     * Constructor for dialog for new groups.
      *
      * @param cms CmsObject
      * @param window window holding dialog
      * @param ou to create group in
+     * @param app the app instance
      */
     public CmsGroupEditDialog(CmsObject cms, Window window, String ou, CmsAccountsApp app) {
 
