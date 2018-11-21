@@ -147,14 +147,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         /** Internal widget map. */
         private static Map<String, String> m_mapping = new HashMap<>();
-        static {
-            m_mapping.put("string", "StringWidget");
-            m_mapping.put("select", "SelectorWidget");
-            m_mapping.put("combo", "ComboWidget");
-            m_mapping.put("selectcombo", "SelectComboWidget");
-            m_mapping.put("checkbox", "BooleanWidget");
-        }
-
         /** The original configuration. */
         private String m_config;
 
@@ -171,6 +163,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
             m_widget = widget;
             m_config = config;
+        }
+
+        static {
+            m_mapping.put("string", "StringWidget");
+            m_mapping.put("select", "SelectorWidget");
+            m_mapping.put("combo", "ComboWidget");
+            m_mapping.put("selectcombo", "SelectComboWidget");
+            m_mapping.put("checkbox", "BooleanWidget");
         }
 
         /**
@@ -240,6 +240,54 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
             return m_params;
         }
+    }
+
+    /** Enum for field setting element names which are not already defined elsewhere. */
+    enum FieldSettingElems {
+        /** Element name. */
+        Class,
+
+        /** Element name. */
+        DefaultResolveMacros,
+
+        /** Element name. */
+        Display,
+
+        /** Element name. */
+        FieldVisibility,
+
+        /** Element name. */
+        Invalidate,
+
+        /** Element name. */
+        Mapping,
+
+        /** Element name. */
+        MapTo,
+
+        /** Element name. */
+        NestedFormatter,
+
+        /** Element name. */
+        Params,
+
+        /** Element name. */
+        Relation,
+
+        /** Element name. */
+        Search,
+
+        /** Element name. */
+        Synchronization,
+
+        /** Element name. */
+        Type,
+
+        /** Element name. */
+        UseDefault,
+
+        /** Element name. */
+        Visibility
     }
 
     /**
@@ -501,9 +549,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "setting" appinfo element name. */
     public static final String APPINFO_SETTING = "setting";
 
-    /** Constant for the 'Setting' node name. */
-    public static final String N_SETTING = "Setting";
-
     /** Constant for the "settings" appinfo element name. */
     public static final String APPINFO_SETTINGS = "settings";
 
@@ -567,6 +612,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
+    /** Constant for the 'Setting' node name. */
+    public static final String N_SETTING = "Setting";
+
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
         + "${key."
@@ -610,40 +658,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The title property shared mapping key. */
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
 
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
@@ -778,7 +792,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private CmsParameterConfiguration m_parameters = new CmsParameterConfiguration();
 
     /** The visibility configurations by element path. */
-    private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
+    private Map<String, VisibilityConfiguration> m_visibilityConfigurations = new HashMap<String, VisibilityConfiguration>();
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -786,6 +800,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -2542,7 +2590,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
 
         String defaultValue = elem.elementText(CmsConfigurationReader.N_DEFAULT);
-        String defaultResolveMacros = elem.elementTextTrim("DefaultResolveMacros");
+        String defaultResolveMacros = elem.elementTextTrim(FieldSettingElems.DefaultResolveMacros.name());
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(defaultValue)) {
             addDefault(contentDef, name, defaultValue, defaultResolveMacros);
         }
@@ -2569,14 +2617,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         if (description != null) {
             m_fieldDescriptions.put(name, description);
         }
-        for (Element mappingElem : elem.elements("Mapping")) {
-            String mapTo = mappingElem.elementText("MapTo");
-            String useDefault = mappingElem.elementText("UseDefault");
+        for (Element mappingElem : elem.elements(FieldSettingElems.Mapping.name())) {
+            String mapTo = mappingElem.elementText(FieldSettingElems.MapTo.name());
+            String useDefault = mappingElem.elementText(FieldSettingElems.UseDefault.name());
             if (mapTo != null) {
                 addMapping(contentDef, name, mapTo, useDefault);
             }
         }
-        String display = elem.elementTextTrim("Display");
+        String display = elem.elementTextTrim(FieldSettingElems.Display.name());
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(display)) {
             try {
                 addDisplayType(contentDef, name, DisplayType.valueOf(display));
@@ -2584,13 +2632,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        String synchronization = elem.elementTextTrim("Synchronization");
+        String synchronization = elem.elementTextTrim(FieldSettingElems.Synchronization.name());
         if (Boolean.parseBoolean(synchronization)) {
             m_synchronizations.add(name);
         }
-        for (Element relElem : elem.elements("Relation")) {
-            String type = relElem.elementTextTrim("Type");
-            String invalidate = relElem.elementTextTrim("Invalidate");
+        for (Element relElem : elem.elements(FieldSettingElems.Relation.name())) {
+            String type = relElem.elementTextTrim(FieldSettingElems.Type.name());
+            String invalidate = relElem.elementTextTrim(FieldSettingElems.Invalidate.name());
             if (type != null) {
                 type = type.toLowerCase();
             }
@@ -2600,19 +2648,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             addCheckRule(contentDef, name, invalidate, type);
         }
 
-        for (Element visElem : elem.elements("FieldVisibility")) {
-            String className = visElem.elementTextTrim("Class");
-            String params = visElem.elementTextTrim("Params");
+        for (Element visElem : elem.elements(FieldSettingElems.Visibility.name())) {
+            String params = visElem.getText();
+            VisibilityConfiguration visConfig = createVisibilityConfiguration(null, params);
+            m_visibilityConfigurations.put(name, visConfig);
+        }
+
+        for (Element visElem : elem.elements(FieldSettingElems.FieldVisibility.name())) {
+            String className = visElem.elementTextTrim(FieldSettingElems.Class.name());
+            String params = visElem.elementTextTrim(FieldSettingElems.Params.name());
             VisibilityConfiguration visConfig = createVisibilityConfiguration(className, params);
             m_visibilityConfigurations.put(name, visConfig);
         }
 
-        String nestedFormatter = elem.elementTextTrim("NestedFormatter");
+        String nestedFormatter = elem.elementTextTrim(FieldSettingElems.NestedFormatter.name());
         if (Boolean.parseBoolean(nestedFormatter)) {
             m_nestedFormatterElements.add(name);
         }
 
-        String search = elem.elementTextTrim("Search");
+        String search = elem.elementTextTrim(FieldSettingElems.Search.name());
         if (search != null) {
             addSimpleSearchSetting(contentDef, name, search);
         }
