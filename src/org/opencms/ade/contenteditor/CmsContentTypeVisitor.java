@@ -623,7 +623,6 @@ public class CmsContentTypeVisitor {
             I_CmsWidget widget = widgetInfo.getWidget();
             I_CmsComplexWidget complexWidget = widgetInfo.getComplexWidget();
             configuredType = widgetInfo.getDisplayType();
-            I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
             if (configuredType.equals(DisplayType.none) && schemaType.isSimpleType()) {
                 // check the type is on the root level of the document, those will be displayed 'wide'
                 // the path will always have a leading '/'
