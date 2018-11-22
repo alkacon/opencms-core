@@ -359,7 +359,7 @@ public class CmsJspDateSeriesBean {
                 m_value.getLocale());
             return result.getTitle();
         } catch (CmsException e) {
-            LOG.error("Could not retrieve title of series content.", e);
+            LOG.warn("Could not retrieve title of series content.", e);
             return "";
         }
 
@@ -453,7 +453,11 @@ public class CmsJspDateSeriesBean {
             m_dates = bean.getDates();
             m_duration = bean.getEventDuration();
         } else {
-            LOG.error("Could not read series definition: " + seriesDefinitionString);
+            try {
+                throw new Exception("Could not read series definition: " + seriesDefinitionString);
+            } catch (Exception e) {
+                LOG.debug(e.getMessage(), e);
+            }
             m_dates = new TreeSet<>();
         }
     }
