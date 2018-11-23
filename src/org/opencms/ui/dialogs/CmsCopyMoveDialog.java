@@ -82,27 +82,28 @@ import com.vaadin.v7.ui.ComboBox.ItemStyleGenerator;
 /**
  * The copy move dialog.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsCopyMoveDialog extends CmsBasicDialog {
 
     /** The copy/move actions. */
     public static enum Action {
 
-    /** Copy container page automatic mode. */
-    container_page_automatic,
-    /** Copy container page including referenced elements. */
-    container_page_copy,
-    /** Copy container page reuse referenced elements. */
-    container_page_reuse,
-    /** Copy resources as new. */
-    copy_all,
-    /** Create siblings. */
-    copy_sibling_all,
-    /** Copy and preserve siblings. */
-    copy_sibling_mixed,
-    /** Move resources. */
-    move,
-    /** Copy sub sitemap, adjust internal links. */
-    sub_sitemap;
+        /** Copy container page automatic mode. */
+        container_page_automatic,
+        /** Copy container page including referenced elements. */
+        container_page_copy,
+        /** Copy container page reuse referenced elements. */
+        container_page_reuse,
+        /** Copy resources as new. */
+        copy_all,
+        /** Create siblings. */
+        copy_sibling_all,
+        /** Copy and preserve siblings. */
+        copy_sibling_mixed,
+        /** Move resources. */
+        move,
+        /** Copy sub sitemap, adjust internal links. */
+        sub_sitemap;
     }
 
     /** The dialog mode. */
@@ -419,9 +420,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     protected void updateOverwriteExisting() {
 
         if (m_overwriteExisting != null) {
-            boolean move = m_actionCombo.getValue() == Action.move;
+            boolean move = (m_dialogMode == DialogMode.move) || (m_actionCombo.getValue() == Action.move);
             if (move) {
-                m_overwriteExisting.setValue(false);
+                m_overwriteExisting.setValue(Boolean.FALSE);
                 m_overwriteExisting.setVisible(false);
             } else {
                 m_overwriteExisting.setVisible(true);
@@ -704,10 +705,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0));
         m_targetPath.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
         m_targetPath.setWidth("100%");
-        //        if ((m_dialogMode.equals(DialogMode.copy) | m_dialogMode.equals(DialogMode.copy_and_move))
-        //            && (m_context.getResources().size() == 1)) {
-        //            m_targetPath.setFileSelectButtonVisible(false);
-        //        }
         form.addComponent(m_targetPath);
 
         if (m_dialogMode != DialogMode.move) {
@@ -716,11 +713,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             m_actionCombo.setNullSelectionAllowed(false);
             m_actionCombo.setNewItemsAllowed(false);
             m_actionCombo.setWidth("100%");
-            //            m_actionCombo.addItem(Action.automatic);
-            //            m_actionCombo.setItemCaption(
-            //                Action.automatic,
-            //                CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_AUTOMATIC_0));
-            //            m_actionCombo.setValue(Action.automatic);
             if (m_context.getResources().size() == 1) {
                 if (m_context.getResources().get(0).isFile()) {
                     m_actionCombo.addItem(Action.copy_all);
