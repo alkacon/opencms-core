@@ -1621,10 +1621,14 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * JSP EL accessor for wrapping an object with a CmsJspObjectValueWrapper, unless it
-     * already is a wrapper, in which case it is returned unchanged.<p>
+     * Returns an EL access wrapper map for the given object.<p>
      *
-     * @return the lazy map used to wrap its input
+     * If the object is a {@link CmsResource}, then a {@link CmsJspResourceWrapper} is returned.
+     * Otherwise the object is wrapped in a {@link CmsJspObjectValueWrapper}.<p>
+     *
+     * If the object is already is a wrapper, it is returned unchanged.<p>
+     *
+     * @return an EL access wrapper map for the given object
      */
     public Map<Object, Object> getWrap() {
 
@@ -1638,7 +1642,6 @@ public final class CmsJspStandardContextBean {
                 return CmsJspObjectValueWrapper.createWrapper(m_cms, obj);
             }
         });
-
     }
 
     /**

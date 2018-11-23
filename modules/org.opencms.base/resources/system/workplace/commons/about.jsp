@@ -56,6 +56,7 @@
     mailSubject = CmsEncoder.escapeWBlanks(mailSubject, "US_ASCII");
 %>
     <tr><td>Java Runtime:</td><td><%= System.getProperty("java.runtime.version") %></td></tr>
+    <tr><td>Server:</td><td><%= application.getServerInfo() %> - Servlet/<%= application.getMajorVersion() %>.<%= application.getMinorVersion() %> - JSP/<%=JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %></td></tr>
     </table>
 
     <div class="center">

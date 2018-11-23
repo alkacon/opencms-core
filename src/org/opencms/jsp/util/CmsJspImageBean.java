@@ -30,6 +30,7 @@ package org.opencms.jsp.util;
 import org.opencms.ade.galleries.shared.CmsPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -103,8 +104,8 @@ public class CmsJspImageBean {
     /** Size variations for source sets. */
     static final double[] m_sizeVariants = {1.000, 0.7500, 0.5000, 0.3750, 0.2500, 0.1250};
 
-    /** The CmsResource for this image. */
-    CmsResource m_resource = null;
+    /** The wrapped VFS resource for this image. */
+    CmsJspResourceWrapper m_resource = null;
 
     /** Lazy initialized map of ratio scaled versions of this image. */
     Map<String, CmsJspImageBean> m_scaleRatio = null;
@@ -143,13 +144,22 @@ public class CmsJspImageBean {
     private String m_vfsUri;
 
     /**
-     * Initializes a new image bean based on a VFS input string.<p>
+     * Initializes a new image bean based on a VFS resource and optional scaler parameters.<p>
      *
-     * The input string is is used to read the images from the VFS.
-     * It can contain scaling parameters.<p>
+     * @param cms the current OpenCms user context
+     * @param imageRes the VFS resource to read the image from
+     * @param scaleParams optional scaler parameters to apply to the VFS resource
+     */
+    public CmsJspImageBean(CmsObject cms, CmsResource imageRes, String scaleParams) {
+
+        init(cms, imageRes, scaleParams);
+    }
+
+    /**
+     * Initializes a new image bean based on a string pointing to a VFS resource that may contain appended scaling parameters.<p>
      *
-     * @param cms the current uses OpenCms context
-     * @param imageUri the URI to read the image from in the OpenCms VFS, may also contain scaling parameters
+     * @param cms the current OpenCms user context
+     * @param imageUri the URI to read the image from in the OpenCms VFS, may also contain appended scaling parameters
      *
      * @throws CmsException in case of problems reading the image from the VFS
      */
@@ -168,27 +178,7 @@ public class CmsJspImageBean {
             }
         }
 
-        // set VFS URI without scaling parameters
-        setVfsUri(splitSrc.getPrefix());
-        setResource(cms.readResource(getVfsUri()));
-
-        // the originalScaler reads the image dimensions from the VFS properties
-        CmsImageScaler originalScaler = new CmsImageScaler(cms, getResource());
-        // set original scaler
-        setOriginalScaler(originalScaler);
-
-        // set base scaler
-        CmsImageScaler baseScaler = originalScaler;
-        if (scaleParam != null) {
-            // scale parameters have been set
-            baseScaler = new CmsImageScaler(scaleParam);
-            baseScaler.setFocalPoint(originalScaler.getFocalPoint());
-        }
-
-        setBaseScaler(baseScaler);
-
-        // set the current scaler to the base scaler
-        setScaler(baseScaler);
+        init(cms, cms.readResource(splitSrc.getPrefix()), scaleParam);
     }
 
     /**
@@ -342,6 +332,7 @@ public class CmsJspImageBean {
      * If the scaler has no crop region, true is returned.
      *
      * @param scaler the scaler
+     * @param focalPoint the focal point to check
      * @return true if the scaler's crop region contains the focal point
      */
     private static boolean checkCropRegionContainsFocalPoint(CmsImageScaler scaler, CmsPoint focalPoint) {
@@ -604,6 +595,16 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Returns the JSP access wrapped VFS resource for this image.<p>
+     *
+     * @return the JSP access wrapped VFS resource for this image
+     */
+    public CmsJspResourceWrapper getResource() {
+
+        return m_resource;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides access to hi-DPI scaled instances of this image bean.<p>
      *
      * <ul>
@@ -799,9 +800,19 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Returns <code>true</code> if this image bean has been correctly initialized with an image VFS resource.<p>
+     *
+     * @return <code>true</code> if this image bean has been correctly initialized with an image VFS resource
+     */
+    public boolean isImage() {
+
+        return getOriginalScaler().isValid();
+    }
+
+    /**
      * Returns <code>true</code> if the image has been scaled or otherwise processed.<p>
      *
-     * @return the isScaled
+     * @return <code>true</code> if the image has been scaled or otherwise processed
      */
     public boolean isScaled() {
 
@@ -894,7 +905,7 @@ public class CmsJspImageBean {
         CmsJspImageBean result = new CmsJspImageBean();
 
         result.setCmsObject(getCmsObject());
-        result.setResource(getResource());
+        result.setResource(getCmsObject(), getResource());
         result.setOriginalScaler(getOriginalScaler());
         result.setBaseScaler(getBaseScaler());
         result.setVfsUri(getVfsUri());
@@ -935,16 +946,6 @@ public class CmsJspImageBean {
     }
 
     /**
-     * Returns the CmsResource for this image.<p>
-     *
-     * @return the CmsResource for this image
-     */
-    protected CmsResource getResource() {
-
-        return m_resource;
-    }
-
-    /**
      * Returns this instance bean, required for the transformers.<p>
      *
      * @return this instance bean
@@ -952,6 +953,40 @@ public class CmsJspImageBean {
     protected CmsJspImageBean getSelf() {
 
         return this;
+    }
+
+    /**
+     * Initializes this new image bean based on a VFS resource and optional scaler parameters.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param imageRes the VFS resource to read the image from
+     * @param scaleParams optional scaler parameters to apply to the VFS resource
+     */
+    protected void init(CmsObject cms, CmsResource imageRes, String scaleParams) {
+
+        setCmsObject(cms);
+
+        // set VFS URI without scaling parameters
+        setResource(cms, imageRes);
+        setVfsUri(cms.getRequestContext().getSitePath(imageRes));
+
+        // the originalScaler reads the image dimensions from the VFS properties
+        CmsImageScaler originalScaler = new CmsImageScaler(cms, getResource());
+        // set original scaler
+        setOriginalScaler(originalScaler);
+
+        // set base scaler
+        CmsImageScaler baseScaler = originalScaler;
+        if (scaleParams != null) {
+            // scale parameters have been set
+            baseScaler = new CmsImageScaler(scaleParams);
+            baseScaler.setFocalPoint(originalScaler.getFocalPoint());
+        }
+
+        setBaseScaler(baseScaler);
+
+        // set the current scaler to the base scaler
+        setScaler(baseScaler);
     }
 
     /**
@@ -987,11 +1022,12 @@ public class CmsJspImageBean {
     /**
      * Sets the CmsResource for this image.<p>
      *
-     * @param resource the CmsResource for this image
+     * @param cms the current OpenCms user context, required for wrapping the resource
+     * @param resource the VFS resource for this image
      */
-    protected void setResource(CmsResource resource) {
+    protected void setResource(CmsObject cms, CmsResource resource) {
 
-        m_resource = resource;
+        m_resource = CmsJspResourceWrapper.wrap(cms, resource);
     }
 
     /**

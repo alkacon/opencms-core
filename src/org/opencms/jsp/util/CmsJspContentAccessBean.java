@@ -36,6 +36,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -426,10 +427,10 @@ public class CmsJspContentAccessBean {
     /** The XML content to access. */
     private I_CmsXmlDocument m_content;
 
-    /** The lazy initialized map for the "has locale" check. */
+    /** Lazy map for the "has locale" check. */
     private Map<String, Boolean> m_hasLocale;
 
-    /** The lazy initialized map for the "has locale value" check. */
+    /** Lazy map for the "has locale value" check. */
     private Map<String, Map<String, Boolean>> m_hasLocaleValue;
 
     /** Lazy map for imageDnd annotations. */
@@ -438,19 +439,19 @@ public class CmsJspContentAccessBean {
     /** The locale used for accessing entries from the XML content, this may be a fallback default locale. */
     private Locale m_locale;
 
-    /** The lazy initialized with the locale names. */
+    /** Lazy map with the locale names. */
     private Map<String, List<String>> m_localeNames;
 
-    /** Lazy initialized map of RDFA maps by locale. */
+    /** Lazy map of RDFA maps by locale. */
     private Map<String, Map<String, String>> m_localeRdfa;
 
-    /** The lazy initialized with the locale sub value lists. */
+    /** Lazy map with the locale sub value lists. */
     private Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> m_localeSubValueList;
 
-    /** The lazy initialized with the locale value. */
+    /** Lazy map with the locale value. */
     private Map<String, Map<String, CmsJspContentAccessValueWrapper>> m_localeValue;
 
-    /** The lazy initialized with the locale value lists. */
+    /** Lazy map with the locale value lists. */
     private Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> m_localeValueList;
 
     /** The original locale requested for accessing entries from the XML content. */
@@ -458,6 +459,9 @@ public class CmsJspContentAccessBean {
 
     /** Resource the XML content is created from. */
     private CmsResource m_resource;
+
+    /** JSP EL access wrapped version of the resource the XML content is created from. */
+    private CmsJspResourceWrapper m_resourceWrapper;
 
     /**
      * No argument constructor, required for a JavaBean.<p>
@@ -1139,6 +1143,19 @@ public class CmsJspContentAccessBean {
     public CmsJspVfsAccessBean getVfs() {
 
         return CmsJspVfsAccessBean.create(m_cms);
+    }
+
+    /**
+     * Returns the content file as a CmsJspObjectValueWrapper.<p>
+     *
+     * @return the content file as a CmsJspObjectValueWrapper
+     */
+    public CmsJspResourceWrapper getWrap() {
+
+        if (m_resourceWrapper == null) {
+            m_resourceWrapper = CmsJspResourceWrapper.wrap(m_cms, m_resource);
+        }
+        return m_resourceWrapper;
     }
 
     /**

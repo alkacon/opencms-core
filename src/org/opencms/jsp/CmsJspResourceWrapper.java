@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
+import org.opencms.jsp.util.CmsJspImageBean;
 import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -123,6 +124,9 @@ public class CmsJspResourceWrapper extends CmsResource {
 
     /** The navigation info element for this resource. */
     private CmsJspNavElement m_navigation;
+
+    /** Image bean instance created from this resource. */
+    private CmsJspImageBean m_imageBean;
 
     /**
      * Creates a new instance.<p>
@@ -280,6 +284,16 @@ public class CmsJspResourceWrapper extends CmsResource {
             result = readResource(getSitePathFolder());
         }
         return result;
+    }
+
+    /**
+     * Returns <code>true</code> in case this resource is an image in the VFS.<p>
+     *
+     * @return <code>true</code> in case this resource is an image in the VFS
+     */
+    public boolean getIsImage() {
+
+        return getToImage().isImage();
     }
 
     /**
@@ -540,7 +554,7 @@ public class CmsJspResourceWrapper extends CmsResource {
         if (m_propertiesSearch == null) {
             try {
                 List<CmsProperty> properties = m_cms.readPropertyObjects(this, true);
-                m_properties = CmsProperty.toMap(properties);
+                m_propertiesSearch = CmsProperty.toMap(properties);
             } catch (CmsException e) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(e.getMessage(), e);
@@ -702,6 +716,21 @@ public class CmsJspResourceWrapper extends CmsResource {
     public String getSitePathParentFolder() {
 
         return getParentFolder(getSitePath());
+    }
+
+    /**
+     * Returns a scaled image bean from the wrapped value.<p>
+     *
+     * In case the value does not point to an image resource, <code>null</code> is returned.
+     *
+     * @return the scaled image bean
+     */
+    public CmsJspImageBean getToImage() {
+
+        if (m_imageBean == null) {
+            m_imageBean = new CmsJspImageBean(getCmsObject(), this, null);
+        }
+        return m_imageBean;
     }
 
     /**
