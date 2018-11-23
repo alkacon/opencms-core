@@ -222,24 +222,22 @@ public final class CmsDetailOnlyContainerUtil {
     }
 
     /**
-     * Returns the site path to the detail only container page.<p>
+     * Returns the site/root path to the detail only container page, for site/root path of the detail content.<p>
      *
      * @param cms the current cms context
      * @param pageResource the detail page resource
-     * @param detailRootPath the path to the detail content
+     * @param detailPath the site or root path to the detail content (accordingly site or root path's will be returned)
      * @param locale the locale for which we want the detail only page
      *
-     * @return the site path to the detail only container page
+     * @return the site or root path to the detail only container page (dependent on providing site or root path for the detailPath).
      */
     public static String getDetailOnlyPageName(
         CmsObject cms,
         CmsResource pageResource,
-        String detailRootPath,
+        String detailPath,
         String locale) {
 
-        return getDetailOnlyPageNameWithoutLocaleCheck(
-            detailRootPath,
-            getDetailContainerLocale(cms, locale, pageResource));
+        return getDetailOnlyPageNameWithoutLocaleCheck(detailPath, getDetailContainerLocale(cms, locale, pageResource));
     }
 
     /**
