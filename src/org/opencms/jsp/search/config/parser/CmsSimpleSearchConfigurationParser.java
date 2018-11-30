@@ -57,6 +57,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.solr.common.params.CommonParams;
+
 import com.google.common.collect.Lists;
 
 /**
@@ -524,6 +526,35 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     }
 
     /**
+     * The fields returned by default. Typically the output is done via display formatters and hence nearly no
+     * field is necessary. Returning all fields might cause performance problems.
+     *
+     * @return the default return fields.
+     */
+    String getDefaultReturnFields() {
+
+        StringBuffer fields = new StringBuffer("");
+        fields.append(CmsSearchField.FIELD_PATH);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE).append('_').append(getSearchLocale().toString()).append("_dt");
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE_END).append('_').append(getSearchLocale().toString()).append(
+            "_dt");
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL).append('_').append(
+            getSearchLocale().toString()).append("_dt");
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_ID);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_SOLR_ID);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_DISPTITLE).append('_').append(getSearchLocale().toString()).append("_sort");
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_LINK);
+        return fields.toString();
+    }
+
+    /**
      * Returns the filter query string.<p>
      *
      * @return the filter query
@@ -537,7 +568,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !result.startsWith("&")) {
             result = "&" + result;
         }
-
+        if (!result.contains(CommonParams.FL + "=")) {
+            result += "&" + CommonParams.FL + "=" + getDefaultReturnFields();
+        }
         I_CmsListDateRestriction dateRestriction = m_config.getDateRestriction();
         if (dateRestriction != null) {
             result += "&fq="
