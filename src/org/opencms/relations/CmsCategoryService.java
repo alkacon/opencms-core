@@ -821,8 +821,8 @@ public class CmsCategoryService {
                 }
             } catch (CmsException e) {
                 if (!repair) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e.getLocalizedMessage(), e);
                     }
                 } else {
                     // repair broken categories caused by moving category folders

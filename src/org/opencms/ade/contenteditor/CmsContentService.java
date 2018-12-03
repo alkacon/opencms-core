@@ -2676,7 +2676,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                     cms.getSitePath(file),
                                     CmsCategoryService.getInstance().getCategory(cms, category));
                             } catch (CmsException e) {
-                                LOG.error(e.getLocalizedMessage(), e);
+                                if (LOG.isWarnEnabled()) {
+                                    LOG.warn(e.getLocalizedMessage(), e);
+                                }
                             }
                         }
                     }

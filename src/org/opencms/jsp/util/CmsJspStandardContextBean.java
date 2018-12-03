@@ -1891,7 +1891,9 @@ public final class CmsJspStandardContextBean {
                     }
                     formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
                 } catch (CmsException e1) {
-                    LOG.error(e1.getLocalizedMessage(), e1);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e1.getLocalizedMessage(), e1);
+                    }
                 }
             }
         }

@@ -932,7 +932,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 try {
                     result.add(m_driverManager.readResource(dbc, path, CmsResourceFilter.ALL));
                 } catch (CmsVfsResourceNotFoundException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         } catch (CmsException e) {

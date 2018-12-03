@@ -209,7 +209,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         "/");
 
                 } catch (CmsVfsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 } finally {
                     cms.getRequestContext().setSiteRoot(originalSiteRoot);
 

@@ -193,7 +193,9 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
         } catch (Throwable e) {
             String uri = cms.getRequestContext().getUri();
             CmsMessageContainer msg = Messages.get().container(Messages.ERR_RESCOURCE_NOT_FOUND_1, uri);
-            LOG.error(msg.key(), e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(msg.key(), e);
+            }
             throw new CmsResourceInitException(msg, e);
         }
 

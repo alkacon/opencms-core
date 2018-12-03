@@ -414,7 +414,11 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 }
             }
         } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            // Should be thrown if element on the page does not exist anymore - this is possible, but not necessarily an error.
+            // Hence, just notice it in the debug log.
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         }
         return document;
     }
