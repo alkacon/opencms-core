@@ -2008,7 +2008,8 @@ public class CmsImportVersion10 implements I_CmsImport {
             }
 
             // apply name translation and import path
-            String translatedName = getRequestContext().addSiteRoot(m_parameters.getDestinationPath() + m_destination);
+            String translatedName = getRequestContext().addSiteRoot(
+                CmsStringUtil.joinPaths(m_parameters.getDestinationPath(), m_destination));
 
             boolean resourceImmutable = checkImmutable(translatedName);
             translatedName = getRequestContext().removeSiteRoot(translatedName);
