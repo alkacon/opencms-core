@@ -127,11 +127,13 @@ public interface I_CmsContainerpageService extends RemoteService {
      *
      * @param pageId the container page id
      * @param originalElementId the model element id
+     * @param locale the content locale
+     *
      * @return the structure id of the copy
      *
      * @throws CmsRpcException if something goes wrong
      */
-    CmsUUID copyElement(CmsUUID pageId, CmsUUID originalElementId) throws CmsRpcException;
+    CmsUUID copyElement(CmsUUID pageId, CmsUUID originalElementId, String locale) throws CmsRpcException;
 
     /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>

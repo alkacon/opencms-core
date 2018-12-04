@@ -626,12 +626,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#copyElement(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#copyElement(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsUUID copyElement(CmsUUID pageId, CmsUUID originalElementId) throws CmsRpcException {
+    public CmsUUID copyElement(CmsUUID pageId, CmsUUID originalElementId, String locale) throws CmsRpcException {
 
         try {
-            CmsObject cms = getCmsObject();
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(locale));
             CmsResource page = cms.readResource(pageId, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsResource element = cms.readResource(originalElementId, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, page.getRootPath());

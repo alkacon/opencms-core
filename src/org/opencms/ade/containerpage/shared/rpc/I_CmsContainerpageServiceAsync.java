@@ -120,9 +120,10 @@ public interface I_CmsContainerpageServiceAsync {
      *
      * @param pageId the container page id
      * @param originalElementId the model element id
+     * @param locale the content locale
      * @param resultCallback the callback for the result
      */
-    void copyElement(CmsUUID pageId, CmsUUID originalElementId, AsyncCallback<CmsUUID> resultCallback);
+    void copyElement(CmsUUID pageId, CmsUUID originalElementId, String locale, AsyncCallback<CmsUUID> resultCallback);
 
     /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>

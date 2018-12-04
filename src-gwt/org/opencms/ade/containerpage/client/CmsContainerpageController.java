@@ -124,14 +124,14 @@ public final class CmsContainerpageController {
      * Enum which is used to control how elements are removed from the page.<p>
      */
     public enum ElementRemoveMode {
-    /** Reference checks are performed and the user is asked for confirmation whether they really want to remove the element before the page is saved. */
-    confirmRemove,
+        /** Reference checks are performed and the user is asked for confirmation whether they really want to remove the element before the page is saved. */
+        confirmRemove,
 
-    /** Reference checks are only performed after the page or group has been saved. */
-    saveAndCheckReferences,
+        /** Reference checks are only performed after the page or group has been saved. */
+        saveAndCheckReferences,
 
-    /** Element is just removed, no checks are performed. */
-    silent;
+        /** Element is just removed, no checks are performed. */
+        silent;
     }
 
     /**
@@ -963,7 +963,11 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 start(200, false);
-                getContainerpageService().copyElement(CmsCoreProvider.get().getStructureId(), new CmsUUID(id), this);
+                getContainerpageService().copyElement(
+                    CmsCoreProvider.get().getStructureId(),
+                    new CmsUUID(id),
+                    getData().getLocale(),
+                    this);
             }
 
             @Override
