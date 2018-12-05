@@ -598,12 +598,11 @@
 	}
 
 	textarea.o-shell-terminal, .o-shell-terminal.o-report{
-		
 		    display: block;
     		font-family: monospace;
     		background: #300a24;
     		color: white;
-		
+    		white-space: pre;
 		}
 
 	.o-app-info{
