@@ -313,14 +313,11 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     @Override
     protected void onClickNew(boolean askCreateMode) {
 
-        CmsDebugLog.consoleLog("onClickNew");
         if (!askCreateMode) {
-            CmsDebugLog.consoleLog("askCreateMode = " + askCreateMode);
             openEditDialog(true, null, null);
             removeHighlighting();
         } else {
             if (m_editableData.hasEditHandler()) {
-                CmsDebugLog.consoleLog("has edit handler");
                 final String elementId = CmsContentEditor.getClientIdForEditable(m_editableData);
                 CmsCntPageData cntPageData = CmsContainerpageController.get().getData();
                 final CmsUUID pageId = cntPageData.getRpcContext().getPageStructureId();

@@ -646,6 +646,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         return result.toString();
     }
 
+    /**
+     * Adds a String value to the JSON object.<p>
+     *
+     * @param obj the object to manipulate
+     * @param key the key
+     * @param val the value
+     */
     private void putString(JSONObject obj, String key, String val) {
 
         obj.put(key, new JSONString(val));

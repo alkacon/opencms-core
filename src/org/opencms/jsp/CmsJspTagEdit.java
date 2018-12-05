@@ -127,16 +127,18 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         CmsResourceTypeConfig typeConfig = adeConfig.getResourceType(typeName);
         CmsResource newElement = null;
         try {
-            newElement = typeConfig.createNewElement(cmsObject, modelFile, rootPath);
+            CmsObject cmsClone = cmsObject;
+            if ((locale != null) && !cmsObject.getRequestContext().getLocale().equals(locale)) {
+                // in case the content locale does not match the request context locale, use a clone cms with the appropriate locale
+                cmsClone = OpenCms.initCmsObject(cmsObject);
+                cmsClone.getRequestContext().setLocale(locale);
+            }
+            newElement = typeConfig.createNewElement(cmsClone, modelFile, rootPath);
             CmsPair<String, String> handlerParameter = I_CmsCollectorPostCreateHandler.splitClassAndConfig(
                 postCreateHandler);
             I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(
                 handlerParameter.getFirst());
-            handler.onCreate(
-                cmsObject,
-                cmsObject.readFile(newElement),
-                modelFile != null,
-                handlerParameter.getSecond());
+            handler.onCreate(cmsClone, cmsClone.readFile(newElement), modelFile != null, handlerParameter.getSecond());
         } catch (CmsException e) {
             LOG.error("Could not create resource.", e);
         }
