@@ -22,7 +22,7 @@
 				<importversion class="org.opencms.importexport.CmsImportVersion10" />
 			</importversions>
 			<immutables>
-                <resource uri="/" />
+				<resource uri="/" />
 				<resource uri="/shared/" />
 				<resource uri="/sites/" />
 				<resource uri="/system/" />
@@ -32,8 +32,8 @@
 				<resource uri="/system/login/" />
 				<resource uri="/system/modules/" />
 				<resource uri="/system/orgunits/" />
+				<resource uri="/system/shared/" />
 				<resource uri="/system/userimages/" />
-				<resource uri="/system/config/" />
 				<resource uri="/system/workplace/" />
 				<resource uri="/system/workplace/commons/" />
 				<resource uri="/system/workplace/editors/" />
