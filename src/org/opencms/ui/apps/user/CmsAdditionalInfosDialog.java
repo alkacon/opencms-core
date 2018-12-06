@@ -282,18 +282,24 @@ public class CmsAdditionalInfosDialog extends CmsBasicDialog {
      */
     private void saveAddInfo(String key, String value) {
 
+        int pos = key.indexOf("@");
+
+        String className = "";
+        if (pos > -1) {
+            className = key.substring(pos + 1);
+            key = key.substring(0, pos);
+        }
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
             m_user.deleteAdditionalInfo(key);
             return;
         }
 
-        int pos = key.indexOf("@");
         if (pos < 0) {
             m_user.setAdditionalInfo(key, value);
             return;
         }
-        String className = key.substring(pos + 1);
-        key = key.substring(0, pos);
+
         Class<?> clazz;
         try {
             // try the class name
