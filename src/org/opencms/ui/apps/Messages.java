@@ -54,6 +54,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SQLCONSOLE_NO_PERMISSIONS_EXEC_SENTENCE_1 = "ERR_SQLCONSOLE_NO_PERMISSIONS_EXEC_SENTENCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SQLCONSOLE_NOTHING_TO_EXECUTE_0 = "ERR_SQLCONSOLE_NOTHING_TO_EXECUTE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -871,18 +877,25 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINKVALIDATION_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0 = "GUI_LINKVALIDATION_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_ADD_FOLDER_0 = "GUI_LISTMANAGER_ADD_FOLDER_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_ADD_TYPE_0 = "GUI_LISTMANAGER_ADD_TYPE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0 = "GUI_LISTMANAGER_BLACKLIST_MENU_ENTRY_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_CLEAR_BLACKLIST_0 = "GUI_LISTMANAGER_CLEAR_BLACKLIST_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_COLUMN_BLACKLISTED_0 = "GUI_LISTMANAGER_COLUMN_BLACKLISTED_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_COLUMN_INFO_0 = "GUI_LISTMANAGER_COLUMN_INFO_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_COLUMN_INSTANCEDATE_0 = "GUI_LISTMANAGER_COLUMN_INSTANCEDATE_0";
     /** Message constant for key in the resource bundle. */
@@ -985,25 +998,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_SORT_DATE_ASC_0 = "GUI_LISTMANAGER_SORT_DATE_ASC_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_SORT_DATE_DESC_0 = "GUI_LISTMANAGER_SORT_DATE_DESC_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_SORT_ORDER_ASC_0 = "GUI_LISTMANAGER_SORT_ORDER_ASC_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_SORT_ORDER_DESC_0 = "GUI_LISTMANAGER_SORT_ORDER_DESC_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_SORT_TITLE_ASC_0 = "GUI_LISTMANAGER_SORT_TITLE_ASC_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_SORT_TITLE_DESC_0 = "GUI_LISTMANAGER_SORT_TITLE_DESC_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_TAB_ADVANCED_0 = "GUI_LISTMANAGER_TAB_ADVANCED_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_TAB_BASIC_0 = "GUI_LISTMANAGER_TAB_BASIC_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_TITLE_0 = "GUI_LISTMANAGER_TITLE_0";
 
@@ -2694,6 +2700,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCESEARCH_XPATH_HELP_0 = "GUI_SOURCESEARCH_XPATH_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SQLCONSOLE_APP_TITLE_0 = "GUI_SQLCONSOLE_APP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SQLCONSOLE_CSV_BUTTON_0 = "GUI_SQLCONSOLE_CSV_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SQLCONSOLE_POOL_0 = "GUI_SQLCONSOLE_POOL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SQLCONSOLE_QUERY_RESULTS_0 = "GUI_SQLCONSOLE_QUERY_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_STATEXP_THREAD_NAME_0 = "GUI_STATEXP_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -3558,6 +3576,20 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SOURCESEARCH_UNLOCK_FILE_0 = "RPT_SOURCESEARCH_UNLOCK_FILE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_SQLCONSOLE_BEGIN_0 = "RPT_SQLCONSOLE_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SQLCONSOLE_END_0 = "RPT_SQLCONSOLE_END_0";
+
+    /** Message constant for key in the resource bundle. */
+
+    public static final String RPT_SQLCONSOLE_NUM_ROWS_RETRIEVED_1 = "RPT_SQLCONSOLE_NUM_ROWS_RETRIEVED_1";
+
+    /** Message constant for key in the resource bundle. */
+
+    public static final String RPT_SQLCONSOLE_ROWS_AFFECTED_1 = "RPT_SQLCONSOLE_ROWS_AFFECTED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_STARTING_LETSENCRYPT_UPDATE_0 = "RPT_STARTING_LETSENCRYPT_UPDATE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -3580,6 +3612,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    public static final String GUI_SQLCONSOLE_APP_HELP_0 = "GUI_SQLCONSOLE_APP_HELP_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth" height="100%">
+		<v-panel  caption="%(key.GUI_SQLCONSOLE_APP_TITLE_0)" height="100%" :expand>	
+			<v-vertical-layout height="100%" margin spacing>
+				<v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
+					<v-combo-box _id="m_pool" width="100%" caption="%(key.GUI_SQLCONSOLE_POOL_0)"></v-combo-box>
+				</v-form-layout>	
+				<v-text-area _id="m_script" height="100%" width="100%" style-name="o-shell-terminal o-report" :expand> </v-text-area>	
+			</v-vertical-layout>		
+		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_EXECUTE_0)</v-button>
+				</v-horizontal-layout>
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
+</body>
+</html>

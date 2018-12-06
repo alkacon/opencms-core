@@ -212,6 +212,16 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getCredentialsResolver();
     }
 
+    /** 
+     * Gets the database pool names.<p>
+     * 
+     * @return the database pool names 
+     */
+    public static List<String> getDbPoolNames() {
+
+        return OpenCmsCore.getInstance().getDbPoolNames();
+    }
+
     /**
      * Returns the configured list of default directory file names (instances of <code>{@link String}</code>).<p>
      *

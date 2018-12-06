@@ -515,6 +515,17 @@ public final class OpenCmsCore {
 
         return m_credentialsResolver;
     }
+    
+    /**
+     * Gets the database pool names.<p>
+     * 
+     * @return the configured database pool names
+     */
+    protected List<String> getDbPoolNames() {
+
+        return new ArrayList<>(m_configurationManager.getConfiguration().getList("db.pools"));
+
+    }
 
     /**
      * Returns the configured list of default directory file names.<p>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<o-basic-dialog>
+		<content>
+			<v-vertical-layout height="100%">
+			    <v-label _id="m_reportOutput"></v-label>
+			    <v-vertical-layout height="100%" _id="m_tableContainer" :expand></v-vertical-layout>
+			</v-vertical-layout> 
+		</content>
+		<buttons>
+			<v-button _id="m_csv">%(key.GUI_SQLCONSOLE_CSV_BUTTON_0)</v-button>
+			<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+		</buttons>
+	</o-basic-dialog>
+</body>
+</html>
