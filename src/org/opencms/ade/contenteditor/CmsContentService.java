@@ -767,6 +767,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
                     I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
                     if ((formatter != null)
+                        && formatter.isAllowsSettingsInEditor()
                         && (formatter.getSettings() != null)
                         && !formatter.getSettings().isEmpty()) {
                         Locale locale = CmsLocaleManager.getLocale(lastEditedLocale);
@@ -975,6 +976,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
                     I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
                     if ((formatter != null)
+                        && formatter.isAllowsSettingsInEditor()
                         && (formatter.getSettings() != null)
                         && !formatter.getSettings().isEmpty()) {
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
