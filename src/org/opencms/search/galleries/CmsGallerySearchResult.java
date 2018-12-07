@@ -66,6 +66,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     /** The logger instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsGallerySearchResult.class);
 
+    /** List of Solr fields that are read during the initialization of the search result. */
+    private static String[] m_requiredSolrFields;
+
     /** The additional information for the gallery search index. */
     protected String m_additonalInfo;
 
@@ -285,6 +288,54 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         if ((null != cms) && (null != m_structureId)) {
             initializeMissingFieldsFromVfs(cms, new CmsUUID(m_structureId));
         }
+    }
+
+    /**
+     * Returns the list of Solr fields a search result must have to initialize the gallery search result correctly.
+     * @return the list of Solr fields.
+     */
+    public static final String[] getRequiredSolrFields() {
+
+        if (null == m_requiredSolrFields) {
+            List<Locale> locales = OpenCms.getLocaleManager().getAvailableLocales();
+            m_requiredSolrFields = new String[14 + (locales.size() * 6)];
+            int count = 0;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_PATH;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_TYPE;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_DATE_CREATED;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_DATE_LASTMODIFIED;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_DATE_EXPIRED;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_DATE_RELEASED;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_SIZE;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_STATE;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_USER_CREATED;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_ID;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_USER_LAST_MODIFIED;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_ADDITIONAL_INFO;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_CONTAINER_TYPES;
+            m_requiredSolrFields[count++] = CmsSearchField.FIELD_RESOURCE_LOCALES;
+            for (Locale locale : locales) {
+                m_requiredSolrFields[count++] = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                    CmsSearchField.FIELD_TITLE_UNSTORED,
+                    locale.toString()) + "_s";
+                m_requiredSolrFields[count++] = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    locale.toString()) + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT + "_s";
+                m_requiredSolrFields[count++] = CmsPropertyDefinition.PROPERTY_TITLE
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
+                    + "_s";
+                m_requiredSolrFields[count++] = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                    CmsSearchField.FIELD_DESCRIPTION,
+                    locale.toString()) + "_s";
+                m_requiredSolrFields[count++] = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    locale.toString()) + CmsSearchField.FIELD_DYNAMIC_PROPERTIES + "_s";
+                m_requiredSolrFields[count++] = CmsPropertyDefinition.PROPERTY_DESCRIPTION
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+                    + "_s";
+            }
+        }
+        return m_requiredSolrFields;
     }
 
     /**

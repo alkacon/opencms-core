@@ -351,6 +351,20 @@ public class CmsSolrIndex extends CmsSearchIndex {
     @Override
     public synchronized I_CmsSearchDocument getDocument(String fieldname, String term) {
 
+        return getDocument(fieldname, term, null);
+    }
+
+    /**
+     * Version of {@link org.opencms.search.CmsSearchIndex#getDocument(java.lang.String, java.lang.String)} where
+     * the returned fields can be restricted.
+     *
+     * @param fieldname the field to query in
+     * @param term the query
+     * @param fls the returned fields.
+     * @return the document.
+     */
+    public synchronized I_CmsSearchDocument getDocument(String fieldname, String term, String[] fls) {
+
         try {
             SolrQuery query = new SolrQuery();
             if (CmsSearchField.FIELD_PATH.equals(fieldname)) {
@@ -359,6 +373,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 query.setQuery(fieldname + ":" + term);
             }
             query.addFilterQuery("{!collapse field=" + fieldname + "}");
+            if (null != fls) {
+                query.setFields(fls);
+            }
             QueryResponse res = m_solr.query(query);
             if (res != null) {
                 SolrDocumentList sdl = m_solr.query(query).getResults();

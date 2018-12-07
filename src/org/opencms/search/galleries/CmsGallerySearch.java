@@ -168,7 +168,10 @@ public class CmsGallerySearch {
      */
     public CmsGallerySearchResult searchById(CmsUUID id, Locale locale) throws CmsException {
 
-        I_CmsSearchDocument sDoc = m_index.getDocument(CmsSearchField.FIELD_ID, id.toString());
+        I_CmsSearchDocument sDoc = m_index.getDocument(
+            CmsSearchField.FIELD_ID,
+            id.toString(),
+            CmsGallerySearchResult.getRequiredSolrFields());
 
         CmsGallerySearchResult result = null;
         if ((sDoc != null) && (sDoc.getDocument() != null)) {

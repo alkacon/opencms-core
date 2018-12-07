@@ -58,74 +58,74 @@ public class CmsGallerySearchParameters {
     /** Sort parameter constants. */
     public enum CmsGallerySortParam {
 
-    /** Sort by date created ascending. */
-    dateCreated_asc,
+        /** Sort by date created ascending. */
+        dateCreated_asc,
 
-    /** Sort by date created descending. */
-    dateCreated_desc,
+        /** Sort by date created descending. */
+        dateCreated_desc,
 
-    /** Sort date expired ascending. */
-    dateExpired_asc,
+        /** Sort date expired ascending. */
+        dateExpired_asc,
 
-    /** Sort date expired descending. */
-    dateExpired_desc,
+        /** Sort date expired descending. */
+        dateExpired_desc,
 
-    /** Sort by date modified ascending. */
-    dateLastModified_asc,
+        /** Sort by date modified ascending. */
+        dateLastModified_asc,
 
-    /** Sort by date modified descending. */
-    dateLastModified_desc,
+        /** Sort by date modified descending. */
+        dateLastModified_desc,
 
-    /** Sort date released ascending. */
-    dateReleased_asc,
+        /** Sort date released ascending. */
+        dateReleased_asc,
 
-    /** Sort date released descending. */
-    dateReleased_desc,
+        /** Sort date released descending. */
+        dateReleased_desc,
 
-    /** Sort by length ascending. */
-    length_asc,
+        /** Sort by length ascending. */
+        length_asc,
 
-    /** Sort by length descending. */
-    length_desc,
+        /** Sort by length descending. */
+        length_desc,
 
-    /** Sort by VFS root path ascending. */
-    path_asc,
+        /** Sort by VFS root path ascending. */
+        path_asc,
 
-    /** Sort by VFS root path descending. */
-    path_desc,
+        /** Sort by VFS root path descending. */
+        path_desc,
 
-    /** Sort by score ascending. */
-    score,
+        /** Sort by score ascending. */
+        score,
 
-    /** Sort state ascending. */
-    state_asc,
+        /** Sort state ascending. */
+        state_asc,
 
-    /** Sort state descending. */
-    state_desc,
+        /** Sort state descending. */
+        state_desc,
 
-    /** Sort by title ascending. */
-    title_asc,
+        /** Sort by title ascending. */
+        title_asc,
 
-    /** Sort by title ascending. */
-    title_desc,
+        /** Sort by title ascending. */
+        title_desc,
 
-    /** Sort by type ascending. */
-    type_asc,
+        /** Sort by type ascending. */
+        type_asc,
 
-    /** Sort by type descending. */
-    type_desc,
+        /** Sort by type descending. */
+        type_desc,
 
-    /** Sort created by ascending. */
-    userCreated_asc,
+        /** Sort created by ascending. */
+        userCreated_asc,
 
-    /** Sort created by descending. */
-    userCreated_desc,
+        /** Sort created by descending. */
+        userCreated_desc,
 
-    /** Sort modified by ascending. */
-    userLastModified_asc,
+        /** Sort modified by ascending. */
+        userLastModified_asc,
 
-    /** Sort modified by descending. */
-    userLastModified_desc;
+        /** Sort modified by descending. */
+        userLastModified_desc;
 
         /** The default sort parameter. */
         public static final CmsGallerySortParam DEFAULT = title_asc;
@@ -455,6 +455,8 @@ public class CmsGallerySearchParameters {
 
         // set result collapsing by id
         query.addFilterQuery("{!collapse field=id}");
+
+        query.setFields(CmsGallerySearchResult.getRequiredSolrFields());
 
         return query;
     }
