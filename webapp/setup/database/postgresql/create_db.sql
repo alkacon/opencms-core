@@ -4,9 +4,7 @@
 
 # Create the user;
 
-CREATE USER ${user} 
-  PASSWORD '${password}'
-  CREATEDB CREATEROLE;
+CREATE USER ${user} WITH PASSWORD '${password}';
 
 #create the database
 
