@@ -88,16 +88,19 @@ import com.vaadin.v7.ui.TextField;
 @SuppressWarnings("deprecation")
 public class CmsNewResourceTypeDialog extends CmsBasicDialog {
 
+    /**
+     * XPath elements.
+     */
     public static class XMLPath {
 
         /**Module Config Constant.  */
-        private final static String CONFIG_RESOURCETYPE = "ResourceType";
+        private static final String CONFIG_RESOURCETYPE = "ResourceType";
 
         /**Module Config Constant.  */
-        private final static String CONFIG_RESOURCETYPE_TYPENAME = "/TypeName";
+        private static final String CONFIG_RESOURCETYPE_TYPENAME = "/TypeName";
 
         /**Module Config Constant.  */
-        private final static String CONFIG_RESOURCETYPE_NAMEPATTERN = "/NamePattern";
+        private static final String CONFIG_RESOURCETYPE_NAMEPATTERN = "/NamePattern";
 
         /**
          * Adds the count to the path, e.g., <code>"Title" + num(2)</code> results in <code>"Title[2]"</code>.
@@ -108,6 +111,40 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
 
             return "[" + i + "]";
         }
+    }
+
+    /**
+     * Validator for the bundle resource field.<p>
+     */
+    class BundleValidator implements Validator {
+
+        /**Vaadin serial id. */
+        private static final long serialVersionUID = 7872665683495080792L;
+
+        /**
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (!m_cms.existsResource((String)value)) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0));
+            }
+
+            try {
+                CmsResource res = m_cms.readResource((String)value);
+                if (!OpenCms.getResourceManager().getResourceType(res).equals(
+                    OpenCms.getResourceManager().getResourceType("propertyvfsbundle"))) {
+                    throw new InvalidValueException(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0));
+
+                }
+            } catch (CmsException e) {
+                LOG.error("Unable to read resource", e);
+            }
+
+        }
+
     }
 
     /**
@@ -147,7 +184,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
         private static final long serialVersionUID = 7878441125879949490L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -173,7 +210,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
         private static final long serialVersionUID = 7878441125879949490L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -262,6 +299,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
     /** vaadin component.*/
     private Button m_ok;
 
+    /**vaadin component. */
     private CmsPathSelectField m_parentFormatter;
 
     /** vaadin component.*/
@@ -768,6 +806,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
         m_parentSchema.removeAllValidators();
         m_config.removeAllValidators();
         m_config.addValidator(new ResourceValidator());
+        m_bundle.addValidator(new BundleValidator());
         m_parentFormatter.addValidator(new ResourceValidator());
         m_parentSchema.addValidator(new ResourceValidator());
         CmsResource bundle = getMessageBundle();
