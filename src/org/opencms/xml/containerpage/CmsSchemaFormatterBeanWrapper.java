@@ -241,6 +241,14 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#hasNestedFormatterSettings()
+     */
+    public boolean hasNestedFormatterSettings() {
+
+        return false;
+    }
+
+    /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isAllowsSettingsInEditor()
      */
     public boolean isAllowsSettingsInEditor() {

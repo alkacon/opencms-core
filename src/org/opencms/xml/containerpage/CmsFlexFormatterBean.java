@@ -130,6 +130,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             isDisplay,
             isAllowsSettingsInEditor,
             false,
+            false,
             metaMappings,
             useMetaMappingsForNormalElements);
         m_stringTemplate = stringTemplate;

@@ -186,6 +186,9 @@ public class CmsFormatterBeanParser {
     public static final String N_META_MAPPING = "MetaMapping";
 
     /** Content value node name. */
+    public static final String N_NESTED_FORMATTER_SETTINGS = "NestedFormatterSettings";
+
+    /** Content value node name. */
     public static final String N_NICE_NAME = "NiceName";
 
     /** Content value node name. */
@@ -405,6 +408,9 @@ public class CmsFormatterBeanParser {
         String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
         m_autoEnabled = Boolean.parseBoolean(autoEnabled);
 
+        String nestedFormatterSettings = getString(root, N_NESTED_FORMATTER_SETTINGS, "false");
+        boolean nestedFormatters = Boolean.parseBoolean(nestedFormatterSettings);
+
         String useMetaMappinsForNormalElementsStr = getString(root, N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS, "false");
         boolean useMetaMappingsForNormalElements = Boolean.parseBoolean(useMetaMappinsForNormalElementsStr);
 
@@ -574,6 +580,7 @@ public class CmsFormatterBeanParser {
                     isDisplay,
                     isAllowSettings,
                     isStrictContainers,
+                    nestedFormatters,
                     mappings,
                     useMetaMappingsForNormalElements);
             }
