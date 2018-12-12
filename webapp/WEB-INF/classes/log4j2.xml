@@ -4,13 +4,13 @@
 	    <Console name="CONSOLE" target="SYSTEM_OUT">
 	      <PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
 	    </Console>
-		
+
 		<RollingFile name="OC" fileName="${sys:opencms.logfile}"
 			filePattern="${sys:opencms.logfile}.%i.log.gz">
 			<PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="5 MB"/>
-			</Policies>	
+			</Policies>
 			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
 
@@ -18,14 +18,22 @@
 			filePattern="${sys:opencms.logfolder}opencms-search.log.%i.log.gz">
 			<PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
 			<Policies>
-				<SizeBasedTriggeringPolicy size="20 MB"/>
-			</Policies>	
+				<SizeBasedTriggeringPolicy size="5 MB"/>
+			</Policies>
 			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
-		
+
+		<RollingFile name="OCMemoryMonitor" fileName="${sys:opencms.logfolder}opencms-memory.log"
+			filePattern="${sys:opencms.logfolder}opencms-memory.log.%i.log.gz">
+			<PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %m%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
+
 	</Appenders>
 	<Loggers>
-	    <Logger level="error" name="com.opencms"/>
 	    <Logger level="error" name="com.vaadin"/>
 	    <Logger level="error" name="org.opencms"/>
 	    <Logger level="info" name="org.opencms.db.log"/>
@@ -38,17 +46,17 @@
 	    <Logger level="warn" name="org.opencms.search" additivity="false">
 	        <AppenderRef ref="OCSearch"/>
 	    </Logger>
-	    <Logger level="warn" name="org.opencms.search.documents" additivity="false">
+	    <Logger level="warn" name="org.opencms.jsp.search" additivity="false">
 	        <AppenderRef ref="OCSearch"/>
 	    </Logger>
-	    <Logger level="warn" name="org.opencms.search.extractors" additivity="false">
+	    <Logger level="warn" name="org.opencms.jsp.CmsJspTagSearch" additivity="false">
 	        <AppenderRef ref="OCSearch"/>
 	    </Logger>
-	    <Logger level="warn" name="org.opencms.search.fields" additivity="false">
+	    <Logger level="warn" name="org.opencms.jsp.CmsJspTagSimpleSearch" additivity="false">
 	        <AppenderRef ref="OCSearch"/>
 	    </Logger>
-	    <Logger level="warn" name="org.opencms.search.solr" additivity="false">
-	        <AppenderRef ref="OCSearch"/>
+	    <Logger level="info" name="org.opencms.monitor.CmsMemoryMonitor" additivity="false">
+	        <AppenderRef ref="OCMemoryMonitor"/>
 	    </Logger>
 	    <Root level="error">
 	        <AppenderRef ref="OC"/>
