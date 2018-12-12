@@ -2162,11 +2162,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     containerElement.getResource(),
                     settingsConfig);
                 CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(m_workplaceLocale);
-                List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(
-                    cms,
-                    containerElement.getResource(),
-                    locale,
-                    getRequest());
+                List<I_CmsFormatterBean> nestedFormatters = formatter.hasNestedFormatterSettings()
+                ? OpenCms.getADEManager().getNestedFormatters(cms, containerElement.getResource(), locale, getRequest())
+                : Collections.emptyList();
                 String firstContentAttributeName = types.get(
                     entity.getTypeName()).getAttributeNames().iterator().next();
                 List<String> addedVisibleAttrs = addSettingsAttributes(
