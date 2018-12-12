@@ -28,6 +28,7 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -324,6 +325,10 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                 String formatterId = formatter.getId();
                 int prefixLength = formatterId.length() + 1;
                 for (Entry<String, String> entry : m_parameterMap.entrySet()) {
+                    if (CmsContainerElement.ELEMENT_INSTANCE_ID.equals(entry.getKey())) {
+                        // remove any instance id to make sure to generate a unique one
+                        continue;
+                    }
                     if (entry.getKey().startsWith(formatterId)) {
                         settings.put(entry.getKey().substring(prefixLength), entry.getValue());
                     } else if (!settings.containsKey(entry.getKey())) {
