@@ -68,12 +68,21 @@ public class CmsXmlContentProperty implements Serializable {
 
     /** The property visibility options. */
     public enum Visibility {
-        /** Visible in both element and parent. */
-        both,
-        /** Visible in element. */
+
+        /** Visible only on the element. */
         element,
-        /** Visible in parent. */
-        parent
+
+        /** Visible in both element and list parent as an individual setting. */
+        elementAndParentIndividual,
+
+        /** Visible in both element and list parent as a shared setting. */
+        elementAndParentShared,
+
+        /** Visible only on list parent, as individual setting. */
+        parentIndividual,
+
+        /** Visible only on list parent, as shared setting. */
+        parentShared
     }
 
     /** XML node name constants. */

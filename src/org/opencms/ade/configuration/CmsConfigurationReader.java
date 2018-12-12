@@ -322,6 +322,12 @@ public class CmsConfigurationReader {
         Visibility visibility;
         String visibilityStr = getString(cms, field.getSubValue(N_VISIBILITY));
         try {
+            // to stay compatible with former visibility option values
+            if ("both".equals(visibilityStr)) {
+                visibilityStr = Visibility.elementAndParentIndividual.name();
+            } else if ("parent".equals(visibilityStr)) {
+                visibilityStr = Visibility.parentShared.name();
+            }
             visibility = Visibility.valueOf(visibilityStr);
         } catch (Exception e) {
             visibility = null;

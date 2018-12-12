@@ -609,10 +609,11 @@ public class CmsADEManager {
         ServletRequest req) {
 
         Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
-        Visibility defaultVisibility = Visibility.both;
+        Visibility defaultVisibility = Visibility.elementAndParentIndividual;
         if (mainFormatter != null) {
             for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings().entrySet()) {
-                if (!entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
+                Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
+                if (!(visibility.equals(Visibility.parentShared) || visibility.equals(Visibility.parentIndividual))) {
                     result.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -621,13 +622,20 @@ public class CmsADEManager {
                 if (nestedFormatters != null) {
                     for (I_CmsFormatterBean formatter : nestedFormatters) {
                         for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
-                            if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.parent)) {
-                                result.put(entry.getKey(), entry.getValue());
-                            } else if (entry.getValue().getVisibility(defaultVisibility).equals(Visibility.both)) {
-                                String settingName = formatter.getId() + "_" + entry.getKey();
-                                CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
-
-                                result.put(settingName, settingConf);
+                            Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
+                            switch (visibility) {
+                                case parentShared:
+                                case elementAndParentShared:
+                                    result.put(entry.getKey(), entry.getValue());
+                                    break;
+                                case elementAndParentIndividual:
+                                case parentIndividual:
+                                    String settingName = formatter.getId() + "_" + entry.getKey();
+                                    CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
+                                    result.put(settingName, settingConf);
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     }
