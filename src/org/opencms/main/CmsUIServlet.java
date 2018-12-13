@@ -336,14 +336,19 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
                 // can be ignored
                 LOG.error(e.getLocalizedMessage(), e);
             }
-        } catch (Throwable t) {
-            // error code not set - set "internal server error" (500)
-            if (t instanceof IOException) {
-                // probably connection aborted by client, no need to write to the ERROR channel
-                LOG.warn(t.getLocalizedMessage(), t);
-            } else {
-                LOG.error(t.getLocalizedMessage(), t);
+        } catch (IOException io) {
+            // probably connection aborted by client, no need to write to the ERROR channel
+            LOG.warn(io.getLocalizedMessage(), io);
+            // try so set status and send error in any case
+            int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            response.setStatus(status);
+            try {
+                response.sendError(status, io.toString());
+            } catch (IOException e) {
+                // can be ignored
             }
+        } catch (Throwable t) {
+            LOG.error(t.getLocalizedMessage(), t);
             int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             response.setStatus(status);
             try {
