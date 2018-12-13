@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
 import org.apache.solr.common.params.CommonParams;
 
 /**
@@ -96,6 +97,9 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
          */
         SolrSpell
     }
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(OpenCmsSolrHandler.class);
 
     /** A constant for the optional 'baseUri' parameter. */
     public static final String PARAM_BASE_URI = "baseUri";
@@ -165,11 +169,13 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
                     }
                 }
             } catch (Exception e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-                String message = Messages.get().getBundle().key(Messages.GUI_SOLR_UNEXPECTED_ERROR_0);
-                String formattedException = CmsException.getStackTraceAsString(e).replace("\n", "<br/>");
+                String formattedException = CmsStringUtil.escapeHtml(e.getLocalizedMessage());
                 res.getWriter().println(
-                    Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message + formattedException));
+                    Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, formattedException));
             }
         }
     }
