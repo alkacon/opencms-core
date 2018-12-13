@@ -91,6 +91,18 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_3 = "LOG_SOLR_ERR_MAPPING_TO_INTERNALLY_USED_FIELD_3";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HANDLER_REQUEST_NOT_ALLOWED_0 = "GUI_HANDLER_REQUEST_NOT_ALLOWED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HANDLER_REQUESTED_FIELD_NOT_ALLOWED_2 = "GUI_HANDLER_REQUESTED_FIELD_NOT_ALLOWED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HANDLER_TOO_MANY_RESULTS_REQUESTED_AT_ALL_2 = "GUI_HANDLER_TOO_MANY_RESULTS_REQUESTED_AT_ALL_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HANDLER_TOO_MANY_RESULTS_REQUESTED_PER_PAGE_2 = "GUI_HANDLER_TOO_MANY_RESULTS_REQUESTED_PER_PAGE_2";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.search.solr.messages";
 

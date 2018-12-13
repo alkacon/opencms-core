@@ -33,6 +33,7 @@ package org.opencms.search.solr;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -62,6 +63,7 @@ import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -74,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletResponse;
 
@@ -126,6 +129,23 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** Constant for additional parameter to set the post processor class name. */
     public static final String POST_PROCESSOR = "search.solr.postProcessor";
 
+    /** Constant for additional parameter to set the fields the select handler should return at maximum. */
+    public static final String SOLR_HANDLER_ALLOWED_FIELDS = "handle.solr.allowedFields";
+
+    /** Constant for additional parameter to set the number results the select handler should return at maxium per request. */
+    public static final String SOLR_HANDLER_MAX_ALLOWED_RESULTS_PER_PAGE = "handle.solr.maxAllowedResultsPerPage";
+
+    /** Constant for additional parameter to set the maximal number of a result, the select handler should return. */
+    public static final String SOLR_HANDLER_MAX_ALLOWED_RESULTS_AT_ALL = "handle.solr.maxAllowedResultsAtAll";
+
+    /** Constant for additional parameter to disable the select handler (except for debug mode). */
+    private static final String SOLR_HANDLER_DISABLE_SELECT = "handle.solr.disableSelectHandler";
+
+    /** Constant for additional parameter to set the VFS path to the file holding the debug secret. */
+    private static final String SOLR_HANDLER_DEBUG_SECRET_FILE = "handle.solr.debugSecretFile";
+
+    /** Constant for additional parameter to disable the spell handler (except for debug mode). */
+    private static final String SOLR_HANDLER_DISABLE_SPELL = "handle.solr.disableSpellHandler";
     /** The solr exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR = "solr";
 
@@ -171,6 +191,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** A constant for UTF-8 charset. */
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
+    /** The name of the request parameter holding the debug secret. */
+    private static final String REQUEST_PARAM_DEBUG_SECRET = "_debug";
+
     /** The embedded Solr client for this index. */
     transient SolrClient m_solr;
 
@@ -179,6 +202,24 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** The core name for the index. */
     private transient String m_coreName;
+
+    /** The list of allowed fields to return */
+    private String[] m_handlerAllowedFields;
+
+    /** The number of maximally allowed results per page when using the handler. */
+    private int m_handlerMaxAllowedResultsPerPage = -1;
+
+    /** The number of maximally allowed results at all when using the handler. */
+    private int m_handlerMaxAllowedResultsAtAll = -1;
+
+    /** Flag, indicating if the handler only works in debug mode. */
+    private boolean m_handlerSelectDisabled;
+
+    /** Path to the secret file. Must be under /system/.../ or /shared/.../ and readable by all users that should be able to debug. */
+    private String m_handlerDebugSecretFile;
+
+    /** Flag, indicating if the spellcheck handler is disabled for the index. */
+    private boolean m_handlerSpellDisabled;
 
     /**
      * Default constructor.<p>
@@ -228,19 +269,71 @@ public class CmsSolrIndex extends CmsSearchIndex {
     @Override
     public void addConfigurationParameter(String key, String value) {
 
-        if (POST_PROCESSOR.equals(key)) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-                try {
-                    setPostProcessor((I_CmsSolrPostSearchProcessor)Class.forName(value).newInstance());
-                } catch (Exception e) {
-                    CmsException ex = new CmsException(
-                        Messages.get().container(Messages.LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1, value),
-                        e);
-                    LOG.error(ex.getMessage(), ex);
+        switch (key) {
+            case POST_PROCESSOR:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    try {
+                        setPostProcessor((I_CmsSolrPostSearchProcessor)Class.forName(value).newInstance());
+                    } catch (Exception e) {
+                        CmsException ex = new CmsException(
+                            Messages.get().container(Messages.LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1, value),
+                            e);
+                        LOG.error(ex.getMessage(), ex);
+                    }
                 }
-            }
+                break;
+            case SOLR_HANDLER_ALLOWED_FIELDS:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    m_handlerAllowedFields = Stream.of(value.split(",")).map(v -> v.trim()).toArray(String[]::new);
+                }
+                break;
+            case SOLR_HANDLER_MAX_ALLOWED_RESULTS_PER_PAGE:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    try {
+                        m_handlerMaxAllowedResultsPerPage = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        LOG.warn(
+                            "Could not parse parameter \""
+                                + SOLR_HANDLER_MAX_ALLOWED_RESULTS_PER_PAGE
+                                + "\" for index \""
+                                + getName()
+                                + "\". Results per page will not be restricted.");
+                    }
+                }
+                break;
+            case SOLR_HANDLER_MAX_ALLOWED_RESULTS_AT_ALL:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    try {
+                        m_handlerMaxAllowedResultsAtAll = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        LOG.warn(
+                            "Could not parse parameter \""
+                                + SOLR_HANDLER_MAX_ALLOWED_RESULTS_AT_ALL
+                                + "\" for index \""
+                                + getName()
+                                + "\". Results per page will not be restricted.");
+                    }
+                }
+                break;
+            case SOLR_HANDLER_DISABLE_SELECT:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    m_handlerSelectDisabled = value.trim().toLowerCase().equals("true");
+                }
+                break;
+            case SOLR_HANDLER_DEBUG_SECRET_FILE:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    m_handlerDebugSecretFile = value.trim();
+                }
+                break;
+            case SOLR_HANDLER_DISABLE_SPELL:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    m_handlerSpellDisabled = value.trim().toLowerCase().equals("true");
+                }
+                break;
+            default:
+                super.addConfigurationParameter(key, value);
+                break;
         }
-        super.addConfigurationParameter(key, value);
     }
 
     /**
@@ -949,6 +1042,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
     throws Exception {
 
+        throwExceptionIfSafetyRestrictionsAreViolated(cms, query, false);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         CmsResourceFilter filter = isOnline ? null : CmsResourceFilter.IGNORE_EXPIRATION;
 
@@ -1000,6 +1094,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      */
     public void spellCheck(ServletResponse res, CmsObject cms, CmsSolrQuery q) throws CmsSearchException {
 
+        throwExceptionIfSafetyRestrictionsAreViolated(cms, q, true);
         SolrCore core = null;
         LocalSolrQueryRequest solrQueryRequest = null;
         try {
@@ -1135,6 +1230,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      *
      * @return <code>true</code> if the given resource should be indexed or <code>false</code> if not
      */
+    @Override
     protected boolean isIndexing(CmsResource res) {
 
         if ((res != null) && (getSources() != null)) {
@@ -1189,6 +1285,92 @@ public class CmsSolrIndex extends CmsSearchIndex {
             return name.replace(" ", "-");
         }
         return null;
+    }
+
+    /**
+     * Checks if the query should be executed using the debug mode where the security restrictions do not apply.
+     * @param cms the current context.
+     * @param query the query to execute.
+     * @return a flag, indicating, if the query should be performed in debug mode.
+     */
+    private boolean isDebug(CmsObject cms, CmsSolrQuery query) {
+
+        String[] debugSecretValues = query.remove(REQUEST_PARAM_DEBUG_SECRET);
+        String debugSecret = (debugSecretValues == null) || (debugSecretValues.length < 1)
+        ? null
+        : debugSecretValues[0];
+        if ((null != debugSecret) && !debugSecret.trim().isEmpty() && (null != m_handlerDebugSecretFile)) {
+            try {
+                CmsFile secretFile = cms.readFile(m_handlerDebugSecretFile);
+                String secret = new String(secretFile.getContents(), CmsFileUtil.getEncoding(cms, secretFile));
+                return secret.trim().equals(debugSecret.trim());
+            } catch (Exception e) {
+                LOG.info(
+                    "Failed to read secret file for index \""
+                        + getName()
+                        + "\" at path \""
+                        + m_handlerDebugSecretFile
+                        + "\".");
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Throws an exception if the request can for security reasons not be performed.
+     * Security restrictions can be set via parameters of the index.
+     *
+     * @param cms the current context.
+     * @param query the query.
+     * @param isSpell flag, indicating if the spellcheck handler is requested.
+     * @throws CmsSearchException thrown if the query cannot be executed due to security reasons.
+     */
+    private void throwExceptionIfSafetyRestrictionsAreViolated(CmsObject cms, CmsSolrQuery query, boolean isSpell)
+    throws CmsSearchException {
+
+        if (!isDebug(cms, query)) {
+            if (isSpell) {
+                if (m_handlerSpellDisabled) {
+                    throw new CmsSearchException(Messages.get().container(Messages.GUI_HANDLER_REQUEST_NOT_ALLOWED_0));
+                }
+            } else {
+                if (m_handlerSelectDisabled) {
+                    throw new CmsSearchException(Messages.get().container(Messages.GUI_HANDLER_REQUEST_NOT_ALLOWED_0));
+                }
+                int start = null != query.getStart() ? query.getStart().intValue() : 0;
+                int rows = null != query.getRows() ? query.getRows().intValue() : CmsSolrQuery.DEFAULT_ROWS.intValue();
+                if ((m_handlerMaxAllowedResultsAtAll >= 0) && ((rows + start) > m_handlerMaxAllowedResultsAtAll)) {
+                    throw new CmsSearchException(
+                        Messages.get().container(
+                            Messages.GUI_HANDLER_TOO_MANY_RESULTS_REQUESTED_AT_ALL_2,
+                            Integer.valueOf(m_handlerMaxAllowedResultsAtAll),
+                            Integer.valueOf(rows + start)));
+                }
+                if ((m_handlerMaxAllowedResultsPerPage >= 0) && (rows > m_handlerMaxAllowedResultsPerPage)) {
+                    throw new CmsSearchException(
+                        Messages.get().container(
+                            Messages.GUI_HANDLER_TOO_MANY_RESULTS_REQUESTED_PER_PAGE_2,
+                            Integer.valueOf(m_handlerMaxAllowedResultsPerPage),
+                            Integer.valueOf(rows)));
+                }
+                if ((null != m_handlerAllowedFields) && (Stream.of(m_handlerAllowedFields).anyMatch(x -> true))) {
+                    if (query.getFields().equals(CmsSolrQuery.ALL_RETURN_FIELDS)) {
+                        query.setFields(m_handlerAllowedFields);
+                    } else {
+                        for (String requestedField : query.getFields().split(",")) {
+                            if (Stream.of(m_handlerAllowedFields).noneMatch(
+                                allowedField -> allowedField.equals(requestedField))) {
+                                throw new CmsSearchException(
+                                    Messages.get().container(
+                                        Messages.GUI_HANDLER_REQUESTED_FIELD_NOT_ALLOWED_2,
+                                        requestedField,
+                                        Stream.of(m_handlerAllowedFields).reduce("", (a, b) -> a + "," + b)));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
