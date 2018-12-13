@@ -466,7 +466,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
         if (m_secureServer != null) {
             return m_secureServer.getUrl();
         } else {
-            LOG.error(Messages.get().getBundle().key(Messages.ERR_SECURESERVER_MISSING_1, toString()));
+            LOG.warn(Messages.get().getBundle().key(Messages.ERR_SECURESERVER_MISSING_1, toString()));
             return getUrl();
         }
     }
