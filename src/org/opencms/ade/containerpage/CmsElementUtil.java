@@ -629,7 +629,7 @@ public class CmsElementUtil {
                             m_locale,
                             m_req);
                         if ((nestedFormatters != null) && !nestedFormatters.isEmpty()) {
-                            Map<String, String> settingPrefixes = new HashMap<String, String>();
+                            Map<String, String> settingPrefixes = new LinkedHashMap<String, String>();
                             for (I_CmsFormatterBean nested : nestedFormatters) {
                                 settingPrefixes.put(
                                     nested.getId(),
