@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -111,7 +110,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     private String m_name;
 
     /** Additional setting configurations. */
-    private volatile Map<CmsUUID, Map<String, CmsXmlContentProperty>> m_settingConfigs;
+    private volatile Map<CmsUUID, List<CmsXmlContentProperty>> m_settingConfigs;
 
     /** The current data contained in the formatter cache.<p> This field is reassigned when formatters are changed, but the objects pointed to by this  field are immutable.<p> **/
     private volatile CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
@@ -242,7 +241,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
-        Map<CmsUUID, Map<String, CmsXmlContentProperty>> settingConfigs = new HashMap<>();
+        Map<CmsUUID, List<CmsXmlContentProperty>> settingConfigs = new HashMap<>();
         for (CmsResource resource : settingConfigResources) {
             parseSettingsConfig(resource, settingConfigs);
         }
@@ -405,11 +404,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
      * @param resource the resource to parse
      * @param settingConfigs the map in which the result should be stored, with the structure id of the resource as the key
      */
-    private void parseSettingsConfig(
-        CmsResource resource,
-        Map<CmsUUID, Map<String, CmsXmlContentProperty>> settingConfigs) {
+    private void parseSettingsConfig(CmsResource resource, Map<CmsUUID, List<CmsXmlContentProperty>> settingConfigs) {
 
-        Map<String, CmsXmlContentProperty> settingConfig = new LinkedHashMap<>();
+        List<CmsXmlContentProperty> settingConfig = new ArrayList<>();
 
         try {
             CmsFile settingFile = m_cms.readFile(resource);
@@ -419,7 +416,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
                 CmsXmlContentProperty setting = CmsConfigurationReader.parseProperty(
                     m_cms,
                     settingLoc).getPropertyData();
-                settingConfig.put(setting.getName(), setting);
+                settingConfig.add(setting);
             }
             settingConfigs.put(resource.getStructureId(), settingConfig);
         } catch (Exception e) {

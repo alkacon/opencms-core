@@ -39,7 +39,6 @@ import org.opencms.jsp.util.CmsFunctionRenderer;
 import org.opencms.jsp.util.CmsMacroFormatterResolver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
@@ -243,7 +242,7 @@ public class CmsFormatterBeanParser {
     int m_width;
 
     /** Additional setting configurations for includes. */
-    private Map<CmsUUID, Map<String, CmsXmlContentProperty>> m_additionalSettingConfigs = new HashMap<>();
+    private Map<CmsUUID, List<CmsXmlContentProperty>> m_additionalSettingConfigs = new HashMap<>();
 
     /** Parsed field. */
     private boolean m_autoEnabled;
@@ -287,8 +286,11 @@ public class CmsFormatterBeanParser {
     /** Parsed field. */
     private Set<String> m_resourceType;
 
-    /** Parsed field. */
-    private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
+    /** Setting configurations read from content. **/
+    private List<CmsXmlContentProperty> m_settingList = new ArrayList<>();
+
+    /** Settings merged with included settings. */
+    private Map<String, CmsXmlContentProperty> m_settings = new HashMap<>();
 
     /**
      * Creates a new parser instance.<p>
@@ -298,7 +300,7 @@ public class CmsFormatterBeanParser {
      * @param cms the CMS context to use for parsing
      * @param settingConfigs the additional setting configurations used for includes
      */
-    public CmsFormatterBeanParser(CmsObject cms, Map<CmsUUID, Map<String, CmsXmlContentProperty>> settingConfigs) {
+    public CmsFormatterBeanParser(CmsObject cms, Map<CmsUUID, List<CmsXmlContentProperty>> settingConfigs) {
 
         m_cms = cms;
         m_additionalSettingConfigs = settingConfigs;
@@ -331,6 +333,7 @@ public class CmsFormatterBeanParser {
     public I_CmsFormatterBean parse(CmsXmlContent content, String location, String id)
     throws CmsException, ParseException {
 
+        String path = content.getFile().getRootPath();
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(content.getFile());
         boolean isMacroFromatter = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(type.getTypeName());
         boolean isFlexFormatter = CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(type.getTypeName());
@@ -362,14 +365,24 @@ public class CmsFormatterBeanParser {
         parseSettings(root);
         List<I_CmsXmlContentValue> settingIncludes = content.getValues(N_INCLUDE_SETTINGS, en);
         settingIncludes = Lists.reverse(settingIncludes); // make defaults from earlier include files 'win' when merging them into a map
-        Map<String, CmsXmlContentProperty> combinedIncludedSettings = new HashMap<>();
+        Map<String, CmsXmlContentProperty> includesByIncludeName = new HashMap<>();
         for (I_CmsXmlContentValue settingInclude : settingIncludes) {
             try {
                 CmsXmlVfsFileValue includeFileVal = (CmsXmlVfsFileValue)settingInclude;
                 CmsUUID includeSettingsId = includeFileVal.getLink(m_cms).getStructureId();
-                Map<String, CmsXmlContentProperty> includedSettings = m_additionalSettingConfigs.get(includeSettingsId);
-                if (includedSettings != null) {
-                    combinedIncludedSettings.putAll(includedSettings);
+                List<CmsXmlContentProperty> includedSettings = m_additionalSettingConfigs.get(includeSettingsId);
+                if (includedSettings == null) {
+                    continue;
+                }
+                for (CmsXmlContentProperty prop : includedSettings) {
+                    String includeName = prop.getIncludeName(prop.getName());
+                    if (includeName != null) {
+                        CmsXmlContentProperty existingProp = includesByIncludeName.get(includeName);
+                        if (existingProp != null) {
+                            LOG.warn("Conflict with included setting configuration: " + path);
+                        }
+                        includesByIncludeName.put(includeName, prop);
+                    }
                 }
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -377,15 +390,23 @@ public class CmsFormatterBeanParser {
         }
 
         Map<String, CmsXmlContentProperty> mergedSettings = new LinkedHashMap<>();
-        for (Map.Entry<String, CmsXmlContentProperty> entry : m_settings.entrySet()) {
-            CmsXmlContentProperty setting = entry.getValue();
+
+        for (CmsXmlContentProperty setting : m_settingList) {
             String includeName = setting.getIncludeName(setting.getName());
-            CmsXmlContentProperty defaultSetting = combinedIncludedSettings.get(includeName);
+            if (includeName == null) {
+                LOG.warn("Neither name nor include name given in setting definition in " + path);
+                continue;
+            }
+            CmsXmlContentProperty defaultSetting = includesByIncludeName.get(includeName);
             CmsXmlContentProperty mergedSetting;
             if (defaultSetting != null) {
-                mergedSetting = entry.getValue().mergeDefaults(defaultSetting);
+                mergedSetting = setting.mergeDefaults(defaultSetting);
             } else {
-                mergedSetting = entry.getValue();
+                mergedSetting = setting;
+            }
+            if (mergedSetting.getName() == null) {
+                LOG.warn("Invalid setting without name in " + path);
+                continue;
             }
             mergedSettings.put(mergedSetting.getName(), mergedSetting);
         }
@@ -515,8 +536,8 @@ public class CmsFormatterBeanParser {
 
             if (jspID == null) {
                 throw new CmsConfigurationException(
-                    Messages.get().container(
-                        Messages.ERR_READ_FORMATTER_CONFIG_4,
+                    org.opencms.main.Messages.get().container(
+                        org.opencms.main.Messages.ERR_READ_FORMATTER_CONFIG_4,
                         new Object[] {
                             link != null ? link.getUri() : " ??? ",
                             m_niceName,
@@ -781,7 +802,7 @@ public class CmsFormatterBeanParser {
         for (I_CmsXmlContentValueLocation settingLoc : formatterLoc.getSubValues(N_SETTING)) {
             CmsPropertyConfig propConfig = CmsConfigurationReader.parseProperty(m_cms, settingLoc);
             CmsXmlContentProperty property = propConfig.getPropertyData();
-            m_settings.put(property.getName(), property);
+            m_settingList.add(property);
         }
     }
 

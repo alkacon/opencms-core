@@ -45,10 +45,10 @@ public class CmsXmlContentProperty implements Serializable {
 
     /** Type constants. */
     public enum PropType {
-        /** Type constant string. */
-        string,
-        /** Type constant VFS list. */
-        vfslist;
+    /** Type constant string. */
+    string,
+    /** Type constant VFS list. */
+    vfslist;
 
         /**
          * Checks if the given type is {@link #vfslist}.<p>
@@ -482,7 +482,7 @@ public class CmsXmlContentProperty implements Serializable {
     public CmsXmlContentProperty mergeDefaults(CmsXmlContentProperty defaults) {
 
         return new CmsXmlContentProperty(
-            m_name,
+            firstNotNull(m_name, defaults.m_name),
             firstNotNull(m_type, defaults.m_type),
             firstNotNull(m_visibility, defaults.m_visibility),
             firstNotNull(m_widget, defaults.m_widget),

@@ -12,7 +12,7 @@
     
     <xsd:complexType name="OpenCmsFormatterSetting">
         <xsd:sequence>    
-            <xsd:element name="PropertyName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="PropertyName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="IncludeName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DisplayName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
