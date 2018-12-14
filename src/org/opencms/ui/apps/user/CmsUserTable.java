@@ -87,30 +87,30 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
     /**Table properties. */
     public enum TableProperty {
-    /**Last login. */
-    Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
-    /**Is the user disabled? */
-    DISABLED("", Boolean.class, new Boolean(false)),
-    /**From Other ou?. */
-    FROMOTHEROU("", Boolean.class, new Boolean(false)),
-    /**Description. */
-    FullName(Messages.GUI_USERMANAGEMENT_USER_NAME_0, String.class, ""),
-    /**Icon. */
-    Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-user")),
-    /**IsIndirect?. */
-    INDIRECT("", Boolean.class, new Boolean(false)),
-    /**Last login. */
-    LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
-    /**Name. */
-    Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
-    /**Is the user new? */
-    NEWUSER("", Boolean.class, new Boolean(false)),
-    /**OU. */
-    OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
-    /**Status. */
-    STATUS("", Integer.class, new Integer(0)),
-    /**Full system Name. */
-    SystemName("", String.class, "");
+        /**Last login. */
+        Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
+        /**Is the user disabled? */
+        DISABLED("", Boolean.class, new Boolean(false)),
+        /**From Other ou?. */
+        FROMOTHEROU("", Boolean.class, new Boolean(false)),
+        /**Description. */
+        FullName(Messages.GUI_USERMANAGEMENT_USER_NAME_0, String.class, ""),
+        /**Icon. */
+        Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-user")),
+        /**IsIndirect?. */
+        INDIRECT("", Boolean.class, new Boolean(false)),
+        /**Last login. */
+        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
+        /**Name. */
+        Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
+        /**Is the user new? */
+        NEWUSER("", Boolean.class, new Boolean(false)),
+        /**OU. */
+        OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
+        /**Status. */
+        STATUS("", Integer.class, new Integer(0)),
+        /**Full system Name. */
+        SystemName("", String.class, "");
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -792,10 +792,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (context.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-            }
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            return CmsMenuItemVisibilityMode.activeInactive(
+                onlyVisibleForOU(new CmsUUID(context.iterator().next())) && (context.size() <= 1));
         }
 
     }
@@ -1251,7 +1249,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     protected CmsMenuItemVisibilityMode onlyVisibleForOU(Set<String> context) {
 
         for (String id : context) {
-            if (onlyVisibleForOU(new CmsUUID(id))) {
+            if (!onlyVisibleForOU(new CmsUUID(id))) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
         }
