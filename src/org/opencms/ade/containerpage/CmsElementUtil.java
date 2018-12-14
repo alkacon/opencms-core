@@ -859,35 +859,6 @@ public class CmsElementUtil {
     }
 
     /**
-     * Checks if the maximum nesting level is reached for the given container.<p>
-     *
-     * @param container the container
-     * @param containers the other containers of the container page
-     *
-     * @return <code>true</code> if further nesting is allowed
-     */
-    private boolean checkContainerTreeLevel(CmsContainer container, Collection<CmsContainer> containers) {
-
-        Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
-        for (CmsContainer cnt : containers) {
-            containersByName.put(cnt.getName(), cnt);
-        }
-        int level = 0;
-        String parentName = container.getParentContainerName();
-        while (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentName)) {
-            level++;
-            parentName = containersByName.containsKey(parentName)
-            ? containersByName.get(parentName).getParentContainerName()
-            : null;
-        }
-        boolean result = MAX_NESTING_LEVEL > level;
-        if (!result && LOG.isWarnEnabled()) {
-            LOG.warn("Max container nesting exceeded for " + container.getName() + ": " + level);
-        }
-        return result;
-    }
-
-    /**
      * Returns the base element data for the given element bean, without content or formatter info.<p>
      *
      * @param page the current container page
