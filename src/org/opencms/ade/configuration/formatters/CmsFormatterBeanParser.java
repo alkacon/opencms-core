@@ -416,7 +416,7 @@ public class CmsFormatterBeanParser {
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
         String displayType = getString(root, N_DISPLAY, null);
-        if ("false".equals(displayType)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayType) || "false".equals(displayType)) {
             displayType = null;
         }
 
