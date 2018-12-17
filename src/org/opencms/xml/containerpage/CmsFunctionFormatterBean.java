@@ -116,8 +116,8 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             settings,
             true, //isFromConfigFile
             true, // isAutoEnabled
-            false, // isDetail
-            false, // isDisplay
+            false, // detailType
+            null, // isDisplay
             isAllowsSettingsInEditor,
             isStrictContainers,
             false, // nestedFormatterSettings

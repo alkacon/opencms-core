@@ -116,6 +116,14 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getDisplayType()
+     */
+    public String getDisplayType() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getId()
      */
     public String getId() {

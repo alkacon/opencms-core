@@ -82,7 +82,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
      * @param settings the settings configuration
      * @param isDetail <code>true</code> if detail formatter
      * @param isAutoEnabled <code>true</code> if auto enabled
-     * @param isDisplay the display flag
+     * @param displayType the display type
      * @param isAllowsSettingsInEditor whether this formatter allows settings to be edited in the content editor
      * @param macroInput the macro input
      * @param placeholderMacroInput the placeholder macro input
@@ -109,7 +109,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
         Map<String, CmsXmlContentProperty> settings,
         boolean isAutoEnabled,
         boolean isDetail,
-        boolean isDisplay,
+        String displayType,
         boolean isAllowsSettingsInEditor,
         String macroInput,
         String placeholderMacroInput,
@@ -140,7 +140,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             true,
             isAutoEnabled,
             isDetail,
-            isDisplay,
+            displayType,
             isAllowsSettingsInEditor,
             false,
             false,

@@ -32,13 +32,19 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 
 import java.util.ArrayList;
@@ -78,6 +84,9 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
      */
     class FormatterOption {
 
+        /** the display type. */
+        String m_displayType;
+
         /** The option key. */
         String m_key;
 
@@ -95,17 +104,22 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
          *
          * @param key the option key
          * @param typeName the type name
+         * @param displayType the display type
          * @param label the option label
          * @param rank the formatter rank
          */
-        FormatterOption(String key, String typeName, String label, int rank) {
+        FormatterOption(String key, String typeName, String displayType, String label, int rank) {
 
             m_key = key;
             m_typeName = typeName;
+            m_displayType = displayType;
             m_label = label;
             m_rank = rank;
         }
     }
+
+    /** The match display types key. */
+    public static final String MATCH_TYPES_KEY = "matchTypes";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDisplayTypeSelectWidget.class);
@@ -113,7 +127,13 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
     /** The display types split regex. */
     private static final String TYPES_SPLITTER = " *, *";
 
-    /** The widget configuration. */
+    /** The display container type configuration. */
+    private String m_displayContainerTypeConfig;
+
+    /** Flag indicating display types should be matched. */
+    private boolean m_matchTypes;
+
+    /** The configuration String. */
     private String m_config;
 
     /**
@@ -123,6 +143,57 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
     public String getConfiguration() {
 
         return m_config;
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
+     */
+    @Override
+    public String getConfiguration(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource,
+        Locale contentLocale) {
+
+        List<FormatterOption> options = getFormatterOptions(cms, resource);
+        JSONObject config = new JSONObject();
+        try {
+            String path;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(schemaType.getPath())) {
+                path = CmsStringUtil.joinPaths(schemaType.getPath(), schemaType.getName());
+            } else {
+                path = schemaType.getName();
+            }
+
+            config.put("valuePath", path);
+            config.put("matchTypes", m_matchTypes);
+            JSONArray optionArray = new JSONArray();
+            for (FormatterOption option : options) {
+                JSONObject opt = new JSONObject();
+                try {
+                    opt.put("value", option.m_key);
+                    opt.put("label", option.m_label);
+                    opt.put("displayType", option.m_displayType);
+                    optionArray.put(opt);
+                } catch (JSONException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            config.put("options", optionArray);
+        } catch (JSONException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return config.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.CmsSelectWidget#getWidgetName()
+     */
+    @Override
+    public String getWidgetName() {
+
+        return CmsDisplayTypeSelectWidget.class.getName();
     }
 
     /**
@@ -141,6 +212,17 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
     public void setConfiguration(String configuration) {
 
         m_config = configuration;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            String[] conf = configuration.split("\\|");
+            for (int i = 0; i < conf.length; i++) {
+                if (MATCH_TYPES_KEY.equals(conf[i])) {
+                    m_matchTypes = true;
+                } else {
+                    m_displayContainerTypeConfig = conf[i];
+                }
+
+            }
+        }
     }
 
     /**
@@ -152,21 +234,59 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsResource resource = null;
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        try {
+            if (widgetDialog instanceof CmsDummyWidgetDialog) {
+                resource = ((CmsDummyWidgetDialog)widgetDialog).getResource();
+            } else if (widgetDialog instanceof CmsDialog) {
+                String sitePath = ((CmsDialog)widgetDialog).getParamResource();
+                if (sitePath != null) {
+
+                    resource = cms.readResource(sitePath);
+
+                }
+            }
+            for (FormatterOption option : getFormatterOptions(cms, resource)) {
+                result.add(new CmsSelectWidgetOption(option.m_key, false, option.m_label));
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
+    }
+
+    /**
+     * Evaluates the display type of the given formatter.<p>
+     *
+     * @param formatter the formatter configuration bean
+     *
+     * @return the display type
+     */
+    private String getDisplayType(I_CmsFormatterBean formatter) {
+
+        return formatter.getDisplayType();
+    }
+
+    /**
+     * Returns the available formatter options.<p>
+     *
+     * @param cms the cms context
+     * @param resource the edited resource
+     *
+     * @return the formatter options
+     */
+    private List<FormatterOption> getFormatterOptions(CmsObject cms, CmsResource resource) {
+
         List<FormatterOption> options = new ArrayList<FormatterOption>();
-        String resourcePath = getResourcePath(cms, widgetDialog);
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(resourcePath);
-
         Set<String> containerTypes = new HashSet<>();
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_config)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_displayContainerTypeConfig)) {
             String types = null;
 
-            if (CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES.equals(m_config)) {
+            if (CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES.equals(m_displayContainerTypeConfig)) {
                 try {
                     CmsProperty prop = cms.readPropertyObject(
-                        resourceSitePath,
+                        resource,
                         CmsPropertyDefinition.PROPERTY_TEMPLATE_DISPLAY_TYPES,
                         true);
                     String propValue = prop.getValue();
@@ -175,7 +295,6 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                     } else {
                         // look up template property
                         try {
-                            CmsResource resource = cms.readResource(resourceSitePath);
                             CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
                                 cms,
                                 null,
@@ -200,14 +319,16 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                     LOG.warn(e.getLocalizedMessage(), e);
                 }
             } else {
-                types = m_config;
+                types = m_displayContainerTypeConfig;
             }
             if (types != null) {
                 containerTypes.addAll(Arrays.asList(types.split(TYPES_SPLITTER)));
             }
         }
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resourcePath);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+
         if (config != null) {
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
                 if (!containerTypes.isEmpty()) {
                     if (Sets.intersection(containerTypes, formatter.getContainerTypes()).isEmpty()) {
@@ -223,15 +344,13 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                         new FormatterOption(
                             typeName + CmsXmlDisplayFormatterValue.SEPARATOR + formatter.getId(),
                             typeName,
+                            getDisplayType(formatter),
                             label,
                             formatter.getRank()));
                 }
             }
         }
         Collections.sort(options, new FormatterComparator());
-        for (FormatterOption option : options) {
-            result.add(new CmsSelectWidgetOption(option.m_key, false, option.m_label));
-        }
-        return result;
+        return options;
     }
 }

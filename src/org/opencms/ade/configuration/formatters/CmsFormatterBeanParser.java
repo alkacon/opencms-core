@@ -415,8 +415,10 @@ public class CmsFormatterBeanParser {
         String isDetailStr = getString(root, N_DETAIL, "false");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
-        String isDisplayStr = getString(root, N_DISPLAY, "false");
-        boolean isDisplay = Boolean.parseBoolean(isDisplayStr);
+        String displayType = getString(root, N_DISPLAY, null);
+        if ("false".equals(displayType)) {
+            displayType = null;
+        }
 
         String isAllowSettingsStr = getString(root, N_ALLOWS_SETTINGS_IN_EDITOR, "false");
         boolean isAllowSettings = Boolean.parseBoolean(isAllowSettingsStr);
@@ -479,7 +481,7 @@ public class CmsFormatterBeanParser {
                     m_settings,
                     m_autoEnabled,
                     isDetail,
-                    isDisplay,
+                    displayType,
                     isAllowSettings,
                     macroInput,
                     placeholderMacroInput,
@@ -508,7 +510,7 @@ public class CmsFormatterBeanParser {
                     m_settings,
                     m_autoEnabled,
                     isDetail,
-                    isDisplay,
+                    displayType,
                     isAllowSettings,
                     stringTemplate,
                     placeholder,
@@ -598,7 +600,7 @@ public class CmsFormatterBeanParser {
                     true,
                     m_autoEnabled,
                     isDetail,
-                    isDisplay,
+                    displayType,
                     isAllowSettings,
                     isStrictContainers,
                     nestedFormatters,

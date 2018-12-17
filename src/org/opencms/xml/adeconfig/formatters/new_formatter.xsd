@@ -29,7 +29,7 @@
             <xsd:element name="AlwaysApplyMetaMappings" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="NestedFormatterSettings" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="AllowsSettingsInEditor" type="OpenCmsBoolean" minOccurs="0" />
-            <xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0"/>
+            <xsd:element name="Display" type="OpenCmsString" minOccurs="0"/>
             <xsd:element name="Preview" type="OpenCmsBoolean" minOccurs="0"/>                    	
 
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>

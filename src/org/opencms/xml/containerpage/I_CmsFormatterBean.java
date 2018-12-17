@@ -70,6 +70,13 @@ public interface I_CmsFormatterBean {
     String getDescription(Locale locale);
 
     /**
+     * The display type of this formatter or <code>null</code> in case this is not a display formatter.<p>
+     *
+     * @return the display type
+     */
+    String getDisplayType();
+
+    /**
      * Returns the id of this formatter.<p>
      *
      * This method may return null because the id is not always defined for formatters, e.g. for those formatters declared in a schema.<p>
