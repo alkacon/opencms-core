@@ -81,6 +81,9 @@ public class CmsDisplayTypeSelectWidget extends Composite implements I_CmsEditWi
     /** Path components of the path used to select the option value. */
     private String[] m_valuePath;
 
+    /** The empty option label. */
+    private String m_emptyLabel;
+
     /**
      * Creates a new widget instance.<p>
      *
@@ -92,6 +95,7 @@ public class CmsDisplayTypeSelectWidget extends Composite implements I_CmsEditWi
         String path = ((JSONString)config.get("valuePath")).stringValue();
         m_valuePath = splitPath(path);
         m_matchTypes = ((JSONBoolean)config.get("matchTypes")).booleanValue();
+        m_emptyLabel = ((JSONString)config.get("emptyLabel")).stringValue();
         JSONArray opts = (JSONArray)config.get("options");
         m_options = new LinkedHashMap<String, CmsPair<String, String>>();
         for (int i = 0; i < opts.size(); i++) {
@@ -283,6 +287,8 @@ public class CmsDisplayTypeSelectWidget extends Composite implements I_CmsEditWi
         if (!filterType.equals(m_filterType)) {
             boolean noFilter = NO_FILTER.equals(filterType);
             Map<String, String> items = new LinkedHashMap<String, String>();
+            // add empty option
+            items.put("", m_emptyLabel);
             for (Entry<String, CmsPair<String, String>> optEntry : m_options.entrySet()) {
                 if (noFilter || filterType.equals(optEntry.getValue().getSecond())) {
                     items.put(optEntry.getKey(), optEntry.getValue().getFirst());

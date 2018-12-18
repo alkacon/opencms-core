@@ -168,6 +168,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
 
             config.put("valuePath", path);
             config.put("matchTypes", m_matchTypes);
+            config.put("emptyLabel", messages.key(Messages.GUI_DISPLAYTYPE_SELECT_0));
             JSONArray optionArray = new JSONArray();
             for (FormatterOption option : options) {
                 JSONObject opt = new JSONObject();

@@ -89,6 +89,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DIALOG_COLOR_TITLE_0 = "GUI_DIALOG_COLOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISPLAYTYPE_SELECT_0 = "GUI_DISPLAYTYPE_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_BUTTON_DOWNLOADLIST_0 = "GUI_EDITOR_BUTTON_DOWNLOADLIST_0";
 
     /** Message constant for key in the resource bundle. */
