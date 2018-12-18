@@ -106,6 +106,9 @@ public class CmsFormatterBeanParser {
         }
     }
 
+    /** The key for the setting display type. */
+    public static final String SETTING_DISPLAY_TYPE = "displayType";
+
     /** Content value node name. */
     public static final String N_ALLOWS_SETTINGS_IN_EDITOR = "AllowsSettingsInEditor";
 
@@ -418,6 +421,21 @@ public class CmsFormatterBeanParser {
         String displayType = getString(root, N_DISPLAY, null);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayType) || "false".equals(displayType)) {
             displayType = null;
+        } else if (!m_settings.containsKey(SETTING_DISPLAY_TYPE)) {
+            m_settings.put(
+                SETTING_DISPLAY_TYPE,
+                new CmsXmlContentProperty(
+                    SETTING_DISPLAY_TYPE,
+                    "string",
+                    "hidden",
+                    null,
+                    null,
+                    null,
+                    displayType,
+                    null,
+                    null,
+                    null,
+                    null));
         }
 
         String isAllowSettingsStr = getString(root, N_ALLOWS_SETTINGS_IN_EDITOR, "false");
