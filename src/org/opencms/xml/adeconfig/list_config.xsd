@@ -53,6 +53,9 @@
 					ORDER_ASC:%(key.list_config.sort.orderasc)|
 					ORDER_DESC:%(key.list_config.sort.orderdesc)" />
 			</layouts>
+			<validationrules>
+				<validationrule element="TypesToCollect" regex=".+" type="error" message="%(key.err.typestocollect.notempty)" />
+			</validationrules>
 			<nestedformatters>
 				<nestedformatter element="TypesToCollect"/>
 			</nestedformatters>
