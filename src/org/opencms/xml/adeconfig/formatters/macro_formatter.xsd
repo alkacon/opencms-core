@@ -19,19 +19,16 @@
         	<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Rank" type="OpenCmsString"/>
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
-            
+            <xsd:element name="Display" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
         	<xsd:element name="Detail" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="AllowsSettingsInEditor" type="OpenCmsBoolean" minOccurs="0" />
-        	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0" />
-            
         	<xsd:element name="Macro" type="OpenCmsString" />
         	<xsd:element name="Formatters" type="OpenCmsFormatterReference" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="PlaceholderMacro" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
         	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
-
         	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -41,6 +38,7 @@
         <resourcebundle name="org.opencms.xml.containerpage.messages"/>
         <defaults>
 			<default element="Rank" value="1000" />
+			<default element="Display" value="display" />
 			<default element="AutoEnabled" value="true" />
 			<default element="Detail" value="true" />
 			<default element="Setting/Visibility" value="both" />
