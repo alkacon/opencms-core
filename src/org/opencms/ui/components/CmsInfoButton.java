@@ -34,14 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Class for the info button used in toolbar.<p>
@@ -229,6 +229,7 @@ public class CmsInfoButton extends Button {
         for (InfoElementBean infoElement : additionalElements) {
             layout.addComponent(infoElement.getComponent(), infoElement.getPos());
         }
+        layout.setWidthUndefined();
         return layout;
     }
 
@@ -257,7 +258,6 @@ public class CmsInfoButton extends Button {
                 window.setResizable(false);
                 CmsBasicDialog dialog = new CmsBasicDialog();
                 VerticalLayout layout = getLayout(htmlLines, additionalElements);
-
                 dialog.setContent(layout);
 
                 Button button = new Button(CmsVaadinUtils.messageClose());

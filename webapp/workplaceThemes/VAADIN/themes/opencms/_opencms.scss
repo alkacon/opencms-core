@@ -74,13 +74,20 @@
 
 @mixin opencms {
 	@include valo;
-  	
+  	.o-info-dialog-small{
+		width:270px !important;
+	}
   	.o-info-dialog {
-  		width:400px !important;
+  		width:400px;
   		
+		& p {
+			margin:0px;
+		}
+
   		& div{
   			overflow: hidden;
-  			margin-bottom: 5px;
+  			margin-bottom: 0px;
+			line-height:1.3;
   			width:100%;
   		}
   		
@@ -94,6 +101,11 @@
   		}
   		
   	}
+        .o-info-panel{
+		.v-panel-caption{
+			font-weight: 700;
+		}
+	}
   
 	.v-Notification.error {
 		@include valo-notification-error-style(v-Notification);
