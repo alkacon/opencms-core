@@ -1461,7 +1461,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         for (Entry<String, CmsXmlContentProperty> entry : settingsConfig.entrySet()) {
             if (nestedFormatters != null) {
                 for (I_CmsFormatterBean formatter : nestedFormatters) {
-                    if (entry.getKey().startsWith(formatter.getId())) {
+                    if (entry.getKey().startsWith(formatter.getId())
+                        && !HIDDEN_SETTINGS_WIDGET_NAME.equals(entry.getValue().getWidget())) {
                         CmsType parent = types.get(formatter.getId());
                         if (parent == null) {
                             parent = new CmsType(formatter.getId());
