@@ -48,6 +48,8 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOUHandler;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -62,7 +64,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +86,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.Version;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
@@ -94,6 +99,7 @@ import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.SingleComponentContainer;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
@@ -102,11 +108,13 @@ import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
+import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -203,7 +211,6 @@ public final class CmsVaadinUtils {
             return ((Boolean)item.getItemProperty(PropertyId.isXmlContent).getValue()).booleanValue();
         }
     };
-
     /** The combo box label item property id. */
     public static final String PROPERTY_LABEL = "label";
 
@@ -278,6 +285,19 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Closes the window containing the given component.
+     *
+     * @param component a component
+     */
+    public static void closeWindow(Component component) {
+
+        Window window = getWindow(component);
+        if (window != null) {
+            window.close();
+        }
+    }
+
+    /**
      * Creates a click listener which calls a Runnable when activated.<p>
      *
      * @param action the Runnable to execute on a click
@@ -296,6 +316,34 @@ public final class CmsVaadinUtils {
                 action.run();
             }
         };
+    }
+
+    /**
+     * Simple context menu handler for multi-select tables.
+     *
+     * @param table the table
+     * @param menu the table's context menu
+     * @param event the click event
+     * @param entries the context menu entries
+     */
+    public static <T> void defaultHandleContextMenuForMultiselect(
+        Table table,
+        CmsContextMenu menu,
+        ItemClickEvent event,
+        List<I_CmsSimpleContextMenuEntry<Collection<T>>> entries) {
+
+        if (!event.isCtrlKey() && !event.isShiftKey()) {
+            if (event.getButton().equals(MouseButton.RIGHT)) {
+                Collection<T> oldValue = ((Collection<T>)table.getValue());
+                if (oldValue.isEmpty() || !oldValue.contains(event.getItemId())) {
+                    table.setValue(new HashSet<Object>(Arrays.asList(event.getItemId())));
+                }
+                Collection<T> selection = (Collection<T>)table.getValue();
+                menu.setEntries(entries, selection);
+                menu.openForTable(event, table);
+            }
+        }
+
     }
 
     /**
@@ -1053,6 +1101,21 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Configures a text field to look like a filter box for a table.
+     *
+     * @param searchBox the text field to configure
+     */
+    public static void setFilterBoxStyle(TextField searchBox) {
+
+        searchBox.setIcon(FontOpenCms.FILTER);
+
+        searchBox.setPlaceholder(
+            org.opencms.ui.apps.Messages.get().getBundle(UI.getCurrent().getLocale()).key(
+                org.opencms.ui.apps.Messages.GUI_EXPLORER_FILTER_0));
+        searchBox.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+    }
+
+    /**
      * Sets the value of a text field which may be set to read-only mode.<p>
      *
      * When setting a Vaadin field to read-only, you also can't set its value programmatically anymore.
@@ -1206,7 +1269,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
