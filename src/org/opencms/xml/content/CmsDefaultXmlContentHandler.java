@@ -171,6 +171,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             m_mapping.put("combo", "ComboWidget");
             m_mapping.put("selectcombo", "SelectComboWidget");
             m_mapping.put("checkbox", "BooleanWidget");
+            m_mapping.put("datetime", "DateTimeWidget");
+            m_mapping.put("category", "CategoryWidget");
+            m_mapping.put("colorpicker", "ColorpickerWidget");
+            m_mapping.put("display", "DisplayWidget");
+            m_mapping.put("group", "GroupWidget");
+            m_mapping.put("html", "HtmlWidget");
+            m_mapping.put("string-plaintext", "StringWidgetPlaintext");
+            m_mapping.put("linkgallery", "LinkGalleryWidget");
+            m_mapping.put("localization", "LocalizationWidget");
+            m_mapping.put("multiselect", "MultiSelectWidget");
+            m_mapping.put("groupmultiselect", "GroupMultiSelectorWidget");
+            m_mapping.put("orgunit", "OrgUnitWidget");
+            m_mapping.put("principal", "PrincipalWidget");
+            m_mapping.put("radio", "RadioSelectWidget");
+            m_mapping.put("groupselect", "GroupSelectorWidget");
+            m_mapping.put("textarea", "TextareaWidget");
+            m_mapping.put("textarea-plaintext", "TextareaWidgetPlaintext");
+            m_mapping.put("user", "UserWidget");
+            m_mapping.put("file", "VfsFileWidget");
+            m_mapping.put("image", "VfsImageWidget");
+            m_mapping.put("downloadgallery", "DownloadGalleryWidget");
+            m_mapping.put("imagegallery", "ImageGalleryWidget");
+            m_mapping.put("typecombo", "TypeComboWidget");
+            m_mapping.put("dependentselect", "DependentSelectWidget");
+            m_mapping.put("displaytype", "DisplayTypeSelectWidget");
+            m_mapping.put("serialdate", "SerialDateWidget");
         }
 
         /**

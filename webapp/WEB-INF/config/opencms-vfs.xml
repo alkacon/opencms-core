@@ -173,245 +173,245 @@
 				<collector class="org.opencms.file.collectors.CmsSolrCollector"
 					order="170" />
 			</collectors>
-            
+
 			<mimetypes>
-                       
-                <!-- 
-                # The basic list of mimetypes was taken from HTML 5 boilerplate project.
-                # See https://github.com/h5bp/server-configs/.
-                # Apparently the h5pb lists differ per server, this was taken from Nginx.
-                # Extensions have been added for office formats and Microsoft related files.
-                -->
-                           
-                <!-- Data interchange -->
-                <mimetype extension=".atom" type="application/atom+xml" />
-                <mimetype extension=".json" type="application/json" />
-                <mimetype extension=".map" type="application/json" />
-                <mimetype extension=".topojson" type="application/json" />
-                <mimetype extension=".jsonld" type="application/ld+json" />
-                <mimetype extension=".rss" type="application/rss+xml" />
-                <mimetype extension=".geojson" type="application/vnd.geo+json" />
-                <mimetype extension=".rdf" type="application/xml" />
-                <mimetype extension=".xml" type="application/xml" />
-                
-                <!-- JavaScript -->
-                <mimetype extension=".js" type="application/javascript" />
-                
-                <!-- Manifest files -->
-                <mimetype extension=".webapp" type="application/x-web-app-manifest+json" />
-                <mimetype extension=".appcache" type="text/cache-manifest" />
-                <mimetype extension=".webmanifest" type="application/manifest+json" />
-                
-                <!-- Media files -->
-                <mimetype extension=".mid" type="audio/midi" />
-                <mimetype extension=".midi" type="audio/midi" />
-                <mimetype extension=".kar" type="audio/midi" />
-                <mimetype extension=".aac" type="audio/mp4" />
-                <mimetype extension=".f4a" type="audio/mp4" />
-                <mimetype extension=".f4b" type="audio/mp4" />
-                <mimetype extension=".m4a" type="audio/mp4" />
-                <mimetype extension=".mp3" type="audio/mpeg" />
-                <mimetype extension=".oga" type="audio/ogg" />
-                <mimetype extension=".ogg" type="audio/ogg" />
-                <mimetype extension=".opus" type="audio/ogg" />
-                <mimetype extension=".ra" type="audio/x-realaudio" />
-                <mimetype extension=".wav" type="audio/x-wav" />
-                <mimetype extension=".wax" type="audio/x-ms-wax" />
-                <mimetype extension=".wma" type="audio/x-ms-wma" />
 
-                <mimetype extension=".bmp" type="image/bmp" />
-                <mimetype extension=".gif" type="image/gif" />
-                <mimetype extension=".jpeg" type="image/jpeg" />
-                <mimetype extension=".jpg" type="image/jpeg" />
-                <mimetype extension=".png" type="image/png" />
-                <mimetype extension=".svg" type="image/svg+xml" />
-                <mimetype extension=".svgz" type="image/svg+xml" />
-                <mimetype extension=".tif" type="image/tiff" />
-                <mimetype extension=".tiff" type="image/tiff" />
-                <mimetype extension=".wbmp" type="image/vnd.wap.wbmp" />
-                <mimetype extension=".webp" type="image/webp" />
-                <mimetype extension=".jng" type="image/x-jng" />
-                <mimetype extension=".xbm" type="image/x-xbitmap" />
-                <mimetype extension=".xpm" type="image/x-xpixmap" />
-                <mimetype extension=".xwd" type="image/x-xwindowdump" />
+				<!--
+				# The basic list of mimetypes was taken from HTML 5 boilerplate project.
+				# See https://github.com/h5bp/server-configs/.
+				# Apparently the h5pb lists differ per server, this was taken from Nginx.
+				# Extensions have been added for office formats and Microsoft related files.
+				-->
 
-                <mimetype extension=".mp4" type="video/mp4" />
-                <mimetype extension=".f4p" type="video/mp4" />
-                <mimetype extension=".f4v" type="video/mp4" />
-                <mimetype extension=".m4v" type="video/mp4" />
-                <mimetype extension=".3gp" type="video/3gpp" />
-                <mimetype extension=".3gpp" type="video/3gpp" />
-                <mimetype extension=".mpeg" type="video/mpeg" />
-                <mimetype extension=".mpg" type="video/mpeg" />
-                <mimetype extension=".ogv" type="video/ogg" />
-                <mimetype extension=".mov" type="video/quicktime" />
-                <mimetype extension=".qt" type="video/quicktime" />                
-                <mimetype extension=".webm" type="video/webm" />
-                <mimetype extension=".flv" type="video/x-flv" />
-                <mimetype extension=".wmv" type="video/x-ms-wmv" />
-                <mimetype extension=".asf" type="video/x-ms-asf" />
-                <mimetype extension=".asx" type="video/x-ms-asf" />
-                <mimetype extension=".avi" type="video/x-msvideo" />
-                                
-                <!-- 
-                # Serving `.ico` image files with a different media type
-                # prevents Internet Explorer from displaying then as images.
-                 -->    
-                <mimetype extension=".cur" type="image/x-icon" />
-                <mimetype extension=".ico" type="image/x-icon" />
-                
-                
-                <!-- Web fonts -->
-                <mimetype extension=".woff" type="application/font-woff" />
-                <mimetype extension=".woff2" type="application/font-woff2" />
-                <mimetype extension=".eot" type="application/vnd.ms-fontobject" />
-                
-                <!-- 
-                # Browsers usually ignore the font media types and simply sniff
-                # the bytes to figure out the font type.
-                # https://mimesniff.spec.whatwg.org/#matching-a-font-type-pattern
-                #
-                # However, Blink and WebKit based browsers will show a warning
-                # in the console if the following font types are served with any
-                # other media types.
-                 -->    
-                <mimetype extension=".otf" type="font/opentype" />
-                <mimetype extension=".ttc" type="application/x-font-ttf" />
-                <mimetype extension=".ttf" type="application/x-font-ttf" />
+				<!-- Data interchange -->
+				<mimetype extension=".atom" type="application/atom+xml" />
+				<mimetype extension=".json" type="application/json" />
+				<mimetype extension=".map" type="application/json" />
+				<mimetype extension=".topojson" type="application/json" />
+				<mimetype extension=".jsonld" type="application/ld+json" />
+				<mimetype extension=".rss" type="application/rss+xml" />
+				<mimetype extension=".geojson" type="application/vnd.geo+json" />
+				<mimetype extension=".rdf" type="application/xml" />
+				<mimetype extension=".xml" type="application/xml" />
 
-                <!-- Other -->
-                <mimetype extension=".jar" type="application/x-java-archive" />
-                <mimetype extension=".war" type="application/x-java-archive" />
-                <mimetype extension=".ear" type="application/x-java-archive" />
-                <mimetype extension=".hqx" type="application/mac-binhex40" />
-                <mimetype extension=".bin" type="application/octet-stream" />
-                <mimetype extension=".deb" type="application/octet-stream" />
-                <mimetype extension=".dll" type="application/octet-stream" />
-                <mimetype extension=".dmg" type="application/octet-stream" />
-                <mimetype extension=".exe" type="application/octet-stream" />
-                <mimetype extension=".img" type="application/octet-stream" />
-                <mimetype extension=".iso" type="application/octet-stream" />
-                <mimetype extension=".msi" type="application/octet-stream" />
-                <mimetype extension=".msm" type="application/octet-stream" />
-                <mimetype extension=".msp" type="application/octet-stream" />
-                <mimetype extension=".safariextz" type="application/octet-stream" />
-                <mimetype extension=".pdf" type="application/pdf" />
-                <mimetype extension=".sig" type="application/pgp-signature" />
-                <mimetype extension=".ps" type="application/postscript" />
-                <mimetype extension=".ai" type="application/postscript" />
-                <mimetype extension=".eps" type="application/postscript" />
-                <mimetype extension=".rtf" type="application/rtf" />
-                <mimetype extension=".kml" type="application/vnd.google-earth.kml+xml" />
-                <mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
-                <mimetype extension=".wmlc" type="application/vnd.wap.wmlc" />
-                <mimetype extension=".7z" type="application/x-7z-compressed" />
-                <mimetype extension=".bbaw" type="application/x-bb-appworld" />
-                <mimetype extension=".torrent" type="application/x-bittorrent" />
-                <mimetype extension=".bz2" type="application/x-bzip" />
-                <mimetype extension=".tar.bz2" type="application/x-bzip-compressed-tar" />
-                <mimetype extension=".tbz" type="application/x-bzip-compressed-tar" />
-                <mimetype extension=".crx" type="application/x-chrome-extension" />
-                <mimetype extension=".cco" type="application/x-cocoa " />
-                <mimetype extension=".gz" type="application/x-gzip" />
-                <mimetype extension=".jardiff" type="application/x-java-archive-diff" />
-                <mimetype extension=".jnlp" type="application/x-java-jnlp-file" />
-                <mimetype extension=".run" type="application/x-makeself" />       
-                <mimetype extension=".pac" type="application/x-ns-proxy-autoconfig" />
-                <mimetype extension=".oex" type="application/x-opera-extension" />                
-                <mimetype extension=".pl" type="application/x-perl" />
-                <mimetype extension=".pm" type="application/x-perl" />
-                <mimetype extension=".pdb" type="application/x-pilot" />
-                <mimetype extension=".prc" type="application/x-pilot" />
-                <mimetype extension=".rar" type="application/x-rar-compressed" />        
-                <mimetype extension=".rpm" type="application/x-redhat-package-manager" />
-                <mimetype extension=".sea" type="application/x-sea" />
-                <mimetype extension=".swf" type="application/x-shockwave-flash" />
-                <mimetype extension=".sit" type="application/x-stuffit" />
-                <mimetype extension=".tar" type="application/x-tar" />
-                <mimetype extension=".tcl" type="application/x-tcl " />
-                <mimetype extension=".tk" type="application/x-tcl " />
-                <mimetype extension=".tgz" type="application/x-tgz" />
-                <mimetype extension=".tar.gz" type="application/x-tgz" />
-                <mimetype extension=".xpi" type="application/x-xpinstall" />                
-                <mimetype extension=".crt" type="application/x-x509-ca-cert" />
-                <mimetype extension=".der" type="application/x-x509-ca-cert" />
-                <mimetype extension=".pem" type="application/x-x509-ca-cert" />
-                <mimetype extension=".xhtml" type="application/xhtml+xml" />
-                <mimetype extension=".xsl" type="application/xslt+xml" />
-                <mimetype extension=".zip" type="application/zip" />        
-                <mimetype extension=".css" type="text/css" />
-                <mimetype extension=".htm" type="text/html" />
-                <mimetype extension=".html" type="text/html" />
-                <mimetype extension=".shtml" type="text/html" />
-                <mimetype extension=".mml" type="text/mathml" />
-                <mimetype extension=".text" type="text/plain" />
-                <mimetype extension=".txt" type="text/plain" />
-                <mimetype extension=".conf" type="text/plain" />
-                <mimetype extension=".log" type="text/plain" />
-                <mimetype extension=".properties" type="text/plain" />
-                <mimetype extension=".vcard" type="text/vcard" />
-                <mimetype extension=".vcf" type="text/vcard" />
-                <mimetype extension=".xloc" type="text/vnd.rim.location.xloc" />
-                <mimetype extension=".jad" type="text/vnd.sun.j2me.app-descriptor" />
-                <mimetype extension=".wml" type="text/vnd.wap.wml" />
-                <mimetype extension=".vtt" type="text/vtt" />
-                <mimetype extension=".htc" type="text/x-component" />
+				<!-- JavaScript -->
+				<mimetype extension=".js" type="application/javascript" />
 
-                <!-- MS office and Windows related files -->
-                <mimetype extension=".doc" type="application/msword" />
-                <mimetype extension=".docx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />                
-                <mimetype extension=".xls" type="application/vnd.ms-excel" />
-                <mimetype extension=".xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-                <mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
-                <mimetype extension=".pptx" type="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
-                                                
-                <mimetype extension=".docm" type="application/vnd.ms-word.document.macroEnabled.12" />
-                <mimetype extension=".dotx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.template" />
-                <mimetype extension=".dotm" type="application/vnd.ms-word.template.macroEnabled.12" />
-                <mimetype extension=".xlsm" type="application/vnd.ms-excel.sheet.macroEnabled.12" />
-                <mimetype extension=".xltx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.template" />
-                <mimetype extension=".xltm" type="application/vnd.ms-excel.template.macroEnabled.12" />
-                <mimetype extension=".xlsb" type="application/vnd.ms-excel.sheet.binary.macroEnabled.12" />
-                <mimetype extension=".xlam" type="application/vnd.ms-excel.addin.macroEnabled.12" />
-                <mimetype extension=".pptm" type="application/vnd.ms-powerpoint.presentation.macroEnabled.12" />
-                <mimetype extension=".ppsx" type="application/vnd.openxmlformats-officedocument.presentationml.slideshow" />
-                <mimetype extension=".ppsm" type="application/vnd.ms-powerpoint.slideshow.macroEnabled.12" />
-                <mimetype extension=".potx" type="application/vnd.openxmlformats-officedocument.presentationml.template" />
-                <mimetype extension=".potm" type="application/vnd.ms-powerpoint.template.macroEnabled.12" />
-                <mimetype extension=".ppam" type="application/vnd.ms-powerpoint.addin.macroEnabled.12" />
-                <mimetype extension=".sldx" type="application/vnd.openxmlformats-officedocument.presentationml.slide" />
-                <mimetype extension=".sldm" type="application/vnd.ms-powerpoint.slide.macroEnabled.12" />
-                <mimetype extension=".thmx" type="application/vnd.ms-officetheme" />
-                
-                <mimetype extension=".chm" type="application/vnd.ms-htmlhelp" />
-                <mimetype extension=".msg" type="application/vnd.ms-outlook" />
-                <mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
-                <mimetype extension=".mpp" type="application/vnd.ms-project" />
-                <mimetype extension=".wmf" type="windows/metafile" />                
-           
-                <!-- Open Document (OpenOffice, LibreOffice etc.) -->           
-                <mimetype extension=".odt" type="application/vnd.oasis.opendocument.text" />
-                <mimetype extension=".ods" type="application/vnd.oasis.opendocument.spreadsheet" />
-                <mimetype extension=".odp" type="application/vnd.oasis.opendocument.presentation" />
-                <mimetype extension=".odg" type="application/vnd.oasis.opendocument.graphics" />
-                <mimetype extension=".odc" type="application/vnd.oasis.opendocument.chart" />
-                <mimetype extension=".odf" type="application/vnd.oasis.opendocument.formula" />
-                <mimetype extension=".odi" type="application/vnd.oasis.opendocument.image" />
-                <mimetype extension=".odm" type="application/vnd.oasis.opendocument.text-master" />
-                <mimetype extension=".ott" type="application/vnd.oasis.opendocument.text-template ott" />
-                <mimetype extension=".ots" type="application/vnd.oasis.opendocument.spreadsheet-template" />
-                <mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
-                <mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
-				
-                <!--
-                # RFC5545 - Internet Calendaring and Scheduling Core Object Specification
-                # (iCalendar)
-                  -->    
-                <mimetype extension=".ics" type="text/calendar" />
+				<!-- Manifest files -->
+				<mimetype extension=".webapp" type="application/x-web-app-manifest+json" />
+				<mimetype extension=".appcache" type="text/cache-manifest" />
+				<mimetype extension=".webmanifest" type="application/manifest+json" />
 
-         
+				<!-- Media files -->
+				<mimetype extension=".mid" type="audio/midi" />
+				<mimetype extension=".midi" type="audio/midi" />
+				<mimetype extension=".kar" type="audio/midi" />
+				<mimetype extension=".aac" type="audio/mp4" />
+				<mimetype extension=".f4a" type="audio/mp4" />
+				<mimetype extension=".f4b" type="audio/mp4" />
+				<mimetype extension=".m4a" type="audio/mp4" />
+				<mimetype extension=".mp3" type="audio/mpeg" />
+				<mimetype extension=".oga" type="audio/ogg" />
+				<mimetype extension=".ogg" type="audio/ogg" />
+				<mimetype extension=".opus" type="audio/ogg" />
+				<mimetype extension=".ra" type="audio/x-realaudio" />
+				<mimetype extension=".wav" type="audio/x-wav" />
+				<mimetype extension=".wax" type="audio/x-ms-wax" />
+				<mimetype extension=".wma" type="audio/x-ms-wma" />
+
+				<mimetype extension=".bmp" type="image/bmp" />
+				<mimetype extension=".gif" type="image/gif" />
+				<mimetype extension=".jpeg" type="image/jpeg" />
+				<mimetype extension=".jpg" type="image/jpeg" />
+				<mimetype extension=".png" type="image/png" />
+				<mimetype extension=".svg" type="image/svg+xml" />
+				<mimetype extension=".svgz" type="image/svg+xml" />
+				<mimetype extension=".tif" type="image/tiff" />
+				<mimetype extension=".tiff" type="image/tiff" />
+				<mimetype extension=".wbmp" type="image/vnd.wap.wbmp" />
+				<mimetype extension=".webp" type="image/webp" />
+				<mimetype extension=".jng" type="image/x-jng" />
+				<mimetype extension=".xbm" type="image/x-xbitmap" />
+				<mimetype extension=".xpm" type="image/x-xpixmap" />
+				<mimetype extension=".xwd" type="image/x-xwindowdump" />
+
+				<mimetype extension=".mp4" type="video/mp4" />
+				<mimetype extension=".f4p" type="video/mp4" />
+				<mimetype extension=".f4v" type="video/mp4" />
+				<mimetype extension=".m4v" type="video/mp4" />
+				<mimetype extension=".3gp" type="video/3gpp" />
+				<mimetype extension=".3gpp" type="video/3gpp" />
+				<mimetype extension=".mpeg" type="video/mpeg" />
+				<mimetype extension=".mpg" type="video/mpeg" />
+				<mimetype extension=".ogv" type="video/ogg" />
+				<mimetype extension=".mov" type="video/quicktime" />
+				<mimetype extension=".qt" type="video/quicktime" />
+				<mimetype extension=".webm" type="video/webm" />
+				<mimetype extension=".flv" type="video/x-flv" />
+				<mimetype extension=".wmv" type="video/x-ms-wmv" />
+				<mimetype extension=".asf" type="video/x-ms-asf" />
+				<mimetype extension=".asx" type="video/x-ms-asf" />
+				<mimetype extension=".avi" type="video/x-msvideo" />
+
+				<!--
+				# Serving `.ico` image files with a different media type
+				# prevents Internet Explorer from displaying then as images.
+				 -->
+				<mimetype extension=".cur" type="image/x-icon" />
+				<mimetype extension=".ico" type="image/x-icon" />
+
+
+				<!-- Web fonts -->
+				<mimetype extension=".woff" type="application/font-woff" />
+				<mimetype extension=".woff2" type="application/font-woff2" />
+				<mimetype extension=".eot" type="application/vnd.ms-fontobject" />
+
+				<!--
+				# Browsers usually ignore the font media types and simply sniff
+				# the bytes to figure out the font type.
+				# https://mimesniff.spec.whatwg.org/#matching-a-font-type-pattern
+				#
+				# However, Blink and WebKit based browsers will show a warning
+				# in the console if the following font types are served with any
+				# other media types.
+				 -->
+				<mimetype extension=".otf" type="font/opentype" />
+				<mimetype extension=".ttc" type="application/x-font-ttf" />
+				<mimetype extension=".ttf" type="application/x-font-ttf" />
+
+				<!-- Other -->
+				<mimetype extension=".jar" type="application/x-java-archive" />
+				<mimetype extension=".war" type="application/x-java-archive" />
+				<mimetype extension=".ear" type="application/x-java-archive" />
+				<mimetype extension=".hqx" type="application/mac-binhex40" />
+				<mimetype extension=".bin" type="application/octet-stream" />
+				<mimetype extension=".deb" type="application/octet-stream" />
+				<mimetype extension=".dll" type="application/octet-stream" />
+				<mimetype extension=".dmg" type="application/octet-stream" />
+				<mimetype extension=".exe" type="application/octet-stream" />
+				<mimetype extension=".img" type="application/octet-stream" />
+				<mimetype extension=".iso" type="application/octet-stream" />
+				<mimetype extension=".msi" type="application/octet-stream" />
+				<mimetype extension=".msm" type="application/octet-stream" />
+				<mimetype extension=".msp" type="application/octet-stream" />
+				<mimetype extension=".safariextz" type="application/octet-stream" />
+				<mimetype extension=".pdf" type="application/pdf" />
+				<mimetype extension=".sig" type="application/pgp-signature" />
+				<mimetype extension=".ps" type="application/postscript" />
+				<mimetype extension=".ai" type="application/postscript" />
+				<mimetype extension=".eps" type="application/postscript" />
+				<mimetype extension=".rtf" type="application/rtf" />
+				<mimetype extension=".kml" type="application/vnd.google-earth.kml+xml" />
+				<mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
+				<mimetype extension=".wmlc" type="application/vnd.wap.wmlc" />
+				<mimetype extension=".7z" type="application/x-7z-compressed" />
+				<mimetype extension=".bbaw" type="application/x-bb-appworld" />
+				<mimetype extension=".torrent" type="application/x-bittorrent" />
+				<mimetype extension=".bz2" type="application/x-bzip" />
+				<mimetype extension=".tar.bz2" type="application/x-bzip-compressed-tar" />
+				<mimetype extension=".tbz" type="application/x-bzip-compressed-tar" />
+				<mimetype extension=".crx" type="application/x-chrome-extension" />
+				<mimetype extension=".cco" type="application/x-cocoa " />
+				<mimetype extension=".gz" type="application/x-gzip" />
+				<mimetype extension=".jardiff" type="application/x-java-archive-diff" />
+				<mimetype extension=".jnlp" type="application/x-java-jnlp-file" />
+				<mimetype extension=".run" type="application/x-makeself" />
+				<mimetype extension=".pac" type="application/x-ns-proxy-autoconfig" />
+				<mimetype extension=".oex" type="application/x-opera-extension" />
+				<mimetype extension=".pl" type="application/x-perl" />
+				<mimetype extension=".pm" type="application/x-perl" />
+				<mimetype extension=".pdb" type="application/x-pilot" />
+				<mimetype extension=".prc" type="application/x-pilot" />
+				<mimetype extension=".rar" type="application/x-rar-compressed" />
+				<mimetype extension=".rpm" type="application/x-redhat-package-manager" />
+				<mimetype extension=".sea" type="application/x-sea" />
+				<mimetype extension=".swf" type="application/x-shockwave-flash" />
+				<mimetype extension=".sit" type="application/x-stuffit" />
+				<mimetype extension=".tar" type="application/x-tar" />
+				<mimetype extension=".tcl" type="application/x-tcl " />
+				<mimetype extension=".tk" type="application/x-tcl " />
+				<mimetype extension=".tgz" type="application/x-tgz" />
+				<mimetype extension=".tar.gz" type="application/x-tgz" />
+				<mimetype extension=".xpi" type="application/x-xpinstall" />
+				<mimetype extension=".crt" type="application/x-x509-ca-cert" />
+				<mimetype extension=".der" type="application/x-x509-ca-cert" />
+				<mimetype extension=".pem" type="application/x-x509-ca-cert" />
+				<mimetype extension=".xhtml" type="application/xhtml+xml" />
+				<mimetype extension=".xsl" type="application/xslt+xml" />
+				<mimetype extension=".zip" type="application/zip" />
+				<mimetype extension=".css" type="text/css" />
+				<mimetype extension=".htm" type="text/html" />
+				<mimetype extension=".html" type="text/html" />
+				<mimetype extension=".shtml" type="text/html" />
+				<mimetype extension=".mml" type="text/mathml" />
+				<mimetype extension=".text" type="text/plain" />
+				<mimetype extension=".txt" type="text/plain" />
+				<mimetype extension=".conf" type="text/plain" />
+				<mimetype extension=".log" type="text/plain" />
+				<mimetype extension=".properties" type="text/plain" />
+				<mimetype extension=".vcard" type="text/vcard" />
+				<mimetype extension=".vcf" type="text/vcard" />
+				<mimetype extension=".xloc" type="text/vnd.rim.location.xloc" />
+				<mimetype extension=".jad" type="text/vnd.sun.j2me.app-descriptor" />
+				<mimetype extension=".wml" type="text/vnd.wap.wml" />
+				<mimetype extension=".vtt" type="text/vtt" />
+				<mimetype extension=".htc" type="text/x-component" />
+
+				<!-- MS office and Windows related files -->
+				<mimetype extension=".doc" type="application/msword" />
+				<mimetype extension=".docx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+				<mimetype extension=".xls" type="application/vnd.ms-excel" />
+				<mimetype extension=".xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+				<mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
+				<mimetype extension=".pptx" type="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+
+				<mimetype extension=".docm" type="application/vnd.ms-word.document.macroEnabled.12" />
+				<mimetype extension=".dotx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.template" />
+				<mimetype extension=".dotm" type="application/vnd.ms-word.template.macroEnabled.12" />
+				<mimetype extension=".xlsm" type="application/vnd.ms-excel.sheet.macroEnabled.12" />
+				<mimetype extension=".xltx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.template" />
+				<mimetype extension=".xltm" type="application/vnd.ms-excel.template.macroEnabled.12" />
+				<mimetype extension=".xlsb" type="application/vnd.ms-excel.sheet.binary.macroEnabled.12" />
+				<mimetype extension=".xlam" type="application/vnd.ms-excel.addin.macroEnabled.12" />
+				<mimetype extension=".pptm" type="application/vnd.ms-powerpoint.presentation.macroEnabled.12" />
+				<mimetype extension=".ppsx" type="application/vnd.openxmlformats-officedocument.presentationml.slideshow" />
+				<mimetype extension=".ppsm" type="application/vnd.ms-powerpoint.slideshow.macroEnabled.12" />
+				<mimetype extension=".potx" type="application/vnd.openxmlformats-officedocument.presentationml.template" />
+				<mimetype extension=".potm" type="application/vnd.ms-powerpoint.template.macroEnabled.12" />
+				<mimetype extension=".ppam" type="application/vnd.ms-powerpoint.addin.macroEnabled.12" />
+				<mimetype extension=".sldx" type="application/vnd.openxmlformats-officedocument.presentationml.slide" />
+				<mimetype extension=".sldm" type="application/vnd.ms-powerpoint.slide.macroEnabled.12" />
+				<mimetype extension=".thmx" type="application/vnd.ms-officetheme" />
+
+				<mimetype extension=".chm" type="application/vnd.ms-htmlhelp" />
+				<mimetype extension=".msg" type="application/vnd.ms-outlook" />
+				<mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
+				<mimetype extension=".mpp" type="application/vnd.ms-project" />
+				<mimetype extension=".wmf" type="windows/metafile" />
+
+				<!-- Open Document (OpenOffice, LibreOffice etc.) -->
+				<mimetype extension=".odt" type="application/vnd.oasis.opendocument.text" />
+				<mimetype extension=".ods" type="application/vnd.oasis.opendocument.spreadsheet" />
+				<mimetype extension=".odp" type="application/vnd.oasis.opendocument.presentation" />
+				<mimetype extension=".odg" type="application/vnd.oasis.opendocument.graphics" />
+				<mimetype extension=".odc" type="application/vnd.oasis.opendocument.chart" />
+				<mimetype extension=".odf" type="application/vnd.oasis.opendocument.formula" />
+				<mimetype extension=".odi" type="application/vnd.oasis.opendocument.image" />
+				<mimetype extension=".odm" type="application/vnd.oasis.opendocument.text-master" />
+				<mimetype extension=".ott" type="application/vnd.oasis.opendocument.text-template ott" />
+				<mimetype extension=".ots" type="application/vnd.oasis.opendocument.spreadsheet-template" />
+				<mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
+				<mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
+
+				<!--
+				# RFC5545 - Internet Calendaring and Scheduling Core Object Specification
+				# (iCalendar)
+				  -->
+				<mimetype extension=".ics" type="text/calendar" />
+
+
 			</mimetypes>
-            
+
 			<html-converters>
 				<html-converter name="true"
 					class="org.opencms.util.CmsHtmlConverterJTidy" />
