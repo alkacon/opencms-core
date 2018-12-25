@@ -143,6 +143,12 @@ public class CmsJspImageBean {
     /** The image VFS path. */
     private String m_vfsUri;
 
+    /** The ratio of the image, width to height, for example '4-3' or '16-9'. */
+    private String m_ratio;
+
+    /** The height percentage of the image relative to the image width. */
+    private String m_ratioHeightPercentage;
+
     /**
      * Initializes a new image bean based on a VFS resource and optional scaler parameters.<p>
      *
@@ -468,6 +474,8 @@ public class CmsJspImageBean {
 
                 if (targetScaler != null) {
                     result = createVariation(targetScaler);
+                    result.m_ratio = ratioStr;
+                    result.m_ratioHeightPercentage = calcRatioHeightPercentage(ratioW, ratioH);
                 }
             }
         } catch (NumberFormatException e) {
@@ -592,6 +600,40 @@ public class CmsJspImageBean {
     public int getQuality() {
 
         return m_quality;
+    }
+
+    /**
+     * Returns the image ratio.<p>
+     *
+     * The ratio is in the form 'width-height', for example '4-3' or '16-9'.
+     * In case no ratio was set, the pixel dimensions of the image are returned.<p>
+     *
+     *  @return the image ratio
+     */
+    public String getRatio() {
+
+        if (m_ratio == null) {
+            m_ratio = "" + getScaler().getWidth() + "-" + getScaler().getHeight();
+        }
+        return m_ratio;
+    }
+
+    /**
+     * Returns the image height percentage relative to the image width as a String.<p>
+     *
+     * In case a ratio has been used to scale the image, the height percentage is
+     * calculated based on the ratio, not on the actual image pixel size.
+     * This is done to avoid rounding differences.<p>
+     *
+     *  @return the image height percentage relative to the image width
+     */
+    public String getRatioHeightPercentage() {
+
+        if (m_ratioHeightPercentage == null) {
+
+            m_ratioHeightPercentage = calcRatioHeightPercentage(getScaler().getWidth(), getScaler().getHeight());
+        }
+        return m_ratioHeightPercentage;
     }
 
     /**
@@ -888,6 +930,20 @@ public class CmsJspImageBean {
     public void setVfsUri(String vfsUri) {
 
         m_vfsUri = vfsUri;
+    }
+
+    /**
+     * Returns the ratio height percentage of an image based on width and height.<p>
+     *
+     * @param width width to calculate percentage from
+     * @param height height to calculate percentage from
+     *
+     * @return the ratio height percentage of an image based on width and height
+     */
+    protected String calcRatioHeightPercentage(double width, double height) {
+
+        double p = Math.round((height / width) * 10000000.0) / 100000.0;
+        return String.valueOf(p) + "%";
     }
 
     /**
