@@ -147,23 +147,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         /** Internal widget map. */
         private static Map<String, String> m_mapping = new HashMap<>();
-        /** The original configuration. */
-        private String m_config;
-
-        /** The original widget name. */
-        private String m_widget;
-
-        /**
-         * Creates a new instance.<p>
-         *
-         * @param widget the original widget name
-         * @param config the original widget configuration
-         */
-        public WidgetMapper(String widget, String config) {
-
-            m_widget = widget;
-            m_config = config;
-        }
 
         static {
             m_mapping.put("string", "StringWidget");
@@ -197,6 +180,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             m_mapping.put("dependentselect", "DependentSelectWidget");
             m_mapping.put("displaytype", "DisplayTypeSelectWidget");
             m_mapping.put("serialdate", "SerialDateWidget");
+        }
+
+        /** The original configuration. */
+        private String m_config;
+
+        /** The original widget name. */
+        private String m_widget;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param widget the original widget name
+         * @param config the original widget configuration
+         */
+        public WidgetMapper(String widget, String config) {
+
+            m_widget = widget;
+            m_config = config;
         }
 
         /**
@@ -685,6 +686,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
 
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -826,40 +861,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
-    }
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -2229,6 +2230,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         + "                </searchsetting>\n"
                         + "            </searchsettings>\n"
                         + "");
+                initSearchSettings(doc.getRootElement(), contentDef);
+            } catch (DocumentException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
+        } else if ("disporder".equals(value)) {
+            String docText = "<searchsettings>\n"
+                + "  <searchsetting element=\""
+                + CmsEncoder.escapeXml(name)
+                + "\" searchcontent=\"false\">\n"
+                + "        <solrfield targetfield=\"disporder\" sourcefield=\"*_i\" default=\"0\" />\n"
+                + "  </searchsetting>\n"
+                + "</searchsettings>";
+            try {
+                Document doc = DocumentHelper.parseText(docText);
                 initSearchSettings(doc.getRootElement(), contentDef);
             } catch (DocumentException e) {
                 LOG.error(e.getLocalizedMessage(), e);
