@@ -28,19 +28,16 @@
 package org.opencms.report;
 
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 
 import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateErrorListener;
 import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 
 /**
  * Report update formatter for the new Vaadin-based workplace.<p>
@@ -57,29 +54,9 @@ public class CmsVaadinHtmlReportUpdateFormatter implements I_CmsReportUpdateForm
      * Creates a new instance.<p>
      */
     public CmsVaadinHtmlReportUpdateFormatter() {
+
         try (InputStream stream = CmsVaadinHtmlReportUpdateFormatter.class.getResourceAsStream("report.st")) {
-            try {
-                m_templateGroup = new StringTemplateGroup(
-                    new InputStreamReader(stream, "UTF-8"),
-                    DefaultTemplateLexer.class,
-                    new StringTemplateErrorListener() {
-
-                        @SuppressWarnings("synthetic-access")
-                        public void error(String arg0, Throwable arg1) {
-
-                            LOG.error(arg0 + ": " + arg1.getMessage(), arg1);
-                        }
-
-                        @SuppressWarnings("synthetic-access")
-                        public void warning(String arg0) {
-
-                            LOG.warn(arg0);
-
-                        }
-                    });
-            } catch (UnsupportedEncodingException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+            m_templateGroup = CmsStringUtil.readStringTemplateGroup(stream);
         } catch (IOException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

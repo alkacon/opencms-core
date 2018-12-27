@@ -1,0 +1,33 @@
+group searchsetting_configs;
+
+disptitle(name) ::= <<
+
+<searchsettings>
+	<searchsetting element="$name$">
+		<solrfield targetfield="disptitle" sourcefield="*_sort" />
+	</searchsetting>
+</searchsettings>
+
+
+>>
+
+disporder(name) ::= <<
+
+<searchsettings>
+	<searchsetting element="$name$" searchcontent="false">
+		<solrfield targetfield="disporder" sourcefield="*_i" default="0" />
+	</searchsetting>
+</searchsettings>
+
+>>
+
+instancedate(name) ::= <<
+
+<searchsettings>
+	<searchsetting element="$name$" searchcontent="false">
+		<solrfield targetfield="instancedate" sourcefield="*_dt" />
+		<solrfield targetfield="instancedatecurrenttill" sourcefield="*_dt" />
+    </searchsetting>
+</searchsettings>
+
+>>

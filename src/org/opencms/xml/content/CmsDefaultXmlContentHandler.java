@@ -102,6 +102,8 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 import org.opencms.xml.types.I_CmsXmlValidateWithMessage;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -120,6 +122,8 @@ import javax.servlet.ServletRequest;
 
 import org.apache.commons.logging.Log;
 
+import org.antlr.stringtemplate.StringTemplate;
+import org.antlr.stringtemplate.StringTemplateGroup;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -773,6 +777,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The search settings. */
     protected Map<String, Boolean> m_searchSettings;
+
+    /** String template group for the simple search setting expansions. */
+    protected StringTemplateGroup m_searchTemplateGroup;
 
     /** The configured settings for the formatters (as defined in the annotations). */
     protected Map<String, CmsXmlContentProperty> m_settings;
@@ -2204,54 +2211,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             addSearchSetting(contentDef, name, Boolean.FALSE);
         } else if ("true".equalsIgnoreCase(value)) {
             addSearchSetting(contentDef, name, Boolean.TRUE);
-        } else if ("disptitle".equals(value)) {
-            try {
-                Document doc = DocumentHelper.parseText(
-                    "<searchsettings>\n"
-                        + "                <searchsetting element=\""
-                        + CmsEncoder.escapeXml(name)
-                        + "\">\n"
-                        + "                    <solrfield targetfield=\"disptitle\" sourcefield=\"*_sort\" />\n"
-                        + "                </searchsetting>"
-                        + "</searchsettings>");
-                initSearchSettings(doc.getRootElement(), contentDef);
-            } catch (DocumentException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+        } else {
+            StringTemplate template = m_searchTemplateGroup.getInstanceOf(value);
+            if ((template != null) && (template.getFormalArgument("name") != null)) {
+                template.setAttribute("name", CmsEncoder.escapeXml(name));
+                String xml = template.toString();
+                try {
+                    Document doc = DocumentHelper.parseText(xml);
+                    initSearchSettings(doc.getRootElement(), contentDef);
+                } catch (DocumentException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-        } else if ("instancedate".equals(value)) {
-            try {
-                Document doc = DocumentHelper.parseText(
-                    "<searchsettings>\n"
-                        + "                <searchsetting element=\""
-                        + CmsEncoder.escapeXml(name)
-                        + "\" searchcontent=\"false\">\n"
-                        + "                    <solrfield targetfield=\"instancedate\" sourcefield=\"*_dt\" />\n"
-                        + "                    <solrfield targetfield=\"instancedatecurrenttill\" sourcefield=\"*_dt\" />\n"
-                        + "                </searchsetting>\n"
-                        + "            </searchsettings>\n"
-                        + "");
-                initSearchSettings(doc.getRootElement(), contentDef);
-            } catch (DocumentException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
-        } else if ("disporder".equals(value)) {
-            String docText = "<searchsettings>\n"
-                + "  <searchsetting element=\""
-                + CmsEncoder.escapeXml(name)
-                + "\" searchcontent=\"false\">\n"
-                + "        <solrfield targetfield=\"disporder\" sourcefield=\"*_i\" default=\"0\" />\n"
-                + "  </searchsetting>\n"
-                + "</searchsettings>";
-            try {
-                Document doc = DocumentHelper.parseText(docText);
-                initSearchSettings(doc.getRootElement(), contentDef);
-            } catch (DocumentException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
         }
-
     }
 
     /**
@@ -2509,6 +2481,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_synchronizations = new ArrayList<String>();
         m_editorChangeHandlers = new ArrayList<I_CmsXmlContentEditorChangeHandler>();
         m_nestedFormatterElements = new HashSet<String>();
+        try (
+        InputStream stream = CmsDefaultXmlContentHandler.class.getResourceAsStream("simple-searchsetting-configs.st")) {
+            m_searchTemplateGroup = CmsStringUtil.readStringTemplateGroup(stream);
+        } catch (IOException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
