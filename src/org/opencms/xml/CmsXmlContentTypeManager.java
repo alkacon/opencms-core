@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +62,28 @@ import org.dom4j.Element;
  * @since 6.0.0
  */
 public class CmsXmlContentTypeManager {
+
+    public static class WidgetEntry {
+
+        private List<String> m_aliases = new ArrayList<>();
+
+        private String m_className;
+
+        public List<String> getAliases() {
+
+            return m_aliases;
+        }
+
+        public String getClassName() {
+
+            return m_className;
+        }
+
+        public void setClassName(String className) {
+
+            m_className = className;
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentTypeManager.class);
@@ -93,8 +116,8 @@ public class CmsXmlContentTypeManager {
 
         m_registeredTypes = new HashMap<String, I_CmsXmlSchemaType>();
         m_defaultWidgets = new HashMap<String, I_CmsWidget>();
-        m_registeredWidgets = new HashMap<String, I_CmsWidget>();
-        m_widgetAliases = new HashMap<String, String>();
+        m_registeredWidgets = new LinkedHashMap<String, I_CmsWidget>();
+        m_widgetAliases = new LinkedHashMap<String, String>();
         m_widgetDefaultConfigurations = new HashMap<String, String>();
 
         FastHashMap fastMap = new FastHashMap();
@@ -220,13 +243,16 @@ public class CmsXmlContentTypeManager {
      * Adds a XML content editor widget class, making this widget available for the XML content editor.<p>
      *
      * @param className the widget class to add
-     * @param aliasName the (optional) alias name to use for the widget class
+     * @param aliases the (optional) alias names to use for the widget class
      * @param defaultConfiguration the default configuration of the widget
      */
-    public void addWidget(String className, String aliasName, String defaultConfiguration) {
+    public void addWidget(String className, List<String> aliases, String defaultConfiguration) {
 
         Class<?> widgetClazz;
         I_CmsWidget widget;
+        if (aliases == null) {
+            aliases = Collections.emptyList();
+        }
         try {
             widgetClazz = Class.forName(className);
             widget = (I_CmsWidget)widgetClazz.newInstance();
@@ -237,8 +263,12 @@ public class CmsXmlContentTypeManager {
 
         m_registeredWidgets.put(widgetClazz.getName(), widget);
 
-        if (aliasName != null) {
-            m_widgetAliases.put(aliasName, widgetClazz.getName());
+        for (String alias : aliases) {
+            String prev = m_widgetAliases.get(alias);
+            if (prev != null) {
+                LOG.warn("Duplicate widget alias " + alias + " for " + prev + ", " + widgetClazz.getName());
+            }
+            m_widgetAliases.put(alias, widgetClazz.getName());
         }
 
         if (CmsStringUtil.isNotEmpty(defaultConfiguration)) {
@@ -247,31 +277,14 @@ public class CmsXmlContentTypeManager {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            if (aliasName == null) {
-                if (CmsStringUtil.isEmpty(defaultConfiguration)) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
-                } else {
-                    CmsLog.INIT.info(
-                        Messages.get().getBundle().key(
-                            Messages.INIT_ADD_WIDGET_CONFIG_2,
-                            widgetClazz.getName(),
-                            defaultConfiguration));
-                }
+            if (CmsStringUtil.isEmpty(defaultConfiguration)) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
             } else {
-                if (CmsStringUtil.isEmpty(defaultConfiguration)) {
-                    CmsLog.INIT.info(
-                        Messages.get().getBundle().key(
-                            Messages.INIT_ADD_WIDGET_ALIAS_2,
-                            widgetClazz.getName(),
-                            aliasName));
-                } else {
-                    CmsLog.INIT.info(
-                        Messages.get().getBundle().key(
-                            Messages.INIT_ADD_WIDGET_ALIAS_CONFIG_3,
-                            widgetClazz.getName(),
-                            aliasName,
-                            defaultConfiguration));
-                }
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_ADD_WIDGET_CONFIG_2,
+                        widgetClazz.getName(),
+                        defaultConfiguration));
             }
         }
     }
@@ -453,18 +466,18 @@ public class CmsXmlContentTypeManager {
      * @return the alias for the given Widget class name, may be <code>null</code> if no alias is defined for
      * the class
      */
-    public String getRegisteredWidgetAlias(String className) {
+    public List<String> getRegisteredWidgetAliases(String className) {
 
+        List<String> result = new ArrayList<>();
         Iterator<Map.Entry<String, String>> i = m_widgetAliases.entrySet().iterator();
         while (i.hasNext()) {
             // key is alias name, value is class name
             Map.Entry<String, String> e = i.next();
             if (e.getValue().equals(className)) {
-                // the alias mapping was found
-                return e.getKey();
+                result.add(e.getKey());
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -475,7 +488,6 @@ public class CmsXmlContentTypeManager {
     public List<String> getRegisteredWidgetNames() {
 
         List<String> result = new ArrayList<String>(m_registeredWidgets.keySet());
-        Collections.sort(result);
         return result;
     }
 

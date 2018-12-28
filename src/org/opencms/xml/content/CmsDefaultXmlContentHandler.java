@@ -143,93 +143,6 @@ import com.google.common.collect.Maps;
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_CmsXmlContentVisibilityHandler {
 
     /**
-     * Helper class for mapping widget names and configurations which are configured using the setting-like 'field' syntax.<p>
-     *
-     * Widget mappers are single-use, one instance needs to be created for each field.
-     */
-    public static class WidgetMapper {
-
-        /** Internal widget map. */
-        private static Map<String, String> m_mapping = new HashMap<>();
-
-        static {
-            m_mapping.put("string", "StringWidget");
-            m_mapping.put("select", "SelectorWidget");
-            m_mapping.put("combo", "ComboWidget");
-            m_mapping.put("selectcombo", "SelectComboWidget");
-            m_mapping.put("checkbox", "BooleanWidget");
-            m_mapping.put("datetime", "DateTimeWidget");
-            m_mapping.put("category", "CategoryWidget");
-            m_mapping.put("colorpicker", "ColorpickerWidget");
-            m_mapping.put("display", "DisplayWidget");
-            m_mapping.put("group", "GroupWidget");
-            m_mapping.put("html", "HtmlWidget");
-            m_mapping.put("string-plaintext", "StringWidgetPlaintext");
-            m_mapping.put("linkgallery", "LinkGalleryWidget");
-            m_mapping.put("localization", "LocalizationWidget");
-            m_mapping.put("multiselect", "MultiSelectWidget");
-            m_mapping.put("groupmultiselect", "GroupMultiSelectorWidget");
-            m_mapping.put("orgunit", "OrgUnitWidget");
-            m_mapping.put("principal", "PrincipalWidget");
-            m_mapping.put("radio", "RadioSelectWidget");
-            m_mapping.put("groupselect", "GroupSelectorWidget");
-            m_mapping.put("textarea", "TextareaWidget");
-            m_mapping.put("textarea-plaintext", "TextareaWidgetPlaintext");
-            m_mapping.put("user", "UserWidget");
-            m_mapping.put("file", "VfsFileWidget");
-            m_mapping.put("image", "VfsImageWidget");
-            m_mapping.put("downloadgallery", "DownloadGalleryWidget");
-            m_mapping.put("imagegallery", "ImageGalleryWidget");
-            m_mapping.put("typecombo", "TypeComboWidget");
-            m_mapping.put("dependentselect", "DependentSelectWidget");
-            m_mapping.put("displaytype", "DisplayTypeSelectWidget");
-            m_mapping.put("serialdate", "SerialDateWidget");
-        }
-
-        /** The original configuration. */
-        private String m_config;
-
-        /** The original widget name. */
-        private String m_widget;
-
-        /**
-         * Creates a new instance.<p>
-         *
-         * @param widget the original widget name
-         * @param config the original widget configuration
-         */
-        public WidgetMapper(String widget, String config) {
-
-            m_widget = widget;
-            m_config = config;
-        }
-
-        /**
-         * Gets the widget configuration.<p>
-         *
-         * @return the widget configuration
-         */
-        public String getConfig() {
-
-            return m_config;
-        }
-
-        /**
-         * Gets the mapped widget name.<p>
-         *
-         * @return the mapped widget name
-         */
-        public String getWidget() {
-
-            String mappedValue = m_mapping.get(m_widget);
-            if (mappedValue != null) {
-                return mappedValue;
-            }
-            return m_widget;
-        }
-    }
-
-    /**
      * Contains the visibility handler configuration for a content field path.<p>
      */
     protected static class VisibilityConfiguration {
@@ -690,40 +603,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
 
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
-
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -868,6 +747,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -2618,11 +2531,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String widget = elem.elementText(CmsConfigurationReader.N_WIDGET);
         String widgetConfig = elem.elementText(CmsConfigurationReader.N_WIDGET_CONFIG);
         if (widget != null) {
-            WidgetMapper mapper = new WidgetMapper(widget, widgetConfig);
-            widget = mapper.getWidget();
-            widgetConfig = mapper.getConfig();
             addWidget(contentDef, name, widget);
-
         }
         if (widgetConfig != null) {
             widgetConfig = widgetConfig.trim();

@@ -52,8 +52,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 
 import org.dom4j.Element;
+import org.xml.sax.Attributes;
 
 /**
  * VFS master configuration class.<p>
@@ -172,6 +174,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The widget node name. */
     public static final String N_WIDGET = "widget";
+
+    /** The widget alias node name. */
+    public static final String N_WIDGET_ALIAS = "widget-alias";
 
     /** The widgets node name. */
     public static final String N_WIDGETS = "widgets";
@@ -557,10 +562,48 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENT, "setXmlContentTypeManager");
 
         // XML content widgets add rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, "addWidget", 3);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 0, A_CLASS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 1, A_ALIAS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 2, A_CONFIGURATION);
+
+        // Widget definitions.
+        // 'aliases' list is used/reset by the rule for widgets, and filled by the rule for aliases.
+        final List<String> aliases = new ArrayList<>();
+        digester.addRule("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, new Rule() {
+
+            private String m_className;
+            private String m_config;
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                m_className = attributes.getValue(A_CLASS);
+                m_config = attributes.getValue(A_CONFIGURATION);
+                String alias = attributes.getValue(A_ALIAS);
+
+                aliases.clear();
+                if (alias != null) {
+                    aliases.add(alias.trim());
+                }
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                CmsXmlContentTypeManager manager = getDigester().peek();
+                List<String> aliasesCopy = new ArrayList<>(aliases);
+                manager.addWidget(m_className, aliasesCopy, m_config);
+            }
+        });
+
+        digester.addRule(
+            "*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET + "/" + N_WIDGET_ALIAS,
+            new Rule() {
+
+                @Override
+                public void body(String namespace, String name, String text) throws Exception {
+
+                    aliases.add(text.trim());
+                }
+
+            });
 
         // XML content schema type add rules
         digester.addCallMethod(
@@ -716,9 +759,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         Element xmlWidgetsElement = xmlContentsElement.addElement(N_WIDGETS);
         for (String widget : m_xmlContentTypeManager.getRegisteredWidgetNames()) {
             Element widgetElement = xmlWidgetsElement.addElement(N_WIDGET).addAttribute(A_CLASS, widget);
-            String alias = m_xmlContentTypeManager.getRegisteredWidgetAlias(widget);
-            if (alias != null) {
-                widgetElement.addAttribute(A_ALIAS, alias);
+            for (String alias : m_xmlContentTypeManager.getRegisteredWidgetAliases(widget)) {
+                widgetElement.addElement(N_WIDGET_ALIAS).addText(alias);
             }
             String defaultConfiguration = m_xmlContentTypeManager.getWidgetDefaultConfiguration(widget);
             if (CmsStringUtil.isNotEmpty(defaultConfiguration)) {

@@ -663,30 +663,134 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
-				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
-				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
-				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />				
-				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
-				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
-				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget"/>
-                <widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" configuration="link,anchor,source,formatselect" />
-				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
-				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
-                <widget class="org.opencms.widgets.CmsInputWidgetPlaintext" alias="StringWidgetPlaintext" />                
-				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
-				<widget class="org.opencms.widgets.CmsLocalizationWidget" alias="LocalizationWidget"/>
-				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
-				<widget class="org.opencms.widgets.CmsSelectGroupWidget" alias="GroupSelectorWidget" />
-				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
-				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
-				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" configuration="8" />
-                <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />                
-				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
-				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"  configuration="hidesiteselector|excludefiles"/>
-				<widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget"/>
-			</widgets>
+                <widget class="org.opencms.widgets.CmsCalendarWidget">
+                    <widget-alias>DateTimeWidget</widget-alias>
+                    <widget-alias>datetime</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsCategoryWidget">
+                    <widget-alias>CategoryWidget</widget-alias>
+                    <widget-alias>category</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsCheckboxWidget">
+                    <widget-alias>BooleanWidget</widget-alias>
+                    <widget-alias>checkbox</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsColorpickerWidget">
+                    <widget-alias>ColorpickerWidget</widget-alias>
+                    <widget-alias>colorpicker</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsComboWidget">
+                    <widget-alias>ComboWidget</widget-alias>
+                    <widget-alias>combo</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSelectComboWidget">
+                    <widget-alias>SelectComboWidget</widget-alias>
+                    <widget-alias>selectcombo</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsDisplayWidget">
+                    <widget-alias>DisplayWidget</widget-alias>
+                    <widget-alias>display</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsGroupWidget">
+                    <widget-alias>GroupWidget</widget-alias>
+                    <widget-alias>group</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsHtmlWidget">
+                    <widget-alias>HtmlWidget</widget-alias>
+                    <widget-alias>html</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsInputWidget">
+                    <widget-alias>StringWidget</widget-alias>
+                    <widget-alias>string</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsInputWidgetPlaintext">
+                    <widget-alias>StringWidgetPlaintext</widget-alias>
+                    <widget-alias>string-plaintext</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsLinkGalleryWidget">
+                    <widget-alias>LinkGalleryWidget</widget-alias>
+                    <widget-alias>linkgallery</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsLocalizationWidget">
+                    <widget-alias>LocalizationWidget</widget-alias>
+                    <widget-alias>localization</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsMultiSelectWidget">
+                    <widget-alias>MultiSelectWidget</widget-alias>
+                    <widget-alias>multiselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsMultiSelectGroupWidget">
+                    <widget-alias>GroupMultiSelectorWidget</widget-alias>
+                    <widget-alias>groupmultiselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsOrgUnitWidget">
+                    <widget-alias>OrgUnitWidget</widget-alias>
+                    <widget-alias>orgunit</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsPrincipalWidget">
+                    <widget-alias>PrincipalWidget</widget-alias>
+                    <widget-alias>principal</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsRadioSelectWidget">
+                    <widget-alias>RadioSelectWidget</widget-alias>
+                    <widget-alias>radio</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSelectGroupWidget">
+                    <widget-alias>GroupSelectorWidget</widget-alias>
+                    <widget-alias>groupselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSelectWidget">
+                    <widget-alias>SelectorWidget</widget-alias>
+                    <widget-alias>select</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsTextareaWidget">
+                    <widget-alias>TextareaWidget</widget-alias>
+                    <widget-alias>textarea</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext">
+                    <widget-alias>TextareaWidgetPlaintext</widget-alias>
+                    <widget-alias>textarea-plaintext</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsUserWidget">
+                    <widget-alias>UserWidget</widget-alias>
+                    <widget-alias>user</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsVfsFileWidget">
+                    <widget-alias>VfsFileWidget</widget-alias>
+                    <widget-alias>file</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsVfsImageWidget">
+                    <widget-alias>VfsImageWidget</widget-alias>
+                    <widget-alias>image</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsAdeDownloadGalleryWidget">
+                    <widget-alias>DownloadGalleryWidget</widget-alias>
+                    <widget-alias>downloadgallery</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsAdeImageGalleryWidget">
+                    <widget-alias>ImageGalleryWidget</widget-alias>
+                    <widget-alias>imagegallery</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsTypeComboWidget">
+                    <widget-alias>TypeComboWidget</widget-alias>
+                    <widget-alias>typecombo</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsLocationPickerWidget">
+                    <widget-alias>LocationPickerWidget</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsDependentSelectWidget">
+                    <widget-alias>DependentSelectWidget</widget-alias>
+                    <widget-alias>dependentselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsDisplayTypeSelectWidget">
+                    <widget-alias>DisplayTypeSelectWidget</widget-alias>
+                    <widget-alias>displaytype</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSerialDateWidget">
+                    <widget-alias>SerialDateWidget</widget-alias>
+                    <widget-alias>serialdate</widget-alias>
+                </widget>
+            </widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />

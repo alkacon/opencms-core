@@ -164,12 +164,15 @@
 # For a widget, an optional alias name can be configured as well as a default
 # widget configuration that is used to define the widget behavior in the structured
 # content editor if no individual configuration is defined in the XSD for the XML content.
+# Additional widget aliases can be defined using the widget-alias subelement. 
 -->
 <!ELEMENT xmlcontent (widgets, schematypes)>
 
 <!ELEMENT widgets (widget*)>
-<!ELEMENT widget EMPTY>
+<!ELEMENT widget (widget-alias*)>
 <!ATTLIST widget class CDATA #REQUIRED alias CDATA #IMPLIED configuration CDATA #IMPLIED>
+
+<!ELEMENT widget-alias (#PCDATA)>
 
 <!ELEMENT schematypes (schematype*)>
 <!ELEMENT schematype EMPTY>
