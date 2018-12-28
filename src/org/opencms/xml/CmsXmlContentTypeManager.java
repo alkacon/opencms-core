@@ -63,28 +63,6 @@ import org.dom4j.Element;
  */
 public class CmsXmlContentTypeManager {
 
-    public static class WidgetEntry {
-
-        private List<String> m_aliases = new ArrayList<>();
-
-        private String m_className;
-
-        public List<String> getAliases() {
-
-            return m_aliases;
-        }
-
-        public String getClassName() {
-
-            return m_className;
-        }
-
-        public void setClassName(String className) {
-
-            m_className = className;
-        }
-    }
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentTypeManager.class);
 
