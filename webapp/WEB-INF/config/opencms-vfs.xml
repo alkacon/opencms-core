@@ -563,6 +563,7 @@
                 </widget>
                 <widget class="org.opencms.widgets.CmsLocationPickerWidget">
                     <widget-alias>LocationPickerWidget</widget-alias>
+                    <widget-alias>location</widget-alias>
                 </widget>
                 <widget class="org.opencms.widgets.CmsDependentSelectWidget">
                     <widget-alias>DependentSelectWidget</widget-alias>
