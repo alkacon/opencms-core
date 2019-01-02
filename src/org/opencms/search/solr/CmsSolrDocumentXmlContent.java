@@ -65,6 +65,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
+import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlSerialDateValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -396,8 +397,13 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                         extracted = CmsSearchUtil.getDateAsIso8601(((CmsXmlDateTimeValue)value).getDateTimeValue());
                     } else {
                         extracted = value.getPlainText(cms);
-                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted) && value.isSimpleType()) {
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)
+                            && value.isSimpleType()
+                            && !(value instanceof CmsXmlHtmlValue)) {
                             // no text value for simple type, so take the string value as item
+                            // prevent this for elements of type "OpenCmsHtml", since this causes problematic values
+                            // being indexed, e.g., <iframe ...></iframe>
+                            // TODO: Why is this special handling needed at all???
                             extracted = value.getStringValue(cms);
                         }
                     }
