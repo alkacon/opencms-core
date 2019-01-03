@@ -2028,6 +2028,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0 = "GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_NO_VFSBUNDLE_0 = "GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_NO_VFSBUNDLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_0 = "GUI_RESOURCETYPE_EDIT_MODULE_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */

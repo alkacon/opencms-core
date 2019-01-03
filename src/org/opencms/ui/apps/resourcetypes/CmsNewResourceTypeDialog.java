@@ -59,6 +59,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsVfsBundleLoaderXml;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -67,13 +68,15 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
+
+import org.dom4j.Element;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.Button;
@@ -136,7 +139,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
                 if (!OpenCms.getResourceManager().getResourceType(res).equals(
                     OpenCms.getResourceManager().getResourceType("propertyvfsbundle"))) {
                     throw new InvalidValueException(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_0));
+                        CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_INVALID_RESORUCE_NO_VFSBUNDLE_0));
 
                 }
             } catch (CmsException e) {
@@ -261,7 +264,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
     private static final String KEY_PREFIX_TITLE = "title.";
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourceTypeDialog.class);
+    protected static final Log LOG = CmsLog.getLog(CmsNewResourceTypeDialog.class);
 
     /**Sample path. */
     private static final String PATH_SAMPLE = "/system/modules/org.opencms.base/copyresources/";
@@ -486,6 +489,36 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
     }
 
     /**
+     * Adds the given messages to the vfs message bundle.<p>
+     *
+     * @param messages the messages
+     * @param vfsBundleFile the bundle file
+     *
+     * @throws CmsException if something goes wrong writing the file
+     */
+    private void addMessagesToVfsBundle(Map<String, String> messages, CmsFile vfsBundleFile) throws CmsException {
+
+        lockTemporary(vfsBundleFile);
+        CmsObject cms = m_cms;
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, vfsBundleFile);
+        Locale locale = CmsLocaleManager.getDefaultLocale();
+        if (!content.hasLocale(locale)) {
+            content.addLocale(cms, locale);
+        }
+        Element root = content.getLocaleNode(locale);
+        for (Entry<String, String> entry : messages.entrySet()) {
+            Element message = root.addElement(CmsVfsBundleLoaderXml.N_MESSAGE);
+            Element key = message.addElement(CmsVfsBundleLoaderXml.N_KEY);
+            key.setText(entry.getKey());
+            Element value = message.addElement(CmsVfsBundleLoaderXml.N_VALUE);
+            value.setText(entry.getValue());
+        }
+        content.initDocument();
+        vfsBundleFile.setContents(content.marshal());
+        cms.writeFile(vfsBundleFile);
+    }
+
+    /**
      * Adds the given resource to the module if necessary.<p>
      *
      * @param resourcePath to be added
@@ -515,7 +548,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
     private void addTypeMessages(CmsExplorerTypeSettings setting, String moduleFolder)
     throws CmsException, UnsupportedEncodingException {
 
-        Map<String, String> messages = new HashMap<String, String>();
+        Map<String, String> messages = new TreeMap<String, String>();
 
         // check if any messages to set
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_typeName.getValue())) {
@@ -557,33 +590,32 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
         CmsFile file = m_cms.readFile(config);
 
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
-        for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
-
-            if (!xmlContent.hasLocale(l)) {
-                xmlContent.addLocale(m_cms, l);
-            }
-            CmsResource formatter = m_cms.readResource(formatterPath);
-
-            I_CmsXmlContentValue v = xmlContent.getValue("Jsp", l);
-            v.setStringValue(m_cms, formatter.getRootPath());
-
-            String xmlPath = "NiceName";
-            v = xmlContent.getValue(xmlPath, l);
-            v.setStringValue(m_cms, m_typeName.getValue());
-
-            xmlPath = "Type";
-            v = xmlContent.getValue(xmlPath, l);
-            v.setStringValue(m_cms, m_typeShortName.getValue());
-
-            xmlPath = "AutoEnabled";
-            v = xmlContent.getValue(xmlPath, l);
-            v.setStringValue(m_cms, "true");
-
-            xmlPath = "Match/Width/Width";
-            createParentXmlElements(xmlContent, xmlPath, l);
-            v = xmlContent.getValue(xmlPath, l);
-            v.setStringValue(m_cms, "-1");
+        Locale l = new Locale("en");
+        if (!xmlContent.hasLocale(l)) {
+            xmlContent.addLocale(m_cms, l);
         }
+        CmsResource formatter = m_cms.readResource(formatterPath);
+
+        I_CmsXmlContentValue v = xmlContent.getValue("Jsp", l);
+        v.setStringValue(m_cms, formatter.getRootPath());
+
+        String xmlPath = "NiceName";
+        v = xmlContent.getValue(xmlPath, l);
+        v.setStringValue(m_cms, m_typeName.getValue());
+
+        xmlPath = "Type";
+        v = xmlContent.getValue(xmlPath, l);
+        v.setStringValue(m_cms, m_typeShortName.getValue());
+
+        xmlPath = "AutoEnabled";
+        v = xmlContent.getValue(xmlPath, l);
+        v.setStringValue(m_cms, "true");
+
+        xmlPath = "Match/Width/Width";
+        createParentXmlElements(xmlContent, xmlPath, l);
+        v = xmlContent.getValue(xmlPath, l);
+        v.setStringValue(m_cms, "-1");
+
         file.setContents(xmlContent.marshal());
         CmsLockUtil.ensureLock(m_cms, file);
         m_cms.writeFile(file);
@@ -596,7 +628,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
      */
     private void adjustModuleConfig() {
 
-        Locale l = CmsLocaleManager.getLocale("en");//.getDefaultLocale();
+        Locale l = CmsLocaleManager.getLocale("en");
         try {
             CmsResource config = m_cms.readResource(m_config.getValue());
             CmsFile configFile = m_cms.readFile(config);
@@ -719,9 +751,8 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
                 I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(
                     CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG);
                 List<CmsProperty> props = new ArrayList<CmsProperty>();
-                props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, getAvailableLocalString(), null));
-                props.add(
-                    new CmsProperty(CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, getAvailableLocalString(), null));
+                props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "en", null));
+                props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, "en", null));
 
                 m_cms.createResource(formatterConfigPath, configType, null, props);
             }
