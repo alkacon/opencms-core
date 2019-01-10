@@ -647,7 +647,7 @@ function printList(wo) {
    + "<script type=\"text/javascript\" language=\"JavaScript\">\n"
    + "document.oncontextmenu = new Function('return false;');\n"
    + "document.onmousedown = " + mousedownHandler + ";\n"
-   + "document.onmouseup = top.handleOnClick;\n"
+   + "document.onmouseup = function(e){top.handleOnClick(e);}\n"
    + (wo.additionalContextMenuParams ? "var additionalContextMenuParams = \""+wo.additionalContextMenuParams +"\";\n" : "")
    + "</script>\n"
    + "<style type='text/css'> @import url(" + vi.skinPath + "commons/explorer.css); </style>\n"
