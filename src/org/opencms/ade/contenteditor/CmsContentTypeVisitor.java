@@ -504,6 +504,7 @@ public class CmsContentTypeVisitor {
             String help = defaultHandler.getFieldHelp().get(value.getName());
             if (help != null) {
                 CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setKeepEmptyMacros(true);
                 resolver.setMessages(m_messages);
                 return resolver.resolveMacros(help);
             }
@@ -529,6 +530,7 @@ public class CmsContentTypeVisitor {
             String label = defaultHandler.getFieldLabels().get(value.getName());
             if (label != null) {
                 CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setKeepEmptyMacros(true);
                 resolver.setMessages(m_messages);
                 return resolver.resolveMacros(label);
             }
