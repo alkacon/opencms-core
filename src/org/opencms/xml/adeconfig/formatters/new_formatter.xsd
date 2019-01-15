@@ -55,6 +55,9 @@
         	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
         </layouts>
+        <relations>
+            <relation element="IncludeSettings" invalidate="false" />
+        </relations>
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
