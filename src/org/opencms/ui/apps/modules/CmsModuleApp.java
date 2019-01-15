@@ -43,9 +43,11 @@ import org.opencms.ui.apps.A_CmsAttributeAwareApp;
 import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.modules.edit.CmsEditModuleForm;
+import org.opencms.ui.components.CmsAppViewLayout;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsBasicReportPage;
@@ -572,6 +574,13 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         return result;
     }
 
+    @Override
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.addPublishButton(updatedItems -> {});
+        super.initUI(context);
+    }
+
     /**
      * @see org.opencms.ui.apps.I_CmsCachableApp#isCachable()
      */
@@ -767,6 +776,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         @SuppressWarnings("unchecked")
         List<Component> buttons = (List<Component>)attributes.get(Attributes.BUTTONS);
         if (buttons != null) {
+            buttons.add(0, CmsAppViewLayout.createPublishButton(changes -> {}));
             for (Component button : buttons) {
                 m_uiContext.addToolbarButton(button);
             }

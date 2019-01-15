@@ -83,9 +83,12 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, Br
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsAppUIContext#addPublishButton(org.opencms.ui.I_CmsUpdateListener)
+     * Creates the publish button.
+     *
+     * @param updateListener the update listener
+     * @return the publish button
      */
-    public Button addPublishButton(final I_CmsUpdateListener<String> updateListener) {
+    public static Button createPublishButton(final I_CmsUpdateListener<String> updateListener) {
 
         Button publishButton = CmsToolBar.createButton(
             FontOpenCms.PUBLISH,
@@ -107,6 +110,15 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, Br
                 extension.openPublishDialog();
             }
         });
+        return publishButton;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#addPublishButton(org.opencms.ui.I_CmsUpdateListener)
+     */
+    public Button addPublishButton(final I_CmsUpdateListener<String> updateListener) {
+
+        Button publishButton = createPublishButton(updateListener);
 
         addToolbarButton(publishButton);
         return publishButton;

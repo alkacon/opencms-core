@@ -33,6 +33,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsToolBar;
@@ -123,6 +124,13 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             LOG.debug(e.getLocalizedMessage(), e);
         }
         return result;
+    }
+
+    @Override
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.addPublishButton(updatedItems -> {});
+        super.initUI(context);
     }
 
     /**
