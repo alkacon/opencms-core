@@ -31,3 +31,7 @@ instancedate(name) ::= <<
 </searchsettings>
 
 >>
+
+listtitle(name) ::= <<$disptitle(name)$>>
+listorder(name) ::= <<$disporder(name)$>>
+listdate(name) ::= <<$instancedate(name)$>>
