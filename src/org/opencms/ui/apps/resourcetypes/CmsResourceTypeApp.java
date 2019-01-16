@@ -33,6 +33,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -92,6 +93,16 @@ public class CmsResourceTypeApp extends A_CmsWorkplaceApp {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    @Override
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.addPublishButton(changes -> {});
+        super.initUI(context);
     }
 
     /**
