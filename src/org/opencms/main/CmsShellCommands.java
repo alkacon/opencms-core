@@ -1535,6 +1535,22 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Sets a string-valued additional info entry on the user.
+     *
+     * @param username the name of the user
+     * @param infoName the additional info key
+     * @param value the additional info value
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void setUserInfo(String username, String infoName, String value) throws CmsException {
+
+        CmsUser user = m_cms.readUser(username);
+        user.setAdditionalInfo(infoName, value);
+        m_cms.writeUser(user);
+    }
+
+    /**
      * @see org.opencms.main.I_CmsShellCommands#shellExit()
      */
     public void shellExit() {
