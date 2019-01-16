@@ -39,6 +39,7 @@ import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
 
 import java.util.ArrayList;
@@ -727,7 +728,12 @@ public class CmsAttributeHandler extends CmsRootHandler {
             valueWidget.setValueEntity(
                 m_widgetService.getRendererForAttribute(m_attributeName, getAttributeType()),
                 value);
-
+            if (getAttributeType().getAttributeType(CmsType.CHOICE_ATTRIBUTE_NAME) != null) {
+                List<CmsChoiceMenuEntryBean> menuEntries = CmsRenderer.getChoiceEntries(getAttributeType(), false);
+                for (CmsChoiceMenuEntryBean entry : menuEntries) {
+                    valueWidget.addChoice(m_widgetService, entry);
+                }
+            }
         }
         m_attributeValueViews.remove(valueWidget);
         m_attributeValueViews.add(targetPosition, valueWidget);
