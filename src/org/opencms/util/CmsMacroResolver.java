@@ -153,6 +153,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** The prefix indicating that the key represents a property to be read on the current element. */
     public static final String KEY_PROPERTY_ELEMENT = "elementProperty.";
 
+    /** Key used to specify a random id as macro value. */
+    public static final String KEY_RANDOM_ID = "randomId";
+
     /** Key used to specify the request encoding as macro value. */
     public static final String KEY_REQUEST_ENCODING = "request.encoding";
 
@@ -1108,6 +1111,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     break;
             }
             return String.valueOf(resultTime);
+        }
+
+        if (CmsMacroResolver.KEY_RANDOM_ID.equals(macro)) {
+            // a random id value is requested
+            String id = CmsUUID.getConstantUUID("randomId." + Math.random()).toString();
+            // full UUIDs are to long, the first part should be enough
+            return id.substring(0, id.indexOf('-'));
         }
 
         if (m_additionalMacros != null) {
