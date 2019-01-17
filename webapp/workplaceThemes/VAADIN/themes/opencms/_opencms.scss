@@ -1300,6 +1300,20 @@
 	.o-dnd-area {
 		min-height: 78px;
 	}
+
+	.v-progressbar.v-disabled .v-progressbar-indicator{
+		background-color: #AAAAAA;
+    		border-color: #AAAAAA;
+    		background-image: none;
+	}
+
+	.v-progressbar.o-full .v-progressbar-indicator{
+		background-color: $red;
+    		border-color: $red;
+    		background-image: none;
+	}
+
+
 }
 
 .waggle{
