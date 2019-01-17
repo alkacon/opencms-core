@@ -36,10 +36,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Vaadin app for Cache Administration.<p>
@@ -52,6 +52,19 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
 
     /**width of the statistic info boxes.*/
     static final String STATISTIC_INFOBOX_WIDTH = "300px";
+
+    /**
+     * Panel with java statistics.<p>
+     *
+     * @return vaadin component.
+     */
+    public static Panel getJavaCacheStatsPanel() {
+
+        Panel java = new Panel();
+        java.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_0));
+        java.setContent(CmsCacheViewApp.getJavaStatisticButton().getInfoLayout());
+        return java;
+    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -111,12 +124,8 @@ public class CmsCacheAdminApp extends A_CmsWorkplaceApp {
         layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 
         //Statistic about heap space
-        Panel java = new Panel();
-        //        java.setWidth("400px");
-        java.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_0));
-        java.setContent(CmsCacheViewApp.getJavaStatisticButton().getInfoLayout());
 
-        layout.addComponent(java);
+        layout.addComponent(getJavaCacheStatsPanel());
 
         Panel flex = new Panel();
         //        flex.setWidth("400px");

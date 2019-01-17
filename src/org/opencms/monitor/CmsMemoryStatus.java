@@ -27,12 +27,17 @@
 
 package org.opencms.monitor;
 
+import java.io.Serializable;
+
 /**
  * Data structure for dealing with memory status information.<p>
  *
  * @since 6.0.0
  */
-public class CmsMemoryStatus {
+public class CmsMemoryStatus implements Serializable {
+
+    /**Default serial id. */
+    private static final long serialVersionUID = 1L;
 
     /** The count used to calculate the average. */
     private int m_count;

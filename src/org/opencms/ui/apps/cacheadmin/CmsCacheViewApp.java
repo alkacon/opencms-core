@@ -49,18 +49,18 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.ProgressBar;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the app which shows the content of caches.<p>
@@ -89,7 +89,64 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      * @param mode of app
      */
     public CmsCacheViewApp(Mode mode) {
+
         m_mode = mode;
+    }
+
+    /**
+     * Creates in info button for java cache statistics.<p>
+     *
+     * @return CmsInfoButton
+     */
+    public static CmsInfoButton getJavaStatisticButton() {
+
+        return getJavaStatisticButton(OpenCms.getMemoryMonitor().getMemoryStatus());
+
+    }
+
+    /**
+     * Creates in info button for java cache statistics.<p>
+     * @param memory memory object
+     *
+     * @return CmsInfoButton
+     */
+    public static CmsInfoButton getJavaStatisticButton(CmsMemoryStatus memory) {
+
+        Map<String, String> infoMap = new LinkedHashMap<String, String>();
+
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_MAX_0),
+            CmsFileUtil.formatFilesize(
+                memory.getMaxMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_TOTAL_0),
+            CmsFileUtil.formatFilesize(
+                memory.getTotalMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_USED_0),
+            CmsFileUtil.formatFilesize(
+                memory.getUsedMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_FREE_0),
+            CmsFileUtil.formatFilesize(
+                memory.getFreeMemory() * 1048576,
+                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+
+        CmsInfoButton info = new CmsInfoButton(infoMap);
+        VerticalLayout prog = new VerticalLayout();
+        Label label = new Label();
+        label.setContentMode(ContentMode.HTML);
+        label.setValue(
+            "<p>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</p>");
+        prog.addComponent(label);
+        prog.addComponent(new ProgressBar(((float)memory.getUsage() / 100)));
+        info.addAdditionalElement(prog, 0);
+        info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
+        info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
+        return info;
     }
 
     /**
@@ -125,7 +182,7 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         Label label = new Label();
         label.setContentMode(ContentMode.HTML);
         label.setValue(
-            "<h2>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</h2>");
+            "<p>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</p>");
         prog.addComponent(label);
 
         prog.addComponent(
@@ -158,52 +215,6 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
 
         info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
         info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
-        return info;
-    }
-
-    /**
-     * Creates in info button for java cache statistics.<p>
-     *
-     * @return CmsInfoButton
-     */
-    protected static CmsInfoButton getJavaStatisticButton() {
-
-        CmsMemoryStatus memory = OpenCms.getMemoryMonitor().getMemoryStatus();
-
-        Map<String, String> infoMap = new LinkedHashMap<String, String>();
-
-        infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_MAX_0),
-            CmsFileUtil.formatFilesize(
-                memory.getMaxMemory() * 1048576,
-                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-        infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_TOTAL_0),
-            CmsFileUtil.formatFilesize(
-                memory.getTotalMemory() * 1048576,
-                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-        infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_USED_0),
-            CmsFileUtil.formatFilesize(
-                memory.getUsedMemory() * 1048576,
-                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-        infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_JAVA_HEAP_FREE_0),
-            CmsFileUtil.formatFilesize(
-                memory.getFreeMemory() * 1048576,
-                A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-
-        CmsInfoButton info = new CmsInfoButton(infoMap);
-        VerticalLayout prog = new VerticalLayout();
-        Label label = new Label();
-        label.setContentMode(ContentMode.HTML);
-        label.setValue(
-            "<h2>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</h2>");
-        prog.addComponent(label);
-        prog.addComponent(new ProgressBar(((float)memory.getUsage() / 100)));
-        info.addAdditionalElement(prog, 0);
-        info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
-        info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         return info;
     }
 
