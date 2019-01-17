@@ -46,6 +46,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsGroupTable.TableProperty;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -586,6 +587,16 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             }
         }
         A_CmsUI.get().reload();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    @Override
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.addPublishButton(changed -> {/* do nothing*/});
+        super.initUI(context);
     }
 
     /**

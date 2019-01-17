@@ -40,6 +40,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.sitemanager.CmsSitesTable.TableProperty;
@@ -273,6 +274,17 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
                 OpenCms.getLinkManager().getPermalink(getRootCmsObject(), iconResource.getRootPath()));
         }
         return new CmsCssIcon(OpenCmsTheme.ICON_SITE);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    @Override
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.addPublishButton(changes -> {/* do nothing. */});
+        // TODO Auto-generated method stub
+        super.initUI(context);
     }
 
     /**

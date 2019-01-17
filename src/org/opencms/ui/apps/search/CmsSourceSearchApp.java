@@ -39,6 +39,7 @@ import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
@@ -78,6 +79,9 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
     /** The folder key. */
     public static final String FOLDER = "f";
 
+    /** The ignore subsites key. */
+    public static final String IGNORE_SUBSITES = "igss";
+
     /** The index key. */
     public static final String INDEX = "i";
 
@@ -101,9 +105,6 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
 
     /** The search pattern key. */
     public static final String SEARCH_PATTERN = "sp";
-
-    /** The ignore subsites key. */
-    public static final String IGNORE_SUBSITES = "igss";
 
     /** The type key. */
     public static final String SEARCH_TYPE = "t";
@@ -228,6 +229,16 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             }
         }
         return settings;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    @Override
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.addPublishButton(changed -> {/* do nothing */});
+        super.initUI(context);
     }
 
     /**
