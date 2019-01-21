@@ -42,8 +42,10 @@ import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.util.table.CmsBeanTableBuilder;
 
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -56,7 +58,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
@@ -86,7 +87,7 @@ public class CmsModuleTable<T> extends Table {
     private CmsInfoButton m_counter;
 
     /** The context menu. */
-    private CmsContextMenu m_menu = new CmsContextMenu();
+    protected CmsContextMenu m_menu = new CmsContextMenu();
 
     /** The search box. */
     private TextField m_searchBox = new TextField();
@@ -229,19 +230,24 @@ public class CmsModuleTable<T> extends Table {
      *
      * @param event the click event
      */
-    void onItemClick(ItemClickEvent event) {
+    protected void onItemClick(ItemClickEvent event) {
 
         if (!event.isCtrlKey() && !event.isShiftKey()) {
+
+            Set<String> nameSet = new LinkedHashSet<String>();
+
+            CmsModuleRow moduleRow = (CmsModuleRow)(event.getItemId());
+            select(moduleRow);
+            nameSet.add(moduleRow.getModule().getName());
             if (event.getButton().equals(MouseButton.RIGHT) || (event.getPropertyId() == null)) {
-                CmsModuleRow moduleRow = (CmsModuleRow)(event.getItemId());
                 select(moduleRow);
-                m_menu.setEntries(m_app.getMenuEntries(), moduleRow.getModule().getName());
+                m_menu.setEntries(m_app.getMenuEntries(), nameSet);
                 m_menu.openForTable(event, this);
             } else if (event.getButton().equals(MouseButton.LEFT) && "name".equals(event.getPropertyId())) {
-                BeanItem<?> item = (BeanItem<?>)event.getItem();
-                CmsModuleRow row = (CmsModuleRow)(item.getBean());
-                m_app.openModuleInfo(row.getModule().getName());
+
+                m_app.openModuleInfo(nameSet);
             }
+
         }
     }
 

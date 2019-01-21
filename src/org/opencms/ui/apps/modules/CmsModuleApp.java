@@ -62,6 +62,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -130,18 +131,19 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     /**
      * Context menu entry for deleting a module.<p>
      */
-    class DeleteModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
+    class DeleteModuleEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         @SuppressWarnings("synthetic-access")
         @Override
-        public void executeAction(final String context) {
+        public void executeAction(final Set<String> context) {
 
             try {
+                final String moduleName = context.iterator().next();
                 final CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-                final CmsModule module = OpenCms.getModuleManager().getModule(context);
+                final CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
 
                 Runnable okAction = new Runnable() {
 
@@ -161,7 +163,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
 
                                 initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
                                 try {
-                                    OpenCms.getModuleManager().deleteModule(cms, context, false, getReport());
+                                    OpenCms.getModuleManager().deleteModule(cms, moduleName, false, getReport());
                                 } catch (Exception e) {
                                     getReport().println(e);
                                     LOG.error(e.getLocalizedMessage(), e);
@@ -223,9 +225,12 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return visibilityCheckHasModule(context);
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            return visibilityCheckHasModule(context.iterator().next());
         }
 
     }
@@ -233,15 +238,15 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     /**
      * Context menu entry for editng a module.
      */
-    class EditModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
+    class EditModuleEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         @Override
-        public void executeAction(String context) {
+        public void executeAction(Set<String> context) {
 
-            CmsModuleApp.this.editModule(context);
+            CmsModuleApp.this.editModule(context.iterator().next());
 
         }
 
@@ -258,9 +263,12 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return visibilityCheckHasModule(context);
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            return visibilityCheckHasModule(context.iterator().next());
         }
 
     }
@@ -268,15 +276,15 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     /**
      * Context menu entry for editng a module.
      */
-    static class ExplorerEntry implements I_CmsSimpleContextMenuEntry<String> {
+    static class ExplorerEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         @Override
-        public void executeAction(String context) {
+        public void executeAction(Set<String> context) {
 
-            String path = getModuleFolder(context);
+            String path = getModuleFolder(context.iterator().next());
             if (path != null) {
                 String link = CmsCoreService.getVaadinWorkplaceLink(A_CmsUI.getCmsObject(), path);
                 A_CmsUI.get().getPage().setLocation(link);
@@ -297,10 +305,14 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            if (getModuleFolder(context) != null) {
-                return visibilityCheckHasModule(context);
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            String moduleName = context.iterator().next();
+            if (getModuleFolder(moduleName) != null) {
+                return visibilityCheckHasModule(moduleName);
             } else {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
@@ -330,18 +342,19 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     /**
      * Context menu entry for exporting a module.
      */
-    class ExportModuleEntry implements I_CmsSimpleContextMenuEntry<String> {
+    class ExportModuleEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         @Override
-        public void executeAction(final String context) {
+        public void executeAction(final Set<String> context) {
 
             final CmsObject cms = A_CmsUI.getCmsObject();
-            final String handlerDesc = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context);
+            final String moduleName = context.iterator().next();
+            final String handlerDesc = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, moduleName);
 
-            final A_CmsReportThread thread = new A_CmsReportThread(cms, "Export module " + context) {
+            final A_CmsReportThread thread = new A_CmsReportThread(cms, "Export module " + moduleName) {
 
                 @Override
                 public String getReportUpdate() {
@@ -360,7 +373,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
                     try {
                         CmsModuleImportExportHandler handler = CmsModuleImportExportHandler.getExportHandler(
                             cms,
-                            OpenCms.getModuleManager().getModule(context),
+                            OpenCms.getModuleManager().getModule(moduleName),
                             handlerDesc);
                         OpenCms.getImportExportManager().exportData(cms, handler, getReport());
                     } catch (Exception e) {
@@ -370,7 +383,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
 
                 }
             };
-            CmsModule module = OpenCms.getModuleManager().getModule(context);
+            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
             if (module.hasModuleResourcesWithUndefinedSite()) {
                 CmsSiteSelectDialog.openDialogInWindow(new CmsSiteSelectDialog.I_Callback() {
 
@@ -413,9 +426,13 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return visibilityCheckHasModule(context);
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            return visibilityCheckHasModule(context.iterator().next());
         }
 
     }
@@ -424,18 +441,20 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
      * Context menu entry for displaying the type list.<p>
      */
     class ModuleInfoEntry
-    implements I_CmsSimpleContextMenuEntry<String>,
+    implements I_CmsSimpleContextMenuEntry<Set<String>>,
     org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry.I_HasCssStyles {
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         @Override
-        public void executeAction(String module) {
+        public void executeAction(Set<String> module) {
 
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
 
-            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(module, CmsModuleApp.this::editModule);
+            CmsModuleInfoDialog typeList = new CmsModuleInfoDialog(
+                module.iterator().next(),
+                CmsModuleApp.this::editModule);
 
             window.setContent(typeList);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TYPES_FOR_MODULE_0));
@@ -465,9 +484,12 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
          */
         @Override
-        public CmsMenuItemVisibilityMode getVisibility(String context) {
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return visibilityCheckHasModule(context);
+            if (context.size() > 1) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            return visibilityCheckHasModule(context.iterator().next());
         }
 
     }
@@ -514,7 +536,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     }
 
     /**
-     * Returns VISIBILITY_ACTIVE if a module with the given name exists, and VISIBILITY_INVISIBLE otherwise
+     * Returns VISIBILITY_ACTIVE if a module with the given name exists, and VISIBILITY_INVISIBLE otherwise. <p>
      *
      * @param name a module name
      * @return the visibility
@@ -562,9 +584,9 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
      *
      * @return the menu entries
      */
-    public List<I_CmsSimpleContextMenuEntry<String>> getMenuEntries() {
+    public List<I_CmsSimpleContextMenuEntry<Set<String>>> getMenuEntries() {
 
-        List<I_CmsSimpleContextMenuEntry<String>> result = Lists.newArrayList();
+        List<I_CmsSimpleContextMenuEntry<Set<String>>> result = Lists.newArrayList();
 
         result.add(new ModuleInfoEntry());
         result.add(new EditModuleEntry());
@@ -574,6 +596,9 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         return result;
     }
 
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
     @Override
     public void initUI(I_CmsAppUIContext context) {
 
@@ -615,7 +640,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
      *
      * @param name the name of the module
      */
-    public void openModuleInfo(String name) {
+    public void openModuleInfo(Set<String> name) {
 
         new ModuleInfoEntry().executeAction(name);
 
