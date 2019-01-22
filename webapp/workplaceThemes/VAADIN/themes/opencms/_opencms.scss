@@ -1301,18 +1301,31 @@
 		min-height: 78px;
 	}
 
-	.v-progressbar.v-disabled .v-progressbar-indicator{
-		background-color: #AAAAAA;
-    		border-color: #AAAAAA;
-    		background-image: none;
-	}
+	.v-progressbar{
+		.v-progressbar-indicator{
+			background-color: $cyan;
+			border-color: $cyan;
+			background-image:none;
+		}
+		&.v-disabled .v-progressbar-indicator{
+			background-color: #AAAAAA;
+    			border-color: #AAAAAA;
+    			background-image: none;
+		}
 
-	.v-progressbar.o-full .v-progressbar-indicator{
-		background-color: $red;
-    		border-color: $red;
-    		background-image: none;
-	}
+		&.o-full .v-progressbar-indicator{
+			background-color: $alkacon-red;
+    			border-color: $alkacon-red;
+    			background-image: none;
+		}
 
+		&.o-nearlyfull .v-progressbar-indicator{
+			background-color: $alkacon-orange;
+    			border-color: $alkacon-orange;
+    			background-image: none;
+		}
+
+	}
 
 }
 
