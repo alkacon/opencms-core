@@ -889,19 +889,26 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             CmsStateBean bean = parseState(state, m_baseOU);
             String[] ouPath = bean.getPath().split("/");
             LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
+
             if ((bean.getPath().equals(m_baseOU))
                 && (CmsOuTreeType.OU.equals(bean.getType()) | (bean.getType() == null))) {
                 crumbs.put(
                     "",
-                    OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_baseOU).getDisplayName(
-                        A_CmsUI.get().getLocale()));
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOOL_NAME_0)
+                        + " ("
+                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_baseOU).getDisplayName(
+                            A_CmsUI.get().getLocale())
+                        + ")");
                 return crumbs;
             }
             CmsStateBean beanCr = new CmsStateBean(m_baseOU, CmsOuTreeType.OU, null, "");
             crumbs.put(
                 getAppId() + "/" + beanCr.getState(),
-                OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_baseOU).getDisplayName(
-                    A_CmsUI.get().getLocale()));
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOOL_NAME_0)
+                    + " ("
+                    + OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, m_baseOU).getDisplayName(
+                        A_CmsUI.get().getLocale())
+                    + ")");
             String base = "";
             String pathOfLastElement = "";
             for (String oP : ouPath) {
@@ -1067,24 +1074,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         window.setContent(dialog);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
         A_CmsUI.get().addWindow(window);
-    }
-
-    /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#updateBreadCrumb(java.util.Map)
-     */
-    @Override
-    protected void updateBreadCrumb(Map<String, String> breadCrumbEntries) {
-
-        LinkedHashMap<String, String> entries = new LinkedHashMap<String, String>();
-        if ((breadCrumbEntries != null) && !breadCrumbEntries.isEmpty()) {
-            entries.putAll(breadCrumbEntries);
-        } else {
-            entries.put(
-                "",
-                OpenCms.getWorkplaceAppManager().getAppConfiguration(m_uiContext.getAppId()).getName(
-                    UI.getCurrent().getLocale()));
-        }
-        setBreadCrumbEntries(entries);
     }
 
     /**
