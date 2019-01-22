@@ -1,1 +1,0 @@
-Place here your explorer tools. as in /system/workplace/admin/

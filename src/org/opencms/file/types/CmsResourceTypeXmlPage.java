@@ -38,7 +38,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
@@ -73,9 +72,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
-
-    /** Indicates that the static configuration of the resource type has been frozen. */
-    private static boolean m_staticFrozen;
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
@@ -189,31 +185,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
-            // configuration already frozen
-            throw new CmsConfigurationException(
-                Messages.get().container(
-                    Messages.ERR_CONFIG_FROZEN_3,
-                    this.getClass().getName(),
-                    getStaticTypeName(),
-                    new Integer(getStaticTypeId())));
-        }
-
-        if (!RESOURCE_TYPE_NAME.equals(name)) {
-            // default resource type MUST have default name
-            throw new CmsConfigurationException(
-                Messages.get().container(
-                    Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                    this.getClass().getName(),
-                    RESOURCE_TYPE_NAME,
-                    name));
-        }
-
-        // freeze the configuration
-        m_staticFrozen = true;
-
-        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
-        // set static members with values from the configuration
+        super.initConfiguration(name, id, className);
         m_staticTypeId = m_typeId;
     }
 

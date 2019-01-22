@@ -28,12 +28,15 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.ade.contenteditor.CmsContentTypeVisitor;
+import org.opencms.cache.CmsVfsMemoryObjectCache;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
@@ -44,6 +47,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -232,6 +236,37 @@ public class CmsWorkplaceEditorManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the value of a global editor configuration parameter.
+     *
+     * @param cms the CMS context
+     * @param editor the editor name
+     * @param param the name of the parameter
+     *
+     * @return the editor parameter value
+     */
+    public String getEditorParameter(CmsObject cms, String editor, String param) {
+
+        String path = OpenCms.getSystemInfo().getConfigFilePath(cms, "editors/" + editor + ".properties");
+        CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
+        CmsParameterConfiguration config = (CmsParameterConfiguration)cache.getCachedObject(cms, path);
+        if (config == null) {
+            try {
+                CmsFile file = cms.readFile(path);
+                try (ByteArrayInputStream input = new ByteArrayInputStream(file.getContents())) {
+                    config = new CmsParameterConfiguration(input); // Uses ISO-8859-1, should be OK for config parameters
+                    cache.putCachedObject(cms, path, config);
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                return null;
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return null;
+            }
+        }
+        return config.getString(param, null);
     }
 
     /**

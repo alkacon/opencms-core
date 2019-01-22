@@ -102,6 +102,7 @@ import org.opencms.site.CmsSiteMatcher;
 import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.ugc.CmsUgcSessionFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.error.CmsErrorUI;
 import org.opencms.ui.login.CmsLoginHelper;
@@ -515,10 +516,10 @@ public final class OpenCmsCore {
 
         return m_credentialsResolver;
     }
-    
+
     /**
      * Gets the database pool names.<p>
-     * 
+     *
      * @return the configured database pool names
      */
     protected List<String> getDbPoolNames() {
@@ -1647,6 +1648,8 @@ public final class OpenCmsCore {
             // initialize the subscription manager
             m_subscriptionManager.setSecurityManager(m_securityManager);
             m_subscriptionManager.initialize(adminCms);
+
+            CmsUgcSessionFactory.setAdminCms(adminCms);
 
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);

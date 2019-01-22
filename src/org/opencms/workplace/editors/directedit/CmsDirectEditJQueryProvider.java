@@ -114,13 +114,11 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     protected CmsMacroResolver prepareMacroResolverForIncludes(CmsDirectEditParams params) {
 
         CmsMacroResolver resolver = super.prepareMacroResolverForIncludes(params);
-        resolver.addMacro(
-            "jquery_flydom",
-            readFile("/system/modules/org.opencms.jquery/resources/packed/jquery.flydom.js"));
+        resolver.addMacro("jquery_flydom", readFile("/system/workplace/resources/jquery/packed/jquery.flydom.js"));
         resolver.addMacro(
             "jquery_dimensions",
-            readFile("/system/modules/org.opencms.jquery/resources/packed/jquery.dimensions.js"));
-        resolver.addMacro("jquery", readFile("/system/modules/org.opencms.jquery/resources/packed/jquery.js"));
+            readFile("/system/workplace/resources/jquery/packed/jquery.dimensions.js"));
+        resolver.addMacro("jquery", readFile("/system/workplace/resources/jquery/packed/jquery.js"));
         return resolver;
     }
 

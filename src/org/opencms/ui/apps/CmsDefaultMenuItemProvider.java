@@ -32,7 +32,6 @@ import org.opencms.ui.actions.CmsAboutDialogAction;
 import org.opencms.ui.actions.CmsAvailabilityDialogAction;
 import org.opencms.ui.actions.CmsCategoriesDialogAction;
 import org.opencms.ui.actions.CmsChangeTypeDialogAction;
-import org.opencms.ui.actions.CmsClassicWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.CmsCopyDialogAction;
 import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
@@ -178,7 +177,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             // toolbar menu entries
             new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 3100, 0),
             new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 3500, 0),
-            new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 3700, 0),
             new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 3900, 0),
             new CmsContextMenuActionItem(new CmsLogoutAction(), null, 4100, 0));
         MENU_ITEMS = Collections.unmodifiableList(items);

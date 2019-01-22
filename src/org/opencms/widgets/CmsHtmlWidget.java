@@ -41,7 +41,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsSpellcheckHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
-import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
@@ -202,9 +201,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                 && !widgetOptions.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
                 result.put("block_formats", getTinyMceBlockFormats(formatSelectOptions));
             }
-            CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
-                "tinymce");
-            Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
+            Boolean pasteText = Boolean.valueOf(
+                OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorParameter(
+                    cms,
+                    "tinymce",
+                    "paste_text"));
             JSONObject directOptions = new JSONObject();
             directOptions.put("paste_text_sticky_default", pasteText);
             directOptions.put("paste_text_sticky", pasteText);

@@ -142,11 +142,11 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         }
     }
 
-    /** The form upload helper. */
-    private CmsUgcUploadHelper m_uploadHelper = new CmsUgcUploadHelper();
-
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUgcSession.class);
+
+    /** The form upload helper. */
+    private CmsUgcUploadHelper m_uploadHelper = new CmsUgcUploadHelper();
 
     /** The edit context. */
     private CmsObject m_cms;
@@ -185,7 +185,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         m_configuration = configuration;
         if (cms.getRequestContext().getCurrentUser().isGuestUser() && m_configuration.getUserForGuests().isPresent()) {
             m_cms = OpenCms.initCmsObject(
-                CmsUgcModuleAction.getAdminCms(),
+                adminCms,
                 new CmsContextInfo(m_configuration.getUserForGuests().get().getName()));
             m_cms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         } else {

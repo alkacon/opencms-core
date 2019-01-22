@@ -30,6 +30,7 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsLog;
 import org.opencms.ugc.CmsUgcSession;
 import org.opencms.ugc.CmsUgcSessionFactory;
 import org.opencms.util.CmsStringUtil;
@@ -39,10 +40,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Jsp tag to initialize an editing session for user generated content.<p>
  */
 public class CmsJspTagUgc extends TagSupport {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagUgc.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 7290192201848437667L;
@@ -113,6 +119,7 @@ public class CmsJspTagUgc extends TagSupport {
                     m_var == null ? DEFAULT_SESSION_ID_ATTR : m_var,
                     ugcsession.getId().toString());
             } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
                 pageContext.setAttribute(
                     m_error == null ? DEFAULT_ERROR_MESSAGE_ATTR : m_error,
                     e.getLocalizedMessage());

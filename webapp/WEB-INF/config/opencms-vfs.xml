@@ -114,9 +114,6 @@
                 <type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5">
                     <param name="gallery.type.names">linkgallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6">
-                    <param name="gallery.type.names">downloadgallery</param>
-                </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7">
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>

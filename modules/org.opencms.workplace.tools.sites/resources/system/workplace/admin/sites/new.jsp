@@ -1,1 +1,0 @@
-<%new org.opencms.workplace.tools.sites.CmsSiteDetailDialog(pageContext, request, response).displayDialog();%> 

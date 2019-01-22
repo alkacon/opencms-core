@@ -1,1 +1,0 @@
-<% new org.opencms.workplace.tools.searchindex.sourcesearch.CmsSourceSearchReport(pageContext, request, response).displayReport(); %>

@@ -84,7 +84,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         {
             "opencms://system/modules/org.opencms.ade.containerpage/schemas/",
             "internal://org/opencms/xml/containerpage/"},
-        {"opencms://system/modules/org.opencms.ade.sitemap/schemas/", "internal://org/opencms/xml/adeconfig/sitemap/"}};
+        {"opencms://system/modules/org.opencms.ade.sitemap/schemas/", "internal://org/opencms/xml/adeconfig/sitemap/"},
+        {"opencms://system/modules/org.opencms.ugc/schemas/", "internal://org/opencms/ugc/"}
+
+    };
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);
@@ -361,8 +364,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         } else if (systemId.equals(CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID)) {
 
             // XML page XSD reference
-            try {
-                InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_XSD_LOCATION);
+            try (InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_XSD_LOCATION)) {
                 content = CmsFileUtil.readFully(stream);
                 // cache the XML page DTD
                 m_cachePermanent.put(systemId, content);
@@ -376,8 +378,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
 
             // XML page DTD reference
-            try {
-                InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_OLD_DTD_LOCATION);
+            try (InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_OLD_DTD_LOCATION)) {
                 // cache the XML page DTD
                 content = CmsFileUtil.readFully(stream);
                 m_cachePermanent.put(systemId, content);
@@ -413,15 +414,15 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 return createInputSource(content, systemId);
             } catch (CmsException e) {
                 throw new IOException(
-                        Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), e);
+                    Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId),
+                    e);
             } finally {
                 m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
 
         } else if (systemId.startsWith(INTERNAL_SCHEME)) {
             String location = systemId.substring(INTERNAL_SCHEME.length());
-            try {
-                InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
+            try (InputStream stream = getClass().getClassLoader().getResourceAsStream(location)) {
                 content = CmsFileUtil.readFully(stream);
                 m_cachePermanent.put(systemId, content);
                 return createInputSource(content, systemId);

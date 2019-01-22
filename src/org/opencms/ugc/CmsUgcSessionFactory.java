@@ -53,6 +53,9 @@ public class CmsUgcSessionFactory {
     /** The factory instance. */
     private static CmsUgcSessionFactory INSTANCE;
 
+    /** Admin CmsObject instance. */
+    private static CmsObject m_adminCms;
+
     /** The session queues. */
     private ConcurrentHashMap<CmsUUID, CmsUgcSessionQueue> m_queues = new ConcurrentHashMap<CmsUUID, CmsUgcSessionQueue>();
 
@@ -74,6 +77,16 @@ public class CmsUgcSessionFactory {
             INSTANCE = new CmsUgcSessionFactory();
         }
         return INSTANCE;
+    }
+
+    /**
+     * Sets the admin CmsObject instance.
+     *
+     * @param adminCms the admin CmsObject
+     */
+    public static void setAdminCms(CmsObject adminCms) {
+
+        m_adminCms = adminCms;
     }
 
     /**
@@ -137,7 +150,8 @@ public class CmsUgcSessionFactory {
         CmsObject cms,
         HttpServletRequest request,
         String configPath,
-        String fileName) throws CmsUgcException {
+        String fileName)
+    throws CmsUgcException {
 
         CmsUgcSession session = createSession(cms, request, configPath);
         session.loadXmlContent(fileName);
@@ -174,7 +188,7 @@ public class CmsUgcSessionFactory {
 
         if (getQueue(config).waitForSlot()) {
             try {
-                return new CmsUgcSession(CmsUgcModuleAction.getAdminCms(), cms, config);
+                return new CmsUgcSession(m_adminCms, cms, config);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
                 throw new CmsUgcException(e);

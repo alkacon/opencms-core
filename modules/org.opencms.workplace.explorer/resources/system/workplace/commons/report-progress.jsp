@@ -1,1 +1,0 @@
-<%= new org.opencms.workplace.commons.CmsProgressWidget(pageContext, request, response).getActualProgress() %>
