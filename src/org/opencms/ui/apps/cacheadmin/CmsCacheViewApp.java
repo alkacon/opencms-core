@@ -142,11 +142,31 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         label.setValue(
             "<p>" + CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEXCACHE_LABEL_MEMORY_BLOCK_0) + "</p>");
         prog.addComponent(label);
-        prog.addComponent(new ProgressBar(((float)memory.getUsage() / 100)));
+        prog.addComponent(getProgressBar((((float)memory.getUsage() / 100))));
         info.addAdditionalElement(prog, 0);
         info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         return info;
+    }
+
+    /**
+     * Gets a Progressbar with css style set.<p>
+     *
+     * @param value of the bar
+     * @return vaadin ProgressBar
+     */
+    public static ProgressBar getProgressBar(float value) {
+
+        ProgressBar res = new ProgressBar(value);
+        String style = "";
+        if (value > 0.75) {
+            style = "o-nearlyfull";
+        }
+        if (value > 0.9) {
+            style = "o-full";
+        }
+        res.addStyleName(style);
+        return res;
     }
 
     /**
@@ -186,7 +206,7 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         prog.addComponent(label);
 
         prog.addComponent(
-            new ProgressBar((float)entryLruCache.getObjectCosts() / (float)entryLruCache.getMaxCacheCosts()));
+            getProgressBar((float)entryLruCache.getObjectCosts() / (float)entryLruCache.getMaxCacheCosts()));
         info.addAdditionalElement(prog, 0);
         info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
         info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_FLEX_0));
