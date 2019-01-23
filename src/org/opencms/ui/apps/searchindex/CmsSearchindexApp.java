@@ -128,13 +128,10 @@ public class CmsSearchindexApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp
     @Override
     protected Component getComponentForState(String state) {
 
-        if (state.isEmpty()) {
-            m_rootLayout.setMainHeightFull(true);
-            m_table = new CmsSearchIndexTable(this);
-            m_table.loadTable();
-            return m_table;
-        }
-        return null;
+        m_rootLayout.setMainHeightFull(true);
+        m_table = new CmsSearchIndexTable(this);
+        m_table.loadTable();
+        return m_table;
     }
 
     /**
