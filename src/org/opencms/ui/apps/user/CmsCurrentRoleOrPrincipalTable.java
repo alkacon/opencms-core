@@ -50,6 +50,7 @@ import org.apache.commons.logging.Log;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
@@ -221,6 +222,17 @@ public class CmsCurrentRoleOrPrincipalTable extends Table {
             }
 
         });
+
+        setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+
+            private static final long serialVersionUID = 7367011213487089661L;
+
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                return m_dialog.getDescriptionForItemId(itemId);
+            }
+        });
+
         addGeneratedColumn(PROP_REMOVE, new ColumnGenerator() {
 
             private static final long serialVersionUID = -7212693904376423407L;

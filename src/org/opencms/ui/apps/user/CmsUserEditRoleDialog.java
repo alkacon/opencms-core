@@ -39,6 +39,7 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -136,6 +137,16 @@ public class CmsUserEditRoleDialog extends A_CmsEditUserGroupRoleDialog {
 
         try {
             List<CmsRole> roles = OpenCms.getRoleManager().getRoles(m_cms, m_principal.getOuFqn(), false);
+            List<CmsRole> invisibleRoles = new ArrayList<CmsRole>();
+            for (CmsRole role : roles) {
+                if (!OpenCms.getRoleManager().hasRole(
+                    m_cms,
+                    m_cms.getRequestContext().getCurrentUser().getName(),
+                    role)) {
+                    invisibleRoles.add(role);
+                }
+            }
+            roles.removeAll(invisibleRoles);
             CmsRole.applySystemRoleOrder(roles);
             List<CmsRole> userRoles = OpenCms.getRoleManager().getRolesOfUser(
                 m_cms,
@@ -177,6 +188,16 @@ public class CmsUserEditRoleDialog extends A_CmsEditUserGroupRoleDialog {
     public String getCurrentTableCaption() {
 
         return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EDIT_CURRENTLY_SET_ROLES_0);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsEditUserGroupRoleDialog#getDescriptionForItemId(java.lang.Object)
+     */
+    @Override
+    public String getDescriptionForItemId(Object itemId) {
+
+        CmsRole role = (CmsRole)itemId;
+        return role.getDescription(m_cms.getRequestContext().getLocale());
     }
 
     /**

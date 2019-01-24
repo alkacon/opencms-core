@@ -168,6 +168,16 @@ public class CmsUserEditGroupsDialog extends A_CmsEditUserGroupRoleDialog {
     }
 
     /**
+     * @see org.opencms.ui.apps.user.A_CmsEditUserGroupRoleDialog#getDescriptionForItemId(java.lang.Object)
+     */
+    @Override
+    public String getDescriptionForItemId(Object itemId) {
+
+        return null;
+
+    }
+
+    /**
      * @see org.opencms.ui.apps.user.A_CmsEditUserGroupRoleDialog#getEmptyMessage()
      */
     @Override

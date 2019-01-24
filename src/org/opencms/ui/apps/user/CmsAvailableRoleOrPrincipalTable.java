@@ -42,6 +42,7 @@ import java.util.Set;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
@@ -117,6 +118,7 @@ public class CmsAvailableRoleOrPrincipalTable extends Table {
      *
      * @param dialog which displays the table
      */
+    @SuppressWarnings("deprecation")
     public CmsAvailableRoleOrPrincipalTable(A_CmsEditUserGroupRoleDialog dialog) {
 
         m_dialog = dialog;
@@ -167,7 +169,15 @@ public class CmsAvailableRoleOrPrincipalTable extends Table {
             }
 
         });
+        setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
+            private static final long serialVersionUID = 7367011213487089661L;
+
+            public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+                return m_dialog.getDescriptionForItemId(itemId);
+            }
+        });
         addGeneratedColumn(PROP_ADD, new ColumnGenerator() {
 
             private static final long serialVersionUID = -778841579899729529L;

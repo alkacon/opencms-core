@@ -166,6 +166,14 @@ public abstract class A_CmsEditUserGroupRoleDialog extends CmsBasicDialog {
     public abstract String getCurrentTableCaption();
 
     /**
+     * Gets the description for the item.<p>
+     *
+     * @param itemId to get description for
+     * @return String
+     */
+    public abstract String getDescriptionForItemId(Object itemId);
+
+    /**
      * Gets the empty message.<p>
      *
      * @return String
