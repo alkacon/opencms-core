@@ -364,6 +364,18 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
+     * Returns the mime type for this resource.<p>
+     *
+     * In case no valid mime type can be determined from the file extension, <code>text/plain</code> is returned.<p>
+     *
+     * @return the mime type for this resource
+     */
+    public String getMimeType() {
+
+        return OpenCms.getResourceManager().getMimeType(getRootPath(), null, "text/plain");
+    }
+
+    /**
      * Returns the navigation builder for this resource.<p>
      *
      * This will be initialized with this resource as default URI.<p>
