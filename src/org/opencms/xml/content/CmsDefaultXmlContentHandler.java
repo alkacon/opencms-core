@@ -2682,7 +2682,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
     * However, certain values can also use more then one widget, for example you may
     * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
-    * and as a result the Strings possible values would be eithe <code>"false"</code> or <code>"true"</code>,
+    * and as a result the Strings possible values would be either <code>"false"</code> or <code>"true"</code>,
     * but nevertheless be a String.<p>
     *
     * The widget to use can further be controlled using the <code>widget</code> attribute.
