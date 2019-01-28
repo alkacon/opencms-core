@@ -159,6 +159,9 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     @Override
     public String resolveMacros(String input) {
 
+        if (input == null) {
+            return null;
+        }
         // We are overriding this method to implement the no_prefix macro. This is because
         // we only know what the no_prefix macro should expand to after resolving all other
         // macros (there could be an arbitrary number of macros before it which might potentially

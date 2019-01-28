@@ -28,13 +28,10 @@
 package org.opencms.xml.content;
 
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -42,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -85,26 +83,26 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     /** Element Property json property  constants. */
     public enum JsonProperty {
 
-        /** Property's default value. */
-        defaultValue,
-        /** Property's description. */
-        description,
-        /** Property's error message. */
-        error,
-        /** Property's nice name. */
-        niceName,
-        /** Property's validation regular expression. */
-        ruleRegex,
-        /** Property's validation rule type. */
-        ruleType,
-        /** Property's type. */
-        type,
-        /** Property's value. */
-        value,
-        /** Property's widget. */
-        widget,
-        /** Property's widget configuration. */
-        widgetConf;
+    /** Property's default value. */
+    defaultValue,
+    /** Property's description. */
+    description,
+    /** Property's error message. */
+    error,
+    /** Property's nice name. */
+    niceName,
+    /** Property's validation regular expression. */
+    ruleRegex,
+    /** Property's validation rule type. */
+    ruleType,
+    /** Property's type. */
+    type,
+    /** Property's value. */
+    value,
+    /** Property's widget. */
+    widget,
+    /** Property's widget configuration. */
+    widgetConf;
     }
 
     /** The prefix for macros used to acess properties of the current container page. */
@@ -203,6 +201,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      *
      * @param cms the CMS context
      * @param contentHandler the content handler which contains the message bundle that should be available in the macro resolver
+     * @param content the XML content object
      * @param containerPage the current container page
      *
      * @return a new macro resolver
@@ -210,9 +209,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public static CmsMacroResolver getMacroResolverForProperties(
         final CmsObject cms,
         final I_CmsXmlContentHandler contentHandler,
+        final CmsXmlContent content,
         final CmsResource containerPage) {
 
-        CmsMacroResolver resolver = new CmsMacroResolver() {
+        Locale locale = OpenCms.getLocaleManager().getBestAvailableLocaleForXmlContent(cms, content.getFile(), content);
+        final CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(cms, content, locale) {
 
             @SuppressWarnings("synthetic-access")
             @Override
@@ -248,13 +249,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             }
 
         };
+
         resolver.setCmsObject(cms);
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
-        CmsMultiMessages multimessages = new CmsMultiMessages(settings.getLocale());
-        CmsMessages messages = contentHandler.getMessages(settings.getLocale());
-        multimessages.addMessages(messages);
-        multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(settings.getLocale()));
-        resolver.setMessages(multimessages);
         resolver.setKeepEmptyMacros(true);
         return resolver;
     }
@@ -279,8 +275,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
             Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings(cms, resource);
-
-            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, page);
+            if (resource == null) {
+                System.out.println("Content is null");
+            }
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, content, page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return Collections.<String, CmsXmlContentProperty> emptyMap();
@@ -642,7 +641,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, page);
+            CmsMacroResolver resolver = getMacroResolverForProperties(
+                cms,
+                contentHandler,
+                CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource)),
+                page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return propertiesConf;
@@ -685,7 +688,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsXmlContentProperty result = new CmsXmlContentProperty(
             propName,
             property.getType(),
-            property.getWidget(),
+            resolver.resolveMacros(property.getWidget()),
             resolver.resolveMacros(property.getWidgetConfiguration()),
             property.getRuleRegex(),
             property.getRuleType(),
@@ -927,4 +930,5 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
         return propertyConfig.get(propName);
     }
+
 }
