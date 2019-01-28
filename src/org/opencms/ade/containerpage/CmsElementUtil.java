@@ -88,6 +88,8 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -114,6 +116,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.Sets;
 
 /**
@@ -568,6 +572,14 @@ public class CmsElementUtil {
         }
 
         CmsContainerElementData elementData = getBaseElementData(page, element);
+        Supplier<CmsXmlContent> contentSupplier = Suppliers.memoize(() -> {
+            try {
+                return CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(element.getResource()));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return null;
+            }
+        });
         if (!element.isGroupContainer(m_cms) && !element.isInheritedContainer(m_cms)) {
             CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
             Map<String, Map<String, CmsFormatterConfig>> formatters = new HashMap<String, Map<String, CmsFormatterConfig>>();
@@ -621,6 +633,7 @@ public class CmsElementUtil {
                             m_cms,
                             page,
                             element.getResource(),
+                            contentSupplier,
                             settingsConfig);
                         config.setSettingConfig(settingsConfig);
                         List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(

@@ -133,6 +133,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.Sets;
 
 /**
@@ -2161,6 +2162,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     cms,
                     null,
                     containerElement.getResource(),
+                    Suppliers.memoize(() -> {
+                        try {
+                            return CmsXmlContentFactory.unmarshal(cms, cms.readFile(containerElement.getResource()));
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                            return null;
+                        }
+                    }),
                     settingsConfig);
                 CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(m_workplaceLocale);
                 List<I_CmsFormatterBean> nestedFormatters = formatter.hasNestedFormatterSettings()

@@ -73,6 +73,8 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
 
+import com.google.common.base.Supplier;
+
 /**
  * Provides common methods on XML property configuration.<p>
  *
@@ -626,6 +628,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param cms the current CMS context
      * @param page the current container page
      * @param resource the resource
+     * @param contentGetter loads the actual content
      * @param propertiesConf the property information
      *
      * @return the property information
@@ -636,16 +639,13 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsObject cms,
         CmsResource page,
         CmsResource resource,
+        Supplier<CmsXmlContent> contentGetter,
         Map<String, CmsXmlContentProperty> propertiesConf)
     throws CmsException {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-            CmsMacroResolver resolver = getMacroResolverForProperties(
-                cms,
-                contentHandler,
-                CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource)),
-                page);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, contentGetter.get(), page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return propertiesConf;
