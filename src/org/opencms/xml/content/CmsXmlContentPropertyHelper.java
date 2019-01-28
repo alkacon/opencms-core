@@ -277,9 +277,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
             Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings(cms, resource);
-            if (resource == null) {
-                System.out.println("Content is null");
-            }
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, content, page);
             return resolveMacrosInProperties(propertiesConf, resolver);
