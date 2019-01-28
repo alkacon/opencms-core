@@ -344,7 +344,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             response.setStatus(status);
             try {
                 response.sendError(status, io.toString());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // can be ignored
             }
         } catch (Throwable t) {
