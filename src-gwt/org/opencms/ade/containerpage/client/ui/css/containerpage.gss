@@ -60,13 +60,10 @@
 	-moz-box-sizing: border-box;
 }
 
-.oc-edit-buttons-visible div.expired, .dragging div.expired{
-	display: block;
-}
-
-div.expired{
+body:not(.oc-edit-buttons-visible) div.expired { 
 	display: none;
 }
+
 
 .expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay{
 	background-image: value("constants.css.gradientInvalid");
