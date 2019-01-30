@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -216,6 +217,9 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         if (buttonStyle != null) {
             button.addStyleName(buttonStyle);
+        }
+        if ((icon instanceof CmsCssIcon) && ((CmsCssIcon)icon).hasAdditionalButtonStyle()) {
+            button.addStyleName(((CmsCssIcon)icon).getAdditionalButtonStyle());
         }
         return button;
     }
