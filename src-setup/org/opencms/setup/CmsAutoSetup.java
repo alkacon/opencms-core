@@ -54,8 +54,11 @@ public class CmsAutoSetup {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAutoSetup.class);
 
-    /** A constant fpr the path, where the "setup.properties" files is placed on the local file system. */
+    /** A constant for the path, where the "setup.properties" files is placed on the local file system. */
     private static final String PARAM_CONFIG_PATH = "-path";
+
+    /** Set this parameter to create DB and tables only. */
+    private static final String PARAM_DB_ONLY = "-dbonly";
 
     /** Horizontal ruler - ASCII style. */
     private static final String HR = "-----------------------------------------------------------";
@@ -93,14 +96,20 @@ public class CmsAutoSetup {
 
         String path = null;
 
-        if ((args.length > 0) && (args[0] != null) && args[0].startsWith(PARAM_CONFIG_PATH)) {
-            if ((args.length == 2) && (args[1] != null) && new File(args[1]).exists()) {
-                path = args[1];
-            } else {
-                path = args[0].substring(PARAM_CONFIG_PATH.length()).trim();
+        boolean setupDBOnly = false;
+        if ((args.length > 0) && (args[0] != null)) {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] != null) {
+                    if (PARAM_CONFIG_PATH.equals(args[i]) && (args.length > (i + 1))) {
+                        path = args[i + 1];
+                    } else if (args[i].startsWith(PARAM_CONFIG_PATH)) {
+                        path = args[i].substring(PARAM_CONFIG_PATH.length()).trim();
+                    } else if (PARAM_DB_ONLY.equals(args[i])) {
+                        setupDBOnly = true;
+                    }
+                }
             }
         }
-
         if ((null != path) && (new File(path).exists())) {
             System.out.println("Using config file: " + path + "\n");
             try {
@@ -115,7 +124,16 @@ public class CmsAutoSetup {
                     System.out.println(entry.getKey() + " = " + entry.getValue()[0]);
                 }
                 System.out.println();
-                new CmsAutoSetup(props).run();
+                CmsAutoSetup setup = new CmsAutoSetup(props);
+                if (setupDBOnly) {
+                    System.out.println("Creating DB and tables only.");
+                    System.out.println(
+                        "The opencms.properties file will not be written and no modules will be installed.\n\n");
+                    setup.initSetupBean();
+                    setup.setupDB();
+                } else {
+                    setup.run();
+                }
             } catch (Exception e) {
                 System.out.println("An error occurred during the setup process with the following error message:");
                 System.out.println(e.getMessage());
