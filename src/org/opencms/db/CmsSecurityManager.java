@@ -4189,10 +4189,11 @@ public final class CmsSecurityManager {
         CmsResource result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.readDefaultFile(dbc, resource, resourceFilter);
-            if (result != null) {
+            CmsResource tempResult = m_driverManager.readDefaultFile(dbc, resource, resourceFilter);
+            if (tempResult != null) {
                 // check if the user has read access to the resource
-                checkPermissions(dbc, result, CmsPermissionSet.ACCESS_READ, true, resourceFilter);
+                checkPermissions(dbc, tempResult, CmsPermissionSet.ACCESS_READ, true, resourceFilter);
+                result = tempResult;
             }
         } catch (CmsSecurityException se) {
             // permissions deny access to the resource
