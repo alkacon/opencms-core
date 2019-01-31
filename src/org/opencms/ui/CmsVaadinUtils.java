@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -121,6 +122,7 @@ import com.vaadin.v7.ui.VerticalLayout;
  * Vaadin utility functions.<p>
  *
  */
+@SuppressWarnings("deprecation")
 public final class CmsVaadinUtils {
 
     /**
@@ -326,6 +328,7 @@ public final class CmsVaadinUtils {
      * @param event the click event
      * @param entries the context menu entries
      */
+    @SuppressWarnings("unchecked")
     public static <T> void defaultHandleContextMenuForMultiselect(
         Table table,
         CmsContextMenu menu,
@@ -614,6 +617,20 @@ public final class CmsVaadinUtils {
 
         return result;
 
+    }
+
+    /**
+     * Gets the message for the current locale and the given key and arguments.<p>
+     *
+     * @param messages the messages instance
+     * @param key the message key
+     * @param args the message arguments
+     *
+     * @return the message text for the current locale
+     */
+    public static String getMessageText(I_CmsMessageBundle messages, String key, Object... args) {
+
+        return messages.getBundle(A_CmsUI.get().getLocale()).key(key, args);
     }
 
     /**
@@ -1269,7 +1286,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
