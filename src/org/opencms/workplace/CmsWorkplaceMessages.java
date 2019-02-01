@@ -31,15 +31,20 @@ import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.ServiceLoader;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the localized messages for the OpenCms workplace.<p>
@@ -72,6 +77,9 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /** Constant for the multi bundle name. */
     public static final String WORKPLACE_BUNDLE_NAME = CmsWorkplaceMessages.class.getName();
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsWorkplaceMessages.class.getName());
 
     /**
      * Constructor for creating a new messages object
@@ -210,30 +218,42 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
         ArrayList<CmsMessages> result = new ArrayList<CmsMessages>();
 
         //////////// iterate over all registered modules ////////////////
-        Set<String> names = OpenCms.getModuleManager().getModuleNames();
-        if (names != null) {
-            // iterate all module names
-            Iterator<String> i = names.iterator();
-            while (i.hasNext()) {
-                String modName = i.next();
-                //////////// collect the workplace.properties ////////////////
-                // this should result in a name like "my.module.name.workplace"
-                String bundleName = modName + PREFIX_BUNDLE_WORKPLACE;
-                // try to load a bundle with the module names
-                CmsMessages msg = new CmsMessages(bundleName, locale);
-                // bundle was loaded, add to list of bundles
-                if (msg.isInitialized()) {
-                    result.add(msg);
-                }
-                //////////// collect the messages.properties ////////////////
-                // this should result in a name like "my.module.name.messages"
-                bundleName = modName + PREFIX_BUNDLE_MESSAGES;
-                // try to load a bundle with the module names
-                msg = new CmsMessages(bundleName, locale);
-                // bundle was loaded, add to list of bundles
-                if (msg.isInitialized()) {
-                    result.add(msg);
-                }
+        Set<String> names = new HashSet<String>();
+        Set<String> modules = OpenCms.getModuleManager().getModuleNames();
+        if (modules != null) {
+            names.addAll(modules);
+        }
+        // use service loader to get additional bundle names
+        Iterator<I_CmsWorkplaceMessageBundleProvider> providers = ServiceLoader.load(
+            I_CmsWorkplaceMessageBundleProvider.class).iterator();
+        while (providers.hasNext()) {
+            try {
+                I_CmsWorkplaceMessageBundleProvider provider = providers.next();
+                names.addAll(provider.getMessageBundleNames());
+            } catch (Throwable t) {
+                LOG.error("Error loading workplace messages bundle names from classpath.", t);
+            }
+        }
+
+        // iterate all module names
+        for (String baseName : names) {
+            //////////// collect the workplace.properties ////////////////
+            // this should result in a name like "my.module.name.workplace"
+            String bundleName = baseName + PREFIX_BUNDLE_WORKPLACE;
+            // try to load a bundle with the module names
+            CmsMessages msg = new CmsMessages(bundleName, locale);
+            // bundle was loaded, add to list of bundles
+            if (msg.isInitialized()) {
+                result.add(msg);
+            }
+            //////////// collect the messages.properties ////////////////
+            // this should result in a name like "my.module.name.messages"
+            bundleName = baseName + PREFIX_BUNDLE_MESSAGES;
+            // try to load a bundle with the module names
+            msg = new CmsMessages(bundleName, locale);
+            // bundle was loaded, add to list of bundles
+            if (msg.isInitialized()) {
+                result.add(msg);
             }
         }
 
@@ -245,7 +265,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
         }
 
         /////////// collect bundles configured in module configurations ////////
-        if(OpenCms.getADEManager().isInitialized()) {
+        if (OpenCms.getADEManager().isInitialized()) {
             Set<String> bundleNames = OpenCms.getADEManager().getConfiguredWorkplaceBundles();
             for (String bundleName : bundleNames) {
                 CmsMessages msg = new CmsMessages(bundleName, locale);
