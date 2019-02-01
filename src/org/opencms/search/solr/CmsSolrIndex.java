@@ -36,6 +36,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -365,6 +366,40 @@ public class CmsSolrIndex extends CmsSearchIndex {
         if (resource.isFolder() || resource.isTemporaryFile()) {
             // don't index  folders or temporary files for galleries, but pretty much everything else
             return true;
+        }
+        boolean isOnlineIndex = getProject().equals(CmsProject.ONLINE_PROJECT_NAME);
+        if (isOnlineIndex && (resource.getDateExpired() <= System.currentTimeMillis())) {
+            return true;
+        }
+
+        try {
+            // do property lookup with folder search
+            String propValue = cms.readPropertyObject(
+                resource,
+                CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
+                true).getValue();
+            if (propValue != null) {
+                // property value was neither "true" nor null, must check for "all"
+                if ((isOnlineIndex && Boolean.valueOf(propValue).booleanValue())
+                    || PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())) {
+                    return true;
+                }
+            }
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(
+                    org.opencms.search.Messages.get().getBundle().key(
+                        org.opencms.search.Messages.LOG_UNABLE_TO_READ_PROPERTY_1,
+                        resource.getRootPath()));
+            }
+        }
+        if (!USE_ALL_LOCALE.equalsIgnoreCase(getLocale().getLanguage())) {
+            // check if any resource default locale has a match with the index locale, if not skip resource
+            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
+                Collections.singletonList(getLocale()),
+                locales);
+            return (match == null);
         }
         return false;
 
