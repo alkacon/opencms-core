@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -251,9 +252,13 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             }
 
         };
-
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsMultiMessages messages = new CmsMultiMessages(wpLocale);
+        messages.addMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
+        messages.addMessages(content.getContentDefinition().getContentHandler().getMessages(wpLocale));
         resolver.setCmsObject(cms);
         resolver.setKeepEmptyMacros(true);
+        resolver.setMessages(messages);
         return resolver;
     }
 
