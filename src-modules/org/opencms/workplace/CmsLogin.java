@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
@@ -592,7 +593,7 @@ public class CmsLogin extends CmsJspLoginBean {
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
         if (m_requestedResource == null) {
             // no resource was requested, use default workplace URI
-            m_requestedResource = CmsWorkplace.JSP_WORKPLACE_URI;
+            m_requestedResource = CmsVaadinUtils.getWorkplaceLink();
         }
 
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {

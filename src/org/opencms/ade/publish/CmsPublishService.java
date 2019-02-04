@@ -176,14 +176,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsObject cms = getCmsObject();
         String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
         if ((closeLink == null) && "true".equals(params.get("prefetch"))) {
-            CmsUserSettings settings = new CmsUserSettings(cms);
-            if (settings.usesNewWorkplace()) {
-                closeLink = CmsVaadinUtils.getWorkplaceLink();
-            } else {
-                closeLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                    cms,
-                    CmsWorkplace.JSP_WORKPLACE_URI);
-            }
+            closeLink = CmsVaadinUtils.getWorkplaceLink();
         }
         String confirmStr = getRequest().getParameter(PARAM_CONFIRM);
         boolean confirm = Boolean.parseBoolean(confirmStr);

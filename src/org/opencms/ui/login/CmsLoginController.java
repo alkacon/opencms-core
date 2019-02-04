@@ -270,12 +270,9 @@ public class CmsLoginController {
             target = directEditPath;
         } else if ((requestedResource != null) && !CmsWorkplace.JSP_WORKPLACE_URI.equals(requestedResource)) {
             target = requestedResource;
-        } else if (settings.getUserSettings().startWithNewWorkplace()) {
+        } else {
             workplace2 = true;
             target = CmsVaadinUtils.getWorkplaceLink();
-            checkRole = true;
-        } else {
-            target = CmsWorkplace.JSP_WORKPLACE_URI;
             checkRole = true;
         }
 

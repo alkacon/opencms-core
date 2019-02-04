@@ -30,7 +30,6 @@ package org.opencms.gwt.client.ui.contextmenu;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Window;
@@ -97,7 +96,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             public void execute() {
 
                 start(0, true);
-                CmsCoreProvider.getService().getWorkplaceLink(structureId, CmsWorkplaceLinkMode.auto, this);
+                CmsCoreProvider.getService().getWorkplaceLink(structureId, this);
             }
 
             /**

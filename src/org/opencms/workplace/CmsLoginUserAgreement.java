@@ -37,6 +37,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -281,7 +282,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
     public String getParamWpres() {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_paramWpres) || "null".equals(m_paramWpres)) {
-            return CmsWorkplace.JSP_WORKPLACE_URI;
+            return CmsVaadinUtils.getWorkplaceLink();
         }
         return m_paramWpres;
     }
@@ -345,9 +346,11 @@ public class CmsLoginUserAgreement extends CmsDialog {
                 }
             } catch (Exception e) {
                 // error when trying to determine if user agreement should be shown
-                LOG.error(Messages.get().getBundle().key(
+                LOG.error(
+                    Messages.get().getBundle().key(
                         Messages.LOG_USERAGREEMENT_SHOW_1,
-                    getConfigurationContent().getFile().getRootPath()), e);
+                        getConfigurationContent().getFile().getRootPath()),
+                    e);
             }
 
         }

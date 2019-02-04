@@ -783,7 +783,6 @@ public class CmsWorkplaceAppManager {
                 new CmsAppHierarchyConfiguration(),
                 new CmsEditorConfiguration(),
                 new CmsQuickLaunchEditorConfiguration(),
-                new CmsTraditionalWorkplaceConfiguration(),
                 new CmsProjectManagerConfiguration(),
                 new CmsProjectOverviewConfiguration(),
                 new CmsCacheAdminConfiguration(),

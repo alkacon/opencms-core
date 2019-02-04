@@ -2494,34 +2494,6 @@ public class CmsUserSettings {
     }
 
     /**
-     * Return true if user should start with new workplace.<p>
-     *
-     * @return true if user should start with new workplace
-     */
-    public boolean startWithNewWorkplace() {
-
-        return (!getStartView().startsWith("/")
-            | (CmsWorkplace.VIEW_WORKPLACE.equals(getStartView()) || CmsWorkplace.VIEW_ADMIN.equals(getStartView())))
-            && usesNewWorkplace();
-    }
-
-    /**
-     * Return true if user uses new workplace.<p>
-     *
-     * @return true if the user users the new workplace
-     */
-    public boolean usesNewWorkplace() {
-
-        boolean traditionalWorkplaceExists = OpenCms.getModuleManager().hasModule("org.opencms.workplace.traditional");
-        if (!traditionalWorkplaceExists) {
-            return true;
-        } else {
-            return !(WORKPLACE_MODE_OLD.equals(getAdditionalPreference(PREF_WORKPLACE_MODE, true)));
-        }
-
-    }
-
-    /**
      * Sets a specific explorer setting depending on the set parameter.<p>
      *
      * @param set true if the setting should be set, otherwise false

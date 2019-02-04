@@ -49,7 +49,6 @@ import org.opencms.gwt.shared.CmsTinyMCEData;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
@@ -933,9 +932,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsWorkplaceLinkMode)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID)
      */
-    public String getWorkplaceLink(CmsUUID structureId, CmsWorkplaceLinkMode linkMode) throws CmsRpcException {
+    public String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException {
 
         String result = null;
         CmsObject cms = getCmsObject();
@@ -944,24 +943,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             ? CmsResource.getFolderPath(
                 cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED).getRootPath())
             : cms.getRequestContext().getSiteRoot();
-
-            switch (linkMode) {
-                case oldWorkplace:
-                    result = CmsWorkplace.getWorkplaceExplorerLink(cms, resourceRootFolder);
-                    break;
-                case newWorkplace:
-                    result = getVaadinWorkplaceLink(cms, resourceRootFolder);
-                    break;
-                case auto:
-                default:
-                    boolean newWp = CmsWorkplace.getWorkplaceSettings(
-                        cms,
-                        getRequest()).getUserSettings().usesNewWorkplace();
-                    result = getWorkplaceLink(
-                        structureId,
-                        newWp ? CmsWorkplaceLinkMode.newWorkplace : CmsWorkplaceLinkMode.oldWorkplace);
-                    break;
-            }
+            result = getVaadinWorkplaceLink(cms, resourceRootFolder);
         } catch (Throwable e) {
             error(e);
         }

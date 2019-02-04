@@ -39,7 +39,6 @@ import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -188,10 +187,9 @@ public interface I_CmsCoreServiceAsync {
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      *
      * @param structureId the structure id of the resource for which to open the workplace
-     * @param linkMode the link mode
      * @param callback the callback which receives the result
      */
-    void getWorkplaceLink(CmsUUID structureId, CmsWorkplaceLinkMode linkMode, AsyncCallback<String> callback);
+    void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
      * Loads the user settings for the current user.<p>
