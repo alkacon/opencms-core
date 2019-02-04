@@ -28,7 +28,6 @@
 package org.opencms.gwt;
 
 import org.opencms.ade.configuration.CmsADEManager;
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -95,7 +94,6 @@ public final class CmsQuickLaunchProvider {
 
         List<CmsQuickLaunchData> result = Lists.newArrayList();
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsUserSettings userSettings = new CmsUserSettings(cms);
         List<I_CmsWorkplaceAppConfiguration> appConfigs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
             OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(cms));
 
