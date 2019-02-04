@@ -39,7 +39,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -466,33 +465,6 @@ public class TestLiveConfig extends OpenCmsTestCase {
             publish();
             waitForUpdate(true);
             checkResourceTypes(onlineCms, "/sites/default/today/", "foldername");
-        } finally {
-            restoreFiles();
-        }
-    }
-
-    /**
-     * Tests the saving of detail pages.<p>
-     * @throws Exception -
-     */
-    public void testSaveDetailPages() throws Exception {
-
-        try {
-
-            CmsADEManager manager = OpenCms.getADEManager();
-            CmsObject cms = rootCms();
-            CmsResource page1 = cms.readResource("/sites/default/today");
-            CmsResource page2 = cms.readResource("/sites/default/today/events");
-            CmsDetailPageInfo info1 = new CmsDetailPageInfo(page1.getStructureId(), page1.getRootPath(), "foo", "");
-            CmsDetailPageInfo info2 = new CmsDetailPageInfo(page2.getStructureId(), page2.getRootPath(), "bar", "");
-            cms.lockResource("/sites/default/.content/.config");
-            manager.saveDetailPages(cms, "/sites/default/today", list(info1, info2), new CmsUUID());
-            waitForUpdate(false);
-            CmsADEConfigData configData = manager.lookupConfiguration(cms, "/sites/default/today/");
-            List<CmsDetailPageInfo> detailPages = configData.getAllDetailPages();
-            assertTrue(detailPages.contains(info1));
-
-            assertTrue(detailPages.contains(info2));
         } finally {
             restoreFiles();
         }
