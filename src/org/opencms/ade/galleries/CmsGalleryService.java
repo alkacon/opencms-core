@@ -100,6 +100,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 
+import java.text.Collator;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -588,8 +589,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 public int compare(CmsResourceTypeBean first, CmsResourceTypeBean second) {
 
                     return ComparisonChain.start().compare(searchTypeRank(first), searchTypeRank(second)).compare(
-                        first.getType(),
-                        second.getType()).result();
+                        first.getTitle(),
+                        second.getTitle(),
+                        Collator.getInstance(getWorkplaceLocale())).compare(first.getType(), second.getType()).result();
                 }
 
                 int searchTypeRank(CmsResourceTypeBean type) {
@@ -604,7 +606,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             });
 
         }
-
         return result;
     }
 
@@ -1471,6 +1472,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         return (CmsTreeOpenState)(getRequest().getSession().getAttribute(
             getTreeOpenStateAttributeName(I_CmsGalleryProviderConstants.TREE_VFS, treeToken)));
+    }
+
+    /**
+     * Returns the workplace locale from the current user's settings.<p>
+     *
+     * @return the workplace locale
+     */
+    Locale getWorkplaceLocale() {
+
+        if (m_wpLocale == null) {
+            m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        }
+        return m_wpLocale;
     }
 
     /**
@@ -2604,19 +2618,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return rootFolders;
-    }
-
-    /**
-     * Returns the workplace locale from the current user's settings.<p>
-     *
-     * @return the workplace locale
-     */
-    private Locale getWorkplaceLocale() {
-
-        if (m_wpLocale == null) {
-            m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
-        }
-        return m_wpLocale;
     }
 
     /**
