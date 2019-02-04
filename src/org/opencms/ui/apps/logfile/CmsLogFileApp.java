@@ -39,6 +39,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,18 +47,19 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.core.Appender;
 
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.v7.ui.TextField;
 
 /**
  * Main class of Log managment app.<p>
@@ -69,7 +71,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     ? ""
     : OpenCms.getSystemInfo().getLogFileRfsPath().substring(
         0,
-        OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf("/") + 1);
+        OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf(File.separatorChar) + 1);
 
     /**Path to channel settings view.*/
     static String PATH_LOGCHANNEL = "log-channel";
@@ -126,10 +128,15 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         return result;
     }
 
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
     @Override
     public void initUI(I_CmsAppUIContext context) {
 
-        context.addPublishButton(updatedItems -> {});
+        context.addPublishButton(updatedItems -> {
+            // nothing to do
+        });
         super.initUI(context);
     }
 
@@ -185,19 +192,22 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             final CmsLogChannelTable channelTable = new CmsLogChannelTable();
             m_tableFilter = new TextField();
             m_tableFilter.setIcon(FontOpenCms.FILTER);
-            m_tableFilter.setInputPrompt(
+            m_tableFilter.setPlaceholder(
                 Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
             m_tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
             m_tableFilter.setWidth("200px");
-            m_tableFilter.addTextChangeListener(new TextChangeListener() {
+            m_tableFilter.setValueChangeMode(ValueChangeMode.TIMEOUT);
+            m_tableFilter.setValueChangeTimeout(400);
+            m_tableFilter.addValueChangeListener(new ValueChangeListener<String>() {
 
                 private static final long serialVersionUID = 1L;
 
-                public void textChange(TextChangeEvent event) {
+                public void valueChange(ValueChangeEvent<String> event) {
 
-                    channelTable.filterTable(event.getText());
+                    channelTable.filterTable(event.getValue());
                 }
             });
+
             m_infoLayout.addComponent(m_tableFilter);
             return channelTable;
         }
