@@ -34,7 +34,7 @@
             </type>
         </resourcetypes>
         <explorertypes>
-            <explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif" bigicon="page_big.png">
+            <explorertype name="xmlpage" key="fileicon.xmlpage">
                 <newresource page="otheroptions" uri="newresource_xmlpage.jsp" order="81" autosetnavigation="false" autosettitle="false" info="desc.xmlpage" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">

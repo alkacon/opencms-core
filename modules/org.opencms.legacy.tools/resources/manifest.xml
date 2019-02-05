@@ -102,8 +102,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
 			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/defaultadvancedgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/advancedvfsimage.js"/>
-			<resource uri="/system/workplace/resources/filetypes/page.gif"/>
-			<resource uri="/system/workplace/resources/filetypes/page_big.png"/>
 			<resource uri="/system/workplace/locales/en/readme.txt"/>
 			<resource uri="/system/workplace/commons/list-csv.jsp"/>
 			<resource uri="/system/workplace/commons/list-explorer.jsp"/>
@@ -8438,45 +8436,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS for VFS image widget]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/filetypes</destination>
-			<type>folder</type>
-			<properties/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/page.gif</source>
-			<destination>system/workplace/resources/filetypes/page.gif</destination>
-			<type>image</type>
-			<uuidstructure>83eb88a1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>4976b5af-b82b-11d7-9da3-90edea408374</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/filetypes/page_big.png</source>
-			<destination>system/workplace/resources/filetypes/page_big.png</destination>
-			<type>image</type>
-			<uuidstructure>d0a15972-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
-			<uuidresource>d0a15973-7649-11e0-89d1-5b4e51806a5b</uuidresource>
-			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>
