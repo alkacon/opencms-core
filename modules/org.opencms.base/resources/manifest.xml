@@ -750,7 +750,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-            <explorertype name="ugc_config" key="fileicon.ugc_config" reference="xmlcontent">
+            <explorertype name="ugc_config" key="fileicon.ugc_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
                 <newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=ugc_config" order="23" autosetnavigation="false" autosettitle="false" info="desc.ugc_config"/>
                 <accesscontrol>
                     <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
