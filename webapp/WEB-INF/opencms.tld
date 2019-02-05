@@ -2040,7 +2040,7 @@
            <description><![CDATA[
 			    A map containing setting presets for elements in this container. If settings are passed in this map, they will not be user-editable on elements in the container.
             ]]></description>
-            <name>presets</name>
+            <name>settings</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

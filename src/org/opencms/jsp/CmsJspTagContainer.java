@@ -836,13 +836,13 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      * @param presets a map with string keys and values, or null
      */
     @SuppressWarnings("unchecked")
-    public void setPresets(Object presets) {
+    public void setSettings(Object presets) {
 
         if (presets == null) {
             m_settingPresets = null;
         } else if (!(presets instanceof Map)) {
             throw new IllegalArgumentException(
-                "cms:container -- presets should be a map, but is " + ClassUtils.getCanonicalName(presets));
+                "cms:container -- value of 'settings' attribute  should be a map, but is " + ClassUtils.getCanonicalName(presets));
         } else {
             m_settingPresets = new HashMap<>((Map<String, String>)presets);
         }
