@@ -366,25 +366,25 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         // access XML content
         CmsJspResourceWrapper res1 = CmsJspResourceWrapper.wrap(cms, cms.readResource("/xmlcontent/article_0001.html"));
         CmsJspContentAccessBean content = res1.getXml();
-        assertTrue(res1.isXml());
+        assertTrue(res1.getIsXml());
         assertEquals("Alkacon Software", content.getValue().get("Author").toString());
 
         // access XML page
         CmsJspResourceWrapper res2 = CmsJspResourceWrapper.wrap(cms, cms.readResource("/index.html"));
         content = res2.getXml();
-        assertTrue(res2.isXml());
+        assertTrue(res2.getIsXml());
         assertEquals(Boolean.TRUE, content.getHasValue().get("body"));
         assertEquals(Boolean.FALSE, content.getHasValue().get("element"));
         System.out.println(content.getValue().get("body"));
 
         // access folder as XML
         CmsJspResourceWrapper folderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/"));
-        assertFalse(folderRes.isXml());
+        assertFalse(folderRes.getIsXml());
         assertNull(folderRes.getXml());
 
         // access file as XML
         CmsJspResourceWrapper fileRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/image1.gif"));
-        assertFalse(fileRes.isXml());
+        assertFalse(fileRes.getIsXml());
         assertNull(fileRes.getXml());
     }
 }

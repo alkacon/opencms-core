@@ -300,12 +300,14 @@ public class CmsJspResourceWrapper extends CmsResource {
      * Returns <code>true</code> in case this resource is an XML content.<p>
      *
      * @return <code>true</code> in case this resource is an XML content
-     *
-     * @see #isXml()
      */
     public boolean getIsXml() {
 
-        return isXml();
+        if (m_isXml == null) {
+            m_isXml = Boolean.valueOf(
+                CmsResourceTypeXmlPage.isXmlPage(this) || CmsResourceTypeXmlContent.isXmlContent(this));
+        }
+        return m_isXml.booleanValue();
     }
 
     /**
@@ -752,14 +754,29 @@ public class CmsJspResourceWrapper extends CmsResource {
      *
      * @return an XML content access bean created for this resource
      *
-     * @see #isXml()
+     * @see #getIsXml()
      */
-    public CmsJspContentAccessBean getXml() {
+    public CmsJspContentAccessBean getToXml() {
 
-        if ((m_xml == null) && isXml()) {
+        if ((m_xml == null) && getIsXml()) {
             m_xml = new CmsJspContentAccessBean(m_cms, this);
         }
         return m_xml;
+    }
+
+    /**
+     * Returns an XML content access bean created for this resource.<p>
+     *
+     * In case this resource is not an XML content, <code>null</code> is returned.<p>
+     *
+     * @return an XML content access bean created for this resource
+     *
+     * @see #getToXml()
+     * @see #getIsXml()
+     */
+    public CmsJspContentAccessBean getXml() {
+
+        return getToXml();
     }
 
     /**
@@ -837,22 +854,6 @@ public class CmsJspResourceWrapper extends CmsResource {
             && isFolder()
             && ((sitePath.indexOf(getSitePath()) == 0))
             && (sitePath.length() > getSitePath().length());
-    }
-
-    /**
-     * Returns <code>true</code> in case this resource is an XML content.<p>
-     *
-     * @return <code>true</code> in case this resource is an XML content
-     *
-     * @see #getIsXml()
-     */
-    public boolean isXml() {
-
-        if (m_isXml == null) {
-            m_isXml = Boolean.valueOf(
-                CmsResourceTypeXmlPage.isXmlPage(this) || CmsResourceTypeXmlContent.isXmlContent(this));
-        }
-        return m_isXml.booleanValue();
     }
 
     /**
