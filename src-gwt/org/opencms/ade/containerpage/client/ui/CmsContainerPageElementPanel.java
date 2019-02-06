@@ -336,7 +336,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
-        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
         m_elementView = elementView;
         getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroupId != null);
         getElement().setPropertyBoolean(PROP_WAS_MODEL_GROUP, wasModelGroup);
@@ -847,8 +846,11 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
         m_elementOptionBar = elementOptionBar;
         if (m_elementOptionBar != null) {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
             insert(m_elementOptionBar, 0);
             updateOptionBarPosition();
+        } else {
+            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
         }
     }
 
@@ -1267,29 +1269,29 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-		var $this = this;
-		var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-		var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-		if (handler == null) {
-			handler = function(event) {
-				$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-			};
-			$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-		} else {
-			if (element.removeEventLister) {
-				element.removeEventListener("DOMNodeInserted", handler);
-			} else if (element.detachEvent) {
-				// IE specific
-				element.detachEvent("onDOMNodeInserted", handler);
-			}
-		}
-		if (element.addEventListener) {
-			element.addEventListener("DOMNodeInserted", handler, false);
-		} else if (element.attachEvent) {
-			// IE specific
-			element.attachEvent("onDOMNodeInserted", handler);
-		}
-    }-*/;
+                                                  var $this = this;
+                                                  var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+                                                  var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+                                                  if (handler == null) {
+                                                  handler = function(event) {
+                                                  $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+                                                  };
+                                                  $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+                                                  } else {
+                                                  if (element.removeEventLister) {
+                                                  element.removeEventListener("DOMNodeInserted", handler);
+                                                  } else if (element.detachEvent) {
+                                                  // IE specific
+                                                  element.detachEvent("onDOMNodeInserted", handler);
+                                                  }
+                                                  }
+                                                  if (element.addEventListener) {
+                                                  element.addEventListener("DOMNodeInserted", handler, false);
+                                                  } else if (element.attachEvent) {
+                                                  // IE specific
+                                                  element.attachEvent("onDOMNodeInserted", handler);
+                                                  }
+                                                  }-*/;
 
     /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
