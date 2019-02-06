@@ -287,7 +287,7 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
-         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, javax.servlet.ServletRequest)
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, javax.servlet.ServletRequest, java.util.Map)
          */
         @Override
         public void initSettings(
@@ -966,6 +966,66 @@ public final class CmsJspStandardContextBean {
     public CmsContainerElementWrapper getElement() {
 
         return m_element != null ? new CmsContainerElementWrapper(m_element) : null;
+    }
+
+    /**
+     * Returns a lazy initialized map of wrapped element resources by container name.<p>
+     *
+     * @return the lazy map of element resource wrappers
+     */
+    public Map<String, List<CmsJspResourceWrapper>> getElementsInContainer() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
+            if (obj instanceof String) {
+                List<CmsJspResourceWrapper> elements = new ArrayList<>();
+                CmsContainerBean container = getPage().getContainers().get(obj);
+                if (container != null) {
+                    for (CmsContainerElementBean element : container.getElements()) {
+                        try {
+                            element.initResource(m_cms);
+                            elements.add(CmsJspResourceWrapper.wrap(m_cms, element.getResource()));
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                return elements;
+            } else {
+                return null;
+            }
+        });
+
+    }
+
+    /**
+     * Returns a lazy initialized map of wrapped element resources by container name suffix.<p>
+     * So in case there is more than one container where the name end with the given suffix, a joined list of elements is returned.<p>
+     *
+     * @return the lazy map of element resource wrappers
+     */
+    public Map<String, List<CmsJspResourceWrapper>> getElementsInContainers() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
+            if (obj instanceof String) {
+                List<CmsJspResourceWrapper> elements = new ArrayList<>();
+                for (CmsContainerBean container : getPage().getContainers().values()) {
+                    if (container.getName().endsWith("-" + obj)) {
+                        for (CmsContainerElementBean element : container.getElements()) {
+                            try {
+                                element.initResource(m_cms);
+                                elements.add(CmsJspResourceWrapper.wrap(m_cms, element.getResource()));
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                }
+                return elements;
+            } else {
+                return null;
+            }
+        });
+
     }
 
     /**
