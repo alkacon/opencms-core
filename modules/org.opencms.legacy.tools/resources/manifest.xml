@@ -162,6 +162,7 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
 			<resource uri="/system/workplace/explorer/search/"/>
 			<resource uri="/system/workplace/explorer/sibling/"/>
 			<resource uri="/system/workplace/resources/tools/ex_history/"/>
+            <resource uri="/system/modules/org.opencms.jquery/"/>
 		</resources>
 		<excluderesources/>
 		<parameters/>
@@ -8537,5 +8538,1923 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
 			<relations/>
 			<accesscontrol/>
 		</file>
+                <file>
+            <destination>system/modules/org.opencms.jquery</destination>
+            <type>folder</type>
+            <uuidstructure>1cf40ffe-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:54:57 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources</destination>
+            <type>folder</type>
+            <uuidstructure>250e57a0-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:55:11 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>export</name>
+                    <value>true</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/load.js</destination>
+            <type>plain</type>
+            <uuidstructure>63b724af-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>27e630f4-21b4-11dd-a7a5-111d34530985</uuidresource>
+            <datecreated>Wed, 14 May 2008 12:49:13 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>Used by the jquery tag</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/css</destination>
+            <type>folder</type>
+            <uuidstructure>6209ea43-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>Shared style sheets</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/pagination.css</destination>
+            <type>plain</type>
+            <uuidstructure>63b242ae-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>126ed37c-1d13-11dd-b203-111d34530985</uuidresource>
+            <datecreated>Thu, 08 May 2008 15:26:04 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/css/flora</destination>
+            <type>folder</type>
+            <uuidstructure>620ea536-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.accordion.css</destination>
+            <type>plain</type>
+            <uuidstructure>63045036-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>628afd39-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.accordion</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.all.css</destination>
+            <type>plain</type>
+            <uuidstructure>63090b28-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>628fb82c-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.all</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.calendar.css</destination>
+            <type>plain</type>
+            <uuidstructure>630dc61a-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6296e41f-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.calendar</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.css</destination>
+            <type>plain</type>
+            <uuidstructure>6312810c-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>629b9f12-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.datepicker.css</destination>
+            <type>plain</type>
+            <uuidstructure>6317630e-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62a08115-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.datepicker</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.dialog.css</destination>
+            <type>plain</type>
+            <uuidstructure>631c1d00-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62a785f8-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.dialog</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.menu.css</destination>
+            <type>plain</type>
+            <uuidstructure>6320d7f2-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62ac67fb-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.menu</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.resizable.css</destination>
+            <type>plain</type>
+            <uuidstructure>632592e4-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62b122ee-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.resizable</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.slider.css</destination>
+            <type>plain</type>
+            <uuidstructure>632a74e6-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62b5dde1-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.slider</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.tablesorter.css</destination>
+            <type>plain</type>
+            <uuidstructure>632f2fd8-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62babfe4-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.tablesorter</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.tabs.css</destination>
+            <type>plain</type>
+            <uuidstructure>6333eaca-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62bf7ad7-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.tabs</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.toasterLite.css</destination>
+            <type>plain</type>
+            <uuidstructure>6338a5bc-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62cdd2ba-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.toasterLite</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/flora.toolbar.css</destination>
+            <type>plain</type>
+            <uuidstructure>633d87be-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>62d28dad-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>flora.toolbar</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i</destination>
+            <type>folder</type>
+            <uuidstructure>62138738-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-left-act.png</destination>
+            <type>image</type>
+            <uuidstructure>6218422a-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>643f3d12-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-left-act</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:3,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-left-over.png</destination>
+            <type>image</type>
+            <uuidstructure>621cfd1c-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64441f16-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-left-over</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:3,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-left.png</destination>
+            <type>image</type>
+            <uuidstructure>6224290e-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>645005fa-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-left</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:3,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-middle-act.png</destination>
+            <type>image</type>
+            <uuidstructure>622b5500-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64597bde-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-middle-act</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-middle-over.png</destination>
+            <type>image</type>
+            <uuidstructure>62300ff2-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>645e5de2-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-middle-over</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-middle.png</destination>
+            <type>image</type>
+            <uuidstructure>6234cae4-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6467d3c6-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-middle</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-right-act.png</destination>
+            <type>image</type>
+            <uuidstructure>6239ace6-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>646c8eba-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-right-act</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:3,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-right-over.png</destination>
+            <type>image</type>
+            <uuidstructure>6240b1c8-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64762bae-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-right-over</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:3,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/accordion-right.png</destination>
+            <type>image</type>
+            <uuidstructure>624593ca-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>647fa092-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>accordion-right</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:3,h:28</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/asc.gif</destination>
+            <type>image</type>
+            <uuidstructure>624a4ebc-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6486cc86-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>asc</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:21,h:4</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/bg.gif</destination>
+            <type>image</type>
+            <uuidstructure>62517aae-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>648df87a-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>bg</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:21,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/desc.gif</destination>
+            <type>image</type>
+            <uuidstructure>625635a0-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6492b36e-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>desc</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:21,h:4</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-e.gif</destination>
+            <type>image</type>
+            <uuidstructure>625af092-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6499df62-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-e</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:7,h:1000</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-n.gif</destination>
+            <type>image</type>
+            <uuidstructure>625fd294-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64a10b56-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-n</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:2000,h:6</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-ne.gif</destination>
+            <type>image</type>
+            <uuidstructure>62648d86-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64a5c64a-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-ne</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:29</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-nw.gif</destination>
+            <type>image</type>
+            <uuidstructure>62694878-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64b68f2e-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-nw</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:29</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-s.gif</destination>
+            <type>image</type>
+            <uuidstructure>626e036a-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64bb4a22-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-s</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1000,h:8</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-se.gif</destination>
+            <type>image</type>
+            <uuidstructure>6272e56c-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64c27616-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-se</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-sw.gif</destination>
+            <type>image</type>
+            <uuidstructure>6277a05e-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64c7310a-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-sw</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-title.gif</destination>
+            <type>image</type>
+            <uuidstructure>627c5b50-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64ce5cfe-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-title</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:29</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-titlebar-close-hover.png</destination>
+            <type>image</type>
+            <uuidstructure>62811642-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64d588f2-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-titlebar-close-hover</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:16,h:16</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-titlebar-close.png</destination>
+            <type>image</type>
+            <uuidstructure>62884234-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64dcb4e6-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-titlebar-close</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:16,h:16</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/dialog-w.gif</destination>
+            <type>image</type>
+            <uuidstructure>628cfd26-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64e3e0da-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialog-w</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:7,h:1000</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/menu-submenu.gif</destination>
+            <type>image</type>
+            <uuidstructure>6291df28-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64e89bce-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>menu-submenu</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:16,h:16</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-e.gif</destination>
+            <type>image</type>
+            <uuidstructure>62969a1a-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64f211b2-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-e</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:6,h:1000</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-n.gif</destination>
+            <type>image</type>
+            <uuidstructure>629dc60c-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64f482b6-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-n</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1000,h:6</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-ne.gif</destination>
+            <type>image</type>
+            <uuidstructure>62a280fe-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>64fdf89a-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-ne</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-nw.gif</destination>
+            <type>image</type>
+            <uuidstructure>62a73bf0-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6502da9e-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-nw</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-s.gif</destination>
+            <type>image</type>
+            <uuidstructure>62ac1df2-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>65079592-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-s</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1000,h:6</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-se.gif</destination>
+            <type>image</type>
+            <uuidstructure>62b0d8e4-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>650c5086-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-se</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-sw.gif</destination>
+            <type>image</type>
+            <uuidstructure>62b593d6-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>65110b7a-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-sw</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/resizable-w.gif</destination>
+            <type>image</type>
+            <uuidstructure>62ba4ec8-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6515ed7e-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>resizable-w</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:6,h:1000</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/shadow.png</destination>
+            <type>image</type>
+            <uuidstructure>62bf30ca-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6534e732-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>shadow</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:800,h:800</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/slider-bg-1.png</destination>
+            <type>image</type>
+            <uuidstructure>62c635ac-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6539a226-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>slider-bg-1</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:200,h:7</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/slider-bg-2.png</destination>
+            <type>image</type>
+            <uuidstructure>62cb17ae-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6540ce1a-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>slider-bg-2</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:200,h:20</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/slider-handle.gif</destination>
+            <type>image</type>
+            <uuidstructure>62cfd2a0-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>65433f1e-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>slider-handle</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:12,h:23</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/tabs.png</destination>
+            <type>image</type>
+            <uuidstructure>62d48d92-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>655651f2-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>tabs</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:300,h:50</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-e.gif</destination>
+            <type>image</type>
+            <uuidstructure>62d94884-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>655d56d6-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-e</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:7,h:1</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-n.gif</destination>
+            <type>image</type>
+            <uuidstructure>62de2a86-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>656238da-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-n</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:6</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-ne.gif</destination>
+            <type>image</type>
+            <uuidstructure>62e2e578-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6566f3ce-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-ne</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:29</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-nw.gif</destination>
+            <type>image</type>
+            <uuidstructure>62e7a06a-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>656e1fc2-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-nw</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:29</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-s.gif</destination>
+            <type>image</type>
+            <uuidstructure>62ec5b5c-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>65754bb6-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-s</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:8</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-se.gif</destination>
+            <type>image</type>
+            <uuidstructure>62f13d5e-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>657a06aa-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-se</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-sw.gif</destination>
+            <type>image</type>
+            <uuidstructure>62f5f850-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>6581329e-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-sw</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:9,h:9</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toaster-w.gif</destination>
+            <type>image</type>
+            <uuidstructure>62fab342-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>65885e92-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toaster-w</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:7,h:1</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/flora/i/toolbars-bot-bg.gif</destination>
+            <type>image</type>
+            <uuidstructure>62ff6e34-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>658d1986-12d6-11dd-98ed-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>toolbars-bot-bg</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:8</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/css/thickbox</destination>
+            <type>folder</type>
+            <uuidstructure>634242b0-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:55 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/thickbox/loading.gif</destination>
+            <type>image</type>
+            <uuidstructure>6344b3b2-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d20e3a59-12ae-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:03:14 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:208,h:13</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/thickbox/macFFBgHack.png</destination>
+            <type>image</type>
+            <uuidstructure>63496ea3-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>298b3b33-12af-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:05:41 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:25,h:25</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/thickbox/thickbox.css</destination>
+            <type>plain</type>
+            <uuidstructure>634e2994-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d2260820-12ae-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:03:15 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>Thickbox Stylesheet</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms</destination>
+            <type>folder</type>
+            <uuidstructure>6352e486-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:55 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/jquery.ui.css</destination>
+            <type>plain</type>
+            <uuidstructure>63a65bcb-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>da10a157-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/jquery.ui.ocms.css</destination>
+            <type>plain</type>
+            <uuidstructure>63ab16bc-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>8c2e5678-3556-11de-b9a6-03821fc5d684</uuidresource>
+            <datecreated>Thu, 30 Apr 2009 07:14:30 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>Changes for UI CSS</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images</destination>
+            <type>folder</type>
+            <uuidstructure>635a1078-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:55 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/dialogBackground.png</destination>
+            <type>image</type>
+            <uuidstructure>635c817a-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>52fc043f-6be7-11e0-927f-4f74e4b251be</uuidresource>
+            <datecreated>Thu, 21 Apr 2011 07:16:49 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialogBackground</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:20,h:300</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/dialogCloseImage.png</destination>
+            <type>image</type>
+            <uuidstructure>6363ad6c-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>0ef21fa9-6c05-11e0-927f-4f74e4b251be</uuidresource>
+            <datecreated>Thu, 21 Apr 2011 10:49:40 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>dialogCloseImage</value>
+                </property>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:23,h:23</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_flat_0_aaaaaa_40x100.png</destination>
+            <type>image</type>
+            <uuidstructure>6365f75e-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9aed313-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:40,h:100</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_flat_75_ffffff_40x100.png</destination>
+            <type>image</type>
+            <uuidstructure>636ad95f-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9b5ff07-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:40,h:100</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_glass_55_fbf9ee_1x400.png</destination>
+            <type>image</type>
+            <uuidstructure>636f9450-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9bd2afb-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:400</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_glass_65_ffffff_1x400.png</destination>
+            <type>image</type>
+            <uuidstructure>63744f41-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9c456ef-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:400</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_glass_75_dadada_1x400.png</destination>
+            <type>image</type>
+            <uuidstructure>63790a32-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9cb81e3-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:400</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_glass_75_e6e6e6_1x400.png</destination>
+            <type>image</type>
+            <uuidstructure>637dec33-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9d286c7-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:400</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_glass_95_fef1ec_1x400.png</destination>
+            <type>image</type>
+            <uuidstructure>6382a724-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9d768cb-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:400</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-bg_highlight-soft_75_cccccc_1x100.png</destination>
+            <type>image</type>
+            <uuidstructure>63876215-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9e0deaf-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:1,h:100</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-icons_222222_256x240.png</destination>
+            <type>image</type>
+            <uuidstructure>638c1d06-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9e80aa3-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:256,h:240</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-icons_2e83ff_256x240.png</destination>
+            <type>image</type>
+            <uuidstructure>6390ff07-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9f1a797-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:256,h:240</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-icons_454545_256x240.png</destination>
+            <type>image</type>
+            <uuidstructure>6395b9f8-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d9fb1d7b-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:256,h:240</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-icons_888888_256x240.png</destination>
+            <type>image</type>
+            <uuidstructure>639a74e9-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>da02496f-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:256,h:240</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/css/ui-ocms/images/ui-icons_cd0a0a_256x240.png</destination>
+            <type>image</type>
+            <uuidstructure>639f2fda-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>da097563-1a12-11de-83c7-03821fc5d684</uuidresource>
+            <datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property type="shared">
+                    <name>image.size</name>
+                    <value>w:256,h:240</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/packed</destination>
+            <type>folder</type>
+            <uuidstructure>49e61ae2-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:13 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>Used in production</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/jquery.dimensions.js</destination>
+            <type>plain</type>
+            <uuidstructure>49ead5d5-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>a8383c84-12ae-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:02:04 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery Dimensions - v1.2.0</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/jquery.flydom.js</destination>
+            <type>plain</type>
+            <uuidstructure>49efb7d7-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>67c1db21-12ae-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery FlyDom - v3.1.1</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/jquery.hint.js</destination>
+            <type>plain</type>
+            <uuidstructure>49f472c9-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>67c1db21-12ae-17ad-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery hint</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/jquery.js</destination>
+            <type>plain</type>
+            <uuidstructure>49f92dba-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>3b9b7a1e-12ad-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 09:51:52 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery - v1.8.0</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/jquery.pagination.js</destination>
+            <type>plain</type>
+            <uuidstructure>49fde8ac-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>12653689-1d13-11dd-b203-111d34530985</uuidresource>
+            <datecreated>Thu, 08 May 2008 15:26:04 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery Pagination - v1.2</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/jquery.ui.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a02caae-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>e301be85-21cc-11dd-af0a-111d34530985</uuidresource>
+            <datecreated>Wed, 14 May 2008 15:46:15 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery UI - v1.8.23</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/packed/thickbox.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a0785a0-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>9c9acdad-21b9-11dd-a429-111d34530985</uuidresource>
+            <datecreated>Wed, 14 May 2008 13:28:17 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery Thickbox - v3.1</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/modules/org.opencms.jquery/resources/unpacked</destination>
+            <type>folder</type>
+            <uuidstructure>4a0c4092-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <datecreated>Mon, 30 May 2011 07:56:13 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>Used for debugging</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/jquery.dimensions.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a10fb85-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>fe05e250-20e9-11dd-a08e-111d34530985</uuidresource>
+            <datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery Dimensions - v1.2.0</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/jquery.flydom.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a15dd87-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>fe1db013-20e9-11dd-a08e-111d34530985</uuidresource>
+            <datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery FlyDom - v3.1.1</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/jquery.hint.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a1a9879-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>67c1dbd1-18fe-13d7-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery hint</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/jquery.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a1f536b-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>fe2725f6-20e9-11dd-a08e-111d34530985</uuidresource>
+            <datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery - v1.8.0</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/jquery.pagination.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a240e5d-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>de1d657c-20e9-11dd-a08e-111d34530985</uuidresource>
+            <datecreated>Tue, 13 May 2008 12:41:11 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery Pagination - v1.2</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/jquery.ui.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a28f05f-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>fe2e51e9-20e9-11dd-a08e-111d34530985</uuidresource>
+            <datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery UI - v1.8.23</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            
+            <destination>system/modules/org.opencms.jquery/resources/unpacked/thickbox.js</destination>
+            <type>plain</type>
+            <uuidstructure>4a2dab51-8a92-11e0-ad6c-bff56146ac12</uuidstructure>
+            <uuidresource>d2214d2d-12ae-11dd-86ab-111d34530985</uuidresource>
+            <datecreated>Fri, 25 Apr 2008 10:03:14 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value>jQuery Thickbox - v3.1</value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        
 	</files>
 </export>
