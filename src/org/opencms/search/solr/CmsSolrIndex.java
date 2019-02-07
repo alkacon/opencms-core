@@ -397,6 +397,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
             // don't index  folders or temporary files for galleries, but pretty much everything else
             return true;
         }
+        // If this is the default offline index than it is used for gallery search that needs all resources indexed.
+        if (this.getName().equals(DEFAULT_INDEX_NAME_OFFLINE)) {
+            return false;
+        }
+
         boolean isOnlineIndex = getProject().equals(CmsProject.ONLINE_PROJECT_NAME);
         if (isOnlineIndex && (resource.getDateExpired() <= System.currentTimeMillis())) {
             return true;
@@ -409,9 +414,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
                 true).getValue();
             if (propValue != null) {
-                // property value was neither "true" nor null, must check for "all"
-                if ((isOnlineIndex && Boolean.valueOf(propValue).booleanValue())
-                    || PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())) {
+                if (!("false".equalsIgnoreCase(propValue.trim()))) {
                     return true;
                 }
             }
