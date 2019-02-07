@@ -5,6 +5,7 @@
 	<search>
 		<solr enabled="true">
 			<commitWithinMs>10000</commitWithinMs>
+			<maxResults>400</maxResults>
 		</solr>
 		<directory>index</directory>
 		<timeout>60000</timeout>
@@ -226,6 +227,10 @@
 				<!-- <param name="handle.solr.maxAllowedResultsPerPage">20</param> -->
 				<!-- Specify the number of results maximally allowed to be returned, i.e., the maximal sum of the values of the "rows" and the "start" parameter. -->
 				<!-- param name="handle.solr.maxAllowedResultsAtAll"></param> -->
+				<!-- Specify the number of results maximally processed by any (frontend) query to the index, i.e. maximal start + rows. -->
+				<!-- This will overwrite the setting of the node "/opencms/search/solr/maxResults" for this index. -->
+				<!-- param name="search.solr.maxResults">400</param> -->
+
 			</index>
 			<index class="org.opencms.search.solr.CmsSolrIndex">
 				<name>Solr Offline</name>

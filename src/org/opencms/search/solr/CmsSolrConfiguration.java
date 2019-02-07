@@ -66,6 +66,9 @@ public class CmsSolrConfiguration {
     /** The Solr configuration file name. */
     public static final String SOLR_CONFIG_FILE = "solr.xml";
 
+    /** The default maximum number of results to return in a Solr search. */
+    public static final int DEFAULT_MAX_RESULTS = 400;
+
     /**
      * The default max time in ms before a commit will happen (10 seconds by default).<p>
      *
@@ -112,6 +115,9 @@ public class CmsSolrConfiguration {
     /** The file name of the Solr configuration. */
     private String m_solrFileName;
 
+    /** The maximal number of Results to return by a Solr index. */
+    private int m_maxResults = DEFAULT_MAX_RESULTS;
+
     /**
      * Default constructor.<p>
      */
@@ -152,6 +158,11 @@ public class CmsSolrConfiguration {
         return m_homeFolderPath;
     }
 
+    public int getMaxResults() {
+
+        return m_maxResults;
+    }
+
     /**
      * Returns the servers URL if embedded is set to <code>false</code>.<p>
      *
@@ -181,8 +192,11 @@ public class CmsSolrConfiguration {
     public SolrConfig getSolrConfig() {
 
         if (m_solrConfig == null) {
-            try (FileInputStream fis = new FileInputStream(getSolrConfigFile())){
-                m_solrConfig = new SolrConfig(Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER), null, new InputSource(fis));
+            try (FileInputStream fis = new FileInputStream(getSolrConfigFile())) {
+                m_solrConfig = new SolrConfig(
+                    Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER),
+                    null,
+                    new InputSource(fis));
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),
@@ -240,7 +254,7 @@ public class CmsSolrConfiguration {
     public IndexSchema getSolrSchema() {
 
         if (m_schema == null) {
-            try(FileInputStream fis = new FileInputStream(getSolrSchemaFile())) {
+            try (FileInputStream fis = new FileInputStream(getSolrSchemaFile())) {
                 InputSource solrSchema = new InputSource(fis);
                 m_schema = new IndexSchema(getSolrConfig(), SOLR_SCHEMA_NAME, solrSchema);
             } catch (IOException e) {
@@ -261,11 +275,13 @@ public class CmsSolrConfiguration {
      * @return the Solr index schema file
      */
     public File getSolrSchemaFile() {
+
         final String dir = getHome() + DEFAULT_CONFIGSET_FOLDER + CONF_FOLDER;
         //SOLR7 Schema took a new name, also removed the file extension.
         File file = new File(dir, "managed-schema");
-        if(file.exists())
+        if (file.exists()) {
             return file;
+        }
 
         //If use the old Schema.xml, it will automatically "upgrade" to a new filename.
         file = new File(dir, IndexSchema.DEFAULT_SCHEMA_FILE);
@@ -300,6 +316,30 @@ public class CmsSolrConfiguration {
     public void setHomeFolderPath(String homeFolderPath) {
 
         m_homeFolderPath = homeFolderPath;
+    }
+
+    /**
+     * Sets the maximal number of results returned by Solr indexes.<p>
+     *
+     * @param maxResults the maximal number of results returned by Solr indexes.
+     */
+    public void setMaxResults(String maxResults) {
+
+        try {
+            m_maxResults = Integer.parseInt(maxResults);
+        } catch (Exception e) {
+            LOG.warn(
+                "Could not parse value "
+                    + maxResults
+                    + " as Integer to set the limit for the number of results a Solr index can return.");
+        }
+        if (m_maxResults <= 0) {
+            m_maxResults = DEFAULT_MAX_RESULTS;
+            LOG.warn(
+                "The maximal number of results to return by a Solr index should be greater than 0. Reset it to the default value "
+                    + DEFAULT_MAX_RESULTS
+                    + ".");
+        }
     }
 
     /**

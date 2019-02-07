@@ -820,7 +820,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 query.setRows(new Integer(999999999));
                 query.ensureParameters();
                 try {
-                    resources.addAll(index.search(getCms(), query, true));
+                    resources.addAll(
+                        index.search(getCms(), query, true, null, false, null, CmsSolrIndex.MAX_RESULTS_UNLIMITED));
                 } catch (CmsSearchException e) {
                     LOG.error(e.getMessage(), e);
                 }
