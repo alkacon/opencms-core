@@ -33,8 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
@@ -199,9 +198,6 @@ public class CmsGallerySearchParameters {
     /** The time range for the date of resource last modification to consider in the search. */
     private CmsGallerySearchTimeRange m_dateLastModifiedTimeRange;
 
-    /** The list of search index fields to search in. */
-    private List<String> m_fields;
-
     /** The list of folders to search in. */
     private List<String> m_folders;
 
@@ -302,22 +298,6 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Returns the list of the names of the fields to search in.<p>
-     *
-     * If this has not been set, then the default fields defined in
-     * {@link CmsSearchIndex#DOC_META_FIELDS} are used as default.<p>
-     *
-     * @return the list of the names of the fields to search in
-     */
-    public List<String> getFields() {
-
-        if (m_fields == null) {
-            setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
-        }
-        return m_fields;
-    }
-
-    /**
      * Returns the list of folders to search in.<p>
      *
      * @return a list of paths of VFS folders
@@ -398,11 +378,6 @@ public class CmsGallerySearchParameters {
                 getDateLastModifiedRange().m_startTime,
                 getDateLastModifiedRange().m_endTime));
 
-        // Set fields
-        if (null != m_fields) {
-            query.setFields(m_fields.toArray(new String[m_fields.size()]));
-        }
-
         // set scope / folders to search in
         m_foldersToSearchIn = new ArrayList<String>();
         addFoldersToSearchIn(m_folders);
@@ -414,12 +389,14 @@ public class CmsGallerySearchParameters {
             false,
             true);
 
-        // TODO: ignoresearchexclude
         if (!m_ignoreSearchExclude) {
             // Reference for the values: CmsGallerySearchIndex.java, field EXCLUDE_PROPERTY_VALUES
             query.addFilterQuery(
                 "-" + CmsSearchField.FIELD_SEARCH_EXCLUDE,
-                Arrays.asList(new String[] {"all", "gallery"}),
+                Arrays.asList(
+                    new String[] {
+                        A_CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
+                        A_CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY}),
                 false,
                 true);
         }
@@ -601,16 +578,6 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Sets the list of the names of the fields to search in. <p>
-     *
-     * @param fields the list of names of the fields to set
-     */
-    public void setFields(List<String> fields) {
-
-        m_fields = fields;
-    }
-
-    /**
      * Sets the folders to search in.<p>
      *
      * @param folders the list of VFS folders
@@ -747,27 +714,6 @@ public class CmsGallerySearchParameters {
     public void setSortOrder(CmsGallerySortParam sortOrder) {
 
         m_sortOrder = sortOrder;
-    }
-
-    /**
-     * Wraps this parameters to the standard search parameters, so that inherited methods in the search index
-     * can be used.<p>
-     *
-     * @return this parameters wrapped to the standard search parameters
-     */
-    protected CmsSearchParameters getCmsSearchParams() {
-
-        CmsSearchParameters result = new CmsSearchParameters();
-        result.setFields(getFields());
-        result.setExcerptOnlySearchedFields(true);
-        if (getSearchWords() != null) {
-            result.setQuery(getSearchWords());
-            result.setIgnoreQuery(false);
-        } else {
-            result.setIgnoreQuery(true);
-        }
-
-        return result;
     }
 
     /**
