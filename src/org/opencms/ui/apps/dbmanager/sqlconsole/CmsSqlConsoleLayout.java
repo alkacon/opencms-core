@@ -35,6 +35,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsErrorDialog;
 
 import java.util.Locale;
 
@@ -91,11 +92,15 @@ public class CmsSqlConsoleLayout extends VerticalLayout {
         }
         CmsStringBufferReport report = new CmsStringBufferReport(Locale.ENGLISH);
         CmsSqlConsoleResults result = m_console.execute(stmt, pool, report);
-        Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SQLCONSOLE_QUERY_RESULTS_0));
-        window.setContent(new CmsSqlConsoleResultsForm(result, report.toString()));
-        A_CmsUI.get().addWindow(window);
-        window.center();
+        if (report.hasError()) {
+            CmsErrorDialog.showErrorDialog((Throwable)(report.getErrors().get(0)));
+        } else {
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SQLCONSOLE_QUERY_RESULTS_0));
+            window.setContent(new CmsSqlConsoleResultsForm(result, report.toString()));
+            A_CmsUI.get().addWindow(window);
+            window.center();
+        }
 
     }
 
