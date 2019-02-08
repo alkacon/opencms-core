@@ -3055,7 +3055,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             ? searchObj.getGalleries().get(0)
             : searchObj.getFolders().iterator().next();
             try {
-                CmsResource targetRes = searchCms.readResource(target, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                CmsResource targetRes;
+                if (searchCms.existsResource(target, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    targetRes = searchCms.readResource(target, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                } else {
+                    CmsObject rootCms = OpenCms.initCmsObject(searchCms);
+                    rootCms.getRequestContext().setSiteRoot("");
+                    targetRes = rootCms.readResource(target, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                }
                 searchObj.setNoUploadReason(
                     new CmsResourceUtil(searchCms, targetRes).getNoEditReason(getWorkplaceLocale(), true));
             } catch (CmsException e) {
