@@ -76,8 +76,8 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
     Element m_locationInfoPanel;
 
     /** The map preview element. */
-    @UiField
-    Element m_mapPreview;
+    //@UiField
+    //Element m_mapPreview;
 
     /** The popup opener button. */
     @UiField(provided = true)
@@ -105,7 +105,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
         m_textbox.setEnabled(false);
         m_locationInfoPanel.getStyle().setDisplay(Display.NONE);
         m_controller = new CmsLocationController(this, configuration);
-        m_mapPreview.setId(HTMLPanel.createUniqueId());
+        // m_mapPreview.setId(HTMLPanel.createUniqueId());
     }
 
     /**
@@ -174,15 +174,15 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
         m_textbox.setText(value);
     }
 
-    /**
-     * Returns the map preview element.<p>
-     *
-     * @return the map preview element
-     */
-    protected Element getMapPreview() {
-
-        return m_mapPreview;
-    }
+    //    /**
+    //     * Returns the map preview element.<p>
+    //     *
+    //     * @return the map preview element
+    //     */
+    //    protected Element getMapPreview() {
+    //
+    //        return m_mapPreview;
+    //    }
 
     /**
      * Returns whether the map preview is visible.<p>
