@@ -976,7 +976,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     secondCheckQuery.setStart(Integer.valueOf(processedResults));
 
                     long solrSecondCheckTime = System.currentTimeMillis();
-                    QueryResponse secondCheckQueryResponse = m_solr.query(checkQuery);
+                    QueryResponse secondCheckQueryResponse = m_solr.query(secondCheckQuery);
                     solrSecondCheckTime = System.currentTimeMillis() - solrSecondCheckTime;
                     solrPermissionTime += solrCheckTime;
 
@@ -984,11 +984,13 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     for (SolrDocument doc : secondCheckQueryResponse.getResults()) {
                         try {
                             CmsSolrDocument searchDoc = new CmsSolrDocument(doc);
-                            if (needsPermissionCheck(searchDoc) && !hasPermissions(searchCms, searchDoc, filter)) {
+                            String docSolrId = searchDoc.getFieldValueAsString(CmsSearchField.FIELD_SOLR_ID);
+                            if ((needsPermissionCheck(searchDoc) && !hasPermissions(searchCms, searchDoc, filter))
+                                || resultSolrIds.contains(docSolrId)) {
                                 visibleHitCount--;
                             } else {
                                 if (cnt >= start) {
-                                    resultSolrIds.add(searchDoc.getFieldValueAsString(CmsSearchField.FIELD_SOLR_ID));
+                                    resultSolrIds.add(docSolrId);
                                 }
                                 if (searchDoc.getScore() > maxScore) {
                                     maxScore = searchDoc.getScore();
