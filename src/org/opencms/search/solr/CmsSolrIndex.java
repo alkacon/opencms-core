@@ -815,6 +815,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * Currently not supported Solr features are:
      * <ul>
      *  <li>groups</li>
+     *  <li>collapse and expand</li>
      * </ul>
      *
      * @param cms the current OpenCms context
@@ -873,11 +874,18 @@ public class CmsSolrIndex extends CmsSearchIndex {
             query.setStart(Integer.valueOf(0));
             start = 0;
         }
+
+        // Adjust the maximal number of results to process in case it is unlimited.
+        if (maxNumResults < 0) {
+            maxNumResults = Integer.MAX_VALUE;
+        }
+
         // Correct the rows parameter
         // Set the default rows, if rows are not set in the original query.
         int rows = null == query.getRows() ? CmsSolrQuery.DEFAULT_ROWS.intValue() : query.getRows().intValue();
+
         // Restrict the rows, such that the maximal number of queryable results is not exceeded.
-        if ((maxNumResults >= 0) && ((rows + start) > maxNumResults)) {
+        if ((((rows + start) > maxNumResults) || ((rows + start) < 0))) {
             rows = maxNumResults - start;
         }
         // Restrict the rows to the maximally allowed number, if they should be restricted.
@@ -894,6 +902,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         float maxScore = 0;
 
         LocalSolrQueryRequest solrQueryRequest = null;
+        SolrCore core = null;
 
         try {
 
@@ -921,9 +930,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             // disable highlighting - it's done in the next query.
             checkQuery.setHighlight(false);
             // adjust rows and start for the permission check.
-            checkQuery.setRows(
-                Integer.valueOf(
-                    maxNumResults >= 0 ? Math.min(maxNumResults - processedResults, itemsToCheck) : itemsToCheck));
+            checkQuery.setRows(Integer.valueOf(Math.min(maxNumResults - processedResults, itemsToCheck)));
             checkQuery.setStart(Integer.valueOf(processedResults));
             // return only the fields required for the permission check and for scoring
             checkQuery.setFields(CmsSearchField.FIELD_TYPE, CmsSearchField.FIELD_SOLR_ID, CmsSearchField.FIELD_PATH);
@@ -939,6 +946,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             // initialize the counts
             hitCount = checkQueryResponse.getResults().getNumFound();
+            int maxToProcess = Long.valueOf(Math.min(hitCount, maxNumResults)).intValue();
             visibleHitCount = hitCount;
 
             // process found documents
@@ -966,17 +974,24 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             processedResults += checkQueryResponse.getResults().size();
 
-            if ((resultSolrIds.size() < rows) && (processedResults < hitCount)) {
+            if ((resultSolrIds.size() < rows) && (processedResults < maxToProcess)) {
                 CmsSolrQuery secondCheckQuery = checkQuery.clone();
                 // disable all features not necessary, since results are present from the first check query.
                 secondCheckQuery.setFacet(false);
                 secondCheckQuery.setMoreLikeThis(false);
                 secondCheckQuery.set(QUERY_SPELLCHECK_NAME, false);
                 do {
+                    // query directly more under certain conditions to reduce number of queries
+                    itemsToCheck = itemsToCheck < 3000 ? itemsToCheck * 4 : itemsToCheck;
+                    // adjust rows and start for the permission check.
+                    secondCheckQuery.setRows(
+                        Integer.valueOf(
+                            Long.valueOf(Math.min(maxToProcess - processedResults, itemsToCheck)).intValue()));
                     secondCheckQuery.setStart(Integer.valueOf(processedResults));
 
                     long solrSecondCheckTime = System.currentTimeMillis();
                     QueryResponse secondCheckQueryResponse = m_solr.query(secondCheckQuery);
+                    processedResults += secondCheckQueryResponse.getResults().size();
                     solrSecondCheckTime = System.currentTimeMillis() - solrSecondCheckTime;
                     solrPermissionTime += solrCheckTime;
 
@@ -1008,7 +1023,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         }
                     }
 
-                } while ((resultSolrIds.size() < rows) && (processedResults < hitCount));
+                } while ((resultSolrIds.size() < rows) && (processedResults < maxToProcess));
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1165,7 +1180,12 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             // write the response for the handler
             if (response != null) {
-                solrQueryRequest = new LocalSolrQueryRequest(null, query);
+                // create and return the result
+                core = m_solr instanceof EmbeddedSolrServer
+                ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getCoreName())
+                : null;
+
+                solrQueryRequest = new LocalSolrQueryRequest(core, query);
                 SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
                 solrQueryResponse.setAllValues(checkQueryResponse.getResponse());
                 writeResp(response, solrQueryRequest, solrQueryResponse);
@@ -1182,6 +1202,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
         } finally {
             if (solrQueryRequest != null) {
                 solrQueryRequest.close();
+            }
+            if (null != core) {
+                core.close();
             }
             // re-set thread to previous priority
             Thread.currentThread().setPriority(previousPriority);
