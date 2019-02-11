@@ -622,7 +622,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      */
     public int getMaxResults() {
 
-        return OpenCms.getSearchManager().getSolrServerConfiguration().getMaxResults();
+        return m_maxResults;
     }
 
     /**
