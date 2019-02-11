@@ -106,6 +106,8 @@ import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
 import org.apache.solr.util.FastWriter;
 
+import com.google.common.base.Objects;
+
 /**
  * Implements the search within an Solr index.<p>
  *
@@ -207,6 +209,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** The name of the query parameter sorting. */
     private static final String QUERY_SORT_NAME = "sort";
+
+    /** The name of the query parameter expand. */
+    private static final String QUERY_PARAM_EXPAND = "expand";
 
     /** The embedded Solr client for this index. */
     transient SolrClient m_solr;
@@ -812,10 +817,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
      *  </li>
      *</ol>
      *
-     * Currently not supported Solr features are:
+     * Currently not or only partly supported Solr features are:
      * <ul>
      *  <li>groups</li>
-     *  <li>collapse and expand</li>
+     *  <li>collapse - representatives of the collapsed group might be filtered by the permission check</li>
+     *  <li>expand is disabled</li>
      * </ul>
      *
      * @param cms the current OpenCms context
@@ -899,10 +905,19 @@ public class CmsSolrIndex extends CmsSearchIndex {
         // Set the corrected rows for the query.
         query.setRows(Integer.valueOf(rows));
 
+        // remove potentially set expand parameter
+        if (null != query.getParams(QUERY_PARAM_EXPAND)) {
+            query.remove("expand");
+        }
+
         float maxScore = 0;
 
         LocalSolrQueryRequest solrQueryRequest = null;
         SolrCore core = null;
+        String[] sortParamValues = query.getParams(QUERY_SORT_NAME);
+        boolean sortByScoreDesc = (null == sortParamValues)
+            || (sortParamValues.length == 0)
+            || Objects.equal(sortParamValues[0], "score desc");
 
         try {
 
@@ -959,7 +974,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         if (cnt >= start) {
                             resultSolrIds.add(searchDoc.getFieldValueAsString(CmsSearchField.FIELD_SOLR_ID));
                         }
-                        if (searchDoc.getScore() > maxScore) {
+                        if (sortByScoreDesc && (searchDoc.getScore() > maxScore)) {
                             maxScore = searchDoc.getScore();
                         }
                         if (++cnt >= end) {
@@ -1007,7 +1022,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                                 if (cnt >= start) {
                                     resultSolrIds.add(docSolrId);
                                 }
-                                if (searchDoc.getScore() > maxScore) {
+                                if (sortByScoreDesc && (searchDoc.getScore() > maxScore)) {
                                     maxScore = searchDoc.getScore();
                                 }
                                 if (++cnt >= end) {
@@ -1057,7 +1072,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             // use sorting as in the original query.
             queryForResults.setSorts(query.getSorts());
-            String[] sortParamValues = query.getParams(QUERY_SORT_NAME);
             if (null != sortParamValues) {
                 queryForResults.add(QUERY_SORT_NAME, sortParamValues);
             }
@@ -1121,7 +1135,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             // adjust start, max score and hit count displayed in the result list.
             solrDocumentList.setStart(start);
-            solrDocumentList.setMaxScore(new Float(maxScore));
+            Float finalMaxScore = sortByScoreDesc ? new Float(maxScore) : checkQueryResponse.getResults().getMaxScore();
+            solrDocumentList.setMaxScore(finalMaxScore);
             solrDocumentList.setNumFound(visibleHitCount);
 
             // Exchange the search parameters in the response header by the ones from the (adjusted) original query.
@@ -1163,7 +1178,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 end,
                 rows > 0 ? (start / rows) + 1 : 0, //page - but matches only in case of equally sized pages and is zero for rows=0 (because this was this way before!?!)
                 visibleHitCount,
-                new Float(maxScore),
+                finalMaxScore,
                 startTime,
                 System.currentTimeMillis());
             if (LOG.isDebugEnabled()) {
