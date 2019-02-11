@@ -29,19 +29,21 @@ package org.opencms.search.solr;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
@@ -50,6 +52,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -109,6 +112,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         suite.addTest(new TestSolrSearch("testXmlContent"));
         suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
         suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
+        suite.addTest(new TestSolrSearch("testPermissionFilterAndLimits"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -356,7 +360,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         index.setProject("Offline");
         // important: use german locale for a special treat on term analyzing
         index.setLocale(Locale.GERMAN);
-        index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
+        index.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         index.setFieldConfigurationName("solr_fields");
         index.addSourceName("solr_source2");
@@ -383,7 +387,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
 
-        // change seach root and assert no more files are found
+        // change search root and assert no more files are found
         query = "q=+text:>>SearchEgg1<< +parent-folders:/folder1/";
         results = index.search(getCmsObject(), query);
         assertEquals(0, results.size());
@@ -730,6 +734,84 @@ public class TestSolrSearch extends OpenCmsTestCase {
             AllTests.printResults(getCmsObject(), results, false);
             assertEquals(expect, results.size());
         }
+    }
+
+    public void testPermissionFilterAndLimits() throws Throwable {
+
+        echo("Testing permission filter");
+
+        echo("Adding resources to search");
+        CmsObject adminCms = OpenCms.initCmsObject(getCmsObject());
+        adminCms.getRequestContext().setSiteRoot("/sites/default/");
+        String mainFolder = "searchfolder";
+        String subFolder1 = mainFolder + "/a";
+        String subFolder2 = mainFolder + "/b";
+        String searchUser = "searchUser";
+        I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeFolder.getStaticTypeName());
+
+        List<CmsResource> publishResources = new ArrayList<>(103);
+        publishResources.add(adminCms.createResource(mainFolder, folderType));
+        publishResources.add(adminCms.createResource(subFolder1, folderType));
+        publishResources.add(adminCms.createResource(subFolder2, folderType));
+        I_CmsResourceType plainType = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypePlain.getStaticTypeName());
+        for (int i = 11; i <= 60; i++) {
+            publishResources.add(adminCms.createResource(subFolder1 + "/" + i + "a.txt", plainType));
+        }
+        for (int i = 11; i <= 60; i++) {
+            publishResources.add(adminCms.createResource(subFolder2 + "/" + i + "b.txt", plainType));
+        }
+
+        adminCms.createUser(searchUser, "password", "Test user for permission check in search", null);
+        adminCms.chacc(subFolder1, I_CmsPrincipal.PRINCIPAL_USER, "searchUser", "");
+
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(
+            adminCms,
+            new CmsShellReport(adminCms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        echo("Querying indexed resource as Admin to ensure indexing went correctly");
+
+        CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        query.addFilterQuery("parent-folders:\"/sites/default/" + mainFolder + "/\"");
+        query.setSort(CmsSearchField.FIELD_FILENAME, ORDER.asc);
+        query.setRows(Integer.valueOf(20));
+        CmsSolrResultList adminResults = index.search(adminCms, query);
+        assertEquals(100, adminResults.getNumFound());
+        assertEquals(20, adminResults.size());
+
+        echo("Searching as user with restricted permissions on parts of the indexed resources.");
+        CmsObject userCms = OpenCms.initCmsObject(adminCms);
+        userCms.getRequestContext().setCurrentProject(userCms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        userCms.loginUser(searchUser, "password");
+        CmsSolrResultList userResults = index.search(userCms, query);
+        assertEquals(80, userResults.getNumFound());
+        assertEquals(20, userResults.size());
+
+        query.setSort(CmsSearchField.FIELD_PATH, ORDER.asc);
+        userResults = index.search(userCms, query);
+        assertEquals(50, userResults.getNumFound());
+        assertEquals(20, userResults.size());
+
+        query.setStart(Integer.valueOf(60));
+        userResults = index.search(userCms, query);
+        assertEquals(50, userResults.getNumFound());
+        assertEquals(0, userResults.size());
+
+        echo("Testing processing limit");
+        query.setStart(Integer.valueOf(0));
+        userResults = index.search(userCms, query, false, null, false, null, 55);
+        assertEquals(50, userResults.getNumFound());
+        assertEquals(5, userResults.size());
+
+        query.setStart(Integer.valueOf(60));
+        userResults = index.search(userCms, query, false, null, false, null, 55);
+        assertEquals(50, userResults.getNumFound());
+        assertEquals(0, userResults.size());
+
     }
 
     /**
