@@ -159,6 +159,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** The constant for an unlimited maximum number of results to return in a Solr search. */
     public static final int MAX_RESULTS_UNLIMITED = -1;
 
+    /** The constant for an unlimited maximum number of results to return in a Solr search. */
+    public static final int MAX_RESULTS_GALLERY = 10000;
+
     /** A constant for debug formatting output. */
     protected static final int DEBUG_PADDING_RIGHT = 50;
 
@@ -463,7 +466,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 null,
                 true,
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED,
-                MAX_RESULTS_UNLIMITED); // ignore the maximally searched number of contents.
+                MAX_RESULTS_GALLERY); // ignore the maximally searched number of contents.
 
             if (null == list) {
                 return null;
