@@ -59,7 +59,7 @@ public class CmsLocationController {
     private static boolean m_hasInsertedDynamicStyle;
 
     /** The main API param. */
-    private static final String MAPS_MAIN_PARAM = "v=3.exp&sensor=false";
+    private static final String MAPS_MAIN_PARAM = "v=3.exp";
 
     /** The places library param. */
     private static final String MAPS_PLACES_PARAM = "libraries=places";
@@ -501,12 +501,6 @@ public class CmsLocationController {
     }
 
     /**
-     * Shows the map preview.<p>
-     */
-    native void showMapPreview() /*-{
-                                 }-*/;
-
-    /**
      * Displays the values within the picker widget.<p>
      */
     private void displayValue() {
@@ -535,14 +529,13 @@ public class CmsLocationController {
             }
             m_picker.setLocationInfo(infos);
             m_picker.setPreviewVisible(true);
-            if (isApiLoaded()) {
-                showMapPreview();
-            } else {
+            if (!isApiLoaded()) {
+
                 onApiReady(new Command() {
 
                     public void execute() {
 
-                        showMapPreview();
+                        return;
                     }
                 });
             }

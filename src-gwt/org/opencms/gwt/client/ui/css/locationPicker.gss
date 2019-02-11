@@ -71,7 +71,7 @@ div.locationField input[type="text"]{
     margin:0px;
 }
 div.locationField.hasPreview{
-	height: 112px;
+	height: 82px;
 	position: relative;
 }
 div.inputContainer{

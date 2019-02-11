@@ -114,11 +114,7 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
                     sitePath = cms.getSitePath(resource);
                 }
                 try {
-                    String apiKey = cms.readPropertyObject(
-                        sitePath,
-                        CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY,
-                        true).getValue();
-
+                    String apiKey = getApiKey(cms, sitePath);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apiKey)) {
                         conf.put(CONFIG_API_KEY, apiKey);
                     }
@@ -299,6 +295,29 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
     public I_CmsWidget newInstance() {
 
         return new CmsLocationPickerWidget(getConfiguration());
+    }
+
+    /**
+     * Get the correct google api key.
+     * Tries to read a workplace key first.
+     *
+     * @param cms CmsObject
+     * @param sitePath site path
+     * @return key value
+     * @throws CmsException exception
+     */
+    private String getApiKey(CmsObject cms, String sitePath) throws CmsException {
+
+        String res = cms.readPropertyObject(
+            sitePath,
+            CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY_WORKPLACE,
+            true).getValue();
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(res)) {
+            res = cms.readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY, true).getValue();
+        }
+        return res;
+
     }
 
     /**
