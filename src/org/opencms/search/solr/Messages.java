@@ -41,6 +41,33 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_LANGUAGE_DETECTION_FAILED_1 = "LOG_LANGUAGE_DETECTION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_DEBUG_CHECK_QUERY_2 = "LOG_SOLR_DEBUG_CHECK_QUERY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_DEBUG_ORIGINAL_QUERY_2 = "LOG_SOLR_DEBUG_ORIGINAL_QUERY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_DEBUG_RESULT_QUERY_2 = "LOG_SOLR_DEBUG_RESULT_QUERY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_DEBUG_SECONDCHECK_QUERY_2 = "LOG_SOLR_DEBUG_SECONDCHECK_QUERY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_INFO_ADDING_SEARCH_EXCLUDE_FILTER_FOR_QUERY_2 = "LOG_SOLR_INFO_ADDING_SEARCH_EXCLUDE_FILTER_FOR_QUERY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_INFO_CORRECTING_ROWS_4 = "LOG_SOLR_INFO_CORRECTING_ROWS_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_INFO_LIMITING_MAX_PROCESSED_RESULTS_3 = "LOG_SOLR_INFO_LIMITING_MAX_PROCESSED_RESULTS_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_INFO_LIMITING_MAX_ROWS_4 = "LOG_SOLR_INFO_LIMITING_MAX_ROWS_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_INFO_REMOVING_EXPAND_2 = "LOG_SOLR_INFO_REMOVING_EXPAND_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1 = "LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */

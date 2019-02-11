@@ -859,6 +859,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
         // - deal with result clustering?
         // - remove max score calculation?
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SOLR_DEBUG_ORIGINAL_QUERY_2, query, getName()));
+        }
+
         // change thread priority in order to reduce search impact on overall system performance
         int previousPriority = Thread.currentThread().getPriority();
         if (getPriority() > 0) {
@@ -869,6 +873,13 @@ public class CmsSolrIndex extends CmsSearchIndex {
         checkOfflineAccess(cms);
 
         if (!ignoreSearchExclude) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_INFO_ADDING_SEARCH_EXCLUDE_FILTER_FOR_QUERY_2,
+                        query,
+                        getName()));
+            }
             query.addFilterQuery(CmsSearchField.FIELD_SEARCH_EXCLUDE + ":\"false\"");
         }
 
@@ -884,6 +895,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
         // Adjust the maximal number of results to process in case it is unlimited.
         if (maxNumResults < 0) {
             maxNumResults = Integer.MAX_VALUE;
+            if (LOG.isInfoEnabled()) {
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_INFO_LIMITING_MAX_PROCESSED_RESULTS_3,
+                        query,
+                        getName(),
+                        Integer.valueOf(maxNumResults)));
+            }
         }
 
         // Correct the rows parameter
@@ -896,10 +915,22 @@ public class CmsSolrIndex extends CmsSearchIndex {
         }
         // Restrict the rows to the maximally allowed number, if they should be restricted.
         if (!ignoreMaxRows && (rows > ROWS_MAX)) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_INFO_LIMITING_MAX_ROWS_4,
+                        new Object[] {query, getName(), Integer.valueOf(rows), Integer.valueOf(ROWS_MAX)}));
+            }
             rows = ROWS_MAX;
         }
         // If start is higher than maxNumResults, the rows could be negative here - correct this.
         if (rows < 0) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_INFO_CORRECTING_ROWS_4,
+                        new Object[] {query, getName(), Integer.valueOf(rows), Integer.valueOf(0)}));
+            }
             rows = 0;
         }
         // Set the corrected rows for the query.
@@ -907,6 +938,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
         // remove potentially set expand parameter
         if (null != query.getParams(QUERY_PARAM_EXPAND)) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_SOLR_INFO_REMOVING_EXPAND_2, query, getName()));
             query.remove("expand");
         }
 
@@ -952,6 +984,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
             List<String> originalFields = Arrays.asList(query.getFields().split(","));
             if (originalFields.contains(CmsSearchField.FIELD_SCORE)) {
                 checkQuery.addField(CmsSearchField.FIELD_SCORE);
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_SOLR_DEBUG_CHECK_QUERY_2, checkQuery, getName()));
             }
             // perform the permission check Solr query and remember the response and time Solr took.
             long solrCheckTime = System.currentTimeMillis();
@@ -1003,6 +1038,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         Integer.valueOf(
                             Long.valueOf(Math.min(maxToProcess - processedResults, itemsToCheck)).intValue()));
                     secondCheckQuery.setStart(Integer.valueOf(processedResults));
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_SOLR_DEBUG_SECONDCHECK_QUERY_2,
+                                secondCheckQuery,
+                                getName()));
+                    }
 
                     long solrSecondCheckTime = System.currentTimeMillis();
                     QueryResponse secondCheckQueryResponse = m_solr.query(secondCheckQuery);
@@ -1085,6 +1128,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 }
             }
 
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_SOLR_DEBUG_RESULT_QUERY_2, queryForResults, getName()));
+            }
             // perform the result query.
             solrResultTime = System.currentTimeMillis();
             QueryResponse resultQueryResponse = m_solr.query(queryForResults);
