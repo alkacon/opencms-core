@@ -129,9 +129,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Constant for additional parameter to set the maximally processed results (start + rows) for searches with this index.
-     * It overwrites the global configuration from {@link CmsSolrConfiguration#getMaxResults()} for this index.
+     * It overwrites the global configuration from {@link CmsSolrConfiguration#getMaxProcessedResults()} for this index.
     **/
-    public static final String SOLR_SEARCH_MAX_RESULTS = "search.solr.maxResults";
+    public static final String SOLR_SEARCH_MAX_PROCESSED_RESULTS = "search.solr.maxProcessedResults";
 
     /** Constant for additional parameter to set the fields the select handler should return at maximum. */
     public static final String SOLR_HANDLER_ALLOWED_FIELDS = "handle.solr.allowedFields";
@@ -244,7 +244,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     private boolean m_handlerSpellDisabled;
 
     /** The maximal number of results to process for search queries. */
-    int m_maxResults = -2; // special value for not initialized.
+    int m_maxProcessedResults = -2; // special value for not initialized.
 
     /**
      * Default constructor.<p>
@@ -355,14 +355,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     m_handlerSpellDisabled = value.trim().toLowerCase().equals("true");
                 }
                 break;
-            case SOLR_SEARCH_MAX_RESULTS:
+            case SOLR_SEARCH_MAX_PROCESSED_RESULTS:
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
                     try {
-                        m_maxResults = Integer.parseInt(value);
+                        m_maxProcessedResults = Integer.parseInt(value);
                     } catch (NumberFormatException e) {
                         LOG.warn(
                             "Could not parse parameter \""
-                                + SOLR_SEARCH_MAX_RESULTS
+                                + SOLR_SEARCH_MAX_PROCESSED_RESULTS
                                 + "\" for index \""
                                 + getName()
                                 + "\". The global configuration will be used instead.");
@@ -620,9 +620,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
      *
      * @return the maximal number of results (start + rows) that are processed for a search query.
      */
-    public int getMaxResults() {
+    public int getMaxProcessedResults() {
 
-        return m_maxResults;
+        return m_maxProcessedResults;
     }
 
     /**
@@ -642,8 +642,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void initialize() throws CmsSearchException {
 
         super.initialize();
-        if (m_maxResults == -2) {
-            m_maxResults = OpenCms.getSearchManager().getSolrServerConfiguration().getMaxResults();
+        if (m_maxProcessedResults == -2) {
+            m_maxProcessedResults = OpenCms.getSearchManager().getSolrServerConfiguration().getMaxProcessedResults();
         }
         try {
             OpenCms.getSearchManager().registerSolrIndex(this);
@@ -797,7 +797,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         CmsResourceFilter filter)
     throws CmsSearchException {
 
-        return search(cms, query, ignoreMaxRows, response, ignoreSearchExclude, filter, getMaxResults());
+        return search(cms, query, ignoreMaxRows, response, ignoreSearchExclude, filter, getMaxProcessedResults());
     }
 
     /**

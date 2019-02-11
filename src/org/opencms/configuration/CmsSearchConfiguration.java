@@ -225,7 +225,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     private static final String XPATH_SEARCH = "*/" + N_SEARCH;
 
     /** Node name constant. */
-    private static final String N_MAX_RESULTS = "maxResults";
+    private static final String N_MAX_PROCESSED_RESULTS = "maxProcessedResults";
 
     /** The configured search manager. */
     private CmsSearchManager m_searchManager;
@@ -285,7 +285,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPath + "/" + N_HOME, "setHomeFolderPath", 0);
         digester.addCallMethod(xPath + "/" + N_CONFIG_FILE, "setSolrFileName", 0);
         digester.addCallMethod(xPath + "/" + N_COMMIT_MS, "setSolrCommitMs", 0);
-        digester.addCallMethod(xPath + "/" + N_MAX_RESULTS, "setMaxResults", 0);
+        digester.addCallMethod(xPath + "/" + N_MAX_PROCESSED_RESULTS, "setMaxProcessedResults", 0);
         digester.addSetNext(xPath, "setSolrServerConfiguration");
 
         // document type rule

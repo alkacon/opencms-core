@@ -35,7 +35,7 @@
 	home?,
 	configfile?,
 	commitWithinMs?,
-	maxResults?
+	maxProcessedResults?
 )>
 <!ATTLIST solr
 	enabled (true|false|TRUE|FALSE) #REQUIRED
@@ -44,7 +44,7 @@
 <!ELEMENT home (#PCDATA)>
 <!ELEMENT configfile (#PCDATA)>
 <!ELEMENT commitWithinMs (#PCDATA)>
-<!ELEMENT maxResults (#PCDATA)>
+<!ELEMENT maxProcessedResults (#PCDATA)>
 
 <!--
 # the size of the search result LFU map.

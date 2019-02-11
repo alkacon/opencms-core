@@ -67,7 +67,7 @@ public class CmsSolrConfiguration {
     public static final String SOLR_CONFIG_FILE = "solr.xml";
 
     /** The default maximum number of results to return in a Solr search. */
-    public static final int DEFAULT_MAX_RESULTS = 400;
+    public static final int DEFAULT_MAX_PROCESSED_RESULTS = 400;
 
     /**
      * The default max time in ms before a commit will happen (10 seconds by default).<p>
@@ -115,8 +115,8 @@ public class CmsSolrConfiguration {
     /** The file name of the Solr configuration. */
     private String m_solrFileName;
 
-    /** The maximal number of Results to return by a Solr index. */
-    private int m_maxResults = DEFAULT_MAX_RESULTS;
+    /** The maximal number of results to be processed in a search request to a Solr index. */
+    private int m_maxProcessedResults = DEFAULT_MAX_PROCESSED_RESULTS;
 
     /**
      * Default constructor.<p>
@@ -158,9 +158,16 @@ public class CmsSolrConfiguration {
         return m_homeFolderPath;
     }
 
-    public int getMaxResults() {
+    /**
+     * Returns the maximal number of results processed when querying a Solr index.
+     *
+     * Each index has a configuration option to overwrite this global value.
+     *
+     * @return the maximal number of results processed when querying a Solr index.
+     */
+    public int getMaxProcessedResults() {
 
-        return m_maxResults;
+        return m_maxProcessedResults;
     }
 
     /**
@@ -319,25 +326,27 @@ public class CmsSolrConfiguration {
     }
 
     /**
-     * Sets the maximal number of results returned by Solr indexes.<p>
+     * Sets the maximal number of results processed for a query to a Solr index.<p>
      *
-     * @param maxResults the maximal number of results returned by Solr indexes.
+     * The globally set value can be overwritten for each index.
+     *
+     * @param maxProcessedResults the maximal number of results processed for a query to a Solr index.
      */
-    public void setMaxResults(String maxResults) {
+    public void setMaxProcessedResults(String maxProcessedResults) {
 
         try {
-            m_maxResults = Integer.parseInt(maxResults);
+            m_maxProcessedResults = Integer.parseInt(maxProcessedResults);
         } catch (Exception e) {
             LOG.warn(
                 "Could not parse value "
-                    + maxResults
+                    + maxProcessedResults
                     + " as Integer to set the limit for the number of results a Solr index can return.");
         }
-        if (m_maxResults <= 0) {
-            m_maxResults = DEFAULT_MAX_RESULTS;
+        if (m_maxProcessedResults <= 0) {
+            m_maxProcessedResults = DEFAULT_MAX_PROCESSED_RESULTS;
             LOG.warn(
                 "The maximal number of results to return by a Solr index should be greater than 0. Reset it to the default value "
-                    + DEFAULT_MAX_RESULTS
+                    + DEFAULT_MAX_PROCESSED_RESULTS
                     + ".");
         }
     }
