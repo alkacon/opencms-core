@@ -83,10 +83,11 @@ public final class CmsSqlConsoleExecutor {
      * @param sql the sql query to execute
      * @param pool name of the db pool to use
      * @param report the report to write the output
+     * @param errors a list to append errors to
      *
      * @return a <code>{@link List}</code> if the sql is a SELECT sentence, or <code>null</code>.
      */
-    public CmsSqlConsoleResults execute(String sql, String pool, I_CmsReport report) {
+    public CmsSqlConsoleResults execute(String sql, String pool, I_CmsReport report, List<Throwable> errors) {
 
         try {
             CmsMessageContainer message = Messages.get().container(Messages.RPT_SQLCONSOLE_BEGIN_0);
@@ -136,7 +137,7 @@ public final class CmsSqlConsoleExecutor {
                 }
             }
         } catch (Throwable e) {
-            writeError(report, e);
+            errors.add(e);
         } finally {
             CmsMessageContainer message = Messages.get().container(Messages.RPT_SQLCONSOLE_END_0);
             report.println(message, I_CmsReport.FORMAT_HEADLINE);
@@ -175,6 +176,7 @@ public final class CmsSqlConsoleExecutor {
      *
      * @throws SQLException in the case of a error
      */
+    @SuppressWarnings("resource")
     private CmsSqlConsoleResults executeQuery(String sentence, String poolName) throws SQLException {
 
         Connection conn = null;

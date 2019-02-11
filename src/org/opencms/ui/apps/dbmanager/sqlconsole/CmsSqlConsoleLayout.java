@@ -35,7 +35,10 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsErrorDialog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.ui.Button;
@@ -90,12 +93,17 @@ public class CmsSqlConsoleLayout extends VerticalLayout {
             return;
         }
         CmsStringBufferReport report = new CmsStringBufferReport(Locale.ENGLISH);
-        CmsSqlConsoleResults result = m_console.execute(stmt, pool, report);
-        Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SQLCONSOLE_QUERY_RESULTS_0));
-        window.setContent(new CmsSqlConsoleResultsForm(result, report.toString()));
-        A_CmsUI.get().addWindow(window);
-        window.center();
+        List<Throwable> errors = new ArrayList<>();
+        CmsSqlConsoleResults result = m_console.execute(stmt, pool, report, errors);
+        if (errors.size() > 0) {
+            CmsErrorDialog.showErrorDialog(report.toString() +  errors.get(0).getMessage(), errors.get(0));
+        } else {
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SQLCONSOLE_QUERY_RESULTS_0));
+            window.setContent(new CmsSqlConsoleResultsForm(result, report.toString()));
+            A_CmsUI.get().addWindow(window);
+            window.center();
+        }
 
     }
 
