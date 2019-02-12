@@ -192,9 +192,6 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
         // registers a factory for creating new instances of this widget
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
-             */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
                 return new CmsTextArea();
@@ -437,6 +434,20 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
 
         m_textArea.setName(name);
 
+    }
+
+    /**
+     * Sets the text area to use a proportional font.<p>
+     *
+     * @param propartional <code>true</code> to use a proportional font
+     */
+    public void setProportionalStyle(boolean propartional) {
+
+        if (propartional) {
+            m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaProportional());
+        } else {
+            m_panel.removeStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaProportional());
+        }
     }
 
     /**

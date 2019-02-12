@@ -133,6 +133,10 @@ div.textArea textarea{
 	font-family: value("constants.css.fontFamilyMono");
 }
 
+div.textArea.textAreaProportional textarea{
+	font-family: value("constants.css.fontFamily");
+}
+
 div.textArea.textAreaGhostMode textarea { 
 	font-style: oblique;
 	color: value("constants.css.textColorDisabled") /*!important*/;

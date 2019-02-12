@@ -49,6 +49,12 @@ import com.google.gwt.user.client.ui.Composite;
  * */
 public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
 
+    /** The monospace style key. */
+    public static final String STYLE_MONSPACE = "monospace";
+
+    /** The proportional style key. */
+    public static final String STYLE_PROPORTIONAL = "proportional";
+
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
 
@@ -68,17 +74,27 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
         // All composites must call initWidget() in their constructors.
         initWidget(m_textarea);
         int configheight = DEFAULT_ROWS_NUMBER;
+        boolean useProportional = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
-            try {
-                int rows = Integer.parseInt(config);
-                if (rows > 0) {
-                    configheight = rows;
+            for (String conf : config.split("|")) {
+                if (STYLE_PROPORTIONAL.equals(conf)) {
+                    useProportional = true;
+                } else if (STYLE_MONSPACE.equals(conf)) {
+                    useProportional = false;
+                } else {
+                    try {
+                        int rows = Integer.parseInt(conf);
+                        if (rows > 0) {
+                            configheight = rows;
+                        }
+                    } catch (Exception e) {
+                        // nothing to do
+                    }
                 }
-            } catch (Exception e) {
-                // nothing to do
             }
         }
         m_textarea.setRows(configheight);
+        m_textarea.setProportionalStyle(useProportional);
         m_textarea.getTextArea().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
         m_textarea.getTextAreaContainer().addStyleName(
             I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
