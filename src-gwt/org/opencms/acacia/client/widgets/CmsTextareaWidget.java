@@ -30,6 +30,7 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
@@ -75,10 +76,13 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
         initWidget(m_textarea);
         int configheight = DEFAULT_ROWS_NUMBER;
         boolean useProportional = false;
+        CmsDebugLog.consoleLog("Parsing config: " + config);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
-            for (String conf : config.split("|")) {
+            for (String conf : config.split("\\|")) {
+                CmsDebugLog.consoleLog("Evaluating item: " + conf);
                 if (STYLE_PROPORTIONAL.equals(conf)) {
                     useProportional = true;
+                    CmsDebugLog.consoleLog("Setting to use proportional style");
                 } else if (STYLE_MONSPACE.equals(conf)) {
                     useProportional = false;
                 } else {

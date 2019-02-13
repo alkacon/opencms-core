@@ -54,7 +54,6 @@ div.textAreaBoxPanel textarea.textAreaBox {
 	border: none;
 	resize: none;
 	overflow: hidden;
-	font-family: value("constants.css.fontFamilyMono");
 	padding: 3px 0 0 3px;
 	outline:none;
 }

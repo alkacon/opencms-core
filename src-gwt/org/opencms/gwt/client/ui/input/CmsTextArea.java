@@ -439,11 +439,11 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
     /**
      * Sets the text area to use a proportional font.<p>
      *
-     * @param propartional <code>true</code> to use a proportional font
+     * @param proportional <code>true</code> to use a proportional font
      */
-    public void setProportionalStyle(boolean propartional) {
+    public void setProportionalStyle(boolean proportional) {
 
-        if (propartional) {
+        if (proportional) {
             m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaProportional());
         } else {
             m_panel.removeStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaProportional());

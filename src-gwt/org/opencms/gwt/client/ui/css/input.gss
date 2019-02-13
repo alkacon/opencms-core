@@ -135,6 +135,7 @@ div.textArea textarea{
 
 div.textArea.textAreaProportional textarea{
 	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 }
 
 div.textArea.textAreaGhostMode textarea { 
