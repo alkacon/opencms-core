@@ -1,7 +1,16 @@
 <%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
-	
+
+String xmlValidation = Bean.getXmlConfigUpdater().validationErrors(); 
+if (xmlValidation != null) {%>
+    <script type="text/javascript">
+    validation = <%= xmlValidation%> ; 
+    alert(validation.err);
+</script><%return;
+}
+
+
 	if (!Bean.isValidUser()){%>
 		<script type="text/javascript">
 			alert('The given user/password combination is not valid, or the given user has no root administrator role.');
@@ -9,6 +18,7 @@
 		</script>
 		<%return;
 	}
+
 	
 	// next page
 	String nextPage = "step_5_update_modules.jsp";	

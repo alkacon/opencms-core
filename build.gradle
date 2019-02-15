@@ -1083,6 +1083,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
         include 'update/**/*.xml'
         include 'update/**/*.txt'
         include 'update/**/*.jsp'
+        exclude 'update/config/opencms.xml'
         exclude 'update/readme.txt'
         exclude 'update/empty.jar'
         filter(ReplaceTokens, tokens: [
@@ -1099,8 +1100,25 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
         exclude 'update/**/*.xml'
         exclude 'update/**/*.txt'
         exclude 'update/**/*.jsp'
+        exclude 'update/config/opencms.xml'
         exclude 'update/readme.txt'
         exclude 'update/empty.jar'
+    }
+    
+    from ("${projectDir}/webapp/WEB-INF/classes/log4j2.xml") {
+		into '/WEB-INF/classes' 
+	}    	
+	
+	from ("${projectDir}/webapp/update/config/opencms.xml") {
+		into '/WEB-INF/config'
+	}
+	
+	from("${projectDir}/webapp/WEB-INF/config/opencms-workplace.xml"){
+            into '/WEB-INF/config/defaults'
+    }
+    
+    from("${projectDir}/webapp/WEB-INF/config/opencms-vfs.xml"){
+           into '/WEB-INF/config/defaults'
     }
 
     from ("${projectDir}/webapp/WEB-INF/solr"){

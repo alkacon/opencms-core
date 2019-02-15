@@ -48,6 +48,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.setup.db.CmsUpdateDBThread;
+import org.opencms.setup.xml.CmsXmlConfigUpdater;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
 import org.opencms.workplace.threads.CmsXmlContentRepairThread;
@@ -124,6 +125,11 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.ade.publish",
         "org.opencms.ade.sitemap",
         "org.opencms.ade.upload",
+        "org.opencms.editors.codemirror",
+        "org.opencms.editors.tinymce",
+        "org.opencms.editors",
+        "org.opencms.gwt",
+        "org.opencms.jquery",
         "org.opencms.locale.cs",
         "org.opencms.locale.da",
         "org.opencms.locale.de",
@@ -134,8 +140,26 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.locale.zh",
         "org.opencms.ugc",
         "org.opencms.workplace",
+        "org.opencms.workplace.administration",
+        "org.opencms.workplace.explorer",
         "org.opencms.workplace.handler",
+        "org.opencms.workplace.spellcheck",
+        "org.opencms.workplace.tools.accounts",
+        "org.opencms.workplace.tools.cache",
+        "org.opencms.workplace.tools.content",
+        "org.opencms.workplace.tools.database",
+        "org.opencms.workplace.tools.galleryoverview",
+        "org.opencms.workplace.tools.git",
+        "org.opencms.workplace.tools.history",
         "org.opencms.workplace.tools.link",
+        "org.opencms.workplace.tools.modules",
+        "org.opencms.workplace.tools.projects",
+        "org.opencms.workplace.tools.publishqueue",
+        "org.opencms.workplace.tools.scheduler",
+        "org.opencms.workplace.tools.searchindex",
+        "org.opencms.workplace.tools.sites",
+        "org.opencms.workplace.tools.workplace",
+        "org.opencms.workplace.traditional",
         "org.opencms.workplace.help.de",
         "org.opencms.workplace.help.en",
         "org.opencms.workplace.help",
@@ -182,6 +206,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** The list of modules that should keep their libs. */
     private List<String> m_preserveLibModules;
+
+    /** The XML updater instance (lazily initialized). */
+    private CmsXmlConfigUpdater m_configUpdater;
 
     /**
      * Default constructor.<p>
@@ -330,6 +357,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Gets the folder for config files.
+     *
+     * @return the folder for config files
+     */
+    public File getConfigFolder() {
+
+        return new File(getWebAppRfsPath() + "WEB-INF/config");
+    }
+
+    /**
      * Returns the detected mayor version, based on DB structure.<p>
      *
      * @return the detected mayor version
@@ -462,6 +499,30 @@ public class CmsUpdateBean extends CmsSetupBean {
     public CmsUpdateThread getWorkplaceUpdateThread() {
 
         return m_workplaceUpdateThread;
+    }
+
+    /**
+     * Gets the XML updater (lazily create it if it hasn't been created yet).
+     *
+     * @return the XML updater
+     */
+    public CmsXmlConfigUpdater getXmlConfigUpdater() {
+
+        if (m_configUpdater == null) {
+            m_configUpdater = new CmsXmlConfigUpdater(getXmlUpdateFolder(), getConfigFolder());
+        }
+        return m_configUpdater;
+    }
+
+    /**
+     * Gets the folder for XML update files.
+     *
+     * @return the folder for XML update files
+     */
+    public File getXmlUpdateFolder() {
+
+        return new File(new File(getWebAppRfsPath()), "update/xmlupdate");
+
     }
 
     /**
