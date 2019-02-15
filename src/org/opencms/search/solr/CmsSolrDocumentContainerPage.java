@@ -124,20 +124,24 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     // get the formatter configuration for this element
                     try {
                         element.initResource(cms);
-                        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-                            cms,
-                            file.getRootPath());
-                        CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
-                        if ((formatters != null)
-                            && (element.getFormatterId() != null)
-                            && formatters.isSearchContent(element.getFormatterId())) {
-                            // the content of this element must be included for the container page
-                            all.add(
-                                CmsSolrDocumentXmlContent.extractXmlContent(
-                                    cms,
-                                    element.getResource(),
-                                    index,
-                                    forceLocale));
+                        CmsResource elementResource = element.getResource();
+                        if (!(cms.readProject(index.getProject()).isOnlineProject()
+                            && elementResource.isExpired(System.currentTimeMillis()))) {
+                            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                                cms,
+                                file.getRootPath());
+                            CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
+                            if ((formatters != null)
+                                && (element.getFormatterId() != null)
+                                && formatters.isSearchContent(element.getFormatterId())) {
+                                // the content of this element must be included for the container page
+                                all.add(
+                                    CmsSolrDocumentXmlContent.extractXmlContent(
+                                        cms,
+                                        elementResource,
+                                        index,
+                                        forceLocale));
+                            }
                         }
                     } catch (CmsException e) {
                         LOG.debug(
