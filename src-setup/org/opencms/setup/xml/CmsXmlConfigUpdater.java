@@ -221,6 +221,11 @@ public class CmsXmlConfigUpdater {
         }
     }
 
+    /**
+     * Gets validation errors either as a JSON string, or null if there are no validation errors.
+     *
+     * @return the validation error JSON
+     */
     public String validationErrors() {
 
         List<String> errors = new ArrayList<>();
@@ -247,6 +252,11 @@ public class CmsXmlConfigUpdater {
         return obj.toString();
     }
 
+    /**
+     * Gets existing config files.
+     *
+     * @return the existing config files
+     */
     private List<File> getConfigFiles() {
 
         String[] filenames = {
