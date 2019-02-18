@@ -1214,7 +1214,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 for (String filteredId : filteredResultIds) {
                     highlighting.remove(filteredId);
                 }
-                checkQueryResponse.getResponse().add("highlighting", highlighting);
+                NamedList<Object> completeResponse = new NamedList<Object>(1);
+                completeResponse.addAll(checkQueryResponse.getResponse());
+                completeResponse.add(QUERY_HIGHLIGHTING_NAME, highlighting);
+                checkQueryResponse.setResponse(completeResponse);
             }
 
             // build the result
