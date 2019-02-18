@@ -1,8 +1,6 @@
 <%@ page import="org.opencms.setup.xml.*,java.io.*" session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
---%><jsp:useBean id="xmlBean" class="org.opencms.setup.xml.CmsSetupXmlManager" scope="page" /><%
-    xmlBean.initialize(Bean.getDetectedVersion());
-%><jsp:setProperty name="xmlBean" property="*" /><%
+--%><%
 	
 	// next page
 	String nextPage = "step_4_module_selection.jsp";	
@@ -10,8 +8,6 @@
 	String prevPage = "step_2_settings.jsp";
 	
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
-	
-	
 	
 	if (Bean.isInitialized()) {
 	  if (isFormSubmitted) {
@@ -36,7 +32,7 @@ OpenCms Update-Wizard - XML Configuration Files Update
 <form method="post" class="nomargin" name="xmlupdate" onSubmit="getSelectedPlugins2();">
 <div>
 <p>In this step the XML configuration files will be updated.</p>
-<p>The update will use the XSLT transformations listed in the file update/xmlupdate/transforms.xml. </p>
+<p>The update will apply the XSLT transformations listed in the file update/xmlupdate/transforms.xml. </p>
 </div>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
