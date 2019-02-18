@@ -782,6 +782,8 @@ public final class CmsXmlUtils {
             if (!validate) {
                 reader.setValidation(false);
                 reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            } else {
+                reader.setValidation(true);
             }
             return reader.read(source);
         } catch (DocumentException e) {
