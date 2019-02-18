@@ -4,6 +4,13 @@
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-workplace.dtd"
                 indent="yes" />
 
+<!-- 
+
+Replace explorer types with the default ones in opencms-workplace.
+
+-->
+
+
 <xsl:param name="configDir" />
 <xsl:param name="opencmsWorkplace" select="document(concat($configDir, '/defaults/opencms-workplace.xml'))" />
 

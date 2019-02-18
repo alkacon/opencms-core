@@ -1,6 +1,10 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:strip-space elements="*" />
     <xsl:output method="xml" encoding="UTF-8" doctype-system="http://www.opencms.org/dtd/6.0/opencms-vfs.dtd" indent="yes" />
+    
+<!--     
+    Updates widget definitions to new format for standard widgets by copying them from the default configuration.
+-->
 
     <xsl:param name="configDir" />
     <xsl:param name="opencmsVfs" select="document(concat($configDir, '/defaults/opencms-vfs.xml'))" />

@@ -4,6 +4,13 @@
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-system.dtd"
                 indent="yes" />
 
+<!-- 
+
+Removes the sections from opencms-system.xml which now have their own config files.
+
+-->
+
+
 <xsl:param name="configDir" />
 
     <xsl:template match="@*|node()">

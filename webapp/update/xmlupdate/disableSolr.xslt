@@ -3,6 +3,13 @@
  <xsl:output method="xml" encoding="UTF-8"
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-search.dtd"
                 indent="yes" />
+                
+<!-- 
+
+Disables Solr for the module update step.
+
+-->
+                
 
 <xsl:param name="configDir" />
 

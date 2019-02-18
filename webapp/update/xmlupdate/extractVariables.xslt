@@ -3,6 +3,13 @@
  <xsl:output method="xml" 
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-variables.dtd"
                 indent="yes" />
+                
+<!-- 
+
+Copies login message configuration from opencms-system to opencms-variables.
+
+-->
+                
 
 <xsl:param name="configDir" />
 <xsl:param name="opencmsSystem" select="document(concat($configDir, '/opencms-system.xml'))" />

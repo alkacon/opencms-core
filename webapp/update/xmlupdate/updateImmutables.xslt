@@ -4,6 +4,13 @@
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-importexport.dtd"
                 indent="yes" />
 
+<!-- 
+
+Replace immutables list in opencms-importexport.
+
+-->
+
+
 <xsl:param name="configDir" />
 
     <xsl:template match="@*|node()">

@@ -3,6 +3,13 @@
  <xsl:output method="xml" 
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-sites.dtd"
                 indent="yes" />
+                
+<!-- 
+
+Copies site configuration from opencms-system to opencms-sites.
+
+-->
+
 
 <xsl:param name="configDir" />
 <xsl:param name="opencmsSystem" select="document(concat($configDir, '/opencms-system.xml'))" />

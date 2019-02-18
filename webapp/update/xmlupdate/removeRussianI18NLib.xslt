@@ -4,6 +4,14 @@
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-modules.dtd"
                 indent="yes" />
 
+<!-- 
+
+Removes export point for old Russian localization module lib folder so that the JAR isn't removed
+during the module update, causing problems with the classloader.
+
+-->
+
+
 <xsl:param name="configDir" />
 
     <xsl:template match="@*|node()">

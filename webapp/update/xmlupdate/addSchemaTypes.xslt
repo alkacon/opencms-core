@@ -4,6 +4,13 @@
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-vfs.dtd"
                 indent="yes" />
 
+<!-- 
+
+Copies schema types from default opencms-vfs.xml if they don't already exist.
+
+-->
+
+
 <xsl:param name="configDir" />
 <xsl:param name="opencmsVfs" select="document(concat($configDir, '/defaults/opencms-vfs.xml'))" />
 

@@ -4,6 +4,13 @@
                 doctype-system="http://www.opencms.org/dtd/6.0/opencms-workplace.dtd"
                 indent="yes" />
 
+<!-- 
+
+Moves startView preference from hidden tab to advanced tab.
+
+-->
+
+
 <xsl:param name="configDir" />
 
     <xsl:template match="@*|node()">
