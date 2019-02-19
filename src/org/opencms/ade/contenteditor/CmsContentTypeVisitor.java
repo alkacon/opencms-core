@@ -231,12 +231,14 @@ public class CmsContentTypeVisitor {
     private static final Log LOG = CmsLog.getLog(CmsContentTypeVisitor.class);
 
     /** The localization macro start sequence. */
-    private static final String MESSAGE_MACRO_START = I_CmsMacroResolver.MACRO_DELIMITER
+    private static final String MESSAGE_MACRO_START = ""
+        + I_CmsMacroResolver.MACRO_DELIMITER
         + I_CmsMacroResolver.MACRO_START
         + CmsMacroResolver.KEY_LOCALIZED_PREFIX;
 
     /** The old style localization macro start sequence. */
-    private static final String MESSAGE_MACRO_START_OLD = I_CmsMacroResolver.MACRO_DELIMITER_OLD
+    private static final String MESSAGE_MACRO_START_OLD = ""
+        + I_CmsMacroResolver.MACRO_DELIMITER_OLD
         + I_CmsMacroResolver.MACRO_START_OLD
         + CmsMacroResolver.KEY_LOCALIZED_PREFIX;
 
@@ -492,10 +494,6 @@ public class CmsContentTypeVisitor {
                     tabName = m_messages.keyDefault(
                         A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName(),
                         xmlTab.getTabName());
-                    if (CmsMessages.isUnknownKey(tabName)) {
-                        // in case this is an unknown key
-                        tabName = xmlTab.getTabName();
-                    }
                 }
 
                 result.add(
