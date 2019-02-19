@@ -50,6 +50,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -1146,33 +1147,6 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     }
 
     /**
-     * Checks whether their is enough space to display the help bubble below the widget.<p>
-     *
-     * @return <code>true</code> in case their is enough space
-     */
-    private boolean hasHelpBubbleSpaceBelow() {
-
-        m_helpBubble.getStyle().setDisplay(Display.BLOCK);
-        int bubbleHeight = m_helpBubble.getOffsetHeight();
-        m_helpBubble.getStyle().clearDisplay();
-
-        Element widgetElement = m_widget.asWidget().getElement();
-        // Calculate top position for the popup
-        int top = widgetElement.getAbsoluteTop();
-
-        int windowTop = Window.getScrollTop();
-        int windowBottom = Window.getScrollTop() + Window.getClientHeight();
-
-        int distanceFromWindowTop = top - windowTop;
-
-        int distanceToWindowBottom = windowBottom - (top + widgetElement.getOffsetHeight());
-
-        boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
-            && (distanceToWindowBottom < bubbleHeight);
-        return !displayAbove;
-    }
-
-    /**
      * Initializes the button styling.<p>
      */
     private void initButtons() {
@@ -1282,17 +1256,40 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
             }
             switch (direction) {
                 case above:
-                    displayAbove = false;
-                    break;
-                case below:
                     displayAbove = true;
                     break;
+                case below:
                 case none:
                 default:
-                    displayAbove = !hasHelpBubbleSpaceBelow();
+                    displayAbove = true;
                     break;
             }
         } else {
+            displayAbove = true;
+        }
+
+        m_helpBubble.getStyle().setDisplay(Display.BLOCK);
+        int bubbleHeight = m_helpBubble.getOffsetHeight();
+        m_helpBubble.getStyle().clearDisplay();
+
+        Element widgetElement = m_widget.asWidget().getElement();
+        // Calculate top position for the popup
+        int top = widgetElement.getAbsoluteTop();
+
+        int windowTop = Window.getScrollTop();
+        int windowBottom = Window.getScrollTop() + Window.getClientHeight();
+        CmsDebugLog.consoleLog("window bottom: " + windowBottom + "    window height: " + Window.getClientHeight());
+
+        int distanceFromWindowTop = top - windowTop;
+
+        int distanceToWindowBottom = windowBottom - (top + widgetElement.getOffsetHeight());
+        if (displayAbove
+            && ((distanceFromWindowTop < bubbleHeight) && (distanceToWindowBottom > distanceFromWindowTop))) {
+            // in case there is too little space above, and there is more below, change direction
+            displayAbove = false;
+        } else if (!displayAbove
+            && ((distanceToWindowBottom < bubbleHeight) && (distanceFromWindowTop > distanceToWindowBottom))) {
+            // in case there is too little space below, and there is more above, change direction
             displayAbove = true;
         }
         return displayAbove;
