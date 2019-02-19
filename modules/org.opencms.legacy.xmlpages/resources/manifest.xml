@@ -19,7 +19,8 @@
         <datecreated />
         <userinstalled />
         <dateinstalled />
-        <dependencies />
+        <dependencies>
+        	<dependency name="org.opencms.legacy.tools" version="11.0.0" />
         <exportpoints />
         <resources>
             <resource uri="/system/workplace/editors/tinymce/editor_configuration.xml" />
