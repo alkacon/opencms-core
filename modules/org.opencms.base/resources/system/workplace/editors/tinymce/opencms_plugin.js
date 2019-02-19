@@ -41,12 +41,39 @@ function doShowCmsGalleries(editor, url) {
        url+="\" allowtransparency=\"true\" scrolling=\"no\" frameborder=\"0\" framespacing=\"0"
    }
    editor.windowManager.open({
-       url: url, 
-       width : width, 
-       height: height, 
-       inline: "yes", 
-       classes: "opencmsDialog"
+   	   title: "DIALOG",
+   	   body: {
+   	       type: "panel",
+   	       items: [{
+   	           type: "htmlpanel",
+   	           html: "<iframe src=\""+url+"\" style=\"height:"+height+"px; width:"+width+"px; position:fixed; top: 0px; left:0px;\" />"
+   	       }]
+   	   },
+   	   buttons: [
+          {
+            type: 'custom',
+            name: 'close',
+            text: 'Close',
+            disabled: false
+          }
+        ],
+       classes: "opencmsDialog",
+       onAction: function (dialogApi, actionData) {
+          if (actionData.name === 'close') {
+          dialogApi.close();
+          }
+        }
    }, {});
+   var cssClasses=document.body.getAttribute("class")+" "+OPENCMS_DIALOG_CLASS;
+   document.body.setAttribute("class", cssClasses);
+}
+
+var OPENCMS_DIALOG_CLASS="opencms_dialog";
+
+function removeOpenCmsDialogStyle(){
+	var cssClasses=document.body.getAttribute("class");
+	cssClasses=cssClasses.replace(/ opencms_dialog/g,"");
+	document.body.setAttribute("class", cssClasses);
 }
 
 /**
@@ -344,7 +371,6 @@ function htmlGalleryDialogUrl() {
    return "<%= cms.link("/system/workplace/galleries/htmlgallery/index.jsp") %>?dialogmode=editor" + resParam +integratorParam;
 }
 
-
 // set it in window, because this is used from the link selection dialog 
 window.createLink = createLink; 
 
@@ -376,6 +402,10 @@ tinymce.create('tinymce.opencms', {
          doShowCmsGalleries(ed, imageGalleryDialogUrl());
       });
       
+      ed.addCommand("removeDialogStyle", function() {
+         removeOpenCmsDialogStyle();
+      });
+      
       ed.addCommand("cmsDownloadGallery", function() {
          doShowCmsGalleries(ed, downloadGalleryDialogUrl());
       });
@@ -397,47 +427,61 @@ tinymce.create('tinymce.opencms', {
          var url = linkGalleryDialogUrl();
          ed.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
       });
-      
-      ed.addButton('OcmsImageGallery', {
-         title: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-imagegallery.png") %>',
-         cmd: "cmsImageGallery"
+      ed.ui.registry.addIcon('download-gallery','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="nonzero" d="M2.8 2c-.4 0-.8.5-.8.9v17.2c0 .4.4.9.8.9H5v-2H4V7h16v12h-1v2h2.2c.4 0 .8-.5.8-1V6c0-.5-.4-1-.9-1H11L8 2zm0 0"/><path fill-rule="nonzero" d="M7 8c-.5 0-1 .5-1 1v13c0 .5.5 1 1 1h10c.5 0 1-.5 1-1v-8l-6-6zm0 1h5v4c0 .5.5 1 1 1h4v8H7zm0 0"/></svg>');
+      ed.ui.registry.addIcon('image-gallery','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="nonzero" d="M2.8 2c-.4 0-.8.5-.8 1v17c0 .5.4 1 .8 1h18.4c.4 0 .8-.5.8-1V6c0-.5-.4-1-.9-1H11L8 2zM4 7h16v12H4zm0 0"/><path fill-rule="nonzero" d="M5 17v1h14v-3l-4-3-5 4-2-2zm0 0M10 11a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 0"/></svg>');
+      ed.ui.registry.addIcon('link-gallery','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="nonzero" d="M2.8 2c-.4 0-.8.4-.8.9v17.2c0 .5.4.9.8.9h18.4c.4 0 .8-.4.8-.9V5.9c0-.5-.4-1-.9-1H11L8 2zM4 7h16v12H4zm0 0"/><path fill-rule="nonzero" d="M16 14v2c0 1-1 2-2 2H8c-1 0-2-1-2-2v-5c0-1 1-2 2-2h5v1H8c-.5 0-1 .5-1 1v5c0 .5.5 1 1 1h6c.5 0 1-.5 1-1v-2zm3-5.5v4c-.1.5-.5.6-.9.4l-1.4-1.4-4.4 4.5-1.3-1.3 4.5-4.4-1.4-1.4c-.2-.4-.1-.8.4-.9h4c.3 0 .5.3.5.5zm0 0"/></svg>');
+      ed.ui.registry.addButton('OcmsImageGallery', {
+         tooltip: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
+         icon: 'image-gallery',
+         onAction: function() {
+         		doShowCmsGalleries(ed, imageGalleryDialogUrl());
+      		}
        });
       
-      ed.addButton('OcmsDownloadGallery', {
-         title: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-downloadgallery.png") %>',
-         cmd: "cmsDownloadGallery"
+      ed.ui.registry.addButton('OcmsDownloadGallery', {
+         tooltip: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
+         icon: 'download-gallery',
+         onAction: function() {
+         		doShowCmsGalleries(ed, downloadGalleryDialogUrl());
+      		}
       });
       
-      ed.addButton('oc-link', {
-         title: '<%= CmsEncoder.encodeJavaEntities(OpenCms.getWorkplaceManager().getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0), encoding) %>',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-link.gif") %>',
-         cmd: "cmsLink"
+      ed.ui.registry.addButton('oc-link', {
+         tooltip: '<%= CmsEncoder.encodeJavaEntities(OpenCms.getWorkplaceManager().getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0), encoding) %>',
+         icon: 'link-gallery',
+         onAction: function() {
+         		openLinkDialog("<%= CmsEncoder.encodeJavaEntities(OpenCms.getWorkplaceManager().getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0), encoding) %>");
+      		}
        });
-      
-      ed.addButton('OcmsHtmlGallery', {
-         title : '<%=org.opencms.workplace.galleries.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.galleries.Messages.GUI_HTMLGALLERY_EDITOR_TOOLTIP_0)%>',
-         image : '<%= org.opencms.workplace.CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-htmlgallery.gif") %>',
-         cmd: 'cmsHtmlGallery'
-      });
-      
-      ed.addButton('OcmsLinkGallery', { 
+     
+      ed.ui.registry.addButton('OcmsLinkGallery', { 
          title : '<%=org.opencms.workplace.galleries.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.galleries.Messages.GUI_LINKGALLERY_EDITOR_TOOLTIP_0)%>',
          image: '<%= org.opencms.workplace.CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-linkgallery.gif") %>',
-         cmd : 'cmsLinkGallery'
+         //cmd : 'cmsLinkGallery'
+         onAction: function() {
+         		var width = 685;
+         		var height = 600;
+		        var url = linkGalleryDialogUrl();
+         		ed.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
+      		}
       });
-      ed.addMenuItem('OcmsImageGallery', {
+      ed.ui.registry.addMenuItem('OcmsImageGallery', {
          text: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
          context: 'tools',
          icon: 'image',
-         cmd: "cmsImageGallery"
+         //cmd: "cmsImageGallery"
+         onAction: function() {
+         		doShowCmsGalleries(ed, imageGalleryDialogUrl());
+      		}
        });
-      ed.addMenuItem('OcmsDownloadGallery', {
+      ed.ui.registry.addMenuItem('OcmsDownloadGallery', {
           text: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
           context: 'tools',
           icon: 'browse',
-          cmd: "cmsDownloadGallery"
+          //cmd: "cmsDownloadGallery"
+          onAction: function() {
+         		doShowCmsGalleries(ed, downloadGalleryDialogUrl());
+      		}
        });
    },
 
@@ -452,8 +496,9 @@ tinymce.create('tinymce.opencms', {
    }
 });
 
-window.cmsTinyMceFileBrowser = function(fieldId, currentValue, browserType, targetWindow) {
+window.cmsTinyMceFileBrowser = function (callback, currentValue, meta) {
    var editor = tinymce.activeEditor;
+   var browserType=meta.fileType;
    var resourceType="all";
    if (browserType == "image") {
        resourceType=browserType;
@@ -461,8 +506,7 @@ window.cmsTinyMceFileBrowser = function(fieldId, currentValue, browserType, targ
    var integrator = "/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"
    var url = createGalleryDialogUrl(currentValue, resourceType, integrator);
    url = url + "&hideformats=true";
-   editor.cmsTargetWindow = targetWindow;
-   editor.cmsFieldId = fieldId; 
+   editor.cmsSetValueFunction = callback; 
    doShowCmsGalleries(editor, url);
 }
 

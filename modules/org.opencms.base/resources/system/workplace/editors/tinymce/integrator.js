@@ -107,6 +107,7 @@ var Ok =function(){
  */
 function closeDialog(){
    editor.windowManager.close();
+   editor.execCommand("removeDialogStyle",false,null)
 }
 
 /**

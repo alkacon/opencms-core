@@ -124,7 +124,7 @@ function start()
 	}
 
 	// Create legend for keyboard shortcuts for find & replace:
-	var head = parent.document.querySelectorAll('.mce-foot')[0],
+	var head = parent.document.querySelectorAll('.tox-dialog__footer')[0],
 		div = parent.document.createElement('div'),
 		td1 = '<td style="font-size:11px;background:#777;color:#fff;padding:0 4px">',
 		td2 = '<td style="font-size:11px;padding-right:5px">';
@@ -217,13 +217,7 @@ function submit()
 	}
 
 	// Submit HTML to TinyMCE:
-    // [FIX] Cursor position inside JS, style or &nbps;
-    // Workaround to fix cursor position if inside script tag
-    var code = codemirror.getValue();
-    
-    // CHANGED: We will not try to set the curser position in TinyMCE to the same as in CodeMirror, as the HTML may get modified in the process
     editor.setContent(codemirror.getValue().replace(cc, ''));
-
 	editor.isNotDirty = !isDirty;
 	if (isDirty) {
 		editor.nodeChanged();
@@ -232,6 +226,8 @@ function submit()
 
 </script>
 <style type="text/css">
+  
+html,body { height:100%; }
 body {
 	margin: 0;
 }

@@ -1,4 +1,5 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-btn, mce-active, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-top-part, mce-tinymce-inline, mce-flow-layout, mce-branding, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel;
+@external tox, tox-tinymce, tox-toolbar, tox-editor-container, tox-statusbar__branding, tox-edit-area, tox-statusbar, tox-fullscreen, tox-tinymce-inline,
+	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -253,191 +254,127 @@ div.attributeValue.secondColumn{
 	color: #FFAA00 !important; 
 }
 
-.hasError .widgetHolder > div > .widget.input, .attributeValue.hasError .widgetHolder  .mce-tinymce, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasError{
+.hasError .widgetHolder > div > .widget.input, .attributeValue.hasError .widgetHolder  .tox-tinymce, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasError{
 	border-color: value("constants.css.borderColorHighlight");
 }
 
-.hasWarning .widgetHolder > div > .widget.input, .attributeValue.hasWarning .widgetHolder  .mce-tinymce, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasWarning{
+.hasWarning .widgetHolder > div > .widget.input, .attributeValue.hasWarning .widgetHolder  .tox-tinymce, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasWarning{
 	border-color: #FFAA00;
 }
 .widgetHolder > div > .widget.input{
 	cursor: text;
 }
 
-.attributeValue .widgetHolder  .mce-tinymce{
+.attributeValue .widgetHolder  .tox-tinymce{
 	border: 1px solid value("constants.css.borderColorEditor");
 	background: value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	width: auto !important;
 }
 
-.attributeValue .widgetHolder .widget.inActive .mce-tinymce{
+.attributeValue .widgetHolder .widget.inActive .tox-tinymce{
 	overflow: hidden;
 }
 
-.attributeValue.focused > .widgetHolder > div > .widget .mce-tinymce {
+.attributeValue.focused > .widgetHolder > div > .widget .tox-tinymce {
 	border-radius: value("constants.css.borderRadius") 0 0 0;
 }
 
-.widgetHolder > div > .widget.input.inActive, .attributeValue .widgetHolder .widget.inActive  .mce-tinymce{
+.widgetHolder > div > .widget.input.inActive, .attributeValue .widgetHolder .widget.inActive  .tox-tinymce{
 	color: transparent;
 	border-color: value("constants.css.borderColor");
 }
-.attributeValue > .widgetHolder > .widget .mce-tinymce.inActive{
+.attributeValue > .widgetHolder > .widget .tox-tinymce.inActive{
 	height: 18px;	
 	border-radius: value("constants.css.borderRadius");
 }
 
 /* tinymce in line edit toolbar styles */
-div.tinymceToolbarContainer{
-	position: absolute;
+.tox.tox-tinymce.tox-tinymce-inline{
 	z-index: value("constants.css.zIndexPopup");
 }
 
-div.tinymceToolbarContainer > div{
-	position: absolute;
-	bottom: 0px;
-}
-
-.tinymceToolbarContainer div.mce-tinymce.mce-tinymce-inline{
-	width: auto !important;
-	height: auto !important;
-}
-
-.tinymceToolbarContainer .mce-tinymce-inline .mce-flow-layout{
-	white-space: normal;
-}
-
-.mce-branding{
+.tox-statusbar__branding{
 	display: none !important;
 }
 
 /* this styles the tinymce toolbar */
-.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part{
+.attributeValue .tox-tinymce .tox-toolbar{
 	position: absolute;
-    right: -1px;
-    top: -2px;
-    width :90%;
-    display: none;
-}
-
-.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part > .mce-container-body{
-	background: inherit;
-    bottom: -2px;
-    max-width: 100%;
-    position: absolute;
-    right: 0;
-    border-top: 1px solid value("constants.css.borderColorEditor");
+	display: none;
+	z-index: 1000000000;
+	bottom: 100%;
+	width: 90%;
+	right: 0;
+	margin-bottom: 0px;
+	margin-right: -1px;
+	border-top: 1px solid value("constants.css.borderColorEditor") !important;
     border-right: 1px solid value("constants.css.borderColorEditor");
     border-left: 1px solid value("constants.css.borderColorEditor");
     border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
 }
 
-.attributeValue .mce-tinymce > .mce-container-body > .mce-top-part > .mce-container-body > div{
-	border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
+.attributeValue .tox-tinymce .tox-editor-container{
+	
+	overflow: visible;
 }
 
-div.attributeValue div.mce-tinymce.mce-fullscreen {
+.attributeValue .tox-tinymce .tox-edit-area{
+	border: none;
+}
+
+.attributeValue .tox.tox-tinymce{
+	overflow: visible;
+	position: relative;
+}
+
+div.attributeValue div.tox-tinymce.tox-fullscreen {
 	width: 100%;
 	top: 0px;
 	right: 0px;
 	left: 0px;
 	bottom: 0px;
+	position: fixed;
+}
+div.attributeValue div.tox-tinymce.tox-fullscreen .tox-toolbar, div.attributeValue div.tox-tinymce.tox-fullscreen .tox-statusbar{
+	width: 100%;
+	border: none !important;
+	margin: 0px;
+	border-radius: 0px;
 }
 
-
-
-div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body {
-	display: flex;
-	-ms-flex-direction: column;
-	flex-direction: column;
-	height: 100%;
-}
-
-.attributeValue .mce-tinymce.mce-fullscreen > * > .mce-top-part,
- .attributeValue .mce-tinymce.mce-fullscreen > * > .mce-top-part > .mce-container-body, 
- .attributeValue .mce-tinymce.mce-fullscreen > * > .mce-statusbar  {
+.attributeValue .tox-tinymce.tox-fullscreen .tox-toolbar,
+.attributeValue .tox-tinymce.tox-fullscreen .tox-statusbar  {
 	position: static;
 }
 
-.attributeValue .mce-tinymce.mce-fullscreen > * > .mce-edit-area {
-	-ms-flex: 1;
-	flex: 1;
-}
-
-.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body > .mce-statusbar {
+.attributeValue .tox-tinymce.tox-fullscreen .tox-statusbar {
 	position: static !important;
 }
 
-.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp {
-	height:auto; 
-	position:static; 
-	width: 100%;
+.attributeValue.focused > .widgetHolder > div > div.widget .tox-tinymce .tox-toolbar, 
+.attributeValue.focused > .widgetHolder > div > div.widget .tox-tinymce .tox-statusbar{
+	display: flex;	
 }
 
-.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp .mce-btn.mce-active {
-	background-color: lightgray !important;
-}
-
-.attributeValue .mce-btn.mce-active button, .attributeValue .mce-btn.mce-active:hover button, .attributeValue .mce-btn.mce-active i, .attributeValue .mce-btn.mce-active:hover i,
-.tinymceToolbarContainer .mce-btn.mce-active button, .tinymceToolbarContainer .mce-btn.mce-active:hover button, .tinymceToolbarContainer .mce-btn.mce-active i, .tinymceToolbarContainer .mce-btn.mce-active:hover i{
-	
-	color: black !important;
-}
-.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp > .mce-container-body{
-	position: static; 
-	border:none
-}
-
-
-.attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area, .attributeValue .mce-tinymce.mce-fullscreen .mce-edit-area > iframe {
-	height: 100% !important; 
-} 
-
-.attributeValue .mce-tinymce .mce-edit-area{
-	border-top: none;
-	background: transparent;
-}
-
-.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-top-part, 
-.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
-	display: block;	
-}
-
-.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body > .mce-top-part {
-	width: 100%;
-}
-
-.attributeValue > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
+.attributeValue > .widgetHolder > div > div.widget .tox-tinymce .tox-statusbar{
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
-    border-bottom: 1px solid value("constants.css.borderColorEditor") !important;
-    border-right: 1px solid value("constants.css.borderColorEditor") !important;
-    border-left: 1px solid value("constants.css.borderColorEditor") !important;
+    border-bottom: 1px solid value("constants.css.borderColorEditor");
+    border-right: 1px solid value("constants.css.borderColorEditor");
+    border-left: 1px solid value("constants.css.borderColorEditor");
     box-shadow: 2px 2px 2px #666666;
     border-radius: 0 0 value("constants.css.borderRadius") value("constants.css.borderRadius");
     display: none;
     left: -1px;
     position: absolute;
     right: -1px;
+    top:100%;
     z-index: 2;
 }
 
-
-	
-
-.mce-statusbar .mce-wordcount, .mce-statusbar .mce-path{
-	padding: 2px;
-	margin-right: 8px;
-} 
-
-.attributeValue > .widgetHolder > div > div.widget .mce-tinymce iframe{
+.attributeValue > .widgetHolder > div > div.widget .tox-tinymce iframe{
 	border-radius: value("constants.css.borderRadius");
 	width: 100% !important;
-}
-
-/* fixing tinymce tool-tip z-index problem */
-div.mce-widget.mce-tooltip{
-	z-index: value("constants.css.zIndexPopup") !important;
 }
 
 /** Help bubble styles. */
@@ -561,7 +498,7 @@ div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
 .entity .attributeValue > div, .dragHelper.attributeValue > div{
 	border-radius: value("constants.css.borderRadius");
 }
-.widgetHolder .widget.input, .attributeValue .widgetHolder  .mce-tinymce{
+.widgetHolder .widget.input{
 	border-radius: value("constants.css.borderRadius");
 }
 

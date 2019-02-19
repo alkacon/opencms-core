@@ -1,18 +1,19 @@
 @external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, 
 	cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, 
-	mce-opencmsDialog, mce-window, mce-window-head, mce-panel, mce-caret, mce-notification, mce-widget;
-
+	opencms_dialog, tox-dialog, tox-dialog__header, tox-dialog__footer, tox-silver-sink;
+	
 /* TinyMCE plugin popup dialog styles, all used classes are external. */
-div.mce-opencmsDialog.mce-window{
+div.tox-silver-sink{
+	z-index: 1000000;
+}
+
+body.opencms_dialog .tox-dialog__header, body.opencms_dialog .tox-dialog__footer{
+	display:none;
+}
+
+body.opencms_dialog .tox-dialog, body.opencms_dialog .tox-dialog div{
+	border: none;
 	background: transparent;
-}
-
-.mce-opencmsDialog.mce-window .mce-window-head{
-	display: none;
-}
-
-.mce-widget.mce-notification{
-	z-index: value("constants.css.zIndexPopup") !important;
 }
 
 div.radioButtonPanel {
@@ -356,25 +357,6 @@ div.inputField>div{
 	bottom:1px;
 	right:2px;
 }
-
-/**  Copied from skin.min.css in the TinyMCE editor and increased specificity. */ 
-.mce-panel.mce-panel { 
-	
-    background: #F0F0F0;
-    border: 0 solid #9E9E9E;
-}
-
-.mce-caret.mce-caret {
-    border-left: 4px solid rgba(0, 0, 0, 0);
-    border-right: 4px solid rgba(0, 0, 0, 0);
-    border-top: 4px solid #444444;
-    content: "";
-    display: inline-block;
-    height: 0;
-    vertical-align: top;
-    width: 0;
-}
-
 
 .widgetHolder{}
 .inActive{}

@@ -31,16 +31,13 @@ import org.opencms.acacia.client.CmsEditorBase;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
-import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -69,9 +66,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /** The minimum editor height. */
     private static final int MIN_EDITOR_HEIGHT = 70;
-
-    /** The toolbar container css class name. */
-    private static final String TOOLBAR_CONTAINER = I_CmsLayoutBundle.INSTANCE.form().tinymceToolbarContainer();
 
     /** A flag which indicates whether the editor is currently active. */
     protected boolean m_active;
@@ -111,9 +105,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /** The editor options. */
     private Object m_options;
-
-    /** The in line editing toolbar container. */
-    private Element m_toolbarContainer;
 
     /**
      * Creates a new instance for the given element. Use this constructor for in line editing.<p>
@@ -407,10 +398,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
         } catch (Throwable t) {
             // may happen in rare cases, can be ignored
         }
-        if (m_toolbarContainer != null) {
-            m_toolbarContainer.removeFromParent();
-            m_toolbarContainer = null;
-        }
         super.onDetach();
     }
 
@@ -572,11 +559,11 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 				selector : mainElement.tagName + "#" + elementId,
 				entity_encoding : "raw",
 				mode : "exact",
+				theme : "silver",
 				plugins : "paste",
 				paste_as_text : true,
-				toolbar : "undo,redo",
+				toolbar : "undo redo",
 				menubar : false,
-				toolbar_items_size : 'small',
 				forced_root_block : false
 			};
 			options = null;
@@ -588,26 +575,16 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 				entity_encoding : "raw",
 				skin_variant : 'ocms',
 				mode : "exact",
-				theme : "modern",
-				plugins : "autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
+				theme : "silver",
+				plugins : "autolink,lists,pagebreak,table,save,code,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
 				paste_as_text : true,
 				menubar : false,
-				toolbar_items_size : 'small'
 			};
 		}
 		if (this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
 			self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_currentContent = mainElement.innerHTML;
 			defaults.inline = true;
 			defaults.width = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_width;
-			var toolbarContainer = $wnd.document.createElement("div");
-			toolbarContainer.className = @org.opencms.acacia.client.widgets.CmsTinyMCEWidget::TOOLBAR_CONTAINER;
-			toolbarContainer.innerHTML = "<div id=\"" + elementId
-					+ "_toolbarContainer\" style=\"width: " + defaults.width
-					+ "px;\"></div>";
-			$wnd.document.body.appendChild(toolbarContainer);
-			this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_toolbarContainer = toolbarContainer;
-			defaults.fixed_toolbar_container = "#" + elementId
-					+ "_toolbarContainer";
 		} else {
 			self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_currentContent = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_originalContent;
 			defaults.autoresize_min_height = 100;
@@ -689,19 +666,11 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 										self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::scheduleRefocus()();
 									});
 				}
-				ed
-						.on(
-								'focus',
-								function(event) {
-									self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::resetToolbarContainerPosition()();
-								});
 			}
 		};
 
 		// initialize tinyMCE
 		$wnd.tinymce.init(defaults);
-		self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::scheduleSetFloatPanelZIndex()();
-
     }-*/;
 
     /**
@@ -770,24 +739,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     }-*/;
 
     /**
-     * Sets the default zIndex for overlay panels.<p>
-     * May not work immediately as the TinyMCE initialization takes some time.<p>
-     *
-     * @return <code>true</code> in case setting the value was successful
-     */
-    native boolean setFloatPanelZIndex() /*-{
-		if ($wnd.tinymce.ui.FloatPanel) {
-			// set default z-index for overlay ui components
-
-			var cssConstants = @org.opencms.acacia.client.css.I_CmsLayoutBundle::INSTANCE.@org.opencms.acacia.client.css.I_CmsLayoutBundle::constants()().@org.opencms.gwt.client.ui.css.I_CmsConstantsBundle::css()();
-			$wnd.tinymce.ui.FloatPanel.zIndex = cssConstants.@org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.I_CmsConstantsCss::zIndexPopup()();
-			return true;
-		} else {
-			return false;
-		}
-    }-*/;
-
-    /**
      * Removes the editor.<p>
      */
     private native void detachEditor() /*-{
@@ -842,33 +793,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 		var editor = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editor;
 		return editor.getContent();
     }-*/;
-
-    /**
-     * Resets the in line editing toolbar position.<p>
-     */
-    private void resetToolbarContainerPosition() {
-
-        if (m_toolbarContainer != null) {
-            CmsPositionBean position = CmsPositionBean.generatePositionInfo(m_contentElement);
-            m_toolbarContainer.getStyle().setTop(position.getTop() - 5, Unit.PX);
-            m_toolbarContainer.getStyle().setLeft(position.getLeft(), Unit.PX);
-        }
-    }
-
-    /**
-     * Schedules to set the default zIndex for overlay panels.<p>
-     */
-    private void scheduleSetFloatPanelZIndex() {
-
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-
-            public boolean execute() {
-
-                return !setFloatPanelZIndex();
-            }
-        }, 300);
-
-    }
 
     /**
      * Sets the content of the TinyMCE editor.<p>

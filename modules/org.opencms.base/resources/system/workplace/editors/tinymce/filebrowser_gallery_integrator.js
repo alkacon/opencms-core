@@ -64,8 +64,7 @@ var SUB_PREFIX='simg_'
 /** Enhancement span id prefix. */
 var ENHANCE_PREFIX='aimg_';
 
-var fieldId = editor.cmsFieldId;
-var targetWindow = editor.cmsTargetWindow; 
+var setValueFunction=editor.cmsSetValueFunction;
 
 
 /**
@@ -83,6 +82,7 @@ var Ok =function(){
  */
 function closeDialog(){
     editor.windowManager.close();
+    editor.execCommand("removeDialogStyle",false,null)
 }
 
 /**
@@ -144,8 +144,7 @@ function getLinkTarget(){
 }
 
 function _setValue(url) {
-   var inputField = targetWindow.document.getElementById(fieldId);
-   inputField.value = url;
+   setValueFunction(url);
 }
 
 /**

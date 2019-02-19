@@ -332,13 +332,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String tabDescriptionPanel();
 
         /**
-         * Returns the tinymce toolbar container CSS class name.<p>
-         *
-         * @return the tinymce toolbar container CSS class name
-         */
-        String tinymceToolbarContainer();
-
-        /**
          * Style name for uncollapsed attribute value views.<p>
          *
          * @return a style name
