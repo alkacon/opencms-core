@@ -21,7 +21,7 @@ IMPORTANT: Alkacon OCEE versions less than 5 will not work with OpenCms 10.
 IMPORTANT: The updater is only compatible with the database engines MySQL, 
            Oracle and PostgreSQL.
            
-IMPORTANT: This version of OpenCms requires at least Java 7.
+IMPORTANT: This version of OpenCms requires at least Java 8.
 
 IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
            If you made modifications to these modules, their changes will be lost.
@@ -30,7 +30,7 @@ IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modu
            Administration to export all the changes you have done after installing 
            OpenCms.
 
-Follow the following steps to update from OpenCms 8.x and 9.x to @OPENCMS_VERSION@:
+Follow the following steps to update from OpenCms 10.x to @OPENCMS_VERSION@:
 
 
 1. Shutdown your OpenCms servlet container
