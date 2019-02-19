@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsWidgetConfigurationException;
 import org.opencms.widgets.I_CmsADEWidget;
@@ -228,6 +229,16 @@ public class CmsContentTypeVisitor {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContentTypeVisitor.class);
+
+    /** The localization macro start sequence. */
+    private static final String MESSAGE_MACRO_START = I_CmsMacroResolver.MACRO_DELIMITER
+        + I_CmsMacroResolver.MACRO_START
+        + CmsMacroResolver.KEY_LOCALIZED_PREFIX;
+
+    /** The old style localization macro start sequence. */
+    private static final String MESSAGE_MACRO_START_OLD = I_CmsMacroResolver.MACRO_DELIMITER_OLD
+        + I_CmsMacroResolver.MACRO_START_OLD
+        + CmsMacroResolver.KEY_LOCALIZED_PREFIX;
 
     /** The attribute configurations. */
     private Map<String, CmsAttributeConfiguration> m_attributeConfigurations;
@@ -472,9 +483,20 @@ public class CmsContentTypeVisitor {
         resolver.setMessages(m_messages);
         if (definition.getContentHandler().getTabs() != null) {
             for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
-                String tabName = m_messages.keyDefault(
-                    A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName(),
-                    xmlTab.getTabName());
+                String tabName;
+                // in case the tab name attribute contains a localization macro
+                if (xmlTab.getTabName().contains(MESSAGE_MACRO_START)
+                    || xmlTab.getTabName().contains(MESSAGE_MACRO_START_OLD)) {
+                    tabName = resolver.resolveMacros(xmlTab.getTabName());
+                } else {
+                    tabName = m_messages.keyDefault(
+                        A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName(),
+                        xmlTab.getTabName());
+                    if (CmsMessages.isUnknownKey(tabName)) {
+                        // in case this is an unknown key
+                        tabName = xmlTab.getTabName();
+                    }
+                }
 
                 result.add(
                     new CmsTabInfo(
