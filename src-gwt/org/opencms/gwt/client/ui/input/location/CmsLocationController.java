@@ -515,6 +515,7 @@ public class CmsLocationController {
             if (hasLatLng()) {
                 infos.put(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0), m_editValue.getLatitudeString());
                 infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_editValue.getLongitudeString());
+                infos.put(Messages.get().key(Messages.GUI_LOCATION_ZOOM_0), String.valueOf(m_editValue.getZoom()));
             }
             if (hasSize()) {
                 infos.put(
