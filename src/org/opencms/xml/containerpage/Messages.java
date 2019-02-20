@@ -71,7 +71,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1 = "ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_ELEMENT_FROM_REQUEST_0 = "ERR_READING_ELEMENT_FROM_REQUEST_0";
+    public static final String ERR_READING_ELEMENT_FROM_REQUEST_1 = "ERR_READING_ELEMENT_FROM_REQUEST_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_FORMATTER_INFO_FROM_REQUEST_0 = "ERR_READING_FORMATTER_INFO_FROM_REQUEST_0";

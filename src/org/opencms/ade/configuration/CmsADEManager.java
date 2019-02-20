@@ -380,9 +380,13 @@ public class CmsADEManager {
      */
     public CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
 
-        CmsContainerElementBean element = CmsJspStandardContextBean.getInstance(req).getElement();
+        CmsJspStandardContextBean sCBean = CmsJspStandardContextBean.getInstance(req);
+        CmsContainerElementBean element = sCBean.getElement();
         if (element == null) {
-            throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0));
+            throw new CmsException(
+                Messages.get().container(
+                    Messages.ERR_READING_ELEMENT_FROM_REQUEST_1,
+                    sCBean.getRequestContext().getUri()));
         }
         return element;
     }
