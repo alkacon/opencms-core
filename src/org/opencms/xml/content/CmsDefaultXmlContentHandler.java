@@ -603,6 +603,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
 
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -747,40 +781,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
-    }
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -3136,7 +3136,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 String description = null;
                 if (descriptionNode != null) {
                     description = descriptionNode.getText();
+                } else {
+                    description = element.attributeValue(APPINFO_ATTR_DESCRIPTION);
                 }
+
                 String tabName = element.attributeValue(APPINFO_ATTR_NAME, elementName);
                 if (elementName != null) {
                     // add the element tab

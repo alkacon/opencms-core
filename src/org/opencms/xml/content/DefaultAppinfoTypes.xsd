@@ -202,6 +202,7 @@
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="collapse" type="xsd:string" use="optional" />
 		<xsd:attribute name="name" type="xsd:string" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoFormatters">
