@@ -901,6 +901,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         if (tabInfo.getDescription() != null) {
             HTML descriptionLabel = new HTML();
             descriptionLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.form().tabDescription());
+            if (!tabInfo.getDescription().startsWith("<div")) {
+                // add default styling in case of simple HTML
+                descriptionLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.form().tabDescriptionPanel());
+            }
             descriptionLabel.setHTML(tabInfo.getDescription());
             descriptionParent.add(descriptionLabel);
         }

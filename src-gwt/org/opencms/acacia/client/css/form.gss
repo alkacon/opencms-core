@@ -26,15 +26,23 @@ div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div
 	background: transparent;
 }
 
-.formParent *, .formParent table tr td, .formParent input[type="text"], .inlineEditOverlay, .inlineEditOverlay *{
-	margin: 0;
-	padding: 0;
-	border: none;
+.formParent, .inlineEditOverlay{
 	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
 	font-weight: normal;
 	line-height: value("constants.css.lineHeight");
+}
+
+.formParent *, .formParent table tr td, .formParent input[type="text"], .inlineEditOverlay, .inlineEditOverlay *{
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
 	background: transparent;
 	text-align: left;
 	height: auto;
@@ -677,15 +685,12 @@ div.overlayButtonPanel > div{
 	padding-left: 4px;
 	padding-top: 4px;
 	margin-bottom: 8px; 
-}
-
-.tabDescription.tabDescription, .tabDescription.tabDescription * { 
 	color: value("constants.css.textColorEditorLabel");
 	font-weight: 400;
 	line-height: normal !important;
 }
 
-.tabDescription.tabDescription, .tabDescription.tabDescription * {
+.tabDescription.tabDescription {
 	font-size: 17px; 
 }
 
@@ -701,7 +706,7 @@ div.overlayButtonPanel > div{
 	font-size: 126%; 
 }
 
-.tabDescription.tabDescription .tabDescriptionPanel {
+.tabDescription.tabDescription .tabDescriptionPanel, .tabDescription.tabDescription.tabDescriptionPanel{
 	background-color: #ffffcc;
 	color: value("constants.css.textColor");
 	border: 1px solid value("constants.css.borderColor");
@@ -711,7 +716,11 @@ div.overlayButtonPanel > div{
 	font-size: value("constants.css.fontSize");
 }
 
-.tabDescription.tabDescription .tabDescriptionPanel a{
+.tabDescription.tabDescription .tabDescriptionPanel a, .tabDescription.tabDescription.tabDescriptionPanel a{
 	color: value("constants.css.textColorImportant");
 }
 
+.tabDescription.tabDescription .tabDescriptionPanel b, .tabDescription.tabDescription.tabDescriptionPanel b,
+.tabDescription.tabDescription .tabDescriptionPanel strong, .tabDescription.tabDescription.tabDescriptionPanel strong{
+	font-weight: 700;
+}
