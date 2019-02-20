@@ -123,6 +123,7 @@ public class CmsModuleImportData {
                     for (CmsObject cmsToRead : Arrays.asList(cms, onlineCms)) {
                         try {
                             CmsResource resourceFromVfs = cmsToRead.readResource(importPath, CmsResourceFilter.ALL);
+                            boolean skipResourceIdCheck = false;
                             if (!resourceFromVfs.getStructureId().equals(importId)) {
 
                                 if (resData.getResource().isFile()
@@ -136,6 +137,11 @@ public class CmsModuleImportData {
                                             + " because the id from the module is not present in the VFS and vice versa.");
                                     m_conflictingIds.put(importId, resourceFromVfs.getStructureId());
 
+                                    // If we have different structure ids, but they don't conflict with anything else in the manifest or VFS,
+                                    // we don't compare resource ids. First, because having different resource ids is normal in this scenario, second
+                                    // because the resource in the VFS is deleted anyway during the module update.
+                                    skipResourceIdCheck = true;
+
                                 } else {
 
                                     LOG.info(
@@ -144,7 +150,8 @@ public class CmsModuleImportData {
                                     return false;
                                 }
                             }
-                            if (resData.getResource().isFile()
+                            if (!skipResourceIdCheck
+                                && resData.getResource().isFile()
                                 && !(resData.getResource().getResourceId().equals(resourceFromVfs.getResourceId()))) {
                                 LOG.info(
                                     "Module is not updateable because of a resource id conflict for "

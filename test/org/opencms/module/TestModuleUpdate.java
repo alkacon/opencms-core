@@ -812,6 +812,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.addModule();
             builder.addFolder("");
             builder.setNextStructureId(new CmsUUID());
+            builder.setNextResourceId(new CmsUUID());
             builder.addTextFile("foo.txt", "this is the original foo file");
             builder.publish();
         }
