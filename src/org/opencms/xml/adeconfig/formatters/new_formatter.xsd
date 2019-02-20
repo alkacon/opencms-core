@@ -57,6 +57,8 @@
         </layouts>
         <relations>
             <relation element="IncludeSettings" invalidate="false" />
+            <relation element="HeadIncludeCss/CssLink" invalidate="false" />
+            <relation element="HeadIncludeJs/JavascriptLink" invalidate="false" />
         </relations>
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
