@@ -628,9 +628,9 @@ public final class CmsJspStandardContextBean {
         public Object transform(Object arg0) {
 
             String result = null;
-            CmsGalleryNameMacroResolver resolver = null;
-            if (m_metaMappings.containsKey(arg0)) {
+            if ((m_metaMappings != null) && m_metaMappings.containsKey(arg0)) {
                 MetaMapping mapping = m_metaMappings.get(arg0);
+                CmsGalleryNameMacroResolver resolver = null;
                 try {
                     CmsResourceFilter filter = getIsEditMode()
                     ? CmsResourceFilter.IGNORE_EXPIRATION
@@ -2111,6 +2111,7 @@ public final class CmsJspStandardContextBean {
     private void initMetaMappings() {
 
         if (m_metaMappings == null) {
+            m_metaMappings = new HashMap<String, MetaMapping>();
             try {
                 initPage(m_cms, (HttpServletRequest)m_request);
                 CmsMacroResolver resolver = new CmsMacroResolver();
@@ -2120,7 +2121,6 @@ public final class CmsJspStandardContextBean {
                 CmsResourceFilter filter = getIsEditMode()
                 ? CmsResourceFilter.IGNORE_EXPIRATION
                 : CmsResourceFilter.DEFAULT;
-                m_metaMappings = new HashMap<String, MetaMapping>();
                 for (CmsContainerBean container : m_page.getContainers().values()) {
                     for (CmsContainerElementBean element : container.getElements()) {
                         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
