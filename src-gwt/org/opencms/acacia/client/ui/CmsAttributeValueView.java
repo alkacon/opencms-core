@@ -1184,16 +1184,19 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
 
         m_removeButton.setImageClass(I_CmsButton.CUT_SMALL);
         m_removeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_removeButton.setHideFromTabNav(true);
 
         m_upButton.setImageClass(I_CmsButton.EDIT_UP_SMALL);
         m_upButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_upButton.setHideFromTabNav(true);
 
         m_downButton.setImageClass(I_CmsButton.EDIT_DOWN_SMALL);
         m_downButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        m_downButton.setHideFromTabNav(true);
 
         m_helpBubbleClose.setImageClass(I_CmsButton.DELETE_SMALL);
         m_helpBubbleClose.setButtonStyle(ButtonStyle.FONT_ICON, null);
-
+        m_helpBubbleClose.setHideFromTabNav(true);
         if (CmsEditorBase.hasDictionary()) {
             m_addButton.setTitle(CmsEditorBase.getMessageForKey(CmsEditorBase.GUI_VIEW_ADD_1, m_label));
             m_attributeChoice.setTitle(CmsEditorBase.getMessageForKey(CmsEditorBase.GUI_CHOICE_ADD_CHOICE_1, m_label));

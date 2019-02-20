@@ -55,8 +55,14 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     /** Stores the button color. */
     private I_CmsButton.ButtonColor m_color;
 
+    /** The disabled reason. */
+    private String m_disabledReason;
+
     /** The down face image class. */
     private String m_downImageClass;
+
+    /** The hide from tab navigation flag. */
+    private boolean m_hideFromTabNav;
 
     /** The image class. */
     private String m_imageClass;
@@ -75,9 +81,6 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /** Use minimum width flag. */
     private boolean m_useMinWidth;
-
-    /** The disabled reason. */
-    private String m_disabledReason;
 
     /**
      * The constructor.<p>
@@ -326,6 +329,18 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     }
 
     /**
+     * Sets the hide from tab navigation flag.<p>
+     * If <code>true</code> the button will not be accessible by tab navigation.<p>
+     *
+     * @param hideFromTabNav the hide from tab navigation flag
+     */
+    public void setHideFromTabNav(boolean hideFromTabNav) {
+
+        m_hideFromTabNav = hideFromTabNav;
+        setTabIndex(-1);
+    }
+
+    /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -428,5 +443,17 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     protected String getFaceHtml(String text, String imageClass) {
 
         return CmsDomUtil.createFaceHtml(text, imageClass, m_align);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.CustomButton#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        if (m_hideFromTabNav) {
+            setTabIndex(-1);
+        }
     }
 }
