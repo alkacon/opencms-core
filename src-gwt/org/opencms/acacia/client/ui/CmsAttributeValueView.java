@@ -234,6 +234,9 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     /** The wide compact view mode. */
     public static final int COMPACT_MODE_WIDE = 0;
 
+    /** The toolbar height. */
+    private static final int TOOLBAR_HEIGHT = 52;
+
     /** The UI binder instance. */
     private static I_AttributeValueUiBinder uiBinder = GWT.create(I_AttributeValueUiBinder.class);
 
@@ -1280,7 +1283,7 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         int windowBottom = Window.getScrollTop() + Window.getClientHeight();
         CmsDebugLog.consoleLog("window bottom: " + windowBottom + "    window height: " + Window.getClientHeight());
 
-        int distanceFromWindowTop = top - windowTop;
+        int distanceFromWindowTop = top - windowTop - TOOLBAR_HEIGHT;
 
         int distanceToWindowBottom = windowBottom - (top + widgetElement.getOffsetHeight());
         if (displayAbove
