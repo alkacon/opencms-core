@@ -589,7 +589,7 @@ public class CmsJspNavBuilder {
     public CmsJspNavElement getNavigationForResource(String sitePath) {
 
         CmsJspNavElement result = getNavigationForResource(sitePath, CmsResourceFilter.DEFAULT, false);
-        if (result.getNavContext() == null) {
+        if ((result != null) && (result.getNavContext() == null)) {
             result.setNavContext(new NavContext(this, Visibility.navigation, CmsResourceFilter.DEFAULT));
         }
         return result;
