@@ -118,12 +118,23 @@ public class CmsModuleUpdater {
      */
     public static boolean checkCompatibleModuleResources(CmsModule installedModule, CmsModule newModule) {
 
-        if (installedModule.hasOnlySystemAndSharedResources() && newModule.hasOnlySystemAndSharedResources()) {
-            return true;
+        if (!(installedModule.hasOnlySystemAndSharedResources() && newModule.hasOnlySystemAndSharedResources())) {
+            String oldSite = installedModule.getSite();
+            String newSite = newModule.getSite();
+            if (!((oldSite != null) && (newSite != null) && CmsStringUtil.comparePaths(oldSite, newSite))) {
+                return false;
+            }
+
         }
-        String oldSite = installedModule.getSite();
-        String newSite = newModule.getSite();
-        return (oldSite != null) && (newSite != null) && CmsStringUtil.comparePaths(oldSite, newSite);
+        for (String oldModRes : installedModule.getResources()) {
+            for (String newModRes : newModule.getResources()) {
+                if (CmsStringUtil.isProperPrefixPath(oldModRes, newModRes)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
     }
 
     /**

@@ -1104,6 +1104,22 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Checks if the first path is a prefix of the second path, but not equivalent to it.<p>
+     *
+     * @param firstPath the first path
+     * @param secondPath the second path
+     *
+     * @return true if the first path is a prefix path of the second path, but not equivalent
+     */
+    public static boolean isProperPrefixPath(String firstPath, String secondPath) {
+
+        firstPath = CmsStringUtil.joinPaths(firstPath, "/");
+        secondPath = CmsStringUtil.joinPaths(secondPath, "/");
+        return secondPath.startsWith(firstPath) && !firstPath.equals(secondPath);
+
+    }
+
+    /**
      * Checks if the given class name is a valid Java class name.<p>
      *
      * <b>Directly exposed for JSP EL</b>, not through {@link org.opencms.jsp.util.CmsJspElFunctions}.<p>
