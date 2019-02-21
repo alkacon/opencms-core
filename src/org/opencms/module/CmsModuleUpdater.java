@@ -291,40 +291,14 @@ public class CmsModuleUpdater {
     public void run() {
 
         try {
-            List<CmsResource> toUnlock = new ArrayList<>();
             CmsObject cms = m_moduleData.getCms();
             CmsModule module = m_moduleData.getModule();
             CmsModule oldModule = OpenCms.getModuleManager().getModule(module.getName());
             Map<CmsUUID, CmsUUID> conflictingIds = m_moduleData.getConflictingIds();
-            if (!m_moduleData.getConflictingIds().isEmpty()) {
-                CmsProject conflictProject = cms.createProject(
-                    "Deletion of conflicting resources for " + module.getName(),
-                    "Deletion of conflicting resources for " + module.getName(),
-                    OpenCms.getDefaultUsers().getGroupAdministrators(),
-                    OpenCms.getDefaultUsers().getGroupAdministrators(),
-                    CmsProject.PROJECT_TYPE_TEMPORARY);
-                CmsObject deleteCms = OpenCms.initCmsObject(cms);
-                deleteCms.getRequestContext().setCurrentProject(conflictProject);
-                for (CmsUUID vfsId : conflictingIds.values()) {
-                    CmsResource toDelete = deleteCms.readResource(vfsId, CmsResourceFilter.ALL);
-                    lock(deleteCms, toDelete);
-                    deleteCms.deleteResource(toDelete, CmsResource.DELETE_PRESERVE_SIBLINGS);
-                }
-                OpenCms.getPublishManager().publishProject(deleteCms);
-                OpenCms.getPublishManager().waitWhileRunning();
+            if (!conflictingIds.isEmpty()) {
+                deleteConflictingResources(cms, module, conflictingIds);
             }
-            CmsProject importProject = cms.createProject(
-                org.opencms.module.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                    org.opencms.module.Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
-                    new Object[] {module.getName()}),
-                org.opencms.module.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                    org.opencms.module.Messages.GUI_IMPORT_MODULE_PROJECT_DESC_1,
-                    new Object[] {module.getName()}),
-                OpenCms.getDefaultUsers().getGroupAdministrators(),
-                OpenCms.getDefaultUsers().getGroupAdministrators(),
-                CmsProject.PROJECT_TYPE_TEMPORARY);
-            cms.getRequestContext().setCurrentProject(importProject);
-            cms.copyResourceToProject("/");
+            CmsProject importProject = createAndSetModuleImportProject(cms, module);
             CmsModuleImportExportHandler.reportBeginImport(m_report, module.getName());
 
             Map<CmsUUID, CmsResourceImportData> importResourcesById = new HashMap<>();
@@ -347,157 +321,16 @@ public class CmsModuleUpdater {
                 }
             }
             int index = 0;
-            for (CmsResourceImportData resData : m_moduleData.getResourceData()) {
+            for (CmsResourceImportData resData1 : m_moduleData.getResourceData()) {
                 index += 1;
-                boolean changed = false;
-                m_report.print(
-                    org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        "( " + index + " / " + m_moduleData.getResourceData().size() + " ) "),
-                    I_CmsReport.FORMAT_NOTE);
-                m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.FORMAT_NOTE);
-                m_report.print(
-                    org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        resData.getPath()));
-                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                try {
-                    CmsResource oldRes = null;
-                    try {
-                        if (resData.hasStructureId()) {
-                            oldRes = cms.readResource(
-                                resData.getResource().getStructureId(),
-                                CmsResourceFilter.IGNORE_EXPIRATION);
-                        } else {
-                            oldRes = cms.readResource(resData.getPath(), CmsResourceFilter.IGNORE_EXPIRATION);
-                        }
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        LOG.debug(e.getLocalizedMessage(), e);
-                    }
-                    CmsResource currentRes = oldRes;
-                    if (oldRes != null) {
-                        String oldPath = cms.getSitePath(oldRes);
-                        String newPath = resData.getPath();
-                        if (!CmsStringUtil.comparePaths(oldPath, resData.getPath())) {
-                            cms.moveResource(oldPath, newPath);
-                            changed = true;
-                            currentRes = cms.readResource(oldRes.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
-                        }
-                    }
-                    boolean needsImport = true;
-                    boolean reducedExport = !resData.hasDateLastModified();
-                    byte[] content = resData.getContent();
-                    if (oldRes != null) {
-                        if (!resData.hasStructureId()) {
-                            needsImport = false;
-                        } else if (oldRes.getState().isUnchanged()
-                            && !needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
-
-                            // if resource is changed or new, we don't want to go into this code block
-                            // because even if the content / metaadata are the same, we still want the file to be published at the end,
-                            // so we import it to add it to the current working project
-
-                            if (oldRes.isFile() && (content != null)) {
-                                CmsFile file = cms.readFile(oldRes);
-                                if (Arrays.equals(file.getContents(), content)) {
-                                    needsImport = false;
-                                } else {
-                                    LOG.debug("Content mismatch for " + file.getRootPath());
-                                }
-                            } else {
-                                needsImport = false;
-                            }
-                        }
-                    }
-                    if (needsImport || (oldRes == null)) { // oldRes null check is redundant, we just do it to remove the warning in Eclipse
-                        currentRes = cms.importResource(
-                            resData.getPath(),
-                            resData.getResource(),
-                            content,
-                            new ArrayList<CmsProperty>());
-                        changed = true;
-                        m_importIds.add(currentRes.getStructureId());
-                    } else {
-                        currentRes = cms.readResource(oldRes.getStructureId(), CmsResourceFilter.ALL);
-                        CmsLock lock = cms.getLock(currentRes);
-                        if (lock.isUnlocked()) {
-                            lock(cms, currentRes);
-                            toUnlock.add(currentRes);
-                        }
-
-                    }
-                    resData.setImportResource(currentRes);
-                    List<CmsProperty> propsToWrite = compareProperties(cms, resData, currentRes);
-                    if (!propsToWrite.isEmpty()) {
-                        cms.writePropertyObjects(currentRes, propsToWrite);
-                        changed = true;
-                    }
-                    changed |= updateAcls(cms, resData, currentRes);
-                    if (changed) {
-                        m_report.println(
-                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                            I_CmsReport.FORMAT_OK);
-                    } else {
-                        m_report.println(
-                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
-                            I_CmsReport.FORMAT_NOTE);
-                    }
-
-                } catch (Exception e) {
-                    m_report.println(e);
-                    LOG.error(e.getLocalizedMessage(), e);
-
-                }
+                processImportResource(cms, resData1, index);
             }
-            for (CmsResource deleteRes : toDelete) {
-                m_report.print(
-                    org.opencms.importexport.Messages.get().container(
-                        org.opencms.importexport.Messages.RPT_DELFOLDER_0),
-                    I_CmsReport.FORMAT_NOTE);
-                m_report.print(
-                    org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        deleteRes.getRootPath()));
-                CmsLock lock = cms.getLock(deleteRes);
-                if (lock.isUnlocked()) {
-                    lock(cms, deleteRes);
-                }
-                cms.deleteResource(deleteRes, CmsResource.DELETE_PRESERVE_SIBLINGS);
-                m_report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.FORMAT_OK);
-
-            }
-            List<CmsResource> linkParseables = new ArrayList<>();
-            for (CmsResourceImportData resData : m_moduleData.getResourceData()) {
-                CmsResource importRes = resData.getImportResource();
-                if ((importRes != null)
-                    && m_importIds.contains(importRes.getStructureId())
-                    && isLinkParsable(importRes)) {
-                    linkParseables.add(importRes);
-                }
-            }
-            m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
-            CmsImportVersion10.parseLinks(cms, linkParseables, m_report);
-            m_report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+            processDeletions(cms, toDelete);
+            parseLinks(cms);
 
             importRelations(cms);
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(module.getImportScript())) {
-                LOG.info("Executing import script for module " + module.getName());
-                m_report.println(
-                    org.opencms.module.Messages.get().container(org.opencms.module.Messages.RPT_IMPORT_SCRIPT_HEADER_0),
-                    I_CmsReport.FORMAT_HEADLINE);
-                String importScript = "echo on\n" + module.getImportScript();
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                PrintStream out = new PrintStream(buffer);
-                CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, out, out);
-                shell.execute(importScript);
-                String outputString = buffer.toString();
-                LOG.info("Shell output for import script was: \n" + outputString);
-                m_report.println(
-                    org.opencms.module.Messages.get().container(
-                        org.opencms.module.Messages.RPT_IMPORT_SCRIPT_OUTPUT_1,
-                        outputString));
+                runImportScript(cms, module);
             }
             cms.unlockProject(importProject.getUuid());
             OpenCms.getModuleManager().updateModule(cms, module);
@@ -552,6 +385,242 @@ public class CmsModuleUpdater {
             }
         }
         return changed;
+    }
+
+    /**
+     * Creates the project used to import module resources and sets it on the CmsObject.
+     *
+     * @param cms the CmsObject to set the project on
+     * @param module the module
+     * @return the created project
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsProject createAndSetModuleImportProject(CmsObject cms, CmsModule module) throws CmsException {
+
+        CmsProject importProject = cms.createProject(
+            org.opencms.module.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                org.opencms.module.Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
+                new Object[] {module.getName()}),
+            org.opencms.module.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                org.opencms.module.Messages.GUI_IMPORT_MODULE_PROJECT_DESC_1,
+                new Object[] {module.getName()}),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            CmsProject.PROJECT_TYPE_TEMPORARY);
+        cms.getRequestContext().setCurrentProject(importProject);
+        cms.copyResourceToProject("/");
+        return importProject;
+    }
+
+    /**
+     * Deletes and publishes resources with ID conflicts.
+     *
+     * @param cms the CMS context to use
+     * @param module the module
+     * @param conflictingIds the conflicting ids
+     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
+     */
+    protected void deleteConflictingResources(CmsObject cms, CmsModule module, Map<CmsUUID, CmsUUID> conflictingIds)
+    throws CmsException, Exception {
+
+        CmsProject conflictProject = cms.createProject(
+            "Deletion of conflicting resources for " + module.getName(),
+            "Deletion of conflicting resources for " + module.getName(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            CmsProject.PROJECT_TYPE_TEMPORARY);
+        CmsObject deleteCms = OpenCms.initCmsObject(cms);
+        deleteCms.getRequestContext().setCurrentProject(conflictProject);
+        for (CmsUUID vfsId : conflictingIds.values()) {
+            CmsResource toDelete = deleteCms.readResource(vfsId, CmsResourceFilter.ALL);
+            lock(deleteCms, toDelete);
+            deleteCms.deleteResource(toDelete, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+        OpenCms.getPublishManager().publishProject(deleteCms);
+        OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Parses links for XMLContents etc.
+     *
+     * @param cms the CMS context to use
+     * @throws CmsException if something goes wrong
+     */
+    protected void parseLinks(CmsObject cms) throws CmsException {
+
+        List<CmsResource> linkParseables = new ArrayList<>();
+        for (CmsResourceImportData resData : m_moduleData.getResourceData()) {
+            CmsResource importRes = resData.getImportResource();
+            if ((importRes != null) && m_importIds.contains(importRes.getStructureId()) && isLinkParsable(importRes)) {
+                linkParseables.add(importRes);
+            }
+        }
+        m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+        CmsImportVersion10.parseLinks(cms, linkParseables, m_report);
+        m_report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+    }
+
+    /**
+     * Handles the file deletions.
+     *
+     * @param cms the CMS context to use
+     * @param toDelete the resources to delete
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected void processDeletions(CmsObject cms, List<CmsResource> toDelete) throws CmsException {
+
+        Collections.sort(toDelete, (a, b) -> b.getRootPath().compareTo(a.getRootPath()));
+        for (CmsResource deleteRes : toDelete) {
+            m_report.print(
+                org.opencms.importexport.Messages.get().container(org.opencms.importexport.Messages.RPT_DELFOLDER_0),
+                I_CmsReport.FORMAT_NOTE);
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    deleteRes.getRootPath()));
+            CmsLock lock = cms.getLock(deleteRes);
+            if (lock.isUnlocked()) {
+                lock(cms, deleteRes);
+            }
+            cms.deleteResource(deleteRes, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            m_report.println(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                I_CmsReport.FORMAT_OK);
+
+        }
+    }
+
+    /**
+     * Processes single resource from module import data.
+     *
+     * @param cms the CMS context to use
+     * @param resData the resource data from the module import
+     * @param index index of the current import resource
+     */
+    protected void processImportResource(CmsObject cms, CmsResourceImportData resData, int index) {
+
+        boolean changed = false;
+        m_report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                "( " + index + " / " + m_moduleData.getResourceData().size() + " ) "),
+            I_CmsReport.FORMAT_NOTE);
+        m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.FORMAT_NOTE);
+        m_report.print(
+            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resData.getPath()));
+        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+        try {
+            CmsResource oldRes = null;
+            try {
+                if (resData.hasStructureId()) {
+                    oldRes = cms.readResource(
+                        resData.getResource().getStructureId(),
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                } else {
+                    oldRes = cms.readResource(resData.getPath(), CmsResourceFilter.IGNORE_EXPIRATION);
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+            CmsResource currentRes = oldRes;
+            if (oldRes != null) {
+                String oldPath = cms.getSitePath(oldRes);
+                String newPath = resData.getPath();
+                if (!CmsStringUtil.comparePaths(oldPath, resData.getPath())) {
+                    cms.moveResource(oldPath, newPath);
+                    changed = true;
+                    currentRes = cms.readResource(oldRes.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                }
+            }
+            boolean needsImport = true;
+            boolean reducedExport = !resData.hasDateLastModified();
+            byte[] content = resData.getContent();
+            if (oldRes != null) {
+                if (!resData.hasStructureId()) {
+                    needsImport = false;
+                } else if (oldRes.getState().isUnchanged()
+                    && !needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
+
+                    // if resource is changed or new, we don't want to go into this code block
+                    // because even if the content / metaadata are the same, we still want the file to be published at the end,
+                    // so we import it to add it to the current working project
+
+                    if (oldRes.isFile() && (content != null)) {
+                        CmsFile file = cms.readFile(oldRes);
+                        if (Arrays.equals(file.getContents(), content)) {
+                            needsImport = false;
+                        } else {
+                            LOG.debug("Content mismatch for " + file.getRootPath());
+                        }
+                    } else {
+                        needsImport = false;
+                    }
+                }
+            }
+            if (needsImport || (oldRes == null)) { // oldRes null check is redundant, we just do it to remove the warning in Eclipse
+                currentRes = cms.importResource(
+                    resData.getPath(),
+                    resData.getResource(),
+                    content,
+                    new ArrayList<CmsProperty>());
+                changed = true;
+                m_importIds.add(currentRes.getStructureId());
+            } else {
+                currentRes = cms.readResource(oldRes.getStructureId(), CmsResourceFilter.ALL);
+                CmsLock lock = cms.getLock(currentRes);
+                if (lock.isUnlocked()) {
+                    lock(cms, currentRes);
+                }
+            }
+            resData.setImportResource(currentRes);
+            List<CmsProperty> propsToWrite = compareProperties(cms, resData, currentRes);
+            if (!propsToWrite.isEmpty()) {
+                cms.writePropertyObjects(currentRes, propsToWrite);
+                changed = true;
+            }
+            changed |= updateAcls(cms, resData, currentRes);
+            if (changed) {
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            } else {
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                    I_CmsReport.FORMAT_NOTE);
+            }
+
+        } catch (Exception e) {
+            m_report.println(e);
+            LOG.error(e.getLocalizedMessage(), e);
+
+        }
+    }
+
+    /**
+     * Runs the module import script.
+     *
+     * @param cms the CMS context to use
+     * @param module the module for which to run the script
+     */
+    protected void runImportScript(CmsObject cms, CmsModule module) {
+
+        LOG.info("Executing import script for module " + module.getName());
+        m_report.println(
+            org.opencms.module.Messages.get().container(org.opencms.module.Messages.RPT_IMPORT_SCRIPT_HEADER_0),
+            I_CmsReport.FORMAT_HEADLINE);
+        String importScript = "echo on\n" + module.getImportScript();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(buffer);
+        CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, out, out);
+        shell.execute(importScript);
+        String outputString = buffer.toString();
+        LOG.info("Shell output for import script was: \n" + outputString);
+        m_report.println(
+            org.opencms.module.Messages.get().container(
+                org.opencms.module.Messages.RPT_IMPORT_SCRIPT_OUTPUT_1,
+                outputString));
     }
 
     /**
