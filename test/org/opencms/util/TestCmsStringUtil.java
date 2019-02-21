@@ -336,6 +336,42 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
+     * Test for the isPrefixPath method.
+     */
+    public void testPrefixPath() {
+
+        assertTrue(CmsStringUtil.isPrefixPath("/", "/a"));
+        assertTrue(CmsStringUtil.isPrefixPath("/a", "/a/b"));
+        assertTrue(CmsStringUtil.isPrefixPath("/a/", "/a/b"));
+        assertTrue(CmsStringUtil.isPrefixPath("/", "/a/b"));
+        assertTrue(CmsStringUtil.isPrefixPath("", "/a/b"));
+        assertTrue(CmsStringUtil.isPrefixPath("/a/b/", "/a/b"));
+        assertTrue(CmsStringUtil.isPrefixPath("/a/b/", "/a/b/"));
+
+        assertFalse(CmsStringUtil.isPrefixPath("/a", "/aa/b"));
+        assertFalse(CmsStringUtil.isPrefixPath("/a/b", "/a"));
+
+    }
+
+    /**
+     * Test for the isProperPrefixPath method.
+     */
+    public void testProperPrefixPath() {
+
+        assertTrue(CmsStringUtil.isProperPrefixPath("/", "/a"));
+        assertTrue(CmsStringUtil.isProperPrefixPath("/a", "/a/b"));
+        assertTrue(CmsStringUtil.isProperPrefixPath("/a/", "/a/b"));
+        assertTrue(CmsStringUtil.isProperPrefixPath("/", "/a/b"));
+        assertTrue(CmsStringUtil.isProperPrefixPath("", "/a/b"));
+        assertFalse(CmsStringUtil.isProperPrefixPath("/a/b/", "/a/b"));
+        assertFalse(CmsStringUtil.isProperPrefixPath("/a/b/", "/a/b/"));
+        assertFalse(CmsStringUtil.isProperPrefixPath("/a/b", "/a/b/"));
+        assertFalse(CmsStringUtil.isProperPrefixPath("/a", "/aa/b"));
+        assertFalse(CmsStringUtil.isProperPrefixPath("/a/b", "/a"));
+
+    }
+
+    /**
      * Tests <code>{@link CmsStringUtil#replacePrefix(String, String, String, boolean)}</code>.<p>
      */
     public void testReplacePrefix() {

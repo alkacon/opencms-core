@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.importexport.CmsImportParameters;
+import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -307,6 +308,44 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             new CmsShellReport(Locale.ENGLISH));
         assertTrue("should have used update mechanism", result.usedUpdater());
         cms.readResource("/system/testImportScriptFolder");
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
+    public void testModuleResourceChangeToSubfolder() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+        File export1 = null;
+        File export2 = null;
+
+        CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+        builder.addModule();
+        builder.addFolder("");
+        builder.addFolder("folder");
+        builder.addTextFile("folder/file.txt", "123");
+        builder.publish();
+        export1 = tempExport();
+        builder.export(export1.getAbsolutePath());
+        builder.updateModuleResources("/system/modules/" + MODULE + "/folder");
+        export2 = tempExport();
+        builder.export(export2.getAbsolutePath());
+        builder.updateModuleResources("/system/modules/" + MODULE);
+        builder.delete();
+
+        CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getModuleManager().replaceModule(cms, export1.getAbsolutePath(), report);
+        OpenCms.getModuleManager().replaceModule(cms, export2.getAbsolutePath(), report);
+
+        CmsResource res = cms.readResource("/system/modules/" + MODULE);
+        CmsLock lock = cms.getLock(res);
+        cms.lockResource(res);
+        cms.deleteResource("/system/modules/" + MODULE, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
     }
 
     /**

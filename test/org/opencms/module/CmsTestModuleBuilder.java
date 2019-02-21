@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -117,7 +118,11 @@ public class CmsTestModuleBuilder {
     /** The type entries. */
     private List<TypeEntry> m_typeEntries = new ArrayList<>();
 
+    /** The next resource id. */
     private CmsUUID m_nextResourceId;
+
+    /** Module resources to set. */
+    private List<String> m_moduleResources;
 
     /**
      * Creates a new instance.<p>
@@ -129,6 +134,87 @@ public class CmsTestModuleBuilder {
 
         m_cms = cms;
         m_moduleName = moduleName;
+    }
+
+    /**
+     * Adds file using absolute path.
+     *
+     * @param type file type
+     * @param text file content
+     * @param path absolute file path
+     *
+     * @return the created resource
+     *
+     * @throws CmsLoaderException
+     * @throws CmsException
+     */
+    public CmsResource addAbsoluteFile(String type, String text, String path) throws CmsLoaderException, CmsException {
+
+        String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
+        CmsUUID structureId = createStructureId(name);
+        CmsUUID resourceId = createResourceId(name);
+
+        long dummyTime = 1000000;
+        CmsUUID userId = m_cms.getRequestContext().getCurrentUser().getId();
+        byte[] data = getBytes(text);
+        int length = data == null ? 0 : data.length;
+        // create a new CmsResource
+        CmsResource resource = new CmsResource(
+            structureId,
+            resourceId,
+            path,
+            OpenCms.getResourceManager().getResourceType(type),
+            0,
+            m_cms.getRequestContext().getCurrentProject().getUuid(),
+            CmsResource.STATE_NEW,
+            dummyTime,
+            userId,
+            dummyTime,
+            userId,
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            length, // size
+            System.currentTimeMillis(),
+            0);
+        return importResource(path, resource, data, new ArrayList<>());
+    }
+
+    /**
+     * Adds folder using absolute file path.
+     *
+     * @param path the path
+     *
+     * @throws CmsLoaderException
+     * @throws CmsException
+     */
+    public void addAbsoluteFolder(String path) throws CmsLoaderException, CmsException {
+
+        String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
+        CmsUUID structureId = createStructureId(name);
+        CmsUUID resourceId = CmsUUID.getConstantUUID("r-" + name);
+        long dummyTime = 1000000;
+        CmsUUID userId = m_cms.getRequestContext().getCurrentUser().getId();
+        // create a new CmsResource
+        CmsResource resource = new CmsResource(
+            structureId,
+            resourceId,
+            path,
+            OpenCms.getResourceManager().getResourceType("folder"),
+            0,
+            m_cms.getRequestContext().getCurrentProject().getUuid(),
+            CmsResource.STATE_NEW,
+            dummyTime,
+            userId,
+            dummyTime,
+            userId,
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            -1, // sizem_module
+            System.currentTimeMillis(),
+            0);
+        importResource(path, resource, null, new ArrayList<>());
     }
 
     /**
@@ -184,34 +270,7 @@ public class CmsTestModuleBuilder {
     public CmsResource addFile(String type, String relPath, String text) throws CmsException {
 
         String path = moduleToAbsolutePath(relPath);
-        String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
-        CmsUUID structureId = createStructureId(name);
-        CmsUUID resourceId = createResourceId(name);
-
-        long dummyTime = 1000000;
-        CmsUUID userId = m_cms.getRequestContext().getCurrentUser().getId();
-        byte[] data = getBytes(text);
-        int length = data == null ? 0 : data.length;
-        // create a new CmsResource
-        CmsResource resource = new CmsResource(
-            structureId,
-            resourceId,
-            path,
-            OpenCms.getResourceManager().getResourceType(type),
-            0,
-            m_cms.getRequestContext().getCurrentProject().getUuid(),
-            CmsResource.STATE_NEW,
-            dummyTime,
-            userId,
-            dummyTime,
-            userId,
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
-            1,
-            length, // size
-            System.currentTimeMillis(),
-            0);
-        return importResource(path, resource, data, new ArrayList<>());
+        return addAbsoluteFile(type, text, path);
     }
 
     /**
@@ -223,31 +282,7 @@ public class CmsTestModuleBuilder {
     public void addFolder(String relPath) throws CmsException {
 
         String path = moduleToAbsolutePath(relPath);
-        String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
-        CmsUUID structureId = createStructureId(name);
-        CmsUUID resourceId = CmsUUID.getConstantUUID("r-" + name);
-        long dummyTime = 1000000;
-        CmsUUID userId = m_cms.getRequestContext().getCurrentUser().getId();
-        // create a new CmsResource
-        CmsResource resource = new CmsResource(
-            structureId,
-            resourceId,
-            path,
-            OpenCms.getResourceManager().getResourceType("folder"),
-            0,
-            m_cms.getRequestContext().getCurrentProject().getUuid(),
-            CmsResource.STATE_NEW,
-            dummyTime,
-            userId,
-            dummyTime,
-            userId,
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
-            1,
-            -1, // sizem_module
-            System.currentTimeMillis(),
-            0);
-        importResource(path, resource, null, new ArrayList<>());
+        addAbsoluteFolder(path);
     }
 
     /**
@@ -263,7 +298,10 @@ public class CmsTestModuleBuilder {
         if (m_importScript != null) {
             m_module.setImportScript(m_importScript);
         }
-        m_module.setResources(Arrays.asList(moduleToAbsolutePath("")));
+        if (m_moduleResources == null) {
+            m_moduleResources = Arrays.asList(moduleToAbsolutePath(""));
+        }
+        m_module.setResources(m_moduleResources);
         m_module.setExportPoints(m_exportPoints);
         List<I_CmsResourceType> types = new ArrayList<>();
         List<CmsExplorerTypeSettings> expTypes = new ArrayList<>();
@@ -419,6 +457,16 @@ public class CmsTestModuleBuilder {
     }
 
     /**
+     * Sets the initial module resources.
+     *
+     * @param moduleResources the module resources
+     */
+    public void setModuleResources(List<String> moduleResources) {
+
+        m_moduleResources = moduleResources;
+    }
+
+    /**
      * Sets the next resource id.<p>
      *
      * @param nextResourceId the next resource id
@@ -436,6 +484,23 @@ public class CmsTestModuleBuilder {
     public void setNextStructureId(CmsUUID cmsUUID) {
 
         m_nextStructureId = cmsUUID;
+    }
+
+    /**
+     * Updates the module resources.
+     *
+     * <p>Works only if the module has been added to the module manager already.
+     *
+     * @param moduleResources the module resources
+     * @throws CmsException if something goes wrong
+     */
+    public void updateModuleResources(String... moduleResources) throws CmsException {
+
+        CmsModule module = OpenCms.getModuleManager().getModule(m_module.getName());
+        CmsModule copy = module.clone();
+        copy.setResources(Arrays.asList(moduleResources));
+        OpenCms.getModuleManager().updateModule(m_cms, copy);
+
     }
 
     /**
