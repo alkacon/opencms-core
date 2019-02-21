@@ -390,7 +390,13 @@ public class CmsModuleUpdater {
                     if (oldRes != null) {
                         if (!resData.hasStructureId()) {
                             needsImport = false;
-                        } else if (!needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
+                        } else if (oldRes.getState().isUnchanged()
+                            && !needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
+
+                            // if resource is changed or new, we don't want to go into this code block
+                            // because even if the content / metaadata are the same, we still want the file to be published at the end,
+                            // so we import it to add it to the current working project
+
                             if (oldRes.isFile() && (content != null)) {
                                 CmsFile file = cms.readFile(oldRes);
                                 if (Arrays.equals(file.getContents(), content)) {

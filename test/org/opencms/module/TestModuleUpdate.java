@@ -28,6 +28,7 @@
 package org.opencms.module;
 
 import org.opencms.db.CmsExportPoint;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -774,6 +775,38 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             assertFilter(cms, resource.getRootPath(), filter);
         }
         assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
+    public void testUpdateModuleWithModifiedResource() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+        File export1 = null;
+
+        CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+        builder.addModule();
+        builder.addFolder("");
+        CmsResource res = builder.addTextFile("file.txt", "aaa");
+        builder.publish();
+        export1 = tempExport();
+        builder.export(export1.getAbsolutePath());
+        try {
+            CmsFile file = cms.readFile(res);
+            file.setContents("aaa".getBytes("UTF-8"));
+            cms.lockResourceTemporary(res);
+            cms.writeFile(file);
+            CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+            OpenCms.getModuleManager().replaceModule(cms, export1.getAbsolutePath(), report);
+            assertTrue(cms.readResource(res.getRootPath()).getState().isUnchanged());
+
+        } finally {
+            builder.delete();
+        }
 
     }
 
