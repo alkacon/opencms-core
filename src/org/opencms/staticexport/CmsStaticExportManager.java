@@ -674,7 +674,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // write to rfs
                     exported = true;
                     String locRfsName = rfsName;
-                    if (locales.contains(locale)) {
+                    // in case of the default locale, this would either be wrong or the identity substitution
+                    if (!locale.equals(CmsLocaleManager.getDefaultLocale()) && locales.contains(locale)) {
                         locRfsName = rule.getLocalizedRfsName(rfsName, "/");
                     }
                     writeResource(req, rule.getExportPath(), locRfsName, resource, content);
