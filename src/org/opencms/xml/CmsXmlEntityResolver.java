@@ -85,7 +85,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             "opencms://system/modules/org.opencms.ade.containerpage/schemas/",
             "internal://org/opencms/xml/containerpage/"},
         {"opencms://system/modules/org.opencms.ade.sitemap/schemas/", "internal://org/opencms/xml/adeconfig/sitemap/"},
-        {"opencms://system/modules/org.opencms.ugc/schemas/", "internal://org/opencms/ugc/"}
+        {"opencms://system/modules/org.opencms.ugc/schemas/", "internal://org/opencms/ugc/"},
+        {"opencms://system/modules/org.opencms.jsp.search/schemas/", "internal://org/opencms/jsp/search/"}
 
     };
 

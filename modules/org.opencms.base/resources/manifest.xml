@@ -454,6 +454,9 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
                 <param name="resource.flag.internal">true</param>
                 <param name="schema">/system/modules/org.opencms.ugc/schemas/ugc_config.xsd</param>
             </type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="jsp-search" id="311">
+				<param name="schema">/system/modules/org.opencms.jsp.search/schemas/jsp-search.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap" smalliconstyle="oc-icon-16-subsitemap" bigiconstyle="oc-icon-24-subsitemap" reference="folder">
@@ -756,6 +759,9 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
                     <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
                 </accesscontrol>
             </explorertype>
+			<explorertype name="jsp-search" key="fileicon.jsp-search" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=jsp-search" order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search" key="title.jsp-search"/>
+			</explorertype>
 		</explorertypes>
 	</module>
 	<files>

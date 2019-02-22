@@ -30,7 +30,7 @@
 	
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<resourcebundle name="org.opencms.jsp.search.messages" />
 			<searchsettings>
 				<searchsetting element="Range" searchcontent="false" />
 				<searchsetting element="Label" searchcontent="false" />

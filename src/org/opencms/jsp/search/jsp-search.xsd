@@ -1,13 +1,13 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/additionalparam.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/sortoption.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/fieldfacet.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/rangefacet.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/queryfacet.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/highlighting.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/didyoumean.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/additionalparam.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/sortoption.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/fieldfacet.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/rangefacet.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/queryfacet.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/highlighting.xsd"/>
+	<xsd:include schemaLocation="internal://org/opencms/jsp/search/didyoumean.xsd"/>
 
 	<xsd:element name="JspSearchConfigs" type="OpenCmsJspSearchConfigs"/>
 
@@ -49,12 +49,11 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<resourcebundle name="org.opencms.jsp.search.messages" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
 			<defaults>
-				<default element="Title" value="%(key.default.JspSearchConfig.Title)" />
 				<default element="IgnoreQuery" value="true" />
 				<default element="IgnoreReleaseDate" value="true" />
 				<default element="IgnoreExpirationDate" value="true" />
