@@ -42,7 +42,7 @@ import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.ui.favorites.CmsFavoriteDAO;
 import org.opencms.ui.favorites.CmsFavoriteDialog;
 import org.opencms.ui.favorites.CmsPageEditorFavoriteContext;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
