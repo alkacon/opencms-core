@@ -1228,7 +1228,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 resourceDocumentList,
                 start,
                 new Integer(rows),
-                end,
+                Math.min(end, (start + solrDocumentList.size())),
                 rows > 0 ? (start / rows) + 1 : 0, //page - but matches only in case of equally sized pages and is zero for rows=0 (because this was this way before!?!)
                 visibleHitCount,
                 finalMaxScore,
