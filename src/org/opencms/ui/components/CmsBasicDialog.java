@@ -104,11 +104,11 @@ public class CmsBasicDialog extends VerticalLayout {
     /** Extension used to regulate max height. */
     private CmsMaxHeightExtension m_maxHeightExtension;
 
-    /** The window resize listener. */
-    private BrowserWindowResizeListener m_windowResizeListener;
-
     /** Maximum recorded height. */
     private int m_maxRecordedHeight = Integer.MIN_VALUE;
+
+    /** The window resize listener. */
+    private BrowserWindowResizeListener m_windowResizeListener;
 
     /**
      * Creates new instance.<p>
@@ -554,32 +554,9 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
-     * Removes the action handler.<p>
-     *
-     * @param window the window the action handler is attached to
-     */
-    void clearActionHandler(Window window) {
-
-        if (m_actionHandler != null) {
-            window.removeActionHandler(m_actionHandler);
-        }
-    }
-
-    /**
-     * Calculates max dialog height given the window height.<p>
-     *
-     * @param windowHeight the window height
-     * @return the maximal dialog height
-     */
-    private int calculateMaxHeight(int windowHeight) {
-
-        return (int)((0.95 * windowHeight) - 40);
-    }
-
-    /**
      * Adds the max height extension to the dialog panel.<p>
      */
-    private void enableMaxHeight() {
+    protected void enableMaxHeight() {
 
         // use the window height minus an offset for the window header and some spacing
         int maxHeight = calculateMaxHeight(A_CmsUI.get().getPage().getBrowserWindowHeight());
@@ -625,5 +602,28 @@ public class CmsBasicDialog extends VerticalLayout {
         };
         A_CmsUI.get().getPage().addBrowserWindowResizeListener(m_windowResizeListener);
 
+    }
+
+    /**
+     * Removes the action handler.<p>
+     *
+     * @param window the window the action handler is attached to
+     */
+    void clearActionHandler(Window window) {
+
+        if (m_actionHandler != null) {
+            window.removeActionHandler(m_actionHandler);
+        }
+    }
+
+    /**
+     * Calculates max dialog height given the window height.<p>
+     *
+     * @param windowHeight the window height
+     * @return the maximal dialog height
+     */
+    private int calculateMaxHeight(int windowHeight) {
+
+        return (int)((0.95 * windowHeight) - 40);
     }
 }

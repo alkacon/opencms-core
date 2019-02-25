@@ -39,17 +39,17 @@ public interface I_CmsButton {
     /** Available button colors. */
     public enum ButtonColor {
 
-        /** Button color. */
-        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
+    /** Button color. */
+    BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
 
-        /** Button color. */
-        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
+    /** Button color. */
+    GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
 
-        /** Button color. */
-        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
+    /** Button color. */
+    GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
 
-        /** Button color. */
-        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red());
+    /** Button color. */
+    RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red());
 
         /** The list of additional style class names for this button style. */
         private String m_className;
@@ -89,6 +89,9 @@ public interface I_CmsButton {
 
         /** Toolbar button. */
         CLIPBOARD_BUTTON(CLIPBOARD, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+
+        /** Toolbar button. */
+        FAVORITES_BUTTON(CLIPBOARD, Messages.get().key(Messages.GUI_TOOLBAR_FAVORITES_0)),
 
         /** Toolbar button. */
         CONTEXT(CONTEXT_MENU, Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),

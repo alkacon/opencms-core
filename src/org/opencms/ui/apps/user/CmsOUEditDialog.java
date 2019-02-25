@@ -40,7 +40,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsFileUtil;
 
@@ -369,8 +369,8 @@ public class CmsOUEditDialog extends CmsBasicDialog {
         if (!res) {
             return res;
         }
-        for (CmsEditableGroupRow row : m_ouResources.getRows()) {
-            if (!((AbstractField<String>)row.getComponent(0)).isValid()) {
+        for (I_CmsEditableGroupRow row : m_ouResources.getRows()) {
+            if (!((AbstractField<String>)row.getComponent()).isValid()) {
                 return false;
             }
         }
@@ -396,9 +396,9 @@ public class CmsOUEditDialog extends CmsBasicDialog {
             field.setCmsObject(m_cms);
             m_ouResources.addRow(field);
         }
-        for (CmsEditableGroupRow row : m_ouResources.getRows()) {
-            ((AbstractField<String>)row.getComponent(0)).removeAllValidators();
-            ((AbstractField<String>)row.getComponent(0)).addValidator(new ResourceValidator());
+        for (I_CmsEditableGroupRow row : m_ouResources.getRows()) {
+            ((AbstractField<String>)row.getComponent()).removeAllValidators();
+            ((AbstractField<String>)row.getComponent()).addValidator(new ResourceValidator());
         }
     }
 
@@ -409,8 +409,8 @@ public class CmsOUEditDialog extends CmsBasicDialog {
 
         try {
             List<String> resources = new ArrayList<String>();
-            for (CmsEditableGroupRow row : m_ouResources.getRows()) {
-                resources.add(((CmsPathSelectField)row.getComponent(0)).getValue());
+            for (I_CmsEditableGroupRow row : m_ouResources.getRows()) {
+                resources.add(((CmsPathSelectField)row.getComponent()).getValue());
             }
             if (m_ou == null) {
                 String parentOu = m_parentOu.getValue();

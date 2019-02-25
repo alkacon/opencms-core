@@ -80,9 +80,11 @@ public class CmsResourceInfo extends CustomLayout {
      * Constructor.<p>
      */
     public CmsResourceInfo() {
+
         super();
         try {
-            initTemplateContentsFromInputStream(CmsVaadinUtils.readCustomLayout(getClass(), "resourceinfo.html"));
+            initTemplateContentsFromInputStream(
+                CmsVaadinUtils.readCustomLayout(CmsResourceInfo.class, "resourceinfo.html"));
             addComponent(m_topText, "topLabel");
             addComponent(m_bottomText, "bottomLabel");
             addComponent(m_icon, "icon");
@@ -98,6 +100,7 @@ public class CmsResourceInfo extends CustomLayout {
      * @param resource the resource
      */
     public CmsResourceInfo(CmsResource resource) {
+
         this(resource, true);
     }
 
@@ -108,6 +111,7 @@ public class CmsResourceInfo extends CustomLayout {
      * @param useState true if the resource state should be displayed
      */
     public CmsResourceInfo(CmsResource resource, boolean useState) {
+
         this();
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);

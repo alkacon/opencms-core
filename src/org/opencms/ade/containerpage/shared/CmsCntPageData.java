@@ -45,14 +45,14 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The element delte modes. */
     public enum ElementDeleteMode {
-        /** Don't ask, delete no longer referenced element resources. */
-        alwaysDelete,
-        /** Don't ask, keep no longer referenced element resources. */
-        alwaysKeep,
-        /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
-        askDelete,
-        /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
-        askKeep
+    /** Don't ask, delete no longer referenced element resources. */
+    alwaysDelete,
+    /** Don't ask, keep no longer referenced element resources. */
+    alwaysKeep,
+    /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
+    askDelete,
+    /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
+    askKeep
     }
 
     /** Enum representing the different ways dropping elements on a container page can be handled. */

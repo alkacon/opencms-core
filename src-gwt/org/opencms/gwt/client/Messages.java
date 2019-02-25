@@ -889,6 +889,8 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 
+    public static final String GUI_TOOLBAR_FAVORITES_0 = "GUI_TOOLBAR_FAVORITES_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

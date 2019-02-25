@@ -31,11 +31,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.HorizontalLayout;
 
 /**
- * Row for multivalue field lists.<p>
+ * Default implementation for row for multivalue field lists.<p>
  *
  * Wraps an input widget and a button bar for manipulating the row.<p>
  */
-public class CmsEditableGroupRow extends HorizontalLayout implements I_CmsEditableGroupActionHandler {
+public class CmsEditableGroupRow extends HorizontalLayout implements I_CmsEditableGroupRow {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -44,7 +44,7 @@ public class CmsEditableGroupRow extends HorizontalLayout implements I_CmsEditab
     private Component m_component;
 
     /** Group of rows for a multivalue field list. */
-    private I_CmsEditableGroup m_group;
+    private CmsEditableGroup m_group;
 
     /** The button bar. */
     private CmsEditableGroupButtons m_buttonBar;
@@ -55,7 +55,8 @@ public class CmsEditableGroupRow extends HorizontalLayout implements I_CmsEditab
      * @param group the multivalue widget group
      * @param component the wrapped input widget
      */
-    public CmsEditableGroupRow(I_CmsEditableGroup group, Component component) {
+    public CmsEditableGroupRow(CmsEditableGroup group, Component component) {
+
         m_component = component;
         m_group = group;
         setWidth("100%");
@@ -63,7 +64,7 @@ public class CmsEditableGroupRow extends HorizontalLayout implements I_CmsEditab
         component.setWidth("100%");
         addComponent(component);
         setExpandRatio(component, 1f);
-        m_buttonBar = new CmsEditableGroupButtons(this);
+        m_buttonBar = new CmsEditableGroupButtons(new CmsDefaultActionHandler(group, this));
         addComponent(m_buttonBar);
     }
 
@@ -86,38 +87,6 @@ public class CmsEditableGroupRow extends HorizontalLayout implements I_CmsEditab
     public Component getComponent() {
 
         return m_component;
-    }
-
-    /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroupActionHandler#onAdd()
-     */
-    public void onAdd() {
-
-        m_group.addRowAfter(this);
-    }
-
-    /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroupActionHandler#onDelete()
-     */
-    public void onDelete() {
-
-        m_group.remove(this);
-    }
-
-    /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroupActionHandler#onDown()
-     */
-    public void onDown() {
-
-        m_group.moveDown(this);
-    }
-
-    /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroupActionHandler#onUp()
-     */
-    public void onUp() {
-
-        m_group.moveUp(this);
     }
 
 }

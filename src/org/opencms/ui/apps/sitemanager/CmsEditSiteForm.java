@@ -54,7 +54,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsFileUtil;
@@ -1270,8 +1270,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         boolean ret = true;
 
-        for (CmsEditableGroupRow row : m_aliasGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             TextField field = (TextField)layout.getComponent(0);
             ret = ret & field.isValid();
         }
@@ -1493,8 +1493,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     void setupValidatorAliase() {
 
-        for (CmsEditableGroupRow row : m_aliasGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             TextField field = (TextField)layout.getComponent(0);
             field.removeAllValidators();
             field.addValidator(new AliasValidator());
@@ -1614,8 +1614,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private List<CmsSiteMatcher> getAliases() {
 
         List<CmsSiteMatcher> ret = new ArrayList<CmsSiteMatcher>();
-        for (CmsEditableGroupRow row : m_aliasGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             CheckBox box = (CheckBox)(layout.getComponent(1));
             TextField field = (TextField)layout.getComponent(0);
             CmsSiteMatcher matcher = new CmsSiteMatcher(field.getValue());

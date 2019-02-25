@@ -43,23 +43,23 @@ public class CmsCoreData implements IsSerializable {
     /** A enumeration for the ADE context. */
     public enum AdeContext {
 
-        /** Context for classic direct edit provider. */
-        editprovider,
+    /** Context for classic direct edit provider. */
+    editprovider,
 
-        /** Context for gallery dialog. */
-        gallery,
+    /** Context for gallery dialog. */
+    gallery,
 
-        /** Context for container page. */
-        pageeditor,
+    /** Context for container page. */
+    pageeditor,
 
-        /** Context for publish dialog. */
-        publish,
+    /** Context for publish dialog. */
+    publish,
 
-        /** Context for resource info dialog. */
-        resourceinfo,
+    /** Context for resource info dialog. */
+    resourceinfo,
 
-        /** Context for sitemap. */
-        sitemapeditor
+    /** Context for sitemap. */
+    sitemapeditor
     }
 
     /** The available client modules. */
@@ -290,6 +290,8 @@ public class CmsCoreData implements IsSerializable {
     /** The current navigation URI. */
     private String m_navigationUri;
 
+    private CmsUUID m_projectId;
+
     /** The current site root. */
     private String m_siteRoot;
 
@@ -341,6 +343,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getWorkplaceResourcesPrefix(),
             clone.getEmbeddedDialogsUrl(),
             clone.getSiteRoot(),
+            clone.getProjectId(),
             clone.getLocale(),
             clone.getWpLocale(),
             clone.getUri(),
@@ -397,6 +400,7 @@ public class CmsCoreData implements IsSerializable {
         String workplaceResourcesPrefix,
         String embeddedDialogsUrl,
         String siteRoot,
+        CmsUUID projectId,
         String locale,
         String wpLocale,
         String uri,
@@ -421,6 +425,7 @@ public class CmsCoreData implements IsSerializable {
         m_workplaceResourcesPrefix = workplaceResourcesPrefix;
         m_embeddedDialogsUrl = embeddedDialogsUrl;
         m_siteRoot = siteRoot;
+        m_projectId = projectId;
         m_locale = locale;
         m_wpLocale = wpLocale;
         m_uri = uri;
@@ -548,6 +553,11 @@ public class CmsCoreData implements IsSerializable {
     public String getNavigationUri() {
 
         return m_navigationUri;
+    }
+
+    public CmsUUID getProjectId() {
+
+        return m_projectId;
     }
 
     /**

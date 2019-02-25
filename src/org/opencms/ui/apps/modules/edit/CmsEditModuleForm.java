@@ -57,7 +57,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsRemovableFormRow;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.util.CmsComponentField;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsFileUtil;
@@ -563,7 +563,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             // validate 'dynamic' tabs here
             TreeMap<String, String> params = Maps.newTreeMap();
             m_parameterGroup.getRows();
-            for (CmsEditableGroupRow row : m_parameterGroup.getRows()) {
+            for (I_CmsEditableGroupRow row : m_parameterGroup.getRows()) {
                 TextField paramField = (TextField)(row.getComponent());
                 String paramStr = paramField.getValue();
                 int eqPos = paramStr.indexOf("=");
@@ -578,7 +578,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_module.setParameters(params);
 
             List<CmsExportPoint> exportPoints = Lists.newArrayList();
-            for (CmsEditableGroupRow row : m_exportPointGroup.getRows()) {
+            for (I_CmsEditableGroupRow row : m_exportPointGroup.getRows()) {
                 CmsExportPointWidget widget = (CmsExportPointWidget)(row.getComponent());
                 String source = widget.getUri().trim();
                 String target = widget.getDestination().trim();
@@ -606,7 +606,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_module.setDependencies(dependencies);
 
             List<String> moduleResources = Lists.newArrayList();
-            for (CmsEditableGroupRow row : m_moduleResourcesGroup.getRows()) {
+            for (I_CmsEditableGroupRow row : m_moduleResourcesGroup.getRows()) {
                 CmsModuleResourceSelectField field = (CmsModuleResourceSelectField)(row.getComponent());
                 String moduleResource = field.getValue().trim();
                 if (!moduleResource.isEmpty()) {
@@ -616,7 +616,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_module.setResources(moduleResources);
 
             List<String> excludedResources = Lists.newArrayList();
-            for (CmsEditableGroupRow row : m_excludedResourcesGroup.getRows()) {
+            for (I_CmsEditableGroupRow row : m_excludedResourcesGroup.getRows()) {
                 CmsModuleResourceSelectField field = (CmsModuleResourceSelectField)(row.getComponent());
                 String moduleResource = field.getValue().trim();
                 if (!moduleResource.isEmpty()) {

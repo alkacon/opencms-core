@@ -84,6 +84,7 @@ public class CmsToolbar extends Composite {
      * Constructor.<p>
      */
     public CmsToolbar() {
+
         initWidget(uiBinder.createAndBindUi(this));
 
     }

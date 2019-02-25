@@ -731,6 +731,35 @@
 			margin-top: 1px;
 		}
 		
+		.o-resinfo-fav-lines {
+			overflow: ellipsis;
+			width: 250px;
+			margin-top: 1px;
+			
+			.o-resinfo-project { 
+				font-size: 12px; 
+			}
+			
+			.o-resinfo-site { 
+				font-size: 14px; 
+			}
+			
+			& > * {
+				vertical-align: middle;
+				line-height: 17px;
+				font-face: Open Sans,sans-serif;
+				color: $v-font-color;
+			}
+		}
+		
+		.o-button-container { 
+			& > * {
+				margin-right: 5px;
+				margin-top: 7px;  
+			} 
+		}
+			
+		
 		.o-resinfo-hidden-icon {
 			margin-top: 8px;
 			margin-right: 10px;

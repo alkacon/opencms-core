@@ -40,6 +40,10 @@ import com.vaadin.ui.Component;
  */
 public interface I_CmsAppUIContext extends Serializable {
 
+    public Object getAttribute(String key);
+
+    public void setAttribute(String key, Object value);
+
     /**
      * Adds the publish button to the toolbar.<p>
      *

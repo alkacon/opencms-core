@@ -106,9 +106,6 @@ public class CmsProject implements Cloneable, Comparable<CmsProject>, Serializab
         }
     }
 
-    /** The serial version id. */
-    private static final long serialVersionUID = -4552095577282894706L;
-
     /** The name of the online project. */
     public static final String ONLINE_PROJECT_NAME = "Online";
 
@@ -127,11 +124,14 @@ public class CmsProject implements Cloneable, Comparable<CmsProject>, Serializab
     /** Indicates a normal project. */
     public static final CmsProjectType PROJECT_TYPE_NORMAL = CmsProjectType.MODE_PROJECT_NORMAL;
 
+    /** Indicates a temporary project that is deleted after it is published. */
+    public static final CmsProjectType PROJECT_TYPE_TEMPORARY = CmsProjectType.MODE_PROJECT_TEMPORARY;
+
     /** The project type for a workflow project. */
     public static final CmsProjectType PROJECT_TYPE_WORKFLOW = CmsProjectType.MODE_PROJECT_WORKFLOW;
 
-    /** Indicates a temporary project that is deleted after it is published. */
-    public static final CmsProjectType PROJECT_TYPE_TEMPORARY = CmsProjectType.MODE_PROJECT_TEMPORARY;
+    /** The serial version id. */
+    private static final long serialVersionUID = -4552095577282894706L;
 
     /** The creation date of this project. */
     private long m_dateCreated;
@@ -354,6 +354,16 @@ public class CmsProject implements Cloneable, Comparable<CmsProject>, Serializab
     public CmsUUID getGroupId() {
 
         return m_groupUsersId;
+    }
+
+    /**
+     * Returns the id of this project.<p>
+     *
+     * @return the id of this project
+     */
+    public CmsUUID getId() {
+
+        return m_id;
     }
 
     /**

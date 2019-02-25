@@ -41,7 +41,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.threads.CmsExportThread;
@@ -239,8 +239,8 @@ public class CmsDbExportView extends VerticalLayout {
         m_target.removeAllValidators();
         m_target.addValidator(new TargetValidator());
 
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
             field.removeAllValidators();
             field.addValidator(new ResourceValidator());
@@ -282,16 +282,16 @@ public class CmsDbExportView extends VerticalLayout {
     protected void removeUnvalidPathFields() {
 
         int counter = 0;
-        List<CmsEditableGroupRow> rowsToRemove = new ArrayList<CmsEditableGroupRow>();
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        List<I_CmsEditableGroupRow> rowsToRemove = new ArrayList<I_CmsEditableGroupRow>();
+        for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
             if (!m_cms.existsResource(field.getValue())) {
                 rowsToRemove.add(row);
             }
         }
 
-        for (CmsEditableGroupRow row : rowsToRemove) {
+        for (I_CmsEditableGroupRow row : rowsToRemove) {
             m_resourcesGroup.remove(row);
         }
     }
@@ -327,8 +327,8 @@ public class CmsDbExportView extends VerticalLayout {
 
         boolean valid = true;
 
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
             if (!field.isValid()) {
                 valid = false;
@@ -347,8 +347,8 @@ public class CmsDbExportView extends VerticalLayout {
 
         List<String> res = new ArrayList<String>();
 
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent(0));
+        for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
             CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
             if (!field.getValue().isEmpty() & !res.contains(field.getValue())) {
                 res.add(field.getValue());

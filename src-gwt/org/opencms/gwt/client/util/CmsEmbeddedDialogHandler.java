@@ -74,6 +74,8 @@ public class CmsEmbeddedDialogHandler {
      * @param handler the context handler
      */
     public CmsEmbeddedDialogHandler(I_CmsActionHandler handler) {
+
+        this();
         m_handler = handler;
     }
 

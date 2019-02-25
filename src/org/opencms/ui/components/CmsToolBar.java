@@ -41,11 +41,17 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
+import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
+import org.opencms.ui.favorites.CmsExplorerFavoriteContext;
+import org.opencms.ui.favorites.CmsFavoriteDAO;
+import org.opencms.ui.favorites.CmsFavoriteDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
@@ -78,6 +84,7 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -130,6 +137,9 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
     /** The serial version id. */
     private static final long serialVersionUID = -4551194983054069395L;
 
+    /** The app UI context. */
+    protected I_CmsAppUIContext m_appContext;
+
     /** The app indicator. */
     private Label m_appIndicator;
 
@@ -138,6 +148,12 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
 
     /** The context menu component. */
     private MenuBar m_contextMenu;
+
+    /** The favorite button. */
+    private Button m_favButton = CmsToolBar.createButton(
+        FontOpenCms.CLIPBOARD,
+        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_FAVORITES_BUTTON_0),
+        true);
 
     /** The dialog context. */
     private I_CmsDialogContext m_dialogContext;
@@ -182,6 +198,11 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
         m_foldedButtonsMenu.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
         m_foldedButtonsMenu.setHideOnMouseOut(false);
         Design.read("CmsToolBar.html", this);
+
+        m_favButton.addClickListener(evt -> {
+            CmsFileExplorer explorer = (CmsFileExplorer)m_appContext.getAttribute(CmsFileExplorer.ATTR_KEY);
+            openFavoriteDialog(explorer);
+        });
     }
 
     /**
@@ -262,6 +283,26 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
         pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
         pv.setHideOnMouseOut(false);
         return pv;
+    }
+
+    /**
+     * Opens the favorite dialog.
+     *
+     * @param explorer the explorer instance (null if not currently in explorer)
+     */
+    public static void openFavoriteDialog(CmsFileExplorer explorer) {
+
+        try {
+            CmsExplorerFavoriteContext context = new CmsExplorerFavoriteContext(A_CmsUI.getCmsObject(), explorer);
+            CmsFavoriteDialog dialog = new CmsFavoriteDialog(context, new CmsFavoriteDAO(A_CmsUI.getCmsObject()));
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+            window.setContent(dialog);
+            window.setCaption(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_FAVORITES_DIALOG_TITLE_0));
+            A_CmsUI.get().addWindow(window);
+            window.center();
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+        }
     }
 
     /**
@@ -387,9 +428,11 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
 
         if (enabled) {
             m_itemsRight.addComponent(m_contextMenu, 0);
-            m_itemsRight.addComponent(m_quickLaunchDropDown, 1);
+            m_itemsRight.addComponent(m_favButton, 1);
+            m_itemsRight.addComponent(m_quickLaunchDropDown, 2);
         } else {
             m_itemsRight.removeComponent(m_contextMenu);
+            m_itemsRight.removeComponent(m_favButton);
             m_itemsRight.removeComponent(m_quickLaunchDropDown);
         }
         updateFoldingThreshhold();
@@ -417,6 +460,16 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
         m_leftButtons.removeComponent(button);
         m_rightButtons.removeComponent(button);
         updateFoldingThreshhold();
+    }
+
+    /**
+     * Sets the app context.
+     *
+     * @param context the app context
+     */
+    public void setAppContext(I_CmsAppUIContext context) {
+
+        m_appContext = context;
     }
 
     /**
@@ -478,13 +531,16 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
      * Initializes the toolbar.<p>
      *
      * @param appId the app id
+     * @param context the app UI context
      */
-    protected void init(String appId) {
+    protected void init(String appId, I_CmsAppUIContext context) {
 
         m_dialogContext = new ToolbarContext(appId);
+        m_appContext = context;
         initContextMenu();
         m_itemsRight.addComponent(m_quickLaunchDropDown);
         m_itemsRight.addComponent(m_userDropDown);
+        enableDefaultButtons(true);
     }
 
     /**

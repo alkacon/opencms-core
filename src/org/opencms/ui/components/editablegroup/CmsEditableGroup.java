@@ -40,21 +40,71 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.ErrorEvent;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Component.Listener;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Manages a group of widgets used as a multivalue input.<p>
  *
  * This class is not itself a widget, it just coordinates the other widgets actually used to display the multivalue widget group.
  */
-public class CmsEditableGroup implements I_CmsEditableGroup {
+public class CmsEditableGroup {
+
+    public static class DefaultRowBuilder implements CmsEditableGroup.I_RowBuilder {
+
+        public I_CmsEditableGroupRow buildRow(CmsEditableGroup group, Component component) {
+
+            if (component instanceof Layout.MarginHandler) {
+                // Since the row is a HorizontalLayout with the edit buttons positioned next to the original
+                // widget, a margin on the widget causes it to be vertically offset from the buttons too much
+                Layout.MarginHandler marginHandler = (Layout.MarginHandler)component;
+                marginHandler.setMargin(false);
+            }
+            if (component instanceof AbstractComponent) {
+                component.addListener(group.getErrorListener());
+            }
+            I_CmsEditableGroupRow row = new CmsEditableGroupRow(group, component);
+            if (group.getRowCaption() != null) {
+                row.setCaption(group.getRowCaption());
+            }
+            return row;
+        }
+
+    }
+
+    /**
+     * Interface for group row components that can have errors.
+     */
+    public interface I_HasError {
+
+        /**
+         * Check if there is an error.
+         *
+         * @return true if there is an error
+         */
+        public boolean hasEditableGroupError();
+    }
+
+    /**
+     * Builds editable group rows by wrapping other components.
+     */
+    public interface I_RowBuilder {
+
+        /**
+         * Builds a row for the given group by wrapping the given component.
+         *
+         * @param group the group
+         * @param component the component
+         * @return the new row
+         */
+        public I_CmsEditableGroupRow buildRow(CmsEditableGroup group, Component component);
+    }
 
     /** The container in which to render the individual rows of the multivalue widget group. */
     private AbstractOrderedLayout m_container;
 
     /** Factory for creating new input fields. */
-    private Supplier<Component> m_factory;
+    private Supplier<Component> m_newComponentFactory;
 
     /** Button to add a new row to an empty list. */
     private Button m_addButton;
@@ -74,6 +124,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     /**Should the add option be hidden?*/
     private boolean m_hideAdd;
 
+    /** The builder to use for creating new rows. */
+    private I_RowBuilder m_rowBuilder = new DefaultRowBuilder();
+
     /**
      * Creates a new instance.<p>
      *
@@ -85,9 +138,10 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         AbstractOrderedLayout container,
         Supplier<Component> componentFactory,
         String addButtonCaption) {
+
         m_hideAdd = false;
         m_container = container;
-        m_factory = componentFactory;
+        m_newComponentFactory = componentFactory;
         m_addButton = new Button(addButtonCaption);
         m_addButton.addClickListener(new ClickListener() {
 
@@ -97,7 +151,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
             @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                addRow(m_factory.get());
+                addRow(m_newComponentFactory.get());
             }
         });
         m_errorListener = new Listener() {
@@ -118,12 +172,14 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#addRow(com.vaadin.ui.Component)
+     * Adds a row for the given component at the end of the group.
+     *
+     * @param component the component to wrap in the row to be added
      */
     public void addRow(Component component) {
 
-        Component actualComponent = component == null ? m_factory.get() : component;
-        CmsEditableGroupRow row = createRow(actualComponent);
+        Component actualComponent = component == null ? m_newComponentFactory.get() : component;
+        I_CmsEditableGroupRow row = m_rowBuilder.buildRow(this, actualComponent);
         m_container.addComponent(row);
         updateAddButton();
         updateButtonBars();
@@ -131,19 +187,34 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#addRowAfter(org.opencms.ui.components.editablegroup.CmsEditableGroupRow)
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#addRowAfter(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
      */
-    public void addRowAfter(CmsEditableGroupRow row) {
+    public void addRowAfter(I_CmsEditableGroupRow row) {
 
         int index = m_container.getComponentIndex(row);
         if (index >= 0) {
-            Component component = m_factory.get();
-            CmsEditableGroupRow newRow = createRow(component);
+            Component component = m_newComponentFactory.get();
+            I_CmsEditableGroupRow newRow = m_rowBuilder.buildRow(this, component);
             m_container.addComponent(newRow, index + 1);
         }
         updateAddButton();
         updateButtonBars();
         updateGroupValidation();
+    }
+
+    /**
+     * Gets the 'add' button.<p>
+     *
+     * @return the add button
+     */
+    public Component getAddButton() {
+
+        return m_addButton;
+    }
+
+    public Listener getErrorListener() {
+
+        return m_errorListener;
     }
 
     /**
@@ -159,12 +230,12 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     /**
      * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#getRows()
      */
-    public List<CmsEditableGroupRow> getRows() {
+    public List<I_CmsEditableGroupRow> getRows() {
 
-        List<CmsEditableGroupRow> result = Lists.newArrayList();
+        List<I_CmsEditableGroupRow> result = Lists.newArrayList();
         for (Component component : m_container) {
-            if (component instanceof CmsEditableGroupRow) {
-                result.add((CmsEditableGroupRow)component);
+            if (component instanceof I_CmsEditableGroupRow) {
+                result.add((I_CmsEditableGroupRow)component);
             }
         }
         return result;
@@ -181,9 +252,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#moveDown(org.opencms.ui.components.editablegroup.CmsEditableGroupRow)
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#moveDown(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
      */
-    public void moveDown(CmsEditableGroupRow row) {
+    public void moveDown(I_CmsEditableGroupRow row) {
 
         int index = m_container.getComponentIndex(row);
         if ((index >= 0) && (index < (m_container.getComponentCount() - 1))) {
@@ -194,9 +265,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#moveUp(org.opencms.ui.components.editablegroup.CmsEditableGroupRow)
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#moveUp(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
      */
-    public void moveUp(CmsEditableGroupRow row) {
+    public void moveUp(I_CmsEditableGroupRow row) {
 
         int index = m_container.getComponentIndex(row);
         if (index > 0) {
@@ -207,9 +278,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#remove(org.opencms.ui.components.editablegroup.CmsEditableGroupRow)
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#remove(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
      */
-    public void remove(CmsEditableGroupRow row) {
+    public void remove(I_CmsEditableGroupRow row) {
 
         int index = m_container.getComponentIndex(row);
         if (index >= 0) {
@@ -243,6 +314,11 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
         m_errorLabel.setValue(errorMessage != null ? errorMessage : "");
     }
 
+    public void setRowBuilder(I_RowBuilder rowBuilder) {
+
+        m_rowBuilder = rowBuilder;
+    }
+
     /**
      * Sets the row caption.<p>
      *
@@ -251,31 +327,6 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     public void setRowCaption(String rowCaption) {
 
         m_rowCaption = rowCaption;
-    }
-
-    /**
-     * Creates a row wrapping a form widget.<p>
-     *
-     * @param component the widget to wrap
-     *
-     * @return the row wrapper
-     */
-    protected CmsEditableGroupRow createRow(Component component) {
-
-        if (component instanceof Layout.MarginHandler) {
-            // Since the row is a HorizontalLayout with the edit buttons positioned next to the original
-            // widget, a margin on the widget causes it to be vertically offset from the buttons too much
-            Layout.MarginHandler marginHandler = (Layout.MarginHandler)component;
-            marginHandler.setMargin(false);
-        }
-        if (component instanceof AbstractComponent) {
-            component.addListener(m_errorListener);
-        }
-        CmsEditableGroupRow row = new CmsEditableGroupRow(this, component);
-        if (m_rowCaption != null) {
-            row.setCaption(m_rowCaption);
-        }
-        return row;
     }
 
     /**
@@ -291,23 +342,13 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
                 return true;
             }
         }
-        if (component instanceof I_CmsEditableGroup.I_HasError) {
-            if (((I_CmsEditableGroup.I_HasError)component).hasEditableGroupError()) {
+        if (component instanceof I_HasError) {
+            if (((I_HasError)component).hasEditableGroupError()) {
                 return true;
             }
 
         }
         return false;
-    }
-
-    /**
-     * Gets the 'add' button.<p>
-     *
-     * @return the add button
-     */
-    private Component getAddButton() {
-
-        return m_addButton;
     }
 
     /**
@@ -338,9 +379,9 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
      */
     private void updateButtonBars() {
 
-        List<CmsEditableGroupRow> rows = getRows();
+        List<I_CmsEditableGroupRow> rows = getRows();
         int i = 0;
-        for (CmsEditableGroupRow row : rows) {
+        for (I_CmsEditableGroupRow row : rows) {
             boolean first = i == 0;
             boolean last = i == (rows.size() - 1);
             row.getButtonBar().setFirstLast(first, last, m_hideAdd);
@@ -355,7 +396,7 @@ public class CmsEditableGroup implements I_CmsEditableGroup {
     private void updateGroupValidation() {
 
         boolean hasError = false;
-        for (CmsEditableGroupRow row : getRows()) {
+        for (I_CmsEditableGroupRow row : getRows()) {
             if (hasError(row.getComponent())) {
                 hasError = true;
                 break;

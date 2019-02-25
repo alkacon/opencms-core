@@ -1161,6 +1161,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getSystemInfo().getStaticResourceContext(),
             CmsEmbeddedDialogsUI.getEmbeddedDialogsContextPath(),
             cms.getRequestContext().getSiteRoot(),
+            cms.getRequestContext().getCurrentProject().getId(),
             cms.getRequestContext().getLocale().toString(),
             wpLocale.toString(),
             cms.getRequestContext().getUri(),

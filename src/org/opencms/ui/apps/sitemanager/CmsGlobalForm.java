@@ -40,7 +40,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -199,7 +199,7 @@ public class CmsGlobalForm extends CmsBasicDialog {
     Map<String, CmsSSLMode> getWebserverList() {
 
         Map<String, CmsSSLMode> ret = new LinkedHashMap<String, CmsSSLMode>();
-        for (CmsEditableGroupRow row : m_workplaceServerGroup.getRows()) {
+        for (I_CmsEditableGroupRow row : m_workplaceServerGroup.getRows()) {
             CmsWorkplaceServerWidget widget = (CmsWorkplaceServerWidget)row.getComponent();
             ret.put(widget.getServer(), widget.getSSLMode());
         }

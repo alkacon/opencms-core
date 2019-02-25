@@ -88,6 +88,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      * @param resources the resources
      */
     public CmsEmbeddedDialogContext(String appId, ContextType contextType, List<CmsResource> resources) {
+
         extend(UI.getCurrent());
         m_appId = appId;
         m_contextType = contextType;
@@ -221,6 +222,11 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public List<CmsResource> getResources() {
 
         return m_resources;
+    }
+
+    public void leavePage(String uri) {
+
+        getClientRPC().leavePage(uri);
     }
 
     /**

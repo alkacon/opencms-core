@@ -53,6 +53,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ACTION_OPEN_FORM_EDITOR_0 = "GUI_ACTION_OPEN_FORM_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_DIALOG_TITLE_0 = "GUI_FAVORITES_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_BUTTON_0 = "GUI_FAVORITES_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_ADD_BUTTON_0 = "GUI_FAVORITES_ADD_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_VIEW_IN_EXPLORER_0 = "GUI_ACTION_VIEW_IN_EXPLORER_0";
 
     /** Message constant for key in the resource bundle. */

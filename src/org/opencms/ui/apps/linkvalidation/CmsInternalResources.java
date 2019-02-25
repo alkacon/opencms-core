@@ -34,7 +34,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public class CmsInternalResources extends VerticalLayout {
      */
     public void clearResources() {
 
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+        for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
             m_resourcesGroup.remove(row);
         }
     }
@@ -128,7 +128,7 @@ public class CmsInternalResources extends VerticalLayout {
     public List<String> getResources() {
 
         List<String> res = new ArrayList<String>();
-        for (CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
+        for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
             res.add(((CmsPathSelectField)row.getComponent()).getValue());
         }
         return res;

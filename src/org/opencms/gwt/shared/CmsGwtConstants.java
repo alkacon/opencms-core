@@ -32,6 +32,14 @@ package org.opencms.gwt.shared;
  */
 public final class CmsGwtConstants {
 
+    public static final class Favorites {
+
+        public static final String PARAM_SITE = "site";
+        public static final String PARAM_PROJECT = "project";
+        public static final String PARAM_PAGE = "page";
+        public static final String PARAM_DETAIL = "detail";
+    }
+
     /**
      * Quick launcher constants.<p>
      */

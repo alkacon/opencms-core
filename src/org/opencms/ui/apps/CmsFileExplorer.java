@@ -497,6 +497,8 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    public static final String ATTR_KEY = "CmsFileExplorer";
+
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
 
@@ -901,6 +903,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     public void initUI(I_CmsAppUIContext context) {
 
         m_appContext = context;
+        m_appContext.setAttribute(ATTR_KEY, this);
         m_appContext.setMenuDialogContext(
             new CmsExplorerDialogContext(ContextType.appToolbar, m_fileTable, this, null));
         HorizontalSplitPanel sp = new HorizontalSplitPanel();

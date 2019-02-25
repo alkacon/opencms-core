@@ -41,7 +41,7 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
-import org.opencms.ui.components.editablegroup.CmsEditableGroupRow;
+import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.util.CmsStringUtil;
@@ -638,7 +638,7 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
         // get the data object from session
         List<String> groups = getGroupsList(m_exportGroups, false);
 
-        Iterator<CmsEditableGroupRow> it = m_exportRolesGroup.getRows().iterator();
+        Iterator<I_CmsEditableGroupRow> it = m_exportRolesGroup.getRows().iterator();
         List<String> roles = new ArrayList<String>();
         while (it.hasNext()) {
             CmsRole role = (CmsRole)((ComboBox)it.next().getComponent()).getValue();
@@ -681,7 +681,7 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
 
         if (m_groupEditable) {
             CmsEditableGroup editableGroup = importCase ? m_importGroupsGroup : m_exportGroupsGroup;
-            for (CmsEditableGroupRow row : editableGroup.getRows()) {
+            for (I_CmsEditableGroupRow row : editableGroup.getRows()) {
                 String groupName = ((CmsPrincipalSelect)row.getComponent()).getValue();
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(groupName)) {
                     res.add(groupName);
@@ -706,7 +706,7 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
         List<CmsRole> res = new ArrayList<CmsRole>();
 
         CmsEditableGroup editableGroup = importCase ? m_importRolesGroup : m_exportRolesGroup;
-        for (CmsEditableGroupRow row : editableGroup.getRows()) {
+        for (I_CmsEditableGroupRow row : editableGroup.getRows()) {
             res.add(((ComboBox<CmsRole>)row.getComponent()).getValue());
         }
         return res;

@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarElementInfoButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarFavLocationButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarListManagerButton;
@@ -372,6 +373,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_context.addClickHandler(clickHandler);
         m_toolbar.insertRight(m_context, 0);
 
+        CmsToolbarFavLocationButton favLocButton = new CmsToolbarFavLocationButton(containerpageHandler);
+        favLocButton.addClickHandler(clickHandler);
+        m_toolbar.insertRight(favLocButton, 1);
+
         Window.addCloseHandler(new CloseHandler<Window>() {
 
             public void onClose(CloseEvent<Window> event) {
@@ -406,23 +411,23 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * @param controller the controller
      */
     private native void exportMethods(CmsContainerpageController controller) /*-{
-		var contr = controller;
-		$wnd.opencms = {
-			openStacktraceDialog : function(event) {
-				event = (event) ? event : ((window.event) ? window.event : "");
-				var elem = (event.target) ? event.target : event.srcElement;
-				if (elem != null) {
-					var children = elem.getElementsByTagName("span");
-					if (children.length > 0) {
-						var title = children[0].getAttribute("title");
-						var content = children[0].innerHTML;
-						@org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-					}
-				}
-			},
-			reinitializeEditButtons : function() {
-				contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
-			}
-		}
+        var contr = controller;
+        $wnd.opencms = {
+            openStacktraceDialog : function(event) {
+                event = (event) ? event : ((window.event) ? window.event : "");
+                var elem = (event.target) ? event.target : event.srcElement;
+                if (elem != null) {
+                    var children = elem.getElementsByTagName("span");
+                    if (children.length > 0) {
+                        var title = children[0].getAttribute("title");
+                        var content = children[0].innerHTML;
+                        @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                    }
+                }
+            },
+            reinitializeEditButtons : function() {
+                contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
+            }
+        }
     }-*/;
 }
