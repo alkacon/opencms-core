@@ -1527,6 +1527,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the list of explorer type settings configured in the opencms-workplace.xml file.<p>
+     *
+     * @return the list of explorer type settings
+     */
+    public List<CmsExplorerTypeSettings> getWorkplaceExplorerTypeSettings() {
+
+        return Collections.unmodifiableList(m_explorerTypeSettingsFromXml);
+    }
+
+    /**
      * Returns the workplace locale from the current user's settings.<p>
      *
      * @param cms the current cms object

@@ -1169,7 +1169,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // add <explorertypes> node
         Element explorerTypesElement = workplaceElement.addElement(N_EXPLORERTYPES);
-        List<CmsExplorerTypeSettings> explorerTypes = m_workplaceManager.getExplorerTypeSettings();
+        List<CmsExplorerTypeSettings> explorerTypes = m_workplaceManager.getWorkplaceExplorerTypeSettings();
         generateExplorerTypesXml(explorerTypesElement, explorerTypes, false);
 
         // add the <defaultaccesscontrol> node
