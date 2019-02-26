@@ -143,7 +143,7 @@ public final class CmsTinyMCEHelper {
 
 			if (config.toolbar_items) {
 				toolbarGroup = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
-				toolbarGroup += " spellchecker";
+				toolbarGroup += " | spellchecker";
 				$wnd.top.console.log("Toolbar: '" + toolbarGroup + "'");
 				options.toolbar1 = toolbarGroup;
 				var contextmenu = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createContextMenu(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);

@@ -576,7 +576,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 				skin_variant : 'ocms',
 				mode : "exact",
 				theme : "silver",
-				plugins : "autolink,lists,pagebreak,table,save,code,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
+				plugins : "autolink,lists,pagebreak,table,save,codemirror,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
 				paste_as_text : true,
 				menubar : false,
 			};
@@ -587,8 +587,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 			defaults.width = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_width;
 		} else {
 			self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_currentContent = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_originalContent;
-			defaults.autoresize_min_height = 100;
-			defaults.autoresize_max_height = editorHeight;
+			defaults.min_height = 100;
+			defaults.max_height = editorHeight;
 			defaults.width = '100%';
 			defaults.resize = 'both';
 		}
