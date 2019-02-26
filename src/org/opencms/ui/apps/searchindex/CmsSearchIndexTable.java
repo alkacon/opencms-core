@@ -36,8 +36,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.HashSet;

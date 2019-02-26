@@ -34,7 +34,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 
 import java.io.IOException;
 
@@ -135,6 +134,16 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#displayDialog()
+     */
+    @Override
+    public void displayDialog() throws JspException, IOException, ServletException {
+
+        getList().setShowTitle(false);
+        super.displayDialog();
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
     @Override
@@ -153,6 +162,13 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     }
 
     /**
+     * Returns the title of the list to display.<p>
+     *
+     * @return the title of the list to display
+     */
+    public abstract String getListTitle();
+
+    /**
      * Returns the resource name of the selected resource.<p>
      *
      * @return the resource name of the selected resource or null if no resource was selected
@@ -166,23 +182,6 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
         }
         return null;
     }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#displayDialog()
-     */
-    @Override
-    public void displayDialog() throws JspException, IOException, ServletException {
-
-        getList().setShowTitle(false);
-        super.displayDialog();
-    }
-
-    /**
-     * Returns the title of the list to display.<p>
-     *
-     * @return the title of the list to display
-     */
-    public abstract String getListTitle();
 
     /**
      * Returns the url to forward the parameters after selection.<p>
@@ -338,7 +337,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
         CmsListItemSelectionAction selAction = new CmsListItemSelectionAction(LIST_RACTION_SEL, null);
         selAction.setName(Messages.get().container(Messages.GUI_EXPLORER_LIST_COLS_SELECT_HELP_0));
         selAction.setEnabled(true);
-        selAction.setSelectedItemId(CmsUUID.getConstantUUID(CmsNewResourceXmlContent.VALUE_NONE + "s").toString());
+        selAction.setSelectedItemId(CmsUUID.getConstantUUID("nones").toString());
         radioSelCol.addDirectAction(selAction);
 
         // add the column at first position

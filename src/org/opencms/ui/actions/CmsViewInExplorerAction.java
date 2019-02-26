@@ -35,7 +35,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.Messages;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Map;

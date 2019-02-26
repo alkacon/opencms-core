@@ -34,7 +34,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Locale;

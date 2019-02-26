@@ -795,8 +795,6 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
                 "false",
                 null,
                 null);
-            setting.setNewResourceUri("newresource_xmlcontent.jsp?newresourcetype=" + m_typeShortName.getValue());
-            setting.setNewResourcePage("structurecontent");
             setting.setAutoSetNavigation("false");
             setting.setAutoSetTitle("false");
             setting.setNewResourceOrder("10");

@@ -81,10 +81,8 @@ import org.opencms.workplace.editors.I_CmsEditorHandler;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
-import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -218,9 +216,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The name of the local category folder(s). */
     private String m_categoryFolder;
 
-    /** The customized workplace foot. */
-    private CmsWorkplaceCustomFoot m_customFoot;
-
     /** The default access for explorer types. */
     private CmsExplorerTypeAccess m_defaultAccess;
 
@@ -311,17 +306,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured list of localized workplace folders. */
     private List<String> m_localizedFolders;
 
-    /** The configured list of menu rule sets. */
-    private List<CmsMenuRule> m_menuRules;
-
-    /** The configured menu rule sets as Map with the rule name as key. */
-    private Map<String, CmsMenuRule> m_menuRulesMap;
-
     /** The workplace localized messages (mapped to the locales). */
     private Map<Locale, CmsWorkplaceMessages> m_messages;
-
-    /** The configured multi context menu. */
-    private CmsExplorerContextMenu m_multiContextMenu;
 
     /** The post upload handler. */
     private I_CmsPostUploadDialogHandler m_postUploadHandler;
@@ -397,14 +383,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_defaultUserSettings = new CmsDefaultUserSettings();
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap<String, A_CmsAjaxGallery>();
-        m_menuRules = new ArrayList<CmsMenuRule>();
-        m_menuRulesMap = new HashMap<String, CmsMenuRule>();
         flushMessageCache();
-        m_multiContextMenu = new CmsExplorerContextMenu();
-        m_multiContextMenu.setMultiMenu(true);
         m_preEditorConditionDefinitions = new ArrayList<I_CmsPreEditorActionDefinition>();
         m_editorCssHandlers = new ArrayList<I_CmsEditorCssHandler>();
-        m_customFoot = new CmsWorkplaceCustomFoot();
         m_synchronizeExcludePatterns = new ArrayList<Pattern>();
 
         // important to set this to null to avoid unnecessary overhead during configuration phase
@@ -613,19 +594,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_LOCALIZED_1, uri));
         }
-    }
-
-    /**
-     * Adds a menu rule set from the workplace configuration to the configured menu rules.<p>
-     *
-     * @param menuRule the menu rule to add
-     */
-    public void addMenuRule(CmsMenuRule menuRule) {
-
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_MENURULE_1, menuRule.getName()));
-        }
-        m_menuRules.add(menuRule);
     }
 
     /**
@@ -903,16 +871,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public List<CmsAccountInfo> getConfiguredAccountInfos() {
 
         return m_accountInfos;
-    }
-
-    /**
-     * Returns the customized workplace foot.<p>
-     *
-     * @return the customized workplace foot
-     */
-    public CmsWorkplaceCustomFoot getCustomFoot() {
-
-        return m_customFoot;
     }
 
     /**
@@ -1350,40 +1308,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the menu rule set with the given name.<p>
-     *
-     * If no rule set with the specified name is found, <code>null</code> is returned.<p>
-     *
-     * @param ruleName the name of the rule set to get
-     *
-     * @return the menu rule set with the given name
-     */
-    public CmsMenuRule getMenuRule(String ruleName) {
-
-        return m_menuRulesMap.get(ruleName);
-    }
-
-    /**
-     * Returns the configured menu rule sets.<p>
-     *
-     * @return the configured menu rule sets
-     */
-    public List<CmsMenuRule> getMenuRules() {
-
-        return m_menuRules;
-    }
-
-    /**
-     * Returns the configured menu rule sets as Map.<p>
-     *
-     * @return the configured menu rule sets as Map
-     */
-    public Map<String, CmsMenuRule> getMenuRulesMap() {
-
-        return m_menuRulesMap;
-    }
-
-    /**
      * Returns the {@link CmsWorkplaceMessages} for the given locale.<p>
      *
      * The workplace messages are a collection of resource bundles, containing the messages
@@ -1414,16 +1338,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             }
         }
         return result;
-    }
-
-    /**
-     * Returns the configured multi context menu to use in the Explorer view.<p>
-     *
-     * @return the configured multi context menu to use in the Explorer view
-     */
-    public CmsExplorerContextMenu getMultiContextMenu() {
-
-        return m_multiContextMenu;
     }
 
     /**
@@ -1696,8 +1610,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     addExplorerTypeSettings(module);
                 }
             }
-            // initialize the menu rules
-            initMenuRules();
             // initialize the explorer type settings
             initExplorerTypeSettings();
             // initialize the workplace views
@@ -1951,16 +1863,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Sets the customized workplace foot.<p>
-     *
-     * @param footCustom the customized workplace foot
-     */
-    public void setCustomFoot(CmsWorkplaceCustomFoot footCustom) {
-
-        m_customFoot = footCustom;
-    }
-
-    /**
      * Sets the access object of the type settings.<p>
      *
      * @param access access object
@@ -2199,17 +2101,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void setKeepAlive(String keepAlive) {
 
         m_keepAlive = Boolean.valueOf(keepAlive);
-    }
-
-    /**
-     * Sets the configured multi context menu to use in the Explorer view.<p>
-     *
-     * @param multiContextMenu the configured multi context menu to use in the Explorer view
-     */
-    public void setMultiContextMenu(CmsExplorerContextMenu multiContextMenu) {
-
-        multiContextMenu.setMultiMenu(true);
-        m_multiContextMenu = multiContextMenu;
     }
 
     /**
@@ -2478,21 +2369,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             m_explorerTypeViews.put(elemView.getId(), elemView);
         }
 
-    }
-
-    /**
-     * Initializes the configured menu rule sets.<p>
-     */
-    private void initMenuRules() {
-
-        Iterator<CmsMenuRule> i = m_menuRules.iterator();
-        while (i.hasNext()) {
-            CmsMenuRule currentRule = i.next();
-            // freeze the current rule set
-            currentRule.freeze();
-            // put the rule set to the Map with the name as key
-            m_menuRulesMap.put(currentRule.getName(), currentRule);
-        }
     }
 
     /**

@@ -29,9 +29,9 @@ package org.opencms.ui.apps.user;
 
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.Collections;

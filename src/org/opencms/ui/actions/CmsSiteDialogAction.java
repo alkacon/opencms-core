@@ -30,9 +30,9 @@ package org.opencms.ui.actions;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.Messages;
 import org.opencms.ui.dialogs.CmsSiteSelectDialog;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.HashMap;
 import java.util.Map;

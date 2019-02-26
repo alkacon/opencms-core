@@ -38,8 +38,8 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsLockedResourcesList;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Collections;
 import java.util.List;

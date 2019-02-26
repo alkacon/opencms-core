@@ -38,10 +38,10 @@ import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsShowResourcesDialog.DialogType;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.Collections;

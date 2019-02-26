@@ -31,14 +31,12 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsAccountInfo;
-import org.opencms.workplace.CmsWorkplaceCustomFoot;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceUserInfoBlock;
 import org.opencms.workplace.CmsWorkplaceUserInfoEntry;
@@ -46,14 +44,9 @@ import org.opencms.workplace.CmsWorkplaceUserInfoManager;
 import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
-import org.opencms.workplace.explorer.CmsExplorerContextMenu;
-import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsIconRule;
-import org.opencms.workplace.explorer.menu.CmsMenuRule;
-import org.opencms.workplace.explorer.menu.CmsMenuRuleTranslator;
-import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 import org.opencms.workplace.tools.CmsToolManager;
 import org.opencms.workplace.tools.CmsToolRootHandler;
 
@@ -130,6 +123,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The 'widget-config' attribute. */
     public static final String A_NICE_NAME = "nice-name";
+
+    /** The 'noncreatable' attribute. */
+    public static final String A_NON_CREATABLE = "noncreatable";
 
     /** The attribute name of the optional attribute for the user-info node. */
     public static final String A_OPTIONAL = "optional";
@@ -229,9 +225,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the color node. */
     public static final String N_COLOR = "color";
-
-    /** The name of the context menu node. */
-    public static final String N_CONTEXTMENU = "contextmenu";
 
     /** The node name of the datecreated column node. */
     public static final String N_DATECREATED = "show-datecreated";
@@ -428,18 +421,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the "max file upload size" node. */
     public static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
 
-    /** The name of the "menuitemrule" node. */
-    public static final String N_MENUITEMRULE = "menuitemrule";
-
-    /** The name of the "menurule" node. */
-    public static final String N_MENURULE = "menurule";
-
-    /** The name of the "menurules" node. */
-    public static final String N_MENURULES = "menurules";
-
-    /** The name of the context menu node. */
-    public static final String N_MULTICONTEXTMENU = "multicontextmenu";
-
     /** The node name of the navtext column node. */
     public static final String N_NAVTEXT = "show-navtext";
 
@@ -581,9 +562,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the master workplace node. */
     public static final String N_WORKPLACE = "workplace";
 
-    /** The name of the workplace custom foot node. */
-    public static final String N_WORKPLACECUSTOMFOOT = "workplace-customfoot";
-
     /** The node name of the workplace general options node. */
     public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
 
@@ -641,14 +619,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 3, A_SMALLICONSTYLE);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 4, A_BIGICONSTYLE);
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceHandlerClassName", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_HANDLER);
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNonCreatable", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_NON_CREATABLE);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourcePage", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_PAGE);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setAutoSetNavigation", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETNAVIGATION);
@@ -656,8 +630,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETTITLE);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setInfo", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_INFO);
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setDescriptionImage", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ICON);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setTitleKey", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_KEY);
 
@@ -699,9 +671,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             0,
             A_NAME);
 
-        addContextMenuItemRules(digester, "*");
-
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setEditOptions");
     }
 
@@ -723,7 +692,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             defaultAccess = OpenCms.getWorkplaceManager().getDefaultAccess();
         }
         // get the menu rule translator to eliminate eventual legacy menu rules
-        CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
         Iterator<CmsExplorerTypeSettings> i = explorerTypes.iterator();
         while (i.hasNext()) {
             // create an explorer type node
@@ -769,17 +737,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
                 // create subnode <newresource>
                 Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
-                if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
-                    newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
-                }
-                newResElement.addAttribute(A_HANDLER, settings.getNewResourceHandlerClassName());
-                newResElement.addAttribute(A_URI, CmsEncoder.escapeXml(settings.getNewResourceUri()));
+                newResElement.addAttribute(A_NON_CREATABLE, String.valueOf(settings.isNonCreatable()));
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
                 newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
                 newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
                 newResElement.addAttribute(A_INFO, settings.getInfo());
-                newResElement.addAttribute(A_ICON, settings.getDescriptionImage());
-
                 newResElement.addAttribute(A_KEY, settings.getTitleKey());
                 // create subnode <accesscontrol>
                 CmsExplorerTypeAccess access = settings.getAccess();
@@ -812,12 +774,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                     while (m.hasNext()) {
                         defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(A_NAME, m.next());
                     }
-                    Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
-                    Iterator<CmsExplorerContextMenuItem> contextMenuEntries = settings.getContextMenuEntries().iterator();
-                    while (contextMenuEntries.hasNext()) {
-                        CmsExplorerContextMenuItem item = contextMenuEntries.next();
-                        generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
-                    }
                 }
 
                 Map<String, CmsIconRule> iconRules = settings.getIconRules();
@@ -846,100 +802,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 }
 
             }
-        }
-    }
-
-    /**
-     * Adds the context menu item rules to the given digester.<p>
-     *
-     * @param digester the digester to add the rules to
-     * @param xPathPrefix the path prefix (should be the path to the contextmenu or the multicontextmenu node)
-     */
-    protected static void addContextMenuItemRules(Digester digester, String xPathPrefix) {
-
-        // add the rules for an entry item
-        String xPath = xPathPrefix + "/" + N_ENTRY;
-        digester.addObjectCreate(xPath, CmsExplorerContextMenuItem.class);
-        digester.addCallMethod(xPath, "setKey", 1);
-        digester.addCallParam(xPath, 0, A_KEY);
-        digester.addCallMethod(xPath, "setUri", 1);
-        digester.addCallParam(xPath, 0, A_URI);
-        digester.addCallMethod(xPath, "setRules", 1);
-        digester.addCallParam(xPath, 0, A_RULES);
-        digester.addCallMethod(xPath, "setRule", 1);
-        digester.addCallParam(xPath, 0, A_RULE);
-        digester.addCallMethod(xPath, "setTarget", 1);
-        digester.addCallParam(xPath, 0, A_TARGET);
-
-        digester.addCallMethod(xPath, "setName", 1);
-        digester.addCallParam(xPath, 0, A_NAME);
-
-        digester.addCallMethod(xPath, "setParams", 1);
-        digester.addCallParam(xPath, 0, A_PARAMS);
-
-        digester.addCallMethod(xPath, "setIcon", 1);
-        digester.addCallParam(xPath, 0, A_ICON);
-        digester.addSetNext(xPath, "addContextMenuEntry");
-
-        // add the rules for a separator item
-        xPath = xPathPrefix + "/" + N_SEPARATOR;
-        digester.addObjectCreate(xPath, CmsExplorerContextMenuItem.class);
-        digester.addSetNext(xPath, "addContextMenuSeparator");
-    }
-
-    /**
-     * Creates the xml output for context menu item nodes and eventual subnodes.<p>
-     *
-     * @param parentElement the parent element to add the item node to
-     * @param menuRuleTranslator the menu rule translator to use for legacy rules
-     * @param item the context menu item to create the node for
-     */
-    protected static void generateContextMenuItemXml(
-        Element parentElement,
-        CmsMenuRuleTranslator menuRuleTranslator,
-        CmsExplorerContextMenuItem item) {
-
-        Element itemElement;
-        if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
-            // create an <entry> node
-            itemElement = parentElement.addElement(N_ENTRY);
-            itemElement.addAttribute(A_KEY, item.getKey());
-            itemElement.addAttribute(A_URI, item.getUri());
-            if (item.getName() != null) {
-                itemElement.addAttribute(A_NAME, item.getName());
-            }
-            if (item.getIcon() != null) {
-                itemElement.addAttribute(A_ICON, item.getIcon());
-            }
-            if (item.getTarget() != null) {
-                itemElement.addAttribute(A_TARGET, item.getTarget());
-            }
-
-            if (item.getParams() != null) {
-                itemElement.addAttribute(A_PARAMS, item.getParams());
-            }
-
-            String rule = item.getRule();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rule)) {
-                itemElement.addAttribute(A_RULE, rule);
-            } else {
-                String legacyRules = item.getRules();
-                if (CmsStringUtil.isNotEmpty(legacyRules) && menuRuleTranslator.hasMenuRule(legacyRules)) {
-                    itemElement.addAttribute(A_RULE, menuRuleTranslator.getMenuRuleName(legacyRules));
-                } else {
-                    itemElement.addAttribute(A_RULES, legacyRules);
-                }
-            }
-            if (item.isParentItem()) {
-                Iterator<CmsExplorerContextMenuItem> i = item.getSubItems().iterator();
-                while (i.hasNext()) {
-                    CmsExplorerContextMenuItem subItem = i.next();
-                    generateContextMenuItemXml(itemElement, menuRuleTranslator, subItem);
-                }
-            }
-        } else {
-            // create a <separator> node
-            parentElement.addElement(N_SEPARATOR);
         }
     }
 
@@ -1127,21 +989,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add explorer type rules
         addExplorerTypeXmlRules(digester);
         addDefaultAccessControlRules(digester);
-        addMultiContextMenuRules(digester);
-        addContextMenuRules(digester);
         addUserInfoRules(digester);
         addAccountInfoRules(digester);
         addDefaultPreferencesRules(digester);
-
-        // the customized workplace foot
-        xPathPrefix = "*/" + N_WORKPLACE + "/" + N_WORKPLACECUSTOMFOOT;
-        digester.addObjectCreate(xPathPrefix, CmsWorkplaceCustomFoot.class);
-        digester.addCallMethod(xPathPrefix + "/" + N_BACKGROUNDCOLOR, "setBackgroundColor", 0);
-        digester.addCallMethod(xPathPrefix + "/" + N_COLOR, "setColor", 0);
-        digester.addCallMethod(xPathPrefix + "/" + N_TEXT, "setText", 2);
-        digester.addCallParam(xPathPrefix + "/" + N_TEXT, 0);
-        digester.addCallParam(xPathPrefix + "/" + N_TEXT, 1, A_REPLACE);
-        digester.addSetNext(xPathPrefix, "setCustomFoot");
 
         addToolManagerRules(digester);
         CmsAdditionalLogFolderConfig.ADD_LOG_FOLDER_HELPER.addRules(digester);
@@ -1347,38 +1197,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             }
         }
 
-        // add the <multicontextmenu> node
-        Iterator<CmsExplorerContextMenuItem> menuEntries = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
-        if (menuEntries.hasNext()) {
-            // only generate the node if entries are defined
-            Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);
-            // get the menu rule translator to eliminate eventual legacy menu rules
-            CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
-            while (menuEntries.hasNext()) {
-                CmsExplorerContextMenuItem item = menuEntries.next();
-                generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
-            }
-        }
-
-        // add <menurules> node and subnodes
-        if (m_workplaceManager.getMenuRules().size() > 0) {
-            Element rulesElement = explorerTypesElement.addElement(N_MENURULES);
-            Iterator<CmsMenuRule> menuRules = m_workplaceManager.getMenuRules().iterator();
-            while (menuRules.hasNext()) {
-                // create a <menurule> element for each rule set
-                CmsMenuRule rule = menuRules.next();
-                Element ruleElement = rulesElement.addElement(N_MENURULE);
-                ruleElement.addAttribute(A_NAME, rule.getName());
-                Iterator<I_CmsMenuItemRule> it = rule.getMenuItemRules().iterator();
-                while (it.hasNext()) {
-                    // create a <menuitemrule> element for each configured item rule
-                    I_CmsMenuItemRule itemRule = it.next();
-                    Element itemRuleElement = ruleElement.addElement(N_MENUITEMRULE);
-                    itemRuleElement.addAttribute(A_CLASS, itemRule.getClass().getName());
-                }
-            }
-        }
-
         // add the user-infos node
         if (m_workplaceManager.getUserInfoManager() != null) {
             Element userInfosElement = workplaceElement.addElement(N_USERINFOS);
@@ -1446,19 +1264,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                     preferenceTab.add(elem);
                 }
             }
-        }
-
-        if (m_workplaceManager.getCustomFoot() != null) {
-            // add the <workplace-footcustom> node
-            Element workplaceFootCustom = workplaceElement.addElement(N_WORKPLACECUSTOMFOOT);
-            workplaceFootCustom.addElement(N_COLOR).setText(m_workplaceManager.getCustomFoot().getColor());
-            workplaceFootCustom.addElement(N_BACKGROUNDCOLOR).setText(
-                m_workplaceManager.getCustomFoot().getBackgroundColor());
-            Element textElement = workplaceFootCustom.addElement(N_TEXT);
-            textElement.addAttribute(
-                A_REPLACE,
-                Boolean.toString(m_workplaceManager.getCustomFoot().isReplaceDefault()));
-            textElement.setText(m_workplaceManager.getCustomFoot().getText());
         }
 
         // add the tool-manager node
@@ -1555,40 +1360,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(rulePath, 0, A_FIELD);
         digester.addCallParam(rulePath, 1, A_ADD_INFO_KEY);
         digester.addCallParam(rulePath, 2, A_EDITABLE);
-    }
-
-    /**
-     * Adds the digester rules for the menurules node.<p>
-     *
-     * @param digester the digester object
-     */
-    protected void addContextMenuRules(Digester digester) {
-
-        // add menu rules
-        digester.addObjectCreate(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE,
-            CmsMenuRule.class);
-        digester.addSetNext(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE,
-            "addMenuRule");
-        // set the name of the menu rule
-        digester.addCallMethod(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE,
-            "setName",
-            1);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE,
-            0,
-            A_NAME);
-        // add a single menu item rule to the list of rules
-        digester.addCallMethod(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE + "/" + N_MENUITEMRULE,
-            "addMenuItemRuleName",
-            1);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE + "/" + N_MENUITEMRULE,
-            0,
-            A_CLASS);
     }
 
     /**
@@ -1841,19 +1612,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(prefPath, 6, A_RULE_REGEX);
         digester.addCallParam(prefPath, 7, A_ERROR);
         digester.addCallParam(prefPath, 8, 0);
-    }
-
-    /**
-     * Adds the digester rules for the multicontextmenu node.<p>
-     *
-     * @param digester the digester object
-     */
-    protected void addMultiContextMenuRules(Digester digester) {
-
-        // add multi context menu
-        String xPath = "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU;
-        digester.addObjectCreate(xPath, CmsExplorerContextMenu.class);
-        digester.addSetNext(xPath, "setMultiContextMenu");
     }
 
     /**

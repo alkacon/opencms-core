@@ -173,7 +173,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         CmsModule sourceModule = OpenCms.getModuleManager().getModule(m_cloneInfo.getSourceModuleName());
 
         // clone the module object
-        CmsModule targetModule = (CmsModule)sourceModule.clone();
+        CmsModule targetModule = sourceModule.clone();
         targetModule.setName(m_cloneInfo.getName());
         targetModule.setNiceName(m_cloneInfo.getNiceName());
         targetModule.setDescription(m_cloneInfo.getDescription());
@@ -580,11 +580,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix());
             expSetting.setName(newExpTypeName);
-            String newResourcePage = expSetting.getNewResourcePage();
-            if (newResourcePage != null) {
-                expSetting.setNewResourcePage(
-                    alterPrefix(newResourcePage, m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
-            }
+
             expSetting.setKey(expSetting.getKey().replaceFirst(oldExpTypeName, newExpTypeName));
             expSetting.setIcon(
                 alterPrefix(
@@ -596,7 +592,6 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                     expSetting.getBigIcon(),
                     m_cloneInfo.getSourceNamePrefix(),
                     m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setNewResourceUri(expSetting.getNewResourceUri().replaceFirst(oldExpTypeName, newExpTypeName));
             expSetting.setInfo(expSetting.getInfo().replaceFirst(oldExpTypeName, newExpTypeName));
         }
     }
@@ -627,7 +622,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Clones/copies the resource types.<p>
-    
+
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the source path part
@@ -947,7 +942,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      *
      * @throws CmsException in case writing the file fails
      * @throws UnsupportedEncodingException in case of the wrong encoding
-    
+
      */
     private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
 
@@ -1026,7 +1021,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      *
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
-    
+
      */
     private void replacesMessages(Map<String, String> descKeys, List<CmsResource> resources)
     throws CmsException, UnsupportedEncodingException {

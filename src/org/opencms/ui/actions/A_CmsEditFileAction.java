@@ -32,7 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
 import java.util.HashMap;
 import java.util.List;

@@ -32,11 +32,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContextWithAdeContext;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsPublishScheduledDialog;
 import org.opencms.workplace.commons.Messages;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.HashMap;
 import java.util.List;

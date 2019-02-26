@@ -27,6 +27,8 @@
 
 package org.opencms.ui.contextmenu;
 
+import static org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+import static org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.controlpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.defaultfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
@@ -53,8 +55,6 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.xmlunmarshal;
-import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -75,8 +75,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
-import org.opencms.workplace.explorer.menu.Messages;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Set;

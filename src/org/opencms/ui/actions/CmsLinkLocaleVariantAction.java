@@ -36,12 +36,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.sitemap.CmsLocaleLinkTargetSelectionDialog;
 import org.opencms.ui.sitemap.I_CmsLocaleCompareContext;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Locale;

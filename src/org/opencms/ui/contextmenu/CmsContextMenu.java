@@ -6,7 +6,6 @@ import org.opencms.ui.shared.CmsContextMenuState;
 import org.opencms.ui.shared.CmsContextMenuState.ContextMenuItemState;
 import org.opencms.ui.shared.rpc.I_CmsContextMenuClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsContextMenuServerRpc;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

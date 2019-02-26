@@ -33,9 +33,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 

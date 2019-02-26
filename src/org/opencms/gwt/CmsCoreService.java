@@ -73,6 +73,7 @@ import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.actions.I_CmsADEAction;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsFileUtil;
@@ -80,7 +81,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.util.ArrayList;

@@ -42,9 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -52,9 +50,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.I_CmsPostUploadDialogHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsNewResource;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -301,32 +296,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     @Override
     public void actionCloseDialog() throws JspException {
 
-        if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
-            // special case: a new xmlpage resource will be created in wizard mode after closing the dialog
-            String newFolder = getParamResource();
-            if (!newFolder.endsWith("/")) {
-                newFolder += "/";
-            }
-            // set the current explorer resource to the new created folder
-            getSettings().setExplorerResource(newFolder, getCms());
-            String newUri = PATH_DIALOGS
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getParamIndexPageType()).getNewResourceUri();
-            try {
-                // forward to new xmlpage dialog
-                CmsUriSplitter splitter = new CmsUriSplitter(newUri);
-                Map<String, String[]> params = CmsRequestUtil.createParameterMap(splitter.getQuery());
-                params.put(PARAM_DIALOGMODE, new String[] {MODE_WIZARD_CREATEINDEX});
-                params.put(PARAM_ACTION, new String[] {CmsNewResource.DIALOG_NEWFORM});
-                sendForward(splitter.getPrefix(), params);
-                return;
-            } catch (IOException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
-            } catch (ServletException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
-            }
-        } else if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD.equals(getParamDialogmode())) {
+        if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
             try {
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);

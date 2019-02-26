@@ -52,9 +52,9 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsBasicReportPage;
 import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Arrays;
 import java.util.IdentityHashMap;

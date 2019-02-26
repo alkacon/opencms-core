@@ -215,9 +215,7 @@
 <!ATTLIST param name CDATA #REQUIRED>
 
 <!--
-# Settings for the new resource dialog and the contextmenus in the explorer view.
-# Configure which options are shown in the new resource dialog and if resources are 
-# visible and editable depending on the current users group(s). The defaultaccesscontrol
+# The accesscontrol
 # describes the default access control settings for all resourcestypes
 -->
 <!ELEMENT explorertypes (explorertype+)>	

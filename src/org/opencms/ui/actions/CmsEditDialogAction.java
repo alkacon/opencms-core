@@ -43,12 +43,12 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.CmsEditorConfiguration;
 import org.opencms.ui.apps.lists.CmsListManager;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.Messages;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 

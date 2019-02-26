@@ -34,11 +34,11 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Map;

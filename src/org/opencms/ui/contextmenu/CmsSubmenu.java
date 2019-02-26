@@ -32,7 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Locale;

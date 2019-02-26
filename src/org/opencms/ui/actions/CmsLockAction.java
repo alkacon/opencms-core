@@ -36,9 +36,9 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsLockedResourcesList;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.List;

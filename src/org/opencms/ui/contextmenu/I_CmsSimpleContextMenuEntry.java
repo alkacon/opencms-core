@@ -27,8 +27,6 @@
 
 package org.opencms.ui.contextmenu;
 
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
-
 import java.util.Locale;
 
 /**

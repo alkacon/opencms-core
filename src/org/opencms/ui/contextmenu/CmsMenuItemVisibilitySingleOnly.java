@@ -30,7 +30,6 @@ package org.opencms.ui.contextmenu;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 

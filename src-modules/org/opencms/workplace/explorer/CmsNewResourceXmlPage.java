@@ -29,29 +29,17 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 
@@ -66,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 6.0.0
  */
-public class CmsNewResourceXmlPage extends CmsNewResource {
+public class CmsNewResourceXmlPage {
 
     /** Request parameter name for the selected body. */
     public static final String PARAM_BODYFILE = "bodyfile";
@@ -79,37 +67,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlPage.class);
-
-    /** The body file parameter. */
-    private String m_paramBodyFile;
-
-    /** The suffix check parameter. */
-    private String m_paramSuffixCheck;
-
-    /** The template parameter. */
-    private String m_paramTemplate;
-
-    /**
-     * Public constructor with JSP action element.<p>
-     *
-     * @param jsp an initialized JSP action element
-     */
-    public CmsNewResourceXmlPage(CmsJspActionElement jsp) {
-
-        super(jsp);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     *
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsNewResourceXmlPage(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
 
     /**
      * Returns a sorted Map of all available body files of the OpenCms modules.<p>
@@ -191,7 +148,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         CmsObject cms,
         String elementFolder,
         String currWpPath,
-        boolean emptyMap) throws CmsException {
+        boolean emptyMap)
+    throws CmsException {
 
         TreeMap<String, String> elements = new TreeMap<String, String>();
         TreeMap<String, String> allElements = new TreeMap<String, String>();
@@ -243,7 +201,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 // check template folders property value
                 if (CmsStringUtil.isNotEmpty(currWpPath) && CmsStringUtil.isNotEmpty(folderProp)) {
                     // property value set on template, check if current workplace path fits
-                    List<String> folders = CmsStringUtil.splitAsList(folderProp, DELIM_PROPERTYVALUES);
+                    List<String> folders = CmsStringUtil.splitAsList(folderProp, CmsNewResource.DELIM_PROPERTYVALUES);
                     for (int k = 0; k < folders.size(); k++) {
                         String checkFolder = folders.get(k);
                         if (currWpPath.startsWith(checkFolder)) {
@@ -274,229 +232,5 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         }
         // return the filtered elements sorted by title
         return elements;
-    }
-
-    /**
-     * Creates the xml page using the specified resource name.<p>
-     *
-     * @throws JspException if inclusion of error dialog fails
-     */
-    @Override
-    public void actionCreateResource() throws JspException {
-
-        try {
-            // calculate the new resource Title property value
-            String title = computeNewTitleProperty();
-            // create the full resource name
-            String fullResourceName = computeFullResourceName();
-
-            // eventually append ".html" suffix to new file if not present
-            boolean forceSuffix = false;
-            if (CmsStringUtil.isEmpty(getParamSuffixCheck())) {
-                // backward compatibility: append suffix every time
-                forceSuffix = true;
-            }
-            fullResourceName = appendSuffixHtml(fullResourceName, forceSuffix);
-
-            // get the body file content
-            byte[] bodyFileBytes = null;
-            if (CmsStringUtil.isEmpty(getParamBodyFile())) {
-                // body file not specified, use empty body
-                bodyFileBytes = ("").getBytes();
-            } else {
-                // get the specified body file
-                bodyFileBytes = getCms().readFile(
-                    getParamBodyFile(),
-                    CmsResourceFilter.IGNORE_EXPIRATION).getContents();
-            }
-
-            // create the xml page
-            List<CmsProperty> properties = new ArrayList<CmsProperty>(4);
-            // add the template property to the new file
-            properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, getParamTemplate(), null));
-            properties.addAll(
-                createResourceProperties(fullResourceName, CmsResourceTypeXmlPage.getStaticTypeName(), title));
-            int xmlPageId = OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
-            getCms().createResource(fullResourceName, xmlPageId, bodyFileBytes, properties);
-
-            // set the resource parameter to full path for property dialog
-            setParamResource(fullResourceName);
-            setResourceCreated(true);
-        } catch (Throwable e) {
-            // error creating folder, show error dialog
-            includeErrorpage(this, e);
-        }
-    }
-
-    /**
-     * Builds the html for the page body file select box.<p>
-     *
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     *
-     * @return the html for the page body file select box
-     */
-    public String buildSelectBodyFile(String attributes) {
-
-        List<String> options = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
-        TreeMap<String, String> bodies = null;
-        try {
-            // get all available body files
-            bodies = getBodies(getCms(), getParamCurrentFolder(), false);
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e);
-            }
-        }
-        if (bodies == null) {
-            // no body files found, return empty String
-            return "";
-        } else {
-            // body files found, create option and value lists
-            Iterator<Entry<String, String>> i = bodies.entrySet().iterator();
-            while (i.hasNext()) {
-                Entry<String, String> entry = i.next();
-                String key = entry.getKey();
-                String path = entry.getValue();
-
-                options.add(key);
-                values.add(path);
-            }
-        }
-        return buildSelect(attributes, options, values, -1, false);
-    }
-
-    /**
-     * Builds the html for the page template select box.<p>
-     *
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     *
-     * @return the html for the page template select box
-     */
-    public String buildSelectTemplates(String attributes) {
-
-        List<String> options = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
-        TreeMap<String, String> templates = null;
-        try {
-            // get all available templates
-            templates = getTemplates(getCms(), getParamCurrentFolder(), false);
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e);
-            }
-        }
-        if (templates == null) {
-            // no templates found, return empty String
-            return "";
-        } else {
-            // templates found, create option and value lists
-            Iterator<Entry<String, String>> i = templates.entrySet().iterator();
-            while (i.hasNext()) {
-                Entry<String, String> entry = i.next();
-                String key = entry.getKey();
-                String path = entry.getValue();
-                options.add(key);
-                values.add(path);
-            }
-        }
-        return buildSelect(attributes, options, values, -1, false);
-    }
-
-    /**
-     * Returns the body file parameter value.<p>
-     *
-     * @return the body file parameter value
-     */
-    public String getParamBodyFile() {
-
-        return m_paramBodyFile;
-    }
-
-    /**
-     * Returns the request parameter flag indicating if the suffix field is present or not.<p>
-     *
-     * @return the request parameter flag indicating if the suffix field is present or not
-     */
-    public String getParamSuffixCheck() {
-
-        return m_paramSuffixCheck;
-    }
-
-    /**
-     * Returns the template parameter value.<p>
-     *
-     * @return the template parameter value
-     */
-    public String getParamTemplate() {
-
-        return m_paramTemplate;
-    }
-
-    /**
-     * Sets the body file parameter value.<p>
-     *
-     * @param bodyFile the body file parameter value
-     */
-    public void setParamBodyFile(String bodyFile) {
-
-        m_paramBodyFile = bodyFile;
-    }
-
-    /**
-     * Sets the request parameter flag indicating if the suffix field is present or not.<p>
-     *
-     * @param paramSuffixCheck he request parameter flag indicating if the suffix field is present or not
-     */
-    public void setParamSuffixCheck(String paramSuffixCheck) {
-
-        m_paramSuffixCheck = paramSuffixCheck;
-    }
-
-    /**
-     * Sets the template parameter value.<p>
-     *
-     * @param template the template parameter value
-     */
-    public void setParamTemplate(String template) {
-
-        m_paramTemplate = template;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    @Override
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {
-            // set resource name if we are in new folder wizard mode
-            setInitialResourceName();
-            setAction(ACTION_DEFAULT);
-
-            // build title for new resource dialog
-            String title = null;
-            CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                CmsResourceTypeXmlPage.getStaticTypeName());
-            if ((set != null) && (CmsStringUtil.isNotEmptyOrWhitespaceOnly(set.getTitleKey()))) {
-                title = getMessages().key(set.getTitleKey(), true);
-            }
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = key(Messages.GUI_NEWRESOURCE_XMLPAGE_0);
-            }
-            setParamTitle(title);
-        }
     }
 }

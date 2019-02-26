@@ -32,7 +32,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.I_CmsDefaultAction;
 import org.opencms.util.CmsTreeNode;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.Collection;

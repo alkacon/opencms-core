@@ -38,7 +38,6 @@
 	user-infos?,
 	account-infos?,
 	default-preferences,
-	workplace-customfoot?,
 	tool-manager?,
 	user-lists?,
 	synchronization?,
@@ -84,18 +83,6 @@
 <!ATTLIST account-info  field (lastname|firstname|email|institution|address|zipcode|city|country|addinfo) #REQUIRED
                         addinfo-key CDATA #IMPLIED
 						editable (true|TRUE|false|FALSE) #IMPLIED >
-
-<!--
-# The workplace foot is customizable, color and background-color can be changed to have a better overview when
-# working with more OpenCms installations. Also an additional text can be added to the foot which is displayed which
-# is shown instead of the standard text.
--->
-<!ELEMENT workplace-customfoot (color?, background-color?, text?)>
-
-<!ELEMENT color (#PCDATA)>
-<!ELEMENT background-color (#PCDATA)>
-<!ELEMENT text (#PCDATA)>
-<!ATTLIST text replace (true|TRUE|false|FALSE) #REQUIRED>
 
 <!--
 # The tool manager configuration.
@@ -384,43 +371,15 @@
 <!ELEMENT windowSize (#PCDATA)>
 
 <!--
-# Settings for the new resource dialog and the contextmenus in the explorer view.
-# Configure which options are shown in the new resource dialog and if resources are
-# visible and editable depending on the current users group(s). The defaultaccesscontrol
+# The defaultaccesscontrol
 # describes the default access control settings for all resourcestypes.
-# The optional multicontextmenu describes the multi context menu configuration that is used if more
-# files are selected in the explorer view.
 -->
-<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol, multicontextmenu?, menurules?)>
+<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol)>
 
 <!--
 # Enter the default permissions for OpenCms groups.
 -->
 <!ELEMENT defaultaccesscontrol (accesscontrol)>
-
-<!--
-# Enter the default permissions for OpenCms groups.
--->
-<!ELEMENT multicontextmenu (
-	entry*,
-	separator*)*>
-
-<!--
-# Defines rule sets for menu items that should be displayed for a resource.
--->
-<!ELEMENT menurules (menurule+)>
-
-<!--
-# A named menu rule set that can be referenced as rule by a context menu item entry.
--->
-<!ELEMENT menurule (menuitemrule+)>
-<!ATTLIST menurule name CDATA #REQUIRED>
-
-<!--
-# Defines a single rule for a menu item entry, the order of the menu item rules is important.
--->
-<!ELEMENT menuitemrule EMPTY>
-<!ATTLIST menuitemrule class CDATA #REQUIRED>
 
 <!--
 # <importexport> node options.

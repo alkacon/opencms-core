@@ -27,14 +27,10 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.CmsImageScaler;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.Messages;
@@ -43,11 +39,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -416,37 +410,6 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
                     // get settings for resource type
                     CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType);
                     if (set != null) {
-
-                        // add the description image
-                        String imgSrc = set.getDescriptionImage();
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imgSrc)) {
-
-                            try {
-                                // create scaler instance of original image
-                                CmsResource res = getCms().readResource(imgSrc);
-                                CmsImageScaler origImage = new CmsImageScaler(getCms(), res);
-
-                                // create scaler with desired image sizes
-                                CmsImageScaler scaler = new CmsImageScaler();
-                                scaler.setWidth(60);
-                                scaler.setHeight(60);
-
-                                // create down scaler
-                                CmsImageScaler resultScaler = origImage.getDownScaler(scaler);
-                                if (resultScaler == null) {
-                                    resultScaler = origImage;
-                                }
-
-                                Map<String, String> attrs = new HashMap<String, String>();
-                                attrs.put("align", "left");
-                                attrs.put("vspace", "5");
-                                attrs.put("hspace", "5");
-                                description.append(getJsp().img(imgSrc, resultScaler, attrs));
-                            } catch (CmsException ex) {
-                                // ignore it, image won't show
-                            }
-                        }
-
                         // add the description text from resource bundle
                         description.append(key(set.getInfo()));
                     }

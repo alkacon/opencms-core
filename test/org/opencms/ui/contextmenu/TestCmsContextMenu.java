@@ -32,7 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.util.CmsTreeNode;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Arrays;
 import java.util.List;

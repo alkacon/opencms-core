@@ -45,10 +45,10 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

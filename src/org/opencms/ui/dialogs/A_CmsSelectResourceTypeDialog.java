@@ -45,7 +45,6 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -305,7 +304,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                 String typeName = type.getType();
                 CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
                 boolean noCreate = !(type.isCreatableType() && !type.isDeactivated());
-                return noCreate || (explorerType == null) || CmsStringUtil.isEmpty(explorerType.getNewResourceUri());
+                return noCreate || (explorerType == null) || explorerType.isNonCreatable();
             }
         };
 

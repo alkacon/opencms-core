@@ -41,124 +41,20 @@
         </rfsfileviewsettings>
         <explorertypes>
             <explorertype name="folder" key="fileicon.folder" smalliconstyle="oc-icon-16-folder" bigiconstyle="oc-icon-24-folder">
-                <newresource uri="newresource_folder.jsp" order="20" autosetnavigation="false" autosettitle="false" info="desc.folder" />
+                <newresource order="20" autosetnavigation="false" autosettitle="false" info="desc.folder" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="showlocks" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
-                        </entry>
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="plain" key="fileicon.plain" smalliconstyle="oc-icon-16-plain" bigiconstyle="oc-icon-24-plain">
-                <newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false" info="desc.plain" />
+                <newresource order="30" autosetnavigation="false" autosettitle="false" info="desc.plain" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                         <defaultproperty name="export" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role" />
-                        <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RENAME_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRename" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
-                        </entry>
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-
-
-                    </contextmenu>
                 </editoptions>
                 <iconrules>
                     <iconrule extension="java" smalliconstyle="oc-icon-16-java" bigiconstyle="oc-icon-24-java" />
@@ -181,70 +77,17 @@
                 </iconrules>
             </explorertype>
             <explorertype name="image" key="fileicon.image" smalliconstyle="oc-icon-16-image" bigiconstyle="oc-icon-24-image">
-                <newresource uri="" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />
+                <newresource noncreatable="true" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="false">
                         <defaultproperty name="Title" />
                         <defaultproperty name="Description" />
                         <defaultproperty name="Copyright" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role" />
-                        <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-
-                        <entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RENAME_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRename" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
-                        </entry>
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="jsp" key="fileicon.jsp" smalliconstyle="oc-icon-16-jsp" bigiconstyle="oc-icon-24-jsp">
-                <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false" info="desc.jsp" />
+                <newresource order="50" autosetnavigation="false" autosettitle="false" info="desc.jsp" />
                 <accesscontrol>
                     <accessentry principal="DEFAULT" permissions="+r+v" />
                     <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
@@ -257,128 +100,15 @@
                         <defaultproperty name="content-encoding" />
                         <defaultproperty name="export" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role" />
-                        <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RENAME_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRename" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog" rule="containerpage-no-different-site-and-has-editor-role" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
-                        </entry>
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsShowClassicWorkplace" rule="editprovider" />
-                        <entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" rule="editprovider" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="binary" key="fileicon.binary" smalliconstyle="oc-icon-16-binary" bigiconstyle="oc-icon-24-binary">
-                <newresource uri="" order="60" autosetnavigation="false" autosettitle="false" info="desc.binary" />
+                <newresource noncreatable="true" order="60" autosetnavigation="false" autosettitle="false" info="desc.binary" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="false">
                         <defaultproperty name="Title" />
                         <defaultproperty name="Copyright" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role" />
-                        <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-
-
-                        <entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RENAME_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRename" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
-                        </entry>
-
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-
-
-                    </contextmenu>
                 </editoptions>
                 <iconrules>
                     <iconrule extension="jar" smalliconstyle="oc-icon-16-java" bigiconstyle="oc-icon-24-java" />
@@ -412,274 +142,52 @@
                 </iconrules>
             </explorertype>
             <explorertype name="pointer" key="fileicon.pointer" smalliconstyle="oc-icon-16-pointer" bigiconstyle="oc-icon-24-pointer">
-                <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false" info="desc.pointer" />
+                <newresource order="70" autosetnavigation="false" autosettitle="false" info="desc.pointer" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0" uri="commons/editpointer.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditExternalLink" rule="containerpage-no-different-site" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="imagegallery" key="fileicon.imagegallery" smalliconstyle="oc-icon-16-imagegallery" bigiconstyle="oc-icon-24-imagegallery">
-                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false" info="desc.imagegallery" />
+                <newresource order="10" autosetnavigation="false" autosettitle="false" info="desc.imagegallery" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/open_ade_gallery.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0" uri="commons/renameimages.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_COMMENTIMAGES_0" uri="commons/commentimages.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="downloadgallery" key="fileicon.downloadgallery" smalliconstyle="oc-icon-16-downloadgallery" bigiconstyle="oc-icon-24-downloadgallery">
-                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false" info="desc.downloadgallery" />
+                <newresource order="20" autosetnavigation="false" autosettitle="false" info="desc.downloadgallery" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/open_ade_gallery.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="classicgallery" key="fileicon.downloadgallery" smalliconstyle="oc-icon-16-downloadgallery" bigiconstyle="oc-icon-24-downloadgallery">
-                <newresource page="none" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" />
+                <newresource order="20" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="linkgallery" key="fileicon.linkgallery" smalliconstyle="oc-icon-16-linkgallery" bigiconstyle="oc-icon-24-linkgallery" reference="classicgallery">
-                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30" autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
+                <newresource order="30" autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
             </explorertype>
             <explorertype name="xmlcontent" key="fileicon.xmlcontent" smalliconstyle="oc-icon-16-xmlcontent" bigiconstyle="oc-icon-24-xmlcontent">
-                <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
+                <newresource order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="true">
                         <defaultproperty name="Title" />
                         <defaultproperty name="Keywords" />
                         <defaultproperty name="Description" />
                     </defaultproperties>
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp" target="_top" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy" />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions" />
-                        <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="editcontrolcode" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsHistory" rule="containerpage" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-
-                        <entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsAvailabilityDialogAction" rule="containerpage-no-different-site-and-has-editor-role" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
-                            <entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
-                        </entry>
-
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource" rule="containerpage-no-different-site" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace" rule="editprovider" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsShowClassicWorkplace" rule="editprovider" />
-                        <entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" rule="editprovider" />
-
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="unknown_folder" key="fileicon.unknown_folder" smalliconstyle="oc-icon-16-unknown_folder" bigiconstyle="oc-icon-24-unknown_folder">
-                <newresource uri="" order="0" autosetnavigation="false" autosettitle="false" />
+                <newresource noncreatable="true" order="0" autosetnavigation="false" autosettitle="false" />
                 <accesscontrol>
                     <accessentry principal="DEFAULT" permissions="+r+v" />
                     <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
@@ -687,39 +195,10 @@
                 </accesscontrol>
                 <editoptions>
                     <defaultproperties enabled="false" shownavigation="false" />
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="showlocks" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <explorertype name="unknown_file" key="fileicon.unknown_file" smalliconstyle="oc-icon-16-unknown_file" bigiconstyle="oc-icon-24-unknown_file">
-                <newresource uri="" order="0" autosetnavigation="false" autosettitle="false" />
+                <newresource noncreatable="true" order="0" autosetnavigation="false" autosettitle="false" />
                 <accesscontrol>
                     <accessentry principal="DEFAULT" permissions="+r+v" />
                     <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
@@ -727,35 +206,6 @@
                 </accesscontrol>
                 <editoptions>
                     <defaultproperties enabled="false" shownavigation="false" />
-                    <contextmenu>
-                        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" rule="publishscheduled" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges" />
-                        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete" />
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard" />
-                            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-                            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard" />
-                            <separator />
-                            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard" />
-                        </entry>
-                        <separator />
-                        <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted" />
-                        <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted" />
-                    </contextmenu>
                 </editoptions>
             </explorertype>
             <defaultaccesscontrol>
@@ -765,216 +215,6 @@
                     <accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c" />
                 </accesscontrol>
             </defaultaccesscontrol>
-            <multicontextmenu>
-                <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="multistandard" />
-                <separator />
-                <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/workplace/commons/direct_publish.jsp" rule="multipubstandard" />
-                <separator />
-                <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_MOVE_MULTI_0" uri="commons/move.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="multistandard" />
-                <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="multistandard" />
-            </multicontextmenu>
-            <menurules>
-                <menurule name="standard">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                </menurule>
-                <menurule name="copy">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActiveNotDeletedNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                </menurule>
-                <menurule name="copytoproject">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="undelete">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActiveDeletedNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveDeletedAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                </menurule>
-                <menurule name="undochanges">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                </menurule>
-                <menurule name="permissions">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                </menurule>
-                <menurule name="directpublish">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
-                </menurule>
-                <menurule name="lock">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="unlock">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="changelock">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockActiveNoPublish" />
-                </menurule>
-                <menurule name="showlocks">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysActive" />
-                </menurule>
-                <menurule name="editcontrolcode">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirEditControlcode" />
-                </menurule>
-                <menurule name="showsiblings">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirShowSiblings" />
-                </menurule>
-                <menurule name="nondeleted">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirActiveNonDeleted" />
-                </menurule>
-                <menurule name="multistandard">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiStandard" />
-                </menurule>
-                <menurule name="multipubstandard">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiDirPublishStandard" />
-                </menurule>
-                <menurule name="substandard">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSubStandard" />
-                </menurule>
-                <menurule name="publishscheduled">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
-                </menurule>
-                <menurule name="containerpage">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-                </menurule>
-                <menurule name="containerpage-deleted">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirInvisibleIfNotDeleted" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-                </menurule>
-                <menurule name="editprovider">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirEditProviderActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="sitemap">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="sitemap-wpuser">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirRequireWorkplaceUserRole" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapActive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="adecheckfile">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="sitemapcheckfile">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapActiveAndFileAvailable" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
-                </menurule>
-                <menurule name="ade-undochanges">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                </menurule>
-                <menurule name="containerpage-no-different-site">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-                </menurule>
-                <menurule name="containerpage-no-different-site-and-has-editor-role">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirRequireEditorRole" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-                </menurule>
-                <menurule name="containerpage-wpuser">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirRequireWorkplaceUserRole" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-                </menurule>
-                <menurule name="containerpage-basic">
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
-                    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-                </menurule>
-            </menurules>
         </explorertypes>
         <account-infos>
             <account-info field="firstname" editable="false" />
@@ -1058,11 +298,6 @@
                 <preference name="org.opencms.ui.apps.CmsFileExplorerSettings" value="{'collapsed_collumns':['PROPERTY_PROJECT','PROPERTY_NAVIGATION_TEXT','PROPERTY_COPYRIGHT','PROPERTY_CACHE','PROPERTY_PERMISSIONS','PROPERTY_USER_MODIFIED','PROPERTY_DATE_MODIFIED','PROPERTY_DATE_RELEASED','PROPERTY_DATE_EXPIRED','PROPERTY_DATE_CREATED','PROPERTY_USER_CREATED','PROPERTY_STATE_NAME','PROPERTY_USER_LOCKED'],'sort_column':'PROPERTY_RESOURCE_NAME','sort_order':true}" />
             </preference-tab>
         </default-preferences>
-        <workplace-customfoot>
-            <color></color>
-            <background-color></background-color>
-            <text replace="false"></text>
-        </workplace-customfoot>
         <tool-manager>
             <roots>
                 <root>

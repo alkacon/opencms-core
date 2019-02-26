@@ -29,12 +29,11 @@
 <!ATTLIST iconrule extension CDATA #REQUIRED icon CDATA #IMPLIED bigicon CDATA #IMPLIED smalliconstyle CDATA #IMPLIED bigiconstyle CDATA #IMPLIED> 
 
 <!--
-# The URI for the new resource dialog and the ranking is required.
-# Optionally, Title and navigation properties (last entry in current folder) can be attached automatically on resource creation
-# containing the file name as value..
+# The order is required.
+# All handler. page and uri settings are DEPRECATED.
 -->
 <!ELEMENT newresource EMPTY>
-<!ATTLIST newresource handler CDATA #IMPLIED page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED autosetnavigation (true|false) #IMPLIED autosettitle (true|false) #IMPLIED info CDATA #IMPLIED icon CDATA #IMPLIED key CDATA #IMPLIED>
+<!ATTLIST newresource handler CDATA #IMPLIED page CDATA #IMPLIED uri CDATA #IMPLIED noncreatable (true|false) #IMPLIED order CDATA #REQUIRED autosetnavigation (true|false) #IMPLIED autosettitle (true|false) #IMPLIED info CDATA #IMPLIED icon CDATA #IMPLIED key CDATA #IMPLIED>
 
 <!--
 # Enter the permissions for OpenCms groups. The flags have the following meaning:
@@ -52,7 +51,7 @@
 -->
 <!ELEMENT editoptions (
 	defaultproperties,
-	contextmenu)>
+	contextmenu?)>
 
 <!--
 # Define here the properties which can be edited in the new resource dialog.
@@ -71,45 +70,7 @@
 <!ATTLIST defaultproperty name CDATA #REQUIRED>
 
 <!--
-# This defines the context menu appearance of the current explorer type.
-# A list of entry and separator nodes is needed here.
-# An entry node needs the following attributes:
-# key: the name for the localized key of the menu entry.
-# uri: the OpenCms VFS URI of the dialog.
-#
-# rules:	The legacy display rules for the current menu entry, should not be used anymore. 
-#			The rule characters have been separated by spaces for better readability.
-#
-#			Example: "d d iiii aaai dddd"
-#					  1 2    3    4    5 
-# 
-# 			Each rule is separated into 5 blocks (see above).
-#           A block describes a resource condition in the context 
-#           of the current user:
-#
-#			1: Appearance in the "Online" project
-#			2: Appearance if the resource is not part of the current offline project
-#			3: Appearance if the resource is unlocked
-#			4: Appearance if the resource is exclusively locked by the current user in the current project	
-#			5: Appearance for all other lock states (locked by other user, locked in other project, shared lock, etc.)
-#
-#			The meaning of the parameter characters is: 
-#           d = deactivated (invisible), i = inactive, a = active
-#
-#           Blocks 1 and 2 require only one parameter since a resource 
-#           does not have a state if it is not part of the current project.
-#
-#           Blocks 3, 4 and 5 require four parameters. The parameters control the appearance
-#           of the context menu entry if the resource is in one of the 4 possible states:
-#			1 = unchanged, 2 = changed, 3 = new, 4 = deleted
-#           This is e.g. required to show the "undelete" option on the 
-#           menu only if the resource is deleted. 
-#
-# rule: the name of the menu rule that should be used to display the entry, this replaces the legacy rules attribute.
-# order: the order of the entry (display position in the menu), not used anymore.
-# icon: the icon in front of the context menu entry (max. 16px * 16px)
-# isxml: optional, if the URI leads to a legacy XMLTemplate based dialog, set this attribute to true.
-# A separator node only needs the order attribute to be displayed properly.
+# DEPRECATED: This setting is no longer evaluated
 -->
 <!ELEMENT contextmenu (
 	entry*,

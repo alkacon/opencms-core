@@ -38,8 +38,8 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.actions.A_CmsWorkplaceAction;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 

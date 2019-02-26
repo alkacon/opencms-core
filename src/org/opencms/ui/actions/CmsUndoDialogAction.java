@@ -31,11 +31,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsUndoDialog;
 import org.opencms.workplace.explorer.Messages;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Map;

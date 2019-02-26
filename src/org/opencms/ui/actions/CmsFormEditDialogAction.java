@@ -37,9 +37,9 @@ import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 

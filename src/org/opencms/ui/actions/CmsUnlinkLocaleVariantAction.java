@@ -37,11 +37,11 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.sitemap.CmsUnlinkDialog;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 

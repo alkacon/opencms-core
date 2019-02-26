@@ -158,7 +158,7 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
                 OpenCms.getDefaultUsers().getGroupAdministrators(),
                 CmsProject.PROJECT_TYPE_TEMPORARY);
             cms.getRequestContext().setCurrentProject(workProject);
-            CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(m_resInfo.getModuleName()).clone();
+            CmsModule module = OpenCms.getModuleManager().getModule(m_resInfo.getModuleName()).clone();
             String moduleFolder = CmsStringUtil.joinPaths("/system/modules/", m_resInfo.getModuleName());
             copySampleFiles(module, moduleFolder);
             List<I_CmsResourceType> types = new ArrayList<I_CmsResourceType>(module.getResourceTypes());
@@ -189,8 +189,6 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
                 "false",
                 null,
                 null);
-            setting.setNewResourceUri("newresource_xmlcontent.jsp?newresourcetype=" + m_resInfo.getName());
-            setting.setNewResourcePage("structurecontent");
             setting.setAutoSetNavigation("false");
             setting.setAutoSetTitle("false");
             setting.setNewResourceOrder("10");

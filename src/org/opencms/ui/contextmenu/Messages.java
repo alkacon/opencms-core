@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.explorer.menu;
+package org.opencms.ui.contextmenu;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;

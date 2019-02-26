@@ -336,7 +336,7 @@ public class CmsEditResourceTypeDialog extends CmsBasicDialog {
     protected void submit(Window window, CmsResourceTypeApp app) {
 
         if (isValid()) {
-            CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(m_type.getModuleName()).clone();
+            CmsModule module = OpenCms.getModuleManager().getModule(m_type.getModuleName()).clone();
             if (isKeepTypeCase()) {
                 saveResourceType(module);
             } else {
@@ -412,8 +412,6 @@ public class CmsEditResourceTypeDialog extends CmsBasicDialog {
             "false",
             null,
             null);
-        setting.setNewResourceUri("newresource_xmlcontent.jsp?newresourcetype=" + m_typeShortName.getValue());
-        setting.setNewResourcePage("structurecontent");
         setting.setAutoSetNavigation("false");
         setting.setAutoSetTitle("false");
         setting.setNewResourceOrder("10");

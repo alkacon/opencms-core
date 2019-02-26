@@ -46,10 +46,10 @@ import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenu;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.ArrayList;
 import java.util.Date;
