@@ -248,6 +248,15 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
+     * Returns an instance date bean wrapping only the end date of the original bean.
+     * @return an instance date bean wrapping only the end date of the original bean.
+     */
+    public CmsJspInstanceDateBean getEndInstance() {
+
+        return new CmsJspInstanceDateBean(getEnd(), m_series.getLocale());
+    }
+
+    /**
      * Returns a lazy map from date format options to dates.
      * Supported formats are the values of {@link CmsDateFormatOption}.<p>
      *
@@ -311,6 +320,15 @@ public class CmsJspInstanceDateBean {
 
         // Adjust the start time for an explicitely whole day option that overwrites the series' whole day option.
         return isWholeDay() && !m_series.isWholeDay() ? adjustForWholeDay(m_start, false) : m_start;
+    }
+
+    /**
+     * Returns an instance date bean wrapping only the start date of the original bean.
+     * @return an instance date bean wrapping only the start date of the original bean.
+     */
+    public CmsJspInstanceDateBean getStartInstance() {
+
+        return new CmsJspInstanceDateBean(getStart(), m_series.getLocale());
     }
 
     /**

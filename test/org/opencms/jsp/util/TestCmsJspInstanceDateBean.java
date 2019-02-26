@@ -107,6 +107,10 @@ public class TestCmsJspInstanceDateBean extends OpenCmsTestCase {
                 + " - "
                 + (new SimpleDateFormat("dd/MM/yy - hh:mm")).format(d2),
             actual);
+        actual = bean.getStartInstance().getFormat().get("dd/MM/yy");
+        assertEquals((new SimpleDateFormat("dd/MM/yy")).format(d1), actual);
+        actual = bean.getEndInstance().getFormat().get("dd/MM/yy");
+        assertEquals((new SimpleDateFormat("dd/MM/yy")).format(d2), actual);
 
         Date d3 = new Date(1506961200000L); // Mon Oct 02 2017 16:20:00
         seriesDefinition = "{ \"from\" : "
