@@ -29,6 +29,9 @@ package org.opencms.ui.components.editablegroup;
 
 import com.vaadin.ui.Component;
 
+/**
+ * Interface for components used as editable group rows.
+ */
 public interface I_CmsEditableGroupRow extends Component {
 
     /**

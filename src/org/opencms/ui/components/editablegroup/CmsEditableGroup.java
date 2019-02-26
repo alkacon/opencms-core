@@ -50,6 +50,9 @@ import com.vaadin.v7.ui.Label;
  */
 public class CmsEditableGroup {
 
+    /**
+     * Default implementation for row builder.
+     */
     public static class DefaultRowBuilder implements CmsEditableGroup.I_RowBuilder {
 
         public I_CmsEditableGroupRow buildRow(CmsEditableGroup group, Component component) {
@@ -100,20 +103,14 @@ public class CmsEditableGroup {
         public I_CmsEditableGroupRow buildRow(CmsEditableGroup group, Component component);
     }
 
-    /** The container in which to render the individual rows of the multivalue widget group. */
-    private AbstractOrderedLayout m_container;
-
-    /** Factory for creating new input fields. */
-    private Supplier<Component> m_newComponentFactory;
-
     /** Button to add a new row to an empty list. */
     private Button m_addButton;
 
+    /** The container in which to render the individual rows of the multivalue widget group. */
+    private AbstractOrderedLayout m_container;
+
     /** The error label. */
     private Label m_errorLabel = new Label();
-
-    /** The row caption. */
-    private String m_rowCaption;
 
     /** The error listener. */
     private Listener m_errorListener;
@@ -124,8 +121,14 @@ public class CmsEditableGroup {
     /**Should the add option be hidden?*/
     private boolean m_hideAdd;
 
+    /** Factory for creating new input fields. */
+    private Supplier<Component> m_newComponentFactory;
+
     /** The builder to use for creating new rows. */
     private I_RowBuilder m_rowBuilder = new DefaultRowBuilder();
+
+    /** The row caption. */
+    private String m_rowCaption;
 
     /**
      * Creates a new instance.<p>
@@ -314,6 +317,11 @@ public class CmsEditableGroup {
         m_errorLabel.setValue(errorMessage != null ? errorMessage : "");
     }
 
+    /**
+     * Sets the row builder.
+     *
+     * @param rowBuilder the row builder
+     */
     public void setRowBuilder(I_RowBuilder rowBuilder) {
 
         m_rowBuilder = rowBuilder;

@@ -59,25 +59,25 @@ public class CmsFavInfo extends CustomLayout implements I_CmsEditableGroupRow {
     /** The button label. */
     private Label m_buttonLabel = new Label();
 
+    /**
+     * The buttons for changing the position.
+     */
+    private CmsEditableGroupButtons m_buttons;
+
+    /** The favorite entry. */
+    private CmsFavoriteEntry m_entry;
+
+    /** The resource icon. */
+    private CmsResourceIcon m_icon = new CmsResourceIcon();
+
     /** The project label. */
     private Label m_projectLabel = new Label();
 
     /** The site label. */
     private Label m_siteLabel = new Label();
 
-    /** The resource icon. */
-    private CmsResourceIcon m_icon = new CmsResourceIcon();
-
     /** The title label. */
     private Label m_topText = new Label();
-
-    /** The favorite entry. */
-    private CmsFavoriteEntry m_entry;
-
-    /**
-     * The buttons for changing the position.
-     */
-    private CmsEditableGroupButtons m_buttons;
 
     /**
      * Constructor.<p>

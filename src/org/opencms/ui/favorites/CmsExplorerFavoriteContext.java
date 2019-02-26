@@ -44,11 +44,11 @@ import com.vaadin.ui.Component;
  */
 public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
 
-    /** Favorite entry for current location. */
-    private CmsFavoriteEntry m_entry;
-
     /** Current dialog instance. */
     private Component m_dialog;
+
+    /** Favorite entry for current location. */
+    private CmsFavoriteEntry m_entry;
 
     /**
      * Creates a new instance.<p>
@@ -79,6 +79,9 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
         CmsVaadinUtils.getWindow(m_dialog).close();
     }
 
+    /**
+     * @see org.opencms.ui.favorites.I_CmsFavoriteContext#getFavoriteForCurrentLocation()
+     */
     public Optional<CmsFavoriteEntry> getFavoriteForCurrentLocation() {
 
         return Optional.ofNullable(m_entry);

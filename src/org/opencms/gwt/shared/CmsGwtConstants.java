@@ -32,11 +32,19 @@ package org.opencms.gwt.shared;
  */
 public final class CmsGwtConstants {
 
+    /** Parameters for favorite dialog. */
     public static final class Favorites {
 
+        /** Request parameter. */
         public static final String PARAM_SITE = "site";
+
+        /** Request parameter. */
         public static final String PARAM_PROJECT = "project";
+
+        /** Request parameter. */
         public static final String PARAM_PAGE = "page";
+
+        /** Request parameter. */
         public static final String PARAM_DETAIL = "detail";
     }
 

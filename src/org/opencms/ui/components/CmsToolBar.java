@@ -149,14 +149,14 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
     /** The context menu component. */
     private MenuBar m_contextMenu;
 
+    /** The dialog context. */
+    private I_CmsDialogContext m_dialogContext;
+
     /** The favorite button. */
     private Button m_favButton = CmsToolBar.createButton(
         FontOpenCms.CLIPBOARD,
         CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_FAVORITES_BUTTON_0),
         true);
-
-    /** The dialog context. */
-    private I_CmsDialogContext m_dialogContext;
 
     /** The sub menu displaying the folded buttons. */
     private PopupView m_foldedButtonsMenu;

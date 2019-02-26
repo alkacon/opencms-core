@@ -752,6 +752,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_EXIT_0 = "GUI_TOOLBAR_EXIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_FAVORITES_0 = "GUI_TOOLBAR_FAVORITES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_GALLERY_0 = "GUI_TOOLBAR_GALLERY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -888,8 +891,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
-
-    public static final String GUI_TOOLBAR_FAVORITES_0 = "GUI_TOOLBAR_FAVORITES_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

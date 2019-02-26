@@ -71,6 +71,9 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFavoriteDialog.class);
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
     /** The Add button. */
     private Button m_addButton;
 
@@ -80,23 +83,23 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** The favorite context. */
     private I_CmsFavoriteContext m_context;
 
+    /** Current favorite location. */
+    private Optional<CmsFavoriteEntry> m_currentLocation;
+
     /** The container layout for the favorite widgets. */
     private VerticalLayout m_favContainer;
 
-    /** The Save button. */
-    private Button m_saveButton;
-
     /** Load/save handler for favorites. */
     private CmsFavoriteDAO m_favDao;
-
-    /** Current favorite location. */
-    private Optional<CmsFavoriteEntry> m_currentLocation;
 
     /** The group for the favorite widgets. */
     private CmsEditableGroup m_group;
 
     /** Map of project labels. */
     private Map<CmsUUID, String> m_projectLabels = new HashMap<>();
+
+    /** The Save button. */
+    private Button m_saveButton;
 
     /** Container for the sites, used for their labels. */
     private IndexedContainer m_sitesContainer;

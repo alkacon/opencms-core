@@ -290,6 +290,7 @@ public class CmsCoreData implements IsSerializable {
     /** The current navigation URI. */
     private String m_navigationUri;
 
+    /** The project id. */
     private CmsUUID m_projectId;
 
     /** The current site root. */
@@ -374,6 +375,7 @@ public class CmsCoreData implements IsSerializable {
      * @param workplaceResourcesPrefix the workplace resources path prefix
      * @param embeddedDialogsUrl the embedded dialogs URL
      * @param siteRoot the current site root
+     * @param projectId the project id
      * @param locale the current request locale
      * @param wpLocale the workplace locale
      * @param uri the current uri
@@ -555,6 +557,11 @@ public class CmsCoreData implements IsSerializable {
         return m_navigationUri;
     }
 
+    /**
+     * Gets the project id.
+     *
+     * @return the project id
+     */
     public CmsUUID getProjectId() {
 
         return m_projectId;

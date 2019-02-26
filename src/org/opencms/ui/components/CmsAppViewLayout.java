@@ -64,13 +64,13 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, Br
     /** The app id. */
     private String m_appId;
 
+    private Map<String, Object> m_attributes = new HashMap<>();
+
     /** The info area grid. */
     private CssLayout m_infoArea;
 
     /** The toolbar. */
     private CmsToolBar m_toolbar;
-
-    private Map<String, Object> m_attributes = new HashMap<>();
 
     /**
      * Constructor.<p>
@@ -185,6 +185,9 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, Br
         return m_appId;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#getAttribute(java.lang.String)
+     */
     public Object getAttribute(String key) {
 
         return m_attributes.get(key);
@@ -238,6 +241,9 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext, Br
         m_toolbar.setAppTitle(title);
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#setAttribute(java.lang.String, java.lang.Object)
+     */
     public void setAttribute(String key, Object value) {
 
         m_attributes.put(key, value);

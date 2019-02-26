@@ -65,6 +65,9 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     /** The serial version id. */
     private static final long serialVersionUID = -7446784547935775629L;
 
+    /** The app id. */
+    private String m_appId;
+
     /** The context type. */
     private ContextType m_contextType;
 
@@ -76,9 +79,6 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
 
     /** The window used to display the dialog. */
     private Window m_window;
-
-    /** The app id. */
-    private String m_appId;
 
     /**
      * Constructor.<p>
@@ -224,6 +224,11 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
         return m_resources;
     }
 
+    /**
+     * Leaves page by navigating to given URI.
+     *
+     * @param uri the URI to navigate to
+     */
     public void leavePage(String uri) {
 
         getClientRPC().leavePage(uri);

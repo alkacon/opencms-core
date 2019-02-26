@@ -48,11 +48,11 @@ public class CmsFavoriteEntry {
      * Represents the type of the favorite.
      */
     enum Type {
-    /** Page favorite. */
-    page("p"),
-
     /** Container page editor favorite. */
-    explorerFolder("f");
+    explorerFolder("f"),
+
+    /** Page favorite. */
+    page("p");
 
         /** String representing this type in the JSON format. */
         private String m_jsonId;
@@ -96,13 +96,10 @@ public class CmsFavoriteEntry {
     }
 
     /** JSON key. */
-    public static final String JSON_TYPE = "t";
+    public static final String JSON_DETAIL = "d";
 
     /** JSON key. */
     public static final String JSON_PROJECT = "p";
-
-    /** JSON key. */
-    public static final String JSON_DETAIL = "d";
 
     /** JSON key. */
     public static final String JSON_SITEROOT = "s";
@@ -110,20 +107,23 @@ public class CmsFavoriteEntry {
     /** JSON key. */
     public static final String JSON_STRUCTUREID = "i";
 
-    /** The type. */
-    private Type m_type;
-
-    /** The project id. */
-    private CmsUUID m_projectId;
-
-    /** The structure id. */
-    private CmsUUID m_structureId;
+    /** JSON key. */
+    public static final String JSON_TYPE = "t";
 
     /** The detail id. */
     private CmsUUID m_detailId;
 
+    /** The project id. */
+    private CmsUUID m_projectId;
+
     /** The site root. */
     private String m_siteRoot;
+
+    /** The structure id. */
+    private CmsUUID m_structureId;
+
+    /** The type. */
+    private Type m_type;
 
     /**
      * Creates a new entry.

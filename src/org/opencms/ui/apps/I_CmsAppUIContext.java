@@ -40,10 +40,6 @@ import com.vaadin.ui.Component;
  */
 public interface I_CmsAppUIContext extends Serializable {
 
-    public Object getAttribute(String key);
-
-    public void setAttribute(String key, Object value);
-
     /**
      * Adds the publish button to the toolbar.<p>
      *
@@ -89,6 +85,15 @@ public interface I_CmsAppUIContext extends Serializable {
     String getAppId();
 
     /**
+     * Gets an attribute.
+     *
+     * @param key the attribute key
+     *
+     * @return the attribute value
+     */
+    Object getAttribute(String key);
+
+    /**
      * Hides the the toolbar.<p>
      */
     void hideToolbar();
@@ -120,6 +125,14 @@ public interface I_CmsAppUIContext extends Serializable {
      * @param title the app title
      */
     void setAppTitle(String title);
+
+    /**
+     * Sets an attribute.
+     *
+     * @param key the attribute key
+     * @param value the attribute value
+     */
+    void setAttribute(String key, Object value);
 
     /**
      * Sets the dialog context for context menu entries.<p>

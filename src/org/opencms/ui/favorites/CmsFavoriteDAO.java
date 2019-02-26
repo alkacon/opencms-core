@@ -55,29 +55,29 @@ import org.apache.commons.logging.Log;
  */
 public class CmsFavoriteDAO {
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFavoriteDAO.class);
-
     /** The additional info key under which the favorites for a user are saved. */
     public static final String ADDINFO_KEY = "favLocations";
 
     /** The main key in the JSON object containing the favorites. */
     public static final String BASE_KEY = "f";
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFavoriteDAO.class);
+
     /** The CMS context. */
     private CmsObject m_cms;
-
-    /** The root CMS context. */
-    private CmsObject m_rootCms;
-
-    /** Site roots which have been validated. */
-    private Set<String> m_okSiteRoots = new HashSet<>();
 
     /** Projects which have been validated. */
     private Set<CmsUUID> m_okProjects = new HashSet<>();
 
+    /** Site roots which have been validated. */
+    private Set<String> m_okSiteRoots = new HashSet<>();
+
     /** Structure ids which have been validated. */
     private Set<CmsUUID> m_okStructureIds = new HashSet<>();
+
+    /** The root CMS context. */
+    private CmsObject m_rootCms;
 
     /**
      * Creates a new instance.
