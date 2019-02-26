@@ -102,6 +102,8 @@ public class CmsInfoButton extends Button {
     /**Caption for information window.*/
     protected String m_windowCaption;
 
+    Button m_addButton;
+
     /**Html lines to be shown in label.*/
     private List<String> m_htmlLines;
 
@@ -194,6 +196,11 @@ public class CmsInfoButton extends Button {
 
     }
 
+    public void setAdditionalButton(Button button) {
+
+        m_addButton = button;
+    }
+
     /**
      * Sets the caption of the information window.<p>
      *
@@ -257,6 +264,9 @@ public class CmsInfoButton extends Button {
                     : m_windowCaption);
                 window.setResizable(false);
                 CmsBasicDialog dialog = new CmsBasicDialog();
+                if (m_addButton != null) {
+                    dialog.addButton(m_addButton, false);
+                }
                 VerticalLayout layout = getLayout(htmlLines, additionalElements);
                 dialog.setContent(layout);
 

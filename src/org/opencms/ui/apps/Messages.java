@@ -42,6 +42,27 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_OU_1 = "GUI_USERMANAGEMENT_EXPORT_OU_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_ROLE_1 = "GUI_USERMANAGEMENT_EXPORT_ROLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_ONLY_USER_0 = "GUI_USERMANAGEMENT_EXPORT_ONLY_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_GROUP_1 = "GUI_USERMANAGEMENT_EXPORT_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_COUNT_1 = "GUI_USERMANAGEMENT_EXPORT_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_EXTRA_USER_0 = "GUI_USERMANAGEMENT_EXPORT_EXTRA_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_EXPORT_EXTRA_ROLE_0 = "GUI_USERMANAGEMENT_EXPORT_EXTRA_ROLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1 = "ERR_EXPLORER_CAN_NOT_READ_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */

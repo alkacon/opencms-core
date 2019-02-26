@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+		<o-cms-basic-dialog>
+			<content>
+				<vaadin7-vertical-layout :center margin spacing>
+
+							<vaadin7-label _id="m_elementToExportOU" width="100%"></vaadin7-label>
+							<vaadin7-label _id="m_elementToExportGroup" width="100%"></vaadin7-label>
+							<vaadin7-label _id="m_elementToExportRole" width="100%"></vaadin7-label>
+							<vaadin7-label _id="m_elementExtendedDataUser" width="100%">%(key.GUI_USERMANAGEMENT_EXPORT_EXTRA_USER_0)</vaadin7-label>
+							<vaadin7-label _id="m_elementExtendedDataRole" width="100%">%(key.GUI_USERMANAGEMENT_EXPORT_EXTRA_ROLE_0)</vaadin7-label>
+							<vaadin7-label  width="100%"></vaadin7-label>
+							<vaadin7-label _id="m_elementToExportCount" width="100%"></vaadin7-label>
+				</vaadin7-vertical-layout>
+			</content>
+			<buttons>
+				<v-button _id="m_download">%(key.GUI_USERMANAGEMENT_USER_DOWNLOAD_FILE_0)</v-button>
+				<v-button _id="m_cancel">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+</body>
+</html>

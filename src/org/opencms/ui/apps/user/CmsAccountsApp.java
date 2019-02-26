@@ -338,6 +338,24 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
+     * Gets list of users for organizational unit.<p>
+     *
+     * @param cms the CMS context
+     * @param ou the OU path
+     * @param recursive true if users from other OUs should be retrieved
+     *
+     * @return the list of users, without their additional info
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static List<CmsUser> getUsersWithoutAdditionalInfo(CmsObject cms, String ou, boolean recursive)
+    throws CmsException {
+
+        return CmsPrincipal.filterCoreUsers(
+            OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(cms, ou, recursive));
+    }
+
+    /**
      * Adds additional properties for groups to a container.
      *
      * @param container the container to update
@@ -395,7 +413,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-     * Checks if a user can be removed from a set of groups
+     * Checks if a user can be removed from a set of groups.<p>
      *
      * @param principal the user
      * @param items the names of groups to check
@@ -540,29 +558,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-     * Gets list of users for organizational unit.<p>
-     *
-     * @param cms the CMS context
-     * @param type the tree type
-     * @param ou the OU path
-     * @param recursive true if users from other OUs should be retrieved
-     *
-     * @return the list of users, without their additional info
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public List<CmsUser> getUsersWithoutAdditionalInfo(
-        CmsObject cms,
-        I_CmsOuTreeType type,
-        String ou,
-        boolean recursive)
-    throws CmsException {
-
-        return CmsPrincipal.filterCoreUsers(
-            OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(cms, ou, recursive));
-    }
-
-    /**
      * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#handlePrincipal(org.opencms.security.I_CmsPrincipal)
      */
     public void handlePrincipal(I_CmsPrincipal principal) {
@@ -632,32 +627,8 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         }
 
         Component comp = getComponentForState(state);
-        if (m_stateBean.getType().isUser()) {
-            Map<String, String> dataMap = new LinkedHashMap<String, String>();
-            dataMap.put(
-                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
-                String.valueOf(((Table)m_table).size()));
-            try {
-                int count = getUsersWithoutAdditionalInfo(
-                    m_cms,
-                    m_stateBean.getType(),
-                    m_stateBean.getPath(),
-                    true).size();
-                if (count > ((Table)m_table).size()) {
-                    dataMap.put(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOT_COUNT_0),
-                        String.valueOf(count));
-                }
-            } catch (CmsException e) {
-                //;
-            }
-            m_infoButton.replaceData(dataMap);
-        } else {
-            m_infoButton.replaceData(
-                Collections.singletonMap(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
-                    String.valueOf(((Table)m_table).size())));
-        }
+
+        updateInfoButton();
         if (comp != null) {
             VerticalLayout layout = new VerticalLayout();
             layout.setSizeFull();
@@ -845,7 +816,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param type the tree type
      * @param cmsAccountsApp the app instance
      * @param buttonPressed true if toggle button for users is active
-
+    
      * @return the user table
      */
     protected I_CmsFilterableTable createUserTable(
@@ -975,6 +946,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_newButton.setVisible((m_stateBean.getGroupID() == null) & isOUManagable(m_stateBean.getPath()));
         m_toggleButtonRole.setVisible(m_stateBean.getType().isRole() && (m_stateBean.getGroupID() != null));
         m_toggleButtonUser.setVisible(m_stateBean.getType().isUser());
+
         m_toggleButtonGroups.setVisible(m_stateBean.getType().isGroup() && (m_stateBean.getGroupID() == null));
         m_infoButton.setVisible(
             m_stateBean.getType().isUser()
@@ -1037,12 +1009,58 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
+     * Gets the group-, role-, or ou name.<p>
+     *
+     * @param stateBean to be read out
+     * @return Name
+     */
+    protected String getElementName(CmsStateBean stateBean) {
+
+        if (stateBean.getType().equals(CmsOuTreeType.USER)) {
+            try {
+                return OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, stateBean.getPath()).getDisplayName(
+                    A_CmsUI.get().getLocale());
+            } catch (CmsException e) {
+                LOG.error("Unable to read OU", e);
+            }
+        }
+        if (stateBean.getType().equals(CmsOuTreeType.ROLE)) {
+            return CmsRole.valueOfId(stateBean.getGroupID()).getName(A_CmsUI.get().getLocale());
+        } else {
+            try {
+                return m_cms.readGroup(stateBean.getGroupID()).getSimpleName();
+            } catch (CmsException e) {
+                LOG.error("Unable to read group", e);
+            }
+        }
+        return "";
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
      */
     @Override
     protected List<NavEntry> getSubNavEntries(String state) {
 
         return null;
+    }
+
+    /**
+     * Get the current toggle button.<p>
+     *
+     * @param stateBean to be read out
+     * @return Button
+     */
+    protected Button getToggleButton(CmsStateBean stateBean) {
+
+        if (stateBean.getType().equals(CmsOuTreeType.USER)) {
+            return m_toggleButtonUser;
+        }
+        if (stateBean.getType().equals(CmsOuTreeType.ROLE)) {
+            return m_toggleButtonRole;
+        } else {
+            return m_toggleButtonGroups;
+        }
     }
 
     /**
@@ -1053,6 +1071,19 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     protected I_CmsTreeTypeProvider getTreeTypeProvider() {
 
         return DEFAULT_TREETYPES;
+    }
+
+    /**
+     * Gets all currently visible user.<p>
+     *
+     * @return List of CmsUser
+     */
+    protected List<CmsUser> getVisibleUser() {
+
+        if (m_table instanceof CmsUserTable) {
+            return ((CmsUserTable)m_table).getVisibleUser();
+        }
+        return null;
     }
 
     /**
@@ -1119,6 +1150,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_filterTable.getValue())) {
             filterTable(m_filterTable.getValue());
         }
+        updateInfoButton();
     }
 
     /**
@@ -1139,6 +1171,28 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             }
         });
         m_infoButton = new CmsInfoButton();
+        Button csvButton = new Button(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_EXPORT_ONLY_USER_0));
+        csvButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 5472430305539438757L;
+
+            public void buttonClick(ClickEvent event) {
+
+                Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+                CmsUserCsvExportDialog dialog = new CmsUserCsvExportDialog(
+                    getVisibleUser(),
+                    m_stateBean.getPath(),
+                    m_stateBean.getType(),
+                    getElementName(m_stateBean),
+                    CmsVaadinUtils.isButtonPressed(getToggleButton(m_stateBean)),
+                    window);
+                window.setContent(dialog);
+                A_CmsUI.get().addWindow(window);
+
+            }
+
+        });
+        m_infoButton.setAdditionalButton(csvButton);
 
         m_addElementButton = CmsToolBar.createButton(
             FontAwesome.PLUS,
@@ -1206,6 +1260,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_uiContext.addToolbarButton(m_toggleButtonRole);
         m_uiContext.addToolbarButton(m_toggleButtonUser);
         m_uiContext.addToolbarButton(m_toggleButtonGroups);
+
         for (Button button : getAdditionalButtons()) {
             m_uiContext.addToolbarButton(button);
         }
@@ -1248,6 +1303,39 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             m_doNotChange = false;
             m_filter.select(m_filter.getItemIds().iterator().next());
             m_doNotChange = change;
+        }
+    }
+
+    /**
+     * Updates the info button.<p>
+     */
+    private void updateInfoButton() {
+
+        if (m_stateBean.getType().isUser()) {
+            Map<String, String> dataMap = new LinkedHashMap<String, String>();
+            dataMap.put(
+                CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
+                String.valueOf(((Table)m_table).size()));
+            try {
+                int count = getUsersWithoutAdditionalInfo(m_cms, m_stateBean.getPath(), true).size();
+                if (count > ((Table)m_table).size()) {
+                    dataMap.put(
+                        CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOT_COUNT_0),
+                        String.valueOf(count));
+                }
+            } catch (CmsException e) {
+                //;
+            }
+            m_infoButton.replaceData(dataMap);
+        } else {
+            int size = ((Table)m_table).size();
+            if (m_table instanceof CmsUserTable) {
+                size = ((CmsUserTable)m_table).getVisibleUser().size();
+            }
+            m_infoButton.replaceData(
+                Collections.singletonMap(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
+                    String.valueOf(size)));
         }
     }
 

@@ -27,7 +27,6 @@
 
 package org.opencms.ui.apps.user;
 
-import org.opencms.db.CmsUserExportSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -54,13 +53,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,9 +66,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.Resource;
-import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
@@ -89,7 +83,7 @@ import com.vaadin.ui.Window;
 /**
  * Dialog for CSV im- and export.<p>
  */
-public class CmsImportExportUserDialog extends CmsBasicDialog implements Receiver, I_CmsPasswordFetcher {
+public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog implements Receiver, I_CmsPasswordFetcher {
 
     /**The dialog height. */
     public static final String DIALOG_HEIGHT = "650px";
@@ -103,14 +97,8 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     /**Label to show uploaded file. */
     protected Label m_uploadname;
 
-    /**Stream for export. */
-    InputStream m_exportStream;
-
     /**Start import button. */
     Button m_startImport;
-
-    /**Window holding the dialog. */
-    Window m_window;
 
     /**Cancel button. */
     private Button m_cancel;
@@ -145,7 +133,7 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     /**Stream for upload file. */
     private ByteArrayOutputStream m_importFileStream;
 
-    /**Layout for groups*/
+    /**Layout for groups.*/
     private VerticalLayout m_importGroups;
 
     /**Groups. */
@@ -160,16 +148,11 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     /**Roles. */
     private CmsEditableGroup m_importRolesGroup;
 
-    /**Ou name to export from or import to. */
-    private String m_ou;
-
     /**Password for imported user. */
     private TextField m_password;
 
+    /**List of user to import. */
     List<CmsUser> m_userImportList;
-
-    /**Save export file button. */
-    private Button m_save;
 
     /**Should the user get an email? */
     private CheckBox m_sendMail;
@@ -190,22 +173,15 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     private CmsImportExportUserDialog(final String ou, CmsUUID groupID, Window window) {
 
         setHeight(DIALOG_HEIGHT);
-        m_ou = ou;
-        m_window = window;
+
         m_groupID = groupID;
 
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-            CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-
-            displayResourceInfoDirectly(
-                Collections.singletonList(
-                    CmsAccountsApp.getOUInfo(
-                        OpenCms.getOrgUnitManager().readOrganizationalUnit(A_CmsUI.getCmsObject(), ou))));
-        } catch (CmsException e) {
+        } catch (CmsException e1) {
             //
         }
-
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_importPasswords.setValue(Boolean.TRUE);
         m_sendMail.setValue(Boolean.TRUE);
 
@@ -214,7 +190,6 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
         m_tab.addSelectedTabChangeListener(
             event -> setButtonVisibility(m_tab.getTabPosition(m_tab.getTab(m_tab.getSelectedTab()))));
 
-        m_cancel.addClickListener(event -> window.close());
         m_password.setValue(CmsGeneratePasswordDialog.getRandomPassword());
         m_startImport.setEnabled(false);
         m_startImport.addClickListener(event -> importUserFromFile());
@@ -291,11 +266,6 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
             }
         });
 
-        m_download.setEnabled(false);
-
-        FileDownloader fileDownloader = new FileDownloader(getDownloadResource(m_exportStream));
-        fileDownloader.extend(m_download);
-
         if (groupID == null) {
 
             m_importGroupsGroup = new CmsEditableGroup(m_importGroups, new Supplier<Component>() {
@@ -346,7 +316,7 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
 
         m_exportRolesGroup.init();
 
-        m_save.addClickListener(e -> saveExportFile());
+        super.init(ou, window);
 
     }
 
@@ -643,21 +613,27 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     }
 
     /**
-     * Checks if the user can be exported.<p>
-     *
-     * @param exportUser the suer to check
-     *
-     * @return <code>true</code> if the user can be exported
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getCloseButton()
      */
-    protected boolean isExportable(CmsUser exportUser) {
+    @Override
+    Button getCloseButton() {
 
-        return exportUser.getFlags() < I_CmsPrincipal.FLAG_CORE_LIMIT;
+        return m_cancel;
     }
 
     /**
-     * Save export file.<p>
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getDownloadButton()
      */
-    protected void saveExportFile() {
+    @Override
+    Button getDownloadButton() {
+
+        return m_download;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getUserToExport()
+     */
+    Map<CmsUUID, CmsUser> getUserToExport() {
 
         // get the data object from session
         List<String> groups = getGroupsList(m_exportGroups, false);
@@ -671,7 +647,7 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
 
         Map<CmsUUID, CmsUser> exportUsers = new HashMap<CmsUUID, CmsUser>();
         try {
-            if (((groups.size() < 1)) && ((roles == null) || (roles.size() < 1))) {
+            if (((groups.size() < 1)) && ((roles.size() < 1))) {
                 exportUsers = CmsImportExportUserDialog.addExportAllUsers(m_cms, m_ou, exportUsers);
             } else {
                 exportUsers = CmsImportExportUserDialog.addExportUsersFromGroups(m_cms, groups, exportUsers);
@@ -680,92 +656,7 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
         } catch (CmsException e) {
             LOG.error("Unable to get export user list.", e);
         }
-
-        StringBuffer buffer = new StringBuffer();
-        CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
-
-        String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
-        List<String> values = settings.getColumns();
-
-        buffer.append("name");
-        Iterator<String> itValues = values.iterator();
-        while (itValues.hasNext()) {
-            buffer.append(separator);
-            buffer.append(itValues.next());
-        }
-        buffer.append("\n");
-
-        Object[] users = exportUsers.values().toArray();
-
-        for (int i = 0; i < users.length; i++) {
-            CmsUser exportUser = (CmsUser)users[i];
-            if (!exportUser.getOuFqn().equals(m_ou)) {
-                // skip users of others ous
-                continue;
-            }
-            if (!isExportable(exportUser)) {
-                continue;
-            }
-            buffer.append(exportUser.getSimpleName());
-            itValues = values.iterator();
-            while (itValues.hasNext()) {
-                buffer.append(separator);
-                String curValue = itValues.next();
-                try {
-                    Method method = CmsUser.class.getMethod(
-                        "get" + curValue.substring(0, 1).toUpperCase() + curValue.substring(1));
-                    String curOutput = (String)method.invoke(exportUser);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
-                        curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                    }
-
-                    if (curValue.equals("password")) {
-                        curOutput = OpenCms.getPasswordHandler().getDigestType() + "_" + curOutput;
-                    }
-
-                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
-                        buffer.append(curOutput);
-                    }
-                } catch (NoSuchMethodException e) {
-                    Object obj = exportUser.getAdditionalInfo(curValue);
-                    if (obj != null) {
-                        String curOutput = String.valueOf(obj);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
-                            buffer.append(curOutput);
-                        }
-                    }
-                } catch (IllegalAccessException e) {
-                    //
-                } catch (InvocationTargetException e) {
-                    //
-                }
-            }
-            buffer.append("\n");
-
-            m_exportStream = new ByteArrayInputStream(buffer.toString().getBytes());
-            m_download.setEnabled(true);
-
-        }
-    }
-
-    /**
-     * Get download resource for export.<p>
-     *
-     * @param exportStream stream
-     * @return Resource
-     */
-    private Resource getDownloadResource(InputStream exportStream) {
-
-        return new StreamResource(new StreamResource.StreamSource() {
-
-            private static final long serialVersionUID = -8868657402793427460L;
-
-            public InputStream getStream() {
-
-                return m_exportStream;
-
-            }
-        }, "User_Export.csv");
+        return exportUsers;
     }
 
     /**
@@ -829,9 +720,7 @@ public class CmsImportExportUserDialog extends CmsBasicDialog implements Receive
     private void setButtonVisibility(int tab) {
 
         m_download.setVisible(tab == 1);
-        m_save.setVisible(tab == 1);
         m_startImport.setVisible(tab == 0);
 
     }
-
 }

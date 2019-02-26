@@ -913,7 +913,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         try {
             m_cms = getCmsObject();
             m_type = type;
-            List<CmsUser> directs = m_app.getUsersWithoutAdditionalInfo(m_cms, type, ou, false);
+            List<CmsUser> directs = CmsAccountsApp.getUsersWithoutAdditionalInfo(m_cms, ou, false);
             m_indirects = new ArrayList<CmsUser>();
             if (showAll) {
                 setAllUsers(directs);
@@ -960,6 +960,23 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         setVisible(size() > 0);
         m_emptyLayout.setVisible(size() == 0);
         return m_emptyLayout;
+    }
+
+    public List<CmsUser> getVisibleUser() {
+
+        if (!m_fullyLoaded) {
+            return m_users;
+        }
+        if (size() == m_users.size()) {
+            return m_users;
+        }
+        List<CmsUser> directs = new ArrayList<CmsUser>();
+        for (CmsUser user : m_users) {
+            if (!m_indirects.contains(user)) {
+                directs.add(user);
+            }
+        }
+        return directs;
     }
 
     /**
@@ -1480,7 +1497,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                 true,
                 false);
         } else if (m_type.equals(CmsOuTreeType.USER)) {
-            m_users = m_app.getUsersWithoutAdditionalInfo(m_cms, m_type, m_ou, true);
+            m_users = CmsAccountsApp.getUsersWithoutAdditionalInfo(m_cms, m_ou, true);
 
         }
         Iterator<CmsUser> it = m_users.iterator();
