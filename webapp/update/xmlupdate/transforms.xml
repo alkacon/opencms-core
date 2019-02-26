@@ -13,4 +13,5 @@
       <transform config="opencms-vfs.xml" xslt="addSchemaTypes.xslt" />
       <transform config="opencms-vfs.xml" xslt="addWidgets.xslt" />
       <transform config="opencms-workplace.xml" xslt="updateStartViewPref.xslt" />
+      <transform config="opencms-workplace.xml" xslt="removeOldWorkplaceEntries.xslt" />
 </transforms>
