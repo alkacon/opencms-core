@@ -95,7 +95,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONTEXTMENU_TITLE_OTHER_SITE_INACTIVE_0 = "GUI_CONTEXTMENU_TITLE_OTHER_SITE_INACTIVE_0";
 
     /** Name of the resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.menu.messages";
+    private static final String BUNDLE_NAME = "org.opencms.ui.contextmenu.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
