@@ -324,6 +324,17 @@ public class CmsElementUtil {
                 formatter = formatters.get(formatterId);
             }
         }
+        if (formatter == null) {
+            // check for formatter config id stored for other containers matching the current container
+            for (Entry<String, String> settingsEntry : element.getIndividualSettings().entrySet()) {
+                if (settingsEntry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                    formatter = formatters.get(settingsEntry.getValue());
+                    if (formatter != null) {
+                        break;
+                    }
+                }
+            }
+        }
         if ((formatter == null) && (element.getFormatterId() != null)) {
             for (I_CmsFormatterBean currentFormatter : formatters.values()) {
                 if ((currentFormatter.getJspStructureId() != null)
