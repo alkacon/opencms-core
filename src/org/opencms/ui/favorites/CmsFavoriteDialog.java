@@ -68,6 +68,66 @@ import com.vaadin.v7.data.util.IndexedContainer;
  */
 public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGroup.I_RowBuilder {
 
+    /**
+     * Action handler that saves favorites after every change.
+     */
+    public class SaveAfterChangeActionHandler extends CmsDefaultActionHandler {
+
+        /**
+         * Creates a new instance.
+         *
+         * @param row the row
+         */
+        @SuppressWarnings("synthetic-access")
+        public SaveAfterChangeActionHandler(I_CmsEditableGroupRow row) {
+
+            super(m_group, row);
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onAdd()
+         */
+        @Override
+        public void onAdd() {
+
+            super.onAdd();
+            doSave();
+
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onDelete()
+         */
+        @Override
+        public void onDelete() {
+
+            super.onDelete();
+            doSave();
+
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onDown()
+         */
+        @Override
+        public void onDown() {
+
+            super.onDown();
+            doSave();
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onUp()
+         */
+        @Override
+        public void onUp() {
+
+            super.onUp();
+            doSave();
+        }
+
+    }
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFavoriteDialog.class);
 
@@ -98,9 +158,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** Map of project labels. */
     private Map<CmsUUID, String> m_projectLabels = new HashMap<>();
 
-    /** The Save button. */
-    private Button m_saveButton;
-
     /** Container for the sites, used for their labels. */
     private IndexedContainer m_sitesContainer;
 
@@ -120,7 +177,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         List<CmsFavoriteEntry> entries = m_favDao.loadFavorites();
         m_cancelButton.addClickListener(evt -> m_context.close());
-        m_saveButton.addClickListener(evt -> onClickSave());
         m_favContainer.addLayoutClickListener(evt -> {
             CmsFavoriteEntry entry = getEntry(evt.getChildComponent());
             m_context.openFavorite(entry);
@@ -153,9 +209,22 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     public CmsFavInfo buildRow(CmsEditableGroup group, Component component) {
 
         CmsFavInfo info = (CmsFavInfo)component;
-        CmsEditableGroupButtons buttons = new CmsEditableGroupButtons(new CmsDefaultActionHandler(m_group, info));
+        CmsEditableGroupButtons buttons = new CmsEditableGroupButtons(new SaveAfterChangeActionHandler(info));
         info.setButtons(buttons);
         return info;
+    }
+
+    /**
+     * Saves the list of currently displayed favorites.
+     */
+    protected void doSave() {
+
+        List<CmsFavoriteEntry> entries = getEntries();
+        try {
+            m_favDao.saveFavorites(entries);
+        } catch (Exception e) {
+            CmsErrorDialog.showErrorDialog(e);
+        }
     }
 
     /**
@@ -191,7 +260,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
      */
     private CmsFavInfo createFavInfo(CmsFavoriteEntry entry) throws CmsException {
 
-        String title = "foo";
+        String title = "";
         String subtitle = "";
         CmsFavInfo result = new CmsFavInfo(entry);
         CmsObject cms = A_CmsUI.getCmsObject();
@@ -300,20 +369,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
             }
             m_context.close();
         }
-    }
-
-    /**
-     * The click handler for the save button.
-     */
-    private void onClickSave() {
-
-        List<CmsFavoriteEntry> entries = getEntries();
-        try {
-            m_favDao.saveFavorites(entries);
-        } catch (Exception e) {
-            CmsErrorDialog.showErrorDialog(e);
-        }
-        m_context.close();
     }
 
 }
