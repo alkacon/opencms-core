@@ -125,36 +125,39 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Adds bookmark for the givne user/site root/path combination.
+     * Adds bookmark for the givne user/site root/path/project combination
      *
-     * The current project is used as the project to set in the bookmark.
+     * @param user the user for whom to set the bookmark
+     * @param siteRoot the site root
+     * @param sitePath the site path of the resource
+     * @param project the name of the project
      *
-     * @param user
-     * @param siteRoot
-     * @param sitePath
-     * @throws Exception
+     * @throws Exception if something goes wrong
      */
-    public void addBookmark(String user, String siteRoot, String sitePath) throws Exception {
+    public void addBookmark(String user, String siteRoot, String sitePath, String project) throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(m_cms);
+        if (project != null) {
+            cms.getRequestContext().setCurrentProject(cms.readProject(project));
+        }
         cms.getRequestContext().setSiteRoot(siteRoot);
         CmsFavoriteDAO favDao = new CmsFavoriteDAO(cms, user);
         List<CmsFavoriteEntry> entries = favDao.loadFavorites();
         CmsResource res = cms.readResource(sitePath);
         CmsFavoriteEntry entry = new CmsFavoriteEntry();
-        CmsProject project = cms.getRequestContext().getCurrentProject();
+        CmsProject currProject = cms.getRequestContext().getCurrentProject();
         if (res.isFolder()) {
             entry.setType(Type.explorerFolder);
             entry.setStructureId(res.getStructureId());
-            entry.setProjectId(project.getId());
+            entry.setProjectId(currProject.getId());
             entry.setSiteRoot(siteRoot);
         } else {
-            if (project.isOnlineProject()) {
+            if (currProject.isOnlineProject()) {
                 throw new IllegalArgumentException("Can not set bookmark for page in Online project.");
             }
             entry.setType(Type.page);
             entry.setStructureId(res.getStructureId());
-            entry.setProjectId(project.getId());
+            entry.setProjectId(currProject.getId());
             entry.setSiteRoot(siteRoot);
         }
         entries.add(entry);
