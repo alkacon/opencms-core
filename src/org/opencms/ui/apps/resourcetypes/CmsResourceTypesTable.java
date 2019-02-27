@@ -142,8 +142,7 @@ public class CmsResourceTypesTable extends Table {
                                         if (!modulesToBeUpdated.containsKey(type.getModuleName())) {
                                             modulesToBeUpdated.put(
                                                 type.getModuleName(),
-                                                (CmsModule)OpenCms.getModuleManager().getModule(
-                                                    type.getModuleName()).clone());
+                                                OpenCms.getModuleManager().getModule(type.getModuleName()).clone());
                                         }
                                         module = modulesToBeUpdated.get(type.getModuleName());
 
@@ -314,7 +313,19 @@ public class CmsResourceTypesTable extends Table {
             if (data.size() > 1) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            try {
+                Iterator<String> it = data.iterator();
+                while (it.hasNext()) {
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                    }
+                }
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            } catch (CmsException e) {
+                LOG.error("Unable to read resourcetype", e);
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
         }
     }
 
