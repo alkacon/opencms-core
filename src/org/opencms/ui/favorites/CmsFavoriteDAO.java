@@ -79,6 +79,9 @@ public class CmsFavoriteDAO {
     /** The root CMS context. */
     private CmsObject m_rootCms;
 
+    /** Name of user from which bookmarks should be loaded. */
+    private String m_userName;
+
     /**
      * Creates a new instance.
      *
@@ -88,21 +91,37 @@ public class CmsFavoriteDAO {
     public CmsFavoriteDAO(CmsObject cms)
     throws CmsException {
 
+        this(cms, cms.getRequestContext().getCurrentUser().getName());
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param cms the CMS Context
+     * @param userName the name of the user in whose additional infos the bookmarks are stored
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFavoriteDAO(CmsObject cms, String userName)
+    throws CmsException {
+
         m_cms = cms;
         m_rootCms = OpenCms.initCmsObject(m_cms);
         m_rootCms.getRequestContext().setSiteRoot("");
+        m_userName = userName;
     }
 
     /**
      * Loads the favorite list.
      *
      * @return the list of favorites
+     *
+     * @throws CmsException if something goes wrong
      */
-    public List<CmsFavoriteEntry> loadFavorites() {
+    public List<CmsFavoriteEntry> loadFavorites() throws CmsException {
 
         List<CmsFavoriteEntry> result = new ArrayList<>();
         try {
-            CmsUser user = m_cms.getRequestContext().getCurrentUser();
+            CmsUser user = readUser();
             String data = (String)user.getAdditionalInfo(ADDINFO_KEY);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(data)) {
                 return new ArrayList<>();
@@ -143,12 +162,18 @@ public class CmsFavoriteDAO {
             }
             json.put(BASE_KEY, array);
             String data = json.toString();
-            CmsUser user = m_cms.getRequestContext().getCurrentUser();
+            CmsUser user = readUser();
             user.setAdditionalInfo(ADDINFO_KEY, data);
             m_cms.writeUser(user);
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+
+    }
+
+    private CmsUser readUser() throws CmsException {
+
+        return m_cms.readUser(m_userName);
 
     }
 
@@ -183,7 +208,6 @@ public class CmsFavoriteDAO {
 
         } catch (Exception e) {
             LOG.info("Favorite entry validation failed: " + e.getLocalizedMessage(), e);
-            e.printStackTrace();
             return false;
         }
 

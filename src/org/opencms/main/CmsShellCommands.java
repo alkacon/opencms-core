@@ -71,6 +71,9 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.apps.search.CmsSearchReplaceSettings;
 import org.opencms.ui.apps.search.CmsSearchReplaceThread;
 import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
+import org.opencms.ui.favorites.CmsFavoriteDAO;
+import org.opencms.ui.favorites.CmsFavoriteEntry;
+import org.opencms.ui.favorites.CmsFavoriteEntry.Type;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -119,6 +122,43 @@ class CmsShellCommands implements I_CmsShellCommands {
     protected CmsShellCommands() {
 
         // noop
+    }
+
+    /**
+     * Adds bookmark for the givne user/site root/path combination.
+     *
+     * The current project is used as the project to set in the bookmark.
+     *
+     * @param user
+     * @param siteRoot
+     * @param sitePath
+     * @throws Exception
+     */
+    public void addBookmark(String user, String siteRoot, String sitePath) throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(m_cms);
+        cms.getRequestContext().setSiteRoot(siteRoot);
+        CmsFavoriteDAO favDao = new CmsFavoriteDAO(cms, user);
+        List<CmsFavoriteEntry> entries = favDao.loadFavorites();
+        CmsResource res = cms.readResource(sitePath);
+        CmsFavoriteEntry entry = new CmsFavoriteEntry();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
+        if (res.isFolder()) {
+            entry.setType(Type.explorerFolder);
+            entry.setStructureId(res.getStructureId());
+            entry.setProjectId(project.getId());
+            entry.setSiteRoot(siteRoot);
+        } else {
+            if (project.isOnlineProject()) {
+                throw new IllegalArgumentException("Can not set bookmark for page in Online project.");
+            }
+            entry.setType(Type.page);
+            entry.setStructureId(res.getStructureId());
+            entry.setProjectId(project.getId());
+            entry.setSiteRoot(siteRoot);
+        }
+        entries.add(entry);
+        favDao.saveFavorites(entries);
     }
 
     /**

@@ -47,7 +47,7 @@ public class CmsFavoriteEntry {
     /**
      * Represents the type of the favorite.
      */
-    enum Type {
+    public enum Type {
     /** Container page editor favorite. */
     explorerFolder("f"),
 
@@ -139,7 +139,7 @@ public class CmsFavoriteEntry {
 
         m_detailId = readId(obj, JSON_DETAIL);
         m_projectId = readId(obj, JSON_PROJECT);
-        m_siteRoot = obj.optString(JSON_SITEROOT);
+        setSiteRoot(obj.optString(JSON_SITEROOT));
         m_structureId = readId(obj, JSON_STRUCTUREID);
         m_type = Type.fromJsonId(obj.optString(JSON_TYPE));
     }
@@ -240,6 +240,9 @@ public class CmsFavoriteEntry {
      */
     public void setSiteRoot(String siteRoot) {
 
+        if (siteRoot != null) {
+            siteRoot = siteRoot.replaceFirst("/$", "");
+        }
         m_siteRoot = siteRoot;
     }
 

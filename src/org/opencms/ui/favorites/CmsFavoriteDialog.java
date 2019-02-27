@@ -217,7 +217,8 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
      * @param context the favorite context
      * @param favDao the favorite load/save handler
      */
-    public CmsFavoriteDialog(I_CmsFavoriteContext context, CmsFavoriteDAO favDao) {
+    public CmsFavoriteDialog(I_CmsFavoriteContext context, CmsFavoriteDAO favDao)
+    throws CmsException {
 
         super();
         m_favDao = favDao;
