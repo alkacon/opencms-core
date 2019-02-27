@@ -38,7 +38,6 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
-import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCRUDApp;
@@ -118,9 +117,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
 
     /**Info Button. */
     private CmsInfoButton m_infoButton;
-
-    /**Is or should the publish button be visible.*/
-    private boolean m_isPublishVisible;
 
     /**The publish button.*/
     private Button m_publishButton;
@@ -282,8 +278,9 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
     @Override
     public void initUI(I_CmsAppUIContext context) {
 
-        context.addPublishButton(changes -> {/* do nothing. */});
-        // TODO Auto-generated method stub
+        context.addPublishButton(changes -> {
+            A_CmsUI.get().reload();
+        });
         super.initUI(context);
     }
 
@@ -335,19 +332,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
 
         CmsWebServerConfigForm form = new CmsWebServerConfigForm(this);
         openDialog(form, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
-    }
-
-    /**
-     * Sets the visibility of the publish button.<p>
-     *
-     * @param visible true-> publish button visible, false -> not visible
-     */
-    public void showPublishButton(boolean visible) {
-
-        m_isPublishVisible = visible;
-        if (m_publishButton != null) {
-            m_publishButton.setVisible(visible);
-        }
     }
 
     /**
@@ -474,15 +458,6 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
      */
     private void addToolbarButtons() {
 
-        m_publishButton = m_uiContext.addPublishButton(new I_CmsUpdateListener<String>() {
-
-            @Override
-            public void onUpdate(List<String> updatedItems) {
-
-                A_CmsUI.get().reload();
-            }
-        });
-        m_publishButton.setVisible(m_isPublishVisible);
         Button add = CmsToolBar.createButton(FontOpenCms.WAND, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_0));
         add.addClickListener(new ClickListener() {
 

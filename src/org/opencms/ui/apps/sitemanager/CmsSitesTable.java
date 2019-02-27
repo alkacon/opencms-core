@@ -688,7 +688,6 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                 }
             }
         }
-        m_manager.showPublishButton(showPublishButton);
     }
 
     /**
