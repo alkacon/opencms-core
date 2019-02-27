@@ -1355,7 +1355,23 @@
 		}
 
 	}
-
+	
+	.o-bookmarks-placeholder {
+		display: -ms-flex; 
+		display: flex; 
+		flex-direction: column;  
+		height: 100%;
+		 
+		& > * {
+			&:nth-child(2) {  
+				text-align: center;
+			}
+			
+			&:nth-child(1), &:nth-child(3) { 
+				flex: 1; 
+			} 
+		}
+	}
 }
 
 .waggle{

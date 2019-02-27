@@ -53,18 +53,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ACTION_OPEN_FORM_EDITOR_0 = "GUI_ACTION_OPEN_FORM_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_FAVORITES_DIALOG_TITLE_0 = "GUI_FAVORITES_DIALOG_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FAVORITES_BUTTON_0 = "GUI_FAVORITES_BUTTON_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FAVORITES_ADD_BUTTON_0 = "GUI_FAVORITES_ADD_BUTTON_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ACTION_VIEW_IN_EXPLORER_0 = "GUI_ACTION_VIEW_IN_EXPLORER_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_OPEN_PAGE_0 = "GUI_ACTION_OPEN_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -72,6 +60,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_SWITCH_SITE_0 = "GUI_ACTION_SWITCH_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ACTION_VIEW_IN_EXPLORER_0 = "GUI_ACTION_VIEW_IN_EXPLORER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";
@@ -180,6 +171,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_ADD_BUTTON_0 = "GUI_FAVORITES_ADD_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_BUTTON_0 = "GUI_FAVORITES_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_DIALOG_TITLE_0 = "GUI_FAVORITES_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_EMPTY_LIST_PLACEHOLDER_0 = "GUI_FAVORITES_EMPTY_LIST_PLACEHOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FORGOT_PASSWORD_0 = "GUI_FORGOT_PASSWORD_0";

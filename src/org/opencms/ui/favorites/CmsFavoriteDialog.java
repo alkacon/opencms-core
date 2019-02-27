@@ -30,6 +30,7 @@ package org.opencms.ui.favorites;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -40,6 +41,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceIcon;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.editablegroup.CmsDefaultActionHandler;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
 import org.opencms.ui.components.editablegroup.CmsEditableGroupButtons;
@@ -56,8 +58,10 @@ import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
@@ -87,6 +91,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         /**
          * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onAdd()
          */
+        @SuppressWarnings("synthetic-access")
         @Override
         public void onAdd() {
 
@@ -109,11 +114,13 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         /**
          * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onDown()
          */
+        @SuppressWarnings("synthetic-access")
         @Override
         public void onDown() {
 
             super.onDown();
             doSave();
+
         }
 
         /**
@@ -124,6 +131,49 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
 
             super.onUp();
             doSave();
+        }
+
+    }
+
+    /**
+     * Handles changes in empty/not empty state by hiding or displaying a message.
+     */
+    class EmptyHandler implements CmsEditableGroup.I_EmptyHandler {
+
+        /** The group. */
+        private CmsEditableGroup m_groupForHandler;
+
+        /** The placeholder. */
+        private Label m_placeholder;
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsEditableGroup.I_EmptyHandler#init(org.opencms.ui.components.editablegroup.CmsEditableGroup)
+         */
+        public void init(CmsEditableGroup group) {
+
+            String message = CmsVaadinUtils.getMessageText(Messages.GUI_FAVORITES_EMPTY_LIST_PLACEHOLDER_0);
+            m_groupForHandler = group;
+            m_placeholder = new Label();
+            m_placeholder.setContentMode(ContentMode.HTML);
+            String spacer = "<div></div>";
+            String content = "<div>" + CmsEncoder.escapeXml(message) + "</div>";
+            m_placeholder.setValue(spacer + content + spacer);
+            m_placeholder.addStyleName(OpenCmsTheme.BOOKMARKS_PLACEHOLDER);
+            m_placeholder.setHeight("100%");
+
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsEditableGroup.I_EmptyHandler#setEmpty(boolean)
+         */
+        public void setEmpty(boolean empty) {
+
+            if (!m_placeholder.isAttached()) {
+                m_groupForHandler.getContainer().addComponent(m_placeholder);
+                m_groupForHandler.getContainer().setExpandRatio(m_placeholder, 1.0f);
+            }
+            m_groupForHandler.getContainer().setHeight(empty ? "100%" : null);
+            m_placeholder.setVisible(empty);
         }
 
     }
@@ -179,16 +229,20 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         m_cancelButton.addClickListener(evt -> m_context.close());
         m_favContainer.addLayoutClickListener(evt -> {
             CmsFavoriteEntry entry = getEntry(evt.getChildComponent());
-            m_context.openFavorite(entry);
+            if (entry != null) { // may be null when user double clicks on delete icon
+                m_context.openFavorite(entry);
+            }
         });
         m_currentLocation = context.getFavoriteForCurrentLocation();
         m_addButton.setEnabled(m_currentLocation.isPresent());
         m_addButton.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_FAVORITES_ADD_BUTTON_0));
         m_addButton.addClickListener(evt -> onClickAdd());
         m_favContainer.removeAllComponents();
-        m_group = new CmsEditableGroup(m_favContainer, null, null);
+        m_group = new CmsEditableGroup(m_favContainer, null, new EmptyHandler());
         m_group.setAddButtonVisible(false);
         m_group.setRowBuilder(this);
+        m_group.init();
+
         for (CmsFavoriteEntry favEntry : entries) {
             Component favInfo;
             try {
@@ -199,8 +253,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
             }
 
         }
-        m_group.getAddButton().setVisible(false);
-
     }
 
     /**

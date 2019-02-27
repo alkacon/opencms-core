@@ -48,6 +48,9 @@ public final class OpenCmsTheme {
     public static final String APP_INFO = "o-app-info";
 
     /** CSS style name. */
+    public static final String BOOKMARKS_PLACEHOLDER = "o-bookmarks-placeholder";
+
+    /** CSS style name. */
     public static final String BUTTON_BLUE = "o-button-blue";
 
     /** CSS style name. */

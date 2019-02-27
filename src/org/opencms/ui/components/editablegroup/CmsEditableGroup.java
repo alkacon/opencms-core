@@ -34,8 +34,6 @@ import com.google.common.collect.Lists;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.ErrorEvent;
 import com.vaadin.ui.Component.Event;
@@ -49,6 +47,53 @@ import com.vaadin.v7.ui.Label;
  * This class is not itself a widget, it just coordinates the other widgets actually used to display the multivalue widget group.
  */
 public class CmsEditableGroup {
+
+    /**
+     * Empty handler which shows or hides an 'Add' button to add new rows, depending on whether the group is empty.
+     */
+    public static class AddButtonEmptyHandler implements CmsEditableGroup.I_EmptyHandler {
+
+        /** The 'Add' button. */
+        private Button m_addButton;
+
+        /** The group. */
+        private CmsEditableGroup m_group;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param addButtonText the text for the Add button
+         */
+        public AddButtonEmptyHandler(String addButtonText) {
+
+            m_addButton = new Button(addButtonText);
+            m_addButton.addClickListener(evt -> {
+                Component component = m_group.getNewComponentFactory().get();
+                m_group.addRow(component);
+            });
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsEditableGroup.I_EmptyHandler#init(org.opencms.ui.components.editablegroup.CmsEditableGroup)
+         */
+        public void init(CmsEditableGroup group) {
+
+            m_group = group;
+        }
+
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsEditableGroup.I_EmptyHandler#setEmpty(boolean)
+         */
+        public void setEmpty(boolean empty) {
+
+            if (empty) {
+                m_group.getContainer().addComponent(m_addButton);
+            } else {
+                m_group.getContainer().removeComponent(m_addButton);
+            }
+        }
+
+    }
 
     /**
      * Default implementation for row builder.
@@ -72,7 +117,26 @@ public class CmsEditableGroup {
             }
             return row;
         }
+    }
 
+    /**
+     * Handles state changes when the group becomes empty/not empty.
+     */
+    public interface I_EmptyHandler {
+
+        /**
+         * Needs to be called initially with the group for which this is used.
+         *
+         * @param group the group
+         */
+        public void init(CmsEditableGroup group);
+
+        /**
+         * Called when the group changes from empty to not empty, or vice versa.
+         *
+         * @param empty true if the group is empty
+         */
+        public void setEmpty(boolean empty);
     }
 
     /**
@@ -103,11 +167,10 @@ public class CmsEditableGroup {
         public I_CmsEditableGroupRow buildRow(CmsEditableGroup group, Component component);
     }
 
-    /** Button to add a new row to an empty list. */
-    private Button m_addButton;
-
     /** The container in which to render the individual rows of the multivalue widget group. */
     private AbstractOrderedLayout m_container;
+
+    private I_EmptyHandler m_emptyHandler;
 
     /** The error label. */
     private Label m_errorLabel = new Label();
@@ -135,28 +198,19 @@ public class CmsEditableGroup {
      *
      * @param container the container in which to render the individual rows
      * @param componentFactory the factory used to create new input fields
-     * @param addButtonCaption the caption for the button which is used to add a new row to an empty list
+     * @param placeholder the placeholder to display when there are no rows
      */
     public CmsEditableGroup(
         AbstractOrderedLayout container,
         Supplier<Component> componentFactory,
-        String addButtonCaption) {
+        I_EmptyHandler emptyHandler) {
 
         m_hideAdd = false;
+        m_emptyHandler = emptyHandler;
         m_container = container;
         m_newComponentFactory = componentFactory;
-        m_addButton = new Button(addButtonCaption);
-        m_addButton.addClickListener(new ClickListener() {
-
-            /** Serial version id. */
-            private static final long serialVersionUID = 1L;
-
-            @SuppressWarnings("synthetic-access")
-            public void buttonClick(ClickEvent event) {
-
-                addRow(m_newComponentFactory.get());
-            }
-        });
+        m_emptyHandler = emptyHandler;
+        m_emptyHandler.init(this);
         m_errorListener = new Listener() {
 
             private static final long serialVersionUID = 1L;
@@ -175,6 +229,21 @@ public class CmsEditableGroup {
     }
 
     /**
+     * Creates a new instance.<p>
+     *
+     * @param container the container in which to render the individual rows
+     * @param componentFactory the factory used to create new input fields
+     * @param addButtonCaption the caption for the button which is used to add a new row to an empty list
+     */
+    public CmsEditableGroup(
+        AbstractOrderedLayout container,
+        Supplier<Component> componentFactory,
+        String addButtonCaption) {
+
+        this(container, componentFactory, new AddButtonEmptyHandler(addButtonCaption));
+    }
+
+    /**
      * Adds a row for the given component at the end of the group.
      *
      * @param component the component to wrap in the row to be added
@@ -184,13 +253,15 @@ public class CmsEditableGroup {
         Component actualComponent = component == null ? m_newComponentFactory.get() : component;
         I_CmsEditableGroupRow row = m_rowBuilder.buildRow(this, actualComponent);
         m_container.addComponent(row);
-        updateAddButton();
+        updatePlaceholder();
         updateButtonBars();
         updateGroupValidation();
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#addRowAfter(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
+     * Adds a new row after the given one.
+     *
+     * @param row the row after which a new one should be added
      */
     public void addRowAfter(I_CmsEditableGroupRow row) {
 
@@ -200,24 +271,39 @@ public class CmsEditableGroup {
             I_CmsEditableGroupRow newRow = m_rowBuilder.buildRow(this, component);
             m_container.addComponent(newRow, index + 1);
         }
-        updateAddButton();
+        updatePlaceholder();
         updateButtonBars();
         updateGroupValidation();
     }
 
     /**
-     * Gets the 'add' button.<p>
+     * Gets the row container.
      *
-     * @return the add button
+     * @return the row container
      */
-    public Component getAddButton() {
+    public AbstractOrderedLayout getContainer() {
 
-        return m_addButton;
+        return m_container;
     }
 
+    /**
+     * Gets the error listener.
+     *
+     * @return t
+     */
     public Listener getErrorListener() {
 
         return m_errorListener;
+    }
+
+    /**
+     * Gets the factory used for creating new components.
+     *
+     * @return the factory used for creating new components
+     */
+    public Supplier<Component> getNewComponentFactory() {
+
+        return m_newComponentFactory;
     }
 
     /**
@@ -231,7 +317,9 @@ public class CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#getRows()
+     * Gets all rows.
+     *
+     * @return the list of all rows
      */
     public List<I_CmsEditableGroupRow> getRows() {
 
@@ -250,12 +338,14 @@ public class CmsEditableGroup {
     public void init() {
 
         m_container.removeAllComponents();
-        m_container.addComponent(m_addButton);
         m_container.addComponent(m_errorLabel);
+        updatePlaceholder();
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#moveDown(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
+     * Moves the given row down.
+     *
+     * @param row the row to move
      */
     public void moveDown(I_CmsEditableGroupRow row) {
 
@@ -268,7 +358,9 @@ public class CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#moveUp(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
+     * Moves the given row up.
+     *
+     * @param row the row to move
      */
     public void moveUp(I_CmsEditableGroupRow row) {
 
@@ -281,18 +373,17 @@ public class CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#remove(org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow)
+     * Removes the given row.
+     *
+     * @param row the row to remove
      */
     public void remove(I_CmsEditableGroupRow row) {
 
         int index = m_container.getComponentIndex(row);
         if (index >= 0) {
             m_container.removeComponent(row);
-            if (m_container.getComponentCount() == 0) {
-                m_container.addComponent(getAddButton());
-            }
         }
-        updateAddButton();
+        updatePlaceholder();
         updateButtonBars();
         updateGroupValidation();
     }
@@ -370,19 +461,6 @@ public class CmsEditableGroup {
     }
 
     /**
-     * Updates the button visibility.<p>
-     */
-    private void updateAddButton() {
-
-        if (getRows().size() == 0) {
-            m_container.addComponent(m_addButton);
-        } else {
-            m_container.removeComponent(m_addButton);
-        }
-
-    }
-
-    /**
      * Updates the button bars.<p>
      */
     private void updateButtonBars() {
@@ -393,7 +471,6 @@ public class CmsEditableGroup {
             boolean first = i == 0;
             boolean last = i == (rows.size() - 1);
             row.getButtonBar().setFirstLast(first, last, m_hideAdd);
-            //            row.getButtonBar()
             i += 1;
         }
     }
@@ -411,5 +488,15 @@ public class CmsEditableGroup {
             }
         }
         setErrorVisible(hasError);
+    }
+
+    /**
+     * Updates the button visibility.<p>
+     */
+    private void updatePlaceholder() {
+
+        boolean empty = getRows().size() == 0;
+        m_emptyHandler.setEmpty(empty);
+
     }
 }
