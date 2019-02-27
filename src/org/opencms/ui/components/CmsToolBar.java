@@ -153,10 +153,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
     private I_CmsDialogContext m_dialogContext;
 
     /** The favorite button. */
-    private Button m_favButton = CmsToolBar.createButton(
-        FontOpenCms.CLIPBOARD,
-        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_FAVORITES_BUTTON_0),
-        true);
+    private Button m_favButton;
 
     /** The sub menu displaying the folded buttons. */
     private PopupView m_foldedButtonsMenu;
@@ -189,6 +186,10 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
 
         m_quickLaunchDropDown = createQuickLaunchDropDown();
         m_userDropDown = createUserInfoDropDown();
+        m_favButton = CmsToolBar.createButton(
+            FontOpenCms.BOOKMARKS,
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_FAVORITES_BUTTON_0),
+            true);
         m_leftButtons = new VerticalLayout();
         m_rightButtons = new VerticalLayout();
         VerticalLayout layout = new VerticalLayout();

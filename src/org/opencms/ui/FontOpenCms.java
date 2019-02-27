@@ -41,6 +41,9 @@ public enum FontOpenCms implements FontIcon {
     /** The apps icon. */
     APPS(0xe617),
 
+    /** The bookmarks icon. */
+    BOOKMARKS(0xe654),
+
     /** The brackets icon. */
     BRACKETS(0xe64f),
 

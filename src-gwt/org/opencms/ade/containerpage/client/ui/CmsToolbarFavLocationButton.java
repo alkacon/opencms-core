@@ -54,7 +54,7 @@ public class CmsToolbarFavLocationButton extends A_CmsToolbarButton<CmsContainer
      */
     public CmsToolbarFavLocationButton(CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.FAVORITES_BUTTON, handler);
+        super(I_CmsButton.ButtonData.BOOKMARKS_BUTTON, handler);
     }
 
     /**

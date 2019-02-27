@@ -129,6 +129,7 @@ import com.vaadin.v7.ui.Tree.TreeDragMode;
 /**
  * The file explorer app.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsFileExplorer
 implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions,
 I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
