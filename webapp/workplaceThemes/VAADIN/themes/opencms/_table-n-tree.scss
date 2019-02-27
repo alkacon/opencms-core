@@ -2,18 +2,18 @@
   div.v-tree-node-caption:after{
   	border-radius: 0;
   }
-  
+
   div.v-tree-node-caption:hover:after{
   	$background-color: $v-table-background-color or valo-table-background-color();
   	$bg: mix($v-focus-color, $background-color, 20%);
   	background-color: $bg;
   	opacity: 1;
   }
-  
+
   div.v-tree-node-caption span.o-resource-icon, div.v-table-cell-wrapper  span.o-resource-icon{
   	margin: 0 2px 0 -6px;
   }
-  
+
   div.v-tree-node-caption > div > span{
   	position: relative;
   	&:before{
@@ -27,11 +27,11 @@
 	  	z-index: 10;
   	}
   }
-  
+
   .v-tree-node div.v-tree-node-caption span, div.v-tree-node-caption-drag-center span{
   	width: 100%;
   }
-  
+
   div.v-tree-node-caption:hover span.o-tree-caption, div.v-tree-node-caption-drag-center span.o-tree-caption{
   	color: #ffffff;
   	position: relative;
@@ -62,7 +62,7 @@
   }
   div.o-tree-table-caption{
   	width: 100%;
-  	
+
   	span.o-resource-icon{
   		float: left;
   	}
@@ -75,7 +75,7 @@
     	position: relative;
   		z-index: 1;
   	}
-  	
+
   	&:hover span.o-tree-caption{
   		color: #ffffff;
   		&:before{
@@ -94,7 +94,7 @@
   .opencms .v-table-row:hover > .v-table-cell-content, .opencms .v-table-row-odd:hover > .v-table-cell-content, .opencms .v-table-row > .v-table-cell-content, .opencms .v-table-row-odd > .v-table-cell-content{
   	&.o-disabled{
   		background: $o-medium-background-color;
-  		
+
   		div.o-tree-table-caption:hover span.o-tree-caption{
   			color: inherit;
   			&:before{
@@ -102,40 +102,40 @@
   			}
   		}
   	}
-  
+
   }
-   
+
   div.v-tree-node-selected.v-tree-node-caption:hover span.o-tree-caption:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span.o-tree-caption:before{
   	background: lighten($v-selection-color,10%);
   }
-  
+
    div.v-tree-node-caption-drag-center{
    	@include box-shadow(none);
    	position: static;
    	outline: none;
    }
-   
+
   .v-tree-node-caption.o-disabled > div:before, [class*="v-tree-node-caption-o-state-"] > div:before{
   	color: $v-font-color;
   }
-  
+
   div.v-tree-node-selected {
   	$font-color: valo-font-color($v-selection-color, 0.9);
   	color: $font-color;
   }
-  
+
   .v-tree-node-caption-o-state-deleted, .v-table-cell-content-o-state-deleted {
 		text-decoration: line-through;
 	}
-  
+
 	.v-tree-node-caption-o-state-changed, .v-table-cell-content-o-state-changed.o-name-column{
 		color: $o-state-changed-color;
 	}
-  
+
 	.v-tree-node-caption-o-state-new, .v-table-cell-content-o-state-new.o-name-column{
 		color: $o-state-new-color;
 	}
-  
+
 	.v-tree-node-caption.o-disabled, .v-tree-node-caption-o-project-other, .v-table-cell-content-o-disabled.o-name-column, .v-table-cell-content-o-project-other.o-name-column{
 		color: $o-state-other-project-color;
 	}
@@ -145,19 +145,19 @@
   div.v-table{
    	color: $v-font-color;
   }
-  
+
     div.v-table-caption-container {
     border-color: darken($o-dark-background-color, 10%);
   }
-  
-  /* Overriding drag and drop styling in table, keeping the focus highlighting to avoid flickering */ 
+
+  /* Overriding drag and drop styling in table, keeping the focus highlighting to avoid flickering */
   div.v-table-drag .v-table-body .v-table-focus {
   	$outline-width: max($v-table-border-width, 1px);
   	outline: $outline-width solid $v-focus-color;
   	outline-offset: -$outline-width;
   }
 
-  
+
   /** Changed table header styling */
   div.v-table-header-wrap,
   div.v-table-footer-wrap,
@@ -165,36 +165,36 @@
   	@include valo-gradient($o-dark-background-color);
   	font-size: $v-font-size;
   }
-  
+
   .v-table-row:hover > .v-table-cell-content, .v-table-row-odd:hover > .v-table-cell-content {
   	$background-color: $v-table-background-color or valo-table-background-color();
   	$bg: mix($v-focus-color, $background-color, 20%);
   	background-color: $bg;
-  } 
-  
+  }
+
    .v-selected.v-table-row:hover > .v-table-cell-content, .v-selected.v-table-row-odd:hover > .v-table-cell-content {
    	background: $v-selection-color;
    }
-  
+
     .v-table-cell-wrapper > .v-widget.o-resource-icon {
   	margin-top: 0;
   	margin-bottom: 0;
   }
-  
+
     /* file explorer styles */
   .v-table-cell-wrapper > .v-widget.o-inline-textfield{
   	padding: 2px 4px;
   	width: 100%;
   	height: auto;
   }
-    
+
   .v-table .v-table-row-odd{
     background-color: $o-medium-background-color;
   }
   .v-table.v-table-no-stripes .v-table-row-odd{
     background-color: transparent;
   }
-  
+
   .v-table .o-hover-column, .v-table .v-table-cell-content-o-hover-column {
   	&:hover div{
 	  	color: #ffffff;
@@ -213,7 +213,7 @@
 	  	}
 	}
   }
-  
+
   .v-table 	.o-in-navigation div{
 		font-weight: 800;
   }
@@ -223,84 +223,84 @@
   		background: lighten($v-selection-color,10%);
   	}
   }
-  
+
   .v-table-row-o-state-deleted {
 		text-decoration: line-through;
 	}
-  
+
 	.v-table-row-o-state-changed .o-hover-column {
 		color: $o-state-changed-color;
 	}
-  
+
 	.v-table-row-o-state-new .o-hover-column {
 		color: $o-state-new-color;
 	}
-  
+
 	.v-table-row-o-project-other {
 		color: $o-state-other-project-color;
 	}
-	
+
 	/* Data view table styles */
 	.o-wrap-table .v-table-cell-wrapper {
-		white-space: normal !important; 
+		white-space: normal !important;
 	}
-	
+
 	.o-wrap-table .v-table-body-wrapper {
 		overflow-y: auto !important;
 	}
-	
-	.o-table-image { 
-		max-width: 200px; 
+
+	.o-table-image {
+		max-width: 200px;
 		max-height: 200px;
 		width: auto;
 		height: auto;
-		display: block; 
+		display: block;
 	}
-	
-	.o-table-cell-padding .v-table-cell-wrapper { 
-		padding: 10px 10px; 
+
+	.o-table-cell-padding .v-table-cell-wrapper {
+		padding: 10px 10px;
 	}
 
 
-		
+
 }
- 
+
  $columnWidthList: 100,150,200,250,300;
  @each $width in $columnWidthList{
  	.o-formlayout-const-capture-#{$width}{
- 		
+
  		& table{
- 			table-layout: fixed;	
+ 			table-layout: fixed;
  		}
- 		
+
  		& table td.v-formlayout-captioncell{
  		width: #{$width}px;
  		}
- 		
+
  		}
- 	
+
  	}
- 
+
   .o-formlayout-hard{
-  	
+
   	line-height:1.1 !important;
-  	
+
   	.v-caption{
   		line-height:1.1 !important;
   	}
-  	
+
   	}
- 
+
   .o-formlayout-full-height-last-expand{
-		
+
 			table{
 				height:100%;
 			}
-		
+
 			.v-formlayout-lastrow{
-				height:100%;	
+				height:100%;
 			}
-			
+
 		}
 
   .o-no-padding div.v-table-cell-wrapper{
@@ -312,26 +312,43 @@
 	}
 
 	.v-table .o-table-const-color{
-		
+
 		background-color:#FFFFFF !important;
 		}
 	.v-table .o-table-const-color:hover{
-		
+
 		background-color:#FFFFFF !important;
 		}
 
 	[class^="o-box-"], [class*="o-box"]{
-	
-	position:relative;
-	
 		& .v-table-cell-wrapper{
 		position:relative;
 		z-index: 2;
 		color: $white;
-		text-align: center !important;			
+		text-align: center !important;
 		}
-		
-	
+
+
+		& .v-table-cell-wrapper::before{
+			content:"";
+			position:absolute;
+			top: -4px;
+			bottom:-4px;
+			left:5px;
+			right:5px;
+			z-index: -1;
+			border-radius: 4px;
+		}
+	}
+
+	span[class^="o-box-"], span[class*="o-box"]{
+		padding: 5px 20px;
+		color: $white;
+		display:inline;
+		position:relative;
+		z-index:1;
+		text-align: center !important;
+
 		&::before{
 			content:"";
 			position:absolute;
@@ -339,70 +356,56 @@
 			bottom:5px;
 			left:5px;
 			right:5px;
-			z-index: 1;
+			z-index: -1;
 			border-radius: 4px;
 		}
-	
-	}
-	
-	span[class^="o-box-"], span[class*="o-box"]{
-		padding: 5px 20px;
-		color: $white;
-		display:inline;
-		z-index:1;
-		text-align: center !important;	
-		
-		&::before{
-			z-index:-1;
-		}
 	}
 
 
-	.o-box-green::before{
-	
+	.o-box-green::before, .o-box-green .v-table-cell-wrapper::before{
+
 		background-color: $green;
 	}
-	
-	.o-box-orange::before{
+
+	.o-box-orange::before, .o-box-orange .v-table-cell-wrapper::before{
 		background-color: $orange;
 	}
-	
-	.o-box-orange-dark::before{
-		background-color: $orange-dark;	
-	}
-	
-	.o-box-red::before{
-		background-color: $red;
-	}
-	
-	.o-box-gray::before{
-		background-color: $gray;
-	}
-	
-	.o-box-gray-darker::before{
-		background-color: $gray-darker;
-	}
-	
-	.o-box-red-dark::before{
-		background-color: $red-dark;	
-	}
-	
-	.o-box-blue-light::before{
-		background-color: $blue-light;	
+
+	.o-box-orange-dark::before, .o-box-orange-dark .v-table-cell-wrapper::before{
+		background-color: $orange-dark;
 	}
 
-	.o-box-blue::before{
-		background-color: $blue;	
+	.o-box-red::before, .o-box-red .v-table-cell-wrapper::before{
+		background-color: $red;
 	}
-	
-	.o-box-black::before{
-		background-color: $black;	
+
+	.o-box-gray::before, .o-box-gray .v-table-cell-wrapper::before{
+		background-color: $gray;
 	}
-	
-	.o-box-cyan::before{
-		background-color: $cyan;	
+
+	.o-box-gray-darker::before, .o-box-gray-darker .v-table-cell-wrapper::before{
+		background-color: $gray-darker;
 	}
-		
-		
-		
-	
+
+	.o-box-red-dark::before, .o-box-red-dark .v-table-cell-wrapper::before{
+		background-color: $red-dark;
+	}
+
+	.o-box-blue-light::before, .o-box-blue-light .v-table-cell-wrapper::before{
+		background-color: $blue-light;
+	}
+
+	.o-box-blue::before, .o-box-blue .v-table-cell-wrapper::before{
+		background-color: $blue;
+	}
+
+	.o-box-black::before, .o-box-black .v-table-cell-wrapper::before{
+		background-color: $black;
+	}
+
+	.o-box-cyan::before, .o-box-cyan .v-table-cell-wrapper::before{
+		background-color: $cyan;
+	}
+
+
+
