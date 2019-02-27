@@ -338,24 +338,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-     * Gets list of users for organizational unit.<p>
-     *
-     * @param cms the CMS context
-     * @param ou the OU path
-     * @param recursive true if users from other OUs should be retrieved
-     *
-     * @return the list of users, without their additional info
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public static List<CmsUser> getUsersWithoutAdditionalInfo(CmsObject cms, String ou, boolean recursive)
-    throws CmsException {
-
-        return CmsPrincipal.filterCoreUsers(
-            OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(cms, ou, recursive));
-    }
-
-    /**
      * Adds additional properties for groups to a container.
      *
      * @param container the container to update
@@ -555,6 +537,28 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             LOG.error("Unable to read groups from user", e);
         }
         return container;
+    }
+
+    /**
+     * Gets list of users for organizational unit.<p>
+     *
+     * @param cms the CMS context
+     * @param ou the OU path
+     * @param recursive true if users from other OUs should be retrieved
+     *
+     * @return the list of users, without their additional info
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsUser> getUsersWithoutAdditionalInfo(
+        CmsObject cms,
+        I_CmsOuTreeType type,
+        String ou,
+        boolean recursive)
+    throws CmsException {
+
+        return CmsPrincipal.filterCoreUsers(
+            OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(cms, ou, recursive));
     }
 
     /**
@@ -1317,7 +1321,11 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
                 CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_COUNT_0),
                 String.valueOf(((Table)m_table).size()));
             try {
-                int count = getUsersWithoutAdditionalInfo(m_cms, m_stateBean.getPath(), true).size();
+                int count = getUsersWithoutAdditionalInfo(
+                    m_cms,
+                    m_stateBean.getType(),
+                    m_stateBean.getPath(),
+                    true).size();
                 if (count > ((Table)m_table).size()) {
                     dataMap.put(
                         CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_TOT_COUNT_0),

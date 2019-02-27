@@ -913,7 +913,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         try {
             m_cms = getCmsObject();
             m_type = type;
-            List<CmsUser> directs = CmsAccountsApp.getUsersWithoutAdditionalInfo(m_cms, ou, false);
+            List<CmsUser> directs = m_app.getUsersWithoutAdditionalInfo(m_cms, type, ou, false);
             m_indirects = new ArrayList<CmsUser>();
             if (showAll) {
                 setAllUsers(directs);
@@ -1497,7 +1497,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                 true,
                 false);
         } else if (m_type.equals(CmsOuTreeType.USER)) {
-            m_users = CmsAccountsApp.getUsersWithoutAdditionalInfo(m_cms, m_ou, true);
+            m_users = m_app.getUsersWithoutAdditionalInfo(m_cms, m_type, m_ou, true);
 
         }
         Iterator<CmsUser> it = m_users.iterator();
