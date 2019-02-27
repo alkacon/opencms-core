@@ -16,11 +16,17 @@ Legend:
 - General comment
 
 OpenCms 11.0 beta 2 - February 27, 2019
-! Workplace: New 'SQL console' app to query the configured database pools.
-! Workplace: Added favorite locations dialog.
-! Workplace: Removing no longer used configuration settings.
 ! Updated TinyMCE to version 5.0.0.
-! Editor: Allowing to edit local settings in form editor.
+! Workplace: New 'SQL console' app to query the configured database pools.
+! Workplace: Added bookmarks dialog.
+! Search: Reducing number of default fields and limiting result size to avoid memory issues.
+! Editor: Allowing to edit element settings in form editor.
+! Editor: Maps widget allows specific workplace Google API key and reduced number of API calls.
+! Updater: Switched to XSL transformation based mechanism to update configuration files.
+! Setup: Created 'legacy' modules to support traditional administration tools.
+! Setup: Removed deprecated workplace modules.
+- Workplace: Removed deprecated workplace explorer
+- Configuration: Removed deprecated context menu configuration.
 * Fixed issue where 'Log files' app failed on Windows servers.
 * Fixed issue #620 where resource type configuration form was not validated properly.
 
