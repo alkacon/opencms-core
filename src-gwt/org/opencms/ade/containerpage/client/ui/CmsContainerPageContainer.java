@@ -526,6 +526,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         return m_ownPosition;
     }
 
+    /**
+     * Returns the settings presets.<p>
+     *
+     * @return the presets
+     */
     public Map<String, String> getSettingPresets() {
 
         return m_containerData.getSettingPresets();
@@ -547,7 +552,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public boolean hasModelGroupParent() {
 
         boolean result = false;
-        Element parent = getElement().getParentElement();
+        Element parent = getElement();
         while (parent != null) {
             if (parent.getPropertyBoolean(CmsContainerPageElementPanel.PROP_IS_MODEL_GROUP)) {
                 result = true;
