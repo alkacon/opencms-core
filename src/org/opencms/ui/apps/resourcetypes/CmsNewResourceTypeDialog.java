@@ -251,17 +251,20 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
     /** Formatter folder name.*/
     private static final String FORMATTER = "formatters/";
 
-    /** Message key prefix. */
-    private static final String KEY_PREFIX_DESCRIPTION = "desc.";
+    /**Message key schema. */
+    private static final String MESSAGE_KEY_FORMATTER = "type.%s.%s";
 
-    /** Message key prefix. */
-    private static final String KEY_PREFIX_FORMATTER = "formatter.name.detail";
+    /**key: name.*/
+    private static final String MESSAGE_KEY_FORMATTER_NAME = "name";
 
-    /** Message key prefix. */
-    private static final String KEY_PREFIX_NAME = "fileicon.";
+    /**key: description. */
+    private static final String MESSAGE_KEY_FORMATTER_DESCRIPTION = "description";
 
-    /** Message key prefix. */
-    private static final String KEY_PREFIX_TITLE = "title.";
+    /**key: title. */
+    private static final String MESSAGE_KEY_FORMATTER_TITLE = "title";
+
+    /**key: formatter. */
+    private static final String MESSAGE_KEY_FORMATTER_FORMATTER = "formatter";
 
     /** Logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsNewResourceTypeDialog.class);
@@ -476,7 +479,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
         ? PROPERTIES_ENCODING
         : CmsFileUtil.getEncoding(m_cms, propertiesFile);
         StringBuffer contentBuffer = new StringBuffer();
-        contentBuffer.append(new String(propertiesFile.getContents(), encoding));
+        contentBuffer.append(new String(propertiesFile.getContents(), encoding).trim());
         for (Entry<String, String> entry : messages.entrySet()) {
             contentBuffer.append("\n");
             contentBuffer.append(entry.getKey());
@@ -552,19 +555,25 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
 
         // check if any messages to set
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_typeName.getValue())) {
-            String key = KEY_PREFIX_NAME + m_typeShortName.getValue();
+            String key = String.format(MESSAGE_KEY_FORMATTER, m_typeShortName.getValue(), MESSAGE_KEY_FORMATTER_NAME);
             messages.put(key, m_typeName.getValue());
             setting.setKey(key);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_typeDescription.getValue())) {
-            String key = KEY_PREFIX_DESCRIPTION + m_typeShortName.getValue();
+            String key = String.format(
+                MESSAGE_KEY_FORMATTER,
+                m_typeShortName.getValue(),
+                MESSAGE_KEY_FORMATTER_DESCRIPTION);
             messages.put(key, m_typeDescription.getValue());
             setting.setInfo(key);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_typeName.getValue())) {
-            String key = KEY_PREFIX_TITLE + m_typeShortName.getValue();
+            String key = String.format(MESSAGE_KEY_FORMATTER, m_typeShortName.getValue(), MESSAGE_KEY_FORMATTER_TITLE);
             messages.put(key, m_typeName.getValue());
-            String key2 = KEY_PREFIX_FORMATTER.replace("name", m_typeShortName.getValue());
+            String key2 = String.format(
+                MESSAGE_KEY_FORMATTER,
+                m_typeShortName.getValue(),
+                MESSAGE_KEY_FORMATTER_FORMATTER);
             messages.put(key2, m_typeName.getValue());
             setting.setTitleKey(key);
         }

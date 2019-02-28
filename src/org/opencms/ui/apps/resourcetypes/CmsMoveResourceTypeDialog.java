@@ -98,11 +98,11 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
     /** Is schema ok.*/
     private boolean m_schemaOK = true;
 
-    /**resozurce type*/
+    /**resource type.*/
     private I_CmsResourceType m_type;
 
     /** type content.*/
-    private CmsResourceTypeXmlContent m_typeXML = null;
+    private CmsResourceTypeXmlContent m_typeXML;
 
     /**
      * Public constructor.<p>
@@ -206,8 +206,8 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
 
         if (!((CmsModuleRow)m_table.getValue()).equals(
             new CmsModuleRow(OpenCms.getModuleManager().getModule(m_type.getModuleName())))) {
-            CmsModule newModule = (CmsModule)((CmsModuleRow)m_table.getValue()).getModule().clone();
-            CmsModule oldModule = (CmsModule)OpenCms.getModuleManager().getModule(m_type.getModuleName()).clone();
+            CmsModule newModule = ((CmsModuleRow)m_table.getValue()).getModule().clone();
+            CmsModule oldModule = OpenCms.getModuleManager().getModule(m_type.getModuleName()).clone();
 
             m_type.setModuleName(newModule.getName());
 
