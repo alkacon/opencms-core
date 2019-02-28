@@ -15,7 +15,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 11.0 beta 2 - February 27, 2019
+OpenCms 11.0 beta 2 - February 28, 2019
 ! Workplace: Added bookmarks dialog for workplace locations.
 ! Workplace: New 'SQL console' app to query the configured database pools.
 ! Setup: Removed all legacy workplace modules, leaving only two core modules.
