@@ -496,7 +496,8 @@ public class TestConfig extends OpenCmsTestCase {
         List<CmsDetailPageInfo> childDetailPages = list(a3, a4);
 
         List<CmsResourceTypeConfig> types = new ArrayList<CmsResourceTypeConfig>();
-        types.add(new CmsResourceTypeConfig("a", false, null, null, false, false, null, null, true, false, 1, null));
+        types.add(
+            new CmsResourceTypeConfig("a", false, null, null, false, false, false, null, null, true, false, 1, null));
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/sites/default",

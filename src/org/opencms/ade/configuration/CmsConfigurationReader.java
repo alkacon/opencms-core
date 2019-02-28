@@ -586,9 +586,12 @@ public class CmsConfigurationReader {
         I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
         boolean disabled = false;
         boolean addDisabled = false;
+        boolean createDisabled = false;
         String disabledStr = disabledLoc == null ? null : disabledLoc.asString(m_cms);
         if ((disabledStr != null) && "add".equalsIgnoreCase(disabledStr.trim())) {
             addDisabled = true;
+        } else if ((disabledStr != null) && "create".equalsIgnoreCase(disabledStr.trim())) {
+            createDisabled = true;
         } else {
             disabled = Boolean.parseBoolean(disabledStr);
         }
@@ -691,6 +694,7 @@ public class CmsConfigurationReader {
             namePattern,
             detailPagesDisabled,
             addDisabled,
+            createDisabled,
             elementView,
             localization,
             showInDefaultView,

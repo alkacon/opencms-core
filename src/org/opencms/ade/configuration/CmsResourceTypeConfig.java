@@ -64,17 +64,21 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Enum used to distinguish the type of menu in which a configured resource type can be displayed.
      */
     public enum AddMenuType {
-    /** ADE add menu. */
-    ade,
+        /** ADE add menu. */
+        ade,
 
-    /** Workplace dialogs. */
-    workplace
+        /** Workplace dialogs. */
+        workplace
     }
 
     /**
      * Represents the visibility status of a resource type  in  the 'Add' menu of the container page editor.<p>
      */
     public enum AddMenuVisibility {
+
+        /** Type should not be creatable. */
+        createDisabled,
+
         /** Type not visible. */
         disabled,
 
@@ -93,6 +97,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /** Flag which controls whether adding elements of this type using ADE is disabled. */
     private boolean m_addDisabled;
+
+    /** Flag which controls whether creating elements of this type using ADE is disabled. */
+    private boolean m_createDisabled;
 
     /** Elements of this type when used in models should be copied instead of reused. */
     private Boolean m_copyInModels;
@@ -144,6 +151,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             pattern,
             false,
             false,
+            false,
             CmsElementView.DEFAULT_ELEMENT_VIEW.getId(),
             null,
             null,
@@ -161,6 +169,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param pattern the name pattern
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled
+     * @param createDisabled true if creating elements of this type via ADE should be disabled
      * @param elementView the element view id
      * @param localization the base name of the bundle to add as workplace bundle for the resource type
      * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it
@@ -176,6 +185,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         boolean detailPagesDisabled,
         boolean addDisabled,
+        boolean createDisabled,
         CmsUUID elementView,
         String localization,
         Boolean showInDefaultView,
@@ -189,6 +199,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_namePattern = pattern;
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
+        m_createDisabled = createDisabled;
         m_elementView = elementView;
         m_localization = localization;
         m_showInDefaultView = showInDefaultView;
@@ -405,8 +416,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public AddMenuVisibility getAddMenuVisibility(CmsUUID elementViewId, AddMenuType menuType) {
 
-        if (isAddDisabled() && (menuType == AddMenuType.ade)) {
+        if (isAddDisabled()) {
             return AddMenuVisibility.disabled;
+        }
+
+        if (isCreateDisabled() && (menuType == AddMenuType.ade)) {
+            return AddMenuVisibility.createDisabled;
         }
 
         if (elementViewId.equals(getElementView())) {
@@ -564,6 +579,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns whether creating elements of this type via ADE should be disabled.<p>
+     *
+     * @return <code>true</code> if creating elements of this type via ADE should be disabled
+     */
+    public boolean isCreateDisabled() {
+
+        return m_createDisabled;
+    }
+
+    /**
      * True if the detail page creation should be disabled for this resource type.<p>
      *
      * @return true if detail page creation should be disabled for this type
@@ -629,6 +654,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             namePattern,
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
             childConfig.isAddDisabled(),
+            // a type marked as not creatable, should not be creatable in any sub site
+            isCreateDisabled() && childConfig.isCreateDisabled(),
             elementView,
             m_localization,
             showInDefaultView,
@@ -667,6 +694,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_namePattern,
             m_detailPagesDisabled,
             isAddDisabled(),
+            isCreateDisabled(),
             m_elementView,
             m_localization,
             m_showInDefaultView,

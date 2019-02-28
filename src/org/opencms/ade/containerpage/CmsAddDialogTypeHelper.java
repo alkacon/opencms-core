@@ -90,6 +90,7 @@ public class CmsAddDialogTypeHelper {
      * @param type the menu type for which we want to build a type list
      */
     public CmsAddDialogTypeHelper(AddMenuType type) {
+
         LOG.debug("Creating type helper.");
         m_menuType = type;
     }
@@ -280,7 +281,9 @@ public class CmsAddDialogTypeHelper {
         }
         Set<String> creatableTypes = new HashSet<String>();
         for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(cms, folderRootPath)) {
-            if ((AddMenuVisibility.disabled == typeConfig.getAddMenuVisibility(elementView.getId(), m_menuType))
+            AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView.getId(), m_menuType);
+            if ((AddMenuVisibility.disabled == visibility)
+                || (AddMenuVisibility.createDisabled == visibility)
                 || disabledTypes.contains(typeConfig.getTypeName())) {
                 continue;
             }
