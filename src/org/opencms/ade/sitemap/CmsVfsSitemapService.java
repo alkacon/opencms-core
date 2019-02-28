@@ -141,6 +141,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -213,6 +214,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             return m_wasJustLocked;
         }
     }
+
+    /** Properties to remove from the copied template when creating a new sitemap entry. */
+    public static final List<String> FILTER_PROPERTIES = Arrays.asList(
+        new String[] {
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION_HTML,
+            CmsPropertyDefinition.PROPERTY_NAVTEXT,
+            CmsPropertyDefinition.PROPERTY_NAVINFO});
 
     /** The path of the JSP used to download aliases. */
     public static final String ALIAS_DOWNLOAD_PATH = "/system/workplace/commons/download-aliases.jsp";
@@ -1729,7 +1739,20 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             List<CmsProperty> filteredProperties = new ArrayList<CmsProperty>();
             for (CmsProperty property : properties) {
-                if (!property.getName().equals(CmsPropertyDefinition.PROPERTY_DESCRIPTION)) {
+                boolean filter = false;
+                if (FILTER_PROPERTIES.contains(property.getName())) {
+                    filter = true;
+
+                } else {
+                    // filter localized versions also
+                    for (String filterProp : FILTER_PROPERTIES) {
+                        if (property.getName().startsWith(filterProp + "_")) {
+                            filter = true;
+                            break;
+                        }
+                    }
+                }
+                if (!filter) {
                     filteredProperties.add(property);
                 }
             }
