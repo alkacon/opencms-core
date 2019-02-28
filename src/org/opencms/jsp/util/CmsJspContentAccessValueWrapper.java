@@ -630,28 +630,6 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
-     * Returns <code>true</code> in case the value is set in the content,
-     * i.e. the value exists and is not empty or whitespace only.<p>
-     *
-     * In case the XML content value does exist and has a non empty value, <code>true</code> is returned.<p>
-     *
-     * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentload ... &gt;
-     *     &lt;cms:contentaccess var="content" /&gt;
-     *     &lt;c:if test="${content.value['Link'].isSet}" &gt;
-     *         The content of the "Link" value is not empty.
-     *     &lt;/c:if&gt;
-     * &lt;/cms:contentload&gt;</pre>
-     *
-     * @return <code>true</code> in case the value is set
-     */
-    @Override
-    public boolean getIsSet() {
-
-        return !getIsEmptyOrWhitespaceOnly();
-    }
-
-    /**
      * Returns the Locale of the current XML content value.<p>
      *
      * In case the XML content value does not exist, the OpenCms system default Locale is returned.<p>

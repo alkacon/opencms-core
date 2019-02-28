@@ -89,7 +89,7 @@ public class CmsJspElementSettingValueWrapper extends A_CmsJspValueWrapper {
     @Override
     public boolean getIsEmpty() {
 
-        return CmsStringUtil.isEmpty(m_value);
+        return !m_exists || CmsStringUtil.isEmpty(m_value);
     }
 
     /**
@@ -100,16 +100,7 @@ public class CmsJspElementSettingValueWrapper extends A_CmsJspValueWrapper {
     @Override
     public boolean getIsEmptyOrWhitespaceOnly() {
 
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(m_value);
-    }
-
-    /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getIsSet()
-     */
-    @Override
-    public boolean getIsSet() {
-
-        return getExists() && !getIsEmpty();
+        return !m_exists || CmsStringUtil.isEmptyOrWhitespaceOnly(m_value);
     }
 
     /**

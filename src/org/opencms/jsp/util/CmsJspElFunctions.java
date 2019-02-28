@@ -552,6 +552,18 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Returns whether the given value is an instance of {@link A_CmsJspValueWrapper}.<p>
+     *
+     * @param value the value object to check
+     *
+     * @return <code>true</code> if the given value is an instance of {@link A_CmsJspValueWrapper}
+     */
+    public static boolean isWrapper(Object value) {
+
+        return (value instanceof A_CmsJspValueWrapper);
+    }
+
+    /**
      * Parses the JSON String and returns the requested value.<p>
      *
      * @param maybeJsonString the JSON string

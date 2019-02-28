@@ -2379,7 +2379,7 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
-        
+
     </tag>
     <tag>
         <description><![CDATA[
@@ -2908,7 +2908,7 @@
         <tag-class>org.opencms.jsp.CmsJspTagAddParams</tag-class>
         <body-content>JSP</body-content>
     </tag>
-    
+
       <tag>
         <description><![CDATA[Can be used to create a java.util.Map with string keys and values using nested <cms:param> tags.]]></description>
         <name>map</name>
@@ -3270,6 +3270,17 @@
 
     <function>
         <description><![CDATA[
+             Returns whether the given value is an instance of <code>A_CmsJspValueWrapper</code>.
+        ]]></description>
+        <name>isWrapper</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            boolean isWrapper(java.lang.Object)
+        </function-signature>
+    </function>
+
+    <function>
+        <description><![CDATA[
             Adds leading and trailing slashes to a path,
             if the path does not already start or end with a slash.
         ]]></description>
@@ -3491,6 +3502,6 @@
             boolean validateRegex(java.lang.String, java.lang.String)
         </function-signature>
     </function>
-    
-    
+
+
 </taglib>

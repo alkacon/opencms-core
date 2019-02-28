@@ -163,18 +163,6 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
     }
 
     /**
-     * Returns <code>true</code> in case
-     * the object exists and is not empty or whitespace only.<p>
-     *
-     * @return <code>true</code> in case the object exists and is not empty or whitespace only
-     */
-    @Override
-    public boolean getIsSet() {
-
-        return !getIsEmptyOrWhitespaceOnly();
-    }
-
-    /**
      * Returns the wrapped object value.<p>
      *
      * @return the wrapped object value
