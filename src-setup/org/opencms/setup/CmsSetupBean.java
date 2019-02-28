@@ -1813,9 +1813,23 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty("db.history.sqlmanager", sqlManager);
         setExtProperty("db.subscription.driver", subscriptionDriver);
         setExtProperty("db.subscription.sqlmanager", sqlManager);
-        String additionalProps = (String)(getDatabaseProperties().get(m_databaseKey).get("additionalProperties"));
-        if (additionalProps != null) {
-            m_additionalProperties.put("dbprops", additionalProps);
+        Properties dbProps = getDatabaseProperties().get(databaseKey);
+        String prefix = "additional.";
+        String dbPropBlock = "";
+        for (Map.Entry<Object, Object> entry : dbProps.entrySet()) {
+            if (entry.getKey() instanceof String) {
+                String key = (String)entry.getKey();
+                if (key.startsWith(prefix)) {
+                    key = key.substring(prefix.length());
+                    String val = (String)(entry.getValue());
+                    setExtProperty(key, val);
+                    dbPropBlock += key + "=" + val + "\n";
+                }
+            }
+
+        }
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(dbPropBlock)) {
+            m_additionalProperties.put("dbprops", dbPropBlock);
         }
     }
 
