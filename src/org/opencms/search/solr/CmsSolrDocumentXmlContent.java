@@ -114,14 +114,17 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         /** Current locale. */
         private Locale m_locale;
 
+        /** Content value mapped to Description property. */
+        private String m_mappedDescriptionValue;
+
+        /** Content value mapped to gallery description. */
+        private String m_mappedGalleryDescriptionValue;
+
         /** Content value mapped to gallery name. */
         private String m_mappedGalleryNameValue;
 
         /** Content value mapped to title. */
         private String m_mappedTitleValue;
-
-        /** Content value mapped to Description property. */
-        private String m_mappedDescriptionValue;
 
         /**
          * Creates a new instance.<p>
@@ -166,7 +169,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
 
             String result = null;
             for (String resultCandidateWithMacros : new String[] {
-                // Prioritize gallery name over title, and actual content values over defaults
+                m_mappedGalleryDescriptionValue,
                 m_mappedDescriptionValue}) {
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(resultCandidateWithMacros)) {
                     CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(m_cms, m_content, locale);
@@ -259,6 +262,16 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         }
 
         /**
+         * Sets the name from a value mapped via 'galleryDescription'.
+         *
+         * @param mappedGalleryDescriptionValue the value that has been mapped
+         */
+        public void setMappedGalleryDescriptionValue(String mappedGalleryDescriptionValue) {
+
+            m_mappedGalleryDescriptionValue = mappedGalleryDescriptionValue;
+        }
+
+        /**
          * Sets the mappedGalleryNameValue.<p>
          *
          * @param mappedGalleryNameValue the mappedGalleryNameValue to set
@@ -278,6 +291,9 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             m_mappedTitleValue = mappedTitleValue;
         }
     }
+
+    /** Mapping name used to indicate that the value should be used for the gallery description. */
+    public static final String MAPPING_GALLERY_DESCRIPTION = "galleryDescription";
 
     /** Mapping name used to indicate that the value should be used for the gallery name. */
     public static final String MAPPING_GALLERY_NAME = "galleryName";
@@ -444,6 +460,8 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                             }
                         } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
                             galleryNameChooser.setMappedGalleryNameValue(value.getPlainText(cms));
+                        } else if (mapping.equals(MAPPING_GALLERY_DESCRIPTION)) {
+                            galleryNameChooser.setMappedGalleryDescriptionValue(value.getPlainText(cms));
                         }
                     }
                 }
