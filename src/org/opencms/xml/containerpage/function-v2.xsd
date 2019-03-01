@@ -41,6 +41,7 @@
 		</defaults>
 		<mappings>
 				<mapping element="NiceName" mapto="galleryName" />
+                <mapping element="Description" mapto="galleryDescription" />
 		</mappings>
         <layouts>
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
