@@ -141,7 +141,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         private static final long serialVersionUID = 5392136127699472654L;
 
         /** The copy move action. */
-        final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyDialogAction();
+        transient final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyDialogAction();
 
         /**
          * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
@@ -430,6 +430,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         }
     }
 
+    /** The file explorer attribute key. */
+    public static final String ATTR_KEY = "CmsFileExplorer";
+
     /** The in line editable resource properties. */
     public static final Collection<CmsResourceTableProperty> INLINE_EDIT_PROPERTIES = Arrays.asList(
         CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
@@ -497,8 +500,6 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
-
-    public static final String ATTR_KEY = "CmsFileExplorer";
 
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
