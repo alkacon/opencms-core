@@ -42,6 +42,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EXPLORER_CAN_NOT_OPEN_PATH_1 = "ERR_EXPLORER_CAN_NOT_OPEN_PATH_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0 = "GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCETYPE_APP_TABLE_NO_AVAILABLE_MULTIPLE_0 = "GUI_RESOURCETYPE_APP_TABLE_NO_AVAILABLE_MULTIPLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_EXPORT_OU_1 = "GUI_USERMANAGEMENT_EXPORT_OU_1";
 
     /** Message constant for key in the resource bundle. */
@@ -2112,7 +2118,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCETYPE_MOVE_0 = "GUI_RESOURCETYPE_MOVE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_0 = "GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_0";
+    public static final String GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_1 = "GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0 = "GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0";

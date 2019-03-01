@@ -990,6 +990,19 @@
 		}
 	}
 
+	.v-horizontallayout.o-center-vertical{
+
+			.v-expand{
+				display: flex;
+  				align-items: center;
+  				justify-content: center;
+			}
+			.v-slot{
+
+				height:unset;
+			}
+	}
+
 	.o-error-dialog{
 		.o-error-icon{
 			padding-left: 12px;
@@ -1361,21 +1374,21 @@
 		}
 
 	}
-	
+
 	.o-bookmarks-placeholder {
-		display: -ms-flex; 
-		display: flex; 
-		flex-direction: column;  
+		display: -ms-flex;
+		display: flex;
+		flex-direction: column;
 		height: 100%;
-		 
+
 		& > * {
-			&:nth-child(2) {  
+			&:nth-child(2) {
 				text-align: center;
 			}
-			
-			&:nth-child(1), &:nth-child(3) { 
-				flex: 1; 
-			} 
+
+			&:nth-child(1), &:nth-child(3) {
+				flex: 1;
+			}
 		}
 	}
 }

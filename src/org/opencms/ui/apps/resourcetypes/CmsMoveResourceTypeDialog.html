@@ -10,13 +10,21 @@
 	<o-cms-basic-dialog>
 		<content>
 			<vaadin7-vertical-layout :center margin spacing width="100%">
-			<vaadin7-vertical-layout _id="m_missingSchemaLayout" width="100%"> 
-			<v-panel width="100%">
-			<v-form-layout margin spacing style-name="o-formlayout-workplace-main o-wrap">
-				<v-label _id="m_missingSchema" width="100%">%(key.GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0)</v-label>
-				<vaadin7-check-box _id="m_moveAnyway" width="100%" caption="%(key.GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_MOVE_ANYWAY_0)" />
-			</v-form-layout>
-			</v-panel>
+			<vaadin7-vertical-layout _id="m_missingSchemaLayout" width="100%">
+			<v-panel style-name="o-report o-warning" width="100%">
+			 		<vaadin7-vertical-layout style-name="o-error-dialog" width="100%">
+			 		<vaadin7-horizontal-layout width="100%" style-name="o-center-vertical">
+			 			<vaadin7-label _id="m_warningIcon" width="60px" style-name="o-warning-icon" :middle></vaadin7-label>
+			 			<vaadin7-vertical-layout :expand>
+			 				<vaadin7-label _id="m_missingSchema" style-name="o-error-message" :middle>%(key.GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_0)</vaadin7-label>
+			 				<vaadin7-check-box _id="m_moveAnyway" caption="%(key.GUI_RESOURCETYPE_MOVEMODULE_MISSING_SCHEMA_MOVE_ANYWAY_0)"></vaadin7-check-box>
+			 			</vaadin7-vertical-layout>
+			 		</vaadin7-horizontal-layout>
+
+
+			 		</vaadin7-vertical-layout>
+			 	</v-panel>
+
 			</vaadin7-vertical-layout>
 				<v-horizontal-layout width="100%">
 					<v-label :expand></v-label>

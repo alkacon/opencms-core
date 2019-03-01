@@ -215,7 +215,8 @@ public class CmsResourceTypesTable extends Table {
                 while (it.hasNext()) {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                            Messages.GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0);
                     }
                 }
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -258,13 +259,15 @@ public class CmsResourceTypesTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             if (data.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_RESOURCETYPE_APP_TABLE_NO_AVAILABLE_MULTIPLE_0);
             }
             String typeName = data.iterator().next();
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
                 return CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())
-                ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE
+                ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0)
                 : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             } catch (CmsLoaderException e) {
                 LOG.error("Unable to read resource type by name", e);
@@ -285,12 +288,11 @@ public class CmsResourceTypesTable extends Table {
 
             try {
                 Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-
-                window.setContent(
-                    new CmsMoveResourceTypeDialog(
-                        window,
-                        OpenCms.getResourceManager().getResourceType(data.iterator().next())));
-                window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_0));
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
+                window.setContent(new CmsMoveResourceTypeDialog(window, type));
+                String moduleName = type.getModuleName();
+                window.setCaption(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_MOVE_WINDOW_CAPTION_1, moduleName));
                 A_CmsUI.get().addWindow(window);
             } catch (CmsLoaderException e) {
                 LOG.error("Unable to read resource type by name", e);
@@ -311,14 +313,16 @@ public class CmsResourceTypesTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             if (data.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_RESOURCETYPE_APP_TABLE_NO_AVAILABLE_MULTIPLE_0);
             }
             try {
                 Iterator<String> it = data.iterator();
                 while (it.hasNext()) {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                            Messages.GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0);
                     }
                 }
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -376,7 +380,8 @@ public class CmsResourceTypesTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             if (data.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_RESOURCETYPE_APP_TABLE_NO_AVAILABLE_MULTIPLE_0);
             }
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());
@@ -434,7 +439,8 @@ public class CmsResourceTypesTable extends Table {
         public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
 
             if (data.size() > 1) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_RESOURCETYPE_APP_TABLE_NO_AVAILABLE_MULTIPLE_0);
             }
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(data.iterator().next());

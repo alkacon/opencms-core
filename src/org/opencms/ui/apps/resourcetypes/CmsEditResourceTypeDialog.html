@@ -12,12 +12,13 @@
 			<vaadin7-vertical-layout :center margin spacing width="100%" style-name="o-formlayout-const-capture-200">
 				<v-panel style-name="o-report o-warning" width="100%">
 			 		<vaadin7-vertical-layout style-name="o-error-dialog" width="100%">
-			 		<vaadin7-horizontal-layout width="100%">
+			 		<vaadin7-horizontal-layout style-name="o-center-vertical" width="100%">
 			 			<vaadin7-label _id="m_warningIcon" width="60px" style-name="o-warning-icon" :middle></vaadin7-label>
-			 			<vaadin7-label :expand style-name="o-error-message" :middle>%(key.GUI_RESOURCETYPE_EDIT_WARNING_TEXT_0)</vaadin7-label>
+			 			<vaadin7-vertical-layout :expand>
+			 				<vaadin7-label style-name="o-error-message" :middle>%(key.GUI_RESOURCETYPE_EDIT_WARNING_TEXT_0)</vaadin7-label>
+			 				<vaadin7-check-box _id="m_confirm" caption="%(key.GUI_RESOURCETYPE_EDIT_WARNING_TEXT_CONFIRM_0)"></vaadin7-check-box>
+			 			</vaadin7-vertical-layout>
 			 		</vaadin7-horizontal-layout>
-
-			 			<vaadin7-check-box _id="m_confirm" style-name="o-warning-checkbox" caption="%(key.GUI_RESOURCETYPE_EDIT_WARNING_TEXT_CONFIRM_0)"></vaadin7-check-box>
 
 			 		</vaadin7-vertical-layout>
 			 	</v-panel>
