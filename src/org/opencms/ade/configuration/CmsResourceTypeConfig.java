@@ -420,11 +420,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return AddMenuVisibility.disabled;
         }
 
-        if (isCreateDisabled() && (menuType == AddMenuType.ade)) {
-            return AddMenuVisibility.createDisabled;
-        }
-
         if (elementViewId.equals(getElementView())) {
+            if (isCreateDisabled() && (menuType == AddMenuType.ade)) {
+                return AddMenuVisibility.createDisabled;
+            }
             return AddMenuVisibility.visible;
         }
 
