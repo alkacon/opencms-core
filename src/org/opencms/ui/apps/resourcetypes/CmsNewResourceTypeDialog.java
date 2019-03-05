@@ -684,7 +684,14 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
             macroResolver.setKeepEmptyMacros(true);
 
             macroResolver.addMacro(SAMPLE_TYPE_SCHEMA_ELEMENT, newElementString);
+            String bundleName = m_bundle.getValue();
 
+            bundleName = bundleName.split("/")[bundleName.split("/").length - 1];
+            if (bundleName.contains("_")) {
+                bundleName = bundleName.split("_")[0];
+            }
+            macroResolver.addMacro("ResourceBundle", bundleName);
+            macroResolver.addMacro("typeName", m_typeShortName.getValue());
             String encoding = m_cms.readPropertyObject(
                 file,
                 CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,

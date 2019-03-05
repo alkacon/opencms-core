@@ -3,31 +3,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<cms:formatter var="content">
-	<div class="margin-bottom-30">
-		<div class="headline">
-			<h3 ${content.rdfa.Title}>${content.value.Title}</h3>
-		</div>
-		<div class="row">
-			<c:if test="${content.value.Image.exists}">
-				<div class="col-md-4 col-sm-2 hidden-xs">
-					<div class="thumbnail-kenburn">
-						<div class="overflow-hidden">
-							<cms:img src="${content.value.Image}" scaleColor="transparent"
-								width="400" scaleType="0" noDim="true" cssclass="img-responsive" />
-						</div>
-					</div>
-				</div>
-			</c:if>
-			<div class="${content.value.Image.exists ? 'col-md-8 col-sm-10 col-xs-12' : 'col-xs-12' }">
-				<div ${content.rdfa.Text}>${content.value.Text}</div>
-				<c:if test="${content.value.Link.exists}">
-					<p>
-						<a class="btn-u btn-u-small"
-							href="<cms:link>${content.value.Link}</cms:link>">${paragraph.value.Link}</a>
-					</p>
-				</c:if>
-			</div>
-		</div>
-	</div>
+
+
+<cms:formatter var="content" val="value">
+
+  <c:set var="title" value="${value.Title}"/>
+  <c:set var="text" value="${value.Text}"/>
+  <c:set var="image" value="${value.Image}"/>
+  <c:set var="linkuri" value="${value.LinkURI}"/>
+  <c:set var="imageBean" value="${image.toImage}" />
+
+  <div>
+    <div style="width:200px;float:right">
+      <img style="width:100%" src="${imageBean.vfsUri}"/>
+    </div>
+    <div>
+      <h2>${title}</h2>
+      <p>${text}</p>
+    </div>
+    <div>
+      <a href="${linkuri}">Link</a>
+    </div>
+    <div style="clear:right;"></div>
+  </div>
 </cms:formatter>

@@ -69,6 +69,7 @@ import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.Table.RowHeaderMode;
 import com.vaadin.v7.ui.TextField;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Class for a dialog to move resource types to modules.<p>
@@ -99,6 +100,9 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
     /** Is schema ok.*/
     private boolean m_schemaOK = true;
 
+    /**Vaadin component. */
+    private VerticalLayout m_missingSchemaLayout;
+
     /**resource type.*/
     private I_CmsResourceType m_type;
 
@@ -113,6 +117,7 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
     public CmsMoveResourceTypeDialog(CmsNewResourceTypeDialog dialog) {
 
         init(null);
+        m_missingSchemaLayout.setVisible(false);
         m_ok.addClickListener(e -> dialog.setModule(getModuleName(), CmsMoveResourceTypeDialog.this));
         m_cancel.addClickListener(e -> CmsVaadinUtils.getWindow(CmsMoveResourceTypeDialog.this).close());
     }

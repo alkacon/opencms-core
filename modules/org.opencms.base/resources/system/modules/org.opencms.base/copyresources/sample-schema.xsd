@@ -2,9 +2,9 @@
 
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 
-	<xsd:element name="%(SampleType)s" type="OpenCms%(SampleType)s"/>
+	<xsd:element name="%(SampleType)Data" type="OpenCms%(SampleType)Data"/>
 
-	<xsd:complexType name="OpenCms%(SampleType)s">
+	<xsd:complexType name="OpenCms%(SampleType)Data">
 		<xsd:sequence>
 			<xsd:element name="%(SampleType)" type="OpenCms%(SampleType)" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
@@ -15,28 +15,40 @@
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Text" type="OpenCmsHtml" />
 			<xsd:element name="Image" type="OpenCmsVfsFile" />
-			<xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" />
+            <xsd:element name="LinkURI" type="OpenCmsVarLink" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<mappings>
-				<mapping element="Title" mapto="property:Title" />
-				<mapping element="Title" mapto="urlName" />
-			</mappings>
-			<defaults>
-				<default element="Title" value="Add a new title here" />
-				<default element="Text" value="Add your text" />
-			</defaults>
-			<layouts>
-				<layout element="Text" widget="HtmlWidget" configuration="downloadgallery" />
-				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:true}" />
-			</layouts>
-			<validationrules/>
-			<relations/>
-			<searchsettings containerPageOnly="true"/>
+		    <resourcebundles>
+                <propertybundle name="%(ResourceBundle)" />
+            </resourcebundles>
+			<FieldSettings>
+                <Setting>
+                    <PropertyName>Title</PropertyName>
+                    <Widget>string</Widget>
+                    <Default><![CDATA[%(key.type.%(typeName).title)]]></Default>
+                </Setting>
+                <Setting>
+                    <PropertyName>Text</PropertyName>
+                    <Widget>html</Widget>
+                    <WidgetConfig><![CDATA[height:400px,link,anchor,source,downloadgallery,formatselect]]></WidgetConfig>
+                </Setting>
+                <Setting>
+                    <PropertyName>Image</PropertyName>
+                    <Widget>imagegallery</Widget>
+                    <WidgetConfig>{useformat:true}</WidgetConfig>
+                    <Search>false</Search>
+                </Setting>
+                <Setting>
+                    <PropertyName>LinkURI</PropertyName>
+                    <Widget>file</Widget>
+                    <Search>false</Search>
+                    <Display>singleline</Display>
+                </Setting>
+            </FieldSettings>
 		</xsd:appinfo>
 	</xsd:annotation>
 
