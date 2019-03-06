@@ -398,18 +398,29 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
                     public void onSiteSelect(String site) {
 
                         cms.getRequestContext().setSiteRoot(site);
-                        openReport(
-                            CmsModuleApp.States.EXPORT_REPORT,
-                            thread,
-                            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+                        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+                        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+                        CmsModuleExportDialog dialog = new CmsModuleExportDialog(thread, window);
+                        window.setContent(dialog);
+                        A_CmsUI.get().addWindow(window);
+                        //                        openReport(
+                        //                            CmsModuleApp.States.EXPORT_REPORT,
+                        //                            thread,
+                        //                            CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
                     }
                 }, CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_SITE_SELECT_0));
 
             } else {
-                openReport(
-                    CmsModuleApp.States.EXPORT_REPORT,
-                    thread,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+                Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+                window.setHeight("500px");
+                window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
+                CmsModuleExportDialog dialog = new CmsModuleExportDialog(thread, window);
+                window.setContent(dialog);
+                A_CmsUI.get().addWindow(window);
+                //                openReport(
+                //                    CmsModuleApp.States.EXPORT_REPORT,
+                //                    thread,
+                //                    CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
             }
         }
 

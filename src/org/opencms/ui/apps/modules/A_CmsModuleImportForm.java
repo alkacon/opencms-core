@@ -112,6 +112,9 @@ public abstract class A_CmsModuleImportForm extends CssLayout {
                 try {
                     start.setVisible(false);
                     report.setVisible(true);
+                    report.setHeight("100%");
+                    report.setWidth("100%");
+                    getOkButton().setVisible(false);
                     CmsObject importCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
                     importCms.getRequestContext().setSiteRoot((String)(getSiteSelector().getValue()));
                     CmsModuleImportThread thread = new CmsModuleImportThread(

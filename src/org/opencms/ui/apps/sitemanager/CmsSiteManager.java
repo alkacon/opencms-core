@@ -344,8 +344,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
         } catch (CmsException e) {
             LOG.error("Unabel to update site", e);
         }
-        updateInfo();
-        m_sitesTable.loadSites();
+        //updateInfo();
+        //m_sitesTable.loadSites();
     }
 
     /**

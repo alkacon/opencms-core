@@ -1537,7 +1537,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             m_report.setVisible(true);
             m_tab.setVisible(false);
             m_ok.setEnabled(false);
-            m_cancel.setEnabled(false);
+            m_ok.setVisible(false);
+            //Change cancel caption to close (will not interrupt site creation anymore)
+            m_cancel.setEnabled(true);
+            m_cancel.setCaption(
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
 
             Map<String, String> bundle = getBundleMap();
 
