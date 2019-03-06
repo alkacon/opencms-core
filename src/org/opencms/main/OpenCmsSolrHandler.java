@@ -173,9 +173,6 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
                     LOG.info(e);
                 }
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-                String formattedException = CmsStringUtil.escapeHtml(e.getLocalizedMessage());
-                res.getWriter().println(
-                    Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, formattedException));
             }
         }
     }
@@ -230,11 +227,12 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
             context.m_query = new CmsSolrQuery(context.m_cms, context.m_params);
         } else {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            String indexName = context.m_params.get(PARAM_CORE) != null
-            ? context.m_params.get(PARAM_CORE)[0]
-            : (context.m_params.get(PARAM_INDEX) != null ? context.m_params.get(PARAM_INDEX)[0] : null);
-            String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
-            res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
+            if (LOG.isInfoEnabled()) {
+                String indexName = context.m_params.get(PARAM_CORE) != null
+                ? context.m_params.get(PARAM_CORE)[0]
+                : (context.m_params.get(PARAM_INDEX) != null ? context.m_params.get(PARAM_INDEX)[0] : null);
+                LOG.info(Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName));
+            }
         }
 
         return context;
