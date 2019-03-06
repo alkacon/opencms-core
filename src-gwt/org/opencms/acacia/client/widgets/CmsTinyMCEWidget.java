@@ -569,7 +569,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 			options = null;
 		} else {
 			defaults = {
-				elements : elementId,
+				selector : mainElement.tagName + "#" + elementId,
 				relative_urls : false,
 				remove_script_host : false,
 				entity_encoding : "raw",
@@ -594,6 +594,15 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 		}
 		// extend the defaults with any given options
 		if (options != null) {
+			if (options.style_formats) {
+				// tinymce performs a type test for arrays wich fails in case the array was not created in the same window context
+				var formats = new $wnd.Array();
+				for (var i = 0; i < options.style_formats.length; i++) {
+					formats[i] = options.style_formats[i];
+				}
+				options.style_formats = formats;
+			}
+
 			defaults = merge(defaults, options);
 			if (this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
 				delete defaults.content_css;
