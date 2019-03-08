@@ -102,6 +102,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -257,6 +258,9 @@ public class CmsWorkplaceAppManager {
         CmsFileExplorerConfiguration.APP_ID,
         CmsAppHierarchyConfiguration.APP_ID};
 
+    /** The additional style sheets. */
+    private Collection<String> m_additionalStyleSheets;
+
     /** The admin cms context. */
     private CmsObject m_adminCms;
 
@@ -300,6 +304,24 @@ public class CmsWorkplaceAppManager {
      */
     protected CmsWorkplaceAppManager() {
         // nothing to do
+    }
+
+    /**
+     * Returns the additional style sheets provided by I_CmsWorkplaceStylesheetProvider services.<p>
+     *
+     * @return the additional style sheets
+     */
+    public Collection<String> getAdditionalStyleSheets() {
+
+        if (m_additionalStyleSheets == null) {
+            Set<String> stylesheets = new LinkedHashSet<>();
+            for (I_CmsWorkplaceStylesheetProvider provider : ServiceLoader.load(
+                I_CmsWorkplaceStylesheetProvider.class)) {
+                stylesheets.addAll(provider.getStylesheets());
+            }
+            m_additionalStyleSheets = Collections.unmodifiableSet(stylesheets);
+        }
+        return m_additionalStyleSheets;
     }
 
     /**

@@ -39,6 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -154,6 +155,12 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         sb.append(prefetchedData);
         //       sb.append(ClientMessages.get().export(wpLocale));
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(cms)).append("\");\n </style>\n");
+
+        // append additional style sheets
+        Collection<String> stylesheets = OpenCms.getWorkplaceAppManager().getAdditionalStyleSheets();
+        for (String stylesheet : stylesheets) {
+            sb.append("<style type=\"text/css\">\n @import url(\"").append(stylesheet).append("\");\n </style>\n");
+        }
         // append the workplace locale information
         sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\" />\n");
         return sb.toString();
