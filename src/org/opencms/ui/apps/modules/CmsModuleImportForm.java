@@ -93,9 +93,9 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
      * @param app the module manager app instance for which this was opened
      */
     @SuppressWarnings("deprecation")
-    public CmsModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report) {
+    public CmsModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report, Runnable run) {
 
-        super(app, start, report);
+        super(app, start, report, run);
         m_upload.setImmediate(true);
         m_dnd.setDropHandler(new DropHandler() {
 

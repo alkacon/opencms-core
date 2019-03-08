@@ -737,7 +737,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     protected Component getComponentForState(String state) {
 
         if (state.equals(States.IMPORT)) {
-            return new CmsImportTabForm(this);
+            return new CmsImportTabForm(this, this::reload);
         } else if (state.equals(States.IMPORT_REPORT)
             || state.equals(States.DELETE_REPORT)
             || state.equals(States.EXPORT_REPORT)) {

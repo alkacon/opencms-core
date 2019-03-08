@@ -71,9 +71,9 @@ public class CmsServerModuleImportForm extends A_CmsModuleImportForm {
      *
      * @param app the module manager app
      */
-    public CmsServerModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report) {
+    public CmsServerModuleImportForm(CmsModuleApp app, VerticalLayout start, VerticalLayout report, Runnable run) {
 
-        super(app, start, report);
+        super(app, start, report, run);
         IndexedContainer options = new IndexedContainer();
         options.addContainerProperty("label", String.class, "");
         m_moduleSelect.setContainerDataSource(options);

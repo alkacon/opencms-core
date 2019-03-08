@@ -199,7 +199,7 @@ public class CmsModuleTable<T> extends Table {
     public void importModule() {
 
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-        CmsImportTabForm form = new CmsImportTabForm(m_app);
+        CmsImportTabForm form = new CmsImportTabForm(m_app, this::reload);
         window.setContent(form);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_IMPORT_TITLE_0));
         A_CmsUI.get().addWindow(window);

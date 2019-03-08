@@ -179,7 +179,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
             m_dialogWindow = null;
         }
         if (updateTable) {
-            m_sitesTable.loadSites();
+            A_CmsUI.get().reload();
         }
     }
 

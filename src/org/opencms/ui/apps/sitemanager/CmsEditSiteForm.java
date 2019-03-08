@@ -1434,6 +1434,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     void setOkButtonEnabled() {
 
         m_ok.setEnabled(true);
+        m_ok.setCaption(m_cancel.getCaption());
         m_ok.removeClickListener(m_okClickListener);
         m_ok.addClickListener(new ClickListener() {
 
@@ -1514,7 +1515,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             }
             m_simpleFieldServer.addValidator(new ServerValidator());
             m_simpleFieldTitle.addValidator(new TitleValidator());
-            m_fieldSelectOU.addValidator(new SelectOUValidator());
+            if (m_site == null) {
+                m_fieldSelectOU.addValidator(new SelectOUValidator());
+            }
             if (m_fieldCreateOU.getValue().booleanValue()) {
                 m_fieldSelectParentOU.addValidator(new SelectParentOUValidator());
             }
@@ -1537,9 +1540,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             m_report.setVisible(true);
             m_tab.setVisible(false);
             m_ok.setEnabled(false);
-            m_ok.setVisible(false);
+            m_ok.setVisible(true);
             //Change cancel caption to close (will not interrupt site creation anymore)
-            m_cancel.setEnabled(true);
+            m_cancel.setVisible(false);
+            setOkButtonEnabled();
             m_cancel.setCaption(
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
 
@@ -1562,8 +1566,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
                     public void run() {
 
-                        setOkButtonEnabled();
-                    }
+                }
 
                 });
 

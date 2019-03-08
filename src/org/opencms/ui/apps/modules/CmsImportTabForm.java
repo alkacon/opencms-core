@@ -64,14 +64,14 @@ public class CmsImportTabForm extends CmsBasicDialog {
      *
      * @param app the module manager app instance
      */
-    public CmsImportTabForm(CmsModuleApp app) {
+    public CmsImportTabForm(CmsModuleApp app, Runnable run) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_tabs.addTab(
-            new CmsModuleImportForm(app, m_start, m_report),
+            new CmsModuleImportForm(app, m_start, m_report, run),
             CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_TAB_IMPORT_HTTP_0));
         m_tabs.addTab(
-            new CmsServerModuleImportForm(app, m_start, m_report),
+            new CmsServerModuleImportForm(app, m_start, m_report, run),
             CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_MODULES_TAB_IMPORT_SERVER_0));
         updateButtons();
         m_tabs.addSelectedTabChangeListener(new SelectedTabChangeListener() {
