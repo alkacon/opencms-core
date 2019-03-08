@@ -48,7 +48,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
 
 /**
  * This class is used to start TinyMCE for editing the content of an element.<p>
@@ -431,40 +430,12 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     }-*/;
 
     /**
-     * Sets focus to the editor. Use only when in line editing.<p>
-     */
-    protected native void refocusInlineEditor() /*-{
-		var elem = $wnd.document
-				.getElementById(this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_id);
-		elem.blur();
-		elem.focus();
-    }-*/;
-
-    /**
      * Removes the editor instance.<p>
      */
     protected native void removeEditor() /*-{
 		var editor = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editor;
 		editor.remove();
     }-*/;
-
-    /**
-     * Schedules to reset the focus to the main element.<p>
-     */
-    protected void scheduleRefocus() {
-
-        // this needs to be delayed a bit, otherwise the toolbar is not rendered properly
-        Timer focusTimer = new Timer() {
-
-            @Override
-            public void run() {
-
-                m_initialized = true;
-                refocusInlineEditor();
-            }
-        };
-        focusTimer.schedule(150);
-    }
 
     /**
      * Sets the main content of the element which is inline editable.<p>
@@ -611,6 +582,9 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 				defaults.plugins = "autoresize," + defaults.plugins;
 			}
 		}
+		if (needsRefocus) {
+			defaults.auto_focus = elementId;
+		}
 
 		// add the setup function
 		defaults.setup = function(ed) {
@@ -666,15 +640,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 								function(event) {
 									self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::propagateFocusEvent()();
 								});
-			} else {
-				if (needsRefocus) {
-					ed
-							.on(
-									'init',
-									function() {
-										self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::scheduleRefocus()();
-									});
-				}
 			}
 		};
 
