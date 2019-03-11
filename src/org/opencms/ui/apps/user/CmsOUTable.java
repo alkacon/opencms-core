@@ -597,7 +597,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             if (m_app.isOUManagable(m_parentOu)) {
 
                 for (I_CmsOuTreeType treeType : m_app.getTreeTypeProvider().getTreeTypes()) {
-                    if (treeType.showInOuTable()) {
+                    if (treeType.showInOuTable() && treeType.isValidForOu(m_cms, m_parentOu)) {
                         Item item = m_container.addItem(treeType.getId());
                         item.getItemProperty(TableProperty.Name).setValue(treeType.getName());
                         item.getItemProperty(TableProperty.Icon).setValue(treeType.getIcon());

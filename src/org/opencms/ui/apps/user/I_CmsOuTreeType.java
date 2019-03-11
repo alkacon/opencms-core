@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.file.CmsObject;
 import org.opencms.ui.CmsCssIcon;
 
 /**
@@ -96,6 +97,16 @@ public interface I_CmsOuTreeType {
      * @return true for user-like OUs
      */
     public boolean isUser();
+
+    /**
+     * Checks if the tree type is available for a given OU.
+     *
+     * @param cms the CMS context
+     * @param ou the OU FQN.
+     *
+     * @return true if the tree type is valid for the OU
+     */
+    public boolean isValidForOu(CmsObject cms, String ou);
 
     /**
      * True if type should be shown in OU overview table.<p>

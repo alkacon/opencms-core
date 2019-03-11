@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.file.CmsObject;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -160,6 +161,14 @@ public enum CmsOuTreeType implements I_CmsOuTreeType {
     public boolean isUser() {
 
         return USER.equals(this);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsOuTreeType#isValidForOu(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public boolean isValidForOu(CmsObject cms, String ou) {
+
+        return true;
     }
 
     /**

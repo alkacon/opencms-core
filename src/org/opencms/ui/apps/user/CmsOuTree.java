@@ -295,6 +295,9 @@ public class CmsOuTree extends Tree {
 
                 List<I_CmsOuTreeType> types = m_app.getTreeTypeProvider().getTreeTypes();
                 for (I_CmsOuTreeType type : types) {
+                    if (!type.isValidForOu(m_cms, item.getName())) {
+                        continue;
+                    }
                     if (type.isOrgUnit()) {
                         continue;
                     }
