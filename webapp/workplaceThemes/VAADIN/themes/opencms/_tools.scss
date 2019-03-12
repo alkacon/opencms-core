@@ -4,16 +4,16 @@
 		$breadcrumb-background-active: $o-button-blue;
 		$breadcrumb-color: $v-font-color;
 		$breadcrumb-height: $v-unit-size;
-	
+
 		width: 100%;
 		height: $breadcrumb-height;
-		
+
 		> div {
 			display: inline-block;
 			overflow: hidden;
 			border-radius: $v-border-radius;
 		}
-		
+
 		* {
 			text-decoration: none;
 			outline: none;
@@ -24,20 +24,20 @@
 			line-height: $breadcrumb-height;
 			white-space: nowrap;
 		}
-		
+
 		> div > a, > div > span {
-			
+
 			padding: 0 10px 0 26px;
 			position: relative;
 			background: $breadcrumb-background;
 			color: $breadcrumb-color;
 			transition: all 0.5s;
-			
+
 			span {
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
-			
+
 			&:first-child {
 				padding-left: 13px;
 				border-radius: $v-border-radius 0 0 $v-border-radius;
@@ -46,7 +46,7 @@
 				border-radius: 0 $v-border-radius $v-border-radius 0;
 				padding-right: 13px;
 			}
-					
+
 			&.o-tools-breadcrumb-active{
 				background: $breadcrumb-background-active;
 				color: white;
@@ -54,13 +54,13 @@
 					background: $breadcrumb-background-active;
 				}
 			}
-			
+
 			&:after {
 				content: '';
 				position: absolute;
-				top: -1px; 
+				top: -1px;
 				right: -($breadcrumb-height/2); /*half of square's length*/
-				width: $breadcrumb-height; 
+				width: $breadcrumb-height;
 				height: $breadcrumb-height;
 				transform: scale(0.707) rotate(45deg);
 				z-index: 1;
@@ -70,7 +70,7 @@
 				transition: all 0.5s;
 				border-radius: 0 $v-border-radius 0 50px;
 			}
-					
+
 			&:last-child:after {
 				content: none;
 			}
@@ -89,7 +89,7 @@
 		height: 100%;
 		width: 100%;
 		position: relative;
-		
+
 		.o-tools-container{
 			position: absolute;
 			top: 0;
@@ -97,8 +97,20 @@
 			right: 0;
 			bottom: 0;
 		}
+
+		.v-horizontallayout-wrapping.o-spacing{
+
+			> .v-slot{
+				margin-left:10px;
+				margin-bottom:10px;
+			}
+		}
 	}
-	
+
+	.v-scrollable .o-tools-root.v-layout.v-widget{
+		overflow: auto;
+	}
+
 	.o-responsive[width-range~="0-983px"]{
 		/* small screen styles */
 		.o-tools-root {
@@ -107,7 +119,7 @@
 				text-align: left;
 				border-bottom: 1px solid first-color(valo-border($strength: 1));
 			}
-			
+
 			.o-tools-main{
 				position: relative;
 				width: 100%;
@@ -115,7 +127,7 @@
 			}
 		}
 	}
-	
+
 	.o-responsive[width-range~="984px-"]{
 		/* other screen styles */
 		.o-tools-root {
@@ -125,12 +137,12 @@
 				height: 100%;
 				float: left;
 				border-right: 1px solid first-color(valo-border($strength: 1));
-				
+
 				.o-app-button{
 					margin-top: 10px;
 				}
 			}
-			
+
 			.o-tools-main{
 				position: relative;
 				height: 100%;
