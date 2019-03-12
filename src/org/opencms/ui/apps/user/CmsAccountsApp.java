@@ -198,26 +198,32 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAccountsApp.class);
 
+    /**Button to add an element. */
+    protected Button m_addElementButton;
+
     /**CmsObject. */
     protected CmsObject m_cms;
+
+    /**vaadin component. */
+    protected CmsInfoButton m_infoButton;
+
+    /**vaadin component.*/
+    protected Button m_newButton;
+
+    /**vaadin component.*/
+    protected Button m_toggleButtonGroups;
+
+    /**vaadin component.*/
+    protected Button m_toggleButtonRole;
+
+    /**vaadin component.*/
+    protected Button m_toggleButtonUser;
 
     /**Don't handle change event flag.*/
     boolean m_doNotChange;
 
     /**State bean. */
     CmsStateBean m_stateBean;
-
-    /**vaadin component.*/
-    Button m_toggleButtonGroups;
-
-    /**vaadin component.*/
-    Button m_toggleButtonRole;
-
-    /**vaadin component.*/
-    Button m_toggleButtonUser;
-
-    /**Button to add an element. */
-    private Button m_addElementButton;
 
     /**Base ou. */
     private String m_baseOU = "";
@@ -227,12 +233,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
     /** The file table filter input. */
     private TextField m_filterTable;
-
-    /**vaadin component. */
-    private CmsInfoButton m_infoButton;
-
-    /**vaadin component.*/
-    private Button m_newButton;
 
     /**Class to handle visible and managable ous. */
     private CmsOUHandler m_ouHandler;
