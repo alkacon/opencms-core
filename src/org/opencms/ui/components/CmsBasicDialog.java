@@ -44,17 +44,18 @@ import com.vaadin.event.Action.Handler;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.v7.ui.HorizontalLayout;
-import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Basic dialog class with a content panel and button bar.<p>
@@ -64,21 +65,24 @@ public class CmsBasicDialog extends VerticalLayout {
     /** The available window widths. */
     public enum DialogWidth {
 
-    /** Depending on the content. */
-    content,
+        /** Depending on the content. */
+        content,
 
-    /** The maximum width of 90% of the window width. */
-    max,
+        /** The maximum width of 90% of the window width. */
+        max,
 
-    /** The default width of 600px. */
-    narrow,
+        /** The default width of 600px. */
+        narrow,
 
-    /** The wide width of 800px. */
-    wide
+        /** The wide width of 800px. */
+        wide
     }
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** The window resize listener registration. */
+    Registration m_resizeListenerRegistration;
 
     /** The shortcut action handler. */
     private Handler m_actionHandler;
@@ -233,6 +237,36 @@ public class CmsBasicDialog extends VerticalLayout {
             m_buttonPanelLeft.addComponent(button);
             m_buttonPanelLeft.setVisible(true);
         }
+    }
+
+    /**
+     * Creates an 'Cancel' button.<p>
+     *
+     * @return the button
+     */
+    public Button createButtonCancel() {
+
+        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
+    }
+
+    /**
+     * Creates an 'Cancel' button.<p>
+     *
+     * @return the button
+     */
+    public Button createButtonClose() {
+
+        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
+    }
+
+    /**
+     * Creates an 'OK' button.<p>
+     *
+     * @return the button
+     */
+    public Button createButtonOK() {
+
+        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
     }
 
     /**
@@ -470,36 +504,6 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
-     * Creates an 'Cancel' button.<p>
-     *
-     * @return the button
-     */
-    protected Button createButtonCancel() {
-
-        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
-    }
-
-    /**
-     * Creates an 'Cancel' button.<p>
-     *
-     * @return the button
-     */
-    protected Button createButtonClose() {
-
-        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
-    }
-
-    /**
-     * Creates an 'OK' button.<p>
-     *
-     * @return the button
-     */
-    protected Button createButtonOK() {
-
-        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
-    }
-
-    /**
      * Creates a resource list panel.<p>
      *
      * @param caption the caption to use
@@ -581,10 +585,12 @@ public class CmsBasicDialog extends VerticalLayout {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void detach(DetachEvent event) {
 
-                A_CmsUI.get().getPage().removeBrowserWindowResizeListener(m_windowResizeListener);
+                if (m_resizeListenerRegistration != null) {
+                    m_resizeListenerRegistration.remove();
+                    m_resizeListenerRegistration = null;
+                }
             }
         });
 
@@ -600,7 +606,7 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_maxHeightExtension.updateMaxHeight(calculateMaxHeight(newHeight));
             }
         };
-        A_CmsUI.get().getPage().addBrowserWindowResizeListener(m_windowResizeListener);
+        m_resizeListenerRegistration = A_CmsUI.get().getPage().addBrowserWindowResizeListener(m_windowResizeListener);
 
     }
 
