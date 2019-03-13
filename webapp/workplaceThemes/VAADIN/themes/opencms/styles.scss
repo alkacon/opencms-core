@@ -49,7 +49,7 @@
    @include o-css-icons-32;
    @include o-css-icons-24;
    @include o-css-icons-16;
-   
+
    /* Embedded dialogs require the UI to have a transparent background. */
    &.cmsembeddeddialogsui.v-app, &.cmsembeddeddialogsui.v-app-loading {
 		background: transparent;
@@ -66,6 +66,14 @@
 		}
 	}
 }
+
+@media (max-width:750px) {
+
+    .o-app-info > .o-many-elements .o-tools-breadcrumb{
+		display:none;
+	}
+}
+
 
 @media (min-width:501px) and (max-width:800px){
 	.opencms .CodeMirror-dialog {
