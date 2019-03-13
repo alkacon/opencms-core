@@ -174,4 +174,12 @@ public class CmsWorkplaceReport extends A_CmsReport {
         setLastEntryTime(System.currentTimeMillis());
     }
 
+    /**
+     * Rewinds the report update to the start of the report.<p>
+     */
+    public void rewind() {
+
+        m_indexNext = 0;
+    }
+
 }

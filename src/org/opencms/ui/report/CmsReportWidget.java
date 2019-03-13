@@ -29,6 +29,7 @@ package org.opencms.ui.report;
 
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.CmsVaadinHtmlReportUpdateFormatter;
+import org.opencms.report.CmsWorkplaceReport;
 import org.opencms.ui.shared.components.CmsReportWidgetState;
 import org.opencms.ui.shared.rpc.I_CmsReportClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsReportServerRpc;
@@ -59,12 +60,16 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
     /** True if the report thread is finished. */
     private boolean m_threadFinished;
 
+    /** The report to display. */
+    private CmsWorkplaceReport m_report;
+
     /**
      * Creates a new instance.<p>
      * Use in declarative layouts, remember to call .<p>
      * This does not start the report thread.<p>
      */
     public CmsReportWidget() {
+
         registerRpc(this, I_CmsReportServerRpc.class);
     }
 
@@ -76,8 +81,21 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
      * @param thread the report thread
      */
     public CmsReportWidget(A_CmsReportThread thread) {
+
         this();
         m_thread = thread;
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * Use this constructor in case no report thread is available.<p>
+     *
+     * @param report the report to display
+     */
+    public CmsReportWidget(CmsWorkplaceReport report) {
+
+        this();
+        m_report = report;
     }
 
     /**
@@ -108,15 +126,19 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
     public void requestReportUpdate() {
 
         String reportUpdate = null;
-        if (!m_threadFinished && (m_thread != null)) {
-            // if thread is not alive at this point, there may still be report updates
-            reportUpdate = m_thread.getReportUpdate(m_formatter);
-            if (!m_thread.isAlive()) {
-                m_threadFinished = true;
-                for (Runnable handler : m_reportFinishedHandlers) {
-                    handler.run();
+        if (m_thread != null) {
+            if (!m_threadFinished) {
+                // if thread is not alive at this point, there may still be report updates
+                reportUpdate = m_thread.getReportUpdate(m_formatter);
+                if (!m_thread.isAlive()) {
+                    m_threadFinished = true;
+                    for (Runnable handler : m_reportFinishedHandlers) {
+                        handler.run();
+                    }
                 }
             }
+        } else if (m_report != null) {
+            reportUpdate = m_report.getReportUpdate(m_formatter);
         }
         getRpcProxy(I_CmsReportClientRpc.class).handleReportUpdate(reportUpdate);
     }
