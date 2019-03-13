@@ -1289,6 +1289,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         });
         m_filterTable.setWidth("200px");
         m_infoLayout.addComponent(m_filterTable);
+        m_infoLayout.addStyleName("o-many-elements");
         m_filter.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
