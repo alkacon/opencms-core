@@ -1123,6 +1123,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
         }
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchField.getValue())) {
+            filterTable(m_searchField.getValue());
+        }
     }
 
     /**
