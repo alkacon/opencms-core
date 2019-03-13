@@ -161,8 +161,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      *
      * @param element the container element widget
      * @param inline <code>true</code> to open the in-line editor for the given element if available
+     * @param wasNew <code>true</code> in case this is a newly created element not previously edited
      */
-    public void openDialog(final CmsContainerPageElementPanel element, final boolean inline) {
+    public void openDialog(final CmsContainerPageElementPanel element, final boolean inline, boolean wasNew) {
 
         if (!inline && element.hasEditHandler()) {
             m_handler.m_controller.getEditOptions(
@@ -182,11 +183,11 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                                     m_replaceElement = element;
                                     contentId = arg.toString();
                                 }
-                                internalOpenDialog(element, contentId, inline);
+                                internalOpenDialog(element, contentId, inline, wasNew);
                             }
                         };
                         if (editOptions == null) {
-                            internalOpenDialog(element, element.getId(), inline);
+                            internalOpenDialog(element, element.getId(), inline, wasNew);
                         } else if (editOptions.getOptions().getOptions().size() == 1) {
                             m_handler.m_controller.prepareForEdit(
                                 element.getId(),
@@ -216,7 +217,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     }
                 });
         } else {
-            internalOpenDialog(element, element.getId(), inline);
+            internalOpenDialog(element, element.getId(), inline, wasNew);
         }
     }
 
@@ -406,9 +407,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      *
      * @param element the element to edit
      * @param editContentId the edit content id
-     * @param inline <code>true>7code> to edit the content inline
+     * @param inline <code>true</code> to edit the content inline
+     * @param wasNew <code>true</code> in case this is a newly created element not previously edited
      */
-    void internalOpenDialog(final CmsContainerPageElementPanel element, String editContentId, final boolean inline) {
+    void internalOpenDialog(
+        final CmsContainerPageElementPanel element,
+        String editContentId,
+        final boolean inline,
+        boolean wasNew) {
 
         if (!m_editorOpened) {
             m_editorOpened = true;
@@ -466,14 +472,16 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     context.setHtmlContextInfo(getContextInfo(element));
                     // remove expired style before initializing the editor
                     element.setReleasedAndNotExpired(true);
-
+                    // in case of new elements, ignore load time
+                    CmsDebugLog.consoleLog("Opening inline editor for element. Was new: " + wasNew);
+                    long loadTime = wasNew ? Long.MAX_VALUE : m_handler.m_controller.getLoadTime();
                     CmsContentEditor.getInstance().openInlineEditor(
                         context,
                         new CmsUUID(serverId),
                         editorLocale,
                         element,
                         mainLocale,
-                        m_handler.m_controller.getLoadTime(),
+                        loadTime,
                         onClose);
                 } else {
                     addEditingHistoryItem(false);

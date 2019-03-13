@@ -105,7 +105,7 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
      */
     private void openEditor(CmsContainerPageElementPanel element) {
 
-        getHandler().openEditorForElement(element, false);
+        getHandler().openEditorForElement(element, false, element.isNew());
     }
 
     /**

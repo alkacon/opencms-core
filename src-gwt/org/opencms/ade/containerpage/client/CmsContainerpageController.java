@@ -3602,7 +3602,7 @@ public final class CmsContainerpageController {
 
         setPageChanged();
         getHandler().hidePageOverlay();
-        getHandler().openEditorForElement(element, inline);
+        getHandler().openEditorForElement(element, inline, true);
     }
 
     /**

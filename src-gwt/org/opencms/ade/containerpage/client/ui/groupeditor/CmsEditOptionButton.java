@@ -84,7 +84,7 @@ public class CmsEditOptionButton extends CmsPushButton implements I_CmsGroupEdit
 
         clearHoverState();
         m_elementWidget.getElementOptionBar().removeHighlighting();
-        m_editor.getHandler().openEditorForElement(m_elementWidget, false);
+        m_editor.getHandler().openEditorForElement(m_elementWidget, false, m_elementWidget.isNew());
         event.stopPropagation();
         event.preventDefault();
     }

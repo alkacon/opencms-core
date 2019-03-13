@@ -760,8 +760,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      *
      * @param element the element to edit
      * @param inline <code>true</code> to open the inline editor for the given element if available
+     * @param wasNew <code>true</code> in case this is a newly created element not previously edited
      */
-    public void openEditorForElement(final CmsContainerPageElementPanel element, boolean inline) {
+    public void openEditorForElement(final CmsContainerPageElementPanel element, boolean inline, boolean wasNew) {
 
         if (element.isNew()) {
             //openEditorForElement will be called again asynchronously when the RPC for creating the element has finished
@@ -781,7 +782,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             m_controller.setContentEditing(true);
             m_controller.disableInlineEditing(element);
-            m_controller.getContentEditorHandler().openDialog(element, inline);
+            m_controller.getContentEditorHandler().openDialog(element, inline, wasNew);
             element.removeHighlighting();
         }
     }
