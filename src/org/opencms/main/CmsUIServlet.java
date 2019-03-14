@@ -291,6 +291,10 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
     protected void service(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
 
+        if (request.getRequestURI().contains("/VAADIN")) {
+            super.service(request, response);
+            return;
+        }
         // check to OpenCms runlevel
         int runlevel = OpenCmsCore.getInstance().getRunLevel();
 
