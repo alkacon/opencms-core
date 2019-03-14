@@ -43,6 +43,7 @@ public class CmsClientReportWidget extends FlowPanel {
      * Creates a new instance.<p>
      */
     public CmsClientReportWidget() {
+
         add(m_reportContent);
         addStyleName("o-report");
         m_reportContent.addStyleName("o-report-content");
@@ -57,9 +58,10 @@ public class CmsClientReportWidget extends FlowPanel {
      */
     public void append(String html) {
 
-        appendHtmlInternal(m_reportContent.getElement(), html);
-        scrollToBottom(getElement(), m_reportContent.getElement());
-
+        if ((html != null) && (html.length() > 0)) {
+            appendHtmlInternal(m_reportContent.getElement(), html);
+            scrollToBottom(getElement(), m_reportContent.getElement());
+        }
     }
 
     /**
