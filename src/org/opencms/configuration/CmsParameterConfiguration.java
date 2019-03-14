@@ -640,13 +640,13 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> imple
      * <pre>
      *      # lines starting with # are comments
      *      db.pool.default.jdbcDriver=net.bull.javamelody.JdbcDriver
-     *      db.pool.default.connectionProperties.driver=org.gjt.mm.mysql.Driver
+     *      db.pool.default.connectionProperties.driver=com.mysql.cj.jdbc.Driver
      * </pre>
      *
      * <tt>getPrefixedProperties("db.pool.default.connectionProperties")</tt>
      * will return a <tt>Properties</tt> object with one single entry:
      * <pre>
-     *      key:"driver", value:"org.gjt.mm.mysql.Driver"
+     *      key:"driver", value:"com.mysql.cj.jdbc.Driver"
      * </pre>
      *
      * @param keyPrefix prefix to match. If it isn't already, it will be

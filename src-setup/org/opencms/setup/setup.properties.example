@@ -15,7 +15,7 @@ db.create.tables=true
 db.dropDb=true
 db.default.tablespace=
 db.index.tablespace=
-db.jdbc.driver=org.gjt.mm.mysql.Driver
+db.jdbc.driver=com.mysql.cj.jdbc.Driver
 db.template.db=
 db.temporary.tablespace=
 
