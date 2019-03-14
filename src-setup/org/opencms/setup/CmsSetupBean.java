@@ -1794,7 +1794,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String historyDriver;
         String subscriptionDriver;
         String sqlManager;
-
+        System.out.println("setDatabase " + databaseKey);
         vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
         userDriver = getDbProperty(m_databaseKey + ".user.driver");
         projectDriver = getDbProperty(m_databaseKey + ".project.driver");
@@ -1840,6 +1840,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDb(String db) {
 
+        System.out.println("setDb " + db);
         setDbProperty(m_databaseKey + ".dbname", db);
     }
 
@@ -1850,6 +1851,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbConStrParams(String value) {
 
+        System.out.println("setDbConStrParams " + value);
         setDbProperty(m_databaseKey + ".constr.params", value);
     }
 
@@ -1860,6 +1862,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbCreateConStr(String dbCreateConStr) {
 
+        System.out.println("setDbCreateConStr " + dbCreateConStr);
         setDbProperty(m_databaseKey + ".constr", dbCreateConStr);
     }
 
@@ -1873,6 +1876,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbCreatePwd(String dbCreatePwd) {
 
+        System.out.println("setDbCreatePwd " + dbCreatePwd);
         m_dbCreatePwd = dbCreatePwd;
     }
 
@@ -1883,6 +1887,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbCreateUser(String dbCreateUser) {
 
+        System.out.println("setDbCreateUser " + dbCreateUser);
         setDbProperty(m_databaseKey + ".user", dbCreateUser);
     }
 
@@ -1893,6 +1898,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbDriver(String driver) {
 
+        System.out.println("setDbDriver " + driver);
         setDbProperty(m_databaseKey + ".driver", driver);
     }
 
@@ -1925,6 +1931,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String contextPath,
         HttpSession session) {
 
+        System.out.println("setDbParamaters " + paramsToString(request) + " " + provider + " " + contextPath);
         String conStr = getReqValue(request, "dbCreateConStr");
         // store the DB provider
         m_provider = provider;
@@ -2081,6 +2088,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 }
             }
         }
+        System.out.println("END setDBParamaters");
         return isFormSubmitted;
     }
 
@@ -2092,6 +2100,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbProperty(String key, String value) {
 
+        System.out.println("setDbProperty " + key + " " + value);
         // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf('.'));
         Properties databaseProperties = getDatabaseProperties().get(databaseKey);
@@ -2105,6 +2114,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkConStr(String dbWorkConStr) {
 
+        System.out.println("setDbWorkConStr " + dbWorkConStr);
         String driver;
         String pool = '.' + getPool() + '.';
 
@@ -2126,6 +2136,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkPwd(String dbWorkPwd) {
 
+        System.out.println("setDbWorkPwd " + dbWorkPwd);
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_PASSWORD, dbWorkPwd);
     }
 
@@ -2136,6 +2147,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkUser(String dbWorkUser) {
 
+        System.out.println("setDbWorkUser " + dbWorkUser);
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_POOL_USER, dbWorkUser);
     }
 
@@ -2155,6 +2167,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * @param fullDatabaseKey the fullDatabaseKey to set
      */
     public void setFullDatabaseKey(String fullDatabaseKey) {
+
+        System.out.println("setFullDatabaseKEy " + fullDatabaseKey);
 
         m_fullDatabaseKey = fullDatabaseKey;
 
@@ -2185,6 +2199,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setReplacer(Map<String, String> map) {
 
+        System.out.println("setReplacer " + map);
         m_replacer = map;
     }
 
@@ -2744,6 +2759,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void setExtProperty(String key, String value) {
 
+        System.out.println("setExtProperty " + key + " " + value);
         m_configuration.put(key, value);
     }
 
@@ -2857,6 +2873,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private String getReqValue(Map<String, String[]> map, String key) {
 
         return map.get(key) != null ? map.get(key)[0] : null;
+    }
+
+    private String paramsToString(Map<String, String[]> request) {
+
+        String result = "";
+        for (Map.Entry<String, String[]> entry : request.entrySet()) {
+            String strEntry = entry.getKey() + "=(";
+            for (String val : entry.getValue()) {
+                strEntry += val + " ";
+            }
+            strEntry += ")";
+            result += strEntry + " ";
+        }
+        return "{" + result + "}";
+
     }
 
     /**
