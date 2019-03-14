@@ -31,6 +31,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.ui.shared.rpc.I_CmsReportClientRpc;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
@@ -56,13 +58,15 @@ public class CmsStreamReportWidget extends CmsReportWidget {
             // flush is called after every line
             synchronized (m_buffer) {
                 String content = "";
+                byte[] data = toByteArray();
                 try {
-                    content = new String(toByteArray(), "UTF-8");
+                    content = new String(data, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     // ignore
                 }
                 m_buffer.append(content);
                 reset();
+                writeToDelegate(data);
             }
 
         }
@@ -70,6 +74,12 @@ public class CmsStreamReportWidget extends CmsReportWidget {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** A second stream to write the data to. */
+    private OutputStream m_delegateStream;
+
+    /** Flag which signals that no further output will be written to the stream and that the report is finished. */
+    private boolean m_finish;
 
     /** The buffer for the text which has been written to the stream, but not yet sent to the client. */
     private StringBuilder m_buffer = new StringBuilder();
@@ -89,6 +99,17 @@ public class CmsStreamReportWidget extends CmsReportWidget {
         } catch (UnsupportedEncodingException e) {
             // ignore
         }
+    }
+
+    /**
+     * Call this after all output has been written to the stream.<p>
+     *
+     * This does not directly call the 'report finished' handlers, they will be only
+     * called after the next RPC call from the client which fetches the report updates.
+     */
+    public void finish() {
+
+        m_finish = true;
     }
 
     /**
@@ -112,8 +133,28 @@ public class CmsStreamReportWidget extends CmsReportWidget {
             content = m_buffer.toString();
             m_buffer.setLength(0);
         }
-        String html = convertOutputToHtml(content);
+        String html;
+        if ((content.length() == 0) && m_finish) {
+            html = null;
+            try {
+                runReportFinishedHandlers();
+            } catch (Exception e) {
+                // ignore
+            }
+        } else {
+            html = convertOutputToHtml(content);
+        }
         getRpcProxy(I_CmsReportClientRpc.class).handleReportUpdate(html);
+    }
+
+    /**
+     * Sets a second stream to write the report output to (usually a log file).
+     *
+     * @param stream the second stream to write the data to
+     */
+    public void setDelegateStream(OutputStream stream) {
+
+        m_delegateStream = stream;
     }
 
     /**
@@ -132,6 +173,22 @@ public class CmsStreamReportWidget extends CmsReportWidget {
             buffer.append(CmsEncoder.escapeXml(line) + "<br>");
         }
         return buffer.toString();
+    }
+
+    /**
+     * Writes data to delegate stream if it has been set.
+     *
+     * @param data the data to write
+     */
+    private void writeToDelegate(byte[] data) {
+
+        if (m_delegateStream != null) {
+            try {
+                m_delegateStream.write(data);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }

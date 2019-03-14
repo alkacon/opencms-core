@@ -83,7 +83,7 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
             if (!basePath.endsWith(File.separator)) {
                 basePath += File.separator;
             }
-            basePath += "setup" + File.separator + "resources" + File.separator;
+            basePath += CmsSetupBean.FOLDER_SETUP + "resources" + File.separator;
 
             CmsImageScaler scaler = new CmsImageScaler();
             byte[] scaled;

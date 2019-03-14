@@ -27,53 +27,168 @@
 
 package org.opencms.setup;
 
+import org.opencms.setup.ui.A_CmsSetupStep;
+import org.opencms.setup.ui.CmsSetupStep01License;
+import org.opencms.setup.ui.CmsSetupStep02ComponentCheck;
+import org.opencms.setup.ui.CmsSetupStep03Database;
+import org.opencms.setup.ui.CmsSetupStep04Modules;
+import org.opencms.setup.ui.CmsSetupStep05ServerSettings;
+import org.opencms.setup.ui.CmsSetupStep06ImportReport;
+import org.opencms.setup.ui.CmsSetupStep07ConfigNotes;
+import org.opencms.setup.ui.CmsSetupErrorDialog;
+import org.opencms.setup.ui.I_SetupUiContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+/**
+ * UI class for the setup wizard.
+ */
 @Theme("opencms")
-public class CmsSetupUI extends A_CmsUI  {
+public class CmsSetupUI extends A_CmsUI implements I_SetupUiContext {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** List of setup step classes. */
+    private List<Class<? extends A_CmsSetupStep>> m_steps = new ArrayList<>();
+
+    /** Currently active window. */
     private Window m_window;
+
+    /** Current step number. */
+    private int m_stepNo = 0;
+
+    /** The setup bean. */
+    private CmsSetupBean m_setupBean;
+
+    /**
+     * Gets external resource for an HTML page in the setup-resources folder.
+     *
+     * @param context the context
+     * @param name the file name
+     *
+     * @return the resource for the HTML page
+     */
+    public static Resource getSetupPage(I_SetupUiContext context, String name) {
+
+        String path = CmsStringUtil.joinPaths(context.getSetupBean().getContextPath(), CmsSetupBean.FOLDER_SETUP, name);
+        Resource resource = new ExternalResource(path);
+        return resource;
+    }
+
+    /**
+     * @see org.opencms.setup.ui.I_SetupUiContext#getSetupBean()
+     */
+    public CmsSetupBean getSetupBean() {
+
+        return m_setupBean;
+    }
+
+    /**
+     * @see org.opencms.setup.ui.I_SetupUiContext#stepForward()
+     */
+    @Override
+    public void stepForward() {
+
+        updateStep(m_stepNo + 1);
+    }
 
     @Override
     protected void init(VaadinRequest request) {
 
-        this.addStyleName("opencms");
-        CmsBasicDialog dialog = new CmsBasicDialog();
-        Label label = new Label("Hello world!");
-        label.setWidth("500px");
-        label.setHeight("300px");;
-        dialog.setContent(label);
-        Button button = new Button("OK");
-        dialog.addButton(button);
-        Window window = createWindow();
-        window.setContent(dialog);
-        addWindow(window);
+        try {
+            getPage().setTitle("OpenCms Setup");
+            this.addStyleName("opencms");
+            m_steps = Arrays.asList(
+                CmsSetupStep01License.class,
+                CmsSetupStep02ComponentCheck.class,
+                CmsSetupStep03Database.class,
+                CmsSetupStep04Modules.class,
+                CmsSetupStep05ServerSettings.class,
+                CmsSetupStep06ImportReport.class,
+                CmsSetupStep07ConfigNotes.class);
 
+            m_setupBean = new CmsSetupBean();
+            CmsSetupServlet servlet = CmsSetupServlet.getInstance();
+            m_setupBean.init(servlet.getServletContext(), servlet.getServletConfig());
+            if (!m_setupBean.getWizardEnabled()) {
+                throw new Exception(
+                    "The OpenCms setup wizard is not enabled! Please enable it in your opencms.properties.");
+            }
+
+            m_stepNo = 0;
+            updateStep(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CmsSetupErrorDialog.showErrorDialog(e);
+
+        }
     }
 
-    private Window createWindow() {
+    /**
+     * Shows the given step.
+     *
+     * @param step the step
+     */
+    protected void showStep(A_CmsSetupStep step) {
+
+        Window window = newWindow();
+        window.setContent(step);
+        window.setCaption(step.getTitle());
+        A_CmsUI.get().addWindow(window);
+        window.center();
+    }
+
+    /**
+     * Moves to the step with the given number.
+     *
+     * <p>The step number is only updated if no exceptions are thrown when instantiating/displaying the given step
+     *
+     * @param stepNo the step number to move to
+     */
+    protected void updateStep(int stepNo) {
+
+        if ((0 <= stepNo) && (stepNo < m_steps.size())) {
+            Class<? extends A_CmsSetupStep> cls = m_steps.get(stepNo);
+            A_CmsSetupStep step;
+            try {
+                step = cls.getConstructor(I_SetupUiContext.class).newInstance(this);
+                showStep(step);
+                m_stepNo = stepNo; // Only update step number if no exceptions
+            } catch (Exception e) {
+                CmsSetupErrorDialog.showErrorDialog(e);
+            }
+
+        }
+    }
+
+    /**
+     * Replaces active window with a new one and returns it.
+     *
+     * @return the new window
+     */
+    private Window newWindow() {
 
         if (m_window != null) {
             m_window.close();
         }
-        Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        m_window = window;
         window.setDraggable(false);
         window.setResizable(false);
         window.setClosable(false);
-        m_window = window;
         return m_window;
     }
 

@@ -64,7 +64,7 @@ public class CmsSetupDb extends Object {
     public static final String SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
 
     /** The folder where the setup wizard is located. */
-    public static final String SETUP_FOLDER = "setup/";
+    public static final String SETUP_FOLDER = CmsSetupBean.FOLDER_SETUP;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSetupDb.class);
@@ -725,8 +725,7 @@ public class CmsSetupDb extends Object {
         String filename = null;
         try {
             filename = m_basePath
-                + "setup"
-                + File.separator
+                + CmsSetupBean.FOLDER_SETUP
                 + "database"
                 + File.separator
                 + databaseKey

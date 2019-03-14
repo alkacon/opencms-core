@@ -132,9 +132,7 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
                 reportUpdate = m_thread.getReportUpdate(m_formatter);
                 if (!m_thread.isAlive()) {
                     m_threadFinished = true;
-                    for (Runnable handler : m_reportFinishedHandlers) {
-                        handler.run();
-                    }
+                    runReportFinishedHandlers();
                 }
             }
         } else if (m_report != null) {
@@ -160,5 +158,15 @@ public class CmsReportWidget extends AbstractComponent implements I_CmsReportSer
     protected CmsReportWidgetState getState() {
 
         return (CmsReportWidgetState)(super.getState());
+    }
+
+    /**
+     * Runs the 'report finished' handlers.
+     */
+    protected void runReportFinishedHandlers() {
+
+        for (Runnable handler : m_reportFinishedHandlers) {
+            handler.run();
+        }
     }
 }

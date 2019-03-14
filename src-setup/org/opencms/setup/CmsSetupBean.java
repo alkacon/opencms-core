@@ -93,11 +93,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
@@ -140,7 +142,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public static final String FOLDER_LIB = "lib" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_SETUP = "setup" + File.separatorChar;
+    public static final String FOLDER_SETUP = "setup-resources" + File.separatorChar;
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
@@ -310,12 +312,33 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Xml read/write helper object. */
     private CmsSetupXmlHelper m_xmlHelper;
 
+    private String m_contextPath;
+
+    private CmsShell m_shell;
+
     /**
      * Default constructor.<p>
      */
     public CmsSetupBean() {
 
         initHtmlParts();
+    }
+
+    public static String d() {
+
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+        int i;
+        for (i = trace.length - 1; i >= 0; i--) {
+            if (trace[i].getClassName().toString().contains("CmsSetupBean")) {
+                break;
+            }
+        }
+        if (i >= 0) {
+            return StringUtils.repeat("    ", i - 1);
+        } else {
+            return "";
+        }
+
     }
 
     /**
@@ -555,6 +578,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public String getConfigRfsPath() {
 
         return m_configRfsPath;
+    }
+
+    public String getContextPath() {
+
+        return m_contextPath;
     }
 
     /**
@@ -1249,18 +1277,25 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void init(PageContext pageContext) {
 
+        ServletContext servCtx = pageContext.getServletContext();
+        ServletConfig servConfig = pageContext.getServletConfig();
+
+        init(servCtx, servConfig);
+    }
+
+    public void init(ServletContext servCtx, ServletConfig servConfig) {
+
         // check for OpenCms installation directory path
-        String webAppRfsPath = pageContext.getServletConfig().getServletContext().getRealPath("/");
+        String webAppRfsPath = servConfig.getServletContext().getRealPath("/");
 
         // read the the OpenCms servlet mapping from the servlet context parameters
-        String servletMapping = pageContext.getServletContext().getInitParameter(
-            OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET);
+        String servletMapping = servCtx.getInitParameter(OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET);
 
         // read the the default context name from the servlet context parameters
-        String defaultWebApplication = pageContext.getServletContext().getInitParameter(
-            OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION);
+        String defaultWebApplication = servCtx.getInitParameter(OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION);
 
-        m_servletConfig = pageContext.getServletConfig();
+        m_servletConfig = servConfig;
+        m_contextPath = servCtx.getContextPath();
 
         init(webAppRfsPath, servletMapping, defaultWebApplication);
     }
@@ -1344,6 +1379,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public void initShellCmsObject(CmsObject cms, CmsShell shell) {
 
         m_cms = cms;
+        m_shell = shell;
     }
 
     /**
@@ -1794,7 +1830,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String historyDriver;
         String subscriptionDriver;
         String sqlManager;
-        System.out.println("setDatabase " + databaseKey);
+        System.out.println(d() + "setDatabase " + databaseKey);
         vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
         userDriver = getDbProperty(m_databaseKey + ".user.driver");
         projectDriver = getDbProperty(m_databaseKey + ".project.driver");
@@ -1840,7 +1876,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDb(String db) {
 
-        System.out.println("setDb " + db);
+        System.out.println(d() + "setDb " + db);
         setDbProperty(m_databaseKey + ".dbname", db);
     }
 
@@ -1851,7 +1887,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbConStrParams(String value) {
 
-        System.out.println("setDbConStrParams " + value);
+        System.out.println(d() + "setDbConStrParams " + value);
         setDbProperty(m_databaseKey + ".constr.params", value);
     }
 
@@ -1862,7 +1898,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbCreateConStr(String dbCreateConStr) {
 
-        System.out.println("setDbCreateConStr " + dbCreateConStr);
+        System.out.println(d() + "setDbCreateConStr " + dbCreateConStr);
         setDbProperty(m_databaseKey + ".constr", dbCreateConStr);
     }
 
@@ -1876,7 +1912,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbCreatePwd(String dbCreatePwd) {
 
-        System.out.println("setDbCreatePwd " + dbCreatePwd);
+        System.out.println(d() + "setDbCreatePwd " + dbCreatePwd);
         m_dbCreatePwd = dbCreatePwd;
     }
 
@@ -1887,7 +1923,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbCreateUser(String dbCreateUser) {
 
-        System.out.println("setDbCreateUser " + dbCreateUser);
+        System.out.println(d() + "setDbCreateUser " + dbCreateUser);
         setDbProperty(m_databaseKey + ".user", dbCreateUser);
     }
 
@@ -1898,7 +1934,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbDriver(String driver) {
 
-        System.out.println("setDbDriver " + driver);
+        System.out.println(d() + "setDbDriver " + driver);
         setDbProperty(m_databaseKey + ".driver", driver);
     }
 
@@ -1912,6 +1948,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
 
+        System.out.println(d() + "setDbParamaters <req>");
         return setDbParamaters(request.getParameterMap(), provider, request.getContextPath(), request.getSession());
     }
 
@@ -1931,7 +1968,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String contextPath,
         HttpSession session) {
 
-        System.out.println("setDbParamaters " + paramsToString(request) + " " + provider + " " + contextPath);
+        System.out.println(d() + "setDbParamaters " + paramsToString(request) + " " + provider + " " + contextPath);
         String conStr = getReqValue(request, "dbCreateConStr");
         // store the DB provider
         m_provider = provider;
@@ -2088,7 +2125,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 }
             }
         }
-        System.out.println("END setDBParamaters");
+        System.out.println(d() + "END setDBParamaters");
         return isFormSubmitted;
     }
 
@@ -2100,7 +2137,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbProperty(String key, String value) {
 
-        System.out.println("setDbProperty " + key + " " + value);
+        System.out.println(d() + "setDbProperty " + key + " " + value);
         // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf('.'));
         Properties databaseProperties = getDatabaseProperties().get(databaseKey);
@@ -2114,7 +2151,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkConStr(String dbWorkConStr) {
 
-        System.out.println("setDbWorkConStr " + dbWorkConStr);
+        System.out.println(d() + "setDbWorkConStr " + dbWorkConStr);
         String driver;
         String pool = '.' + getPool() + '.';
 
@@ -2136,7 +2173,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkPwd(String dbWorkPwd) {
 
-        System.out.println("setDbWorkPwd " + dbWorkPwd);
+        System.out.println(d() + "setDbWorkPwd " + dbWorkPwd);
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_PASSWORD, dbWorkPwd);
     }
 
@@ -2147,7 +2184,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkUser(String dbWorkUser) {
 
-        System.out.println("setDbWorkUser " + dbWorkUser);
+        System.out.println(d() + "setDbWorkUser " + dbWorkUser);
         setExtProperty(CmsDbPoolV11.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPoolV11.KEY_POOL_USER, dbWorkUser);
     }
 
@@ -2168,7 +2205,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setFullDatabaseKey(String fullDatabaseKey) {
 
-        System.out.println("setFullDatabaseKEy " + fullDatabaseKey);
+        System.out.println(d() + "setFullDatabaseKEy " + fullDatabaseKey);
 
         m_fullDatabaseKey = fullDatabaseKey;
 
@@ -2199,7 +2236,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setReplacer(Map<String, String> map) {
 
-        System.out.println("setReplacer " + map);
+        System.out.println(d() + "setReplacer " + map);
         m_replacer = map;
     }
 
@@ -2259,9 +2296,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void shellExit() {
 
-        System.out.println();
-        System.out.println();
-        System.out.println("The setup is finished!\nThe OpenCms system used for the setup will now shut down.");
+        m_shell.getOut().println();
+        m_shell.getOut().println();
+        m_shell.getOut().println("The setup is finished!\nThe OpenCms system used for the setup will now shut down.");
     }
 
     /**
@@ -2269,21 +2306,22 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void shellStart() {
 
-        System.out.println();
-        System.out.println("Starting Workplace import and database setup for OpenCms!");
+        m_shell.getOut().println();
+        m_shell.getOut().println(d() + "Starting Workplace import and database setup for OpenCms!");
 
         String[] copy = org.opencms.main.Messages.COPYRIGHT_BY_ALKACON;
         for (int i = copy.length - 1; i >= 0; i--) {
-            System.out.println(copy[i]);
+            m_shell.getOut().println(d() + copy[i]);
         }
-        System.out.println(
-            "This is OpenCms "
+        m_shell.getOut().println(
+            d()
+                + "This is OpenCms "
                 + OpenCms.getSystemInfo().getVersionNumber()
                 + " ["
                 + OpenCms.getSystemInfo().getVersionId()
                 + "]");
-        System.out.println();
-        System.out.println();
+        m_shell.getOut().println();
+        m_shell.getOut().println();
     }
 
     /**
@@ -2692,12 +2730,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             // create the properties with all possible configurations
             if (databaseSetupFolder.exists()) {
                 for (String key : databaseKeys) {
-                    String dbDir = m_webAppRfsPath
-                        + "setup"
-                        + File.separatorChar
-                        + "database"
-                        + File.separatorChar
-                        + key;
+                    String dbDir = m_webAppRfsPath + CmsSetupBean.FOLDER_SETUP + "database" + File.separatorChar + key;
                     String configPath = dbDir + File.separatorChar + "database.properties";
                     try {
                         input = new FileInputStream(new File(configPath));
@@ -2759,7 +2792,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void setExtProperty(String key, String value) {
 
-        System.out.println("setExtProperty " + key + " " + value);
+        System.out.println(d() + "setExtProperty " + key + " " + value);
         m_configuration.put(key, value);
     }
 

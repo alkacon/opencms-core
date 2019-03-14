@@ -93,7 +93,7 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
      * @param onClose executed on close
      * @param window the dialog window if available
      */
-    public CmsSetupErrorDialog(String message, Throwable t, Runnable onClose, final Window window) {
+    public CmsSetupErrorDialog(String message, String details, Runnable onClose, final Window window) {
 
         m_onClose = onClose;
         m_window = window;
@@ -102,10 +102,10 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
         m_icon.setValue(FontOpenCms.ERROR.getHtml());
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         final String labelId = "label" + new CmsUUID().toString();
-        String stacktrace = message + "\n\n" + ExceptionUtils.getStackTrace(t);
+
         m_hiddenStack.setId(labelId);
-        m_hiddenStack.setValue(stacktrace);
-        m_errorLabel.setValue(stacktrace);
+        m_hiddenStack.setValue(details);
+        m_errorLabel.setValue(details);
         m_errorLabel.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_errorMessage.setContentMode(ContentMode.HTML);
         m_errorMessage.setValue(message);
@@ -146,6 +146,21 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
     }
 
     /**
+     * Shows error dialog, manually supplying details instead of getting them from an exception stack trace.
+     *
+     * @param message the error message
+     * @param details the details
+     */
+    public static void showErrorDialog(String message, String details) {
+
+        Window window = prepareWindow(DialogWidth.wide);
+        window.setCaption("Error");
+        window.setContent(new CmsSetupErrorDialog(message, details, null, window));
+        A_CmsUI.get().addWindow(window);
+
+    }
+
+    /**
      * Shows the error dialog.<p>
      *
      * @param message the error message
@@ -167,7 +182,8 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
 
         Window window = prepareWindow(DialogWidth.wide);
         window.setCaption("Error");
-        window.setContent(new CmsSetupErrorDialog(message, t, onClose, window));
+        window.setContent(
+            new CmsSetupErrorDialog(message, message + "\n\n" + ExceptionUtils.getStackTrace(t), onClose, window));
         A_CmsUI.get().addWindow(window);
     }
 

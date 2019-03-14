@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+	  <o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout margin="false" spacing="true">
+  					<v-panel caption="Database product">
+  						<v-vertical-layout margin="true">
+  							<v-combo-box _id="m_dbSelect" width="300px"></v-combo-box>
+  						</v-vertical-layout>
+  					</v-panel>
+	  				<v-vertical-layout _id="m_mainLayout" margin="false" spacing height="600px">
+		  			</v-vertical-layout>
+	  			</v-vertical-layout>
+  			</content>
+  			<buttons>
+  				<v-button _id="m_forwardButton" >Continue</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+  </body>
+</html>

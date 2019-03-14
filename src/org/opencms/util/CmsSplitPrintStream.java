@@ -25,28 +25,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.util;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import java.io.PrintStream;
 
-import com.vaadin.server.VaadinServlet;
+public class CmsSplitPrintStream extends PrintStream {
 
-public class CmsSetupServlet extends VaadinServlet {
+    private PrintStream m_stream1;
+    private PrintStream m_stream2;
 
-    static CmsSetupServlet instance;
-    private ServletConfig m_config;
+    public CmsSplitPrintStream(PrintStream stream1, PrintStream stream2) {
 
-    public static CmsSetupServlet getInstance() {
-
-        return instance;
-    }
-
-    @Override
-    public void init(ServletConfig servletConfig) throws ServletException {
-
-        super.init(servletConfig);
-        instance = this;
+        super(stream1);
+        m_stream1 = stream1;
+        m_stream2 = stream2;
     }
 
 }

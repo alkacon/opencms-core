@@ -254,7 +254,7 @@
 
     <servlet-mapping>
         <servlet-name>CmsSetupServlet</servlet-name>
-        <url-pattern>/newsetup/*</url-pattern>
+        <url-pattern>/setup/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

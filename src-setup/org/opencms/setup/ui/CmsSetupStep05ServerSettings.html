@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+	  <o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout spacing height="600px">
+  					<v-panel caption="Settings">
+  						<v-form-layout margin="true" spacing="true">
+  							<v-text-field _id="m_macAddress" width="100%" caption="Server ethernet address"></v-text-field>
+  							<v-text-field _id="m_serverUrl" width="100%" caption="Server URL"></v-text-field>
+  							<v-text-field _id="m_serverId" width="100%"  caption="Server ID"></v-text-field>
+  						</v-form-layout>
+  					</v-panel>
+	  			</v-vertical-layout>
+  			</content>
+  			<buttons>
+  				<v-button _id="m_forwardButton" >Continue</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+  </body>
+</html>

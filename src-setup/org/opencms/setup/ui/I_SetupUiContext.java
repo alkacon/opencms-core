@@ -25,28 +25,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.setup.ui;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import org.opencms.setup.CmsSetupBean;
 
-import com.vaadin.server.VaadinServlet;
+/**
+ * Interface used by setup steps to communicate with the rest of the setup UI.
+ */
+public interface I_SetupUiContext {
 
-public class CmsSetupServlet extends VaadinServlet {
+    /**
+     * Gets the setup bean.
+     *
+     * @return the setup bean
+     */
+    CmsSetupBean getSetupBean();
 
-    static CmsSetupServlet instance;
-    private ServletConfig m_config;
-
-    public static CmsSetupServlet getInstance() {
-
-        return instance;
-    }
-
-    @Override
-    public void init(ServletConfig servletConfig) throws ServletException {
-
-        super.init(servletConfig);
-        instance = this;
-    }
+    /**
+     * Moves forward to the next step.
+     */
+    void stepForward();
 
 }

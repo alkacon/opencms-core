@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+	  <o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout _id="m_mainLayout" spacing="true" width="100%">
+  					<v-panel caption="Component Tests" scrollable="true" width="100%" height="250px" >
+  						<v-vertical-layout _id="m_testContainer" spacing="false">
+  						</v-vertical-layout> 
+  					</v-panel>
+  					<v-panel caption="Status" scrollable="true" width="100%"  height="300px" >
+  						<v-vertical-layout _id="m_failures" width="100%" spacing="true">
+  							<v-label _id="m_status" style-name="bold" width="100%"></v-label>
+  						</v-vertical-layout> 
+  					</v-panel>
+  					<v-check-box _id="m_confirmCheckbox" width="100%" caption="I have noticed that my system may not have the necessary components to use Alkacon OpenCms. Continue anyway."></v-check-box>
+	  			</v-vertical-layout>
+  			</content>
+  			<buttons>
+  				<v-button _id="m_forwardButton" >Continue</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+  </body>
+</html>

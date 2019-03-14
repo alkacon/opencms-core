@@ -1,0 +1,13 @@
+Error starting Alkacon OpenCms setup wizard.<br>
+It appears that your servlet container did not unpack the Alkacon OpenCms WAR file.
+Alkacon OpenCms requires that it's WAR file is unpacked.
+<br><br>
+<b>Please unpack the Alkacon OpenCms WAR file and try again.</b>
+<br><br>
+Check out the documentation of your Servlet container to learn how to unpack the WAR file,
+or do it manually with some kind of unzip - tool.
+<br><br>
+Tip for Tomcat users:<br>
+Open the file <code>{tomcat-home}/conf/server.xml</code> and search
+for <code>unpackWARs="false"</code>. Replace this with <code>unpackWARs="true"</code>.
+Then restart Tomcat.
