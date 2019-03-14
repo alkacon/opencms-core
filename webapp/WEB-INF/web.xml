@@ -148,6 +148,29 @@
 
     <servlet>
         <description>
+            Setup servlet.
+        </description>
+        <servlet-name>CmsSetupServlet</servlet-name>
+        <servlet-class>org.opencms.setup.CmsSetupServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.setup.CmsSetupUI</param-value>
+        </init-param>
+        <init-param>
+            <description>Widget Set to Use</description>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.ui.WidgetSet</param-value>
+        </init-param>
+        <init-param>
+            <param-name>heartbeatInterval</param-name>
+            <param-value>60</param-value>
+        </init-param>
+    </servlet>
+
+
+
+    <servlet>
+        <description>
             The servlet that handles sitemap UI requests.
         </description>
         <servlet-name>CmsSitemapServlet</servlet-name>
@@ -227,6 +250,11 @@
     <servlet-mapping>
         <servlet-name>CmsUIServlet</servlet-name>
         <url-pattern>/workplace/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CmsSetupServlet</servlet-name>
+        <url-pattern>/newsetup/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
