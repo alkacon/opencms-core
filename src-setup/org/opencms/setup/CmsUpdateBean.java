@@ -29,6 +29,7 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
@@ -68,6 +69,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
@@ -92,6 +94,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** name of the update folder. */
     public static final String FOLDER_UPDATE = "update" + File.separatorChar;
 
+    /** The static log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
+
     /** replace pattern constant for the cms script. */
     private static final String C_ADMIN_GROUP = "@ADMIN_GROUP@";
 
@@ -107,11 +112,11 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** replace pattern constant for the cms script. */
     private static final String C_UPDATE_SITE = "@UPDATE_SITE@";
 
-    /** The static log object for this class. */
-    static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
+    /** New MySQL JDBC driver class name. */
+    private static final String MYSQL_DRIVER_CLASS_NEW = "com.mysql.cj.jdbc.Driver";
 
-    /** Static flag to indicate if all modules should be updated regardless of their version number. */
-    private static final boolean UPDATE_ALL_MODULES = false;
+    /** Old MySQL JDBC driver class name. */
+    private static final String MYSQL_DRIVER_CLASS_OLD = "org.gjt.mm.mysql.Driver";
 
     /** The obsolete modules that should be removed. */
     private static String[] OBSOLETE_MODULES = new String[] {
@@ -130,6 +135,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.editors",
         "org.opencms.gwt",
         "org.opencms.jquery",
+        "org.opencms.jsp.search",
         "org.opencms.locale.cs",
         "org.opencms.locale.da",
         "org.opencms.locale.de",
@@ -165,6 +171,9 @@ public class CmsUpdateBean extends CmsSetupBean {
         "org.opencms.workplace.help",
         "org.opencms.workplace.tools.git"};
 
+    /** Static flag to indicate if all modules should be updated regardless of their version number. */
+    private static final boolean UPDATE_ALL_MODULES = false;
+
     /** The new logging offset in the database update thread. */
     protected int m_newLoggingDBOffset;
 
@@ -180,6 +189,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The used admin user name. */
     private String m_adminUser = "Admin";
 
+    /** The XML updater instance (lazily initialized). */
+    private CmsXmlConfigUpdater m_configUpdater;
+
     /** The update database thread. */
     private CmsUpdateDBThread m_dbUpdateThread;
 
@@ -192,6 +204,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** List of module to be updated. */
     private List<String> m_modulesToUpdate;
 
+    /** The list of modules that should keep their libs. */
+    private List<String> m_preserveLibModules;
+
     /** the update project. */
     private String m_updateProject = "_tmpUpdateProject" + (System.currentTimeMillis() % 1000);
 
@@ -203,12 +218,6 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** The workplace import thread. */
     private CmsUpdateThread m_workplaceUpdateThread;
-
-    /** The list of modules that should keep their libs. */
-    private List<String> m_preserveLibModules;
-
-    /** The XML updater instance (lazily initialized). */
-    private CmsXmlConfigUpdater m_configUpdater;
 
     /**
      * Default constructor.<p>
@@ -634,7 +643,9 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public void prepareUpdateStep1() {
 
-        // nothing to do jet
+        // the MySQL driver class name has changed with OpenCms 11.0.0
+        // it needs to be updated before any database access
+        //updateDBDriverClassName();
     }
 
     /**
@@ -929,6 +940,28 @@ public class CmsUpdateBean extends CmsSetupBean {
                 + "]");
         System.out.println();
         System.out.println();
+    }
+
+    /**
+     * Updates the JDBC driver class names.<p>
+     * Needs to be executed before any database access.<p>
+     */
+    public void updateDBDriverClassName() {
+
+        Set<String> keys = new HashSet<String>();
+        // replace MySQL JDBC driver class name
+        CmsParameterConfiguration properties = getProperties();
+        for (Entry<String, String> propertyEntry : properties.entrySet()) {
+            if (MYSQL_DRIVER_CLASS_OLD.equals(propertyEntry.getValue())) {
+                keys.add(propertyEntry.getKey());
+            }
+        }
+        for (String key : keys) {
+            properties.put(key, MYSQL_DRIVER_CLASS_NEW);
+        }
+        if (!keys.isEmpty()) {
+            saveProperties(properties, CmsSystemInfo.FILE_PROPERTIES, false, keys);
+        }
     }
 
     /**

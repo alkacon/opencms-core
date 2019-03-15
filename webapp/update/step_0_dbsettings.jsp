@@ -7,7 +7,7 @@
 	String prevPage = "index.jsp";	
     // next page
 	String nextPage = "step_1_update_db.jsp";
-	
+	Bean.updateDBDriverClassName();
 	dbBean.initialize(Bean);
 		
     boolean isFormSubmitted = (request.getParameter("submit") != null);
