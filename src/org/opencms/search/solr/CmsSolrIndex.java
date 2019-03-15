@@ -1386,6 +1386,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         LocalSolrQueryRequest solrQueryRequest = null;
         try {
             q.setRequestHandler("/spell");
+            q.setRows(Integer.valueOf(0));
 
             QueryResponse queryResponse = m_solr.query(q);
 
