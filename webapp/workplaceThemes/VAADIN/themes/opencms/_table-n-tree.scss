@@ -1,4 +1,8 @@
 @mixin o-tree {
+
+  .v-tree.o-full-width-padding{
+  	padding-top: 0;
+  }
   div.v-tree-node-caption:after{
   	border-radius: 0;
   }
