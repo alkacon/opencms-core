@@ -967,7 +967,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             CmsSolrQuery checkQuery = query.clone();
             // Initialize rows, offset, end and the current page.
             int end = start + rows;
-            int itemsToCheck = Math.max(10, end + (end / 5)); // request 20 percent more, but at least 10 results if permissions are filtered
+            int itemsToCheck = 0 == rows ? 0 : Math.max(10, end + (end / 5)); // request 20 percent more, but at least 10 results if permissions are filtered
             // use a set to prevent double entries if multiple check queries are performed.
             Set<String> resultSolrIds = new HashSet<>(rows); // rows are set before definitely.
 
