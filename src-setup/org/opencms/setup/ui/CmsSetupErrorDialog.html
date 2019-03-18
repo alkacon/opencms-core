@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	</head>
+	<body>
+		<o-cms-basic-dialog>
+  			<content>
+  				<vaadin7-vertical-layout width="100%" _id="m_main" style-name="o-error-dialog">
+  					<vaadin7-horizontal-layout height="70px" width="100%">
+						<vaadin7-label width="60px" _id="m_icon" style-name="o-error-icon" :middle />
+						<vaadin7-label _id="m_errorMessage" :expand style-name="o-error-message" :middle/>
+					</vaadin7-horizontal-layout>
+					<v-css-layout _id="m_details" size-full :expand style-name="o-error-details">
+						<v-panel scrollable="true" size-full caption="Stack trace">
+							<vaadin7-label _id="m_errorLabel" width="-1px" style-name="o-stacktrace-container" />
+		  				</v-panel>
+		  			</v-css-layout>
+		  			<vaadin7-label _id="m_hiddenStack" height="0px" primary-style-name="o-hidden" />
+		  		</vaadin7-vertical-layout>
+			</content>
+			<buttons>
+				<o-cms-copy-to-clipboard-button _id="m_copyText" :left description="Copy to clipboard">Copy to clipboard</o-cms-copy-to-clipboard-button>
+				<v-button _id="m_detailsButton">Details</v-button>
+  				<v-button _id="m_okButton">Close</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+	</body>
+</html>
