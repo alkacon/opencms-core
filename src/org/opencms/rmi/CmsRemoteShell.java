@@ -137,6 +137,7 @@ public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteSh
      */
     public CmsRemoteShell(String additionalCommandsName, int port)
     throws CmsException, RemoteException {
+
         super(port);
         m_id = RandomStringUtils.randomAlphanumeric(8);
         I_CmsShellCommands additionalCommands = null;
@@ -186,13 +187,13 @@ public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteSh
         m_baos.reset();
         boolean hasError = false;
         try {
-            CmsShell.SHELL_INSTANCE.set(m_shell);
+            CmsShell.pushShell(m_shell);
             m_shell.executeCommand(cmd, params);
         } catch (CmsShellCommandException e) {
             hasError = true;
             LOG.warn(m_id + " " + e.getLocalizedMessage(), e);
         } finally {
-            CmsShell.SHELL_INSTANCE.set(null);
+            CmsShell.popShell();
             m_out.flush();
         }
         hasError |= m_shell.hasReportError();

@@ -359,12 +359,6 @@ public class CmsShell {
         }
     }
 
-    /** Boolean variable to disable JLAN. */
-    private static boolean JLAN_DISABLED;
-
-    /** Thread local which stores the current shell instance while a command is executing. */
-    public static final ThreadLocal<CmsShell> SHELL_INSTANCE = new ThreadLocal<CmsShell>();
-
     /** Prefix for "additional" parameter. */
     public static final String SHELL_PARAM_ADDITIONAL_COMMANDS = "-additional=";
 
@@ -385,6 +379,16 @@ public class CmsShell {
 
     /** Prefix for "servletMapping" parameter. */
     public static final String SHELL_PARAM_SERVLET_MAPPING = "-servletMapping=";
+
+    /**
+     * Thread local which stores the currently active shell instance.
+     *
+     *  <p>We need multiple ones because shell commands may cause another nested shell to be launched (e.g. for module import scripts).
+     */
+    public static final ThreadLocal<ArrayList<CmsShell>> SHELL_STACK = ThreadLocal.withInitial(() -> new ArrayList<>());
+
+    /** Boolean variable to disable JLAN. */
+    private static boolean JLAN_DISABLED;
 
     /** The OpenCms context object. */
     protected CmsObject m_cms;
@@ -570,6 +574,21 @@ public class CmsShell {
     }
 
     /**
+     * Gets the top of thread-local shell stack, or null if it is empty.
+     *
+     * @return the top of the shell stack
+     */
+    public static CmsShell getTopShell() {
+
+        ArrayList<CmsShell> shells = SHELL_STACK.get();
+        if (shells.isEmpty()) {
+            return null;
+        }
+        return shells.get(shells.size() - 1);
+
+    }
+
+    /**
      * Check if JLAN should be disabled.<p>
      *
      * @return true if JLAN should be disabled
@@ -669,11 +688,33 @@ public class CmsShell {
     }
 
     /**
+     * Removes top of thread-local shell stack.
+     */
+    public static void popShell() {
+
+        ArrayList<CmsShell> shells = SHELL_STACK.get();
+        if (shells.size() > 0) {
+            shells.remove(shells.size() - 1);
+        }
+
+    }
+
+    /**
+     * Pushes shell instance on thread-local stack.
+     *
+     * @param shell the shell to push
+     */
+    public static void pushShell(CmsShell shell) {
+
+        SHELL_STACK.get().add(shell);
+    }
+
+    /**
     * If running in the context of a CmsShell, this method notifies the running shell instance that an error has occured in a report.<p>
     */
     public static void setReportError() {
 
-        CmsShell instance = SHELL_INSTANCE.get();
+        CmsShell instance = getTopShell();
         if (instance != null) {
             instance.m_hasReportError = true;
         }
@@ -709,7 +750,7 @@ public class CmsShell {
     public void execute(Reader reader) {
 
         try {
-            SHELL_INSTANCE.set(this);
+            pushShell(this);
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
                 String line = lnr.readLine();
@@ -783,7 +824,7 @@ public class CmsShell {
                 System.exit(m_errorCode);
             }
         } finally {
-            SHELL_INSTANCE.set(null);
+            popShell();
         }
     }
 

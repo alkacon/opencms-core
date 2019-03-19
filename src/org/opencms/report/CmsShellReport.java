@@ -64,7 +64,7 @@ public class CmsShellReport extends CmsPrintStreamReport {
      */
     public static PrintStream getOutputStream() {
 
-        CmsShell shell = CmsShell.SHELL_INSTANCE.get();
+        CmsShell shell = CmsShell.getTopShell();
         if (shell != null) {
             return shell.getOut();
         } else {
