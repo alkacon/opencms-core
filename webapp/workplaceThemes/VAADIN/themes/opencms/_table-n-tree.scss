@@ -5,6 +5,8 @@
   }
   div.v-tree-node-caption:after{
   	border-radius: 0;
+  	height: $v-tree-row-height - 1;
+  	margin-top: -( $v-tree-row-height - 1);
   }
 
   div.v-tree-node-caption:hover:after{
@@ -156,7 +158,7 @@
    	color: $v-font-color;
   }
 
-    div.v-table-caption-container {
+  div.v-table-caption-container {
     border-color: darken($o-dark-background-color, 10%);
   }
 
@@ -176,17 +178,26 @@
   	font-size: $v-font-size;
   }
 
-  .v-table-row:hover > .v-table-cell-content, .v-table-row-odd:hover > .v-table-cell-content {
-  	$background-color: $v-table-background-color or valo-table-background-color();
-  	$bg: mix($v-focus-color, $background-color, 20%);
-  	background-color: $bg;
+  div.v-table [class*="-row"]{
+    
+    &:hover > .v-table-cell-content {
+  	  $background-color: $v-table-background-color or valo-table-background-color();
+  	  $bg: mix($v-focus-color, $background-color, 20%);
+  	  background-color: $bg;
+    }
+    
+    &.v-selected{
+      &:hover > .v-table-cell-content {
+   	    background: $v-selection-color;
+   	  }
+   	  
+   	  .v-table-cell-content {
+   	  	border-top-color: $v-table-border-color;
+   	  }
+    }
   }
 
-   .v-selected.v-table-row:hover > .v-table-cell-content, .v-selected.v-table-row-odd:hover > .v-table-cell-content {
-   	background: $v-selection-color;
-   }
-
-    .v-table-cell-wrapper > .v-widget.o-resource-icon {
+  .v-table-cell-wrapper > .v-widget.o-resource-icon {
   	margin-top: 0;
   	margin-bottom: 0;
   }
@@ -275,147 +286,134 @@
 
 }
 
- $columnWidthList: 100,150,200,250,300;
- @each $width in $columnWidthList{
- 	.o-formlayout-const-capture-#{$width}{
-
+$columnWidthList: 100,150,200,250,300;
+@each $width in $columnWidthList{
+  .o-formlayout-const-capture-#{$width}{
  		& table{
  			table-layout: fixed;
  		}
 
  		& table td.v-formlayout-captioncell{
- 		width: #{$width}px;
+	 		width: #{$width}px;
  		}
+	}
+}
 
- 		}
-
- 	}
-
-  .o-formlayout-hard{
-
+.o-formlayout-hard{
   	line-height:1.1 !important;
-
   	.v-caption{
   		line-height:1.1 !important;
   	}
+}
 
-  	}
-
-  .o-formlayout-full-height-last-expand{
-
-			table{
-				height:100%;
-			}
-
-			.v-formlayout-lastrow{
-				height:100%;
-			}
-
-		}
-
-  .o-no-padding div.v-table-cell-wrapper{
-  		padding:0px !important;
-  	}
-
-	.v-table .o-table-cell-disabled{
-		opacity:0.7;
+.o-formlayout-full-height-last-expand{
+	table{
+		height:100%;
 	}
 
-	.v-table .o-table-const-color{
+	.v-formlayout-lastrow{
+		height:100%;
+	}
+}
 
-		background-color:#FFFFFF !important;
-		}
-	.v-table .o-table-const-color:hover{
+.o-no-padding div.v-table-cell-wrapper{
+	padding:0px !important;
+}
 
-		background-color:#FFFFFF !important;
-		}
+.v-table .o-table-cell-disabled{
+	opacity:0.7;
+}
 
-	[class^="o-box-"], [class*="o-box"]{
-		& .v-table-cell-wrapper{
+.v-table .o-table-const-color{
+	background-color:#FFFFFF !important;
+}
+.v-table .o-table-const-color:hover{
+	background-color:#FFFFFF !important;
+}
+
+[class^="o-box-"], [class*="o-box"]{
+	& .v-table-cell-wrapper{
 		position:relative;
 		z-index: 2;
 		color: $white;
 		text-align: center !important;
-		}
-
-
-		& .v-table-cell-wrapper::before{
-			content:"";
-			position:absolute;
-			top: -4px;
-			bottom:-4px;
-			left:5px;
-			right:5px;
-			z-index: -1;
-			border-radius: 4px;
-		}
 	}
 
-	span[class^="o-box-"], span[class*="o-box"]{
-		padding: 5px 20px;
-		color: $white;
-		display:inline;
-		position:relative;
-		z-index:1;
-		text-align: center !important;
-
-		&::before{
-			content:"";
-			position:absolute;
-			top: 5px;
-			bottom:5px;
-			left:5px;
-			right:5px;
-			z-index: -1;
-			border-radius: 4px;
-		}
+	& .v-table-cell-wrapper::before{
+		content:"";
+		position:absolute;
+		top: -4px;
+		bottom:-4px;
+		left:5px;
+		right:5px;
+		z-index: -1;
+		border-radius: 4px;
 	}
+}
+
+span[class^="o-box-"], span[class*="o-box"]{
+	padding: 5px 20px;
+	color: $white;
+	display:inline;
+	position:relative;
+	z-index:1;
+	text-align: center !important;
+	&::before{
+		content:"";
+		position:absolute;
+		top: 5px;
+		bottom:5px;
+		left:5px;
+		right:5px;
+		z-index: -1;
+		border-radius: 4px;
+	}
+}
 
 
-	.o-box-green::before, .o-box-green .v-table-cell-wrapper::before{
-
+.o-box-green::before, .o-box-green .v-table-cell-wrapper::before{
 		background-color: $green;
-	}
+}
 
-	.o-box-orange::before, .o-box-orange .v-table-cell-wrapper::before{
-		background-color: $orange;
-	}
+.o-box-orange::before, .o-box-orange .v-table-cell-wrapper::before{
+	background-color: $orange;
+}
 
-	.o-box-orange-dark::before, .o-box-orange-dark .v-table-cell-wrapper::before{
-		background-color: $orange-dark;
-	}
+.o-box-orange-dark::before, .o-box-orange-dark .v-table-cell-wrapper::before{
+	background-color: $orange-dark;
+}
 
-	.o-box-red::before, .o-box-red .v-table-cell-wrapper::before{
-		background-color: $red;
-	}
+.o-box-red::before, .o-box-red .v-table-cell-wrapper::before{
+	background-color: $red;
+}
 
-	.o-box-gray::before, .o-box-gray .v-table-cell-wrapper::before{
-		background-color: $gray;
-	}
+.o-box-gray::before, .o-box-gray .v-table-cell-wrapper::before{
+	background-color: $gray;
+}
 
-	.o-box-gray-darker::before, .o-box-gray-darker .v-table-cell-wrapper::before{
-		background-color: $gray-darker;
-	}
+.o-box-gray-darker::before, .o-box-gray-darker .v-table-cell-wrapper::before{
+	background-color: $gray-darker;
+}
 
-	.o-box-red-dark::before, .o-box-red-dark .v-table-cell-wrapper::before{
-		background-color: $red-dark;
-	}
+.o-box-red-dark::before, .o-box-red-dark .v-table-cell-wrapper::before{
+	background-color: $red-dark;
+}
 
-	.o-box-blue-light::before, .o-box-blue-light .v-table-cell-wrapper::before{
-		background-color: $blue-light;
-	}
+.o-box-blue-light::before, .o-box-blue-light .v-table-cell-wrapper::before{
+	background-color: $blue-light;
+}
 
-	.o-box-blue::before, .o-box-blue .v-table-cell-wrapper::before{
-		background-color: $blue;
-	}
+.o-box-blue::before, .o-box-blue .v-table-cell-wrapper::before{
+	background-color: $blue;
+}
 
-	.o-box-black::before, .o-box-black .v-table-cell-wrapper::before{
-		background-color: $black;
-	}
+.o-box-black::before, .o-box-black .v-table-cell-wrapper::before{
+	background-color: $black;
+}
 
-	.o-box-cyan::before, .o-box-cyan .v-table-cell-wrapper::before{
-		background-color: $cyan;
-	}
+.o-box-cyan::before, .o-box-cyan .v-table-cell-wrapper::before{
+	background-color: $cyan;
+}
 
 
 
