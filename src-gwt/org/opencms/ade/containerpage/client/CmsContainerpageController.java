@@ -3645,7 +3645,7 @@ public final class CmsContainerpageController {
                 nativeEvent.stopPropagation();
                 m_handler.leavePage(Window.Location.getHref());
             }
-            if (nativeEvent.getCtrlKey()) {
+            if (nativeEvent.getCtrlKey() || nativeEvent.getMetaKey()) {
                 // look for short cuts
                 if (keyCode == KeyCodes.KEY_E) {
                     if (nativeEvent.getShiftKey()) {

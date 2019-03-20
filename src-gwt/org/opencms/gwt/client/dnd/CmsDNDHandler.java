@@ -913,7 +913,7 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
-        m_modifierCTRL = event.getCtrlKey();
+        m_modifierCTRL = event.getCtrlKey() || event.getMetaKey();
         if ((m_currentTarget == null) || (m_currentTarget.getPlaceholderIndex() < 0)) {
             cancel();
         } else {

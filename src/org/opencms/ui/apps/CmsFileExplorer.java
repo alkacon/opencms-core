@@ -486,11 +486,23 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         ShortcutAction.KeyCode.A,
         new int[] {ShortcutAction.ModifierKey.CTRL});
 
+    /** The select all shortcut, (using Apple CMD as modifier). */
+    private static final Action ACTION_SELECT_ALL_CMD = new ShortcutAction(
+        "CMD+A",
+        ShortcutAction.KeyCode.A,
+        new int[] {ShortcutAction.ModifierKey.META});
+
     /** The switch online shortcut. */
     private static final Action ACTION_SWITCH_ONLINE = new ShortcutAction(
         "Ctrl+O",
         ShortcutAction.KeyCode.O,
         new int[] {ShortcutAction.ModifierKey.CTRL});
+
+    /** The switch online shortcut, (using Apple CMD as modifier). */
+    private static final Action ACTION_SWITCH_ONLINE_CMD = new ShortcutAction(
+        "CMD+O",
+        ShortcutAction.KeyCode.O,
+        new int[] {ShortcutAction.ModifierKey.META});
 
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
@@ -614,22 +626,25 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 }
             }
         });
-
-        m_shortcutActions.put(ACTION_SELECT_ALL, new Runnable() {
+        Runnable selectAll = new Runnable() {
 
             public void run() {
 
                 m_fileTable.selectAll();
             }
-        });
+        };
+        m_shortcutActions.put(ACTION_SELECT_ALL, selectAll);
+        m_shortcutActions.put(ACTION_SELECT_ALL_CMD, selectAll);
 
-        m_shortcutActions.put(ACTION_SWITCH_ONLINE, new Runnable() {
+        Runnable switchOnline = new Runnable() {
 
             public void run() {
 
                 toggleOnlineOffline();
             }
-        });
+        };
+        m_shortcutActions.put(ACTION_SWITCH_ONLINE, switchOnline);
+        m_shortcutActions.put(ACTION_SWITCH_ONLINE_CMD, switchOnline);
 
         m_fileTable = new CmsFileTable(this);
         m_fileTable.setSizeFull();

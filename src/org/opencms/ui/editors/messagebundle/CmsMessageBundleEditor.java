@@ -103,11 +103,29 @@ I_OptionListener, I_CmsHasShortcutActions {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
 
+    /** Exit shortcut. */
+    private static final Action ACTION_EXIT = new ShortcutAction(
+        "Ctrl+Shift+X",
+        ShortcutAction.KeyCode.X,
+        new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
+
+    /** Exit shortcut, (using Apple CMD as modifier). */
+    private static final Action ACTION_EXIT_CMD = new ShortcutAction(
+        "CMD+Shift+X",
+        ShortcutAction.KeyCode.X,
+        new int[] {ShortcutAction.ModifierKey.META, ShortcutAction.ModifierKey.SHIFT});
+
     /** Save shortcut. */
     private static final Action ACTION_SAVE = new ShortcutAction(
         "Ctrl+S",
         ShortcutAction.KeyCode.S,
         new int[] {ShortcutAction.ModifierKey.CTRL});
+
+    /** Save shortcut, (using Apple CMD as modifier). */
+    private static final Action ACTION_SAVE_CMD = new ShortcutAction(
+        "CMD+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.META});
 
     /** Save & Exit shortcut. */
     private static final Action ACTION_SAVE_AND_EXIT = new ShortcutAction(
@@ -115,11 +133,11 @@ I_OptionListener, I_CmsHasShortcutActions {
         ShortcutAction.KeyCode.S,
         new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
 
-    /** Exit shortcut. */
-    private static final Action ACTION_EXIT = new ShortcutAction(
-        "Ctrl+X",
-        ShortcutAction.KeyCode.X,
-        new int[] {ShortcutAction.ModifierKey.CTRL, ShortcutAction.ModifierKey.SHIFT});
+    /** Save & Exit shortcut, (using Apple CMD as modifier). */
+    private static final Action ACTION_SAVE_AND_EXIT_CMD = new ShortcutAction(
+        "CMD+Shift+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.META, ShortcutAction.ModifierKey.SHIFT});
 
     /** The bundle editor shortcuts. */
     Map<Action, Runnable> m_shortcutActions;
@@ -175,29 +193,35 @@ I_OptionListener, I_CmsHasShortcutActions {
     public CmsMessageBundleEditor() {
 
         m_shortcutActions = new HashMap<Action, Runnable>();
-        m_shortcutActions.put(ACTION_SAVE, new Runnable() {
+        m_shortcutActions = new HashMap<Action, Runnable>();
+        Runnable save = new Runnable() {
 
             public void run() {
 
                 saveAction();
             }
-        });
-        m_shortcutActions.put(ACTION_SAVE_AND_EXIT, new Runnable() {
+        };
+        m_shortcutActions.put(ACTION_SAVE, save);
+        m_shortcutActions.put(ACTION_SAVE_CMD, save);
+        Runnable saveExit = new Runnable() {
 
             public void run() {
 
                 saveAction();
                 closeAction();
             }
-        });
-        m_shortcutActions.put(ACTION_EXIT, new Runnable() {
+        };
+        m_shortcutActions.put(ACTION_SAVE_AND_EXIT, saveExit);
+        m_shortcutActions.put(ACTION_SAVE_AND_EXIT_CMD, saveExit);
+        Runnable exit = new Runnable() {
 
             public void run() {
 
                 closeAction();
             }
-        });
-
+        };
+        m_shortcutActions.put(ACTION_EXIT, exit);
+        m_shortcutActions.put(ACTION_EXIT_CMD, exit);
     }
 
     /**

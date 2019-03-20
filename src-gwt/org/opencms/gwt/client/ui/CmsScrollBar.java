@@ -327,7 +327,7 @@ implements I_CmsDescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
             case Event.ONKEYDOWN:
                 if (!m_slidingKeyboard) {
                     int multiplier = 1;
-                    if (event.getCtrlKey()) {
+                    if (event.getCtrlKey() || event.getMetaKey()) {
                         multiplier = m_stepSize;
                     }
 
