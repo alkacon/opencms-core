@@ -179,6 +179,10 @@
   }
 
   div.v-table [class*="-row"]{
+	
+	&.v-table-focus{
+		outline: none;
+	}
     
     &:hover > .v-table-cell-content {
   	  $background-color: $v-table-background-color or valo-table-background-color();
@@ -195,6 +199,10 @@
    	  	border-top-color: $v-table-border-color;
    	  }
     }
+
+    &.v-selected + .v-selected .v-table-cell-content {
+   	  	border-top-color: transparent;
+   	}
   }
 
   .v-table-cell-wrapper > .v-widget.o-resource-icon {
