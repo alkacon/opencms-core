@@ -90,6 +90,9 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
         }
     }
 
+    /** Back button. */
+    private Button m_backButton;
+
     /** Forward button. */
     private Button m_forwardButton;
 
@@ -141,7 +144,7 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
         m_dbSelect.setEmptySelectionAllowed(false);
         m_dbSelect.setValue("mysql");
         m_forwardButton.addClickListener(evt -> forward());
-
+        m_backButton.addClickListener(evt -> m_context.stepBack());
     }
 
     /**

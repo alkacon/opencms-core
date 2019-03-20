@@ -47,6 +47,9 @@ import com.vaadin.ui.FormLayout;
 public class CmsSetupStep04Modules extends A_CmsSetupStep {
 
     private FormLayout m_components;
+    /** Back button. */
+    private Button m_backButton;
+
     private Button m_forwardButton;
     private List<CheckBox> m_componentCheckboxes = new ArrayList<>();
     private Map<String, CmsSetupComponent> m_componentMap = new HashMap<>();
@@ -60,6 +63,7 @@ public class CmsSetupStep04Modules extends A_CmsSetupStep {
         bean.getAvailableModules();
         initComponents(bean.getComponents().elementList());
         m_forwardButton.addClickListener(evt -> forward());
+        m_backButton.addClickListener(evt -> m_context.stepBack());
     }
 
     @Override

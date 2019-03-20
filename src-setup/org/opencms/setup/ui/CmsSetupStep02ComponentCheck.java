@@ -77,6 +77,9 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
     /** Status label.*/
     private Label m_status;
 
+    /** Back button. */
+    private Button m_backButton;
+
     /** Confirmation checkbox. */
     private CheckBox m_confirmCheckbox;
 
@@ -109,6 +112,7 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
         updateColor(color);
         showTestResults(tests.getTestResults());
         m_forwardButton.addClickListener(evt -> m_context.stepForward());
+        m_backButton.addClickListener(evt -> m_context.stepBack());
     }
 
     /**

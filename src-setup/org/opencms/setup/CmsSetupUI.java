@@ -28,6 +28,7 @@
 package org.opencms.setup;
 
 import org.opencms.setup.ui.A_CmsSetupStep;
+import org.opencms.setup.ui.CmsSetupErrorDialog;
 import org.opencms.setup.ui.CmsSetupStep01License;
 import org.opencms.setup.ui.CmsSetupStep02ComponentCheck;
 import org.opencms.setup.ui.CmsSetupStep03Database;
@@ -35,7 +36,6 @@ import org.opencms.setup.ui.CmsSetupStep04Modules;
 import org.opencms.setup.ui.CmsSetupStep05ServerSettings;
 import org.opencms.setup.ui.CmsSetupStep06ImportReport;
 import org.opencms.setup.ui.CmsSetupStep07ConfigNotes;
-import org.opencms.setup.ui.CmsSetupErrorDialog;
 import org.opencms.setup.ui.I_SetupUiContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -94,6 +94,11 @@ public class CmsSetupUI extends A_CmsUI implements I_SetupUiContext {
     public CmsSetupBean getSetupBean() {
 
         return m_setupBean;
+    }
+
+    public void stepBack() {
+
+        updateStep(m_stepNo - 1);
     }
 
     /**

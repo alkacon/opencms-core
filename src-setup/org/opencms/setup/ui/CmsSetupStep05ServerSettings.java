@@ -40,6 +40,9 @@ import com.vaadin.ui.TextField;
  */
 public class CmsSetupStep05ServerSettings extends A_CmsSetupStep {
 
+    /** Back button. */
+    private Button m_backButton;
+
     /** MAC address. */
     private TextField m_macAddress;
 
@@ -72,6 +75,7 @@ public class CmsSetupStep05ServerSettings extends A_CmsSetupStep {
         }
         m_serverUrl.setValue(serverUrl);
         m_forwardButton.addClickListener(evt -> forward());
+        m_backButton.addClickListener(evt -> m_context.stepBack());
     }
 
     /**
