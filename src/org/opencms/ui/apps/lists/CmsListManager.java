@@ -153,6 +153,7 @@ import com.vaadin.v7.ui.TextField;
 /**
  * Manager for list configuration files.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsListManager extends A_CmsWorkplaceApp
 implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
@@ -1622,7 +1623,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             m_lockAction = null;
             displayListConfigs();
         }
-        //        m_searchForm.resetFormValues();
         enableOverviewMode(showOverview);
 
         return showOverview ? m_overviewTable : m_resultLayout;
@@ -1778,7 +1778,8 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     cms.getRequestContext().getSiteRoot());
                 CmsResourceTypeConfig typeConfig = data.getResourceType(RES_TYPE_LIST_CONFIG);
                 try {
-                    if (!typeConfig.checkCreatable(cms, cms.getRequestContext().getSiteRoot())) {
+                    if ((typeConfig == null)
+                        || !typeConfig.checkCreatable(cms, cms.getRequestContext().getSiteRoot())) {
                         m_createNewButton.setEnabled(false);
                         m_createNewButton.setDescription(
                             CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_NOT_CREATABLE_TYPE_0));
@@ -1793,8 +1794,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                         CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_NOT_CREATABLE_TYPE_0));
                 }
             }
-
-            m_createNewButton.setEnabled(isOffline);
         }
     }
 
