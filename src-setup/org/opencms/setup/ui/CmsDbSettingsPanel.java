@@ -36,9 +36,13 @@ import java.util.Map;
 
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Form for database settings.
+ */
 public class CmsDbSettingsPanel extends VerticalLayout {
 
     /** Form field. */
@@ -46,6 +50,9 @@ public class CmsDbSettingsPanel extends VerticalLayout {
 
     /** Form field. */
     private TextField m_dbWorkPwd;
+
+    /** Form field. */
+    private Panel m_setupPanel;
 
     /** Form field. */
     private TextField m_dbCreateUser;
@@ -129,8 +136,10 @@ public class CmsDbSettingsPanel extends VerticalLayout {
         String db = m_setupBean.getDatabase();
         CmsSetupBean bean = m_setupBean;
         Map<String, String[]> params = new HashMap<>();
+        m_setupPanel.setVisible(true);
         switch (db) {
             case "mysql":
+            case "mssql":
                 setVisible(
                     m_dbCreateUser,
                     m_dbCreatePwd,
@@ -203,6 +212,45 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                         + "opencms;shutdown=false";
                 }
                 m_dbCreateConStr.setValue(createConStr);
+                break;
+            case "oracle":
+                setVisible(
+                    m_dbCreateUser,
+                    m_dbCreatePwd,
+                    m_dbWorkUser,
+                    m_dbWorkPwd,
+                    m_dbCreateConStr,
+                    m_createDb,
+                    m_createTables,
+                    m_dropDatabase,
+                    m_temporaryTablespace,
+                    m_indexTablespace,
+                    m_defaultTablespace);
+                m_dbCreateUser.setValue(bean.getDbCreateUser());
+                m_dbCreatePwd.setValue(bean.getDbCreatePwd());
+                m_dbWorkUser.setValue(bean.getDbWorkUser());
+                m_dbWorkPwd.setValue(bean.getDbWorkPwd());
+                m_dbCreateConStr.setValue(bean.getDbCreateConStr());
+                m_dbName.setValue(webapp != null ? webapp : bean.getDb());
+                m_createDb.setValue(true);
+                m_createDb.setCaption("Create user");
+                m_createTables.setValue(true);
+                m_dropDatabase.setValue(false);
+                m_temporaryTablespace.setValue(dbProp("temporaryTablespace"));
+                m_indexTablespace.setValue(dbProp("indexTablespace"));
+                m_defaultTablespace.setValue(dbProp("defaultTablespace"));
+                break;
+            case "db2":
+            case "as400":
+                setVisible(m_dbWorkUser, m_dbWorkPwd, m_dbCreateConStr, m_dbName, m_createTables);
+                m_setupPanel.setVisible(false);
+                m_dbWorkUser.setValue(bean.getDbWorkUser());
+                m_dbWorkPwd.setValue(bean.getDbWorkPwd());
+                m_dbCreateConStr.setValue(bean.getDbCreateConStr());
+                m_dbName.setValue(webapp != null ? webapp : bean.getDb());
+                m_createDb.setValue(false);
+                m_createTables.setValue(true);
+                m_dropDatabase.setValue(true);
                 break;
             default:
                 break;

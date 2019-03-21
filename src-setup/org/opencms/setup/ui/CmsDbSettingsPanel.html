@@ -10,7 +10,7 @@
   			<v-vertical-layout margin="false" spacing="true">
                 
                 
-                <v-panel caption="Setup connection">
+                <v-panel caption="Setup connection" _id="m_setupPanel">
                     <v-form-layout margin>
                         <v-text-field width="100%" _id="m_dbCreateUser" caption="User" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_dbCreatePwd" caption="Password" visible="false"></v-text-field>
@@ -31,8 +31,8 @@
                         <v-text-field width="100%" _id="m_dbCreateConStr" caption="Connection string" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_dbName" caption="Database" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_defaultTablespace" caption="Default tablespace" visible="false"></v-text-field>
-                        <v-text-field width="100%" _id="m_temporaryTablespace" caption="Temporary tablespace" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_indexTablespace" caption="Index tablespace" visible="false"></v-text-field>
+                        <v-text-field width="100%" _id="m_temporaryTablespace" caption="Temporary tablespace" visible="false"></v-text-field>
                         <v-check-box width="100%" _id="m_createDb" visible="false" caption="create database"></v-check-box>
                         <v-check-box width="100%" _id="m_createTables"  visible="false" caption="Create tables"></v-check-box>
                         <v-check-box width="100%" _id="m_dropDatabase"  visible="false"  caption="Drop database first if it already exists"></v-check-box>
