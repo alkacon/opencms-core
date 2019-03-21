@@ -79,9 +79,7 @@ import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -521,24 +519,18 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
             // get the Flex controller
             CmsFlexController controller = getController(cms, file, req, res, streaming, true);
-            Lock lock = m_purgeLock.readLock();
-            try {
-                lock.lock();
-                if (bypass || controller.isForwardMode()) {
-                    // initialize the standard contex bean to be available for all requests
-                    CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
-                    // once in forward mode, always in forward mode (for this request)
-                    controller.setForwardMode(true);
-                    // bypass Flex cache for this page, update the JSP first if necessary
-                    String target = updateJsp(file, controller, new HashSet<String>());
-                    // dispatch to external JSP
-                    req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
-                } else {
-                    // Flex cache not bypassed, dispatch to internal JSP
-                    dispatchJsp(controller);
-                }
-            } finally {
-                lock.unlock();
+            if (bypass || controller.isForwardMode()) {
+                // initialize the standard contex bean to be available for all requests
+                CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
+                // once in forward mode, always in forward mode (for this request)
+                controller.setForwardMode(true);
+                // bypass Flex cache for this page, update the JSP first if necessary
+                String target = updateJsp(file, controller, new HashSet<String>());
+                // dispatch to external JSP
+                req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
+            } else {
+                // Flex cache not bypassed, dispatch to internal JSP
+                dispatchJsp(controller);
             }
 
             // remove the controller from the request if not forwarding
@@ -651,24 +643,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws ServletException, IOException, CmsLoaderException {
 
-        Lock lock = m_purgeLock.readLock();
-        try {
-            lock.lock();
-
-            CmsFlexController controller = CmsFlexController.getController(req);
-            // get JSP target name on "real" file system
-            String target = updateJsp(resource, controller, new HashSet<String>(8));
-            // important: Indicate that all output must be buffered
-            controller.getCurrentResponse().setOnlyBuffering(true);
-            // initialize the standard contex bean to be available for all requests
-            CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
-            // dispatch to external file
-            controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
-                req,
-                res);
-        } finally {
-            lock.unlock();
-        }
+        CmsFlexController controller = CmsFlexController.getController(req);
+        // get JSP target name on "real" file system
+        String target = updateJsp(resource, controller, new HashSet<String>(8));
+        // important: Indicate that all output must be buffered
+        controller.getCurrentResponse().setOnlyBuffering(true);
+        // initialize the standard contex bean to be available for all requests
+        CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
+        // dispatch to external file
+        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
+            req,
+            res);
     }
 
     /**
@@ -695,14 +680,23 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             @SuppressWarnings("synthetic-access")
             public void run() {
 
-                WriteLock lock = m_purgeLock.writeLock();
                 try {
-                    lock.lock();
+                    m_purgeLock.writeLock().lock();
+                    for (ReentrantReadWriteLock lock : m_fileLocks.values()) {
+                        lock.writeLock().lock();
+                    }
                     doPurge(afterPurgeAction);
                 } catch (Exception e) {
                     LOG.error("Error while purging jsp repository: " + e.getLocalizedMessage(), e);
                 } finally {
-                    lock.unlock();
+                    for (ReentrantReadWriteLock lock : m_fileLocks.values()) {
+                        try {
+                            lock.writeLock().unlock();
+                        } catch (Exception e) {
+                            LOG.warn(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    m_purgeLock.writeLock().unlock();
                 }
             }
         });
@@ -1752,12 +1746,18 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         ReentrantReadWriteLock lock = m_fileLocks.get(jspVfsName);
         if (lock == null) {
+            // acquire the purge lock before adding new file lock entries
+            // in case of a JSP repository purge, adding new file lock entries is blocked
+            // and all present file locks will be locked for purge
+            // @see #triggerPurge()
+            m_purgeLock.readLock().lock();
             synchronized (m_fileLocks) {
                 if (!m_fileLocks.containsKey(jspVfsName)) {
                     m_fileLocks.put(jspVfsName, new ReentrantReadWriteLock(true));
                 }
                 lock = m_fileLocks.get(jspVfsName);
             }
+            m_purgeLock.readLock().unlock();
         }
         return lock;
     }
