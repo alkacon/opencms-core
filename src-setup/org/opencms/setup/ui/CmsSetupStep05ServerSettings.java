@@ -43,17 +43,17 @@ public class CmsSetupStep05ServerSettings extends A_CmsSetupStep {
     /** Back button. */
     private Button m_backButton;
 
+    /** Forward button. */
+    private Button m_forwardButton;
+
     /** MAC address. */
     private TextField m_macAddress;
-
-    /** Workplace server. */
-    private TextField m_serverUrl;
 
     /** Server id. */
     private TextField m_serverId;
 
-    /** Forward button. */
-    private Button m_forwardButton;
+    /** Workplace server. */
+    private TextField m_serverUrl;
 
     /**
      * Creates a new instance.

@@ -45,14 +45,14 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsSetupStep07ConfigNotes extends A_CmsSetupStep {
 
-    /** The main layout. */
-    private VerticalLayout m_mainLayout;
-
     /** The forward button. */
     private Button m_forwardButton;
 
     /** The panel for displaying the notes. */
     private Panel m_htmlPanel;
+
+    /** The main layout. */
+    private VerticalLayout m_mainLayout;
 
     /**
      * Creates a new instance.

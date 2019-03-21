@@ -40,14 +40,14 @@ import com.vaadin.ui.VerticalLayout;
 
 public class CmsSetupStep01License extends A_CmsSetupStep {
 
-    /** Main layout. */
-    private VerticalLayout m_mainLayout;
-
     /** Forward button. */
     private Button m_forwardButton;
 
     /** License panel. */
     private Panel m_licensePanel;
+
+    /** Main layout. */
+    private VerticalLayout m_mainLayout;
 
     /**
      * Creates a new instance.

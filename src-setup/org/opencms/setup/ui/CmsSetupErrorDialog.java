@@ -55,17 +55,26 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The select text button. */
+    private CmsCopyToClipboardButton m_copyText;
+
+    /** The details component. */
+    private CssLayout m_details;
+
+    /** The toggle details button. */
+    private Button m_detailsButton;
+
     /** Label to display. */
     private Label m_errorLabel;
 
     /** Error message label. */
     private Label m_errorMessage;
 
-    /** Warning icon. */
-    private Label m_icon;
-
     /** Hidden stack trace element. */
     private Label m_hiddenStack;
+
+    /** Warning icon. */
+    private Label m_icon;
 
     /** The OK button. */
     private Button m_okButton;
@@ -75,15 +84,6 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
 
     /** The dialog window. */
     private Window m_window;
-
-    /** The details component. */
-    private CssLayout m_details;
-
-    /** The select text button. */
-    private CmsCopyToClipboardButton m_copyText;
-
-    /** The toggle details button. */
-    private Button m_detailsButton;
 
     /**
      * Creates a new instance.<p>

@@ -46,47 +46,47 @@ import com.vaadin.ui.VerticalLayout;
 public class CmsDbSettingsPanel extends VerticalLayout {
 
     /** Form field. */
-    private TextField m_dbWorkUser;
-
-    /** Form field. */
-    private TextField m_dbWorkPwd;
-
-    /** Form field. */
-    private Panel m_setupPanel;
-
-    /** Form field. */
-    private TextField m_dbCreateUser;
-
-    /** Form field. */
-    private TextField m_dbCreatePwd;
-
-    /** Form field. */
-    private TextField m_dbName;
-    /** Form field. */
-    private TextField m_dbCreateConStr;
-
-    /** Form field. */
     private CheckBox m_createDb;
-
-    /** Form field. */
-    private CheckBox m_dropDatabase;
 
     /** Form field. */
     private CheckBox m_createTables;
 
     /** Form field. */
+    private TextField m_dbCreateConStr;
+
+    /** Form field. */
+    private TextField m_dbCreatePwd;
+
+    /** Form field. */
+    private TextField m_dbCreateUser;
+
+    /** Form field. */
+    private TextField m_dbName;
+    /** Form field. */
+    private TextField m_dbWorkPwd;
+
+    /** Form field. */
+    private TextField m_dbWorkUser;
+
+    /** Form field. */
     private TextField m_defaultTablespace;
+
+    /** Form field. */
+    private CheckBox m_dropDatabase;
 
     /** Form field. */
     private TextField m_indexTablespace;
 
+    /** Setup bean. */
+    private CmsSetupBean m_setupBean;
+
     /** Form field. */
-    private TextField m_temporaryTablespace;
+    private Panel m_setupPanel;
 
     private TextField m_templateDb;
 
-    /** Setup bean. */
-    private CmsSetupBean m_setupBean;
+    /** Form field. */
+    private TextField m_temporaryTablespace;
 
     public CmsDbSettingsPanel(CmsSetupBean setupBean) {
 

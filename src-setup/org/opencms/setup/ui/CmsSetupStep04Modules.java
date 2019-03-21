@@ -52,20 +52,20 @@ public class CmsSetupStep04Modules extends A_CmsSetupStep {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** Panel for components. */
-    private FormLayout m_components;
-
     /** Back button. */
     private Button m_backButton;
-
-    /** The forward button. */
-    private Button m_forwardButton;
 
     /** The list of check boxes for the components. */
     private List<CheckBox> m_componentCheckboxes = new ArrayList<>();
 
     /** The map of components, with their ids as keys. */
     private Map<String, CmsSetupComponent> m_componentMap = new HashMap<>();
+
+    /** Panel for components. */
+    private FormLayout m_components;
+
+    /** The forward button. */
+    private Button m_forwardButton;
 
     /**
      * Creates a new instance.

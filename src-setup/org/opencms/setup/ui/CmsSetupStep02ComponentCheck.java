@@ -49,15 +49,12 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
     /** Green. */
     green,
 
-    /** Yellow. */
-    yellow,
-
     /** Red. */
-    red;
-    }
+    red,
 
-    /** Message for yellow status. */
-    public static final String STATUS_YELLOW = "Your system uses components which have not been tested to work with Alkacon OpenCms. It is possible that OpenCms will not run on your system.";
+    /** Yellow. */
+    yellow;
+    }
 
     /** Message for green status. */
     public static final String STATUS_GREEN = "Your system uses components which have been tested to work properly with Alkacon OpenCms.";
@@ -65,17 +62,8 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
     /** Message for red status. */
     public static final String STATUS_RED = "Your system does not have the necessary components to use Alkacon OpenCms. It is assumed that OpenCms will not run on your system.";
 
-    /** Main layout. */
-    private VerticalLayout m_mainLayout;
-
-    /** Container for test failure notes. */
-    private VerticalLayout m_failures;
-
-    /** Container for test results. */
-    private VerticalLayout m_testContainer;
-
-    /** Status label.*/
-    private Label m_status;
+    /** Message for yellow status. */
+    public static final String STATUS_YELLOW = "Your system uses components which have not been tested to work with Alkacon OpenCms. It is possible that OpenCms will not run on your system.";
 
     /** Back button. */
     private Button m_backButton;
@@ -83,8 +71,20 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
     /** Confirmation checkbox. */
     private CheckBox m_confirmCheckbox;
 
+    /** Container for test failure notes. */
+    private VerticalLayout m_failures;
+
     /** Forward button. */
     private Button m_forwardButton;
+
+    /** Main layout. */
+    private VerticalLayout m_mainLayout;
+
+    /** Status label.*/
+    private Label m_status;
+
+    /** Container for test results. */
+    private VerticalLayout m_testContainer;
 
     /**
      * Creates a new instance.

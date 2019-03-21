@@ -43,14 +43,14 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsSetupStep06ImportReport extends A_CmsSetupStep {
 
-    /** The main layout. */
-    private VerticalLayout m_mainLayout;
-
     /** Forward button. */
     private Button m_forwardButton;
 
     /** The log stream. */
     private OutputStream m_logStream;
+
+    /** The main layout. */
+    private VerticalLayout m_mainLayout;
 
     /**
      * Creates a new instance.

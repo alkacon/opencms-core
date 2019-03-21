@@ -41,6 +41,9 @@ public interface I_SetupUiContext {
      */
     CmsSetupBean getSetupBean();
 
+    /**
+     * Moves to previous step.
+     */
     void stepBack();
 
     /**

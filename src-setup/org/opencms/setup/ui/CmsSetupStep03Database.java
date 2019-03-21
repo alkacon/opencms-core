@@ -51,11 +51,11 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
      */
     class DBException extends RuntimeException {
 
-        /** The error message. */
-        private String m_message;
-
         /** The list of original errors. */
         private List<String> m_errors;
+
+        /** The error message. */
+        private String m_message;
 
         /**
          * Creates a new instance.<p>
@@ -93,20 +93,20 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
     /** Back button. */
     private Button m_backButton;
 
+    /** DB selector. */
+    private ComboBox m_dbSelect;
+
     /** Forward button. */
     private Button m_forwardButton;
 
     /** Main layout. */
     private VerticalLayout m_mainLayout;
 
-    /** Setup bean. */
-    private CmsSetupBean m_setupBean;
-
-    /** DB selector. */
-    private ComboBox m_dbSelect;
-
     /** Array for storing the DB settings panel (need to wrap it in array because it's not part of the declarative layout). */
     private CmsDbSettingsPanel[] m_panel = {null};
+
+    /** Setup bean. */
+    private CmsSetupBean m_setupBean;
 
     /**
      * Creates a new instance.
