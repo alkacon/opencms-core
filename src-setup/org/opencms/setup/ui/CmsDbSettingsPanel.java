@@ -30,6 +30,7 @@ package org.opencms.setup.ui;
 import org.opencms.setup.CmsSetupBean;
 import org.opencms.ui.CmsVaadinUtils;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,6 +144,7 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                 m_dbCreatePwd.setValue(bean.getDbCreatePwd());
                 m_dbWorkUser.setValue(bean.getDbWorkUser());
                 m_dbWorkPwd.setValue(bean.getDbWorkPwd());
+                m_createTables.setValue(true);
                 m_dbCreateConStr.setValue(bean.getDbCreateConStr());
                 m_dbName.setValue(webapp != null ? webapp : bean.getDb());
                 m_createDb.setValue(true);
@@ -172,6 +174,38 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                 m_templateDb.setValue(dbProp("templateDb"));
                 m_createTables.setValue(true);
                 m_dropDatabase.setValue(false);
+                break;
+            case "hsqldb":
+                setVisible(
+                    m_dbCreateUser,
+                    m_dbCreatePwd,
+                    m_dbWorkUser,
+                    m_dbWorkPwd,
+                    m_dbCreateConStr,
+                    m_createDb,
+                    m_dropDatabase);
+
+                m_dbCreateUser.setValue(bean.getDbCreateUser());
+                m_dbCreatePwd.setValue(bean.getDbCreatePwd());
+                m_dbWorkUser.setValue(bean.getDbWorkUser());
+                m_dbWorkPwd.setValue(bean.getDbWorkPwd());
+                m_createDb.setValue(true);
+                m_createTables.setValue(true);
+                m_createDb.setCaption("Create database and tables");
+                m_dropDatabase.setValue(false);
+                String origCreateConStr = bean.getDbProperty("hsqldb.constr");
+                String createConStr = bean.getDbCreateConStr();
+                if ((origCreateConStr != null) && origCreateConStr.equals(createConStr)) {
+                    createConStr = "jdbc:hsqldb:file:"
+                        + bean.getWebAppRfsPath()
+                        + "WEB-INF"
+                        + File.separatorChar
+                        + "hsqldb"
+                        + File.separatorChar
+                        + "opencms;shutdown=false";
+                }
+                m_dbCreateConStr.setValue(createConStr);
+                break;
             default:
                 break;
         }
