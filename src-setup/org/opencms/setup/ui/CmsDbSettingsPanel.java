@@ -75,6 +75,8 @@ public class CmsDbSettingsPanel extends VerticalLayout {
     /** Form field. */
     private TextField m_temporaryTablespace;
 
+    private TextField m_templateDb;
+
     /** Setup bean. */
     private CmsSetupBean m_setupBean;
 
@@ -145,9 +147,31 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                 m_dbName.setValue(webapp != null ? webapp : bean.getDb());
                 m_createDb.setValue(true);
                 m_createDb.setCaption("Create database and tables");
-                m_createTables.setValue(true);
                 m_dropDatabase.setValue(false);
                 break;
+            case "postgresql":
+                setVisible(
+                    m_dbCreateUser,
+                    m_dbCreatePwd,
+                    m_dbWorkUser,
+                    m_dbWorkPwd,
+                    m_dbCreateConStr,
+                    m_dbName,
+                    m_createDb,
+                    m_createTables,
+                    m_dropDatabase,
+                    m_templateDb);
+                m_dbCreateUser.setValue(bean.getDbCreateUser());
+                m_dbCreatePwd.setValue(bean.getDbCreatePwd());
+                m_dbWorkUser.setValue(bean.getDbWorkUser());
+                m_dbWorkPwd.setValue(bean.getDbWorkPwd());
+                m_dbCreateConStr.setValue(bean.getDbCreateConStr());
+                m_dbName.setValue(webapp != null ? webapp : bean.getDb());
+                m_createDb.setValue(true);
+                m_createDb.setCaption("Create database and user");
+                m_templateDb.setValue(dbProp("templateDb"));
+                m_createTables.setValue(true);
+                m_dropDatabase.setValue(false);
             default:
                 break;
         }
@@ -169,6 +193,10 @@ public class CmsDbSettingsPanel extends VerticalLayout {
         }
         if (m_dbWorkUser.isVisible()) {
             bean.setDbWorkUser(m_dbWorkUser.getValue());
+        }
+
+        if (m_templateDb.isVisible()) {
+            setDbProp("templateDb", m_templateDb.getValue());
         }
 
         if (m_dbWorkPwd.isVisible()) {
@@ -221,6 +249,12 @@ public class CmsDbSettingsPanel extends VerticalLayout {
             return "";
         }
         return prop.toString();
+    }
+
+    private void setDbProp(String key, String value) {
+
+        String db = m_setupBean.getDatabase();
+        m_setupBean.setDbProperty(db + "." + key, value);
     }
 
     /**

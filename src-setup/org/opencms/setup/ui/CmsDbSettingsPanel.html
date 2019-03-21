@@ -8,22 +8,26 @@
   	<v-vertical-layout margin="false" height="800px" >
   		<v-panel scrollable="true" style-name="borderless">
   			<v-vertical-layout margin="false" spacing="true">
-                <v-panel caption="OpenCms connection">
-                    <v-form-layout margin style-name="o-formlayout-workplace-main">
-                        <v-text-field width="100%" _id="m_dbWorkUser" caption="User" visible="false"></v-text-field>
-                        <v-text-field width="100%" _id="m_dbWorkPwd" caption="Password" visible="false"></v-text-field>
-                    </v-form-layout> 
-                </v-panel>
+                
                 
                 <v-panel caption="Setup connection">
                     <v-form-layout margin>
                         <v-text-field width="100%" _id="m_dbCreateUser" caption="User" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_dbCreatePwd" caption="Password" visible="false"></v-text-field>
+                        <v-text-field width="100%" _id="m_templateDb" caption="Template database" visible="false"></v-text-field>
+                    </v-form-layout> 
+                </v-panel>
+                
+                <v-panel caption="OpenCms connection">
+                    <v-form-layout margin>
+                        <v-text-field width="100%" _id="m_dbWorkUser" caption="User" visible="false"></v-text-field>
+                        <v-text-field width="100%" _id="m_dbWorkPwd" caption="Password" visible="false"></v-text-field>
                     </v-form-layout> 
                 </v-panel>
                 
                 <v-panel caption="Database">
                     <v-form-layout margin>
+
                         <v-text-field width="100%" _id="m_dbCreateConStr" caption="Connection string" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_dbName" caption="Database" visible="false"></v-text-field>
                         <v-text-field width="100%" _id="m_defaultTablespace" caption="Default tablespace" visible="false"></v-text-field>
