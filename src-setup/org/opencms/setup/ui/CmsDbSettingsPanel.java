@@ -106,7 +106,7 @@ public class CmsDbSettingsPanel extends VerticalLayout {
      */
     public boolean getCreateTables() {
 
-        return m_createTables.getValue().booleanValue();
+        return m_createTables.isVisible() ? m_createTables.getValue() : m_createDb.getValue();
     }
 
     /**
@@ -144,7 +144,6 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                 m_dbCreatePwd.setValue(bean.getDbCreatePwd());
                 m_dbWorkUser.setValue(bean.getDbWorkUser());
                 m_dbWorkPwd.setValue(bean.getDbWorkPwd());
-                m_createTables.setValue(true);
                 m_dbCreateConStr.setValue(bean.getDbCreateConStr());
                 m_dbName.setValue(webapp != null ? webapp : bean.getDb());
                 m_createDb.setValue(true);
@@ -190,7 +189,6 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                 m_dbWorkUser.setValue(bean.getDbWorkUser());
                 m_dbWorkPwd.setValue(bean.getDbWorkPwd());
                 m_createDb.setValue(true);
-                m_createTables.setValue(true);
                 m_createDb.setCaption("Create database and tables");
                 m_dropDatabase.setValue(false);
                 String origCreateConStr = bean.getDbProperty("hsqldb.constr");

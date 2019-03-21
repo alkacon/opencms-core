@@ -248,7 +248,7 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
             db.closeConnection();
             db.setConnection(
                 m_setupBean.getDbDriver(),
-                m_setupBean.getDbWorkConStr(),
+                m_setupBean.getDbCreateConStr(),
                 m_setupBean.getDbConStrParams(),
                 m_setupBean.getDbCreateUser(),
                 m_setupBean.getDbCreatePwd());
