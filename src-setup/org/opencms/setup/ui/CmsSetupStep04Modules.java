@@ -149,6 +149,7 @@ public class CmsSetupStep04Modules extends A_CmsSetupStep {
 
         for (CmsSetupComponent component : components) {
             CheckBox checkbox = new CheckBox();
+            checkbox.setValue(component.isChecked());
             checkbox.setCaption(component.getName() + " (" + component.getDescription() + ")");
             checkbox.setDescription(component.getDescription());
             checkbox.setData(component);
