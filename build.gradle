@@ -988,7 +988,7 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
 
 	from ("${projectDir}/webapp"){
         // exclude the database drivers
-        exclude '**/setup-resources/**/*.jar'
+        exclude '**/setupdata/**/*.jar'
         exclude '**/update/**'
         exclude '**/workplaceThemes/**'
         exclude '**/classes/META-INF/**'
@@ -1046,7 +1046,7 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
     into ('/WEB-INF/lib') { from configurations.distribution }
     into ('/WEB-INF/lib') { from configurations.moduleDeps }
 
-    fileTree('webapp/WEB-INF/setup-resources/database'){ include '**/*.jar'}.each {File driverJar ->
+    fileTree('webapp/WEB-INF/setupdata/database'){ include '**/*.jar'}.each {File driverJar ->
         // copy the database drivers into the lib folder
         from (driverJar.path) { into '/WEB-INF/lib' }
     }
@@ -1183,7 +1183,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     	}
     }
 
-    fileTree('webapp/WEB-INF/setup-resources/database'){ include '**/*.jar'}.each {File driverJar ->
+    fileTree('webapp/WEB-INF/setupdata/database'){ include '**/*.jar'}.each {File driverJar ->
         // copy the database drivers into the lib folder
         from (driverJar.path) { into '/WEB-INF/lib' }
     }

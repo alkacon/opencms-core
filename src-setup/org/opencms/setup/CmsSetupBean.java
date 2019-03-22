@@ -141,7 +141,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public static final String FOLDER_LIB = "lib" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_SETUP = "WEB-INF/setup-resources" + File.separatorChar;
+    public static final String FOLDER_SETUP = "WEB-INF/setupdata" + File.separatorChar;
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
@@ -200,21 +200,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Contains HTML fragments for the output in the JSP pages of the setup wizard. */
     private static Properties m_htmlProps;
 
-    /** Required files per database setup (for AS400 and DB2). */
-    private static final String[] REQUIRED_DB2_DB_SETUP_FILES = {
-        "step_4_database_setup.jsp",
-        "database.properties",
-        "create_tables.sql",
-        "drop_tables.sql"};
-
     /** Required files per database setup (for sql supported dbs). */
-    private static final String[] REQUIRED_SQL_DB_SETUP_FILES = {
-        "step_4_database_setup.jsp",
-        "database.properties",
-        "create_db.sql",
-        "create_tables.sql",
-        "drop_db.sql",
-        "drop_tables.sql"};
+    private static final String[] REQUIRED_SQL_DB_SETUP_FILES = {"database.properties"};
 
     /** A map with all available modules. */
     protected Map<String, CmsModule> m_availableModules;
@@ -2716,20 +2703,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
                         String dataBasekey = childResource.getName().trim();
                         Properties props = databaseProperties.get(dataBasekey);
-                        boolean supportsSQL = true;
-                        boolean isAS400orDB2 = dataBasekey.equalsIgnoreCase(AS400_PROVIDER)
-                            || dataBasekey.equalsIgnoreCase(DB2_PROVIDER);
-
-                        if (isAS400orDB2) {
-                            if (checkFilesExists(REQUIRED_DB2_DB_SETUP_FILES, childResource)) {
-                                m_databaseKeys.add(childResource.getName().trim());
-                                m_databaseProperties.put(dataBasekey, props);
-                            }
-                        } else {
-                            if (checkFilesExists(REQUIRED_SQL_DB_SETUP_FILES, childResource)) {
-                                m_databaseKeys.add(childResource.getName().trim());
-                                m_databaseProperties.put(dataBasekey, props);
-                            }
+                        if (checkFilesExists(REQUIRED_SQL_DB_SETUP_FILES, childResource)) {
+                            m_databaseKeys.add(childResource.getName().trim());
+                            m_databaseProperties.put(dataBasekey, props);
                         }
                     }
                 }
