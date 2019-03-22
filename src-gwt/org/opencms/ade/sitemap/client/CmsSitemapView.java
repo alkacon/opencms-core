@@ -252,6 +252,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     /** The parent model page entries. */
     private Map<CmsUUID, CmsModelPageTreeItem> m_parentModelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
 
+    /** The sitemap tree root item. */
+    private CmsSitemapTreeItem m_rootItem;
+
     /** The sitemap toolbar. */
     private CmsSitemapToolbar m_toolbar;
 
@@ -1175,6 +1178,12 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
         m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
         page.add(m_noGalleriesLabel);
+
+        CmsClientSitemapEntry root = m_controller.getData().getRoot();
+        m_rootItem = createSitemapItem(root);
+        m_rootItem.onFinishLoading();
+        m_rootItem.setOpen(true);
+        m_tree.addItem(m_rootItem);
         // draw tree items
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -1306,9 +1315,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
             }
             // check if the tree has been drawn yet
-            if (m_tree.getWidgetCount() > 0) {
-                getRootItem().updateEditorMode();
-            }
+            getRootItem().updateEditorMode();
             m_toolbar.setMode(editorMode);
         }
     }
@@ -1401,7 +1408,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      */
     protected CmsSitemapTreeItem getRootItem() {
 
-        return (CmsSitemapTreeItem)(m_tree.getWidget(0));
+        return m_rootItem;
     }
 
     /**
@@ -1482,11 +1489,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      */
     void initiateTreeItems(FlowPanel page, Label loadingLabel) {
 
-        CmsClientSitemapEntry root = m_controller.getData().getRoot();
-        CmsSitemapTreeItem rootItem = createSitemapItem(root);
-        rootItem.onFinishLoading();
-        rootItem.setOpen(true);
-        m_tree.addItem(rootItem);
+        CmsSitemapTreeItem rootItem = getRootItem();
         m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
         m_controller.recomputeProperties();
         rootItem.updateSitePath();
@@ -1706,8 +1709,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-                                     $wnd.initVaadin();
-                                     }-*/;
+		$wnd.initVaadin();
+    }-*/;
 
     /**
      * Checks if the given entry represents the last opened page.<p>
