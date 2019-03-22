@@ -141,7 +141,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public static final String FOLDER_LIB = "lib" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_SETUP = "setup-resources" + File.separatorChar;
+    public static final String FOLDER_SETUP = "WEB-INF/setup-resources" + File.separatorChar;
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
