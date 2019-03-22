@@ -27,11 +27,13 @@
 
 package org.opencms.setup.ui;
 
+import org.opencms.setup.CmsSetupBean;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 
-import java.io.IOException;
-
-import org.apache.commons.io.IOUtils;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Label;
@@ -79,9 +81,20 @@ public class A_CmsSetupStep extends CmsBasicDialog {
 
     }
 
-    public String readSnippet(String name) throws IOException {
+    public String readSnippet(String name) {
 
-        return new String(IOUtils.readFully(getClass().getResourceAsStream(name), 99999), "UTF-8");
+        String path = CmsStringUtil.joinPaths(
+            m_context.getSetupBean().getWebAppRfsPath(),
+            CmsSetupBean.FOLDER_SETUP,
+            "html",
+            name);
+        try (InputStream stream = new FileInputStream(path)) {
+            byte[] data = CmsFileUtil.readFully(stream, false);
+            String result = new String(data, "UTF-8");
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

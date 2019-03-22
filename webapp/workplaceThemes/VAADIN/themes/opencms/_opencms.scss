@@ -1404,6 +1404,22 @@
 	.o-setuptest-yellow { 
 		color: $orange; 
 	}
+	
+	.o-logo-alkacon { 
+		background-image: url(img/alkacon-logo.svg);
+		background-repeat: no-repeat;
+		display: inline-block; 
+		width: 129px;
+		height: 42px;  
+	}
+	
+	.o-logo-opencms { 
+		background-image: url(img/opencms-logo.svg);
+		background-repeat: no-repeat;
+		display: inline-block;
+		width: 170px;
+		height: 42px;
+	}
 }
 
 .waggle{

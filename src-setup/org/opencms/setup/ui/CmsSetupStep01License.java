@@ -28,14 +28,11 @@
 package org.opencms.setup.ui;
 
 import org.opencms.setup.CmsSetupBean;
-import org.opencms.setup.CmsSetupUI;
 import org.opencms.ui.CmsVaadinUtils;
 
-import com.vaadin.server.Resource;
-import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class CmsSetupStep01License extends A_CmsSetupStep {
@@ -43,8 +40,8 @@ public class CmsSetupStep01License extends A_CmsSetupStep {
     /** Forward button. */
     private Button m_forwardButton;
 
-    /** License panel. */
-    private Panel m_licensePanel;
+    /** License container. */
+    private VerticalLayout m_licenseContainer;
 
     /** Main layout. */
     private VerticalLayout m_mainLayout;
@@ -68,13 +65,10 @@ public class CmsSetupStep01License extends A_CmsSetupStep {
         } else if (!setupBean.getWizardEnabled()) {
             m_mainLayout.addComponent(htmlLabel(readSnippet("wizardDisabled.html")));
         } else {
-            BrowserFrame frame = new BrowserFrame();
-            String name = "license.html";
-            Resource resource = CmsSetupUI.getSetupPage(context, name);
-            frame.setSource(resource);
-            frame.setWidth("100%");
-            frame.setHeight("100%");
-            m_licensePanel.setContent(frame);
+            Label label = htmlLabel(readSnippet("license.html"));
+            label.setWidth("100%");
+            m_licenseContainer.addComponent(label);
+
             CheckBox confirmation = new CheckBox();
             confirmation.setCaption("I accept all the terms of the preceeding license agreement");
             m_mainLayout.addComponent(confirmation);

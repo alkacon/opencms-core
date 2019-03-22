@@ -28,16 +28,13 @@
 package org.opencms.setup.ui;
 
 import org.opencms.setup.CmsSetupBean;
-import org.opencms.setup.CmsSetupUI;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 
-import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServletRequest;
-import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -48,11 +45,10 @@ public class CmsSetupStep07ConfigNotes extends A_CmsSetupStep {
     /** The forward button. */
     private Button m_forwardButton;
 
-    /** The panel for displaying the notes. */
-    private Panel m_htmlPanel;
-
     /** The main layout. */
     private VerticalLayout m_mainLayout;
+
+    private VerticalLayout m_notesContainer;
 
     /**
      * Creates a new instance.
@@ -64,14 +60,10 @@ public class CmsSetupStep07ConfigNotes extends A_CmsSetupStep {
         super(context);
 
         CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
-        BrowserFrame frame = new BrowserFrame();
         String name = "browser_config.html";
-        Resource resource = CmsSetupUI.getSetupPage(context, name);
-        frame.setSource(resource);
-        frame.setWidth("100%");
-        frame.setHeight("100%");
-        m_htmlPanel.setContent(frame);
-
+        Label label = htmlLabel(readSnippet(name));
+        label.setWidth("100%");
+        m_notesContainer.addComponent(label);
         m_forwardButton.addClickListener(evt -> forward());
     }
 
