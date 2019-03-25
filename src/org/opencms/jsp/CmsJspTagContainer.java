@@ -45,6 +45,7 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagAddParams.ParamState;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.jsp.util.CmsJspStandardContextBean.CmsContainerElementWrapper;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -133,6 +134,9 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /** Indicating that the container page editor is active for the current request. */
     private boolean m_editableRequest;
 
+    /** Indicates this container is nested within a model group, only set for editable requests. */
+    private boolean m_hasModelGroupAncestor;
+
     /** The maxElements attribute value. */
     private String m_maxElements;
 
@@ -157,6 +161,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /** The parent element to this container. */
     private CmsContainerElementBean m_parentElement;
 
+    /** The container setting presets. */
     private HashMap<String, String> m_settingPresets;
 
     /** The tag attribute value. */
@@ -467,6 +472,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 m_editableRequest = standardContext.getIsEditMode();
                 m_parentElement = standardContext.getElement();
                 m_parentContainer = standardContext.getContainer();
+                m_hasModelGroupAncestor = m_editableRequest ? hasModelGroupAncestor(standardContext) : false;
                 CmsContainerPageBean containerPage = standardContext.getPage();
                 CmsResource detailContent = standardContext.getDetailContent();
                 CmsResource detailFunctionPage = standardContext.getDetailFunctionPage();
@@ -531,7 +537,9 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         getTagClass(),
                         isNested(),
                         !m_editableRequest,
-                        m_editableRequest ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly) : null));
+                        m_editableRequest && !m_hasModelGroupAncestor
+                        ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)
+                        : null));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -842,7 +850,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             m_settingPresets = null;
         } else if (!(presets instanceof Map)) {
             throw new IllegalArgumentException(
-                "cms:container -- value of 'settings' attribute  should be a map, but is " + ClassUtils.getCanonicalName(presets));
+                "cms:container -- value of 'settings' attribute  should be a map, but is "
+                    + ClassUtils.getCanonicalName(presets));
         } else {
             m_settingPresets = new HashMap<>((Map<String, String>)presets);
         }
@@ -1023,7 +1032,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      */
     protected void printElementWrapperTagEnd(boolean isGroupcontainer) throws IOException {
 
-        if (m_editableRequest) {
+        if (m_editableRequest && !m_hasModelGroupAncestor) {
             String result;
             if (isGroupcontainer) {
                 result = "</div>";
@@ -1053,7 +1062,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         boolean isGroupContainer)
     throws Exception {
 
-        if (m_editableRequest) {
+        if (m_editableRequest && !m_hasModelGroupAncestor) {
             StringBuffer result = new StringBuffer("<div class='");
             if (isGroupContainer) {
                 result.append(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
@@ -1263,6 +1272,26 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         return m_editableRequest
         ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
         : null;
+    }
+
+    /**
+     * Evaluates if this container is nested within a model group.<p>
+     *
+     * @param standardContext the standard context
+     *
+     * @return <code>true</code> if the container has model group ancestors
+     */
+    private boolean hasModelGroupAncestor(CmsJspStandardContextBean standardContext) {
+
+        boolean result = false;
+        if (!standardContext.isModelGroupPage()) {
+            CmsContainerElementWrapper parent = standardContext.getElement();
+            while ((parent != null) && !result) {
+                result = parent.isModelGroup();
+                parent = parent.getParent();
+            }
+        }
+        return result;
     }
 
     /**
@@ -1597,6 +1626,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         m_width = null;
         m_editableBy = null;
         m_bodyContent = null;
+        m_hasModelGroupAncestor = false;
         // reset the current element
         CmsJspStandardContextBean cmsContext = CmsJspStandardContextBean.getInstance(pageContext.getRequest());
         cmsContext.setElement(m_parentElement);
