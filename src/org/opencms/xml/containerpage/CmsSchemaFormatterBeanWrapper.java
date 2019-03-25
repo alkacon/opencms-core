@@ -87,6 +87,14 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAttributes()
+     */
+    public Map<String, String> getAttributes() {
+
+        return Collections.emptyMap();
+    }
+
+    /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getContainerTypes()
      */
     public Set<String> getContainerTypes() {

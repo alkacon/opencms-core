@@ -42,6 +42,13 @@ import java.util.Set;
 public interface I_CmsFormatterBean {
 
     /**
+     * Gets the map of attributes.<p>
+     *
+     * @return the attribute map
+     */
+    Map<String, String> getAttributes();
+
+    /**
      * Returns the formatter container type.<p>
      *
      * If this is "*", then the formatter is a width based formatter.<p>

@@ -151,6 +151,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Flag indicating this formatter allows settings to be edited in the content editor. */
     private boolean m_isAllowsSettingsInEditor;
 
+    /** Map of attributes. */
+    private Map<String, String> m_attributes = Collections.emptyMap();
+
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
      *
@@ -180,6 +183,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param strictContainers <code>true</code> if this formatter will always render all nested containers
      * @param nestedFormatterSettings indicates whether nested formatter settings should be displayed
      * @param metaMappings the meta mappings
+     * @param attributes the formatter attributes
      * @param useMetaMappingsForNormalElements if true, meta mappings will be evaluated for normal container elements, not just detail elements
      */
     public CmsFormatterBean(
@@ -209,6 +213,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean strictContainers,
         boolean nestedFormatterSettings,
         List<CmsMetaMapping> metaMappings,
+        Map<String, String> attributes,
         boolean useMetaMappingsForNormalElements) {
 
         m_jspRootPath = jspRootPath;
@@ -240,6 +245,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_metaMappings = metaMappings;
         m_useMetaMappingsForNormalElements = useMetaMappingsForNormalElements;
         m_isAllowsSettingsInEditor = isAllowsSettingsInEditor;
+        m_attributes = attributes != null ? attributes : Collections.emptyMap();
     }
 
     /**
@@ -290,6 +296,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             false,
+            null,
             null,
             false);
 
@@ -386,6 +393,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             null,
+            Collections.emptyMap(),
             false);
         m_matchAll = true;
     }
@@ -412,6 +420,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     private static boolean isWildcardType(String containerType) {
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(containerType) || WILDCARD_TYPE.equals(containerType);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAttributes()
+     */
+    public Map<String, String> getAttributes() {
+
+        return m_attributes;
     }
 
     /**

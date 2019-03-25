@@ -58,6 +58,7 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -106,11 +107,11 @@ public class CmsFormatterBeanParser {
         }
     }
 
-    /** The key for the setting display type. */
-    public static final String SETTING_DISPLAY_TYPE = "displayType";
-
     /** Content value node name. */
     public static final String N_ALLOWS_SETTINGS_IN_EDITOR = "AllowsSettingsInEditor";
+
+    /** Content value node name. */
+    public static final String N_ATTRIBUTE = "Attribute";
 
     /** Content value node name. */
     public static final String N_AUTO_ENABLED = "AutoEnabled";
@@ -237,6 +238,9 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_WIDTH = "Width";
+
+    /** The key for the setting display type. */
+    public static final String SETTING_DISPLAY_TYPE = "displayType";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
@@ -460,6 +464,7 @@ public class CmsFormatterBeanParser {
         parseMatch(root, strictMode);
 
         List<CmsMetaMapping> mappings = parseMetaMappings(root);
+        Map<String, String> attributes = parseAttributes(root);
 
         I_CmsFormatterBean formatterBean;
         if (isMacroFromatter || isFlexFormatter) {
@@ -575,7 +580,7 @@ public class CmsFormatterBeanParser {
             parseHeadIncludes(root);
             if (isFunction) {
                 CmsResource functionFormatter = m_cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
-                Map<String, String[]> params = parseParams(root);
+                Map<String, String[]> rparams = parseParams(root);
                 formatterBean = new CmsFunctionFormatterBean(
                     m_containerTypes,
                     m_formatterResource.getRootPath(),
@@ -594,7 +599,7 @@ public class CmsFormatterBeanParser {
                     m_settings,
                     isAllowSettings,
                     isStrictContainers,
-                    params);
+                    rparams);
             } else {
                 formatterBean = new CmsFormatterBean(
                     m_containerTypes,
@@ -623,6 +628,7 @@ public class CmsFormatterBeanParser {
                     isStrictContainers,
                     nestedFormatters,
                     mappings,
+                    attributes,
                     useMetaMappingsForNormalElements);
             }
         }
@@ -669,6 +675,23 @@ public class CmsFormatterBeanParser {
             }
         }
         return valueSet;
+    }
+
+    /**
+     * Parses formatter attributes.
+     *
+     * @param formatterLoc the node location
+     * @return the map of formatter attributes (unmodifiable)
+     */
+    private Map<String, String> parseAttributes(I_CmsXmlContentLocation formatterLoc) {
+
+        Map<String, String> result = new LinkedHashMap<>();
+        for (I_CmsXmlContentValueLocation mappingLoc : formatterLoc.getSubValues(N_ATTRIBUTE)) {
+            String key = CmsConfigurationReader.getString(m_cms, mappingLoc.getSubValue(N_KEY));
+            String value = CmsConfigurationReader.getString(m_cms, mappingLoc.getSubValue(N_VALUE));
+            result.put(key, value);
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     /**

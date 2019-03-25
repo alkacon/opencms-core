@@ -122,6 +122,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             isStrictContainers,
             false, // nestedFormatterSettings
             Collections.<CmsMetaMapping> emptyList(),
+            Collections.emptyMap(),
             false);
         m_realJspRootPath = jspRootPath;
         m_functionFormatterId = functionFormatterId;

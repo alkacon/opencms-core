@@ -67,6 +67,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 import javax.servlet.ServletRequest;
 
@@ -205,6 +206,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param cms the CMS context
      * @param contentHandler the content handler which contains the message bundle that should be available in the macro resolver
      * @param content the XML content object
+     * @param stringtemplateSource provides stringtemplate templates for use in %(stringtemplate:...) macros
      * @param containerPage the current container page
      *
      * @return a new macro resolver
@@ -213,6 +215,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         final CmsObject cms,
         final I_CmsXmlContentHandler contentHandler,
         final CmsXmlContent content,
+        final Function<String, String> stringtemplateSource,
         final CmsResource containerPage) {
 
         Locale locale = OpenCms.getLocaleManager().getBestAvailableLocaleForXmlContent(cms, content.getFile(), content);
@@ -252,6 +255,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             }
 
         };
+
+        resolver.setStringTemplateSource(stringtemplateSource);
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsMultiMessages messages = new CmsMultiMessages(wpLocale);
         messages.addMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
@@ -283,7 +288,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
             Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings(cms, resource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, content, page);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, content, null, page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return Collections.<String, CmsXmlContentProperty> emptyMap();
@@ -642,12 +647,18 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsResource page,
         CmsResource resource,
         Supplier<CmsXmlContent> contentGetter,
+        Function<String, String> stringtemplateSource,
         Map<String, CmsXmlContentProperty> propertiesConf)
     throws CmsException {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, contentGetter.get(), page);
+            CmsMacroResolver resolver = getMacroResolverForProperties(
+                cms,
+                contentHandler,
+                contentGetter.get(),
+                stringtemplateSource,
+                page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return propertiesConf;

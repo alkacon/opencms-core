@@ -132,6 +132,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             false,
             false,
             metaMappings,
+            Collections.emptyMap(),
             useMetaMappingsForNormalElements);
         m_stringTemplate = stringTemplate;
         m_placeholderStringTemplate = placeholderStringTemplate;

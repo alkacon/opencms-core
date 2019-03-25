@@ -596,6 +596,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             false,
             false,
             null,
+            Collections.emptyMap(),
             false);
 
         return result;
@@ -712,6 +713,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             false,
             false,
             null,
+            Collections.emptyMap(),
             false);
 
         return result;
@@ -775,6 +777,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             false,
             false,
             null,
+            Collections.emptyMap(),
             false);
         return result;
     }

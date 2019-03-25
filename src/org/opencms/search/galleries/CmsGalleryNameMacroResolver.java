@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,6 +103,14 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
 
     /** The locale in the XML content. */
     private Locale m_contentLocale;
+
+    /** The default string template source. */
+    private final Function<String, String> m_defaultStringTemplateSource = s -> {
+        return m_content.getHandler().getParameter(s);
+    };
+
+    /** The current string template source. */
+    private Function<String, String> m_stringTemplateSource = m_defaultStringTemplateSource;
 
     /**
      * Creates a new instance.<p>
@@ -179,6 +188,14 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
         return result;
     }
 
+    public void setStringTemplateSource(Function<String, String> stringtemplateSource) {
+
+        if (stringtemplateSource == null) {
+            stringtemplateSource = m_defaultStringTemplateSource;
+        }
+        m_stringTemplateSource = stringtemplateSource;
+    }
+
     /**
      * Gets the given property of the container page referencing this content.<p>
      *
@@ -233,7 +250,7 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
      */
     private String resolveStringTemplate(String stMacro) {
 
-        String template = m_content.getContentDefinition().getContentHandler().getParameter(stMacro);
+        String template = m_stringTemplateSource.apply(stMacro.trim());
         if (template == null) {
             return "";
         }

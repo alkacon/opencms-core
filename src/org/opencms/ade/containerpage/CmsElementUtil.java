@@ -107,6 +107,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -283,6 +284,33 @@ public class CmsElementUtil {
     public static boolean checkGroupAllowed(String containerType, CmsGroupContainerBean groupContainer) {
 
         return !Sets.intersection(CmsContainer.splitType(containerType), groupContainer.getTypes()).isEmpty();
+    }
+
+    /**
+     * Helper method to create a string template source for a given formatter and content.
+     *
+     * @param formatter the formatter
+     * @param contentSupplier the content supplier
+     *
+     * @return the string template provider
+     */
+    public static Function<String, String> createStringTemplateSource(
+        I_CmsFormatterBean formatter,
+        Supplier<CmsXmlContent> contentSupplier) {
+
+        return key -> {
+            String result = null;
+            if (formatter != null) {
+                result = formatter.getAttributes().get(key);
+            }
+            if (result == null) {
+                CmsXmlContent content = contentSupplier.get();
+                if (content != null) {
+                    result = content.getHandler().getParameter(key);
+                }
+            }
+            return result;
+        };
     }
 
     /**
@@ -639,12 +667,15 @@ public class CmsElementUtil {
                             element.getResource(),
                             m_locale,
                             m_req);
-
+                        Function<String, String> templateSource = createStringTemplateSource(
+                            formatter,
+                            contentSupplier);
                         settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
                             m_cms,
                             page,
                             element.getResource(),
                             contentSupplier,
+                            templateSource,
                             settingsConfig);
                         config.setSettingConfig(settingsConfig);
                         List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(

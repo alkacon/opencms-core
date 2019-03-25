@@ -2148,18 +2148,20 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     containerElement.getResource(),
                     locale,
                     getRequest());
+                com.google.common.base.Supplier<CmsXmlContent> contentSupplier = Suppliers.memoize(() -> {
+                    try {
+                        return CmsXmlContentFactory.unmarshal(cms, cms.readFile(containerElement.getResource()));
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        return null;
+                    }
+                });
                 settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
                     cms,
                     null,
                     containerElement.getResource(),
-                    Suppliers.memoize(() -> {
-                        try {
-                            return CmsXmlContentFactory.unmarshal(cms, cms.readFile(containerElement.getResource()));
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                            return null;
-                        }
-                    }),
+                    contentSupplier,
+                    CmsElementUtil.createStringTemplateSource(formatter, contentSupplier),
                     settingsConfig);
                 CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(m_workplaceLocale);
                 List<I_CmsFormatterBean> nestedFormatters = formatter.hasNestedFormatterSettings()
