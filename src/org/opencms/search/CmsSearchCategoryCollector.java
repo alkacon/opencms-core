@@ -41,7 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Scorer;
+import org.apache.lucene.search.ScoreMode;
 import org.apache.lucene.search.SimpleCollector;
 
 /**
@@ -193,22 +193,12 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
     }
 
     /**
-     * @see org.apache.lucene.search.Collector#needsScores()
+     * @see org.apache.lucene.search.Collector#scoreMode()
      */
-    @Override
-    public boolean needsScores() {
+    public ScoreMode scoreMode() {
 
-        // We need no scorer - implies that we need no scores.
-        return false;
-    }
-
-    /**
-     * @see org.apache.lucene.search.SimpleCollector#setScorer(org.apache.lucene.search.Scorer)
-     */
-    @Override
-    public void setScorer(Scorer arg0) {
-
-        // ignored, we don't need a scorer
+        // we do not need scores
+        return ScoreMode.COMPLETE_NO_SCORES;
     }
 
     /**

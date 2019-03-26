@@ -29,10 +29,7 @@ package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchField;
 
-import java.io.IOException;
-
 import org.apache.lucene.index.FieldInvertState;
-import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.CollectionStatistics;
 import org.apache.lucene.search.TermStatistics;
 import org.apache.lucene.search.similarities.BM25Similarity;
@@ -55,46 +52,17 @@ import org.apache.lucene.util.SmallFloat;
  */
 public class CmsSearchSimilarity extends Similarity {
 
-    private final BM25Similarity BM25_SIM = new BM25Similarity();
-
     /** Logarithm base 10 used as factor in the score calculations. */
     private static final double LOG10 = Math.log(10.0);
+
+    /** Similarity implementation the CmsSearchSimilarity is based on. */
+    private final BM25Similarity m_bm25Sim = new BM25Similarity();
 
     /**
      * Creates a new instance of the OpenCms search similarity.<p>
      */
     public CmsSearchSimilarity() {
-    }
 
-    /** Sets whether overlap tokens (Tokens with 0 position increment) are 
-     *  ignored when computing norm.  By default this is true, meaning overlap
-     *  tokens do not count when computing norms. */
-    public void setDiscountOverlaps(boolean v) {
-        BM25_SIM.setDiscountOverlaps(v);
-    }
-
-    /**
-     * Returns true if overlap tokens are discounted from the document's length. 
-     * @see #setDiscountOverlaps 
-     */
-    public boolean getDiscountOverlaps() {
-      return BM25_SIM.getDiscountOverlaps();
-    }
-    /**
-     * Special implementation for "compute norm" to reduce the significance of this factor
-     * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while
-     * keeping the Lucene default for all other fields.<p>
-     *
-     */
-    private float lengthNorm(FieldInvertState state, int numTerms) {
-
-        if (state.getName().equals(CmsSearchField.FIELD_CONTENT)) {
-            numTerms = state.getLength() - state.getNumOverlap();
-            // special length norm for content
-            return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));
-        }
-        // all other fields use the default Lucene implementation
-        return (float) (1 / Math.sqrt(numTerms));
     }
 
     /**
@@ -105,30 +73,69 @@ public class CmsSearchSimilarity extends Similarity {
     @Override
     public final long computeNorm(FieldInvertState state) {
 
-      final int numTerms = BM25_SIM.getDiscountOverlaps() ? state.getLength() - state.getNumOverlap() : state.getLength();
-        
-      if (state.getIndexCreatedVersionMajor() >= 7) {
-        return SmallFloat.intToByte4(numTerms);
-      } else {
-        return SmallFloat.floatToByte315(lengthNorm(state, numTerms));
-      }
+        final int numTerms = m_bm25Sim.getDiscountOverlaps()
+        ? state.getLength() - state.getNumOverlap()
+        : state.getLength();
+
+        if (state.getIndexCreatedVersionMajor() >= 7) {
+            return SmallFloat.intToByte4(numTerms);
+        } else {
+            return SmallFloat.floatToByte315(lengthNorm(state, numTerms));
+        }
     }
 
     /**
-     * @see org.apache.lucene.search.similarities.Similarity#computeWeight(float, org.apache.lucene.search.CollectionStatistics, org.apache.lucene.search.TermStatistics[])
+     * Returns true iff overlap tokens are discounted from the document's length.
+     *
+     * @return true iff overlap tokens are discounted from the document's length.
+     *
+     * @see #setDiscountOverlaps(boolean)
      */
-    @Override
-    public SimWeight computeWeight(float boost, CollectionStatistics collectionStats, TermStatistics... termStats) {
+    public boolean getDiscountOverlaps() {
 
-        return BM25_SIM.computeWeight(boost, collectionStats, termStats);
+        return m_bm25Sim.getDiscountOverlaps();
     }
 
     /**
-     * @see org.apache.lucene.search.similarities.Similarity#simScorer(org.apache.lucene.search.similarities.Similarity.SimWeight, org.apache.lucene.index.LeafReaderContext)
+     * @see org.apache.lucene.search.similarities.Similarity#scorer(float, org.apache.lucene.search.CollectionStatistics, org.apache.lucene.search.TermStatistics[])
      */
     @Override
-    public SimScorer simScorer(SimWeight weight, LeafReaderContext context) throws IOException {
+    public SimScorer scorer(float boost, CollectionStatistics collectionStats, TermStatistics... termStats) {
 
-        return BM25_SIM.simScorer(weight, context);
+        return m_bm25Sim.scorer(boost, collectionStats, termStats);
+    }
+
+    /**
+     * Sets whether overlap tokens (Tokens with 0 position increment) are
+     * ignored when computing norm.  By default this is true, meaning overlap
+     * tokens do not count when computing norms.
+     *
+     * @param v if true, tokens with position increment 0 are ignored when computing the norm, otherwise they are not ignored.
+     */
+    public void setDiscountOverlaps(boolean v) {
+
+        m_bm25Sim.setDiscountOverlaps(v);
+    }
+
+    /**
+     * Special implementation for "compute norm" to reduce the significance of this factor
+     * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while
+     * keeping the Lucene default for all other fields.<p>
+     *
+     * @param state  field invert state
+     * @param numTerms number of terms
+     *
+     * @return the norm as specifically created for OpenCms.
+     *
+     */
+    private float lengthNorm(FieldInvertState state, int numTerms) {
+
+        if (state.getName().equals(CmsSearchField.FIELD_CONTENT)) {
+            numTerms = state.getLength() - state.getNumOverlap();
+            // special length norm for content
+            return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));
+        }
+        // all other fields use the default Lucene implementation
+        return (float)(1 / Math.sqrt(numTerms));
     }
 }

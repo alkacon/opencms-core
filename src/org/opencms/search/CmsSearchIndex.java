@@ -84,6 +84,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.MultiTermQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreMode;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
@@ -1064,6 +1065,9 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
 
+            // get maxScore first, since Lucene 8, it's not computed automatically anymore
+            TopDocs scoreHits = searcher.search(query, 1);
+            float maxScore = scoreHits.scoreDocs.length == 0 ? Float.NaN : scoreHits.scoreDocs[0].score;
             // perform the search operation
             if ((params.getSort() == null) || (params.getSort() == CmsSearchParameters.SORT_DEFAULT)) {
                 // apparently scoring is always enabled by Lucene if no sort order is provided
@@ -1071,14 +1075,16 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
             } else {
                 // if  a sort order is provided, we must check if scoring must be calculated by the searcher
                 boolean isSortScore = isSortScoring(searcher, params.getSort());
-                hits = searcher.search(finalQuery, getMaxHits(), params.getSort(), isSortScore, isSortScore);
+                hits = searcher.search(finalQuery, getMaxHits(), params.getSort(), isSortScore);
             }
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
 
             if (hits != null) {
-                long hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
+                long hitCount = hits.totalHits.value > hits.scoreDocs.length
+                ? hits.scoreDocs.length
+                : hits.totalHits.value;
                 int page = params.getSearchPage();
                 long start = -1, end = -1;
                 if ((params.getMatchesPerPage() > 0) && (page > 0) && (hitCount > 0)) {
@@ -1113,7 +1119,8 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
                                     excerpt = highlighter.getExcerpt(exDoc, this, params, fieldsQuery, getAnalyzer());
                                 }
-                                int score = Math.round((hits.scoreDocs[i].score / hits.getMaxScore()) * 100f);
+                                int score = Math.round(
+                                    (maxScore != Float.NaN ? (hits.scoreDocs[i].score / maxScore) * 100f : 0));
                                 searchResults.add(new CmsSearchResult(score, doc, excerpt));
                             }
                             cnt++;
@@ -1148,7 +1155,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
         if (LOG.isDebugEnabled()) {
             timeTotal += System.currentTimeMillis();
             Object[] logParams = new Object[] {
-                new Long(hits == null ? 0 : hits.totalHits),
+                new Long(hits == null ? 0 : hits.totalHits.value),
                 new Long(timeTotal),
                 new Long(timeLucene),
                 new Long(timeResultProcessing)};
@@ -1665,7 +1672,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
             Query termsQuery = build.build();//termsFilter
 
             try {
-                result = termsQuery.createWeight(m_indexSearcher, false, 1).getQuery();
+                result = termsQuery.createWeight(m_indexSearcher, ScoreMode.COMPLETE_NO_SCORES, 1).getQuery();
                 m_displayFilters.put(field + termsStr, result);
             } catch (IOException e) {
                 // TODO don't know what happend
