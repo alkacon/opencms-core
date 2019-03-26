@@ -37,6 +37,7 @@ import java.util.Map;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -55,15 +56,16 @@ public class CmsDbSettingsPanel extends VerticalLayout {
     private TextField m_dbCreateConStr;
 
     /** Form field. */
-    private TextField m_dbCreatePwd;
+    private PasswordField m_dbCreatePwd;
 
     /** Form field. */
     private TextField m_dbCreateUser;
 
     /** Form field. */
     private TextField m_dbName;
+
     /** Form field. */
-    private TextField m_dbWorkPwd;
+    private PasswordField m_dbWorkPwd;
 
     /** Form field. */
     private TextField m_dbWorkUser;
