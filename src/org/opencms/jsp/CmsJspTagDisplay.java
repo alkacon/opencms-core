@@ -29,6 +29,7 @@ package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -329,7 +330,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                         // remove any instance id to make sure to generate a unique one
                         continue;
                     }
-                    if (entry.getKey().startsWith(formatterId)) {
+                    if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                        settings.put(entry.getKey(), formatter.getId());
+                    } else if (entry.getKey().startsWith(formatterId)) {
                         settings.put(entry.getKey().substring(prefixLength), entry.getValue());
                     } else if (!settings.containsKey(entry.getKey())) {
                         settings.put(entry.getKey(), entry.getValue());
