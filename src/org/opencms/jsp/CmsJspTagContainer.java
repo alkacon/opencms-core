@@ -537,9 +537,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         getTagClass(),
                         isNested(),
                         !m_editableRequest,
-                        m_editableRequest && !m_hasModelGroupAncestor
-                        ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)
-                        : null));
+                        m_editableRequest ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly) : null));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -925,7 +923,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             width,
             maxElements,
             isDetailView,
-            isEditable(cms),
+            !m_hasModelGroupAncestor && isEditable(cms),
             null,
             m_parentContainer != null ? m_parentContainer.getName() : null,
             m_parentElement != null ? m_parentElement.getInstanceId() : null,
@@ -1032,7 +1030,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      */
     protected void printElementWrapperTagEnd(boolean isGroupcontainer) throws IOException {
 
-        if (m_editableRequest && !m_hasModelGroupAncestor) {
+        if (m_editableRequest) {
             String result;
             if (isGroupcontainer) {
                 result = "</div>";
@@ -1062,7 +1060,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         boolean isGroupContainer)
     throws Exception {
 
-        if (m_editableRequest && !m_hasModelGroupAncestor) {
+        if (m_editableRequest) {
             StringBuffer result = new StringBuffer("<div class='");
             if (isGroupContainer) {
                 result.append(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);

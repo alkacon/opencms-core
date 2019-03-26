@@ -1136,7 +1136,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     @Override
     protected void onLoad() {
 
-        if (!hasCheckedHeight() && (getParentTarget() instanceof CmsContainerPageContainer)) {
+        if ((getParentTarget() instanceof CmsContainerPageContainer)
+            && ((CmsContainerPageContainer)getParentTarget()).isEditable()
+            && !hasCheckedHeight()) {
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                 public void execute() {

@@ -257,7 +257,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         }
         m_containerData = containerData;
         element.setPropertyString(PROP_CONTAINER_MARKER, containerData.getName());
-        addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
+        if (m_containerData.isEditable()) {
+            addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
+        }
         onAttach();
     }
 
