@@ -102,7 +102,9 @@ public class CmsSetupStep04Modules extends A_CmsSetupStep {
 
         for (CheckBox checkbox : m_componentCheckboxes) {
             CmsSetupComponent component = (CmsSetupComponent)(checkbox.getData());
-            selected.add(component.getId());
+            if (checkbox.getValue().booleanValue()) {
+                selected.add(component.getId());
+            }
         }
         String error = null;
         for (String compId : selected) {
