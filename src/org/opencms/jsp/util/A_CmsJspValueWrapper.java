@@ -33,7 +33,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.AbstractCollection;
@@ -50,6 +49,26 @@ import org.apache.commons.logging.Log;
  * Wrappers that extend this are usually used for the values in lazy initialized transformer maps.<p>
  */
 abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
+
+    /**
+     * Provides a Map with Booleans that
+     * indicate if a given String is contained in the wrapped objects String representation.<p>
+     */
+    public class CmsContainsTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        @Override
+        public Object transform(Object input) {
+
+            Object o = getObjectValue();
+            if ((o instanceof A_CmsJspValueWrapper) && (input != null)) {
+                return Boolean.valueOf(((A_CmsJspValueWrapper)o).getToString().indexOf(input.toString()) > -1);
+            }
+            return Boolean.FALSE;
+        }
+    }
 
     /**
      * Provides a Map with Booleans that
@@ -116,6 +135,9 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     /** The lazy initialized Map that checks if a Object is equal. */
     private Map<Object, Boolean> m_isEqual;
 
+    /** The lazy initialized Map that checks if the String representation of this wrapper contains specific words. */
+    private Map<Object, Boolean> m_contains;
+
     /** Link created from the wrapped value. */
     private String m_link;
 
@@ -177,6 +199,23 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     }
 
     /**
+     * Returns a lazy initialized Map that provides Booleans which
+     * indicate if if the wrapped values String representation contains a specific String.<p>
+     *
+     * The Object parameter is transformed to it's String representation to perform this check.
+     *
+     * @return  a lazy initialized Map that provides Booleans which
+     * indicate if if the wrapped values String representation contains a specific String
+     */
+    public Map<Object, Boolean> getContains() {
+
+        if (m_contains == null) {
+            m_contains = CmsCollectionsGenericWrapper.createLazyMap(new CmsContainsTransformer());
+        }
+        return m_contains;
+    }
+
+    /**
      * Returns <code>true</code> if the wrapped value has been somehow initialized.<p>
      *
      * @return <code>true</code> if the wrapped value has been somehow initialized
@@ -201,9 +240,6 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     /**
      * Returns a lazy initialized Map that provides Booleans which
      * indicate if an Object is equal to the wrapped object.<p>
-     *
-     * In case the current,
-     * the {@link CmsConstantMap#CONSTANT_BOOLEAN_FALSE_MAP} is returned.<p>
      *
      * @return a lazy initialized Map that provides Booleans which
      *    indicate if an Object is equal to the wrapped object
