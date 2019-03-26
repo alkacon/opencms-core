@@ -511,6 +511,9 @@ public class CmsSetupDb extends Object {
             if (DbConStrParams != null) {
                 jdbcUrl += DbConStrParams;
             }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(DbPwd)) {
+                DbPwd = null;
+            }
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
             LOG.info("OpenCms setup connection established: " + m_con);
