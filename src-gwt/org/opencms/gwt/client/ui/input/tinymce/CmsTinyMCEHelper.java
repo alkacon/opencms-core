@@ -146,19 +146,12 @@ public final class CmsTinyMCEHelper {
 				toolbarGroup += " | spellchecker";
 				options.toolbar1 = toolbarGroup;
 				var contextmenu = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createContextMenu(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
-				if (contextmenu != "") {
-					options.contextmenu = contextmenu;
-				}
-				if (config.tinyMceOptions) {
-					options.paste_as_text = config.tinyMceOptions.paste_text_sticky_default ? true
-							: false;
-				}
 
 				if (config.spellcheck_url) {
 					options.spellchecker_language = config.spellcheck_language;
 					options.spellchecker_languages = config.spellcheck_language;
 					options.spellchecker_rpc_url = config.spellcheck_url;
-					options.spellchecker_callback = function(method, text,
+					options.spellchecker_callback = function(name, text,
 							onSuccess, onFailure) {
 						$wnd.tinymce.util.JSONRequest.sendRPC({
 							url : config.spellcheck_url,
@@ -168,17 +161,23 @@ public final class CmsTinyMCEHelper {
 								words : text.match(this.getWordCharPattern())
 							},
 							success : function(result) {
-								$wnd.tinymce.activeEditor.plugins.spellchecker
-										.markErrors({
-											words : result,
-											dictionary : []
-										});
+								onSuccess({
+									words : result
+								});
 							},
 							error : function(error, xhr) {
 								onFailure("Spellcheck error:" + xhr.status);
 							}
 						});
 					};
+					contextmenu += " spellchecker"
+				}
+				if (contextmenu != "") {
+					options.contextmenu = contextmenu;
+				}
+				if (config.tinyMceOptions) {
+					options.paste_as_text = config.tinyMceOptions.paste_text_sticky_default ? true
+							: false;
 				}
 			}
 
