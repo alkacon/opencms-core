@@ -68,6 +68,7 @@ import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.I_CmsSolrIndexWriter;
 import org.opencms.search.solr.spellchecking.CmsSolrSpellchecker;
+import org.opencms.search.solr.spellchecking.CmsSpellcheckDictionaryIndexer;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
@@ -1433,26 +1434,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /**
      * Return singleton instance of the OpenCms spellchecker.<p>
      *
-     * @param cms the cms object.
-     *
      * @return instance of CmsSolrSpellchecker.
      */
-    public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
+    public CmsSolrSpellchecker getSolrDictionary() {
 
         // get the core container that contains one core for each configured index
         if (m_coreContainer == null) {
             m_coreContainer = createCoreContainer();
         }
-        SolrCore spellcheckCore = m_coreContainer.getCore(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE);
-        if (spellcheckCore == null) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.ERR_SPELLCHECK_CORE_NOT_AVAILABLE_1,
-                    CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE));
-            return null;
-        } else {
-            return CmsSolrSpellchecker.getInstance(m_coreContainer, spellcheckCore);
-        }
+        return CmsSolrSpellchecker.getInstance(m_coreContainer);
     }
 
     /**
@@ -1552,6 +1542,33 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_offlineIndexes = offlineIndexes;
         m_offlineHandler.initialize();
 
+    }
+
+    /**
+     * Initializes the spell check index.<p>
+     *
+     * @param adminCms the ROOT_ADMIN cms context
+     */
+    public void initSpellcheckIndex(CmsObject adminCms) {
+
+        if (CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(adminCms)) {
+            final CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getSolrDictionary();
+            if (spellchecker != null) {
+
+                Runnable initRunner = new Runnable() {
+
+                    public void run() {
+
+                        try {
+                            spellchecker.parseAndAddDictionaries(adminCms);
+                        } catch (CmsRoleViolationException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                };
+                new Thread(initRunner).start();
+            }
+        }
     }
 
     /**

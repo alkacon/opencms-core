@@ -2402,8 +2402,9 @@ public final class OpenCmsCore {
                     e);
             }
         }
-        // only init ADE manager in case of servlet initialization, it won't be needed in case of shell access
+
         if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            // only init ADE manager in case of servlet initialization, it won't be needed in case of shell access
             CmsThreadStatsTreeProfilingHandler stats = new CmsThreadStatsTreeProfilingHandler();
             try {
                 CmsDefaultProfilingHandler.INSTANCE.addHandler(stats);
@@ -2426,6 +2427,20 @@ public final class OpenCmsCore {
                     }
                 }
             }
+
+            try {
+                // get an Admin cms context object with site root set to "/"
+                CmsObject adminCms = initCmsObject(
+                    null,
+                    null,
+                    getDefaultUsers().getUserAdmin(),
+                    (String)null,
+                    (String)null);
+                OpenCms.getSearchManager().initSpellcheckIndex(adminCms);
+            } catch (CmsException e) {
+                throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
+            }
+
         }
         // everything is initialized, now start publishing
         m_publishManager.startPublishing();

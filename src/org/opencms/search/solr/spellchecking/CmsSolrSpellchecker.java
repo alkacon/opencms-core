@@ -32,7 +32,11 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.search.Messages;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -145,15 +149,24 @@ public final class CmsSolrSpellchecker {
      * Return an instance of this class.
      *
      * @param container Solr CoreContainer container object in order to create a server object.
-     * @param core The Solr Core object in order to create a server object.
+     *
      * @return instance of CmsSolrSpellchecker
      */
-    public static CmsSolrSpellchecker getInstance(CoreContainer container, SolrCore core) {
+    public static CmsSolrSpellchecker getInstance(CoreContainer container) {
 
         if (null == instance) {
             synchronized (CmsSolrSpellchecker.class) {
                 if (null == instance) {
-                    instance = new CmsSolrSpellchecker(container, core);
+                    @SuppressWarnings("resource")
+                    SolrCore spellcheckCore = container.getCore(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE);
+                    if (spellcheckCore == null) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_SPELLCHECK_CORE_NOT_AVAILABLE_1,
+                                CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE));
+                        return null;
+                    }
+                    instance = new CmsSolrSpellchecker(container, spellcheckCore);
                 }
             }
         }
@@ -217,10 +230,13 @@ public final class CmsSolrSpellchecker {
     /**
      * Parses and adds dictionaries to the Solr index.
      *
-     * @param cms The OpenCms object.
+     * @param cms the OpenCms object.
+     *
+     * @throws CmsRoleViolationException in case the user does not have the required role ROOT_ADMIN
      */
-    void parseAndAddDictionaries(CmsObject cms) {
+    public void parseAndAddDictionaries(CmsObject cms) throws CmsRoleViolationException {
 
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(m_solrClient, cms);
         CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(m_solrClient, cms);
     }
@@ -329,15 +345,21 @@ public final class CmsSolrSpellchecker {
      */
     private CmsSpellcheckingRequest parseHttpRequest(final ServletRequest req, final CmsObject cms) {
 
-        if ((null != cms) && !cms.getRequestContext().getCurrentUser().isGuestUser()) {
-            if (null != req.getParameter(HTTP_PARAMETER_CHECKREBUILD)) {
-                if (CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(cms)) {
+        if ((null != cms) && OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)) {
+            try {
+                if (null != req.getParameter(HTTP_PARAMETER_CHECKREBUILD)) {
+                    if (CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(cms)) {
+
+                        parseAndAddDictionaries(cms);
+
+                    }
+                }
+
+                if (null != req.getParameter(HTTP_PARAMTER_REBUILD)) {
                     parseAndAddDictionaries(cms);
                 }
-            }
-
-            if (null != req.getParameter(HTTP_PARAMTER_REBUILD)) {
-                parseAndAddDictionaries(cms);
+            } catch (CmsRoleViolationException e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
 

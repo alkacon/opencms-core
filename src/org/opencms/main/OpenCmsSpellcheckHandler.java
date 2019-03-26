@@ -100,7 +100,7 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
         try {
             cms = getCmsObject(req);
 
-            CmsSolrSpellchecker dict = OpenCms.getSearchManager().getSolrDictionary(cms);
+            CmsSolrSpellchecker dict = OpenCms.getSearchManager().getSolrDictionary();
             if (dict != null) {
                 dict.getSpellcheckingResult(res, req, cms);
             }
