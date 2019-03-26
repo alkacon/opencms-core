@@ -101,7 +101,7 @@ public class CmsSetupStep06ImportReport extends A_CmsSetupStep {
     @Override
     public String getTitle() {
 
-        return "Import modules";
+        return "Importing modules";
     }
 
 }

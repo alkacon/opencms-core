@@ -72,6 +72,11 @@ public class A_CmsSetupStep extends CmsBasicDialog {
         return "OpenCms Setup";
     }
 
+    /**
+     * Creates a new HTML-formatted label with the given content.
+     * 
+     * @param html the label content 
+     */
     public Label htmlLabel(String html) {
 
         Label label = new Label();
@@ -81,6 +86,11 @@ public class A_CmsSetupStep extends CmsBasicDialog {
 
     }
 
+    /**
+     * Reads an HTML snipped with the given name.
+     * 
+     * @return the HTML data 
+     */
     public String readSnippet(String name) {
 
         String path = CmsStringUtil.joinPaths(
@@ -95,6 +105,27 @@ public class A_CmsSetupStep extends CmsBasicDialog {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Makes max-height behavior easy to turn on/off in subclasses.
+     */
+    @Override
+    protected void enableMaxHeight() {
+
+        if (isEnableMaxHeight()) {
+            super.enableMaxHeight();
+        }
+    }
+
+    /**
+     * If true, max-height resizing behavior is enabled.
+     * 
+     * @return true if max-height resizing should be enabled 
+     */
+    protected boolean isEnableMaxHeight() {
+
+        return true;
     }
 
 }

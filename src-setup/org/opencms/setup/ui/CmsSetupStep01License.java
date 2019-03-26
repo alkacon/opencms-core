@@ -89,4 +89,10 @@ public class CmsSetupStep01License extends A_CmsSetupStep {
         return "License agreement";
     }
 
+    @Override
+    protected boolean isEnableMaxHeight() {
+
+        return false;
+    }
+
 }
