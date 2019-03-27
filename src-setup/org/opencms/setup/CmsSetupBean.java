@@ -279,6 +279,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** The full key of the selected database including the "_jpa" or "_sql" information. */
     private String m_fullDatabaseKey;
 
+    /** Flag which is set to true after module import if there is an index.html file in the default site. */
+    private boolean m_hasIndexHtml;
+
     /** The Database Provider used in setup. */
     private String m_provider;
 
@@ -1152,6 +1155,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
+     * Returns true if there is an index.html file in the default site after the module import.
+     *
+     * @return true if there is an index.html file
+     */
+    public boolean hasIndexHtml() {
+
+        return m_hasIndexHtml;
+    }
+
+    /**
      * Returns the html code for component selection.<p>
      *
      * @return html code
@@ -1236,7 +1249,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     e.printStackTrace(System.err);
                 }
             }
+            m_hasIndexHtml = false;
+            try {
+                m_cms.readResource("/index.html");
+                m_hasIndexHtml = true;
+            } catch (Exception e) {
+
+            }
+
         }
+
     }
 
     /**

@@ -76,6 +76,8 @@ public class CmsSetupStep07ConfigNotes extends A_CmsSetupStep {
         CmsSetupBean bean = m_context.getSetupBean();
         VaadinServletRequest request = (VaadinServletRequest)(VaadinRequest.getCurrent());
         String servletMapping = bean.getServletMapping();
+        String openLink = null;
+
         if (!servletMapping.startsWith("/")) {
             servletMapping = "/" + servletMapping;
         }
@@ -83,7 +85,8 @@ public class CmsSetupStep07ConfigNotes extends A_CmsSetupStep {
             // usually a mapping must be in the form "/opencms/*", cut off all slashes
             servletMapping = servletMapping.substring(0, servletMapping.length() - 2);
         }
-        String openLink = request.getContextPath() + servletMapping + "/index.html";
+        openLink = request.getContextPath() + servletMapping + (bean.hasIndexHtml() ? "/index.html" : "/system/login");
+
         A_CmsUI.get().getPage().setLocation(openLink);
     }
 
