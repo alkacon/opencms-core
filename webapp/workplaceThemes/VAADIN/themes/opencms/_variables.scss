@@ -3,7 +3,7 @@
 $alkacon-red:       #b31b34;
 $alkacon-blue:      #144382; // for print this is #003082;
 $alkacon-orange:    #ffa826; // for print this is #ffb340;
-$alkacon-gray:      #a8adb4; 
+$alkacon-gray:      #a8adb4;
 
 $white:             #fff;
 $black:             #000;
@@ -27,7 +27,7 @@ $gray:              $alkacon-gray;
 $gray-lighter:      #FAFAFD;
 $gray-light:        #E0E0E2;
 $gray-dark:         darken($gray, 15%);
-$gray-darker:       darken($gray, 35%); 
+$gray-darker:       darken($gray, 35%);
 
 $blue-cyan:         mix($blue, $cyan);
 $violet:            mix($blue, $red);
@@ -70,6 +70,7 @@ $v-selection-item-height: 25px;
 $v-font-size-small: 12px;
 $v-font-size: 14px;
 $v-font-weight: 400;
+$v-font-weight--header: $v-font-weight;
 $v-caption-font-size: $v-font-size;
 $v-unit-size: 30px;
 $v-table-row-height: 32px;
