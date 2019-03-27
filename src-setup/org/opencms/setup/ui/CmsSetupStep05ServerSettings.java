@@ -79,15 +79,6 @@ public class CmsSetupStep05ServerSettings extends A_CmsSetupStep {
     }
 
     /**
-     * @see org.opencms.setup.ui.A_CmsSetupStep#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "Settings";
-    }
-
-    /**
      * Proceed to next step.
      */
     private void forward() {

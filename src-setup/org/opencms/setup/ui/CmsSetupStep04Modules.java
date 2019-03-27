@@ -85,15 +85,6 @@ public class CmsSetupStep04Modules extends A_CmsSetupStep {
     }
 
     /**
-     * @see org.opencms.setup.ui.A_CmsSetupStep#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "Module group selection";
-    }
-
-    /**
      * Moves to the next step.
      */
     private void forward() {
@@ -152,7 +143,7 @@ public class CmsSetupStep04Modules extends A_CmsSetupStep {
         for (CmsSetupComponent component : components) {
             CheckBox checkbox = new CheckBox();
             checkbox.setValue(component.isChecked());
-            checkbox.setCaption(component.getName() + " (" + component.getDescription() + ")");
+            checkbox.setCaption(component.getName() + " - " + component.getDescription());
             checkbox.setDescription(component.getDescription());
             checkbox.setData(component);
             checkbox.setWidth("100%");

@@ -46,14 +46,14 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
 
     /** Test status enum. */
     enum TestColor {
-    /** Green. */
-    green,
+        /** Green. */
+        green,
 
-    /** Red. */
-    red,
+        /** Red. */
+        red,
 
-    /** Yellow. */
-    yellow;
+        /** Yellow. */
+        yellow;
     }
 
     /** Message for green status. */
@@ -113,15 +113,6 @@ public class CmsSetupStep02ComponentCheck extends A_CmsSetupStep {
         showTestResults(tests.getTestResults());
         m_forwardButton.addClickListener(evt -> m_context.stepForward());
         m_backButton.addClickListener(evt -> m_context.stepBack());
-    }
-
-    /**
-     * @see org.opencms.setup.ui.A_CmsSetupStep#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "Component tests";
     }
 
     /**

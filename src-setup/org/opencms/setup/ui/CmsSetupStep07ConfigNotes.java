@@ -87,13 +87,4 @@ public class CmsSetupStep07ConfigNotes extends A_CmsSetupStep {
         A_CmsUI.get().getPage().setLocation(openLink);
     }
 
-    /**
-     * @see org.opencms.setup.ui.A_CmsSetupStep#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "Review configuration notes";
-    }
-
 }

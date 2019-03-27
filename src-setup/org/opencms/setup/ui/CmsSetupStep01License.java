@@ -80,15 +80,6 @@ public class CmsSetupStep01License extends A_CmsSetupStep {
 
     }
 
-    /**
-     * @see org.opencms.setup.ui.A_CmsSetupStep#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "License agreement";
-    }
-
     @Override
     protected boolean isEnableMaxHeight() {
 

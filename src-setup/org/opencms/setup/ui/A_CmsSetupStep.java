@@ -69,13 +69,13 @@ public class A_CmsSetupStep extends CmsBasicDialog {
      */
     public String getTitle() {
 
-        return "OpenCms Setup";
+        return "OpenCms setup";
     }
 
     /**
      * Creates a new HTML-formatted label with the given content.
-     * 
-     * @param html the label content 
+     *
+     * @param html the label content
      */
     public Label htmlLabel(String html) {
 
@@ -88,8 +88,8 @@ public class A_CmsSetupStep extends CmsBasicDialog {
 
     /**
      * Reads an HTML snipped with the given name.
-     * 
-     * @return the HTML data 
+     *
+     * @return the HTML data
      */
     public String readSnippet(String name) {
 
@@ -120,8 +120,8 @@ public class A_CmsSetupStep extends CmsBasicDialog {
 
     /**
      * If true, max-height resizing behavior is enabled.
-     * 
-     * @return true if max-height resizing should be enabled 
+     *
+     * @return true if max-height resizing should be enabled
      */
     protected boolean isEnableMaxHeight() {
 

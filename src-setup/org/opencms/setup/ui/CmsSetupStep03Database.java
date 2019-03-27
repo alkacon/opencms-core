@@ -148,15 +148,6 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
     }
 
     /**
-     * @see org.opencms.setup.ui.A_CmsSetupStep#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "Database setup";
-    }
-
-    /**
      * Creates DB and tables when necessary.<p>
      *
      * @throws Exception in case creating DB or tables fails
