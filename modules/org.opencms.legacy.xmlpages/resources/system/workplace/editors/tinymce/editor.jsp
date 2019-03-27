@@ -691,9 +691,8 @@ if (toolbarButtons.indexOf("OcmsImageGallery")>0)
 if (toolbarButtons.indexOf("table")>0)
     contextmenu+=" inserttable | cell row column deletetable"
 
-var plugins = "anchor,charmap,codemirror,importcss,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms";
-if (contextmenu!="")
-    plugins+=",contextmenu"
+var plugins = "anchor,charmap,codemirror,importcss,textcolor,autolink,lists,pagebreak,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms";
+
 
 tinyMCE.init({
     // General options
@@ -707,7 +706,7 @@ tinyMCE.init({
     toolbar_items_size: 'small',
     mode : "exact",
     elements : "tinymce_content",
-    theme : "modern",
+    theme : "silver",
     plugins : plugins,
     importcss_append: true,
     contextmenu: contextmenu,
@@ -780,11 +779,17 @@ tinyMCE.init({
 		      addCustomShortcuts(event.target);
 		  });
 		//  setupTinyMCE(ed);
+		// add icons
+		ed.ui.registry.addIcon('publish','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><title>publish2</title><path fill="#444" d="M15.958 2c-5.355 0-9.777 3.034-12.077 7.558l-2.881-1.289 0.030 11.267 9.349-7.070-2.734-1.223c1.659-3.082 4.613-5.243 8.313-5.243 5.389 0 10.042 4.532 10.042 10 0 5.466-4.652 10-10.042 10-3.364 0-6.084-1.851-7.844-4.481l-3.035 2.827c2.527 3.425 6.347 5.655 10.879 5.655 7.635 0 14.042-6.256 14.042-14 0-7.745-6.407-14-14.042-14zM16 9c-0.54 0-1.004 0.452-1 1l0.043 5.93c0.001 0.129 0.036 0.48 0.119 0.703 0.087 0.235 0.298 0.555 0.388 0.645l3.656 3.537c0.381 0.386 0.988 0.481 1.37 0.095 0.381-0.388 0.349-1.005-0.033-1.394l-3.544-3.516v-6c0-0.546-0.46-1-1-1z"></path></svg>');
+      ed.ui.registry.addIcon('save','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  viewBox="0 0 32 32"><title>save</title><path fill="#444" d="M15.087 23.078h-3.987l-0.032 4.902 3.987 0.032zM3.005 27.985c-0.005 2.015 0.995 3.015 3.015 3.057l17.994 0.032 5.018-5.040-0-22.003c-0.032-2.031-1.032-3.031-2.993-3.031h-20.030c-2.008 0-3.040 1-2.987 2.999 0 0-0.031 16.691-0.016 23.986zM21.012 29.038h-10.975l-0.054-7.021 10.965-0.032zM26.036 15.977h-20.017v-11.932l19.985-0.032z"></path></svg>');
+      ed.ui.registry.addIcon('save-exit','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><title>save-exit</title><path fill="#444" d="M24 0c-1.405 0-2.725 0.364-3.873 1h-14.119c-2.008 0-3.040 1-2.988 2.999 0 0-0.031 16.691-0.016 23.986v0c-0.005 2.015 0.995 3.015 3.015 3.057l17.994 0.032 5.018-5.040 0.032-11.841c1.792-1.467 2.937-3.697 2.937-6.193 0-4.417-3.582-8-8-8zM24 1.079c3.823 0 6.923 3.099 6.923 6.922s-3.101 6.922-6.923 6.922c-3.823 0-6.922-3.099-6.922-6.922s3.099-6.922 6.922-6.922zM27.001 2.956l-2.993 3.052-3.017-3.018-1.968 2.006 2.995 3.028-2.956 2.982 1.928 1.967 2.999-3.009 3.003 3.036 2-2.009-2.955-2.956 2.963-3.038-1.999-2.042zM17.083 3.982c-0.688 1.181-1.083 2.553-1.083 4.018 0 4.226 3.277 7.683 7.427 7.977h-17.409v-11.932l11.065-0.063zM20.948 21.985l0.064 7.053h-10.975l-0.054-7.021 10.965-0.032zM11.1 23.078l-0.032 4.902 3.987 0.032 0.032-4.934h-3.987z"></path></svg>');
+      ed.ui.registry.addIcon('exit','<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><title>exit</title><path fill="#444" d="M16 2c-7.732 0-14 6.268-14 14s6.268 14 14 14c7.732 0 14-6.268 14-14s-6.268-14-14-14zM25.025 22.027l-2.965 3.062-6.010-6.060-6.063 5.98-2.997-2.935 5.994-6.038-5.994-6.042 2.997-3.030 6.042 6.028 5.999-6.012 3.029 3.030-6.057 6.007z"></path></svg>');
+		
 		// Add Publisg button
-	    ed.addButton('oc-publish', {
-	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>',
-	        image : '<%=CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-publish.gif")%>',
-	        onclick : function() {
+	    ed.ui.registry.addButton('oc-publish', {
+	    	tooltip : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>',
+	        icon: 'publish',
+	        onAction : function() {
 	        	var exitTarget='_top';
 	        	//the editors exit frame target, may be !='_top' if in advanced direct edit!
 	        	if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
@@ -795,24 +800,24 @@ tinyMCE.init({
 	   });
 		
 	 	// Add Save & Exit button
-	    ed.addButton('oc-save-exit', {
-	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0), encoding) %>',
-	        image : '<%=CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-save-exit.gif")%>',
-	        onclick : ocmsSaveExit
+	    ed.ui.registry.addButton('oc-save-exit', {
+	    	tooltip : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0), encoding) %>',
+	        icon: 'save-exit',
+	        onAction : ocmsSaveExit
 	   });
 	   
 	 	// Add Save button
-	    ed.addButton('oc-save', {
-	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0), encoding) %>',
-	        image : '<%=CmsWorkplace.getStaticResourceUri("/editors/tinymce/toolbar/oc-save.gif")%>',
-	        onclick : ocmsSave
+	    ed.ui.registry.addButton('oc-save', {
+	    	tooltip : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0), encoding) %>',
+	        icon: 'save',
+	        onAction : ocmsSave
 	   });
 
 	 	// Add Exit button
-	    ed.addButton('oc-exit', {
-	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0), encoding) %>',
-	        image : '<%=CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-exit.gif")%>',
-	        onclick : ocmsExit
+	    ed.ui.registry.addButton('oc-exit', {
+	    	tooltip : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0), encoding) %>',
+	        icon: 'exit',
+	        onAction : ocmsExit
 	   });
 	}
 });

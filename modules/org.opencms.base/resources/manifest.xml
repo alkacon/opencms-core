@@ -3046,7 +3046,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 		<file>
 			<source>system/workplace/editors/tinymce/opencms_plugin.css</source>
 			<destination>system/workplace/editors/tinymce/opencms_plugin.css</destination>
-			<type>jsp</type>
+			<type>plain</type>
 			<uuidstructure>d0273749-407c-11e3-bd65-13c7f20aeb68</uuidstructure>
 			<uuidresource>d027374a-407c-11e3-bd65-13c7f20aeb68</uuidresource>
 			<datecreated>Tue, 29 Oct 2013 09:30:56 GMT</datecreated>

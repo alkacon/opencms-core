@@ -1,43 +1,6 @@
 @import url("opencms_plugin.css");
 /* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
 
-.mceIframeContainer, .mceIframeContainer iframe, #tinymce_content_tbl > tbody > tr:first-child + tr, #tinymce_content_tbl {
-	height: 100% !important; 
-}
-
-/* Use the cmsTinyMCE class here because we need to turn the float off/on dynamically to fix a layout problem in Chrome. */
-.cmsTinyMCE .mceToolbar table {
-   float: left;
-}
-                    
-.mceToolbar select {
-       width: auto !important;
-}
-                    
-.mceToolbar option {
-  float: none; 
-}
-
-#textarea-container > .mce-container, #textarea-container > .mce-container > .mce-container-body{
-	width: 100%;
-	height: 100%;
-}
-#textarea-container > .mce-container > .mce-container-body{
-	display: -webkit-flex;
-	display: flex;
-	-webkit-flex-direction: column;
-	flex-direction: column;
-}
-#textarea-container .mce-edit-area {
-	-webkit-flex: 3;
-	flex: 3;
-	position: relative;
-}
-
-#tinymce_content_ifr{
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-}
+.tox-statusbar__branding{
+ 	display: none !important;
+ }

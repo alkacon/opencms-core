@@ -1,27 +1,9 @@
-<%@ page import="org.opencms.jsp.*"
-%><% 
-    CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-%>
-div.mce-opencmsDialog.mce-window{
-	background: transparent;
+body.opencms_dialog .tox-dialog__header, body.opencms_dialog .tox-dialog__footer{
+	display:none;
 }
 
-.mce-opencmsDialog.mce-window > .mce-window-head{
-	display: none;
-}
-
-.mce-opencmsDialog.mce-window > .closeButton{
-	background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogCloseImage.png") %>');
-    background-color: transparent;
-    cursor: pointer;
-    height: 23px;
-    overflow: hidden;
-    position: absolute;
-    right: -11px;
-    top: -12px;
-    width: 23px;
-    border: 0;
-    margin: 0;
-    padding: 0;
-}
+body.opencms_dialog .tox-dialog, body.opencms_dialog .tox-dialog div{
+	border: none;
+ 	background: transparent;
+ }
 
