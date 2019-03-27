@@ -502,12 +502,6 @@
       <explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="downloadgallery">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30" autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
       </explorertype>
-      <explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="downloadgallery">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.htmlgallery" />
-      </explorertype>
-      <explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false" info="desc.tablegallery" />
-      </explorertype>
       <explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
         <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
         <editoptions>
@@ -839,13 +833,7 @@
           <name>${key.GUI_ADMIN_VIEW_ROOT_NAME_0}</name>
           <helptext>${key.GUI_ADMIN_VIEW_ROOT_HELP_0}</helptext>
         </root>
-        <root>
-          <key>explorer</key>
-          <uri>/system/workplace/explorer/</uri>
-          <name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
-          <helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
-        </root>
-      </roots>
+     </roots>
     </tool-manager>
   </workplace>
 </opencms>

@@ -113,10 +113,6 @@
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
 					name="linkgallery" id="10">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
-					name="htmlgallery" id="11">
 					<copy-resources>
 						<copy-resource source="/folder1/index.html"
 							target="${resource.folder.path}/newname.html" type="sibling" />
@@ -124,14 +120,9 @@
 							target="${resource.folder.path}/mytypes" />
 						<copy-resource source="/folder1/subfolder11/" type="preserve" />
 					</copy-resources>
-					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
-					name="tablegallery" id="12">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
 				</type>
 			</resourcetypes>
-
 			<collectors>
 				<collector
 					class="org.opencms.file.collectors.CmsPriorityResourceCollector"

@@ -31,7 +31,6 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
-import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
 import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
 
@@ -109,11 +108,6 @@ public class TestWorkplace extends OpenCmsTestCase {
         assertEquals(gallery.getClass().getName(), CmsAjaxLinkGallery.class.getName());
         //assertEquals("linkgallery", gallery.getGalleryTypeName());
         assertEquals(10, gallery.getGalleryTypeId());
-
-        gallery = A_CmsAjaxGallery.createInstance("htmlgallery", null);
-        assertEquals(gallery.getClass().getName(), CmsAjaxHtmlGallery.class.getName());
-        //assertEquals("htmlgallery", gallery.getGalleryTypeName());
-        assertEquals(11, gallery.getGalleryTypeId());
 
         boolean error = true;
         try {

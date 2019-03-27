@@ -127,12 +127,6 @@
                 <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkgallery" id="10">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
-                    <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
-                    <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
-                </type>
             </resourcetypes>
             <collectors>
                 <collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />

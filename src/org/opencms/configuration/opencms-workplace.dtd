@@ -815,7 +815,7 @@
 <!--
 # Startgallery node has two attributes.
 # type: The type of the gallery for which the global start setting is applied ("imagegallery",
-# "downloadgallery", "linkgallery", "tablegallery", "htmlgallery").
+# "downloadgallery", "linkgallery").
 # path: The path to the gallery, which should be opened after login.
 -->
 <!ELEMENT startgallery EMPTY >

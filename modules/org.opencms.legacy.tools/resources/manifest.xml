@@ -45,7 +45,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <resource uri="/system/workplace/resources/buttons/folder_refresh.png" />
             <resource uri="/system/workplace/resources/buttons/folder.png" />
             <resource uri="/system/workplace/resources/buttons/help.png" />
-            <resource uri="/system/workplace/resources/buttons/htmlgallery.png" />
             <resource uri="/system/workplace/resources/buttons/imagegallery.png" />
             <resource uri="/system/workplace/resources/buttons/linkgallery.png" />
             <resource uri="/system/workplace/resources/buttons/logout.png" />
@@ -64,7 +63,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <resource uri="/system/workplace/resources/buttons/reload.png" />
             <resource uri="/system/workplace/resources/buttons/search.png" />
             <resource uri="/system/workplace/resources/buttons/search_in.png" />
-            <resource uri="/system/workplace/resources/buttons/tablegallery.png" />
             <resource uri="/system/workplace/resources/buttons/wizard.png" />
             <resource uri="/system/workplace/resources/buttons/wizard_in.png" />
             <resource uri="/system/workplace/resources/buttons/upload.png" />
@@ -91,13 +89,11 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <resource uri="/system/workplace/resources/components/widgets/downloadgallery.js" />
             <resource uri="/system/workplace/resources/components/widgets/fileselector.js" />
             <resource uri="/system/workplace/resources/components/widgets/groupselector.js" />
-            <resource uri="/system/workplace/resources/components/widgets/htmlgallery.js" />
             <resource uri="/system/workplace/resources/components/widgets/imagegallery.js" />
             <resource uri="/system/workplace/resources/components/widgets/linkgallery.js" />
             <resource uri="/system/workplace/resources/components/widgets/multiselector.js" />
             <resource uri="/system/workplace/resources/components/widgets/orgunitselector.js" />
             <resource uri="/system/workplace/resources/components/widgets/principalselector.js" />
-            <resource uri="/system/workplace/resources/components/widgets/tablegallery.js" />
             <resource uri="/system/workplace/resources/components/widgets/userselector.js" />
             <resource uri="/system/workplace/resources/components/widgets/vfsimage.js" />
             <resource uri="/system/workplace/resources/components/widgets/defaultadvancedgallery.js" />
@@ -119,7 +115,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <resource uri="/system/workplace/commons/displayresource.jsp" />
             <resource uri="/system/workplace/commons/group_selection.jsp" />
             <resource uri="/system/workplace/commons/property_multifile.jsp" />
-            <resource uri="/system/workplace/commons/newcsvfile_upload.jsp" />
             <resource uri="/system/workplace/commons/opengallery.jsp" />
             <resource uri="/system/workplace/commons/openadvancedgallery.jsp" />
             <resource uri="/system/workplace/commons/openvfsgallery.jsp" />
@@ -1115,23 +1110,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <accesscontrol />
         </file>
         <file>
-            <source>system/workplace/galleries/galleryelements/gallerytabs_htmlgallery.html</source>
-            <destination>system/workplace/galleries/galleryelements/gallerytabs_htmlgallery.html</destination>
-            <type>plain</type>
-            <uuidstructure>3998586c-49e4-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>3998586d-49e4-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:59:03 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[jQuery tabs for gallery and category items]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
             <source>system/workplace/galleries/galleryelements/gallerytabs_imagegallery.html</source>
             <destination>system/workplace/galleries/galleryelements/gallerytabs_imagegallery.html</destination>
             <type>plain</type>
@@ -1154,22 +1132,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <uuidstructure>71563081-451f-11de-80e1-350e680a0242</uuidstructure>
             <uuidresource>65a2ef7c-33f3-11de-8aa1-a75c4a166a24</uuidresource>
             <datecreated>Tue, 28 Apr 2009 12:52:14 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[jQuery tabs for gallery and category items]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/galleryelements/gallerytabs_tablegallery.html</destination>
-            <type>plain</type>
-            <uuidstructure>213db736-4b6b-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>3998586d-49e4-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:59:03 GMT</datecreated>
             <flags>0</flags>
             <properties>
                 <property>
@@ -1272,258 +1234,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
                 <property type="shared">
                     <name>export</name>
                     <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/htmlgallery</destination>
-            <type>folder</type>
-            <uuidstructure>53b0bd93-49df-11de-b9be-350e680a0242</uuidstructure>
-            <datecreated>Tue, 26 May 2009 10:23:59 GMT</datecreated>
-            <flags>0</flags>
-            <properties />
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/ajaxcalls.jsp</source>
-            <destination>system/workplace/galleries/htmlgallery/ajaxcalls.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>54101bbf-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>54101bc0-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Handles Ajax requests]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/fckplugin.js</source>
-            <destination>system/workplace/galleries/htmlgallery/fckplugin.js</destination>
-            <type>jsp</type>
-            <uuidstructure>541c02a3-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>541c02a4-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Plugin JS for FCKeditor]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/index.jsp</source>
-            <destination>system/workplace/galleries/htmlgallery/index.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>54257886-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>54257887-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Download gallery start jsp]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/htmlgallery/css</destination>
-            <type>folder</type>
-            <uuidstructure>53ba3375-49df-11de-b9be-350e680a0242</uuidstructure>
-            <datecreated>Tue, 26 May 2009 10:23:59 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Folder with Silblings to css files]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/htmlgallery/css/dialog.css</destination>
-            <type>plain</type>
-            <uuidstructure>53c15f68-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>6eb7635b-5187-11dd-957b-55b439b85a0e</uuidresource>
-            <datecreated>Mon, 14 Jul 2008 09:30:01 GMT</datecreated>
-            <flags>0</flags>
-            <properties />
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/htmlgallery/html</destination>
-            <type>folder</type>
-            <uuidstructure>53c88b59-49df-11de-b9be-350e680a0242</uuidstructure>
-            <datecreated>Tue, 26 May 2009 10:23:59 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[html snippets for gallery tags]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/html/tab_categories_htmlgallery.jsp</source>
-            <destination>system/workplace/galleries/htmlgallery/html/tab_categories_htmlgallery.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>53cd464c-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>53cd464d-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[html Content of categories tab]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/html/tab_galleries_htmlgallery.jsp</source>
-            <destination>system/workplace/galleries/htmlgallery/html/tab_galleries_htmlgallery.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>53e2ca20-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>53e2ca21-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[html Content of galleries tab]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/html/tab_preview_htmlgallery.html</source>
-            <destination>system/workplace/galleries/htmlgallery/html/tab_preview_htmlgallery.html</destination>
-            <type>plain</type>
-            <uuidstructure>4c571025-49f6-11de-9bb2-350e680a0242</uuidstructure>
-            <uuidresource>4c571026-49f6-11de-9bb2-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 13:08:25 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Tabs for widget dialog mode]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/htmlgallery/js</destination>
-            <type>folder</type>
-            <uuidstructure>53ec4004-49df-11de-b9be-350e680a0242</uuidstructure>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[js for mode]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/js/htmlgalleryfunctions.js</source>
-            <destination>system/workplace/galleries/htmlgallery/js/htmlgalleryfunctions.js</destination>
-            <type>plain</type>
-            <uuidstructure>2a1bcb21-49e0-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>2a1bcb22-49e0-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:29:59 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Download functions]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/js/integrator_editor.js</source>
-            <destination>system/workplace/galleries/htmlgallery/js/integrator_editor.js</destination>
-            <type>jsp</type>
-            <uuidstructure>53fa97e9-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>53fa97ea-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Editor integrator JS]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/js/integrator_view.js</source>
-            <destination>system/workplace/galleries/htmlgallery/js/integrator_view.js</destination>
-            <type>jsp</type>
-            <uuidstructure>dba150e8-49f9-11de-9bb2-350e680a0242</uuidstructure>
-            <uuidresource>dba150e9-49f9-11de-9bb2-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 13:33:54 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[View integrator JS]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/htmlgallery/js/integrator_widget.js</source>
-            <destination>system/workplace/galleries/htmlgallery/js/integrator_widget.js</destination>
-            <type>jsp</type>
-            <uuidstructure>54040dcc-49df-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>54040dcd-49df-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:24:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Widget integrator JS]]></value>
                 </property>
             </properties>
             <relations />
@@ -2117,279 +1827,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <uuidstructure>2d574490-451f-11de-80e1-350e680a0242</uuidstructure>
             <uuidresource>f993ecce-451e-11de-80e1-350e680a0242</uuidresource>
             <datecreated>Wed, 20 May 2009 09:17:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Download functions]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/tablegallery</destination>
-            <type>folder</type>
-            <uuidstructure>687869ab-4b67-11de-850a-350e680a0242</uuidstructure>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties />
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/ajaxcalls.jsp</source>
-            <destination>system/workplace/galleries/tablegallery/ajaxcalls.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>68f6c18d-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>68f6c18e-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:38 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Handles Ajax requests]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/fckplugin.js</source>
-            <destination>system/workplace/galleries/tablegallery/fckplugin.js</destination>
-            <type>jsp</type>
-            <uuidstructure>6902a871-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>6902a872-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:38 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Plugin JS for FCKeditor]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/index.jsp</source>
-            <destination>system/workplace/galleries/tablegallery/index.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>690c1e54-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>690c1e55-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:38 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Download gallery start jsp]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/upload.jsp</source>
-            <destination>system/workplace/galleries/tablegallery/upload.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>a0236922-4b77-11de-8ff4-350e680a0242</uuidstructure>
-            <uuidresource>a0236923-4b77-11de-8ff4-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 11:06:42 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Generates the upload applet]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/tablegallery/css</destination>
-            <type>folder</type>
-            <uuidstructure>687f6e8d-4b67-11de-850a-350e680a0242</uuidstructure>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Folder with Silblings to css files]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/tablegallery/css/dialog.css</destination>
-            <type>plain</type>
-            <uuidstructure>68869a80-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>6eb7635b-5187-11dd-957b-55b439b85a0e</uuidresource>
-            <datecreated>Mon, 14 Jul 2008 09:30:01 GMT</datecreated>
-            <flags>0</flags>
-            <properties />
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/tablegallery/html</destination>
-            <type>folder</type>
-            <uuidstructure>68903771-4b67-11de-850a-350e680a0242</uuidstructure>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[html snippets for gallery tags]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/html/tab_categories_tablegallery.jsp</source>
-            <destination>system/workplace/galleries/tablegallery/html/tab_categories_tablegallery.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>6899ad54-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>6899ad55-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[html Content of categories tab]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/html/tab_galleries_tablegallery.jsp</source>
-            <destination>system/workplace/galleries/tablegallery/html/tab_galleries_tablegallery.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>68a80538-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>68a80539-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[html Content of galleries tab]]></value>
-                </property>
-                <property type="shared">
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/html/tab_preview_tablegallery.html</source>
-            <destination>system/workplace/galleries/tablegallery/html/tab_preview_tablegallery.html</destination>
-            <type>plain</type>
-            <uuidstructure>68b3ec1c-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>68b3ec1d-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Tabs for widget dialog mode]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/galleries/tablegallery/js</destination>
-            <type>folder</type>
-            <uuidstructure>68bd890f-4b67-11de-850a-350e680a0242</uuidstructure>
-            <datecreated>Thu, 28 May 2009 09:10:37 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[js for mode]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/js/integrator_editor.js</source>
-            <destination>system/workplace/galleries/tablegallery/js/integrator_editor.js</destination>
-            <type>jsp</type>
-            <uuidstructure>68d2e5d4-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>68d2e5d5-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:38 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Editor integrator JS]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/js/integrator_view.js</source>
-            <destination>system/workplace/galleries/tablegallery/js/integrator_view.js</destination>
-            <type>jsp</type>
-            <uuidstructure>68dc82c7-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>68dc82c8-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:38 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[View integrator JS]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/js/integrator_widget.js</source>
-            <destination>system/workplace/galleries/tablegallery/js/integrator_widget.js</destination>
-            <type>jsp</type>
-            <uuidstructure>68eadaaa-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>68eadaab-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:10:38 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Widget integrator JS]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/galleries/tablegallery/js/tablegalleryfunctions.js</source>
-            <destination>system/workplace/galleries/tablegallery/js/tablegalleryfunctions.js</destination>
-            <type>plain</type>
-            <uuidstructure>b8f48250-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>b8f48251-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:12:52 GMT</datecreated>
             <flags>0</flags>
             <properties>
                 <property>
@@ -3288,37 +2725,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <accesscontrol />
         </file>
         <file>
-            <destination>system/workplace/resources/components/galleries/js/htmlgallery</destination>
-            <type>folder</type>
-            <uuidstructure>94d1c1a1-49e0-11de-b9be-350e680a0242</uuidstructure>
-            <datecreated>Tue, 26 May 2009 10:32:58 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Folder for Htmlgallery JavaScript]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/resources/components/galleries/js/htmlgallery/htmlgalleryfunctions.js</destination>
-            <type>plain</type>
-            <uuidstructure>bc1331e4-49e0-11de-b9be-350e680a0242</uuidstructure>
-            <uuidresource>2a1bcb22-49e0-11de-b9be-350e680a0242</uuidresource>
-            <datecreated>Tue, 26 May 2009 10:29:59 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Download functions]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
             <destination>system/workplace/resources/components/galleries/js/imagegallery</destination>
             <type>folder</type>
             <uuidstructure>1ddecbad-235b-11de-8ba2-a75c4a166a24</uuidstructure>
@@ -3370,37 +2776,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <uuidstructure>f993eccd-451e-11de-80e1-350e680a0242</uuidstructure>
             <uuidresource>f993ecce-451e-11de-80e1-350e680a0242</uuidresource>
             <datecreated>Wed, 20 May 2009 09:17:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Download functions]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/resources/components/galleries/js/tablegallery</destination>
-            <type>folder</type>
-            <uuidstructure>c76d7ee3-4b67-11de-850a-350e680a0242</uuidstructure>
-            <datecreated>Thu, 28 May 2009 09:13:16 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Folder for Tablegallery JavaScript]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <destination>system/workplace/resources/components/galleries/js/tablegallery/tablegalleryfunctions.js</destination>
-            <type>plain</type>
-            <uuidstructure>ed873806-4b67-11de-850a-350e680a0242</uuidstructure>
-            <uuidresource>b8f48251-4b67-11de-850a-350e680a0242</uuidresource>
-            <datecreated>Thu, 28 May 2009 09:12:52 GMT</datecreated>
             <flags>0</flags>
             <properties>
                 <property>
@@ -6928,27 +6303,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <accesscontrol />
         </file>
         <file>
-            <source>system/workplace/commons/newcsvfile_upload.jsp</source>
-            <destination>system/workplace/commons/newcsvfile_upload.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>c8809984-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-            <uuidresource>4c2f3576-ab3c-11d9-a93e-c958787aaa00</uuidresource>
-            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Dialog - New CSV file upload]]></value>
-                </property>
-                <property>
-                    <name>export</name>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
             <source>system/workplace/commons/openadvancedgallery.jsp</source>
             <destination>system/workplace/commons/openadvancedgallery.jsp</destination>
             <type>jsp</type>
@@ -7524,23 +6878,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <accesscontrol />
         </file>
         <file>
-            <source>system/workplace/resources/buttons/htmlgallery.png</source>
-            <destination>system/workplace/resources/buttons/htmlgallery.png</destination>
-            <type>image</type>
-            <uuidstructure>82d6e439-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-            <uuidresource>c49f9931-dd86-11d9-9663-016dc05e1977</uuidresource>
-            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property type="shared">
-                    <name>image.size</name>
-                    <value><![CDATA[w:20,h:20]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
             <source>system/workplace/resources/buttons/imagegallery.png</source>
             <destination>system/workplace/resources/buttons/imagegallery.png</destination>
             <type>image</type>
@@ -7869,23 +7206,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <type>image</type>
             <uuidstructure>83128de5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
             <uuidresource>93aa44c8-dd72-11d9-970b-016dc05e1977</uuidresource>
-            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property type="shared">
-                    <name>image.size</name>
-                    <value><![CDATA[w:20,h:20]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/resources/buttons/tablegallery.png</source>
-            <destination>system/workplace/resources/buttons/tablegallery.png</destination>
-            <type>image</type>
-            <uuidstructure>82d9553c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-            <uuidresource>c4e15c69-dd86-11d9-9663-016dc05e1977</uuidresource>
             <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
             <flags>0</flags>
             <properties>
@@ -8512,23 +7832,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
             <accesscontrol />
         </file>
         <file>
-            <source>system/workplace/resources/components/widgets/htmlgallery.js</source>
-            <destination>system/workplace/resources/components/widgets/htmlgallery.js</destination>
-            <type>plain</type>
-            <uuidstructure>83bbc5d6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-            <uuidresource>a100bc67-4abb-11d9-8f03-e9c35273ab48</uuidresource>
-            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[JS to open html gallery]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
             <source>system/workplace/resources/components/widgets/imagegallery.js</source>
             <destination>system/workplace/resources/components/widgets/imagegallery.js</destination>
             <type>plain</type>
@@ -8608,23 +7911,6 @@ chacc '/system/workplace/views/' 'ROLE' 'WORKPLACE_USER' '+I+O+R+V']]></import-s
                 <property>
                     <name>Title</name>
                     <value><![CDATA[JS to open Principal selector]]></value>
-                </property>
-            </properties>
-            <relations />
-            <accesscontrol />
-        </file>
-        <file>
-            <source>system/workplace/resources/components/widgets/tablegallery.js</source>
-            <destination>system/workplace/resources/components/widgets/tablegallery.js</destination>
-            <type>plain</type>
-            <uuidstructure>83c562d5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-            <uuidresource>c08c2603-ad71-11d9-b7eb-c958787aaa00</uuidresource>
-            <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[JS to open table gallery]]></value>
                 </property>
             </properties>
             <relations />

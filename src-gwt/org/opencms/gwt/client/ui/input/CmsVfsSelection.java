@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.shared.CmsLinkBean;
@@ -108,26 +109,11 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
     /** The file link mode of this widget. */
     public static final String FILE_LINK = "file_link";
 
-    /** The group select mode of this widget. */
-    public static final String GROUP = "group";
-
-    /** The HTML mode of this widget. */
-    public static final String HTML = "html";
-
     /** The image link mode of this widget. */
     public static final String IMAGE_LINK = "image_link";
 
     /** The link mode of this widget. */
     public static final String LINK = "link";
-
-    /** The OrgUnit mode of this widget. */
-    public static final String ORGUNIT = "orgunit";
-
-    /** The principal mode of this widget. */
-    public static final String PRINCIPAL = "principal";
-
-    /** The table mode of this widget. */
-    public static final String TABLE = "table";
 
     /** A counter used for giving text box widgets ids. */
     private static int idCounter;
@@ -418,28 +404,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
     protected String buildGalleryUrl() {
 
         String basePath = "";
-        if (m_type.equals(LINK)
-            || m_type.equals(HTML)
-            || m_type.equals(TABLE)
-            || m_type.equals(PRINCIPAL)
-            || m_type.equals(GROUP)) {
-            if (m_type.equals(LINK)) {
-                basePath = "/system/workplace/galleries/linkgallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
-            } else if (m_type.equals(HTML)) {
-                basePath = "/system/workplace/galleries/htmlgallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
-            } else if (m_type.equals(TABLE)) {
-                basePath = "/system/workplace/galleries/tablegallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
-            } else if (m_type.equals(PRINCIPAL)) {
-                basePath = "/system/workplace/commons/principal_selection.jsp?dialogmode=widget&useparent=true&fieldid="
-                    + m_id;
-            } else if (m_type.equals(GROUP)) {
-                basePath = "/system/workplace/commons/group_selection.jsp?type=groupwidget&fieldid=" + m_id;
-            } else {
-                basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
-            }
-        } else {
-            basePath = "/system/workplace/commons/gallery.jsp";
-            basePath += "?dialogmode=widget&fieldid=" + m_id;
+        basePath = "/system/workplace/commons/gallery.jsp";
+        basePath += "?dialogmode=widget&fieldid=" + m_id;
+        if (LINK.equals(m_type)) {
+            basePath += "&" + I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES + "=pointer";
         }
 
         String pathparameter = m_selectionInput.m_textbox.getText();
@@ -447,8 +415,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
             basePath += "&currentelement=" + pathparameter;
         }
         basePath += m_config;
-
-        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary
         return CmsCoreProvider.get().link(basePath);
     }
 
@@ -495,22 +461,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
             m_popup.setModal(false);
             m_popup.setId(m_id);
             m_popup.setWidth(717);
-
-            if (m_type.equals(DOWNLOAD)) {
-                m_popup.getFrame().setSize("705px", "640px");
-            } else if (m_type.equals(HTML)) {
-                m_popup.getFrame().setSize("705px", "640px");
-            } else if (m_type.equals(LINK)) {
-                m_popup.getFrame().setSize("705px", "640px");
-            } else if (m_type.equals(TABLE)) {
-                m_popup.getFrame().setSize("705px", "640px");
-            } else if (m_type.equals(PRINCIPAL)) {
-                exportSetPrincipalFunction();
-                m_popup.getFrame().setSize("705px", "320px");
-            } else {
-                m_popup.getFrame().setSize("705px", "485px");
-            }
-
+            m_popup.getFrame().setSize("705px", "640px");
             m_popup.addDialogClose(new Command() {
 
                 public void execute() {
@@ -533,10 +484,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
      * Exporting the set principal function to the window scope.<p>
      */
     private native void exportSetPrincipalFunction()/*-{
-        var self = this;
-        $wnd.setPrincipalFormValue = function(typeFlag, principal) {
-            self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
-            self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
-        }
+		var self = this;
+		$wnd.setPrincipalFormValue = function(typeFlag, principal) {
+			self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
+			self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
+		}
     }-*/;
 }

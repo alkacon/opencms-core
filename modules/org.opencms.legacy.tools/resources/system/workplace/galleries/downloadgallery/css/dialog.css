@@ -345,14 +345,6 @@ input.showborder, select.showborder {
 	background-image: url("../../../buttons/linkgallery.png");
 }
 
-#opengallerybutton.htmlgallery {
-	background-image: url("../../../buttons/htmlgallery.png");
-}
-
-#opengallerybutton.tablegallery {
-	background-image: url("../../../buttons/tablegallery.png");
-}
-
 #opencategorybutton {
 	background-repeat: no-repeat;
 	background-image: url("../../../buttons/folder.png");

@@ -32,10 +32,8 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsRegexSubstitution;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
-import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
 import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
-import org.opencms.workplace.galleries.CmsAjaxTableGallery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +96,7 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;pastetext;-;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
         + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
-        + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
+        + "[;imagegallery;downloadgallery;linkgallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
         // additional buttons from TinyMCE
         + "[;abbr;absolute;acronym;advhr;attribs;backcolor;blockquote;cite;cleanup;del;emotions;fontselect;fontsizeselect;forecolor;hr"
         + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;rtl"
@@ -327,9 +325,7 @@ public class CmsHtmlWidgetOption {
         OPTION_VISUALCHARS,
         CmsAjaxImageGallery.GALLERYTYPE_NAME,
         CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
-        CmsAjaxHtmlGallery.GALLERYTYPE_NAME,
-        CmsAjaxLinkGallery.GALLERYTYPE_NAME,
-        CmsAjaxTableGallery.GALLERYTYPE_NAME};
+        CmsAjaxLinkGallery.GALLERYTYPE_NAME};
 
     /** The optional buttons that can be additionally added to the button bar as list. */
     public static final List<String> OPTIONAL_BUTTONS_LIST = Arrays.asList(OPTIONAL_BUTTONS);

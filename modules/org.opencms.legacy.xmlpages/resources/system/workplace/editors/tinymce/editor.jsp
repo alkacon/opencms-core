@@ -150,14 +150,6 @@ if (options.showElement("gallery.link", displayOptions)) {
 	grp.append(",OcmsLinkGallery");
 }
 
-if (options.showElement("gallery.html", displayOptions)) {
-	grp.append(",OcmsHtmlGallery");
-}
-
-if (options.showElement("gallery.table", displayOptions)) {
-	grp.append(",OcmsTableGallery");
-}
-
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }

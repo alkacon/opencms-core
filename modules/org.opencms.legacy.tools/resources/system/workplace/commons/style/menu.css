@@ -1140,14 +1140,6 @@ body.dialogadmin {
 	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/;
 }
 
-.xmlHtmlGallery {
-	overflow: auto;
-	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/;<%
-	if (style == NEW_ADMIN) { %>
-	margin: 0;
-	padding: 0;<% } %>
-}
-
 .xmlButtons {
 	color: /*begin-color WindowText*/#000000/*end-color*/; 
 	position: absolute; 

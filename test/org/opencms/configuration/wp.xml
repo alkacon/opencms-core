@@ -813,19 +813,6 @@
 					uri="newresource.jsp?newresourcetype=linkgallery" order="30"
 					autosetnavigation="false" autosettitle="false" />
 			</explorertype>
-			<explorertype name="htmlgallery" key="fileicon.htmlgallery"
-				icon="htmlgallery.gif" reference="downloadgallery">
-				<newresource page="extendedfolder"
-					uri="newresource.jsp?newresourcetype=htmlgallery" order="40"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="tablegallery"
-				key="fileicon.tablegallery" icon="tablegallery.gif"
-				reference="downloadgallery">
-				<newresource page="extendedfolder"
-					uri="newresource.jsp?newresourcetype=tablegallery" order="50"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent"
 				icon="xmlcontent.gif">
 				<newresource page="structurecontent"

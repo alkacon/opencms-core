@@ -33,7 +33,6 @@ var titleMaxLength = 40;
 
 /* this flag is to be set in the appropriate gallery to "true" */
 var isLinkGallery = false;
-var isTableGallery = false;
 var isImageGallery = false;
 
 /* Stores the hide image info timeout to interrupt it on a mouseover. */
@@ -317,20 +316,6 @@ function selectGallery(vfsPath, galleryIndex) {
 		newLink += vfsPath;
 		newLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
 		$("#gallerynewlink").attr("href", newLink);
-	} else if (isTableGallery == true) {
-		// fill required data in upload link
-		var uploadLink = "upload.jsp?gallery=";
-		uploadLink += vfsPath;
-		if ( uploadVariant == 'gwt' ) {
-			$("#galleryuploadbutton").removeAttr('onclick');
-			$("#galleryuploadbutton").click(function() {
-				cms_ade_openUploadDialog(vfsPath);
-				return false;
-			});
-		} else {
-			uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
-			$("#galleryitemuploadlink").attr("href", uploadLink);
-		}
 	} else {
 		// fill required data in upload link
 		var uploadLink = "../galleryelements/upload.jsp?gallery=";

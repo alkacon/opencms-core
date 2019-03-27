@@ -197,16 +197,6 @@
 				<newresource noncreatable="false" order="30"
 					autosetnavigation="false" autosettitle="false" />
 			</explorertype>
-			<explorertype name="htmlgallery" key="fileicon.htmlgallery"
-				icon="htmlgallery.gif" reference="downloadgallery">
-				<newresource noncreatable="false" order="40"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="tablegallery" key="fileicon.tablegallery"
-				icon="tablegallery.gif" reference="downloadgallery">
-				<newresource noncreatable="false" order="50"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent"
 				icon="xmlcontent.gif">
 				<newresource noncreatable="false" order="500"
@@ -321,10 +311,8 @@
 				<preference name="editor.xmlcontent" value="bestavailable" />
 				<preference name="editor.xmlpage" value="bestavailable" />
 				<preference name="gallery.linkgallery" />
-				<preference name="gallery.tablegallery" />
 				<preference name="gallery.imagegallery" />
 				<preference name="gallery.downloadgallery" />
-				<preference name="gallery.htmlgallery" />
 			</preference-tab>
 			<preference-tab name="hidden">
 				<preference name="workplaceButtonStyle" value="textimage" />

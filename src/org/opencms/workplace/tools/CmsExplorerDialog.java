@@ -48,6 +48,13 @@ public class CmsExplorerDialog extends CmsDialog {
     /** List of explorer tools. */
     public static final List<String> EXPLORER_TOOLS = new ArrayList<String>();
 
+    /* fill the explorer tools list, do not forget to add the message bundle also */
+    static {
+        EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
+        EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
+        EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
+    }
+
     /**
      * Public constructor with JSP action element.<p>
      *
@@ -69,15 +76,6 @@ public class CmsExplorerDialog extends CmsDialog {
     public CmsExplorerDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /* fill the explorer tools list, do not forget to add the message bundle also */
-    static {
-        EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
-        EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
-        EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
-        EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
-        EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
     }
 
     /**

@@ -44,16 +44,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_REASON_NO_DOWNLOADGALLERY_0 = "ERR_REASON_NO_DOWNLOADGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_REASON_NO_HTMLGALLERY_0 = "ERR_REASON_NO_HTMLGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_REASON_NO_IMAGEGALLERY_0 = "ERR_REASON_NO_IMAGEGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REASON_NO_LINKGALLERY_0 = "ERR_REASON_NO_LINKGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_REASON_NO_TABLEGALLERY_0 = "ERR_REASON_NO_TABLEGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_PASTE_0 = "GUI_BUTTON_PASTE_0";
@@ -192,12 +186,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_TAB_PREVIEW_0 = "GUI_GALLERY_TAB_PREVIEW_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLGALLERY_EDITOR_TITLE_0 = "GUI_HTMLGALLERY_EDITOR_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLGALLERY_EDITOR_TOOLTIP_0 = "GUI_HTMLGALLERY_EDITOR_TOOLTIP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEGALLERY_CROP_HEADLINE_0 = "GUI_IMAGEGALLERY_CROP_HEADLINE_0";
@@ -444,19 +432,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0 = "GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TABLEGALLERY_EDITOR_TITLE_0 = "GUI_TABLEGALLERY_EDITOR_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TABLEGALLERY_EDITOR_TOOLTIP_0 = "GUI_TABLEGALLERY_EDITOR_TOOLTIP_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_DELETE_0 = "GUI_TITLE_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_DOWNLOADGALLERY_0 = "GUI_TITLE_DOWNLOADGALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TITLE_HTMLGALLERY_0 = "GUI_TITLE_HTMLGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_IMAGEGALLERY_0 = "GUI_TITLE_IMAGEGALLERY_0";
@@ -466,9 +445,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_NEW_0 = "GUI_TITLE_NEW_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TITLE_TABLEGALLERY_0 = "GUI_TITLE_TABLEGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_GALLERY_INSTANCE_FAILED_2 = "LOG_CREATE_GALLERY_INSTANCE_FAILED_2";
@@ -517,8 +493,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**
      * Convert gallery name to not found error  key.
-     * @param gallery gallery name for example "htmlgallery"
-     * @return key as string "ERR_REASON_NO_HTMLGALLERY_0"
+     * @param gallery gallery name for example "downloadgallery"
+     * @return key as string "ERR_REASON_NO_DOWNLOADGALLERY_0"
      */
     public static String getGalleryNotFoundKey(String gallery) {
 
@@ -530,8 +506,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**
      * Convert gallery name to title key.
-     * @param gallery gallery name for example "htmlgallery"
-     * @return key as string "GUI_TITLE_HTMLGALLERY_0"
+     * @param gallery gallery name for example "downloadgallery"
+     * @return key as string "ERR_REASON_NO_DOWNLOADGALLERY_0"
      */
     public static String getTitleGalleryKey(String gallery) {
 

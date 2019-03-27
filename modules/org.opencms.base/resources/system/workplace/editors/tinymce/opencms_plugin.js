@@ -361,16 +361,6 @@ function createLink(linkInformation) {
    editor.execCommand('mceInsertLink', false, attributes);
 }
 
-//create the path to the HTML gallery dialog with some request parameters for the dialog
-function htmlGalleryDialogUrl() {
-   var resParam = "";
-   var editFrame = findFrame(self, "edit");
-   resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + getEditResource(); 
-   var integratorUri = "/system/workplace/editors/tinymce/htmlgallery_integrator.js";
-   var integratorParam = "&integrator="+integratorUri; 
-   return "<%= cms.link("/system/workplace/galleries/htmlgallery/index.jsp") %>?dialogmode=editor" + resParam +integratorParam;
-}
-
 // set it in window, because this is used from the link selection dialog 
 window.createLink = createLink; 
 
@@ -412,13 +402,6 @@ tinymce.create('tinymce.opencms', {
       
       ed.addCommand("cmsLink", function() {
          openLinkDialog("<%= CmsEncoder.encodeJavaEntities(OpenCms.getWorkplaceManager().getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0), encoding) %>");
-      });
-      
-      ed.addCommand("cmsHtmlGallery", function() {
-         var width = 685;
-         var height = 610;
-         var url = htmlGalleryDialogUrl();
-         ed.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
       });
       
       ed.addCommand("cmsLinkGallery", function() {

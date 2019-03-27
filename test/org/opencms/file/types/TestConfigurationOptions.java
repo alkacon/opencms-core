@@ -101,10 +101,10 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing 'copy resources' on resource creation");
 
-        // create a new type "11", default tests have this configured as "link gallery" folder
+        // create a new type "10", default tests have this configured as "link gallery" folder
         String resourcename = "/newlinkgallery/";
 
-        cms.createResource(resourcename, 11);
+        cms.createResource(resourcename, 10);
 
         List subResources = cms.readResources(resourcename, CmsResourceFilter.ALL);
         assertTrue(subResources.size() > 15);

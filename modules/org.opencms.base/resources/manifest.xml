@@ -131,7 +131,6 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<resource uri="/system/workplace/editors/tinymce/base_content.css"/>
 			<resource uri="/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"/>
 			<resource uri="/system/workplace/editors/tinymce/filebrowser_integrator.js"/>
-			<resource uri="/system/workplace/editors/tinymce/htmlgallery_integrator.js"/>
 			<resource uri="/system/workplace/editors/tinymce/image_popup.html"/>
 			<resource uri="/system/workplace/editors/tinymce/integrator.js"/>
 			<resource uri="/system/workplace/editors/tinymce/linkgallery_integrator.js"/>
@@ -2982,23 +2981,6 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<type>jsp</type>
 			<uuidstructure>a66c86e0-d1d1-46c4-9e6c-691898eb79e1</uuidstructure>
 			<uuidresource>a66c86e1-d1d1-46c4-9e6c-691898eb79e1</uuidresource>
-			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/tinymce/htmlgallery_integrator.js</source>
-			<destination>system/workplace/editors/tinymce/htmlgallery_integrator.js</destination>
-			<type>jsp</type>
-			<uuidstructure>45b5acf2-f3ee-4246-bc81-b0f659721e7f</uuidstructure>
-			<uuidresource>45b5acf3-f3ee-4246-bc81-b0f659721e7f</uuidresource>
 			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
 			<flags>0</flags>
 			<properties>
