@@ -2,16 +2,21 @@
 <transforms>
       <transform config="opencms-search.xml" xslt="disableSolr.xslt" />
       <transform config="opencms-vfs.xml" xslt="replaceResourceTypes.xslt" />
+      <transform config="opencms-vfs.xml" xslt="replaceResourceLoader.xslt" />
       <transform config="opencms-workplace.xml" xslt="replaceExplorerTypes.xslt" />
       <transform config="opencms-variables.xml" xslt="extractVariables.xslt" />
       <transform config="opencms-sites.xml" xslt="extractSites.xslt" />
       <transform config="opencms-scheduler.xml" xslt="extractScheduler.xslt" />
       <transform config="opencms-system.xml" xslt="removeOldSystemEntries.xslt" />
-      <transform config="opencms-modules.xml" xslt="removeRussianI18NLib.xslt" />
+      <transform config="opencms-system.xml" xslt="addRequestHandler.xslt" />
+      <transform config="opencms-search.xml" xslt="removeOldSearch.xslt"/>
+      <transform config="opencms-modules.xml" xslt="removeModuleExportPoints.xslt" />
       <transform config="opencms-importexport.xml" xslt="updateImmutables.xslt" />
       <transform config="opencms-vfs.xml" xslt="updateWidgetFormat.xslt" />
       <transform config="opencms-vfs.xml" xslt="addSchemaTypes.xslt" />
       <transform config="opencms-vfs.xml" xslt="addWidgets.xslt" />
       <transform config="opencms-workplace.xml" xslt="updateStartViewPref.xslt" />
       <transform config="opencms-workplace.xml" xslt="removeOldWorkplaceEntries.xslt" />
+      <transform config="opencms-importexport.xml" xslt="replaceImportVersions.xslt" />
+
 </transforms>

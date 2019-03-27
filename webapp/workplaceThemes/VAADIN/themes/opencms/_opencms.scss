@@ -1020,6 +1020,11 @@
 			color: $orange;
 			font-size: 36px;
 		}
+		.o-ok-icon{
+			padding-left: 12px;
+			color: $green;
+			font-size: 36px;
+		}
 		.o-error-message {
 			white-space: normal;
 		}
@@ -1391,18 +1396,18 @@
 			}
 		}
 	}
-	
-	
-	.o-setuptest-green { 
-		color: $green; 
+
+
+	.o-setuptest-green {
+		color: $green;
 	}
-	
-	.o-setuptest-red { 
-		color: $alkacon-red; 
+
+	.o-setuptest-red {
+		color: $alkacon-red;
 	}
-	
-	.o-setuptest-yellow { 
-		color: $orange; 
+
+	.o-setuptest-yellow {
+		color: $orange;
 	}
 	
 	.o-logo-alkacon { 

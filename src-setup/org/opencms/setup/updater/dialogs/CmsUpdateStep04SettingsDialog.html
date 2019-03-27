@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+	  <o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout margin="false" spacing="true">
+  					<v-panel>
+  					<vaadin7-horizontal-layout height="70px" width="100%" style-name="o-error-dialog">
+						<vaadin7-label width="60px" _id="m_icon" style-name="o-warning-icon" :middle />
+						<vaadin7-label _id="m_errorMessage" :expand style-name="o-error-message" :middle>Make sure you have administration permissions to update your system.</vaadin7-label>
+					</vaadin7-horizontal-layout>
+  					</v-panel>
+  					<v-panel caption="Settings">
+  						<v-vertical-layout margin="true">
+  							<v-form-layout>
+  								<vaadin7-text-field _id="m_adminUser" caption="Admin User" width="100%" description="The Admin User to use during the update process.
+
+The specified user must be a valid user in your current installation and have administration permissions. This user information is not stored after the update is finished."/>
+								<vaadin7-password-field _id="m_adminPassword" width="100%" caption="Admin password" description="Enter the right password for the given Admin User." />
+  								<vaadin7-text-field _id="m_siteRoot" width="100%" caption="Update Site" description="Enter the site to use during the update of the system modules.
+If you are updating documentation modules, please use the same site where the old documentation modules are installed.
+If not you can use the root '/' site."/>
+								<vaadin7-text-field _id="m_appRoot" width="100%" enabled="false" caption="OpenCms Application rootpath"/>
+
+  								<vaadin7-text-field _id="m_configFolder" width="100%" enabled="false" caption="OpenCms Configuration folder"/>
+
+  							</v-form-layout>
+  						</v-vertical-layout>
+  					</v-panel>
+					<v-panel>
+						<v-vertical-layout>
+					  		<vaadin7-horizontal-layout _id="m_beforeRun" height="70px" width="100%" style-name="o-error-dialog">
+								<vaadin7-label width="60px" _id="m_icon0" style-name="o-warning-icon" :middle />
+								<vaadin7-label  :expand style-name="o-error-message" :middle>By clicking the continue button, the xml configurations will be transformed.</vaadin7-label>
+							</vaadin7-horizontal-layout>
+						</v-vertical-layout>
+					</v-panel>
+	  			</v-vertical-layout>
+  			</content>
+
+  		</o-cms-basic-dialog>
+  </body>
+</html>

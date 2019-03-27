@@ -107,7 +107,7 @@ configurations {
         transitive = false
         extendsFrom compile
     }
-    
+
     moduleDeps {
     	description = 'additional dependencies required by external modules'
     	transitive = false
@@ -762,7 +762,7 @@ allModuleNames.split(',').each{ moduleName ->
          	version moduleVersion
         }
         destinationDir modulesDistsDir
-        
+
         // excluding jars from modules, jars will be placed in the WEB-INF lib folder through the moduleDeps configuration
         from("${moduleFolder}/resources"){
         	exclude '**/lib*/*.jar'
@@ -989,7 +989,7 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
 	from ("${projectDir}/webapp"){
         // exclude the database drivers
         exclude '**/setupdata/**/*.jar'
-        exclude '**/update/**'
+        exclude '**/updatedata/**'
         exclude '**/workplaceThemes/**'
         exclude '**/classes/META-INF/**'
         exclude '**/solr/**'
@@ -1006,7 +1006,7 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
     }
 
     from ("${projectDir}/webapp"){
-        exclude '**/update/**'
+        exclude '**/updatedata/**'
         exclude '**/workplaceThemes/**'
         exclude '**/solr/**'
         exclude '**/spellcheck/**'
@@ -1070,7 +1070,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     Properties buildProps = new Properties()
     buildProps.load(new FileInputStream("${projectDir}/build-default.properties"))
     buildProps['updater.jars.remove'].split(',').each{ jar ->
-        from("${projectDir}/webapp/update/empty.jar"){
+        from("${projectDir}/webapp/WEB-INF/updatedata/empty.jar"){
             into '/WEB-INF/lib'
             rename('empty\\.jar', jar)
         }
@@ -1078,14 +1078,14 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
 
     // only process the text files with the ReplaceTokens filter, copy everything else in a second from clause
     from ("${projectDir}/webapp"){
-        include 'update/**/*.ori'
-        include 'update/**/*.html'
-        include 'update/**/*.xml'
-        include 'update/**/*.txt'
-        include 'update/**/*.jsp'
-        exclude 'update/config/opencms.xml'
-        exclude 'update/readme.txt'
-        exclude 'update/empty.jar'
+        include 'WEB-INF/updatedata/**/*.ori'
+        include 'WEB-INF/updatedata/**/*.html'
+        include 'WEB-INF/updatedata/**/*.xml'
+        include 'WEB-INF/updatedata/**/*.txt'
+        include 'WEB-INF/updatedata/**/*.jsp'
+        exclude 'WEB-INF/updatedata/config/opencms.xml'
+        exclude 'WEB-INF/updatedata/readme.txt'
+        exclude 'WEB-INF/updatedata/empty.jar'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
             OPENCMS_VERSION: product_name+' '+version,
@@ -1094,30 +1094,38 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     }
 
     from ("${projectDir}/webapp"){
-        include 'update/**'
-        exclude 'update/**/*.ori'
-        exclude 'update/**/*.html'
-        exclude 'update/**/*.xml'
-        exclude 'update/**/*.txt'
-        exclude 'update/**/*.jsp'
-        exclude 'update/config/opencms.xml'
-        exclude 'update/readme.txt'
-        exclude 'update/empty.jar'
+        include 'WEB-INF/updatedata/**'
+        exclude 'WEB-INF/updatedata/**/*.ori'
+        exclude 'WEB-INF/updatedata/**/*.html'
+        exclude 'WEB-INF/updatedata/**/*.xml'
+        exclude 'WEB-INF/updatedata/**/*.txt'
+        exclude 'WEB-INF/updatedata/**/*.jsp'
+        exclude 'WEB-INF/updatedata/config/opencms.xml'
+        exclude 'WEB-INF/updatedata/readme.txt'
+        exclude 'WEB-INF/updatedata/empty.jar'
     }
-    
+
     from ("${projectDir}/webapp/WEB-INF/classes/log4j2.xml") {
-		into '/WEB-INF/classes' 
-	}    	
-	
-	from ("${projectDir}/webapp/update/config/opencms.xml") {
+		into '/WEB-INF/classes'
+	}
+
+	from ("${projectDir}/webapp/WEB-INF/updatedata/config/opencms.xml") {
 		into '/WEB-INF/config'
 	}
-	
+
 	from("${projectDir}/webapp/WEB-INF/config/opencms-workplace.xml"){
             into '/WEB-INF/config/defaults'
     }
-    
+
     from("${projectDir}/webapp/WEB-INF/config/opencms-vfs.xml"){
+           into '/WEB-INF/config/defaults'
+    }
+
+    from("${projectDir}/webapp/WEB-INF/config/opencms-importexport.xml"){
+           into '/WEB-INF/config/defaults'
+    }
+
+    from("${projectDir}/webapp/WEB-INF/config/opencms-system.xml"){
            into '/WEB-INF/config/defaults'
     }
 
@@ -1127,7 +1135,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
         include '**/*'
     }
 
-    from ("${projectDir}/webapp/update/readme.txt"){
+    from ("${projectDir}/webapp/WEB-INF/updatedata/readme.txt"){
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
             OPENCMS_VERSION: product_name+' '+version
@@ -1174,7 +1182,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     }
 
     from (modulesDistsDir) {
-    	into '/update/modules'
+    	into '/WEB-INF/updatedata/modules'
     	localeModules.split(',').each{ localeModule ->
     		exclude "$localeModule-*.zip"
     	}

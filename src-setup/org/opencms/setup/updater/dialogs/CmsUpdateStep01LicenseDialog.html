@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+	  <o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout _id="m_mainLayout" spacing>
+  					<v-panel caption="License" height="500px" scrollable="true" :expand>
+  						<v-vertical-layout _id="m_licenseContainer" margin="true">
+  						</v-vertical-layout>
+  					</v-panel>
+  					<vaadin7-check-box _id="m_accept" caption="I accept all the terms of the preceeding license agreement" />
+
+	  			</v-vertical-layout>
+  			</content>
+  		</o-cms-basic-dialog>
+  </body>
+</html>

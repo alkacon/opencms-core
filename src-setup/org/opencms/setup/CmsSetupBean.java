@@ -245,7 +245,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private boolean m_autoMode;
 
     /** Contains all defined components. */
-    private CmsIdentifiableObjectContainer<CmsSetupComponent> m_components;
+    protected CmsIdentifiableObjectContainer<CmsSetupComponent> m_components;
 
     /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;

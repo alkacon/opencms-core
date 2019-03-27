@@ -167,6 +167,27 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <description>
+            Setup servlet.
+        </description>
+        <servlet-name>CmsUpdateServlet</servlet-name>
+        <servlet-class>org.opencms.setup.CmsUpdateServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.setup.CmsUpdateUI</param-value>
+        </init-param>
+        <init-param>
+            <description>Widget Set to Use</description>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.ui.WidgetSet</param-value>
+        </init-param>
+        <init-param>
+            <param-name>heartbeatInterval</param-name>
+            <param-value>60</param-value>
+        </init-param>
+    </servlet>
+
 
 
     <servlet>
@@ -255,6 +276,11 @@
     <servlet-mapping>
         <servlet-name>CmsSetupServlet</servlet-name>
         <url-pattern>/setup/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CmsUpdateServlet</servlet-name>
+        <url-pattern>/update/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

@@ -27,6 +27,7 @@
 
 package org.opencms.setup;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
@@ -53,6 +54,7 @@ import org.opencms.setup.xml.CmsXmlConfigUpdater;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
 import org.opencms.workplace.threads.CmsXmlContentRepairThread;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
@@ -91,9 +93,6 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The empty jar marker attribute key. */
     public static final String EMPTY_JAR_ATTRIBUTE_KEY = "OpenCms-empty-jar";
 
-    /** name of the update folder. */
-    public static final String FOLDER_UPDATE = "update" + File.separatorChar;
-
     /** The static log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
@@ -105,6 +104,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** replace pattern constant for the cms script. */
     private static final String C_ADMIN_USER = "@ADMIN_USER@";
+
+    /** Folder constant name.<p> */
+    public static final String FOLDER_UPDATE = "WEB-INF/updatedata" + File.separatorChar;
 
     /** replace pattern constant for the cms script. */
     private static final String C_UPDATE_PROJECT = "@UPDATE_PROJECT@";
@@ -433,6 +435,12 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         if (m_modulesToUpdate == null) {
             getUptodateModules();
+            m_components = new CmsIdentifiableObjectContainer<CmsSetupComponent>(true, true);
+            try {
+                addComponentsFromPath(m_webAppRfsPath + FOLDER_UPDATE);
+            } catch (CmsConfigurationException e) {
+                //
+            }
         }
         return m_modulesToUpdate;
     }
@@ -530,7 +538,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public File getXmlUpdateFolder() {
 
-        return new File(new File(getWebAppRfsPath()), "update/xmlupdate");
+        return new File(new File(getWebAppRfsPath()), "WEB-INF/updatedata/xmlupdate");
 
     }
 

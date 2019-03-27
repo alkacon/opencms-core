@@ -163,6 +163,9 @@ public class CmsXmlConfigUpdater {
         }
     };
 
+    /**Flag to indicate if transformation was done.*/
+    private boolean m_isDone = false;
+
     /** Directory for the config files. */
     private File m_configDir;
 
@@ -188,6 +191,16 @@ public class CmsXmlConfigUpdater {
         m_parserFactory.setNamespaceAware(true);
         m_parserFactory.setValidating(false);
         m_transformerFactory.setURIResolver(new EntityIgnoringUriResolver());
+    }
+
+    /**
+     * Checks if updater has tried to transform.<p>
+     *
+     * @return boolean
+     */
+    public boolean isDone() {
+
+        return m_isDone;
     }
 
     /**
@@ -219,6 +232,7 @@ public class CmsXmlConfigUpdater {
         for (TransformEntry entry : entries) {
             transform(entry.getConfigFile(), entry.getXslt());
         }
+        m_isDone = true;
     }
 
     /**

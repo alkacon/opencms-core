@@ -176,6 +176,31 @@ public class CmsUpdateDBManager {
         return html.toString();
     }
 
+    public String htmlPool(String pool, boolean hiddenInfo) {
+
+        if (hiddenInfo) {
+            try {
+                return htmlPool(pool);
+            } catch (Exception e) {
+                //
+            }
+        }
+        StringBuffer html = new StringBuffer(256);
+
+        html.append("<p>");
+        html.append(pool).append("</p><br>\n");
+        html.append("\t<div id='").append(pool);
+        html.append("\t\t<table border='0'>\n");
+        html.append("\t\t\t<tr><td>JDBC Driver:</td><td>" + getDbDriver(pool) + "</td></tr>\n");
+        html.append("\t\t\t<tr><td>JDBC Connection Url:</td><td>" + getDbUrl(pool) + "</td></tr>\n");
+        html.append("\t\t\t<tr><td>JDBC Connection Url Params:</td><td>" + getDbParams(pool) + "</td></tr>\n");
+        html.append("\t\t\t<tr><td>Database User:</td><td>" + getDbUser(pool) + "</td></tr>\n");
+        html.append("\t\t</table>\n");
+        html.append("\t</div>\n");
+
+        return html.toString();
+    }
+
     /**
      * Initializes the Update Manager object with the updateBean to get the database connection.<p>
      *
@@ -242,7 +267,7 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-        return true;
+        return currentVersion != m_detectedVersion;
     }
 
     /**
