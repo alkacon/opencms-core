@@ -87,7 +87,7 @@ public class A_CmsSetupStep extends CmsBasicDialog {
     }
 
     /**
-     * Reads an HTML snipped with the given name.
+     * Reads an HTML snippet with the given name.
      *
      * @return the HTML data
      */
