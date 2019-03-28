@@ -37,6 +37,7 @@ import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.apps.CmsEditorConfiguration;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -67,7 +68,7 @@ public class CmsFormEditDialogAction extends A_CmsWorkplaceAction {
             ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
         }
         CmsAppWorkplaceUi.get().showApp(
-            OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
+            OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsEditorConfiguration.APP_ID),
             CmsEditor.getEditState(
                 context.getResources().get(0).getStructureId(),
                 false,

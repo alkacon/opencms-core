@@ -76,10 +76,15 @@ import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.actions.CmsResourceInfoAction;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.CmsAppView;
+import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.apps.CmsEditorConfiguration;
 import org.opencms.ui.apps.CmsFileExplorer;
+import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.lists.CmsOptionDialog.I_OptionHandler;
@@ -129,6 +134,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
@@ -155,7 +161,8 @@ import com.vaadin.v7.ui.TextField;
  */
 @SuppressWarnings("deprecation")
 public class CmsListManager extends A_CmsWorkplaceApp
-implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener {
+implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener,
+I_CmsCachableApp {
 
     /**
      * Enum representing how selected categories should be combined in a search.<p>
@@ -182,6 +189,12 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         /** The categories. */
         private List<String> m_categories;
 
+        /** The category mode. */
+        private CategoryMode m_categoryMode;
+
+        /** The date restriction. */
+        private I_CmsListDateRestriction m_dateRestriction;
+
         /** The display types. */
         private List<String> m_dislayTypes;
 
@@ -190,12 +203,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
         /** Search parameters by configuration node name. */
         private Map<String, String> m_parameterFields;
-
-        /** The category mode. */
-        private CategoryMode m_categoryMode;
-
-        /** The date restriction. */
-        private I_CmsListDateRestriction m_dateRestriction;
 
         /**
          * Constructor.<p>
@@ -456,7 +463,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             List<CmsResource> resources) {
 
             super(appId, contextType, fileTable, resources);
-
         }
 
         /**
@@ -566,7 +572,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     }
 
     /**
-     * Overrides the standard delete action to enable use of edit handlers.<p>
+     * Overrides the standard edit action to enable use of edit handlers.<p>
      */
     class EditAction extends CmsEditDialogAction {
 
@@ -652,15 +658,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         }
     }
 
-    /** XML content node name. */
-    public static final String N_DATE_RESTRICTION = "DateRestriction";
-
-    /** Default backend pagination. */
-    private static final I_CmsSearchConfigurationPagination PAGINATION = new CmsSearchConfigurationPagination(
-        null,
-        Integer.valueOf(10000),
-        Integer.valueOf(1));
-
     /** SOLR field name. */
     public static final String FIELD_CATEGORIES = "category_exact";
 
@@ -681,6 +678,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** List configuration node name for the category mode. */
     public static final String N_CATEGORY_MODE = "CategoryMode";
+
+    /** XML content node name. */
+    public static final String N_DATE_RESTRICTION = "DateRestriction";
 
     /** List configuration node name and field key. */
     public static final String N_DISPLAY_TYPE = "TypesToCollect";
@@ -783,9 +783,6 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             Messages.GUI_LISTMANAGER_SORT_ORDER_ASC_0,
             Messages.GUI_LISTMANAGER_SORT_ORDER_DESC_0}};
 
-    /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsListManager.class.getName());
-
     /** The month name abbreviations. */
     static final String[] MONTHS = new String[] {
         "JAN",
@@ -800,6 +797,15 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
         "OCT",
         "NOV",
         "DEC"};
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsListManager.class.getName());
+
+    /** Default backend pagination. */
+    private static final I_CmsSearchConfigurationPagination PAGINATION = new CmsSearchConfigurationPagination(
+        null,
+        Integer.valueOf(10000),
+        Integer.valueOf(1));
 
     /** The serial version id. */
     private static final long serialVersionUID = -25954374225590319L;
@@ -818,6 +824,9 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
 
     /** The current search parser. */
     private CmsSimpleSearchConfigurationParser m_currentConfigParser;
+
+    /** The current app state. */
+    private String m_currentState;
 
     /** The current edit dialog window. */
     private Window m_dialogWindow;
@@ -1038,11 +1047,12 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     public I_CmsDialogContext getDialogContext() {
 
         CmsFileTable table = isOverView() ? m_overviewTable : m_resultTable;
+        List<CmsResource> resources = table.getSelectedResources();
         DialogContext context = new DialogContext(
             CmsProjectManagerConfiguration.APP_ID,
             ContextType.fileTable,
             table,
-            table.getSelectedResources());
+            resources);
         if (!isOverView()) {
             context.setSelectedItems(m_resultTable.getSelectedItems());
         }
@@ -1420,6 +1430,41 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCachableApp#isCachable()
+     */
+    public boolean isCachable() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCachableApp#onRestoreFromCache()
+     */
+    public void onRestoreFromCache() {
+
+        if (isOverView()) {
+            CmsFileExplorerSettings state = m_overviewTable.getTableSettings();
+            displayListConfigs();
+            m_overviewTable.setTableState(state);
+            m_overviewTable.updateSorting();
+        } else {
+            refreshResult();
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#onStateChange(java.lang.String)
+     */
+    @Override
+    public void onStateChange(String state) {
+
+        if ((m_currentState == null) || !m_currentState.equals(state)) {
+            m_currentState = state;
+            super.onStateChange(state);
+        }
+    }
+
+    /**
      * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
      */
     @Override
@@ -1706,6 +1751,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
             state,
             PARAM_LOCALE,
             m_currentConfigParser.getSearchLocale().toString());
+        m_currentState = state;
         CmsAppWorkplaceUi.get().changeCurrentAppState(state);
         if (m_isOverView) {
             enableOverviewMode(false);
@@ -1716,7 +1762,7 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     /**
      * Edits the given list configuration resource.<p>
      *
-     * @param resource the cofiguration resource
+     * @param resource the configuration resource
      */
     void editListConfiguration(CmsResource resource) {
 
@@ -1737,7 +1783,13 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
                     false,
                     UI.getCurrent().getPage().getLocation().toString());
             }
-            CmsAppWorkplaceUi.get().showApp(OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"), editState);
+            View view = CmsAppWorkplaceUi.get().getCurrentView();
+            if (view instanceof CmsAppView) {
+                ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
+            }
+            CmsAppWorkplaceUi.get().showApp(
+                OpenCms.getWorkplaceAppManager().getAppConfiguration(CmsEditorConfiguration.APP_ID),
+                editState);
 
         } catch (CmsLoaderException e) {
             CmsErrorDialog.showErrorDialog(e);
@@ -1925,10 +1977,13 @@ implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener,
     void refreshResult() {
 
         String itemId = m_resultTable.getCurrentPageFirstItemId();
+        CmsFileExplorerSettings state = m_resultTable.getTableSettings();
         search(
             m_resultFacets.getSelectedFieldFacets(),
             m_resultFacets.getSelectedRangeFactes(),
             m_textSearch.getValue());
+        m_resultTable.setTableState(state);
+        m_resultTable.updateSorting();
         m_resultTable.setCurrentPageFirstItemId(itemId);
     }
 
