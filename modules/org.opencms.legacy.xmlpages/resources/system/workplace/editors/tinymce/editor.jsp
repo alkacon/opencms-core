@@ -710,7 +710,7 @@ tinyMCE.init({
     plugins : plugins,
     importcss_append: true,
     contextmenu: contextmenu,
-    file_browser_callback : cmsTinyMceFileBrowser,
+    file_picker_callback : cmsTinyMceFileBrowser,
 	toolbar: toolbarButtons,
 	toolbar_items_size: 'small',
     menubar:false,
