@@ -29,6 +29,9 @@ package org.opencms.setup.comptest;
 
 import org.opencms.setup.CmsSetupBean;
 
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+
 /**
  * Tests the version of the JDK.<p>
  *
@@ -40,31 +43,19 @@ public class CmsSetupTestJdkVersion implements I_CmsSetupTest {
     public static final String TEST_NAME = "JDK Version";
 
     /**
-     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
-     */
-    public String getName() {
-
-        return TEST_NAME;
-    }
-
-    /**
      * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
     public CmsSetupTestResult execute(CmsSetupBean setupBean) {
 
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
 
-        String requiredJDK = "1.4.0";
-        String JDKVersion = System.getProperty("java.version");
-
-        testResult.setResult(JDKVersion);
-
-        boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
+        testResult.setResult(SystemUtils.JAVA_VERSION);
+        boolean supportedJDK = SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8);
 
         if (!supportedJDK) {
             testResult.setRed();
             testResult.setHelp(
-                "OpenCms requires at least Java version " + requiredJDK + " to run. Please update your JDK");
+                "OpenCms requires at least Java version " + JavaVersion.JAVA_1_8 + " to run. Please update your JDK");
         } else {
             testResult.setGreen();
         }
@@ -72,16 +63,11 @@ public class CmsSetupTestJdkVersion implements I_CmsSetupTest {
     }
 
     /**
-     * Checks if the used JDK is a higher version than the required JDK.<p>
-     *
-     * @param usedJDK The JDK version in use
-     * @param requiredJDK The required JDK version
-     *
-     * @return true if used JDK version is equal or higher than required JDK version, false otherwise
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
      */
-    private boolean compareJDKVersions(String usedJDK, String requiredJDK) {
+    public String getName() {
 
-        int compare = usedJDK.compareTo(requiredJDK);
-        return (!(compare < 0));
+        return TEST_NAME;
     }
+
 }
