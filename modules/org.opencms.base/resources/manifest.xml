@@ -130,10 +130,8 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<resource uri="/system/workplace/editors/codemirror/"/>
 			<resource uri="/system/workplace/editors/tinymce/base_content.css"/>
 			<resource uri="/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"/>
-			<resource uri="/system/workplace/editors/tinymce/filebrowser_integrator.js"/>
 			<resource uri="/system/workplace/editors/tinymce/image_popup.html"/>
 			<resource uri="/system/workplace/editors/tinymce/integrator.js"/>
-			<resource uri="/system/workplace/editors/tinymce/linkgallery_integrator.js"/>
 			<resource uri="/system/workplace/editors/tinymce/opencms_plugin.css"/>
 			<resource uri="/system/workplace/editors/tinymce/opencms_plugin.js"/>
 		</resources>
@@ -2976,23 +2974,6 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/tinymce/filebrowser_integrator.js</source>
-			<destination>system/workplace/editors/tinymce/filebrowser_integrator.js</destination>
-			<type>jsp</type>
-			<uuidstructure>a66c86e0-d1d1-46c4-9e6c-691898eb79e1</uuidstructure>
-			<uuidresource>a66c86e1-d1d1-46c4-9e6c-691898eb79e1</uuidresource>
-			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/editors/tinymce/image_popup.html</source>
 			<destination>system/workplace/editors/tinymce/image_popup.html</destination>
 			<type>jsp</type>
@@ -3021,23 +3002,6 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/tinymce/linkgallery_integrator.js</source>
-			<destination>system/workplace/editors/tinymce/linkgallery_integrator.js</destination>
-			<type>jsp</type>
-			<uuidstructure>4800fbde-7710-4d59-a878-8aad4be219a1</uuidstructure>
-			<uuidresource>4800fbdf-7710-4d59-a878-8aad4be219a1</uuidresource>
-			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
