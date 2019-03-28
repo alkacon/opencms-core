@@ -274,8 +274,12 @@ public class CmsEditResourceTypeDialog extends CmsBasicDialog {
         m_typeID.setValue(String.valueOf(m_type.getTypeId()));
         if (m_type instanceof CmsResourceTypeXmlContent) {
             CmsResourceTypeXmlContent typeXML = (CmsResourceTypeXmlContent)m_type;
-            m_schema.setValue(typeXML.getSchema());
-            m_schema.addValidator(new ResourceValidator());
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(typeXML.getSchema())) {
+                m_schema.setVisible(false);
+            } else {
+                m_schema.setValue(typeXML.getSchema());
+                m_schema.addValidator(new ResourceValidator());
+            }
         } else {
             m_schema.setVisible(false);
         }
