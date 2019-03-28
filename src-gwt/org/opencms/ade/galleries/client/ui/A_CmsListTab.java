@@ -480,12 +480,10 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     protected CmsPushButton createNewExternalLinkButton(final String parentPath) {
 
-        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(
+        final CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(
             CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
         CmsPushButton createNewButton = null;
         if (typeInfo != null) {
-            final String niceName = typeInfo.getTitle();
-            final String description = typeInfo.getDescription();
             createNewButton = new CmsPushButton(I_CmsButton.ADD_SMALL);
             createNewButton.setTitle(
                 org.opencms.gwt.client.Messages.get().key(
@@ -496,8 +494,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                 public void onClick(ClickEvent event) {
 
                     CmsEditExternalLinkDialog dialog = CmsEditExternalLinkDialog.showNewLinkDialog(
-                        niceName,
-                        description,
+                        typeInfo,
                         parentPath);
                     dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 

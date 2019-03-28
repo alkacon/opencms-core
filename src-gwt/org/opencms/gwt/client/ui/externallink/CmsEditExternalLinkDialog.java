@@ -41,7 +41,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -104,6 +106,25 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
     private String m_previousTitle;
 
     /**
+     * Constructor. Use to create new link resources.<p>
+     *
+     * @param typeInfo the 'pointer' type info
+     * @param parentFolderPath the parent folder path
+     */
+    private CmsEditExternalLinkDialog(CmsListInfoBean typeInfo, String parentFolderPath) {
+
+        this(Messages.get().key(Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
+        m_isCreateNew = true;
+        m_parentFolderPath = parentFolderPath;
+        CmsExternalLinkInfoBean linkInfo = new CmsExternalLinkInfoBean();
+        linkInfo.setTitle(typeInfo.getTitle());
+        linkInfo.setSubTitle(typeInfo.getSubTitle());
+        linkInfo.setResourceType(POINTER_RESOURCE_TYPE_NAME);
+        linkInfo.setBigIconClasses(typeInfo.getBigIconClasses());
+        initContent(linkInfo);
+    }
+
+    /**
      * Constructor.<p>
      *
      * @param structureId the structure id of the resource to edit
@@ -121,26 +142,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
      */
     private CmsEditExternalLinkDialog(String title) {
 
-        super(title);
-    }
-
-    /**
-     * Constructor. Use to create new link resources.<p>
-     *
-     * @param niceName the pointer resource nice name
-     * @param description the type description
-     * @param parentFolderPath the parent folder path
-     */
-    private CmsEditExternalLinkDialog(String niceName, String description, String parentFolderPath) {
-
-        this(Messages.get().key(Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
-        m_isCreateNew = true;
-        m_parentFolderPath = parentFolderPath;
-        CmsExternalLinkInfoBean linkInfo = new CmsExternalLinkInfoBean();
-        linkInfo.setTitle(niceName);
-        linkInfo.setSubTitle(description);
-        linkInfo.setResourceType(POINTER_RESOURCE_TYPE_NAME);
-        initContent(linkInfo);
+        super(title, CmsFormDialog.STANDARD_DIALOG_WIDTH);
     }
 
     /**
@@ -175,18 +177,14 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
     /**
      * Shows the create new link dialog.<p>
      *
-     * @param niceName the pointer type nice name
-     * @param description the pointer type description
+     * @param typeInfo the 'pointer' type info
      * @param parentFolderPath the parent folder site path
      *
      * @return the dialog object
      */
-    public static CmsEditExternalLinkDialog showNewLinkDialog(
-        String niceName,
-        String description,
-        String parentFolderPath) {
+    public static CmsEditExternalLinkDialog showNewLinkDialog(CmsListInfoBean typeInfo, String parentFolderPath) {
 
-        CmsEditExternalLinkDialog dialog = new CmsEditExternalLinkDialog(niceName, description, parentFolderPath);
+        CmsEditExternalLinkDialog dialog = new CmsEditExternalLinkDialog(typeInfo, parentFolderPath);
         dialog.center();
         return dialog;
     }
