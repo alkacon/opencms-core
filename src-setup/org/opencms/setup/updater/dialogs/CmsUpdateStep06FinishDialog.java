@@ -31,8 +31,9 @@ import org.opencms.setup.CmsUpdateUI;
 import org.opencms.ui.CmsVaadinUtils;
 
 import com.vaadin.server.FontAwesome;
-import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Finish dialog.<p>
@@ -44,6 +45,9 @@ public class CmsUpdateStep06FinishDialog extends A_CmsUpdateDialog {
 
     /**vaadin component. */
     private Label m_icon;
+
+    /**Container for the notes element. */
+    private VerticalLayout m_notesContainer;
 
     /**
      * @see org.opencms.setup.updater.dialogs.A_CmsUpdateDialog#init(org.opencms.setup.CmsUpdateUI)
@@ -58,6 +62,10 @@ public class CmsUpdateStep06FinishDialog extends A_CmsUpdateDialog {
         setCaption("Finished");
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontAwesome.CHECK_CIRCLE_O.getHtml());
+        String name = "browser_config.html";
+        Label label = htmlLabel(readSnippet(name));
+        label.setWidth("100%");
+        m_notesContainer.addComponent(label);
         return true;
     }
 

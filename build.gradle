@@ -1129,6 +1129,10 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
            into '/WEB-INF/config/defaults'
     }
 
+    from("${projectDir}/webapp/WEB-INF/config/opencms-search.xml"){
+           into '/WEB-INF/config/defaults'
+    }
+
     from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
         include '*'

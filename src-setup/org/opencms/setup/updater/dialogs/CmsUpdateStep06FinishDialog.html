@@ -11,10 +11,14 @@
   						<v-panel>
   							<vaadin7-vertical-layout>
   								<vaadin7-horizontal-layout height="70px" width="100%" style-name="o-error-dialog" _id="m_running">
-									<vaadin7-label width="60px" _id="m_icon" style-name="o-ok-icon" :middle />
-									<vaadin7-label  :expand style-name="o-error-message" :middle>The update wizard has finished!</vaadin7-label>
+									<v-label width="60px" _id="m_icon" style-name="o-ok-icon" :middle />
+									<v-label  :expand style-name="o-error-message" :middle>The update wizard has finished!</vaadin7-label>
 								</vaadin7-horizontal-layout>
   						</v-panel>
+  						<v-panel _id="m_htmlPanel" caption="Final notes" height="500px" scrollable="true" :expand>
+  						<v-vertical-layout margin="true" _id="m_notesContainer">
+  						</v-vertical-layout>
+  					</v-panel>
 	  			</v-vertical-layout>
   			</content>
   		</o-cms-basic-dialog>

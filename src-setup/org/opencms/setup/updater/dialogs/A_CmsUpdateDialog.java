@@ -114,6 +114,21 @@ public abstract class A_CmsUpdateDialog extends CmsBasicDialog {
 
         m_ui = ui;
 
+        if (hasPrev) {
+            m_back = getBackButton();
+            m_back.addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    ui.displayDialog(getPreviousDialog());
+                }
+
+            });
+            addButton(m_back, true);
+        }
+
         if (hasNext) {
             m_ok = getOkButton();
             m_ok.addClickListener(new ClickListener() {
@@ -130,22 +145,6 @@ public abstract class A_CmsUpdateDialog extends CmsBasicDialog {
             });
             addButton(m_ok, true);
         }
-
-        if (hasPrev) {
-            m_back = getBackButton();
-            m_back.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    ui.displayDialog(getPreviousDialog());
-                }
-
-            });
-            addButton(m_back, false);
-        }
-
     }
 
     /**

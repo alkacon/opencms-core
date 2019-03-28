@@ -49,4 +49,18 @@ Removes the sections from opencms-workplace.xml which are no longer used.
    <xsl:template match="@boost[parent::field]">
     </xsl:template>
 
+   <xsl:param name="opencmsSearch" select="document(concat($configDir, '/defaults/opencms-search.xml'))" />
+	<xsl:template match="analyzers">
+        <xsl:variable name="ws" select="." />
+        <analyzers>
+            <xsl:apply-templates />
+            <xsl:for-each select="$opencmsSearch//analyzer">
+                <xsl:variable name="cls" select="class" />
+                <xsl:if test="not($ws//analyzer//class=$cls)">
+                    <xsl:copy-of select="." />
+                </xsl:if>
+            </xsl:for-each>
+        </analyzers>
+    </xsl:template>
+
 </xsl:stylesheet>
