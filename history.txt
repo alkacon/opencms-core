@@ -15,8 +15,16 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 11.0.0
+OpenCms 11.0.0 release candidate - March 29, 2019
 - Components: Updated WYSIYWG editor TinyMCE to version 5.0.3.
+- Components: Updated SOLR/Lucene search enginge to version 8.0.0.
+- Components: Updated MySQL JDBC driver to version 8.0.15.
+- Workplace: Removed deprecated HTML and table galleries.
+- Configuration: Added option, to prevent specific resource types to be created in page editor.
+- Usability: Allowing Apple CMD key as modifier for keyboard shortcuts.
+- Fixed spell check index initialization.
+- Fixed spell check in WYSIWYG editor. 
+- Fixed legacy XML page editor initialization.
 
 OpenCms 11.0 beta 2 - February 28, 2019
 ! Workplace: Added bookmarks dialog for workplace locations.
