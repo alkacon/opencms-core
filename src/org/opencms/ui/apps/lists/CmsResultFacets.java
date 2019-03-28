@@ -59,10 +59,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -72,6 +72,9 @@ public class CmsResultFacets extends VerticalLayout {
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResultFacets.class.getName());
+
+    /** Style name indicating a facet is selected. */
+    private static final String SELECTED_STYLE = ValoTheme.LABEL_BOLD;
 
     /** The serial version id. */
     private static final long serialVersionUID = 7190928063356086124L;
@@ -97,6 +100,7 @@ public class CmsResultFacets extends VerticalLayout {
      * @param manager the list manager instance
      */
     public CmsResultFacets(CmsListManager manager) {
+
         m_manager = manager;
         m_selectedFieldFacets = new HashMap<String, List<String>>();
         m_selectedRangeFacets = new HashMap<String, List<String>>();
@@ -157,6 +161,27 @@ public class CmsResultFacets extends VerticalLayout {
     protected Map<String, List<String>> getSelectedRangeFactes() {
 
         return m_selectedRangeFacets;
+    }
+
+    /**
+     * Returns whether the given component is selected.<p>
+     *
+     * @param component the component
+     *
+     * @return <code>true</code> in case selected
+     */
+    boolean isSelected(Component component) {
+
+        return component.getStyleName().contains(SELECTED_STYLE);
+    }
+
+    /**
+     * Resets the selected facets and triggers a new search.<p>
+     */
+    void resetFacetsAndSearch() {
+
+        resetFacets();
+        m_manager.search(m_selectedFieldFacets, m_selectedRangeFacets);
     }
 
     /**
@@ -304,7 +329,7 @@ public class CmsResultFacets extends VerticalLayout {
                 cat.addStyleName(ValoTheme.BUTTON_BORDERLESS);
                 Boolean selected = facetController.getState().getIsChecked().get(value.getName());
                 if ((selected != null) && selected.booleanValue()) {
-                    cat.addStyleName(ValoTheme.LABEL_BOLD);
+                    cat.addStyleName(SELECTED_STYLE);
                 }
                 cat.addClickListener(new ClickListener() {
 
@@ -312,7 +337,11 @@ public class CmsResultFacets extends VerticalLayout {
 
                     public void buttonClick(ClickEvent event) {
 
-                        selectFieldFacet(CmsListManager.FIELD_CATEGORIES, value.getName());
+                        if (isSelected(event.getComponent())) {
+                            resetFacetsAndSearch();
+                        } else {
+                            selectFieldFacet(CmsListManager.FIELD_CATEGORIES, value.getName());
+                        }
                     }
                 });
                 catLayout.addComponent(cat);
@@ -362,7 +391,7 @@ public class CmsResultFacets extends VerticalLayout {
                 date.addStyleName(ValoTheme.BUTTON_BORDERLESS);
                 Boolean selected = facetController.getState().getIsChecked().get(value.getValue());
                 if ((selected != null) && selected.booleanValue()) {
-                    date.addStyleName(ValoTheme.LABEL_BOLD);
+                    date.addStyleName(SELECTED_STYLE);
                 }
                 date.addClickListener(new ClickListener() {
 
@@ -370,7 +399,11 @@ public class CmsResultFacets extends VerticalLayout {
 
                     public void buttonClick(ClickEvent event) {
 
-                        selectRangeFacet(CmsListManager.FIELD_DATE_FACET_NAME, value.getValue());
+                        if (isSelected(event.getComponent())) {
+                            resetFacetsAndSearch();
+                        } else {
+                            selectRangeFacet(CmsListManager.FIELD_DATE_FACET_NAME, value.getValue());
+                        }
                     }
                 });
                 int targetColumn;
@@ -414,7 +447,7 @@ public class CmsResultFacets extends VerticalLayout {
                 folder.addStyleName(ValoTheme.BUTTON_BORDERLESS);
                 Boolean selected = facetController.getState().getIsChecked().get(value.getName());
                 if ((selected != null) && selected.booleanValue()) {
-                    folder.addStyleName(ValoTheme.LABEL_BOLD);
+                    folder.addStyleName(SELECTED_STYLE);
                 }
                 folder.addClickListener(new ClickListener() {
 
@@ -422,7 +455,11 @@ public class CmsResultFacets extends VerticalLayout {
 
                     public void buttonClick(ClickEvent event) {
 
-                        selectFieldFacet(CmsListManager.FIELD_PARENT_FOLDERS, value.getName());
+                        if (isSelected(event.getComponent())) {
+                            resetFacetsAndSearch();
+                        } else {
+                            selectFieldFacet(CmsListManager.FIELD_PARENT_FOLDERS, value.getName());
+                        }
                     }
                 });
                 folderLayout.addComponent(folder);
