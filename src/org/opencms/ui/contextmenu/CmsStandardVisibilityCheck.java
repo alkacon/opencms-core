@@ -44,6 +44,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notinproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notpointer;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.otherlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pagefolder;
@@ -129,6 +130,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
         file,
+        notpointer,
         roleeditor,
         notonline,
         notdeleted,
@@ -254,6 +256,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
      * @param flags the flags indicating which checks to perform
      */
     public CmsStandardVisibilityCheck(CmsVisibilityCheckFlag... flags) {
+
         for (CmsVisibilityCheckFlag flag : flags) {
             m_flags.add(flag);
         }
@@ -352,6 +355,13 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 return VISIBILITY_INVISIBLE;
             }
 
+            if (flag(notpointer)
+                && OpenCms.getResourceManager().matchResourceType(
+                    CmsResourceTypePointer.getStaticTypeName(),
+                    resource.getTypeId())) {
+                return VISIBILITY_INVISIBLE;
+            }
+
             if (flag(replacable)) {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
                 boolean usesDumpLoader = type.getLoaderId() == CmsDumpLoader.RESOURCE_LOADER_ID;
@@ -365,6 +375,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 I_CmsResourceType type = resUtil.getResourceType();
                 boolean hasSourcecodeEditor = (type instanceof CmsResourceTypeXmlContent)
                     || (type instanceof CmsResourceTypeXmlPage)
+                    || (type instanceof CmsResourceTypePointer)
                     || OpenCms.getResourceManager().matchResourceType(
                         BundleType.PROPERTY.toString(),
                         resource.getTypeId());

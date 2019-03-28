@@ -76,6 +76,9 @@ public enum CmsVisibilityCheckFlag {
     /** Check that we are in an Offline project. */
     notonline,
 
+    /** Checks if resource is not a pointer. */
+    notpointer,
+
     /** Checks that the resource is a file which is not unchanged. */
     notunchangedfile,
 
