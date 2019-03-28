@@ -127,6 +127,7 @@ public class CmsImportView extends Composite {
 
                 fileInput.setAllowMultipleFiles(false);
                 fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
+                fileInput.getElement().getStyle().setProperty("minHeight", "200px");
                 fileInput.setName(I_CmsAliasConstants.PARAM_IMPORTFILE);
                 fileInput.addStyleName(
                     org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());

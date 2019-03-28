@@ -115,6 +115,7 @@ public class CmsSingleFileUploadHandler implements I_CmsUploadButtonHandler {
 
         // important to set font-size as inline style, as IE7 and IE8 will not accept it otherwise
         fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
+        fileInput.getElement().getStyle().setProperty("minHeight", "200px");
         fileInput.setAllowMultipleFiles(false);
         fileInput.setName("replace");
         fileInput.addStyleName(
