@@ -1190,8 +1190,8 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     	localeModules.split(',').each{ localeModule ->
     		exclude "$localeModule-*.zip"
     	}
-    	updater_excluded_modules.split(',').each{ excludedModule ->
-    		exclude "$excludedModule-*.zip"
+    	allExternalModuleNames.split(',').each{ externalModule ->
+    		exclude externalModule+'*.zip'
     	}
     }
 
@@ -1202,7 +1202,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
 
 }
 
-updater.dependsOn(tasks.matching{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))})
+updater.dependsOn(tasks.matching{dist_task -> dist_task.name.startsWith('dist_') && !(allExternalModuleNames.split(',').contains(dist_task.moduleName))})
 
 task bindist (dependsOn: war, type: Zip){
     baseName 'opencms'
