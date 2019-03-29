@@ -111,6 +111,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         /** The property saver. */
         private I_CmsPropertySaver m_propertySaver;
 
+        /** The restart command (used to open the property dialog again after closing e.g. the property definition dialog). */
+        private Runnable m_restart;
+
         /**
          * Returns true if the property definition button should be enabled.<p>
          *
@@ -137,6 +140,18 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                 public void onBeforeEditPropertyDefinition() {
 
                     m_formDialog.hide();
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onClosePropertyDefinitionDialog()
+                 */
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void onClosePropertyDefinitionDialog() {
+
+                    if (m_restart != null) {
+                        m_restart.run();
+                    }
                 }
             };
 
@@ -259,6 +274,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         public void setPropertySaver(I_CmsPropertySaver saver) {
 
             m_propertySaver = saver;
+        }
+
+        /**
+         * Sets the restart command (used to open the property dialog again after a secondary dialog).
+         *
+         * @param command the restart command
+         */
+        public void setRestart(Runnable command) {
+
+            m_restart = command;
         }
 
         /**
@@ -422,7 +447,20 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                 additionalLeftButtons.add(nextButton);
             }
 
+            m_editContext.setRestart(() -> {
+                WorkplacePropertyEditorContext context = new WorkplacePropertyEditorContext(
+                    m_structureId,
+                    contextMenuHandler,
+                    editName,
+                    cancelHandler,
+                    enableAdeTemplateSelect,
+                    new PropertyEditingContext(),
+                    prevFieldData);
+                context.editProperties();
+
+            });
             CmsPropertyDefinitionButton defButton = m_editContext.createPropertyDefinitionButton();
+
             FlowPanel leftButtonBox = new FlowPanel();
             String boxStyle = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().leftButtonBox();
             leftButtonBox.addStyleName(boxStyle);
@@ -438,11 +476,11 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             m_dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
+                /**
+                 * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+                 */
                 @SuppressWarnings("synthetic-access")
-                public void onClose(CloseEvent<PopupPanel> event) {
-
-                    m_contextMenuHandler.refreshResource(CmsUUID.getNullUUID());
-                }
+                public void onClose(CloseEvent<PopupPanel> event) {}
             });
 
         }
@@ -476,6 +514,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         }
 
         /**
+         * Gets the structure id.
+         *
+         * @return the structure id
+         */
+        public CmsUUID getStructureId() {
+
+            return m_structureId;
+        }
+
+        /**
          * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#isSubmitting()
          */
         public boolean isSubmitting() {
@@ -491,6 +539,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             if (ok) {
                 m_submitting = true;
                 if (!m_isPrevNext) {
+                    m_contextMenuHandler.refreshResource(CmsUUID.getNullUUID());
                     m_dialog.hide();
                 }
                 m_isPrevNext = false;
@@ -820,6 +869,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             enableAdeTemplateSelect,
             editContext,
             prevFieldData).editProperties();
+
     }
 
     /**
