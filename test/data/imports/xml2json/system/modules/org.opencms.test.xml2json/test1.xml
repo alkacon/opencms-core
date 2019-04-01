@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<XjParents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd">
+  <XjParent language="en">
+    <Text><![CDATA[text1]]></Text>
+    <OptText><![CDATA[text2]]></OptText>
+    <MultiText><![CDATA[test3]]></MultiText>
+    <MultiText><![CDATA[test4]]></MultiText>
+  </XjParent>
+</XjParents>

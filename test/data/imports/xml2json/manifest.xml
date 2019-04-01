@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Thu, 31 Jan 2008 18:14:37 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>10</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>efa7aa1c-d017-11dc-a010-d55d0ba2b9d3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.test.xml2json</destination>
+			<type>folder</type>
+			<uuidstructure>027a806e-5445-11e9-bde5-1b3402713b9c</uuidstructure>
+			<datecreated>Mon, 01 Apr 2019 06:11:38 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.test.xml2json/test1.xml</source>
+			<destination>system/modules/org.opencms.test.xml2json/test1.xml</destination>
+			<type>xjparent</type>
+			<uuidstructure>f6f75f72-544e-11e9-9af3-1b3402713b9c</uuidstructure>
+			<uuidresource>f6f75f73-544e-11e9-9af3-1b3402713b9c</uuidresource>
+			<datecreated>Mon, 01 Apr 2019 07:22:53 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.test.xml2json/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>0284e0b5-5445-11e9-bde5-1b3402713b9c</uuidstructure>
+			<datecreated>Mon, 01 Apr 2019 06:11:38 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.test.xml2json/schemas/child.xsd</source>
+			<destination>system/modules/org.opencms.test.xml2json/schemas/child.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>0baaaf7f-5446-11e9-bde5-1b3402713b9c</uuidstructure>
+			<uuidresource>0baaaf80-5446-11e9-bde5-1b3402713b9c</uuidresource>
+			<datecreated>Mon, 01 Apr 2019 06:19:03 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd</source>
+			<destination>system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>373bc03d-5445-11e9-bde5-1b3402713b9c</uuidstructure>
+			<uuidresource>373bc03e-5445-11e9-bde5-1b3402713b9c</uuidresource>
+			<datecreated>Mon, 01 Apr 2019 06:13:06 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
