@@ -21,6 +21,7 @@
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
+            <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardProperties" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
@@ -30,10 +31,12 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
+				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
 			</layouts>
 			<tabs>
 				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
 				<tab element="RemoveFormatters" name="TabFormatters" collapse="false" />
+				<tab element="Function" name="TabFunctions" collapse="false" description="%(key.label.SitemapConfiguration.TabFunctions.description)" />
 				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
 			</tabs>
 			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />

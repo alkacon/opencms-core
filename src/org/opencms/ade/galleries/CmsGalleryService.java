@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.CmsGalleryFilteredNavTreeBuilder.NavigationNode;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
@@ -99,11 +100,13 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -324,6 +327,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             return o1Path.compareTo(o2Path);
         }
     };
+
+    /** The dynamic function resource type names. */
+    private static final Set<String> FUNCTION_TYPES = new HashSet<>(
+        Arrays.asList(
+            new String[] {CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, CmsResourceTypeFunctionConfig.TYPE_NAME}));
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
@@ -2977,12 +2985,36 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObjBean.setResultCount(searchResults.getHitCount());
         searchObjBean.setPage(params.getResultPage());
         searchObjBean.setLastPage(params.getResultPage());
-        searchObjBean.setResults(buildSearchResultList(searchResults, null));
+
         if (searchObj.getGalleryMode().equals(GalleryMode.ade)) {
+            // in case searching for function types, results may need to be filtered
+            if (searchObj.getTypes().isEmpty() || !Collections.disjoint(FUNCTION_TYPES, searchObj.getTypes())) {
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                    searchCms,
+                    searchCms.getRequestContext().addSiteRoot(searchObj.getReferencePath()));
+                // in case a restricted set of functions is configured, remove all other functions
+                if (config.getDynamicFunctions() != null) {
+                    Iterator<CmsGallerySearchResult> it = searchResults.iterator();
+                    int removed = 0;
+                    while (it.hasNext()) {
+                        CmsGallerySearchResult result = it.next();
+                        CmsUUID id = new CmsUUID(result.getStructureId());
+                        if (FUNCTION_TYPES.contains(result.getResourceType())
+                            && !config.getDynamicFunctions().contains(id)) {
+                            it.remove();
+                            removed++;
+                        }
+                    }
+                    searchObjBean.setResultCount(searchResults.getHitCount() - removed);
+                }
+            }
+            searchObjBean.setResults(buildSearchResultList(searchResults, null));
             if (searchObjBean.getResultCount() > 0) {
                 CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
                 cache.setLastPageEditorGallerySearch(searchObj);
             }
+        } else {
+            searchObjBean.setResults(buildSearchResultList(searchResults, null));
         }
         updateNoUploadReason(searchCms, searchObjBean);
         return searchObjBean;

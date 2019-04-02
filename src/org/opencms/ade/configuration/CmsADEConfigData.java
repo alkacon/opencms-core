@@ -521,6 +521,16 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns the restricted dynamic functions or <code>null</code>.<p>
+     *
+     * @return the dynamic functions
+     */
+    public Collection<CmsUUID> getDynamicFunctions() {
+
+        return m_data.getDynamicFunctions();
+    }
+
+    /**
      * Returns the formatter change sets for this and all parent sitemaps, ordered by increasing folder depth of the sitemap.<p>
      *
      * @return the formatter change sets for all ancestor sitemaps

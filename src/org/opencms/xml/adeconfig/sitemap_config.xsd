@@ -24,6 +24,7 @@
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
+            <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardProperties" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
@@ -36,10 +37,12 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
+				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
 			</layouts>
 			<tabs>
 				<tab element="MasterConfig" name="TabResourceTypes" collapse="false" />
 				<tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
+				<tab element="Function" name="TabFunctions" collapse="false" description="%(key.label.SitemapConfiguration.TabFunctions.description)" />
 				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
 				<tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
 				<tab element="DetailPage" name="TabDetailPages" collapse="false" />

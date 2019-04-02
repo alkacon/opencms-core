@@ -63,6 +63,7 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -457,6 +458,17 @@ public class CmsConfigurationReader {
         if (masterConfig != null) {
             masterConfigResource = m_cms.readResource(masterConfig, CmsResourceFilter.IGNORE_EXPIRATION);
         }
+        Set<CmsUUID> functions = new LinkedHashSet<>();
+        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_FUNCTION)) {
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
+            CmsLink link = value.getLink(m_cms);
+            if (link != null) {
+                functions.add(link.getStructureId());
+            }
+        }
+        if (functions.isEmpty()) {
+            functions = null;
+        }
 
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
             content.getFile(),
@@ -473,7 +485,8 @@ public class CmsConfigurationReader {
             discardInheritedModelPages,
             createContentsLocally,
             preferDetailPagesForLocalContents,
-            formatterChangeSet);
+            formatterChangeSet,
+            functions);
         return result;
     }
 
