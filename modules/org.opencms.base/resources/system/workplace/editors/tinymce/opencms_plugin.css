@@ -5,5 +5,6 @@ body.opencms_dialog .tox-dialog__header, body.opencms_dialog .tox-dialog__footer
 body.opencms_dialog .tox-dialog, body.opencms_dialog .tox-dialog div{
 	border: none;
  	background: transparent;
+ 	overflow: visible;
  }
 
