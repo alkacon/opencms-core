@@ -28,5 +28,8 @@ Removes the sections from opencms-workplace.xml which are no longer used.
     <xsl:template match="workplace-customfoot">
     </xsl:template>
     
+    <xsl:template match="tool-manager/roots/root[uri/text()='/system/workplace/explorer/']">
+    </xsl:template>
+    
     
 </xsl:stylesheet>
