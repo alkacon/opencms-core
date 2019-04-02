@@ -55,6 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
@@ -1006,6 +1007,20 @@ public final class CmsStringUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Inserts the given number of spaces at the start of each line in the given text.
+     * <p>This is useful when writing toString() methods for complex nested objects.</p>
+     *
+     * @param text the text to indent
+     * @param numSpaces the number of spaces to insert before each line
+     *
+     * @return the indented text
+     */
+    public static String indentLines(String text, int numSpaces) {
+
+        return text.replaceAll("(?m)^", StringUtils.repeat(" ", numSpaces));
     }
 
     /**
