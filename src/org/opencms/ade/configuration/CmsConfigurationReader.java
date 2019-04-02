@@ -381,7 +381,11 @@ public class CmsConfigurationReader {
 
         Set<String> addFormatters = new HashSet<String>();
         for (I_CmsXmlContentValueLocation addLoc : node.getSubValues(N_ADD_FORMATTERS + "/" + N_ADD_FORMATTER)) {
-            addFormatters.add(addLoc.asString(m_cms).trim());
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)addLoc.getValue();
+            CmsLink link = value.getLink(m_cms);
+            if (link != null) {
+                addFormatters.add(link.getStructureId().toString());
+            }
         }
         return addFormatters;
     }
@@ -566,7 +570,11 @@ public class CmsConfigurationReader {
         Set<String> removeFormatters = new HashSet<String>();
         for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(
             N_REMOVE_FORMATTERS + "/" + N_REMOVE_FORMATTER)) {
-            removeFormatters.add(removeLoc.asString(m_cms).trim());
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)removeLoc.getValue();
+            CmsLink link = value.getLink(m_cms);
+            if (link != null) {
+                removeFormatters.add(link.getStructureId().toString());
+            }
         }
         return removeFormatters;
     }

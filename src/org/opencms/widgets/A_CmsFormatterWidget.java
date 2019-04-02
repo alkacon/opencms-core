@@ -34,6 +34,7 @@ import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheSt
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -82,7 +83,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
     }
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsFormatterWidget.class);
+    protected static final Log LOG = CmsLog.getLog(A_CmsFormatterWidget.class);
 
     /**
      * Creates a widget option corresponding to a formatter bean for an external formatter.<p>
@@ -91,8 +92,11 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      * @param formatter the formatter bean
      *
      * @return the select option which was created
+     *
+     * @throws Exception in case reading the formatter configuration file fails
      */
-    public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
+    public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter)
+    throws Exception {
 
         String name = formatter.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms))
             + " "
@@ -101,7 +105,10 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             + " ("
             + formatter.getJspRootPath()
             + ")";
-        CmsSelectWidgetOption option = new CmsSelectWidgetOption(formatter.getId(), false, name);
+        String path = cms.readResource(
+            new CmsUUID(formatter.getId()),
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED).getRootPath();
+        CmsSelectWidgetOption option = new CmsSelectWidgetOption(path, false, name);
         return option;
     }
 
@@ -159,9 +166,11 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
         widgetDialog.setResource(resource);
         String result = getConfiguration();
         result += "||";
-        result += optionsToConfigurationString(parseSelectOptions(cms, widgetDialog, schemaType, false));
+        result += CmsSelectWidgetOption.createConfigurationString(
+            parseSelectOptions(cms, widgetDialog, schemaType, false));
         result += "||";
-        result += optionsToConfigurationString(parseSelectOptions(cms, widgetDialog, schemaType, true));
+        result += CmsSelectWidgetOption.createConfigurationString(
+            parseSelectOptions(cms, widgetDialog, schemaType, true));
         return result;
     }
 
@@ -274,20 +283,26 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
                 CmsConfigurationReader reader = new CmsConfigurationReader(cms);
                 Set<String> selected = getSelectedInFile(reader, xmlContent);
                 for (String formatterKey : selected) {
-                    String title = formatterKey;
                     if (CmsUUID.isValidUUID(formatterKey)) {
                         CmsFormatterConfigurationCacheState cacheState = OpenCms.getADEManager().getCachedFormatters(
                             cms.getRequestContext().getCurrentProject().isOnlineProject());
                         CmsUUID mapKey = new CmsUUID(formatterKey);
                         I_CmsFormatterBean formatter = cacheState.getFormatters().get(mapKey);
                         if (formatter != null) {
-                            title = A_CmsFormatterWidget.getWidgetOptionForFormatter(cms, formatter).getOption();
+                            try {
+                                CmsSelectWidgetOption option = A_CmsFormatterWidget.getWidgetOptionForFormatter(
+                                    cms,
+                                    formatter);
+
+                                if (!added.contains(option.getValue())) {
+                                    options.add(option);
+                                }
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
                         }
                     }
-                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(formatterKey, false, title);
-                    if (!added.contains(option.getValue())) {
-                        options.add(option);
-                    }
+
                 }
 
             } catch (CmsException e) {

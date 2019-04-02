@@ -10,7 +10,7 @@
     
     <xsd:complexType name="OpenCmsAddFormattersBlock">
         <xsd:sequence>
-        	<xsd:element name="AddFormatter" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+        	<xsd:element name="AddFormatter" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

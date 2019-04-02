@@ -32,11 +32,11 @@ import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.CmsMacroFormatterBean;
+import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -49,8 +49,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-
 import com.google.common.collect.Lists;
 
 /**
@@ -59,9 +57,6 @@ import com.google.common.collect.Lists;
  * Please note that this widget assumes the resource being edited is a sitemap configuration, and will not work correctly in a different context.
  */
 public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
-
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAddFormatterWidget.class);
 
     /**
      * Default constructor.<p>
@@ -138,7 +133,8 @@ public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
         }
         Collections.sort(formatters, new A_CmsFormatterWidget.FormatterSelectComparator());
         for (I_CmsFormatterBean formatterBean : formatters) {
-            if (formatterBean instanceof CmsFunctionFormatterBean) {
+            if ((formatterBean instanceof CmsFunctionFormatterBean)
+                || (formatterBean instanceof CmsSchemaFormatterBeanWrapper)) {
                 continue;
             }
 
@@ -155,8 +151,12 @@ public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
                     }
                 }
             }
-            CmsSelectWidgetOption option = getWidgetOptionForFormatter(cms, formatterBean);
-            result.add(option);
+            try {
+                CmsSelectWidgetOption option = getWidgetOptionForFormatter(cms, formatterBean);
+                result.add(option);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         return result;
 
