@@ -1534,6 +1534,14 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return CmsXmlContentDefinition.class.getSimpleName() + " " + m_schemaLocation;
+    }
+
+    /**
      * Sets the inner element name to use for the content definition.<p>
      *
      * @param innerName the inner element name to set
