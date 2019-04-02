@@ -295,6 +295,27 @@ public final class CmsXmlUtils {
     }
 
     /**
+     * Returns the last Xpath element from the provided path.
+     *
+     *
+     * Examples:<br>
+     * <code>title</code> is left untouched<br>
+     * <code>title[1]/subtitle[1]</code> becomes <code>subtitle[1]</code><p>
+     *
+     * @param path the path to get the last Xpath element from
+     *
+     * @return the last Xpath element from the provided path
+     */
+    public static String getLastXpathElementWithIndex(String path) {
+
+        int pos = path.lastIndexOf('/');
+        if (pos >= 0) {
+            path = path.substring(pos + 1);
+        }
+        return path;
+    }
+
+    /**
      * Returns the last Xpath index from the given path.<p>
      *
      * Examples:<br>
