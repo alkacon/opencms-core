@@ -1,4 +1,4 @@
-tinymce.addI18n('cs_CZ',{
+tinymce.addI18n('cs',{
 	'HTML source code': 'Zdrojový HTML kód',
 	'Start search': 'Hledat',
 	'Find next': 'Najít další',

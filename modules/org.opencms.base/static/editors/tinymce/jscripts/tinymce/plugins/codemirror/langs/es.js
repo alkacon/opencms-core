@@ -1,4 +1,4 @@
-tinymce.addI18n('es_ES',{
+tinymce.addI18n('es',{
 	'HTML source code': 'Código fuente HTML',
 	'Start search': 'Buscar',
 	'Find next': 'Siguiente',
