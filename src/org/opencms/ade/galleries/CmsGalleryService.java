@@ -2753,6 +2753,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             params.setDateLastModifiedTimeRange(Long.MIN_VALUE, dateModifiedEnd);
         }
         params.setIgnoreSearchExclude(searchData.isIgnoreSearchExclude());
+        if (GalleryMode.ade.equals(searchData.getGalleryMode())) {
+            if (searchData.getTypes().isEmpty() || !Collections.disjoint(FUNCTION_TYPES, searchData.getTypes())) {
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().addSiteRoot(searchData.getReferencePath()));
+                // in case a restricted set of functions is configured, remove all other functions
+                params.setAllowedFunctions(config.getDynamicFunctions());
+            }
+        }
         return params;
     }
 
@@ -2985,36 +2994,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObjBean.setResultCount(searchResults.getHitCount());
         searchObjBean.setPage(params.getResultPage());
         searchObjBean.setLastPage(params.getResultPage());
-
+        searchObjBean.setResults(buildSearchResultList(searchResults, null));
         if (searchObj.getGalleryMode().equals(GalleryMode.ade)) {
-            // in case searching for function types, results may need to be filtered
-            if (searchObj.getTypes().isEmpty() || !Collections.disjoint(FUNCTION_TYPES, searchObj.getTypes())) {
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                    searchCms,
-                    searchCms.getRequestContext().addSiteRoot(searchObj.getReferencePath()));
-                // in case a restricted set of functions is configured, remove all other functions
-                if (config.getDynamicFunctions() != null) {
-                    Iterator<CmsGallerySearchResult> it = searchResults.iterator();
-                    int removed = 0;
-                    while (it.hasNext()) {
-                        CmsGallerySearchResult result = it.next();
-                        CmsUUID id = new CmsUUID(result.getStructureId());
-                        if (FUNCTION_TYPES.contains(result.getResourceType())
-                            && !config.getDynamicFunctions().contains(id)) {
-                            it.remove();
-                            removed++;
-                        }
-                    }
-                    searchObjBean.setResultCount(searchResults.getHitCount() - removed);
-                }
-            }
-            searchObjBean.setResults(buildSearchResultList(searchResults, null));
             if (searchObjBean.getResultCount() > 0) {
                 CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
                 cache.setLastPageEditorGallerySearch(searchObj);
             }
-        } else {
-            searchObjBean.setResults(buildSearchResultList(searchResults, null));
         }
         updateNoUploadReason(searchCms, searchObjBean);
         return searchObjBean;
