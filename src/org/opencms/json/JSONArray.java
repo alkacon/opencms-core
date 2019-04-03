@@ -263,6 +263,18 @@ public class JSONArray {
     }
 
     /**
+     * Appends values from another JSON array.
+     * 
+     * @param array the array whose values should be appended 
+     */
+    public void append(JSONArray array) {
+
+        for (int i = 0; i < array.length(); i++) {
+            put(array.opt(i));
+        }
+    }
+
+    /**
      * Check if this array contains the given string value.<p>
      *
      * @param value the value to check
