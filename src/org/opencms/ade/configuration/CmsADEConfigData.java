@@ -527,7 +527,12 @@ public class CmsADEConfigData {
      */
     public Collection<CmsUUID> getDynamicFunctions() {
 
-        return m_data.getDynamicFunctions();
+        CmsADEConfigData parentData = parent();
+        Collection<CmsUUID> result = m_data.getDynamicFunctions();
+        if ((result == null) && (parentData != null)) {
+            result = parentData.getDynamicFunctions();
+        }
+        return result;
     }
 
     /**
