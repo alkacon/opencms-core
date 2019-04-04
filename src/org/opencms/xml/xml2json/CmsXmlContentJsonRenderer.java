@@ -31,28 +31,64 @@ import org.opencms.file.CmsObject;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Node;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Converts an XML content to JSON.
  */
 public class CmsXmlContentJsonRenderer {
 
+    /** The CMS context. */
     private CmsObject m_cms;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param cms the CMS context to use
+     */
     public CmsXmlContentJsonRenderer(CmsObject cms) {
 
         m_cms = cms;
     }
 
+    /**
+     * Converts an XML content tree to a JSON object
+     *
+     * @param tree the tree
+     * @return the JSON object
+     *
+     * @throws JSONException if something goes wrong
+     */
     public JSONObject render(CmsXmlContentTree tree) throws JSONException {
 
         Node root = tree.getRoot();
         return (JSONObject)renderNode(root);
 
+    }
+
+    /**
+     * Renders the JSON representations for all locales in the given content, and adds them as fields
+     * to the result JSON, with the locales as field names.
+     *
+     * @param content the content
+     * @return the result JSON for all locales
+     * @throws JSONException if something goes wrong
+     */
+    public JSONObject renderAllLocales(CmsXmlContent content) throws JSONException {
+
+        List<Locale> locales = content.getLocales();
+        JSONObject result = new JSONObject(true);
+        for (Locale locale : locales) {
+            CmsXmlContentTree tree = new CmsXmlContentTree(m_cms, content, locale);
+            JSONObject jsonForLocale = render(tree);
+            result.put(locale.toString(), jsonForLocale);
+        }
+        return result;
     }
 
     /**
@@ -66,8 +102,6 @@ public class CmsXmlContentJsonRenderer {
     protected void renderField(Field field, JSONObject result) throws JSONException {
 
         String name = field.getName();
-        System.out.println(
-            "*** " + name + " " + field.getFieldDefinition().getContentDefinition().getChoiceMaxOccurs());
         if (field.isMultivalue()) {
             // If field is *potentially* multivalue,
             // we always generate a JSON array for the sake of consistency,
