@@ -583,23 +583,44 @@ gwtModuleNames.split(',').each{ gwtModule ->
 	    }
 
 
-	    args =
-	            [
-	                gwtModule,
-	                // Your GWT module
-	                '-war',
-	                buildDir,
-	                '-logLevel',
-	                'ERROR',
-	                '-localWorkers',
-	                '2',
-	                '-style',
-	                'obfuscated',
-	                '-extra',
-	                extraDir,
-	                '-strict'
-	                // '-draftCompile' // Speeds up compile with 25%
-	            ]
+	    if (project.hasProperty('gwtDraft')) {
+			println "Using GWT draft mode for module $gwtModule"
+			args =
+                [
+                    gwtModule,
+                    // Your GWT module
+                    '-war',
+                    buildDir,
+                    '-logLevel',
+                    'ERROR',
+                    '-localWorkers',
+                    '2',
+                    '-style',
+                    'obfuscated',
+                    '-extra',
+                    extraDir,
+                    '-draftCompile', // Speeds up compile with 25%
+                    '-setProperty',
+                    'locale=en'
+                ]
+			}else{
+            	args =
+                    [
+                        gwtModule,
+                        // Your GWT module
+                        '-war',
+                        buildDir,
+                        '-logLevel',
+                        'ERROR',
+                        '-localWorkers',
+                        '2',
+                        '-style',
+                        'obfuscated',
+                        '-extra',
+                        extraDir,
+                        '-strict'
+                    ]
+            }
 	    jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
 
 
@@ -922,8 +943,28 @@ allModuleNames.split(',').each{ moduleName ->
                 ]
             }
 
-
-            args =
+			if (project.hasProperty('gwtDraft')) {
+				println "Using GWT draft mode for module $gwtModule"
+				args =
+                    [
+                        gwtModule,
+                        // Your GWT module
+                        '-war',
+                        buildDir,
+                        '-logLevel',
+                        'ERROR',
+                        '-localWorkers',
+                        '2',
+                        '-style',
+                        'obfuscated',
+                        '-extra',
+                        extraDir,
+                        '-draftCompile', // Speeds up compile with 25%
+                        '-setProperty',
+                        'locale=en'
+                    ]
+			}else{
+            	args =
                     [
                         gwtModule,
                         // Your GWT module
@@ -938,8 +979,8 @@ allModuleNames.split(',').each{ moduleName ->
                         '-extra',
                         extraDir,
                         '-strict'
-                        // '-draftCompile' // Speeds up compile with 25%
                     ]
+            }
             jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
 
 
