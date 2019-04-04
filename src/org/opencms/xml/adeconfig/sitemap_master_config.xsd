@@ -19,6 +19,7 @@
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
             <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
@@ -35,7 +36,7 @@
 			</layouts>
 			<tabs>
 				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
-				<tab element="RemoveFormatters" name="TabFormatters" collapse="false" />
+				<tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
 				<tab element="Function" name="TabFunctions" collapse="false" description="%(key.label.SitemapConfiguration.TabFunctions.description)" />
 				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
 			</tabs>
