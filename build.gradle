@@ -1339,7 +1339,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     exclude '**/*$*.class'
     scanForTestClasses false
     testClassesDirs = files(sourceSets.testGwt.java.outputDir)
-    systemProperties['gwt.args'] = "-logLevel WARN"
+    systemProperties['gwt.args'] = "-logLevel WARN -setProperty locale=en"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
     jvmArgs '-XX:MaxPermSize=256m'
