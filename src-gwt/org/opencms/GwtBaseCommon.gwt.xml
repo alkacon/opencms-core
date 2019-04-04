@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-	<inherits name="com.google.gwt.user.User" />
+	<inherits name='com.google.gwt.core.Core'/>
+	<inherits name='com.google.gwt.useragent.UserAgent'/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
@@ -8,44 +9,25 @@
 	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
 	<inherits name="org.timepedia.exporter.Exporter" />
   	<set-property name="export" value="yes" />
- 	<extend-property name="locale" values="en,de,it"/>
+ 	<extend-property name="locale" values="en,de,it,cs,es"/>
 	<set-property-fallback name="locale" value="en"/>
-	<set-property name="locale" value="en,de,it"/>
-
+	<set-property name="locale" value="en,de,it,cs,es"/>
 	<set-property name="user.agent" value="ie10,gecko1_8,safari" />
-
-	<define-property name="fileapi.support" values="formdata,no" />
-
-	<set-property name="fileapi.support" value="formdata" />
-
-	<replace-with class="org.opencms.gwt.client.ui.input.upload.CmsFileInputFileApiImpl">
-		<when-type-is class="org.opencms.gwt.client.ui.input.upload.CmsFileInputImpl" />
-		<any>
-			<when-property-is name="fileapi.support" value="formdata" />
-		</any>
-	</replace-with>
 	
-	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl">
-		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
-		<when-property-is name="fileapi.support" value="formdata" />
-	</replace-with>
+	<!-- Collapsing properties to build one permutation per locale -->
+	<collapse-all-properties value="false" />
+	<collapse-property name="user.agent" values="*" />
+ 	<collapse-property name="touchEventSupport" values="*" />
+ 	
+ 	<set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 	
-	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData">
-		<when-type-is class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault" />
-		<when-property-is name="fileapi.support" value="formdata" />
-	</replace-with>
-
-   
-    
-    <replace-with class="org.opencms.gwt.client.ui.CmsScrollPanelImpl">
-    	<when-type-assignable class="org.opencms.gwt.client.ui.CmsScrollPanel"/>
-    </replace-with>
-    
-    <replace-with class="org.opencms.gwt.client.CmsDefaultUserAgentInfo">
-    	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
-    </replace-with>
-    
-    <source path="gwt">
+	<!-- Enable Gss with CssResource -->
+	<set-configuration-property name="CssResource.enableGss" value="true" />
+	<set-configuration-property name="CssResource.gssDefaultInUiBinder" value="true" />
+  	<set-configuration-property name="CssResource.conversionMode" value="strict" />
+  	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
+  	
+  	<source path="gwt">
     	<include name="CmsRpcException.java" />
     </source>
 	<source path="gwt/client" />
@@ -70,6 +52,28 @@
 	<source path="workplace/editors">
 		<include name="CmsTinyMceToolbarHelper.java" />
 	</source>
+
+	<replace-with class="org.opencms.gwt.client.ui.input.upload.CmsFileInputFileApiImpl">
+		<when-type-is class="org.opencms.gwt.client.ui.input.upload.CmsFileInputImpl" />
+	</replace-with>
+	
+	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl">
+		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
+	</replace-with>
+	
+	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData">
+		<when-type-is class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault" />
+	</replace-with>
+
+    <replace-with class="org.opencms.gwt.client.ui.CmsScrollPanelImpl">
+    	<when-type-assignable class="org.opencms.gwt.client.ui.CmsScrollPanel"/>
+    </replace-with>
+    
+    <replace-with class="org.opencms.gwt.client.CmsDefaultUserAgentInfo">
+    	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
+    </replace-with>
+    
+    
 	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
 	</generate-with> 
@@ -79,21 +83,15 @@
     <generate-with class="org.opencms.gwt.rebind.CmsCommandInitGenerator" >
         <when-type-assignable class="org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer"/>
     </generate-with>
-	<set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 	
-	<!-- Enable Gss with CssResource -->
-	<set-configuration-property name="CssResource.enableGss" value="true" />
-	<set-configuration-property name="CssResource.gssDefaultInUiBinder" value="true" />
-  	<set-configuration-property name="CssResource.conversionMode" value="strict" />
-
-	<!-- Building only a single permutation to speed up build. -->
-	<collapse-all-properties />
 
 	<!-- down here only debugging stuff, should be commented out for release building -->   
 
-	<set-configuration-property name="CssResource.style" value="pretty" /> 
-	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
+	<!-- Building only a single permutation to speed up build. -->
+ 	<!-- 
+ 	<collapse-all-properties /> -->
 <!-- 
+	<set-configuration-property name="CssResource.style" value="pretty" /> 
 	<set-property name="compiler.emulatedStack" value="true" />
 
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
