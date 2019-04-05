@@ -27,6 +27,7 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
 
 /**
@@ -65,6 +66,6 @@ public interface I_CmsJsonHandler {
      *
      * @throws CmsException if something goes wrong
      */
-    CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException;
+    CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException, JSONException;
 
 }

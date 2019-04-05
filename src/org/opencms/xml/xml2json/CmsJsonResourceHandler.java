@@ -29,19 +29,21 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +61,10 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
     /** URL prefix. */
     public static final String PREFIX = "/json";
 
+    /** Service loader used to load external JSON handler classes. */
+    private ServiceLoader<I_CmsJsonHandlerProvider> m_serviceLoader = ServiceLoader.load(
+        I_CmsJsonHandlerProvider.class);
+
     /**
      * Gets the list of sub-handlers, sorted by ascending order.
      *
@@ -66,7 +72,11 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
      */
     public List<I_CmsJsonHandler> getSubHandlers() {
 
-        List<I_CmsJsonHandler> result = Arrays.asList(new CmsXmlContentJsonHandler());
+        List<I_CmsJsonHandler> result = new ArrayList<>(Arrays.asList(new CmsXmlContentJsonHandler()));
+        for (I_CmsJsonHandlerProvider provider : m_serviceLoader) {
+            result.addAll(provider.getJsonHandlers());
+        }
+
         result.sort((h1, h2) -> Double.compare(h1.getOrder(), h2.getOrder()));
         return result;
 
@@ -106,21 +116,29 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
         }
 
         try {
-            CmsJsonHandlerContext context = new CmsJsonHandlerContext(cms, path, singleParams);
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsResource resource = rootCms.readResource(path);
+            CmsJsonHandlerContext context = new CmsJsonHandlerContext(cms, path, resource, singleParams);
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
-            try {
-
-                for (I_CmsJsonHandler handler : getSubHandlers()) {
-                    if (handler.matches(context)) {
-                        CmsJsonResult result = handler.renderJson(context);
+            boolean foundHandler = false;
+            for (I_CmsJsonHandler handler : getSubHandlers()) {
+                if (handler.matches(context)) {
+                    CmsJsonResult result = handler.renderJson(context);
+                    if (result.getNextResource() != null) {
+                        return result.getNextResource();
+                    } else {
                         PrintWriter writer = res.getWriter();
                         writer.write(result.getJson().toString());
                         writer.flush();
                         res.setStatus(result.getStatus());
+                        foundHandler = true;
+                        break;
                     }
                 }
-            } catch (CmsVfsResourceNotFoundException e) {
+            }
+            if (!foundHandler) {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
             CmsResourceInitException ex = new CmsResourceInitException(CmsJsonResourceHandler.class);

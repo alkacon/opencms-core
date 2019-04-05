@@ -30,7 +30,6 @@ package org.opencms.xml.xml2json;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContent;
@@ -56,7 +55,7 @@ public class CmsJsonHandlerContext {
     /** The path below the JSON handler prefix. */
     private String m_path;
 
-    /** The resource for the path (initially null). */
+    /** The resource for the path. */
     private CmsResource m_resource;
 
     /** The file for the path (initially null). */
@@ -79,10 +78,11 @@ public class CmsJsonHandlerContext {
      * @param params the request parameters
      * @throws CmsException if something goes wrong
      */
-    public CmsJsonHandlerContext(CmsObject cms, String path, Map<String, String> params)
+    public CmsJsonHandlerContext(CmsObject cms, String path, CmsResource resource, Map<String, String> params)
     throws CmsException {
 
         m_cms = cms;
+        m_resource = resource;
         m_rootCms = OpenCms.initCmsObject(m_cms);
         m_rootCms.getRequestContext().setSiteRoot("");
         m_path = path;
@@ -144,6 +144,16 @@ public class CmsJsonHandlerContext {
     }
 
     /**
+     * Returns the path.
+     *
+     * @return the path
+     */
+    public String getPath() {
+
+        return m_path;
+    }
+
+    /**
      * Gets the resource.
      *
      * @return the resource
@@ -151,9 +161,6 @@ public class CmsJsonHandlerContext {
      */
     public CmsResource getResource() throws CmsException {
 
-        if (m_resource == null) {
-            m_resource = m_rootCms.readResource(m_path, CmsResourceFilter.IGNORE_EXPIRATION);
-        }
         return m_resource;
     }
 

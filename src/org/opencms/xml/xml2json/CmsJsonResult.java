@@ -27,6 +27,7 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.file.CmsResource;
 import org.opencms.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,19 @@ public class CmsJsonResult {
 
     /** The HTTP status. */
     private int m_status = HttpServletResponse.SC_OK;
+
+    /** The next resource to be loaded. */
+    private CmsResource m_nextResource;
+
+    /**
+     * Creates a result which indicates that a different resource should be loaded instead.
+     *
+     * @param resource the resource
+     */
+    public CmsJsonResult(CmsResource resource) {
+
+        m_nextResource = resource;
+    }
 
     /**
      * Creates a new instance.
@@ -63,6 +77,16 @@ public class CmsJsonResult {
 
         m_json = json;
         m_status = status;
+    }
+
+    /**
+     * Gets the next resource which should be loaded.
+     *
+     * @return the resource which should be loaded
+     */
+    public CmsResource getNextResource() {
+
+        return m_nextResource;
     }
 
     /**
