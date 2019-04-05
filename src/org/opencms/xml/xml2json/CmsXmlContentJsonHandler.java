@@ -27,6 +27,7 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -123,7 +124,8 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
 
         try {
             CmsXmlContent content = context.getContent();
-            CmsXmlContentJsonRenderer renderer = new CmsXmlContentJsonRenderer(context.getCms());
+            CmsObject cms = context.getCms();
+            CmsXmlContentJsonRenderer renderer = new CmsXmlContentJsonRenderer(cms);
 
             Object json = null;
             String localeParam = context.getParameters().get(PARAM_LOCALE);
@@ -136,7 +138,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
                     locale,
                     Collections.emptyList(),
                     context.getContent().getLocales());
-                json = renderer.render(new CmsXmlContentTree(context.getCms(), context.getContent(), selectedLocale));
+                json = renderer.render(new CmsXmlContentTree(context.getContent(), selectedLocale));
                 if (pathParam != null) {
                     Object result = lookupPath(json, pathParam);
                     json = result;

@@ -158,6 +158,16 @@ public class CmsJsonHandlerContext {
     }
 
     /**
+     * Gets the CMS context initialized to the root site.
+     *
+     * @return the CMS context initialized to the root site
+     */
+    public CmsObject getRootCms() {
+
+        return m_rootCms;
+    }
+
+    /**
      * Gets the temporary storage to be used by individual handlers.
      *
      * @return the temporary storage

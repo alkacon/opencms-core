@@ -27,7 +27,6 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlContentDefinition.SequenceType;
@@ -307,10 +306,6 @@ public class CmsXmlContentTree {
         simple;
     }
 
-    /** The CMS context to use. */
-    @SuppressWarnings("unused")
-    private CmsObject m_cms;
-
     /** The content. */
     private CmsXmlContent m_content;
 
@@ -323,14 +318,12 @@ public class CmsXmlContentTree {
     /**
      * Creates a new instance and initializes the full tree for the given locale.
      *
-     * @param cms the CmsObject to use
      * @param content the content from which the tree should be generated
      * @param locale the locale for which the tree should be generated
      */
-    public CmsXmlContentTree(CmsObject cms, CmsXmlContent content, Locale locale) {
+    public CmsXmlContentTree(CmsXmlContent content, Locale locale) {
 
         m_content = content;
-        m_cms = cms;
         m_locale = locale;
         m_root = createNode(content.getLocaleNode(locale), content.getContentDefinition());
     }
@@ -390,9 +383,7 @@ public class CmsXmlContentTree {
                 List<I_CmsXmlContentValue> fieldValues = m_content.getValues(fieldPath, m_locale);
                 List<Node> fieldChildren = new ArrayList<>();
                 for (int i = 0; i < fieldValues.size(); i++) {
-                    String indexFieldPath = fieldPath + "[" + (i + 1) + "]";
-                    String lastComponent = CmsXmlUtils.getLastXpathElementWithIndex(indexFieldPath);
-                    Element subElement = (Element)elem.selectSingleNode(lastComponent);
+                    Element subElement = fieldValues.get(i).getElement();
                     Node fieldChild = createNode(subElement, nestedDef);
                     fieldChildren.add(fieldChild);
                 }

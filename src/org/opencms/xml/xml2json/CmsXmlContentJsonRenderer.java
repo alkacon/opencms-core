@@ -31,7 +31,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Node;
 
@@ -46,14 +51,21 @@ public class CmsXmlContentJsonRenderer {
     /** The CMS context. */
     private CmsObject m_cms;
 
+    /** The root Cms context. */
+    private CmsObject m_rootCms;
+
     /**
      * Creates a new instance.
      *
      * @param cms the CMS context to use
+     * @throws CmsException if something goes wrong
      */
-    public CmsXmlContentJsonRenderer(CmsObject cms) {
+    public CmsXmlContentJsonRenderer(CmsObject cms)
+    throws CmsException {
 
         m_cms = cms;
+        m_rootCms = OpenCms.initCmsObject(cms);
+        m_rootCms.getRequestContext().setSiteRoot("");
     }
 
     /**
@@ -84,7 +96,7 @@ public class CmsXmlContentJsonRenderer {
         List<Locale> locales = content.getLocales();
         JSONObject result = new JSONObject(true);
         for (Locale locale : locales) {
-            CmsXmlContentTree tree = new CmsXmlContentTree(m_cms, content, locale);
+            CmsXmlContentTree tree = new CmsXmlContentTree(content, locale);
             JSONObject jsonForLocale = render(tree);
             result.put(locale.toString(), jsonForLocale);
         }
@@ -164,12 +176,53 @@ public class CmsXmlContentJsonRenderer {
                 }
                 return array;
             case simple:
-                return node.getValue().getStringValue(m_cms);
+                return renderSimpleValue(node);
             default:
                 throw new IllegalArgumentException("Unsupported node: " + node.getType());
 
         }
 
+    }
+
+    /**
+     * Renders a simple value (i.e. not a nested content).
+     *
+     * @param node the node
+     * @return the JSON representation for the value
+     * @throws JSONException if something goes wrong
+     */
+    protected Object renderSimpleValue(Node node) throws JSONException {
+
+        I_CmsXmlContentValue value = node.getValue();
+        if (value instanceof CmsXmlVfsFileValue) {
+            CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)value;
+            String link = fileValue.getLink(m_cms).getLink(m_cms);
+            String path = fileValue.getStringValue(m_rootCms);
+            return linkAndPath(link, path);
+        } else if (value instanceof CmsXmlVarLinkValue) {
+            CmsXmlVarLinkValue linkValue = (CmsXmlVarLinkValue)value;
+            String link = linkValue.getLink(m_cms).getLink(m_cms);
+            String path = linkValue.getStringValue(m_rootCms);
+            return linkAndPath(link, path);
+        } else {
+            return node.getValue().getStringValue(m_cms);
+        }
+    }
+
+    /**
+     * Builds a simple JSON object with link and path fields whose values are taken from the corresponding parameters.
+     *
+     * @param link the value for the link field
+     * @param path the value for the path field
+     * @return the link-and-path object
+     * @throws JSONException if something goes wrong
+     */
+    JSONObject linkAndPath(String link, String path) throws JSONException {
+
+        JSONObject result = new JSONObject();
+        result.put("link", link);
+        result.put("path", path);
+        return result;
     }
 
 }
