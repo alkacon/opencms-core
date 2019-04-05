@@ -27,23 +27,20 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,14 +56,21 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJsonResourceHandler.class);
 
-    /** Request parameter name. */
-    public static final String PARAM_LOCALE = "locale";
-
-    /** Request parameter name. */
-    public static final String PARAM_PATH = "path";
-
     /** URL prefix. */
     public static final String PREFIX = "/json";
+
+    /**
+     * Gets the list of sub-handlers, sorted by ascending order.
+     *
+     * @return the sorted list of sub-handlers
+     */
+    public List<I_CmsJsonHandler> getSubHandlers() {
+
+        List<I_CmsJsonHandler> result = Arrays.asList(new CmsXmlContentJsonHandler());
+        result.sort((h1, h2) -> Double.compare(h1.getOrder(), h2.getOrder()));
+        return result;
+
+    }
 
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -75,6 +79,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
     throws CmsResourceInitException, CmsSecurityException {
 
         String uri = cms.getRequestContext().getUri();
+
         if (origRes != null) {
             return origRes;
         }
@@ -99,25 +104,27 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
             }
             singleParams.put(entry.getKey(), value);
         }
+
         try {
+            CmsJsonHandlerContext context = new CmsJsonHandlerContext(cms, path, singleParams);
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
             try {
-                CmsResource resource = cms.readResource(path);
-                if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                    CmsFile file = cms.readFile(resource);
-                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-                    CmsXmlContentJsonRenderer renderer = new CmsXmlContentJsonRenderer(cms);
-                    JSONObject json = renderer.renderAllLocales(content);
-                    PrintWriter writer = res.getWriter();
-                    writer.write(json.toString());
-                    writer.flush();
+
+                for (I_CmsJsonHandler handler : getSubHandlers()) {
+                    if (handler.matches(context)) {
+                        CmsJsonResult result = handler.renderJson(context);
+                        PrintWriter writer = res.getWriter();
+                        writer.write(result.getJson().toString());
+                        writer.flush();
+                        res.setStatus(result.getStatus());
+                    }
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
             CmsResourceInitException ex = new CmsResourceInitException(CmsJsonResourceHandler.class);
-            ex.setClearErrors(true);
+            ex.setClearErrors(res.getStatus() == HttpServletResponse.SC_OK);
             throw ex;
         } catch (CmsSecurityException e) {
             throw e;

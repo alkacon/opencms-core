@@ -248,9 +248,10 @@ public class CmsXmlContentTree {
 
         /**
          * Gets the path of the node.
-         * 
-         * @return the path of the node 
+         *
+         * @return the path of the node
          */
+        @SuppressWarnings("synthetic-access")
         public String getPath() {
 
             return getValuePath(m_elem);
@@ -307,6 +308,7 @@ public class CmsXmlContentTree {
     }
 
     /** The CMS context to use. */
+    @SuppressWarnings("unused")
     private CmsObject m_cms;
 
     /** The content. */
