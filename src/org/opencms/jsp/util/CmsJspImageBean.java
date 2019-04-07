@@ -933,6 +933,19 @@ public class CmsJspImageBean {
     }
 
     /**
+     * Returns the image source URL as String representation.<p>
+     *
+     * @return the image source URL
+     *
+     * @see #getSrcUrl()
+     */
+    @Override
+    public String toString() {
+
+        return getSrcUrl();
+    }
+
+    /**
      * Returns the ratio height percentage of an image based on width and height.<p>
      *
      * @param width width to calculate percentage from
