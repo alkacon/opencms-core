@@ -203,6 +203,10 @@ public class CmsXmlContentJsonRenderer {
             CmsXmlVarLinkValue linkValue = (CmsXmlVarLinkValue)value;
             String link = linkValue.getLink(m_cms).getLink(m_cms);
             String path = linkValue.getStringValue(m_rootCms);
+            if (path.startsWith("http")) {
+                // external link
+                path = null;
+            }
             return linkAndPath(link, path);
         } else {
             return node.getValue().getStringValue(m_cms);
@@ -211,6 +215,8 @@ public class CmsXmlContentJsonRenderer {
 
     /**
      * Builds a simple JSON object with link and path fields whose values are taken from the corresponding parameters.
+     *
+     * <p>If path is null, it will not be added to the result JSON.
      *
      * @param link the value for the link field
      * @param path the value for the path field
@@ -221,7 +227,9 @@ public class CmsXmlContentJsonRenderer {
 
         JSONObject result = new JSONObject();
         result.put("link", link);
-        result.put("path", path);
+        if (path != null) {
+            result.put("path", path);
+        }
         return result;
     }
 
