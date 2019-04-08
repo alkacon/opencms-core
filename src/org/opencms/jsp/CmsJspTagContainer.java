@@ -468,7 +468,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 String requestUri = cms.getRequestContext().getUri();
                 Locale locale = cms.getRequestContext().getLocale();
                 CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
-                standardContext.initPage(cms, (HttpServletRequest)req);
+                standardContext.initPage();
                 m_editableRequest = standardContext.getIsEditMode();
                 m_parentElement = standardContext.getElement();
                 m_parentContainer = standardContext.getContainer();
