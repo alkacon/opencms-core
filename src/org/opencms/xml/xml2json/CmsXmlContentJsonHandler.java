@@ -125,7 +125,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
         try {
             CmsXmlContent content = context.getContent();
             CmsObject cms = context.getCms();
-            CmsXmlContentJsonRenderer renderer = new CmsXmlContentJsonRenderer(cms);
+            CmsXmlContentJsonRenderer renderer = createContentRenderer(cms);
 
             Object json = null;
             String localeParam = context.getParameters().get(PARAM_LOCALE);
@@ -151,6 +151,20 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsJsonResult(empty(), HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    /**
+     * Creates the content renderer instance.
+     *
+     * @param cms the CMS context
+     *
+     * @return the content renderer instance
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsXmlContentJsonRenderer createContentRenderer(CmsObject cms) throws CmsException {
+
+        return new CmsXmlContentJsonRenderer(cms);
     }
 
 }

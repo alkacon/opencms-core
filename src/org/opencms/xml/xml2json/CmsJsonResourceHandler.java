@@ -35,6 +35,7 @@ import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
@@ -102,6 +103,8 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
         String path = uri.substring(PREFIX.length());
         if (path.isEmpty()) {
             path = "/";
+        } else if (path.length() > 1) {
+            path = CmsFileUtil.removeTrailingSeparator(path);
         }
         Map<String, String> singleParams = new HashMap<>();
         // we don't care about multiple parameter values, single parameter values are easier to work with

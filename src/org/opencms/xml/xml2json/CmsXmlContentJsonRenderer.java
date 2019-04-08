@@ -34,6 +34,8 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.types.CmsXmlBooleanValue;
+import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -66,6 +68,26 @@ public class CmsXmlContentJsonRenderer {
         m_cms = cms;
         m_rootCms = OpenCms.initCmsObject(cms);
         m_rootCms.getRequestContext().setSiteRoot("");
+    }
+
+    /**
+     * Builds a simple JSON object with link and path fields whose values are taken from the corresponding parameters.
+     *
+     * <p>If path is null, it will not be added to the result JSON.
+     *
+     * @param link the value for the link field
+     * @param path the value for the path field
+     * @return the link-and-path object
+     * @throws JSONException if something goes wrong
+     */
+    public static JSONObject linkAndPath(String link, String path) throws JSONException {
+
+        JSONObject result = new JSONObject();
+        result.put("link", link);
+        if (path != null) {
+            result.put("path", path);
+        }
+        return result;
     }
 
     /**
@@ -176,7 +198,8 @@ public class CmsXmlContentJsonRenderer {
                 }
                 return array;
             case simple:
-                return renderSimpleValue(node);
+                Object valueJson = renderSimpleValue(node);
+                return valueJson;
             default:
                 throw new IllegalArgumentException("Unsupported node: " + node.getType());
 
@@ -194,13 +217,19 @@ public class CmsXmlContentJsonRenderer {
     protected Object renderSimpleValue(Node node) throws JSONException {
 
         I_CmsXmlContentValue value = node.getValue();
-        if (value instanceof CmsXmlVfsFileValue) {
+        if (value instanceof I_CmsJsonFormattableValue) {
+            return ((I_CmsJsonFormattableValue)value).toJson(m_cms);
+        } else if (value instanceof CmsXmlVfsFileValue) {
             CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)value;
             String link = fileValue.getLink(m_cms).getLink(m_cms);
             String path = fileValue.getStringValue(m_rootCms);
             return linkAndPath(link, path);
         } else if (value instanceof CmsXmlVarLinkValue) {
             CmsXmlVarLinkValue linkValue = (CmsXmlVarLinkValue)value;
+            // Use the CmsObject with current site for the link, so that the resulting link
+            // works in the context (i.e. domain) of the original JSON handler request,
+            // but CmsObject with site set to root site so we get the root path, which
+            // can then be used to construct further JSON handler URLs.
             String link = linkValue.getLink(m_cms).getLink(m_cms);
             String path = linkValue.getStringValue(m_rootCms);
             if (path.startsWith("http")) {
@@ -208,29 +237,14 @@ public class CmsXmlContentJsonRenderer {
                 path = null;
             }
             return linkAndPath(link, path);
+        } else if (value instanceof CmsXmlBooleanValue) {
+            Boolean result = Boolean.valueOf(((CmsXmlBooleanValue)value).getBooleanValue());
+            return result;
+        } else if (value instanceof CmsXmlDateTimeValue) {
+            return Double.valueOf(((CmsXmlDateTimeValue)value).getDateTimeValue());
         } else {
             return node.getValue().getStringValue(m_cms);
         }
-    }
-
-    /**
-     * Builds a simple JSON object with link and path fields whose values are taken from the corresponding parameters.
-     *
-     * <p>If path is null, it will not be added to the result JSON.
-     *
-     * @param link the value for the link field
-     * @param path the value for the path field
-     * @return the link-and-path object
-     * @throws JSONException if something goes wrong
-     */
-    JSONObject linkAndPath(String link, String path) throws JSONException {
-
-        JSONObject result = new JSONObject();
-        result.put("link", link);
-        if (path != null) {
-            result.put("path", path);
-        }
-        return result;
     }
 
 }
