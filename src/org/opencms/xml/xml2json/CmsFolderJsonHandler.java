@@ -31,7 +31,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -77,12 +76,12 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
                 context.getResource(),
                 CmsResourceFilter.DEFAULT,
                 false);
-            JSONArray array = new JSONArray();
+            JSONObject result = new JSONObject(true);
             for (CmsResource resource : children) {
                 JSONObject childEntry = formatResource(context, resource);
-                array.put(childEntry);
+                result.put(resource.getName(), childEntry);
             }
-            return new CmsJsonResult(array, 200);
+            return new CmsJsonResult(result, 200);
         }
 
     }
@@ -103,7 +102,9 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
         JSONObject result = new JSONObject(true);
         result.put("path", resource.getRootPath());
         result.put("type", OpenCms.getResourceManager().getResourceType(resource).getTypeName());
-        List<CmsProperty> props = context.getCms().readPropertyObjects(resource, true);
+        result.put("isFolder", resource.isFolder());
+        result.put("lastModified", new Double(resource.getDateLastModified()));
+        List<CmsProperty> props = context.getCms().readPropertyObjects(resource, false);
         JSONObject propJson = new JSONObject(true);
         for (CmsProperty prop : props) {
             propJson.put(prop.getName(), prop.getValue());
