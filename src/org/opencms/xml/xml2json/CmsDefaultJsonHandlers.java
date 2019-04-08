@@ -45,7 +45,7 @@ public class CmsDefaultJsonHandlers {
      */
     public static List<I_CmsJsonHandler> getHandlers() {
 
-        return new ArrayList<>(Arrays.asList(new CmsXmlContentJsonHandler()));
+        return new ArrayList<>(Arrays.asList(new CmsFolderJsonHandler(), new CmsXmlContentJsonHandler()));
     }
 
 }
