@@ -2083,7 +2083,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void updateEditorValues(CmsEntity previous, CmsEntity updated) {
 
-        if (updated.getId().equals(m_entityId)) {
+        if (!m_isDirectEdit && updated.getId().equals(m_entityId)) {
             // only apply the changes to the same locale entity
             updateEditorValues(previous, updated, getEntity(), Collections.<String> emptyList());
         }
