@@ -76,15 +76,6 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
-     */
-    public double getOrder() {
-
-        return 100.0;
-
-    }
-
-    /**
      * Looks up sub-object in the given JSON object.
      *
      * @param current the initial object
@@ -93,7 +84,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      *
      * @throws JSONException if something goes wrong
      */
-    public Object lookupPath(Object current, String path) throws JSONException {
+    public static Object lookupPath(Object current, String path) throws JSONException {
 
         String[] tokens = path.split("[/\\[\\]]");
         for (String token : tokens) {
@@ -107,6 +98,15 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             }
         }
         return current;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     */
+    public double getOrder() {
+
+        return 100.0;
+
     }
 
     /**
