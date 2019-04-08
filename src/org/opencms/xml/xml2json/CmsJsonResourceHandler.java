@@ -39,7 +39,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
      */
     public List<I_CmsJsonHandler> getSubHandlers() {
 
-        List<I_CmsJsonHandler> result = new ArrayList<>(Arrays.asList(new CmsXmlContentJsonHandler()));
+        List<I_CmsJsonHandler> result = new ArrayList<>(CmsDefaultJsonHandlers.getHandlers());
         for (I_CmsJsonHandlerProvider provider : m_serviceLoader) {
             result.addAll(provider.getJsonHandlers());
         }
