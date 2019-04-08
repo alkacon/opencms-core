@@ -30,6 +30,7 @@ package org.opencms.xml.xml2json;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
@@ -132,7 +133,8 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
                         return result.getNextResource();
                     } else {
                         PrintWriter writer = res.getWriter();
-                        writer.write(result.getJson().toString());
+                        String jsonStr = JSONObject.valueToString(result.getJson(), 4, 0);
+                        writer.write(jsonStr);
                         writer.flush();
                         res.setStatus(result.getStatus());
                         foundHandler = true;

@@ -600,6 +600,61 @@ public class JSONObject {
     }
 
     /**
+     * Make a pretty printed JSON text of an object value.<p>
+     *
+     * Warning: This method assumes that the data structure is acyclical.<p>
+     *
+     * @param value the value to be serialized
+     * @param indentFactor the number of spaces to add to each level of
+     *  indentation
+     * @param indent the indentation of the top level
+     * @return a printable, displayable, transmittable
+     *  representation of the object, beginning
+     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     *  with <code>}</code>&nbsp;<small>(right brace)</small>
+     * @throws JSONException if the object contains an invalid number
+     */
+    @SuppressWarnings("unchecked")
+    public static String valueToString(Object value, int indentFactor, int indent) throws JSONException {
+
+        if ((value == null) || value.equals(null)) {
+            return "null";
+        }
+        try {
+            if (value instanceof I_JSONString) {
+                Object o = ((I_JSONString)value).toJSONString();
+                if (o instanceof String) {
+                    return (String)o;
+                }
+            }
+        } catch (Exception e) {
+            /* forget about it */
+        }
+        if (value instanceof Number) {
+            return numberToString((Number)value);
+        }
+        if (value instanceof Boolean) {
+            return value.toString();
+        }
+        if (value instanceof JSONObject) {
+            return ((JSONObject)value).toString(indentFactor, indent);
+        }
+        if (value instanceof JSONArray) {
+            return ((JSONArray)value).toString(indentFactor, indent);
+        }
+        if (value instanceof Map) {
+            return new JSONObject((Map<String, Object>)value).toString(indentFactor, indent);
+        }
+        if (value instanceof Collection) {
+            return new JSONArray((Collection<Object>)value).toString(indentFactor, indent);
+        }
+        if (value.getClass().isArray()) {
+            return new JSONArray(value).toString(indentFactor, indent);
+        }
+        return quote(value.toString());
+    }
+
+    /**
      * Throws an exception if the object is an NaN or infinite number.<p>
      *
      * @param o the object to test
@@ -674,61 +729,6 @@ public class JSONObject {
         }
         if (value.getClass().isArray()) {
             return new JSONArray(value).toString();
-        }
-        return quote(value.toString());
-    }
-
-    /**
-     * Make a pretty printed JSON text of an object value.<p>
-     *
-     * Warning: This method assumes that the data structure is acyclical.<p>
-     *
-     * @param value the value to be serialized
-     * @param indentFactor the number of spaces to add to each level of
-     *  indentation
-     * @param indent the indentation of the top level
-     * @return a printable, displayable, transmittable
-     *  representation of the object, beginning
-     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
-     *  with <code>}</code>&nbsp;<small>(right brace)</small>
-     * @throws JSONException if the object contains an invalid number
-     */
-    @SuppressWarnings("unchecked")
-    static String valueToString(Object value, int indentFactor, int indent) throws JSONException {
-
-        if ((value == null) || value.equals(null)) {
-            return "null";
-        }
-        try {
-            if (value instanceof I_JSONString) {
-                Object o = ((I_JSONString)value).toJSONString();
-                if (o instanceof String) {
-                    return (String)o;
-                }
-            }
-        } catch (Exception e) {
-            /* forget about it */
-        }
-        if (value instanceof Number) {
-            return numberToString((Number)value);
-        }
-        if (value instanceof Boolean) {
-            return value.toString();
-        }
-        if (value instanceof JSONObject) {
-            return ((JSONObject)value).toString(indentFactor, indent);
-        }
-        if (value instanceof JSONArray) {
-            return ((JSONArray)value).toString(indentFactor, indent);
-        }
-        if (value instanceof Map) {
-            return new JSONObject((Map<String, Object>)value).toString(indentFactor, indent);
-        }
-        if (value instanceof Collection) {
-            return new JSONArray((Collection<Object>)value).toString(indentFactor, indent);
-        }
-        if (value.getClass().isArray()) {
-            return new JSONArray(value).toString(indentFactor, indent);
         }
         return quote(value.toString());
     }
