@@ -255,16 +255,17 @@ public class CmsNewResourceBuilder {
      */
     public CmsResource createResource() throws CmsException {
 
-        CmsRequestContext context = m_cms.getRequestContext();
-        if (m_modelResource != null) {
-            context.setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, m_modelResource.getRootPath());
-        }
-        context.setAttribute(CmsRequestContext.ATTRIBUTE_NEW_RESOURCE_LOCALE, context.getLocale());
         String path = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
             m_cms,
             m_pathWithPattern,
             5,
             m_explorerNameGeneration);
+        Locale contentLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, CmsResource.getFolderPath(path));
+        CmsRequestContext context = m_cms.getRequestContext();
+        if (m_modelResource != null) {
+            context.setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, m_modelResource.getRootPath());
+        }
+        context.setAttribute(CmsRequestContext.ATTRIBUTE_NEW_RESOURCE_LOCALE, contentLocale);
         CmsResource res = m_cms.createResource(
             path,
             OpenCms.getResourceManager().getResourceType(m_type),
