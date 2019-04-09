@@ -103,7 +103,7 @@
 # Resource initializer settings.
 -->
 <!ELEMENT resourceinit (resourceinithandler*)>
-<!ELEMENT resourceinithandler EMPTY>
+<!ELEMENT resourceinithandler (param*)>
 <!ATTLIST resourceinithandler class CDATA #REQUIRED>
 
 <!--

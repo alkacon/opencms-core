@@ -71,10 +71,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
+import org.xml.sax.Attributes;
 
 /**
  * System master configuration class.<p>
@@ -85,10 +87,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** Enum for the user session mode. */
     public enum UserSessionMode {
-        /** Only a single session per user is allowed. */
-        single,
-        /** Any number of sessions for a user are allowed. */
-        standard
+    /** Only a single session per user is allowed. */
+    single,
+    /** Any number of sessions for a user are allowed. */
+    standard
     }
 
     /** The attribute name for the deleted node. */
@@ -642,8 +644,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * Adds a new instance of a resource init handler class.<p>
      *
      * @param clazz the class name of the resource init handler to instantiate and add
+     * @param params the parameters set for the resource init handler (parameters need to be copied out, the object will be modified after use)
      */
-    public void addResourceInitHandler(String clazz) {
+    public void addResourceInitHandler(String clazz, CmsParameterConfiguration params)
+    throws CmsConfigurationException {
 
         Object initClass;
         try {
@@ -653,6 +657,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             return;
         }
         if (initClass instanceof I_CmsResourceInit) {
+            if (initClass instanceof I_CmsConfigurationParameterHandler) {
+                for (String key : params.keySet()) {
+                    for (String val : params.getList(key)) {
+                        ((I_CmsConfigurationParameterHandler)initClass).addConfigurationParameter(key, val);
+                    }
+                }
+                ((I_CmsConfigurationParameterHandler)initClass).initConfiguration();
+            }
             m_resourceInitHandlers.add((I_CmsResourceInit)initClass);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, clazz));
@@ -720,13 +732,53 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add event classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, "addEventManager", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, 0, A_CLASS);
+        CmsParameterConfiguration resourceHandlerParams = new CmsParameterConfiguration();
 
-        // add resource init classes
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER,
-            "addResourceInitHandler",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, 0, A_CLASS);
+        digester.addRule("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, new Rule() {
+
+            private String m_class;
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                m_class = attributes.getValue(A_CLASS);
+                resourceHandlerParams.clear();
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                addResourceInitHandler(m_class, resourceHandlerParams);
+
+            }
+        });
+
+        digester.addRule(
+            "*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER + "/" + N_PARAM,
+            new Rule() {
+
+                private String m_name;
+                private String m_value;
+
+                @Override
+                public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                    m_name = attributes.getValue(A_NAME);
+                    m_value = null;
+                }
+
+                @Override
+                public void body(String namespace, String name, String text) throws Exception {
+
+                    m_value = text;
+                }
+
+                @Override
+                public void end(String namespace, String name) throws Exception {
+
+                    resourceHandlerParams.add(m_name, m_value);
+                }
+            });
 
         // add request handler classes
         digester.addCallMethod(
