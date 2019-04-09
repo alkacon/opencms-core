@@ -27,6 +27,8 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
@@ -55,16 +57,19 @@ import org.apache.commons.logging.Log;
 /**
  * Handles /json requests.
  */
-public class CmsJsonResourceHandler implements I_CmsResourceInit {
+public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigurationParameterHandler {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJsonResourceHandler.class);
 
     /** URL prefix. */
     public static final String PREFIX = "/json";
-    
-    /** Request attribute for storing the JSON handler context. */ 
+
+    /** Request attribute for storing the JSON handler context. */
     public static final String ATTR_CONTEXT = "jsonHandlerContext";
+
+    /** Configuration from config file. */
+    private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
     /** Service loader used to load external JSON handler classes. */
     private ServiceLoader<I_CmsJsonHandlerProvider> m_serviceLoader = ServiceLoader.load(
@@ -76,6 +81,22 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
     public CmsJsonResourceHandler() {
 
         CmsFlexController.registerUncacheableAttribute(ATTR_CONTEXT);
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        m_config.add(paramName, paramValue);
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public CmsParameterConfiguration getConfiguration() {
+
+        return m_config;
     }
 
     /**
@@ -93,6 +114,14 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
         result.sort((h1, h2) -> Double.compare(h1.getOrder(), h2.getOrder()));
         return result;
 
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+
+        m_config = CmsParameterConfiguration.unmodifiableVersion(m_config);
     }
 
     /**
@@ -134,7 +163,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
             CmsObject rootCms = OpenCms.initCmsObject(cms);
             rootCms.getRequestContext().setSiteRoot("");
             CmsResource resource = rootCms.readResource(path);
-            CmsJsonHandlerContext context = new CmsJsonHandlerContext(cms, path, resource, singleParams);
+            CmsJsonHandlerContext context = new CmsJsonHandlerContext(cms, path, resource, singleParams, m_config);
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
             boolean foundHandler = false;

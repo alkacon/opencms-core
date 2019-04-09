@@ -27,6 +27,7 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -70,15 +71,25 @@ public class CmsJsonHandlerContext {
     /** The XML content (initially null). */
     private CmsXmlContent m_content;
 
+    /** The handler parameters from opencms-system.xml. */
+    private CmsParameterConfiguration m_handlerConfig;
+
     /**
      * Creates a new instance.
      *
      * @param cms the CMS context
      * @param path the path below the JSON handler
+     * @param resource the resource
      * @param params the request parameters
+     * @param handlerConfig the handler parameters from opencms-system.xml
      * @throws CmsException if something goes wrong
      */
-    public CmsJsonHandlerContext(CmsObject cms, String path, CmsResource resource, Map<String, String> params)
+    public CmsJsonHandlerContext(
+        CmsObject cms,
+        String path,
+        CmsResource resource,
+        Map<String, String> params,
+        CmsParameterConfiguration handlerConfig)
     throws CmsException {
 
         m_cms = cms;
@@ -87,6 +98,7 @@ public class CmsJsonHandlerContext {
         m_rootCms.getRequestContext().setSiteRoot("");
         m_path = path;
         m_parameters = params;
+        m_handlerConfig = handlerConfig;
     }
 
     /**
@@ -134,6 +146,16 @@ public class CmsJsonHandlerContext {
     }
 
     /**
+     * Gets the configured handler parameters.
+     *
+     * @return the configured handler parameters
+     */
+    public CmsParameterConfiguration getHandlerConfig() {
+
+        return m_handlerConfig;
+    }
+
+    /**
      * Gets the request parameters.
      *
      * @return the request parameters
@@ -157,9 +179,8 @@ public class CmsJsonHandlerContext {
      * Gets the resource.
      *
      * @return the resource
-     * @throws CmsException if something goes wrong
      */
-    public CmsResource getResource() throws CmsException {
+    public CmsResource getResource() {
 
         return m_resource;
     }
