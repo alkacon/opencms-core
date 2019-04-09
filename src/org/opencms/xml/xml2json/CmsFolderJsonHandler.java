@@ -31,6 +31,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -103,6 +104,11 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
         result.put("path", resource.getRootPath());
         result.put("type", OpenCms.getResourceManager().getResourceType(resource).getTypeName());
         result.put("isFolder", resource.isFolder());
+        boolean isContent = false;
+        if (!resource.isFolder()) {
+            isContent = CmsResourceTypeXmlContent.isXmlContent(resource);
+        }
+        result.put("isXmlContent", Boolean.valueOf(isContent));
         result.put("lastModified", new Double(resource.getDateLastModified()));
         List<CmsProperty> props = context.getCms().readPropertyObjects(resource, false);
         JSONObject propJson = new JSONObject(true);
