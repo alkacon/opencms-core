@@ -437,6 +437,16 @@
                 <translation>s#^(.{250}).*$#$1#</translation>
             </filetranslations>
             <foldertranslations enabled="false" />
+            <!-- 
+                The xsd translations are only necessary if you have contents from older OpenCms versions deployed in the current OpenCms version and have not changed the
+                paths to the xsd in your contents manually.
+                If you do not need it, remove it or make it a comment.
+            -->
+            <xsdtranslations enabled="true">
+                <!-- In OpenCms 11 the folder /system/shared/ was moved to /system/config/, what makes the following translations necessary if you use the decorator. -->
+                <translation>s#opencms://system/shared/decoration/decorationconfiguration\.xsd#opencms://system/config/decoration/decorationconfiguration.xsd#</translation>
+                <translation>s#opencms://system/shared/decoration/decoration\.xsd#opencms://system/config/decoration/decoration.xsd#</translation>
+            </xsdtranslations>
         </translations>
         <xmlcontent>
             <widgets>
