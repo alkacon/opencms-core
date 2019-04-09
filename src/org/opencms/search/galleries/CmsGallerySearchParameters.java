@@ -39,10 +39,13 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsPair;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
@@ -185,6 +188,9 @@ public class CmsGallerySearchParameters {
             return m_startTime;
         }
     }
+
+    /** The allowed dynamic function ids. */
+    private Collection<CmsUUID> m_allowedFunctions;
 
     /** The categories to search in. */
     private List<String> m_categories;
@@ -435,6 +441,24 @@ public class CmsGallerySearchParameters {
 
         query.setFields(CmsGallerySearchResult.getRequiredSolrFields());
 
+        if ((m_allowedFunctions != null) && !m_allowedFunctions.isEmpty()) {
+            String functionFilter = "((-type:("
+                + CmsXmlDynamicFunctionHandler.TYPE_FUNCTION
+                + " OR "
+                + CmsResourceTypeFunctionConfig.TYPE_NAME
+                + ")) OR (id:(";
+            Iterator<CmsUUID> it = m_allowedFunctions.iterator();
+            while (it.hasNext()) {
+                CmsUUID id = it.next();
+                functionFilter += id.toString();
+                if (it.hasNext()) {
+                    functionFilter += " OR ";
+                }
+            }
+            functionFilter += ")))";
+            query.addFilterQuery(functionFilter);
+        }
+
         return query;
     }
 
@@ -524,6 +548,16 @@ public class CmsGallerySearchParameters {
     public boolean isIgnoreSearchExclude() {
 
         return m_ignoreSearchExclude;
+    }
+
+    /**
+     * Sets the allowed dynamic function ids.<p>
+     *
+     * @param allowedFunctions the allowed dynamic function ids
+     */
+    public void setAllowedFunctions(Collection<CmsUUID> allowedFunctions) {
+
+        m_allowedFunctions = allowedFunctions;
     }
 
     /**

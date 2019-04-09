@@ -159,9 +159,13 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
         Element linkElement = m_element.element(CmsXmlPage.NODE_LINK);
         if (linkElement == null) {
-            String uri = m_element.getText();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(uri)) {
-                setStringValue(cms, uri);
+            String textValue = m_element.getText();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(textValue)) {
+                if (CmsUUID.isValidUUID(textValue)) {
+                    setIdValue(cms, new CmsUUID(textValue));
+                } else {
+                    setStringValue(cms, textValue);
+                }
             }
             linkElement = m_element.element(CmsXmlPage.NODE_LINK);
             if (linkElement == null) {
@@ -262,6 +266,10 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         m_stringValue = null;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
             // no valid value given
+            return;
+        }
+        if (CmsUUID.isValidUUID(value)) {
+            setIdValue(cms, new CmsUUID(value));
             return;
         }
         String path = value;

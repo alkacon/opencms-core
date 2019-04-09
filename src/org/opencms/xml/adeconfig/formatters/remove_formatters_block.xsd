@@ -10,7 +10,7 @@
     
     <xsd:complexType name="OpenCmsRemoveFormattersBlock">
         <xsd:sequence>
-        	<xsd:element name="RemoveFormatter" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+        	<xsd:element name="RemoveFormatter" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

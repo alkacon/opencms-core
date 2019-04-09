@@ -498,14 +498,14 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="function" key="fileicon.function_v1" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+			<explorertype name="function" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="function_config" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
+			<explorertype name="function_config" key="fileicon.function_config" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
 				<newresource order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>

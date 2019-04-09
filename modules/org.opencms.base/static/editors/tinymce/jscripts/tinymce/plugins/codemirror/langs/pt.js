@@ -1,4 +1,4 @@
-tinymce.addI18n('pt_BR',{
+tinymce.addI18n('pt',{
 	'HTML source code': 'Código Fonte HTML',
 	'Start search': 'Iniciar Pesquisa',
 	'Find next': 'Encontrar Próximo',

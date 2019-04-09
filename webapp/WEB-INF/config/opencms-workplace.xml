@@ -304,12 +304,6 @@
                     <name>${key.GUI_ADMIN_VIEW_ROOT_NAME_0}</name>
                     <helptext>${key.GUI_ADMIN_VIEW_ROOT_HELP_0}</helptext>
                 </root>
-                <root>
-                    <key>explorer</key>
-                    <uri>/system/workplace/explorer/</uri>
-                    <name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
-                    <helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
-                </root>
             </roots>
         </tool-manager>
         <user-lists mode="lazy" />

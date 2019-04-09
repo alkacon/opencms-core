@@ -30,10 +30,13 @@ package org.opencms.ade.configuration;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
@@ -80,6 +83,12 @@ public class CmsADEConfigDataInternal {
     /** The internal resource type entries. */
     private List<CmsResourceTypeConfig> m_ownResourceTypes = Lists.newArrayList();
 
+    /** The dynamic functions configured for this configuration level. */
+    private Set<CmsUUID> m_ownDynamicFunctions;
+
+    /** the dynamic functions available. */
+    private Set<CmsUUID> m_dynamicFunctions;
+
     /** True if detail pages from this sitemap should be preferred when linking to contents inside this sitemap. */
     private boolean m_preferDetailPagesForLocalContents;
 
@@ -88,7 +97,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-
+    
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -104,6 +113,7 @@ public class CmsADEConfigDataInternal {
      * @param createContentsLocally the "create contents locally" flag
      * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
      * @param formatterChangeSet the formatter changes
+     * @param dynamicFunctions the dynamic functions available
      */
     public CmsADEConfigDataInternal(
         CmsResource resource,
@@ -120,7 +130,8 @@ public class CmsADEConfigDataInternal {
         boolean discardInheritedModelPages,
         boolean createContentsLocally,
         boolean preferDetailPagesForLocalContents,
-        CmsFormatterChangeSet formatterChangeSet) {
+        CmsFormatterChangeSet formatterChangeSet,
+        Set<CmsUUID> dynamicFunctions) {
 
         m_resource = resource;
         m_basePath = basePath;
@@ -138,6 +149,8 @@ public class CmsADEConfigDataInternal {
         m_createContentsLocally = createContentsLocally;
         m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
         m_formatterChangeSet = formatterChangeSet;
+        m_ownDynamicFunctions = dynamicFunctions;
+        m_dynamicFunctions = dynamicFunctions;
     }
 
     /**
@@ -170,6 +183,16 @@ public class CmsADEConfigDataInternal {
     public String getBasePath() {
 
         return m_basePath;
+    }
+
+    /**
+     * Returns the restricted dynamic functions or <code>null</code>.<p>
+     *
+     * @return the dynamic functions
+     */
+    public Collection<CmsUUID> getDynamicFunctions() {
+
+        return m_dynamicFunctions == null ? null : Collections.unmodifiableSet(m_dynamicFunctions);
     }
 
     /**
@@ -361,6 +384,11 @@ public class CmsADEConfigDataInternal {
             parentFunctionRefs,
             m_functionReferences,
             false);
+        if ((parent != null) && (m_ownDynamicFunctions == null)) {
+            m_dynamicFunctions = parent.m_dynamicFunctions;
+        } else {
+            m_dynamicFunctions = m_ownDynamicFunctions;
+        }
     }
 
     /**

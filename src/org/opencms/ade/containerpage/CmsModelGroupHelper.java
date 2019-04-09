@@ -343,7 +343,8 @@ public class CmsModelGroupHelper {
                 List<CmsContainerBean> modelContainers = readModelContainers(
                     baseInstanceId,
                     originalInstanceId,
-                    modelPage);
+                    modelPage,
+                    baseElement.isCopyModel());
                 if (!m_isEditingModelGroups && baseElement.isCopyModel()) {
                     modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
                 }
@@ -452,7 +453,8 @@ public class CmsModelGroupHelper {
                                 List<CmsContainerBean> modelContainers = collectModelStructure(
                                     modelInstanceId,
                                     element.getInstanceId(),
-                                    containerByParent);
+                                    containerByParent,
+                                    true);
                                 if (alwaysCopy) {
                                     modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
                                 }
@@ -518,7 +520,11 @@ public class CmsModelGroupHelper {
                         }
                         elements.add(replaceElement);
                         resultContainers.addAll(
-                            readModelContainers(baseInstanceId, element.getInstanceId(), modelGroupPage));
+                            readModelContainers(
+                                baseInstanceId,
+                                element.getInstanceId(),
+                                modelGroupPage,
+                                baseElement.isCopyModel()));
                     } else {
                         elements.add(element);
                     }
@@ -672,16 +678,20 @@ public class CmsModelGroupHelper {
      * @param element the container element
      * @param originalContainer the original parent container name
      * @param adjustedContainer the target container name
+     * @param setNewInstanceId <code>true</code> to set a new instance id
      *
      * @return the new element instance
      */
     private CmsContainerElementBean adjustSettings(
         CmsContainerElementBean element,
         String originalContainer,
-        String adjustedContainer) {
+        String adjustedContainer,
+        boolean setNewInstanceId) {
 
         Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-        settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+        if (setNewInstanceId) {
+            settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+        }
         String formatterId = settings.remove(CmsFormatterConfig.getSettingsKeyForContainer(originalContainer));
         settings.put(CmsFormatterConfig.getSettingsKeyForContainer(adjustedContainer), formatterId);
         return CmsContainerElementBean.cloneWithSettings(element, settings);
@@ -717,13 +727,15 @@ public class CmsModelGroupHelper {
      * @param modelInstanceId the model instance id
      * @param replaceModelId the local instance id
      * @param containerByParent the model group page containers by parent instance id
+     * @param isCopyGroup <code>true</code> in case of a copy group
      *
      * @return the collected containers
      */
     private List<CmsContainerBean> collectModelStructure(
         String modelInstanceId,
         String replaceModelId,
-        Map<String, List<CmsContainerBean>> containerByParent) {
+        Map<String, List<CmsContainerBean>> containerByParent,
+        boolean isCopyGroup) {
 
         List<CmsContainerBean> result = new ArrayList<CmsContainerBean>();
 
@@ -736,13 +748,18 @@ public class CmsModelGroupHelper {
                     CmsContainerElementBean copyElement = adjustSettings(
                         element,
                         container.getName(),
-                        adjustedContainerName);
+                        adjustedContainerName,
+                        isCopyGroup);
                     if (m_sessionCache != null) {
                         m_sessionCache.setCacheContainerElement(copyElement.editorHash(), copyElement);
                     }
                     elements.add(copyElement);
                     result.addAll(
-                        collectModelStructure(element.getInstanceId(), copyElement.getInstanceId(), containerByParent));
+                        collectModelStructure(
+                            element.getInstanceId(),
+                            copyElement.getInstanceId(),
+                            containerByParent,
+                            isCopyGroup));
                 }
 
                 result.add(
@@ -910,7 +927,7 @@ public class CmsModelGroupHelper {
                 element.getFormatterId());
             resetSettings = (formatter == null)
                 || !formatter.getResourceTypeNames().contains(
-                    OpenCms.getResourceManager().getResourceType(baseElement.getResource()));
+                    OpenCms.getResourceManager().getResourceType(baseElement.getResource()).getTypeName());
         }
         Map<String, String> settings;
         if (resetSettings) {
@@ -954,18 +971,20 @@ public class CmsModelGroupHelper {
      * @param modelInstanceId the model instance id
      * @param localInstanceId the local instance id
      * @param modelPage the model page bean
+     * @param isCopyGroup <code>true</code> in case of a copy group
      *
      * @return the model group containers
      */
     private List<CmsContainerBean> readModelContainers(
         String modelInstanceId,
         String localInstanceId,
-        CmsContainerPageBean modelPage) {
+        CmsContainerPageBean modelPage,
+        boolean isCopyGroup) {
 
         Map<String, List<CmsContainerBean>> containerByParent = getContainerByParent(modelPage);
         List<CmsContainerBean> modelContainers;
         if (containerByParent.containsKey(modelInstanceId)) {
-            modelContainers = collectModelStructure(modelInstanceId, localInstanceId, containerByParent);
+            modelContainers = collectModelStructure(modelInstanceId, localInstanceId, containerByParent, isCopyGroup);
         } else {
             modelContainers = new ArrayList<CmsContainerBean>();
         }

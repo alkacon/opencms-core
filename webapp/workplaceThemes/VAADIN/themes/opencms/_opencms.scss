@@ -1200,7 +1200,7 @@
 		    top: 2px;
 		}
 		&.o-security-invalid:after{
-			content: "\f06a";
+			content: "\e63f";
 			color: $red;
 		}
 		&.o-security-weak:after{
@@ -1409,16 +1409,16 @@
 	.o-setuptest-yellow {
 		color: $orange;
 	}
-	
-	.o-logo-alkacon { 
+
+	.o-logo-alkacon {
 		background-image: url(img/alkacon-logo.svg);
 		background-repeat: no-repeat;
-		display: inline-block; 
+		display: inline-block;
 		width: 129px;
-		height: 42px;  
+		height: 42px;
 	}
-	
-	.o-logo-opencms { 
+
+	.o-logo-opencms {
 		background-image: url(img/opencms-logo.svg);
 		background-repeat: no-repeat;
 		display: inline-block;

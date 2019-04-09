@@ -798,7 +798,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     private CmsJspStandardContextBean getStandardContext(CmsObject cms, HttpServletRequest req) throws CmsException {
 
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
-        standardContext.initPage(cms, req);
+        standardContext.initPage();
         return standardContext;
     }
 
