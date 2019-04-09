@@ -1250,24 +1250,21 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the container page bean for the give site path or structure id.<p>
+     * Returns the container page bean for the give page and locale.<p>
      *
-     * @param pathOrId the path or id of the resource
-     * @param locale the content locale
+     * @param page the container page resource as id, path or already as resource
+     * @param locale the content locale as locale or string
      *
      * @return the container page bean
      */
-    public CmsContainerPageBean getPage(String pathOrId, Locale locale) {
+    public CmsContainerPageBean getPage(Object page, Object locale) {
 
         CmsResource pageResource = null;
         CmsContainerPageBean result = null;
         if (m_cms != null) {
             try {
-                if (CmsUUID.isValidUUID(pathOrId)) {
-                    pageResource = m_cms.readResource(new CmsUUID(pathOrId));
-                } else {
-                    pageResource = m_cms.readResource(pathOrId);
-                }
+                pageResource = CmsJspElFunctions.convertRawResource(m_cms, page);
+                Locale l = CmsJspElFunctions.convertLocale(locale);
                 result = getPage(pageResource);
                 if (result != null) {
                     CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
@@ -1279,6 +1276,7 @@ public final class CmsJspStandardContextBean {
                             boolean isInheritedContainer = element.isInheritedContainer(m_cms);
                             I_CmsFormatterBean formatterConfig = null;
                             if (!isGroupContainer && !isInheritedContainer) {
+                                element.initResource(m_cms);
                                 // ensure that the formatter configuration id is added to the element settings, so it will be persisted on save
                                 formatterConfig = CmsJspTagContainer.getFormatterConfigurationForElement(
                                     m_cms,
@@ -1287,9 +1285,8 @@ public final class CmsJspStandardContextBean {
                                     container.getName(),
                                     "",
                                     0);
-                                element.initResource(m_cms);
                                 if (formatterConfig != null) {
-                                    element.initSettings(m_cms, formatterConfig, locale, m_request, null);
+                                    element.initSettings(m_cms, formatterConfig, l, m_request, null);
                                 }
                             }
                         }
