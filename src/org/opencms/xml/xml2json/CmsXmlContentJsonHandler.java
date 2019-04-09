@@ -112,7 +112,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
      */
-    public boolean matches(CmsJsonHandlerContext context) throws CmsException {
+    public boolean matches(CmsJsonHandlerContext context) {
 
         return CmsResourceTypeXmlContent.isXmlContent(context.getResource());
     }
@@ -122,10 +122,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException {
 
+        System.out.println(context.getHandlerConfig());
         try {
             CmsXmlContent content = context.getContent();
             CmsObject cms = context.getCms();
-            CmsXmlContentJsonRenderer renderer = createContentRenderer(cms);
+            CmsXmlContentJsonRenderer renderer = createContentRenderer(context);
 
             Object json = null;
             String localeParam = context.getParameters().get(PARAM_LOCALE);
@@ -146,7 +147,9 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             } else {
                 throw new IllegalArgumentException("Can not use path parameter without locale parameter.");
             }
-            return new CmsJsonResult(json, HttpServletResponse.SC_OK);
+            CmsJsonResult res = new CmsJsonResult(json, HttpServletResponse.SC_OK);
+            return res;
+
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsJsonResult(empty(), HttpServletResponse.SC_NOT_FOUND);
@@ -156,15 +159,15 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     /**
      * Creates the content renderer instance.
      *
-     * @param cms the CMS context
+     * @param context the JSON handler context
      *
      * @return the content renderer instance
      *
      * @throws CmsException if something goes wrong
      */
-    protected CmsXmlContentJsonRenderer createContentRenderer(CmsObject cms) throws CmsException {
+    protected CmsXmlContentJsonRenderer createContentRenderer(CmsJsonHandlerContext context) throws CmsException {
 
-        return new CmsXmlContentJsonRenderer(cms);
+        return new CmsXmlContentJsonRenderer(context.getCms());
     }
 
 }
