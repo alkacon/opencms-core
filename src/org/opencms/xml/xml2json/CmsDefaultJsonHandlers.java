@@ -38,6 +38,9 @@ import java.util.List;
  */
 public class CmsDefaultJsonHandlers {
 
+    private static CmsFolderJsonHandler m_folderHandler = new CmsFolderJsonHandler();
+    private static CmsXmlContentJsonHandler m_xmlContentHandler = new CmsXmlContentJsonHandler();
+
     /**
      * Gets the default JSON handlers.
      *
@@ -45,7 +48,7 @@ public class CmsDefaultJsonHandlers {
      */
     public static List<I_CmsJsonHandler> getHandlers() {
 
-        return new ArrayList<>(Arrays.asList(new CmsFolderJsonHandler(), new CmsXmlContentJsonHandler()));
+        return new ArrayList<>(Arrays.asList(m_folderHandler, m_xmlContentHandler));
     }
 
 }
