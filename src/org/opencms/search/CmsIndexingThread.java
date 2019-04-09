@@ -98,6 +98,16 @@ public class CmsIndexingThread extends Thread {
      */
     public I_CmsSearchDocument getResult() {
 
+        if (null == m_result) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(
+                    "Creating default document without content for "
+                        + m_res.getRootPath()
+                        + " in index "
+                        + m_index.getName());
+            }
+            return createDefaultIndexDocument();
+        }
         return m_result;
     }
 
@@ -171,6 +181,29 @@ public class CmsIndexingThread extends Thread {
                             m_index.getName()));
                 }
             }
+        }
+    }
+
+    /**
+     * Creates a document for the resource without extracting the content. The aim is to get a content indexed,
+     * even if extraction runs into a timeout.
+     *
+     * @return the document for the resource generated if the content is discarded,
+     *         i.e., only meta information are indexed.
+     */
+    protected I_CmsSearchDocument createDefaultIndexDocument() {
+
+        try {
+            return m_index.getFieldConfiguration().createDocument(m_cms, m_res, m_index, null);
+        } catch (CmsException e) {
+            LOG.error(
+                "Default document for "
+                    + m_res.getRootPath()
+                    + " and index "
+                    + m_index.getName()
+                    + " could not be created.",
+                e);
+            return null;
         }
     }
 
