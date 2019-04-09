@@ -29,6 +29,7 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
@@ -61,10 +62,21 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
 
     /** URL prefix. */
     public static final String PREFIX = "/json";
+    
+    /** Request attribute for storing the JSON handler context. */ 
+    public static final String ATTR_CONTEXT = "jsonHandlerContext";
 
     /** Service loader used to load external JSON handler classes. */
     private ServiceLoader<I_CmsJsonHandlerProvider> m_serviceLoader = ServiceLoader.load(
         I_CmsJsonHandlerProvider.class);
+
+    /**
+     * Creates a new instance.
+     */
+    public CmsJsonResourceHandler() {
+
+        CmsFlexController.registerUncacheableAttribute(ATTR_CONTEXT);
+    }
 
     /**
      * Gets the list of sub-handlers, sorted by ascending order.
@@ -126,6 +138,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
             boolean foundHandler = false;
+            req.setAttribute(ATTR_CONTEXT, context);
             for (I_CmsJsonHandler handler : getSubHandlers()) {
                 if (handler.matches(context)) {
                     CmsJsonResult result = handler.renderJson(context);
