@@ -68,6 +68,9 @@ public class CmsIndexingThread extends Thread {
     /** The result document. */
     private I_CmsSearchDocument m_result;
 
+    /** Flag, indicating if the resource should be excluded from the index. */
+    private Boolean m_excludeFromIndex;
+
     /**
      * Create a new indexing thread.<p>
      *
@@ -98,7 +101,7 @@ public class CmsIndexingThread extends Thread {
      */
     public I_CmsSearchDocument getResult() {
 
-        if (null == m_result) {
+        if (!excludeFromIndex() && (null == m_result)) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(
                     "Creating default document without content for "
@@ -246,10 +249,7 @@ public class CmsIndexingThread extends Thread {
                 I_CmsReport.FORMAT_DEFAULT);
         }
 
-        // check if this resource should be excluded from the index, if so skip it
-        boolean excludeFromIndex = index.excludeFromIndex(cms, res);
-
-        if (!excludeFromIndex) {
+        if (!excludeFromIndex()) {
             // resource is to be included in the index
             I_CmsDocumentFactory documentFactory = index.getDocumentFactory(res);
             if (documentFactory != null) {
@@ -285,5 +285,17 @@ public class CmsIndexingThread extends Thread {
         }
 
         return result;
+    }
+
+    /**
+     * Returns a flag, indicating if the current resource should be excluded from the index.
+     * @return a flag, indicating if the current resource should be excluded from the index.
+     */
+    protected boolean excludeFromIndex() {
+
+        if (null == m_excludeFromIndex) {
+            m_excludeFromIndex = Boolean.valueOf(m_index.excludeFromIndex(m_cms, m_res));
+        }
+        return m_excludeFromIndex.booleanValue();
     }
 }
