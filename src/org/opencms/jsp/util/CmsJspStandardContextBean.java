@@ -1253,10 +1253,11 @@ public final class CmsJspStandardContextBean {
      * Returns the container page bean for the give site path or structure id.<p>
      *
      * @param pathOrId the path or id of the resource
+     * @param locale the content locale
      *
      * @return the container page bean
      */
-    public CmsContainerPageBean getPage(String pathOrId) {
+    public CmsContainerPageBean getPage(String pathOrId, Locale locale) {
 
         CmsResource pageResource = null;
         CmsContainerPageBean result = null;
@@ -1268,6 +1269,32 @@ public final class CmsJspStandardContextBean {
                     pageResource = m_cms.readResource(pathOrId);
                 }
                 result = getPage(pageResource);
+                if (result != null) {
+                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                        m_cms,
+                        pageResource.getRootPath());
+                    for (CmsContainerBean container : result.getContainers().values()) {
+                        for (CmsContainerElementBean element : container.getElements()) {
+                            boolean isGroupContainer = element.isGroupContainer(m_cms);
+                            boolean isInheritedContainer = element.isInheritedContainer(m_cms);
+                            I_CmsFormatterBean formatterConfig = null;
+                            if (!isGroupContainer && !isInheritedContainer) {
+                                // ensure that the formatter configuration id is added to the element settings, so it will be persisted on save
+                                formatterConfig = CmsJspTagContainer.getFormatterConfigurationForElement(
+                                    m_cms,
+                                    element,
+                                    adeConfig,
+                                    container.getName(),
+                                    "",
+                                    0);
+                                element.initResource(m_cms);
+                                if (formatterConfig != null) {
+                                    element.initSettings(m_cms, formatterConfig, locale, m_request, null);
+                                }
+                            }
+                        }
+                    }
+                }
             } catch (Exception e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
