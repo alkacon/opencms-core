@@ -71,6 +71,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -91,7 +92,9 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 import org.dom4j.util.NodeComparator;
 
 import junit.extensions.TestSetup;
@@ -865,6 +868,22 @@ public class OpenCmsTestCase extends TestCase {
             // set data path
             addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
         }
+    }
+
+    public static CmsParameterConfiguration readXmlTestData(Class<?> cls, String path) throws Exception {
+
+        SAXReader reader = new SAXReader();
+        CmsParameterConfiguration result = new CmsParameterConfiguration();
+        Document document;
+        InputStream stream = cls.getResourceAsStream(path);
+        document = reader.read(stream);
+        Element root = document.getRootElement();
+        for (Element child : root.elements("entry")) {
+            String name = child.attributeValue("name");
+            String value = child.getText();
+            result.add(name, value);
+        }
+        return result;
     }
 
     /**

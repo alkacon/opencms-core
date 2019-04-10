@@ -27,15 +27,21 @@
 
 package org.opencms.xml2json;
 
-import org.opencms.file.CmsFile;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import junit.framework.Test;
 
@@ -81,19 +87,65 @@ public class TestXml2Json extends OpenCmsTestCase {
     }
 
     /**
-     * Checks that the test data is set up correctly.
+     * Test case.
      *
      * @throws Exception
      */
-    public void testDataAvailable() throws Exception {
+    public void testChoice() throws Exception {
 
-        CmsObject cms = getCmsObject();
-        CmsFile file = cms.readFile(modPath("test1.xml"));
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(file);
-        assertEquals("xjparent", type.getTypeName());
-
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-
+        runDataTest("choice-test.xml");
     }
 
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testEmpty() throws Exception {
+
+        runDataTest("empty-test.xml");
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testSimple() throws Exception {
+
+        runDataTest("simple-test.xml");
+    }
+
+    /**
+     * Read XML input and expected output from data file and check if rendered JSON matches expected output.
+     *
+     * @param name the test data file name
+     * @throws Exception
+     */
+    protected void runDataTest(String name) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String folder = "/system/jsontest";
+        if (cms.existsResource(folder)) {
+            cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+        cms.createResource(folder, 0);
+        I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
+        CmsParameterConfiguration data = readXmlTestData(getClass(), name);
+        data.get("input");
+        cms.createResource(
+            folder + "/test.xml",
+            contentType,
+            data.get("input").trim().getBytes("UTF-8"),
+            new ArrayList<>());
+        String expected = new String(data.get("output").trim());
+        CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(cms);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(folder + "/test.xml"));
+        Object jsonObj = renderer.render(content, Locale.ENGLISH);
+
+        String actual = JSONObject.valueToString(jsonObj, 0, 4);
+        expected = JSONObject.valueToString(new JSONObject(expected, true), 0, 4);
+        assertEquals(expected, actual);
+
+    }
 }

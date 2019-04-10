@@ -38,18 +38,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.test.xml2json/test1.xml</source>
-			<destination>system/modules/org.opencms.test.xml2json/test1.xml</destination>
-			<type>xjparent</type>
-			<uuidstructure>f6f75f72-544e-11e9-9af3-1b3402713b9c</uuidstructure>
-			<uuidresource>f6f75f73-544e-11e9-9af3-1b3402713b9c</uuidresource>
-			<datecreated>Mon, 01 Apr 2019 07:22:53 GMT</datecreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.test.xml2json/schemas</destination>
 			<type>folder</type>
 			<uuidstructure>0284e0b5-5445-11e9-bde5-1b3402713b9c</uuidstructure>
@@ -71,6 +59,18 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+            <source>system/modules/org.opencms.test.xml2json/schemas/choice.xsd</source>
+            <destination>system/modules/org.opencms.test.xml2json/schemas/choice.xsd</destination>
+            <type>plain</type>
+            <uuidstructure>0baaaf7f-5446-11e9-bdf7-1b3402713b9c</uuidstructure>
+            <uuidresource>0baaaf80-5446-11e9-bdf7-1b3402713b9c</uuidresource>
+            <datecreated>Mon, 01 Apr 2019 06:19:03 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
 		<file>
 			<source>system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd</source>
 			<destination>system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd</destination>

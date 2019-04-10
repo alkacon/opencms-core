@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entries>
+    <entry name="input">
+    <![CDATA[
+    
+<?xml version="1.0" encoding="UTF-8"?>
+
+<XjParents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd">
+  <XjParent language="en">
+    <Text>text1</Text>
+    <SingleNested>
+        <Text>hello world</Text>
+    </SingleNested>
+    <Choice>
+        <Red>1</Red>
+        <Green>2</Green>
+    </Choice>
+    <Choice>
+        <Red>3</Red>
+        <Red>4</Red>
+    </Choice>
+    <Choice>
+        <Green>5</Green>
+    </Choice>
+    
+    
+  </XjParent>
+</XjParents>
+
+    
+    ]]>
+    </entry>
+    <entry name="output">
+    <![CDATA[
+        { 
+            "Text" : "text1", 
+            "MultiText" : [],
+            "SingleNested" : {
+                "Text" : "hello world"
+            },
+            "MultiNested" : [],
+            "Choice": [{"Red": "1"}, {"Green": "2"}, {"Red": "3"}, {"Red": "4"}, {"Green": "5"}] 
+        }
+    ]]>
+    </entry>
+</entries>

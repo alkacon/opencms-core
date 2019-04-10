@@ -28,6 +28,7 @@
 package org.opencms.xml;
 
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.xml2json.TestXml2Json;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -60,6 +61,7 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(TestCmsXmlEntityResolver.suite());
         suite.addTest(new TestSuite(TestXmlUtils.class));
+        suite.addTest(TestXml2Json.suite());
         //$JUnit-END$
         return suite;
     }

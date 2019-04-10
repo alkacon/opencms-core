@@ -1,6 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.test.xml2json/schemas/child.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.test.xml2json/schemas/choice.xsd" />
     
     <xsd:element name="XjParents" type="OpenCmsXjParents" />
     
@@ -15,6 +16,9 @@
         	<xsd:element name="Text" type="OpenCmsString" />
 			<xsd:element name="OptText" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="MultiText" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="SingleNested" type="OpenCmsXjChild" minOccurs="0" />
+            <xsd:element name="MultiNested" type="OpenCmsXjChild" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Choice" type="OpenCmsXjChoice" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
