@@ -27,7 +27,6 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -92,7 +91,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
                 continue;
             }
             if (StringUtils.isNumeric(token) && (current instanceof JSONArray)) {
-                current = ((JSONArray)current).get(Integer.parseInt(token));
+                current = ((JSONArray)current).get(Integer.parseInt(token) - 1);
             } else {
                 current = ((JSONObject)current).get(token);
             }
@@ -122,24 +121,22 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException {
 
-        System.out.println(context.getHandlerConfig());
         try {
             CmsXmlContent content = context.getContent();
-            CmsObject cms = context.getCms();
-            CmsXmlContentJsonRenderer renderer = createContentRenderer(context);
+            I_CmsXmlContentJsonRenderer renderer = createContentRenderer(context);
 
             Object json = null;
             String localeParam = context.getParameters().get(PARAM_LOCALE);
             String pathParam = context.getParameters().get(PARAM_PATH);
             if ((localeParam == null) && (pathParam == null)) {
-                json = renderer.renderAllLocales(content);
+                json = CmsDefaultXmlContentJsonRenderer.renderAllLocales(content, renderer);
             } else if (localeParam != null) {
                 Locale locale = CmsLocaleManager.getLocale(localeParam);
                 Locale selectedLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
                     locale,
                     Collections.emptyList(),
                     context.getContent().getLocales());
-                json = renderer.render(new CmsXmlContentTree(context.getContent(), selectedLocale));
+                json = renderer.render(context.getContent(), selectedLocale);
                 if (pathParam != null) {
                     Object result = lookupPath(json, pathParam);
                     json = result;
@@ -165,9 +162,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      *
      * @throws CmsException if something goes wrong
      */
-    protected CmsXmlContentJsonRenderer createContentRenderer(CmsJsonHandlerContext context) throws CmsException {
+    protected I_CmsXmlContentJsonRenderer createContentRenderer(CmsJsonHandlerContext context) throws CmsException {
 
-        return new CmsXmlContentJsonRenderer(context.getCms());
+        CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer();
+        renderer.initialize(context);
+        return renderer;
     }
 
 }

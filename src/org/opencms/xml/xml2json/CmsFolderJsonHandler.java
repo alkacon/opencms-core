@@ -56,7 +56,7 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
      */
-    public boolean matches(CmsJsonHandlerContext context) throws CmsException {
+    public boolean matches(CmsJsonHandlerContext context) {
 
         return context.getResource().isFolder();
     }

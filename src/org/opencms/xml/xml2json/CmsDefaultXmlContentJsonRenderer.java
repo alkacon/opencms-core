@@ -46,9 +46,12 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Converts an XML content to JSON.
+ * Converts an XML content to JSON by creating a CmsXmlContentTree and then recursively processing its nodes.
+ *
+ * <p>This specific renderer class does not need to be initialized with a CmsJsonHandlerContext, you can
+ * just initialize it with a CmsObject.
  */
-public class CmsXmlContentJsonRenderer {
+public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRenderer {
 
     /** The CMS context. */
     private CmsObject m_cms;
@@ -59,15 +62,22 @@ public class CmsXmlContentJsonRenderer {
     /**
      * Creates a new instance.
      *
+     * If this constructor is used, you still have to call one of the initialize() methods before rendering XML content to JSON.
+     */
+    public CmsDefaultXmlContentJsonRenderer() {
+        // do nothing
+    }
+
+    /**
+     * Creates a new instance.
+     *
      * @param cms the CMS context to use
      * @throws CmsException if something goes wrong
      */
-    public CmsXmlContentJsonRenderer(CmsObject cms)
+    public CmsDefaultXmlContentJsonRenderer(CmsObject cms)
     throws CmsException {
 
-        m_cms = cms;
-        m_rootCms = OpenCms.initCmsObject(cms);
-        m_rootCms.getRequestContext().setSiteRoot("");
+        initialize(cms);
     }
 
     /**
@@ -91,38 +101,58 @@ public class CmsXmlContentJsonRenderer {
     }
 
     /**
-     * Converts an XML content tree to a JSON object
-     *
-     * @param tree the tree
-     * @return the JSON object
-     *
-     * @throws JSONException if something goes wrong
-     */
-    public JSONObject render(CmsXmlContentTree tree) throws JSONException {
-
-        Node root = tree.getRoot();
-        return (JSONObject)renderNode(root);
-
-    }
-
-    /**
-     * Renders the JSON representations for all locales in the given content, and adds them as fields
-     * to the result JSON, with the locales as field names.
+     * Helper method to apply renderer to all locales of an XML content, and put the resulting objects into a JSON object with the locales as keys.
      *
      * @param content the content
-     * @return the result JSON for all locales
+     * @param renderer the renderer to use
+     * @return the result JSON
      * @throws JSONException if something goes wrong
      */
-    public JSONObject renderAllLocales(CmsXmlContent content) throws JSONException {
+    public static JSONObject renderAllLocales(CmsXmlContent content, I_CmsXmlContentJsonRenderer renderer)
+    throws JSONException {
 
         List<Locale> locales = content.getLocales();
         JSONObject result = new JSONObject(true);
         for (Locale locale : locales) {
-            CmsXmlContentTree tree = new CmsXmlContentTree(content, locale);
-            JSONObject jsonForLocale = render(tree);
+            Object jsonForLocale = renderer.render(content, locale);
             result.put(locale.toString(), jsonForLocale);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsXmlContentJsonRenderer#initialize(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     */
+    public void initialize(CmsJsonHandlerContext context) throws CmsException {
+
+        initialize(context.getCms());
+    }
+
+    /**
+     * Initializes the renderer.
+     *
+     * @param cms the CMS context to use
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void initialize(CmsObject cms) throws CmsException {
+
+        m_cms = cms;
+        m_rootCms = OpenCms.initCmsObject(m_cms);
+        m_rootCms.getRequestContext().setSiteRoot("");
+
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsXmlContentJsonRenderer#render(org.opencms.xml.content.CmsXmlContent, java.util.Locale)
+     */
+    @Override
+    public Object render(CmsXmlContent content, Locale locale) throws JSONException {
+
+        CmsXmlContentTree tree = new CmsXmlContentTree(content, locale);
+        Node root = tree.getRoot();
+        return renderNode(root);
+
     }
 
     /**

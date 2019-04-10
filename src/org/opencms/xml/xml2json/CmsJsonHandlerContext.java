@@ -99,6 +99,12 @@ public class CmsJsonHandlerContext {
         m_path = path;
         m_parameters = params;
         m_handlerConfig = handlerConfig;
+        if (m_parameters == null) {
+            m_parameters = Collections.emptyMap();
+        }
+        if (m_handlerConfig == null) {
+            m_handlerConfig = new CmsParameterConfiguration();
+        }
     }
 
     /**

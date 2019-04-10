@@ -27,31 +27,34 @@
 
 package org.opencms.xml.xml2json;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.opencms.json.JSONException;
+import org.opencms.main.CmsException;
+import org.opencms.xml.content.CmsXmlContent;
+
+import java.util.Locale;
 
 /**
- * Provides default JSON handlers.
- *
- * <p>Some JSON handlers are always provided, they do not need to be loaded via ServiceLoader.
+ * Renders a single-locale content tree as JSON.
  */
-public class CmsDefaultJsonHandlers {
-
-    /** The folder handler instance. */
-    private static CmsFolderJsonHandler m_folderHandler = new CmsFolderJsonHandler();
-
-    /** The XML handler instance. */
-    private static CmsXmlContentJsonHandler m_xmlContentHandler = new CmsXmlContentJsonHandler();
+public interface I_CmsXmlContentJsonRenderer {
 
     /**
-     * Gets the default JSON handlers.
+     * Initializes the context for the renderer.
      *
-     * @return the list of default JSON handlers
+     * @param context the context to set
+     * @throws CmsException if something goes wrong
      */
-    public static List<I_CmsJsonHandler> getHandlers() {
+    void initialize(CmsJsonHandlerContext context) throws CmsException;
 
-        return new ArrayList<>(Arrays.asList(m_folderHandler, m_xmlContentHandler));
-    }
+    /**
+     * Converts the XML content for a single locale to a JSON object
+     *
+     * @param content the content
+     * @param locale the locale
+     * @return the JSON object
+     *
+     * @throws JSONException if something goes wrong
+     */
+    Object render(CmsXmlContent content, Locale locale) throws JSONException;
 
 }
