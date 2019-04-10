@@ -68,8 +68,8 @@ public class CmsIndexingThread extends Thread {
     /** The result document. */
     private I_CmsSearchDocument m_result;
 
-    /** Flag, indicating if the resource should be excluded from the index. */
-    private Boolean m_excludeFromIndex;
+    /** Flag, indicating if a default document for the resource should be created. */
+    private boolean m_addDefaultDocument = true;
 
     /**
      * Create a new indexing thread.<p>
@@ -101,7 +101,7 @@ public class CmsIndexingThread extends Thread {
      */
     public I_CmsSearchDocument getResult() {
 
-        if (!excludeFromIndex() && (null == m_result)) {
+        if ((null == m_result) && m_addDefaultDocument) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(
                     "Creating default document without content for "
@@ -249,7 +249,9 @@ public class CmsIndexingThread extends Thread {
                 I_CmsReport.FORMAT_DEFAULT);
         }
 
-        if (!excludeFromIndex()) {
+        if (m_index.excludeFromIndex(m_cms, m_res)) {
+            m_addDefaultDocument = false;
+        } else {
             // resource is to be included in the index
             I_CmsDocumentFactory documentFactory = index.getDocumentFactory(res);
             if (documentFactory != null) {
@@ -263,6 +265,8 @@ public class CmsIndexingThread extends Thread {
                 }
                 // create the document
                 result = documentFactory.createDocument(cms, res, index);
+            } else {
+                m_addDefaultDocument = false;
             }
         }
         if (result == null) {
@@ -285,17 +289,5 @@ public class CmsIndexingThread extends Thread {
         }
 
         return result;
-    }
-
-    /**
-     * Returns a flag, indicating if the current resource should be excluded from the index.
-     * @return a flag, indicating if the current resource should be excluded from the index.
-     */
-    protected boolean excludeFromIndex() {
-
-        if (null == m_excludeFromIndex) {
-            m_excludeFromIndex = Boolean.valueOf(m_index.excludeFromIndex(m_cms, m_res));
-        }
-        return m_excludeFromIndex.booleanValue();
     }
 }
