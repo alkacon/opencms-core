@@ -583,6 +583,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Node name for the list of field declarations. */
     private static final Object APPINFO_FIELD_SETTINGS = "FieldSettings";
 
+    /** JSON renderer node name. */
+    private static final Object APPINFO_JSON_RENDERER = "jsonrenderer";
+
     /** Attribute name for the context used for resolving content mappings. */
     private static final String ATTR_MAPPING_RESOLUTION_CONTEXT = "MAPPING_RESOLUTION_CONTEXT";
 
@@ -750,6 +753,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The nice names for the fields. */
     private Map<String, String> m_fieldNiceNames = new HashMap<>();
+
+    /** The JSON renderer settings. */
+    private JsonRendererSettings m_jsonRendererSettings;
 
     /** A set of keys identifying the mappings which should use default values if the corresponding values are not set in the XML content. */
     private Set<String> m_mappingsUsingDefault = new HashSet<String>();
@@ -1062,6 +1068,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException {
 
         return getJSHeadIncludes();
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getJsonRendererSettings()
+     */
+    public JsonRendererSettings getJsonRendererSettings() {
+
+        return m_jsonRendererSettings;
     }
 
     /**
@@ -1471,6 +1485,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initParameters(element);
                 } else if (nodeName.equals(APPINFO_FIELD_SETTINGS)) {
                     initFields(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_JSON_RENDERER)) {
+                    initJsonRenderer(element);
+
                 }
             }
         }
@@ -2672,6 +2689,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 }
             }
         }
+    }
+
+    /**
+     * Reads the JSON renderer settings.
+     *
+     * @param element the configuration XML element
+     */
+    protected void initJsonRenderer(Element element) {
+
+        String cls = element.attributeValue(APPINFO_ATTR_CLASS);
+        Map<String, String> params = new HashMap<>();
+        for (Element paramElement : element.elements(APPINFO_PARAM)) {
+            String name = paramElement.attributeValue(APPINFO_ATTR_NAME);
+            String value = paramElement.getText();
+            params.put(name, value);
+        }
+        m_jsonRendererSettings = new JsonRendererSettings(cls, params);
+
     }
 
     /**

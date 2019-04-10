@@ -32,6 +32,7 @@
 			<xsd:element name="messagekeyhandler" type="OpenCmsDefaultAppinfoMessageKeyHandler" minOccurs="0" />
 			<xsd:element name="parameters" type="OpenCmsDefaultAppinfoParameters" minOccurs="0" />
 			<xsd:element name="FieldSettings" type="OpenCmsDefaultAppinfoFields" minOccurs="0"/>      
+            <xsd:element name="jsonrenderer" type="OpenCmsJsonRenderer" minOccurs="0"  />
 			
 		</xsd:all>
 	</xsd:complexType>

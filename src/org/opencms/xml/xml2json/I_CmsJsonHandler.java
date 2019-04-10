@@ -65,6 +65,7 @@ public interface I_CmsJsonHandler {
      * @return the JSON result
      *
      * @throws CmsException if something goes wrong
+     * @throws JSONException when JSON classes produce an error
      */
     CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException, JSONException;
 

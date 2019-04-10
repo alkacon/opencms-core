@@ -406,5 +406,12 @@
             <xsd:element name="Synchronization" type="xsd:string" minOccurs="0" maxOccurs="1" />
     	</xsd:sequence>
 	</xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsJsonRenderer">
+        <xsd:sequence>
+			<xsd:element name="param" type="OpenCmsDefaultAppinfoParam" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string" use="required" />
+    </xsd:complexType>
 	
 </xsd:schema>

@@ -83,6 +83,54 @@ public interface I_CmsXmlContentHandler {
     }
 
     /**
+     * Settings for a JSON renderer.
+     */
+    public static class JsonRendererSettings {
+
+        /** The renderer class name. */
+        private String m_className;
+
+        /** The parameters for the renderer. */
+        private Map<String, String> m_params;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param className the class name
+         * @param params the parameters
+         */
+        public JsonRendererSettings(String className, Map<String, String> params) {
+
+            m_className = className;
+            m_params = params;
+        }
+
+        /**
+         * Gets the class name.
+         *
+         * @return the class name
+         */
+        public String getClassName() {
+
+            return m_className;
+        }
+
+        /**
+         * Gets the parameters.
+         *
+         * @return the parameters
+         */
+        public Map<String, String> getParameters() {
+
+            if (m_params == null) {
+                return Collections.emptyMap();
+            }
+            return Collections.unmodifiableMap(m_params);
+        }
+
+    }
+
+    /**
      * The available mapping types. Currently only available for searchsettings (using the "addto" attribute in the node &lt;solrfield&gt;).
      */
     public static enum MappingType {
@@ -298,6 +346,13 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsException if something goes wrong
      */
     Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException;
+
+    /**
+     * Gets the JSON renderer settings.
+     *
+     * @return the JSON renderer settings
+     */
+    JsonRendererSettings getJsonRendererSettings();
 
     /**
      * Returns the all mappings defined for the given element xpath.<p>

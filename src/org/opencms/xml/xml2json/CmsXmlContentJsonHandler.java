@@ -27,19 +27,22 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler.JsonRendererSettings;
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -119,7 +122,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
      */
-    public CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException {
+    public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 
         try {
             CmsXmlContent content = context.getContent();
@@ -148,8 +151,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             return res;
 
         } catch (JSONException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+            return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_NOT_FOUND);
+        } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
-            return new CmsJsonResult(empty(), HttpServletResponse.SC_NOT_FOUND);
+            return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -160,11 +166,27 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      *
      * @return the content renderer instance
      *
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    protected I_CmsXmlContentJsonRenderer createContentRenderer(CmsJsonHandlerContext context) throws CmsException {
+    protected I_CmsXmlContentJsonRenderer createContentRenderer(CmsJsonHandlerContext context) throws Exception {
 
-        CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer();
+        I_CmsXmlContentHandler handler = context.getContent().getContentDefinition().getContentHandler();
+        JsonRendererSettings settings = handler.getJsonRendererSettings();
+        I_CmsXmlContentJsonRenderer renderer = null;
+        if (settings == null) {
+            renderer = new CmsDefaultXmlContentJsonRenderer();
+        } else {
+            renderer = (I_CmsXmlContentJsonRenderer)Class.forName(settings.getClassName()).newInstance();
+            if (renderer instanceof I_CmsConfigurationParameterHandler) {
+                for (Map.Entry<String, String> entry : settings.getParameters().entrySet()) {
+                    ((I_CmsConfigurationParameterHandler)renderer).addConfigurationParameter(
+                        entry.getKey(),
+                        entry.getValue());
+                }
+                ((I_CmsConfigurationParameterHandler)renderer).initConfiguration();
+            }
+        }
+
         renderer.initialize(context);
         return renderer;
     }
