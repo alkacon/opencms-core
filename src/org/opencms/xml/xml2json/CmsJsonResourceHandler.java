@@ -174,11 +174,11 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
                     if (result.getNextResource() != null) {
                         return result.getNextResource();
                     } else {
+                        res.setStatus(result.getStatus()); // Needs to be set before we write the response body
                         PrintWriter writer = res.getWriter();
                         String jsonStr = JSONObject.valueToString(result.getJson(), 4, 0);
                         writer.write(jsonStr);
                         writer.flush();
-                        res.setStatus(result.getStatus());
                         foundHandler = true;
                         break;
                     }
