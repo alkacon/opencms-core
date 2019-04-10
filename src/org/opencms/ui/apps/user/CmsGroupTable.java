@@ -32,6 +32,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -73,16 +75,16 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
 
     /**Table properties.<p>*/
     public enum TableProperty {
-    /**Desription column. */
-    Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
-    /**Icon column.*/
-    Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_GROUP)),
-    /**IsIndirect?. */
-    INDIRECT("", Boolean.class, new Boolean(false)),
-    /**Name column. */
-    Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
-    /**OU column. */
-    OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, "");
+        /**Desription column. */
+        Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
+        /**Icon column.*/
+        Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_GROUP)),
+        /**IsIndirect?. */
+        INDIRECT("", Boolean.class, new Boolean(false)),
+        /**Name column. */
+        Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
+        /**OU column. */
+        OU(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_OU_0), String.class, "");
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -312,13 +314,21 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
          */
         public void executeAction(Set<String> context) {
 
+            boolean includeTechnicalFields = false;
+            try {
+                OpenCms.getRoleManager().checkRole(m_cms, CmsRole.ADMINISTRATOR);
+                includeTechnicalFields = true;
+            } catch (CmsRoleViolationException e) {
+                // ok
+            }
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
             window.setContent(
                 CmsImportExportUserDialog.getExportUserDialogForGroup(
                     new CmsUUID(context.iterator().next()),
                     m_ou,
-                    window));
+                    window,
+                    includeTechnicalFields));
 
             A_CmsUI.get().addWindow(window);
         }

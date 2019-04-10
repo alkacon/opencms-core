@@ -41,6 +41,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +60,20 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
 
     /**vaadin serial id. */
     private static final long serialVersionUID = -3990661225158677324L;
+
+    /**Non technical fields to be exported in reduced export. */
+    private static final List<String> NON_TECHNICAL_VALUES = Arrays.asList(
+        "description",
+        "lastname",
+        "firstname",
+        "email",
+        "address",
+        "zipcode",
+        "city",
+        "country");
+
+    /**File downloader. */
+    private FileDownloader m_fileDownloader;
 
     /**Ou name to export from or import to. */
     protected String m_ou;
@@ -86,11 +101,21 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
         m_ou = ou;
         m_window = window;
         getDownloadButton().setEnabled(true);
-
-        FileDownloader fileDownloader = new FileDownloader(getDownloadResource());
-        fileDownloader.extend(getDownloadButton());
+        initDownloadButton();
 
         getCloseButton().addClickListener(event -> window.close());
+    }
+
+    /**
+     * Initializes the download button.<p>
+     */
+    protected void initDownloadButton() {
+
+        if (m_fileDownloader != null) {
+            m_fileDownloader.remove();
+        }
+        m_fileDownloader = new FileDownloader(getDownloadResource());
+        m_fileDownloader.extend(getDownloadButton());
     }
 
     /**
@@ -134,8 +159,11 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
         buffer.append("name");
         Iterator<String> itValues = values.iterator();
         while (itValues.hasNext()) {
-            buffer.append(separator);
-            buffer.append(itValues.next());
+            String colName = itValues.next();
+            if (isColumnExportable(colName)) {
+                buffer.append(separator);
+                buffer.append(colName);
+            }
         }
         buffer.append("\n");
 
@@ -151,33 +179,35 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
             while (itValues.hasNext()) {
                 buffer.append(separator);
                 String curValue = itValues.next();
-                try {
-                    Method method = CmsUser.class.getMethod(
-                        "get" + curValue.substring(0, 1).toUpperCase() + curValue.substring(1));
-                    String curOutput = (String)method.invoke(exportUser);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
-                        curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                    }
+                if (isColumnExportable(curValue)) {
+                    try {
+                        Method method = CmsUser.class.getMethod(
+                            "get" + curValue.substring(0, 1).toUpperCase() + curValue.substring(1));
+                        String curOutput = (String)method.invoke(exportUser);
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
+                            curOutput = (String)exportUser.getAdditionalInfo(curValue);
+                        }
 
-                    if (curValue.equals("password")) {
-                        curOutput = OpenCms.getPasswordHandler().getDigestType() + "_" + curOutput;
-                    }
+                        if (curValue.equals("password")) {
+                            curOutput = OpenCms.getPasswordHandler().getDigestType() + "_" + curOutput;
+                        }
 
-                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
-                        buffer.append(curOutput);
-                    }
-                } catch (NoSuchMethodException e) {
-                    Object obj = exportUser.getAdditionalInfo(curValue);
-                    if (obj != null) {
-                        String curOutput = String.valueOf(obj);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
+                        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
                             buffer.append(curOutput);
                         }
+                    } catch (NoSuchMethodException e) {
+                        Object obj = exportUser.getAdditionalInfo(curValue);
+                        if (obj != null) {
+                            String curOutput = String.valueOf(obj);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
+                                buffer.append(curOutput);
+                            }
+                        }
+                    } catch (IllegalAccessException e) {
+                        //
+                    } catch (InvocationTargetException e) {
+                        //
                     }
-                } catch (IllegalAccessException e) {
-                    //
-                } catch (InvocationTargetException e) {
-                    //
                 }
             }
             buffer.append("\n");
@@ -192,6 +222,13 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
      * @return Map of user
      */
     abstract Map<CmsUUID, CmsUser> getUserToExport();
+
+    /**
+     * Export including technical fields.<p>
+     *
+     * @return boolean
+     */
+    abstract boolean isExportWithTechnicalFields();
 
     /**
      * Get download resource for export.<p>
@@ -209,5 +246,19 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
                 return getExportStream();
             }
         }, "User_Export.csv");
+    }
+
+    /**
+     * Checks if given column is to be exported.<p>
+     *
+     * @param colName to be checked
+     * @return boolean
+     */
+    private boolean isColumnExportable(String colName) {
+
+        if (isExportWithTechnicalFields()) {
+            return true;
+        }
+        return NON_TECHNICAL_VALUES.contains(colName.toLowerCase());
     }
 }

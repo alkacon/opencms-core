@@ -36,7 +36,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.Label;
 
@@ -63,6 +66,9 @@ public class CmsUserCsvExportDialog extends A_CmsImportExportUserDialog {
     /**vaadin component. */
     private Label m_elementToExportRole;
 
+    /**Include technical fields flag. */
+    private CheckBox m_includeTechnicalFields;
+
     /**vaadin component. */
     private Label m_elementExtendedDataUser;
 
@@ -88,12 +94,22 @@ public class CmsUserCsvExportDialog extends A_CmsImportExportUserDialog {
         I_CmsOuTreeType type,
         String elementName,
         boolean extendedData,
-        Window window) {
+        Window window,
+        boolean includeTechnicalFields) {
 
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_EXPORT_0));
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_includeTechnicalFields.addValueChangeListener(new ValueChangeListener<Boolean>() {
 
+            public void valueChange(ValueChangeEvent event) {
+
+                initDownloadButton();
+
+            }
+
+        });
+        m_includeTechnicalFields.setVisible(includeTechnicalFields);
         m_user = userToExport;
         super.init(ou, window);
         m_elementToExportOU.setVisible(type.isUser());
@@ -144,6 +160,15 @@ public class CmsUserCsvExportDialog extends A_CmsImportExportUserDialog {
             userMap.put(user.getId(), user);
         }
         return userMap;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#isExportWithTechnicalFields()
+     */
+    @Override
+    boolean isExportWithTechnicalFields() {
+
+        return m_includeTechnicalFields.getValue().booleanValue();
     }
 
 }

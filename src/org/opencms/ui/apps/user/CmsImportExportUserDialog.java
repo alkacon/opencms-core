@@ -66,12 +66,15 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
@@ -83,7 +86,8 @@ import com.vaadin.ui.Window;
 /**
  * Dialog for CSV im- and export.<p>
  */
-public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog implements Receiver, I_CmsPasswordFetcher {
+public final class CmsImportExportUserDialog extends A_CmsImportExportUserDialog
+implements Receiver, I_CmsPasswordFetcher {
 
     /**The dialog height. */
     public static final String DIALOG_HEIGHT = "650px";
@@ -99,6 +103,12 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
 
     /**Start import button. */
     Button m_startImport;
+
+    /**Vaadin Component. */
+    private Panel m_includeTechnicalFieldsPanel;
+
+    /**Vaadin Component. */
+    private CheckBox m_includeTechnicalFields;
 
     /**Cancel button. */
     private Button m_cancel;
@@ -169,8 +179,13 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
      * @param ou ou name
      * @param groupID id of group
      * @param window window
+     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
      */
-    private CmsImportExportUserDialog(final String ou, CmsUUID groupID, Window window) {
+    private CmsImportExportUserDialog(
+        final String ou,
+        CmsUUID groupID,
+        Window window,
+        boolean allowTechnicalFieldsExport) {
 
         setHeight(DIALOG_HEIGHT);
 
@@ -182,6 +197,16 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
             //
         }
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_includeTechnicalFieldsPanel.setVisible(allowTechnicalFieldsExport);
+        m_includeTechnicalFields.addValueChangeListener(new ValueChangeListener<Boolean>() {
+
+            public void valueChange(ValueChangeEvent event) {
+
+                initDownloadButton();
+
+            }
+
+        });
         m_importPasswords.setValue(Boolean.TRUE);
         m_sendMail.setValue(Boolean.TRUE);
 
@@ -422,11 +447,16 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
      * @param groupID id
      * @param ou ou name
      * @param window window
+     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
      * @return an instance of this class
-     */
-    public static CmsImportExportUserDialog getExportUserDialogForGroup(CmsUUID groupID, String ou, Window window) {
+         */
+    public static CmsImportExportUserDialog getExportUserDialogForGroup(
+        CmsUUID groupID,
+        String ou,
+        Window window,
+        boolean allowTechnicalFieldsExport) {
 
-        CmsImportExportUserDialog res = new CmsImportExportUserDialog(ou, groupID, window);
+        CmsImportExportUserDialog res = new CmsImportExportUserDialog(ou, groupID, window, allowTechnicalFieldsExport);
         return res;
     }
 
@@ -435,11 +465,15 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
      *
      * @param ou ou name
      * @param window window
+     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
      * @return an instance of this class
      */
-    public static CmsImportExportUserDialog getExportUserDialogForOU(String ou, Window window) {
+    public static CmsImportExportUserDialog getExportUserDialogForOU(
+        String ou,
+        Window window,
+        boolean allowTechnicalFieldsExport) {
 
-        CmsImportExportUserDialog res = new CmsImportExportUserDialog(ou, null, window);
+        CmsImportExportUserDialog res = new CmsImportExportUserDialog(ou, null, window, allowTechnicalFieldsExport);
         return res;
     }
 
@@ -633,6 +667,7 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
     /**
      * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getUserToExport()
      */
+    @Override
     Map<CmsUUID, CmsUser> getUserToExport() {
 
         // get the data object from session
@@ -657,6 +692,15 @@ public class CmsImportExportUserDialog extends A_CmsImportExportUserDialog imple
             LOG.error("Unable to get export user list.", e);
         }
         return exportUsers;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#isExportWithTechnicalFields()
+     */
+    @Override
+    boolean isExportWithTechnicalFields() {
+
+        return m_includeTechnicalFields.getValue().booleanValue();
     }
 
     /**
