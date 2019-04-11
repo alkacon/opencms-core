@@ -27,9 +27,12 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.json.JSONObject;
 import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
 import java.util.Locale;
 
@@ -40,7 +43,8 @@ import org.dom4j.Element;
  *
  * @since 11.0.0
  */
-public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase implements I_CmsXmlValidateWithMessage {
+public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase
+implements I_CmsXmlValidateWithMessage, I_CmsJsonFormattableValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsSerialDate";
@@ -130,6 +134,22 @@ public class CmsXmlSerialDateValue extends A_CmsXmlValueTextBase implements I_Cm
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlSerialDateValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    @SuppressWarnings("finally")
+    public Object toJson(CmsObject cms) {
+
+        JSONObject result = null;
+        try {
+            result = new JSONObject(getStringValue(cms));
+        } catch (Exception e) {
+            result = new JSONObject("{}");
+        } finally {
+            return result;
+        }
     }
 
     /**
