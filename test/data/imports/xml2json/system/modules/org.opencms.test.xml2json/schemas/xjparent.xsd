@@ -21,6 +21,9 @@
             <xsd:element name="Choice" type="OpenCmsXjChoice" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="File" type="OpenCmsVfsFile" minOccurs="0" />
             <xsd:element name="Dates" type="OpenCmsSerialDate" minOccurs="0" />
+            <xsd:element name="Date" type="OpenCmsDateTime" minOccurs="0" />
+            <xsd:element name="Bool" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

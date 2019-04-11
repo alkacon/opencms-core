@@ -8,9 +8,6 @@
 <XjParents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd">
   <XjParent language="en">
     <Text>text1</Text>
-    <SingleNested>
-        <Text>hello world</Text>
-    </SingleNested>
   </XjParent>
 </XjParents>
 
@@ -22,9 +19,6 @@
         { 
             "Text" : "text1", 
             "MultiText" : [],
-            "SingleNested" : {
-                "Text" : "hello world"
-            },
             "MultiNested" : [],
             "Choice": []
         }

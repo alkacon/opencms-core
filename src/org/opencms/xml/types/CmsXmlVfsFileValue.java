@@ -345,4 +345,5 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         }
         return content;
     }
+
 }

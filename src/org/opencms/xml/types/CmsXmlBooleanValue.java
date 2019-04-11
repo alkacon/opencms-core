@@ -32,6 +32,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -43,7 +44,7 @@ import org.dom4j.Element;
  *
  * @since 6.0.0
  */
-public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
+public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase implements I_CmsJsonFormattableValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsBoolean";
@@ -201,6 +202,15 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
 
         m_boolean = getBooleanValue(value);
         super.setStringValue(cms, String.valueOf(m_boolean));
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    public Object toJson(CmsObject cms) {
+
+        Boolean result = Boolean.valueOf(getBooleanValue());
+        return result;
     }
 
     /**

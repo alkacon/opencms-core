@@ -27,9 +27,11 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.file.CmsObject;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -41,7 +43,7 @@ import org.dom4j.Element;
  *
  * @since 6.0.0
  */
-public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
+public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase implements I_CmsJsonFormattableValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsDateTime";
@@ -173,6 +175,14 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlDateTimeValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    public Object toJson(CmsObject cms) {
+
+        return Long.valueOf(getDateTimeValue());
     }
 
     /**

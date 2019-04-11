@@ -34,8 +34,6 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.types.CmsXmlBooleanValue;
-import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -93,12 +91,12 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
     public static JSONObject linkAndPath(String link, String path) throws JSONException {
 
         JSONObject result = new JSONObject();
-        int paramPos = path.indexOf("?");
-        if (paramPos != -1) {
-            path = path.substring(0, paramPos);
-        }
         result.put("link", link);
         if (path != null) {
+            int paramPos = path.indexOf("?");
+            if (paramPos != -1) {
+                path = path.substring(0, paramPos);
+            }
             result.put("path", path);
         }
         return result;
@@ -271,11 +269,6 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
                 path = null;
             }
             return linkAndPath(link, path);
-        } else if (value instanceof CmsXmlBooleanValue) {
-            Boolean result = Boolean.valueOf(((CmsXmlBooleanValue)value).getBooleanValue());
-            return result;
-        } else if (value instanceof CmsXmlDateTimeValue) {
-            return Double.valueOf(((CmsXmlDateTimeValue)value).getDateTimeValue());
         } else {
             return node.getValue().getStringValue(m_cms);
         }

@@ -18,6 +18,13 @@
         </link>
     </File>
     <Dates>{"from":"1563692400000", "wholeday":true, "pattern":{"type":"NONE"}}</Dates>
+    <Date>12345678912345</Date>
+    <Bool>true</Bool>
+    <Link>
+        <link type="WEAK" internal="false">
+          <target>http://www.google.com</target>
+        </link>
+    </Link>
   </XjParent>
 </XjParents>
 
@@ -38,7 +45,10 @@
                 "path": "/system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd",
                 "link": "/data/opencms/system/modules/org.opencms.test.xml2json/schemas/xjparent.xsd?foo=bar"
             },
-            "Dates": {"from":"1563692400000", "wholeday":true, "pattern":{"type":"NONE"}}
+            "Dates": {"from":"1563692400000", "wholeday":true, "pattern":{"type":"NONE"}},
+            "Date": 12345678912345,
+            "Bool": true,
+            "Link" : { "link": "http://www.google.com" } 
         }
     ]]>
     </entry>

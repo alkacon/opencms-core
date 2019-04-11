@@ -27,11 +27,18 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.json.JSONArray;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.dom4j.Element;
@@ -43,7 +50,7 @@ import org.dom4j.Element;
  *
  * @since 7.0.0
  */
-public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
+public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue implements I_CmsJsonFormattableValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsDynamicCategory";
@@ -170,6 +177,25 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
         m_stringValue = value;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    public Object toJson(CmsObject cms) {
+
+        CmsXmlContent content = (CmsXmlContent)getDocument();
+        JSONArray array = new JSONArray();
+        try {
+            CmsFile file = content.getFile();
+            List<CmsCategory> categories = CmsCategoryService.getInstance().readResourceCategories(cms, file);
+            for (CmsCategory cat : categories) {
+                array.put(cat.getPath());
+            }
+            return array;
+        } catch (Exception e) {
+            return array;
+        }
     }
 
 }
