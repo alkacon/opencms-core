@@ -220,8 +220,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 }
                 if (exportData != null) {
                     try {
-                        // data found assume response code 200, may be corrected later
-                        res.setStatus(HttpServletResponse.SC_OK);
                         // generate a static export request wrapper
                         CmsStaticExportRequest exportReq = new CmsStaticExportRequest(req, exportData);
                         // export the resource and set the response status according to the result
