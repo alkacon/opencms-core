@@ -93,6 +93,10 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
     public static JSONObject linkAndPath(String link, String path) throws JSONException {
 
         JSONObject result = new JSONObject();
+        int paramPos = path.indexOf("?");
+        if (paramPos != -1) {
+            path = path.substring(0, paramPos);
+        }
         result.put("link", link);
         if (path != null) {
             result.put("path", path);
