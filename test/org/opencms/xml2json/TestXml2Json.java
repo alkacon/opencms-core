@@ -117,6 +117,16 @@ public class TestXml2Json extends OpenCmsTestCase {
     }
 
     /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testTypes() throws Exception {
+
+        runDataTest("types-test.xml");
+    }
+
+    /**
      * Read XML input and expected output from data file and check if rendered JSON matches expected output.
      *
      * @param name the test data file name
@@ -132,19 +142,15 @@ public class TestXml2Json extends OpenCmsTestCase {
         cms.createResource(folder, 0);
         I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
         CmsParameterConfiguration data = readXmlTestData(getClass(), name);
-        data.get("input");
-        cms.createResource(
-            folder + "/test.xml",
-            contentType,
-            data.get("input").trim().getBytes("UTF-8"),
-            new ArrayList<>());
+        String testFile = folder + "/test.xml";
+        cms.createResource(testFile, contentType, data.get("input").trim().getBytes("UTF-8"), new ArrayList<>());
         String expected = new String(data.get("output").trim());
         CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(cms);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(folder + "/test.xml"));
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(testFile));
         Object jsonObj = renderer.render(content, Locale.ENGLISH);
 
         String actual = JSONObject.valueToString(jsonObj, 0, 4);
-        expected = JSONObject.valueToString(new JSONObject(expected, true), 0, 4);
+        expected = JSONObject.valueToString(new JSONObject(expected), 0, 4);
         assertEquals(expected, actual);
 
     }

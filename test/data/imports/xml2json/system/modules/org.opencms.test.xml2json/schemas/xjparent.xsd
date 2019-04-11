@@ -19,6 +19,8 @@
             <xsd:element name="SingleNested" type="OpenCmsXjChild" minOccurs="0" />
             <xsd:element name="MultiNested" type="OpenCmsXjChild" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="Choice" type="OpenCmsXjChoice" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="File" type="OpenCmsVfsFile" minOccurs="0" />
+            <xsd:element name="Dates" type="OpenCmsSerialDate" minOccurs="0" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
