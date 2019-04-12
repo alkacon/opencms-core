@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser;
+import org.opencms.jsp.search.config.parser.CmsPlainQuerySearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsXMLSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerCommon;
@@ -330,7 +331,12 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
                 }
             }
             if (m_configString != null) {
-                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString, config));
+                if (m_configString.trim().startsWith("{")) {
+                    config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString, config));
+                } else {
+                    config = new CmsSearchConfiguration(
+                        new CmsPlainQuerySearchConfigurationParser(m_configString, config));
+                }
             }
             m_searchController = new CmsSearchController(config);
 
