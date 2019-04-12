@@ -32,6 +32,7 @@ import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -190,6 +191,8 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             throw e;
         } catch (CmsResourceInitException e) {
             throw e;
+        } catch (CmsVfsResourceNotFoundException e) {
+            return null;
         } catch (Throwable e) {
             String uri = cms.getRequestContext().getUri();
             CmsMessageContainer msg = Messages.get().container(Messages.ERR_RESCOURCE_NOT_FOUND_1, uri);
