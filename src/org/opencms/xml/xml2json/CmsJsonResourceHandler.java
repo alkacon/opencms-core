@@ -32,8 +32,8 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
@@ -42,12 +42,14 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -108,10 +110,14 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
 
         List<I_CmsJsonHandler> result = new ArrayList<>(CmsDefaultJsonHandlers.getHandlers());
         for (I_CmsJsonHandlerProvider provider : m_serviceLoader) {
-            result.addAll(provider.getJsonHandlers());
+            try {
+                result.addAll(provider.getJsonHandlers());
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
-
         result.sort((h1, h2) -> Double.compare(h1.getOrder(), h2.getOrder()));
+        result = result.stream().map(h -> new CmsExceptionSafeHandlerWrapper(h)).collect(Collectors.toList());
         return result;
 
     }
@@ -128,7 +134,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(CmsResource origRes, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException, CmsSecurityException {
+    throws CmsResourceInitException {
 
         String uri = cms.getRequestContext().getUri();
 
@@ -148,6 +154,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
         } else if (path.length() > 1) {
             path = CmsFileUtil.removeTrailingSeparator(path);
         }
+
         Map<String, String> singleParams = new HashMap<>();
         // we don't care about multiple parameter values, single parameter values are easier to work with
         for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
@@ -159,48 +166,90 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
             singleParams.put(entry.getKey(), value);
         }
 
+        int status = HttpServletResponse.SC_OK;
+        String output = "";
         try {
             CmsObject rootCms = OpenCms.initCmsObject(cms);
             rootCms.getRequestContext().setSiteRoot("");
-            CmsResource resource = rootCms.readResource(path);
-            CmsJsonHandlerContext context = new CmsJsonHandlerContext(cms, path, resource, singleParams, m_config);
+            boolean resourcePermissionDenied = false;
+            CmsResource resource = null;
+            try {
+                resource = rootCms.readResource(path);
+            } catch (CmsSecurityException e) {
+                LOG.info("Permission denied for " + path);
+                resourcePermissionDenied = true;
+            } catch (CmsException e) {
+                // ignore
+            }
+
+            CmsJsonHandlerContext context = new CmsJsonHandlerContext(
+                cms,
+                rootCms,
+                path,
+                resource,
+                singleParams,
+                m_config);
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
-            boolean foundHandler = false;
-            req.setAttribute(ATTR_CONTEXT, context);
-            for (I_CmsJsonHandler handler : getSubHandlers()) {
-                if (handler.matches(context)) {
-                    CmsJsonResult result = handler.renderJson(context);
-                    if (result.getNextResource() != null) {
-                        return result.getNextResource();
-                    } else {
-                        res.setStatus(result.getStatus()); // Needs to be set before we write the response body
-                        PrintWriter writer = res.getWriter();
-                        String jsonStr = JSONObject.valueToString(result.getJson(), 4, 0);
-                        writer.write(jsonStr);
-                        writer.flush();
-                        foundHandler = true;
-                        break;
+            if (resourcePermissionDenied || !checkAccess(context)) {
+                status = HttpServletResponse.SC_FORBIDDEN;
+                output = "";
+            } else {
+                boolean foundHandler = false;
+                for (I_CmsJsonHandler handler : getSubHandlers()) {
+                    if (handler.matches(context)) {
+                        CmsJsonResult result = handler.renderJson(context);
+                        if (result.getNextResource() != null) {
+                            req.setAttribute(ATTR_CONTEXT, context);
+                            return result.getNextResource();
+                        } else {
+                            try {
+                                status = result.getStatus();
+                                output = JSONObject.valueToString(result.getJson(), 4, 0);
+                            } catch (Exception e) {
+                                status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+                                output = JSONObject.quote(e.getLocalizedMessage());
+                            }
+                            foundHandler = true;
+                            break;
+
+                        }
                     }
                 }
+                if (!foundHandler) {
+                    LOG.info("No JSON handler found for path: " + path);
+                    status = HttpServletResponse.SC_NOT_FOUND;
+                    output = JSONObject.quote("");
+                }
             }
-            if (!foundHandler) {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
-            CmsResourceInitException ex = new CmsResourceInitException(CmsJsonResourceHandler.class);
-            ex.setClearErrors(res.getStatus() == HttpServletResponse.SC_OK);
-            throw ex;
-        } catch (CmsSecurityException e) {
-            throw e;
-        } catch (CmsResourceInitException e) {
-            throw e;
         } catch (Exception e) {
-            CmsMessageContainer msg = org.opencms.ade.detailpage.Messages.get().container(
-                org.opencms.ade.detailpage.Messages.ERR_RESCOURCE_NOT_FOUND_1,
-                uri);
             LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsResourceInitException(msg, e);
+            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            output = JSONObject.quote(e.getLocalizedMessage());
         }
+        res.setStatus(status);
+        try {
+            PrintWriter writer = res.getWriter();
+            writer.write(output);
+            writer.flush();
+        } catch (IOException ioe) {
+            LOG.error(ioe.getLocalizedMessage(), ioe);
+        }
+        CmsResourceInitException ex = new CmsResourceInitException(CmsJsonResourceHandler.class);
+        ex.setClearErrors(true);
+        throw ex;
+
+    }
+
+    /**
+     * Checks whether request for the given context should be allowed.
+     *
+     * @param context the context
+     * @return true if request should be allowed
+     */
+    protected boolean checkAccess(CmsJsonHandlerContext context) {
+
+        return true;
     }
 
 }

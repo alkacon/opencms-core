@@ -35,15 +35,23 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+
 /**
  * Produces directory listings in JSON format.
  */
 public class CmsFolderJsonHandler implements I_CmsJsonHandler {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFolderJsonHandler.class);
 
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
@@ -58,33 +66,37 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
-        return context.getResource().isFolder();
+        return (context.getResource() != null) && context.getResource().isFolder();
     }
 
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
      */
-    public CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException, JSONException {
+    public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 
         try {
-            CmsResource indexJson = context.getRootCms().readResource(
-                CmsStringUtil.joinPaths(context.getPath(), "index.json"));
+            try {
+                CmsResource indexJson = context.getRootCms().readResource(
+                    CmsStringUtil.joinPaths(context.getPath(), "index.json"));
 
-            return new CmsJsonResult(indexJson);
+                return new CmsJsonResult(indexJson);
 
-        } catch (CmsVfsResourceNotFoundException e) {
-            List<CmsResource> children = context.getCms().readResources(
-                context.getResource(),
-                CmsResourceFilter.DEFAULT,
-                false);
-            JSONObject result = new JSONObject(true);
-            for (CmsResource resource : children) {
-                JSONObject childEntry = formatResource(context, resource);
-                result.put(resource.getName(), childEntry);
+            } catch (CmsVfsResourceNotFoundException e) {
+                List<CmsResource> children = context.getCms().readResources(
+                    context.getResource(),
+                    CmsResourceFilter.DEFAULT,
+                    false);
+                JSONObject result = new JSONObject(true);
+                for (CmsResource resource : children) {
+                    JSONObject childEntry = formatResource(context, resource);
+                    result.put(resource.getName(), childEntry);
+                }
+                return new CmsJsonResult(result, 200);
             }
-            return new CmsJsonResult(result, 200);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-
     }
 
     /**

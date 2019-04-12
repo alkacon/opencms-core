@@ -27,9 +27,6 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.json.JSONException;
-import org.opencms.main.CmsException;
-
 /**
  * Interface for individual JSON handlers.
  *
@@ -54,19 +51,15 @@ public interface I_CmsJsonHandler {
      *
      * @param context the context
      * @return true if the handler matches
-     * @throws CmsException if something goes wrong
      */
-    boolean matches(CmsJsonHandlerContext context) throws CmsException;
+    boolean matches(CmsJsonHandlerContext context);
 
     /**
      * Renders the JSON.
      *
      * @param context the context (provides information about the path and resource)
      * @return the JSON result
-     *
-     * @throws CmsException if something goes wrong
-     * @throws JSONException when JSON classes produce an error
      */
-    CmsJsonResult renderJson(CmsJsonHandlerContext context) throws CmsException, JSONException;
+    CmsJsonResult renderJson(CmsJsonHandlerContext context);
 
 }

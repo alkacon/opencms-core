@@ -32,7 +32,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -40,12 +40,18 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides context information to JSON handlers.<p>
  *
  * Also lazily loads the resource or content to be rendered as JSON.
  */
 public class CmsJsonHandlerContext {
+
+    /** The logger instance for this class. */
+    @SuppressWarnings("unused")
+    private static final Log LOG = CmsLog.getLog(CmsJsonHandlerContext.class);
 
     /** The CMS context with the original site root. */
     private CmsObject m_cms;
@@ -78,24 +84,23 @@ public class CmsJsonHandlerContext {
      * Creates a new instance.
      *
      * @param cms the CMS context
+     * @param rootCms the CMS context initialized for the root site
      * @param path the path below the JSON handler
-     * @param resource the resource
+     * @param resource the resource (may be null)
      * @param params the request parameters
      * @param handlerConfig the handler parameters from opencms-system.xml
-     * @throws CmsException if something goes wrong
      */
     public CmsJsonHandlerContext(
         CmsObject cms,
+        CmsObject rootCms,
         String path,
         CmsResource resource,
         Map<String, String> params,
-        CmsParameterConfiguration handlerConfig)
-    throws CmsException {
+        CmsParameterConfiguration handlerConfig) {
 
         m_cms = cms;
         m_resource = resource;
-        m_rootCms = OpenCms.initCmsObject(m_cms);
-        m_rootCms.getRequestContext().setSiteRoot("");
+        m_rootCms = rootCms;
         m_path = path;
         m_parameters = params;
         m_handlerConfig = handlerConfig;
@@ -182,7 +187,7 @@ public class CmsJsonHandlerContext {
     }
 
     /**
-     * Gets the resource.
+     * Gets the resource (may be null if there is no resource).
      *
      * @return the resource
      */
