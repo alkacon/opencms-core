@@ -870,6 +870,18 @@ public class OpenCmsTestCase extends TestCase {
         }
     }
 
+    /**
+     * Reads a set of key-value pairs from an XML in the same source folder as a given class.
+     *
+     * The data file should consist of an XML document with a root node an a number of entry child nodes,
+     * where each entry has a name attribute and some text content. The entry corresponds to an entry in the
+     * result parameter configuration.
+     *
+     * @param cls the class from which to find the data file
+     * @param path the relative sub-path starting from the package of the given class
+     * @return the data from the file
+     * @throws Exception if something goes wrong
+     */
     public static CmsParameterConfiguration readXmlTestData(Class<?> cls, String path) throws Exception {
 
         SAXReader reader = new SAXReader();
