@@ -55,7 +55,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -210,14 +209,6 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String DEFAULT_LAST_QUERY_PARAM = "lq";
     /** Default value. */
     private static final String DEFAULT_RELOADED_PARAM = "reloaded";
-    /** Default value. */
-    private static final String DEFAULT_SORT_PARAM = "sort";
-    /** Default value. */
-    private static final String DEFAULT_PAGE_PARAM = "page";
-    /** Default value. */
-    private static final List<Integer> DEFAULT_PAGE_SIZES = Collections.singletonList(Integer.valueOf(10));
-    /** Default value. */
-    private static final Integer DEFAULT_PAGENAVLENGTH = Integer.valueOf(5);
 
     /** The XML content that contains the configuration. */
     CmsXmlContent m_xml;
@@ -346,7 +337,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     @Override
     public I_CmsSearchConfigurationPagination parsePagination() {
 
-        return new CmsSearchConfigurationPagination(getPageParam(), getPageSizes(), getPageNavLength());
+        return CmsSearchConfigurationPagination.create(getPageParam(), getPageSizes(), getPageNavLength());
     }
 
     /**
@@ -409,7 +400,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         I_CmsSearchConfigurationSortOption defaultOption = (options != null) && !options.isEmpty()
         ? options.get(0)
         : null;
-        return new CmsSearchConfigurationSorting(getSortParam(), options, defaultOption);
+        return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultOption);
     }
 
     /** Helper to read a mandatory String value list.
@@ -734,12 +725,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
      */
     private Integer getPageNavLength() {
 
-        final Integer param = parseOptionalIntValue(XML_ELEMENT_PAGENAVLENGTH);
-        if (param == null) {
-            return DEFAULT_PAGENAVLENGTH;
-        } else {
-            return param;
-        }
+        return parseOptionalIntValue(XML_ELEMENT_PAGENAVLENGTH);
     }
 
     /** Returns the configured request parameter for the current page, or the default parameter if the core is not specified.
@@ -747,12 +733,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
      */
     private String getPageParam() {
 
-        final String param = parseOptionalStringValue(XML_ELEMENT_PAGEPARAM);
-        if (param == null) {
-            return DEFAULT_PAGE_PARAM;
-        } else {
-            return param;
-        }
+        return parseOptionalStringValue(XML_ELEMENT_PAGEPARAM);
     }
 
     /** Returns the configured page size, or the default page size if it is not configured.
@@ -775,7 +756,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 }
             }
         }
-        return DEFAULT_PAGE_SIZES;
+        return null;
     }
 
     /** Returns the optional query modifier.
@@ -833,12 +814,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
      */
     private String getSortParam() {
 
-        final String param = parseOptionalStringValue(XML_ELEMENT_SORTPARAM);
-        if (param == null) {
-            return DEFAULT_SORT_PARAM;
-        } else {
-            return param;
-        }
+        return parseOptionalStringValue(XML_ELEMENT_SORTPARAM);
     }
 
     /** Parses a single query facet item with query and label.

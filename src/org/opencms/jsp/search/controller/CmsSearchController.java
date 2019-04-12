@@ -70,11 +70,15 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
         m_common = new CmsSearchControllerCommon(config.getGeneralConfig());
         m_controllers.add(m_common);
 
-        m_pagination = new CmsSearchControllerPagination(config.getPaginationConfig());
-        m_controllers.add(m_pagination);
+        if (config.getPaginationConfig() != null) {
+            m_pagination = new CmsSearchControllerPagination(config.getPaginationConfig());
+            m_controllers.add(m_pagination);
+        }
 
-        m_sorting = new CmsSearchControllerSorting(config.getSortConfig());
-        m_controllers.add(m_sorting);
+        if (config.getSortConfig() != null) {
+            m_sorting = new CmsSearchControllerSorting(config.getSortConfig());
+            m_controllers.add(m_sorting);
+        }
 
         m_fieldFacets = new CmsSearchControllerFacetsField(config.getFieldFacetConfigs());
         m_controllers.add(m_fieldFacets);

@@ -211,14 +211,6 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     public static final String DEFAULT_LAST_QUERY_PARAM = "lq";
     /** A JSON key. */
     public static final String DEFAULT_RELOADED_PARAM = "reloaded";
-    /** A JSON key. */
-    public static final String DEFAULT_SORT_PARAM = "sort";
-    /** A JSON key. */
-    public static final String DEFAULT_PAGE_PARAM = "page";
-    /** A JSON key. */
-    public static final List<Integer> DEFAULT_PAGE_SIZES = Collections.singletonList(Integer.valueOf(10));
-    /** A JSON key. */
-    public static final Integer DEFAULT_PAGENAVLENGTH = Integer.valueOf(5);
 
     /** The whole JSON file. */
     protected JSONObject m_configObject;
@@ -461,7 +453,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     @Override
     public I_CmsSearchConfigurationPagination parsePagination() {
 
-        return new CmsSearchConfigurationPagination(getPageParam(), getPageSizes(), getPageNavLength());
+        return CmsSearchConfigurationPagination.create(getPageParam(), getPageSizes(), getPageNavLength());
     }
 
     /**
@@ -538,7 +530,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         I_CmsSearchConfigurationSortOption defaultOption = (options != null) && !options.isEmpty()
         ? options.get(0)
         : null;
-        return new CmsSearchConfigurationSorting(getSortParam(), options, defaultOption);
+        return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultOption);
     }
 
     /** Returns a map with additional request parameters, mapping the parameter names to Solr query parts.
@@ -705,14 +697,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected Integer getPageNavLength() {
 
-        Integer param = parseOptionalIntValue(m_configObject, JSON_KEY_PAGENAVLENGTH);
-        if (param == null) {
-            return null != m_baseConfig
-            ? Integer.valueOf(m_baseConfig.getPaginationConfig().getPageNavLength())
-            : DEFAULT_PAGENAVLENGTH;
-        } else {
-            return param;
-        }
+        return parseOptionalIntValue(m_configObject, JSON_KEY_PAGENAVLENGTH);
     }
 
     /** Returns the configured request parameter for the current page, or the default parameter if no core is configured.
@@ -720,12 +705,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected String getPageParam() {
 
-        String param = parseOptionalStringValue(m_configObject, JSON_KEY_PAGEPARAM);
-        if (param == null) {
-            return null != m_baseConfig ? m_baseConfig.getPaginationConfig().getPageParam() : DEFAULT_PAGE_PARAM;
-        } else {
-            return param;
-        }
+        return parseOptionalStringValue(m_configObject, JSON_KEY_PAGEPARAM);
     }
 
     /** Returns the configured page sizes, or the default page size if no core is configured.
@@ -755,7 +735,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0), e);
                 }
-                return DEFAULT_PAGE_SIZES;
+                return null;
             } else {
                 return m_baseConfig.getPaginationConfig().getPageSizes();
             }
@@ -828,12 +808,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected String getSortParam() {
 
-        String param = parseOptionalStringValue(m_configObject, JSON_KEY_SORTPARAM);
-        if (param == null) {
-            return null != m_baseConfig ? m_baseConfig.getSortConfig().getSortParam() : DEFAULT_SORT_PARAM;
-        } else {
-            return param;
-        }
+        return parseOptionalStringValue(m_configObject, JSON_KEY_SORTPARAM);
     }
 
     /** Initialization that parses the String to a JSON object.

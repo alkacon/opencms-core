@@ -38,6 +38,8 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
     private static final List<Integer> DEFAULT_PAGE_SIZE = Collections.singletonList(Integer.valueOf(10));
     /** The default "Google"-like page navigation length. */
     private static final int DEFAULT_PAGE_NAV_LENGTH = 5;
+    /** The default request parameter to read the current page from. */
+    private static final String DEFAULT_PAGE_PARAM = "page";
     /** The request parameter used to send the current page number. */
     private final String m_pageParam;
 
@@ -60,10 +62,7 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
         final Integer pageSize,
         final Integer pageNavLength) {
 
-        m_pageParam = pageParam;
-        m_pageSizes = pageSize == null ? DEFAULT_PAGE_SIZE : Collections.singletonList(pageSize);
-        m_pageSizeAllRemainingPages = (m_pageSizes.get(m_pageSizes.size() - 1)).intValue();
-        m_pageNavLength = pageNavLength == null ? DEFAULT_PAGE_NAV_LENGTH : pageNavLength.intValue();
+        this(pageParam, null != pageSize ? Collections.singletonList(pageSize) : null, pageNavLength);
     }
 
     /** Constructor setting all configuration options for the pagination.
@@ -76,7 +75,7 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
         final List<Integer> pageSizes,
         final Integer pageNavLength) {
 
-        m_pageParam = pageParam;
+        m_pageParam = pageParam == null ? DEFAULT_PAGE_PARAM : pageParam;
         if ((pageSizes == null) || pageSizes.isEmpty()) {
             m_pageSizes = DEFAULT_PAGE_SIZE;
         } else {
@@ -86,6 +85,25 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
         m_pageSizeAllRemainingPages = (m_pageSizes.get(m_pageSizes.size() - 1)).intValue();
 
         m_pageNavLength = pageNavLength == null ? DEFAULT_PAGE_NAV_LENGTH : pageNavLength.intValue();
+    }
+
+    /**
+     * Creates a new pagination configuration if at least one of the provided parameters is not null.
+     * Otherwise returns null.
+     * @param pageParam The request parameter used to send the current page number.
+     * @param pageSizes The page sizes for the first pages. The last provided size is the size of all following pages.
+     * @param pageNavLength The length of the "Google"-like page navigation. Should be an odd number.
+     * @return the pagination configuration, or <code>null</code> if none of the provided parameters is not null.
+     */
+    public static I_CmsSearchConfigurationPagination create(
+        String pageParam,
+        List<Integer> pageSizes,
+        Integer pageNavLength) {
+
+        return (pageParam != null) || (pageSizes != null) || (pageNavLength != null)
+        ? new CmsSearchConfigurationPagination(pageParam, pageSizes, pageNavLength)
+        : null;
+
     }
 
     /**
