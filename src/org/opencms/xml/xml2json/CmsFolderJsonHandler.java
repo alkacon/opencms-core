@@ -114,6 +114,11 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
 
         JSONObject result = new JSONObject(true);
         result.put("path", resource.getRootPath());
+        result.put(
+            "link",
+            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                context.getCms(),
+                context.getCms().getSitePath(resource)));
         result.put("type", OpenCms.getResourceManager().getResourceType(resource).getTypeName());
         result.put("isFolder", resource.isFolder());
         boolean isContent = false;
