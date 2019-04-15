@@ -27,7 +27,6 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -36,7 +35,6 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
@@ -113,28 +111,16 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
     throws JSONException, CmsException {
 
         JSONObject result = new JSONObject(true);
-        result.put("path", resource.getRootPath());
-        result.put(
-            "link",
-            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                context.getCms(),
-                context.getCms().getSitePath(resource)));
+        CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(context.getCms(), resource);
+        helper.addPathAndLink(result);
         result.put("isFolder", resource.isFolder());
         boolean isContent = false;
         if (!resource.isFolder()) {
             isContent = CmsResourceTypeXmlContent.isXmlContent(resource);
         }
-        JSONObject attributes = new JSONObject();
-        attributes.put("type", OpenCms.getResourceManager().getResourceType(resource).getTypeName());
-        attributes.put("lastModified", Long.valueOf(resource.getDateLastModified()));
-        result.put("attributes", attributes);
+        result.put("attributes", helper.attributes());
         result.put("isXmlContent", Boolean.valueOf(isContent));
-        List<CmsProperty> props = context.getCms().readPropertyObjects(resource, false);
-        JSONObject propJson = new JSONObject(true);
-        for (CmsProperty prop : props) {
-            propJson.put(prop.getName(), prop.getValue());
-        }
-        result.put("properties", propJson);
+        result.put("properties", helper.properties());
         return result;
     }
 }

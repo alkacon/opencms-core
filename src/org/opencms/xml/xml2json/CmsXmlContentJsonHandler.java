@@ -132,7 +132,13 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             String localeParam = context.getParameters().get(PARAM_LOCALE);
             String pathParam = context.getParameters().get(PARAM_PATH);
             if ((localeParam == null) && (pathParam == null)) {
-                json = CmsDefaultXmlContentJsonRenderer.renderAllLocales(content, renderer);
+                JSONObject json1 = CmsDefaultXmlContentJsonRenderer.renderAllLocales(content, renderer);
+
+                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(context.getCms(), context.getResource());
+                json1.put("properties", helper.properties());
+                json1.put("attributes", helper.attributes());
+                helper.addPathAndLink(json1);
+                json = json1;
             } else if (localeParam != null) {
                 Locale locale = CmsLocaleManager.getLocale(localeParam);
                 Locale selectedLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
