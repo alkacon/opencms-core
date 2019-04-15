@@ -27,34 +27,35 @@
 
 package org.opencms.xml.xml2json;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.opencms.file.types.CmsResourceTypeJsp;
 
 /**
- * Provides default JSON handlers.
- *
- * <p>Some JSON handlers are always provided, they do not need to be loaded via ServiceLoader.
+ * JSON handler used to load JSPs referenced directly by path.
  */
-public class CmsDefaultJsonHandlers {
-
-    /** The folder handler instance. */
-    private static CmsFolderJsonHandler m_folderHandler = new CmsFolderJsonHandler();
-
-    /** The XML handler instance. */
-    private static CmsXmlContentJsonHandler m_xmlContentHandler = new CmsXmlContentJsonHandler();
-
-    /** The JSP handler instance. */
-    private static CmsJspJsonHandler m_jspHandler = new CmsJspJsonHandler();
+public class CmsJspJsonHandler implements I_CmsJsonHandler {
 
     /**
-     * Gets the default JSON handlers.
-     *
-     * @return the list of default JSON handlers
+     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
      */
-    public static List<I_CmsJsonHandler> getHandlers() {
+    public double getOrder() {
 
-        return new ArrayList<>(Arrays.asList(m_folderHandler, m_xmlContentHandler, m_jspHandler));
+        return 300;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     */
+    public boolean matches(CmsJsonHandlerContext context) {
+
+        return CmsResourceTypeJsp.isJsp(context.getResource());
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     */
+    public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
+
+        return new CmsJsonResult(context.getResource());
     }
 
 }
