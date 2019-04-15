@@ -119,14 +119,16 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
             OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 context.getCms(),
                 context.getCms().getSitePath(resource)));
-        result.put("type", OpenCms.getResourceManager().getResourceType(resource).getTypeName());
         result.put("isFolder", resource.isFolder());
         boolean isContent = false;
         if (!resource.isFolder()) {
             isContent = CmsResourceTypeXmlContent.isXmlContent(resource);
         }
+        JSONObject attributes = new JSONObject();
+        attributes.put("type", OpenCms.getResourceManager().getResourceType(resource).getTypeName());
+        attributes.put("lastModified", Long.valueOf(resource.getDateLastModified()));
+        result.put("attributes", attributes);
         result.put("isXmlContent", Boolean.valueOf(isContent));
-        result.put("lastModified", new Double(resource.getDateLastModified()));
         List<CmsProperty> props = context.getCms().readPropertyObjects(resource, false);
         JSONObject propJson = new JSONObject(true);
         for (CmsProperty prop : props) {
