@@ -35,11 +35,11 @@ import java.util.List;
 public class CmsSearchConfigurationPagination implements I_CmsSearchConfigurationPagination {
 
     /** The default page size. */
-    private static final List<Integer> DEFAULT_PAGE_SIZE = Collections.singletonList(Integer.valueOf(10));
+    public static final List<Integer> DEFAULT_PAGE_SIZE = Collections.singletonList(Integer.valueOf(10));
     /** The default "Google"-like page navigation length. */
-    private static final int DEFAULT_PAGE_NAV_LENGTH = 5;
+    public static final int DEFAULT_PAGE_NAV_LENGTH = 5;
     /** The default request parameter to read the current page from. */
-    private static final String DEFAULT_PAGE_PARAM = "page";
+    public static final String DEFAULT_PAGE_PARAM = "page";
     /** The request parameter used to send the current page number. */
     private final String m_pageParam;
 
