@@ -27,8 +27,10 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
@@ -191,9 +193,10 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
                 m_config);
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
-            if (resourcePermissionDenied || !checkAccess(context)) {
+            if (resourcePermissionDenied
+                || !getAccessPolicy(context.getRootCms()).checkAccess(context.getCms(), context.getPath())) {
                 status = HttpServletResponse.SC_FORBIDDEN;
-                output = "";
+                output = JSONObject.quote("forbidden");
             } else {
                 boolean foundHandler = false;
                 for (I_CmsJsonHandler handler : getSubHandlers()) {
@@ -242,14 +245,30 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
     }
 
     /**
-     * Checks whether request for the given context should be allowed.
+     * Reads JSON access policy from cache or loads it if necessary.
      *
-     * @param context the context
-     * @return true if request should be allowed
+     * @param cms the CMS context used to load the access policy
+     * @return the access policy
      */
-    protected boolean checkAccess(CmsJsonHandlerContext context) {
+    protected CmsJsonAccessPolicy getAccessPolicy(CmsObject cms) {
 
-        return true;
+        String accessConfigPath = m_config.getString("access-policy", null);
+        if (accessConfigPath == null) {
+            return new CmsJsonAccessPolicy(true);
+        }
+        CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
+        CmsJsonAccessPolicy result = (CmsJsonAccessPolicy)cache.loadVfsObject(cms, accessConfigPath, obj -> {
+            try {
+                CmsFile file = cms.readFile(accessConfigPath);
+                CmsJsonAccessPolicy policy = CmsJsonAccessPolicy.parse(file.getContents());
+                return policy;
+            } catch (Exception e) {
+                // If access policy is configured, but can't be read, disable everything
+                LOG.error(e.getLocalizedMessage(), e);
+                return new CmsJsonAccessPolicy(false);
+            }
+        });
+        return result;
     }
 
 }

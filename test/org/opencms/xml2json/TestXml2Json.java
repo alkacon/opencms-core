@@ -39,8 +39,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
+import org.opencms.xml.xml2json.CmsJsonAccessPolicy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import junit.framework.Test;
@@ -84,6 +86,56 @@ public class TestXml2Json extends OpenCmsTestCase {
     static String modPath(String subPath) {
 
         return CmsStringUtil.joinPaths(MOD_PATH, subPath);
+    }
+
+    /**
+     * Test for access policy.
+     *
+     * @throws Exception
+     */
+    public void testAccessExclude() throws Exception {
+
+        CmsJsonAccessPolicy access = CmsJsonAccessPolicy.parse(getClass().getResourceAsStream("access-ex.xml"));
+        CmsObject cms = getCmsObject();
+        assertFalse(access.checkAccess(cms, "/system/foo"));
+        assertFalse(access.checkAccess(cms, "/system/modules/foo"));
+        assertFalse(access.checkAccess(cms, "/shared/foo"));
+        assertTrue(access.checkAccess(cms, "/sites/default/foo"));
+    }
+
+    /**
+     * Test for access policy.
+     *
+     * @throws Exception
+     */
+    public void testAccessGroup() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        cms.createUser("Test1", "password", "", new HashMap<>());
+        cms.createGroup("JsonAccessGroup", "", 0, null);
+        CmsJsonAccessPolicy access = CmsJsonAccessPolicy.parse(getClass().getResourceAsStream("access1.xml"));
+        CmsObject otherCms = OpenCms.initCmsObject(cms);
+        otherCms.loginUser("Test1", "password");
+        assertFalse(access.checkAccess(otherCms, "/foo"));
+        cms.addUserToGroup("Test1", "JsonAccessGroup");
+        assertTrue(access.checkAccess(otherCms, "/foo"));
+        assertFalse(access.checkAccess(otherCms, "/forbidden/foo"));
+
+    }
+
+    /**
+     * Test for access policy.
+     *
+     * @throws Exception
+     */
+    public void testAccessIncludeExclude() throws Exception {
+
+        CmsJsonAccessPolicy access = CmsJsonAccessPolicy.parse(getClass().getResourceAsStream("access-in-ex.xml"));
+        CmsObject cms = getCmsObject();
+        assertTrue(access.checkAccess(cms, "/system/foo"));
+        assertTrue(access.checkAccess(cms, "/shared/foo"));
+        assertFalse(access.checkAccess(cms, "/system/modules/foo"));
+        assertFalse(access.checkAccess(cms, "/sites/default/foo"));
     }
 
     /**

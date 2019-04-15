@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<json-access>
+    <include>/system.*</include>
+    <include>/shared.*</include>
+    <exclude>/system/modules.*</exclude>
+</json-access>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<json-access>
+    <exclude>/system/.*</exclude>
+    <exclude>/shared/.*</exclude>
+</json-access>
