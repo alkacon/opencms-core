@@ -117,6 +117,9 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsJspValueWrapper.class);
 
+    /** Date information as instance date bean. */
+    private CmsJspInstanceDateBean m_instanceDate;
+
     /** The wrapped OpenCms user context. */
     protected CmsObject m_cms;
 
@@ -432,6 +435,18 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
             }
         }
         return m_imageBean;
+    }
+
+    /**
+     * Converts a date to an instance date bean.
+     * @return the instance date bean.
+     */
+    public CmsJspInstanceDateBean getToInstanceDate() {
+
+        if (m_instanceDate == null) {
+            m_instanceDate = new CmsJspInstanceDateBean(getToDate(), m_cms.getRequestContext().getLocale());
+        }
+        return m_instanceDate;
     }
 
     /**
