@@ -33,6 +33,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides access to common object types through wrappers.<p>
@@ -171,6 +172,22 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
     public Object getObjectValue() {
 
         return m_object;
+    }
+
+    /**
+     * Converts the wrapped value to a date. Keeps it as date, if it already is one.<p>
+     *
+     * @return the date
+     *
+     * @see A_CmsJspValueWrapper#getToDate()
+     */
+    @Override
+    public Date getToDate() {
+
+        if (m_object instanceof Date) {
+            return (Date)m_object;
+        }
+        return super.getToDate();
     }
 
     /**
