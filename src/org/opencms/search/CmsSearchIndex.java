@@ -247,7 +247,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
     private boolean m_requireViewPermission;
 
     /** The cms specific Similarity implementation. */
-    private transient final Similarity m_sim = new CmsSearchSimilarity();
+    private final transient Similarity m_sim = new CmsSearchSimilarity();
 
     /**
      * Default constructor only intended to be used by the XML configuration. <p>
@@ -1669,7 +1669,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
             BooleanQuery.Builder build = new BooleanQuery.Builder();
             terms.forEach(term -> build.add(new TermQuery(term), Occur.SHOULD));
-            Query termsQuery = build.build();//termsFilter
+            Query termsQuery = build.build(); //termsFilter
 
             try {
                 result = termsQuery.createWeight(m_indexSearcher, ScoreMode.COMPLETE_NO_SCORES, 1).getQuery();
