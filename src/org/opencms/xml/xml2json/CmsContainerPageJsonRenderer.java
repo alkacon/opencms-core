@@ -36,6 +36,7 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -52,6 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Used for rendering container pages as a JSON structure.
@@ -174,6 +177,9 @@ public class CmsContainerPageJsonRenderer {
 
     }
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsContainerPageJsonRenderer.class);
+
     /** The CMS context used for VFS operations. */
     private CmsObject m_cms;
 
@@ -287,6 +293,7 @@ public class CmsContainerPageJsonRenderer {
     JSONObject elementToJson(ElementNode elementNode) throws JSONException {
 
         JSONObject result = new JSONObject();
+        CmsResource resource = null;
         if (elementNode.getElement() != null) {
             result.put("path", elementNode.getElement().getResource().getRootPath());
 
@@ -295,8 +302,23 @@ public class CmsContainerPageJsonRenderer {
                 settings.put(entry.getKey(), entry.getValue());
             }
             result.put("settings", settings);
-
+            resource = elementNode.getElement().getResource();
+        } else {
+            resource = m_page;
         }
+
+        if (resource != null) {
+            try {
+                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(m_cms, resource);
+                result.put("attributes", helper.attributes());
+                result.put("properties", helper.properties());
+                helper.addPathAndLink(result);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+
+            }
+        }
+
         JSONObject containers = new JSONObject();
         for (Map.Entry<String, ContainerNode> entry : elementNode.getContainers().entrySet()) {
             containers.put(entry.getKey(), containerToJson(entry.getValue()));
