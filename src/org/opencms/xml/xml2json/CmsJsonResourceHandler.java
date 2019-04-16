@@ -63,14 +63,14 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigurationParameterHandler {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJsonResourceHandler.class);
+    /** Request attribute for storing the JSON handler context. */
+    public static final String ATTR_CONTEXT = "jsonHandlerContext";
 
     /** URL prefix. */
     public static final String PREFIX = "/json";
 
-    /** Request attribute for storing the JSON handler context. */
-    public static final String ATTR_CONTEXT = "jsonHandlerContext";
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJsonResourceHandler.class);
 
     /** Configuration from config file. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
@@ -184,17 +184,18 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
                 // ignore
             }
 
+            CmsJsonAccessPolicy accessPolicy = getAccessPolicy(rootCms);
             CmsJsonHandlerContext context = new CmsJsonHandlerContext(
                 cms,
                 rootCms,
                 path,
                 resource,
                 singleParams,
-                m_config);
+                m_config,
+                accessPolicy);
             String encoding = "UTF-8";
             res.setContentType("application/json; charset=" + encoding);
-            if (resourcePermissionDenied
-                || !getAccessPolicy(context.getRootCms()).checkAccess(context.getCms(), context.getPath())) {
+            if (resourcePermissionDenied || !accessPolicy.checkAccess(context.getCms(), context.getPath())) {
                 status = HttpServletResponse.SC_FORBIDDEN;
                 output = JSONObject.quote("forbidden");
             } else {

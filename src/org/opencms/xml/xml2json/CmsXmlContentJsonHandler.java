@@ -138,7 +138,8 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
 
                 CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(
                     context.getCms(),
-                    context.getResource());
+                    context.getResource(),
+                    context.getAccessPolicy()::checkPropertyAccess);
                 json1.put("properties", helper.properties());
                 json1.put("attributes", helper.attributes());
                 helper.addPathAndLink(json1);

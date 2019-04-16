@@ -53,11 +53,23 @@ public class CmsJsonHandlerContext {
     @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsJsonHandlerContext.class);
 
+    /** Gets the access policy. */
+    private CmsJsonAccessPolicy m_accessPolicy;
+
     /** The CMS context with the original site root. */
     private CmsObject m_cms;
 
-    /** The CMS context initialized with the root site. */
-    private CmsObject m_rootCms;
+    /** The XML content (initially null). */
+    private CmsXmlContent m_content;
+
+    /** The file for the path (initially null). */
+    private CmsFile m_file;
+
+    /** The handler parameters from opencms-system.xml. */
+    private CmsParameterConfiguration m_handlerConfig;
+
+    /** The request parameters from the resource init handler call. */
+    private Map<String, String> m_parameters;
 
     /** The path below the JSON handler prefix. */
     private String m_path;
@@ -65,20 +77,11 @@ public class CmsJsonHandlerContext {
     /** The resource for the path. */
     private CmsResource m_resource;
 
-    /** The file for the path (initially null). */
-    private CmsFile m_file;
-
-    /** The request parameters from the resource init handler call. */
-    private Map<String, String> m_parameters;
+    /** The CMS context initialized with the root site. */
+    private CmsObject m_rootCms;
 
     /** Temporary data storage to be used by individual handlers. */
     private Map<String, Object> m_tempData = new LinkedHashMap<>();
-
-    /** The XML content (initially null). */
-    private CmsXmlContent m_content;
-
-    /** The handler parameters from opencms-system.xml. */
-    private CmsParameterConfiguration m_handlerConfig;
 
     /**
      * Creates a new instance.
@@ -89,6 +92,7 @@ public class CmsJsonHandlerContext {
      * @param resource the resource (may be null)
      * @param params the request parameters
      * @param handlerConfig the handler parameters from opencms-system.xml
+     * @param the access policy
      */
     public CmsJsonHandlerContext(
         CmsObject cms,
@@ -96,7 +100,8 @@ public class CmsJsonHandlerContext {
         String path,
         CmsResource resource,
         Map<String, String> params,
-        CmsParameterConfiguration handlerConfig) {
+        CmsParameterConfiguration handlerConfig,
+        CmsJsonAccessPolicy policy) {
 
         m_cms = cms;
         m_resource = resource;
@@ -110,6 +115,17 @@ public class CmsJsonHandlerContext {
         if (m_handlerConfig == null) {
             m_handlerConfig = new CmsParameterConfiguration();
         }
+        m_accessPolicy = policy;
+    }
+
+    /**
+     * Gets the access policy.
+     *
+     * @return the access policy
+     */
+    public CmsJsonAccessPolicy getAccessPolicy() {
+
+        return m_accessPolicy;
     }
 
     /**

@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.apache.commons.logging.Log;
 
@@ -66,11 +67,11 @@ public class CmsContainerPageJsonRenderer {
      */
     public class ContainerNode {
 
-        /** List of nodes corresponding to container elements. */
-        private List<ElementNode> m_elements = new ArrayList<>();
-
         /** The container bean. */
         private CmsContainerBean m_container;
+
+        /** List of nodes corresponding to container elements. */
+        private List<ElementNode> m_elements = new ArrayList<>();
 
         /**
          * Creates a new node for the given container.
@@ -186,16 +187,21 @@ public class CmsContainerPageJsonRenderer {
     /** The container page. */
     private CmsResource m_page;
 
+    /** The property filter. */
+    private Predicate<String> m_propFilter;
+
     /**
      * Creates a new renderer instance.
      *
      * @param cms the CMS context
      * @param page the container page to render
+     * @param propertyFilter the property filter
      */
-    public CmsContainerPageJsonRenderer(CmsObject cms, CmsResource page) {
+    public CmsContainerPageJsonRenderer(CmsObject cms, CmsResource page, Predicate<String> propertyFilter) {
 
         m_cms = cms;
         m_page = page;
+        m_propFilter = propertyFilter;
     }
 
     /**
@@ -309,7 +315,7 @@ public class CmsContainerPageJsonRenderer {
 
         if (resource != null) {
             try {
-                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(m_cms, resource);
+                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(m_cms, resource, m_propFilter);
                 result.put("attributes", helper.attributes());
                 result.put("properties", helper.properties());
                 helper.addPathAndLink(result);

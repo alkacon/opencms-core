@@ -67,7 +67,8 @@ public class CmsContainerPageJsonHandler implements I_CmsJsonHandler {
         try {
             CmsContainerPageJsonRenderer renderer = new CmsContainerPageJsonRenderer(
                 context.getCms(),
-                context.getResource());
+                context.getResource(),
+                context.getAccessPolicy()::checkPropertyAccess);
             return new CmsJsonResult(renderer.renderJson(), 200);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);

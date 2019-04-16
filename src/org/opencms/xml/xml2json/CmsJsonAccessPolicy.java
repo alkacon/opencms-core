@@ -57,14 +57,17 @@ public class CmsJsonAccessPolicy {
     /** Group which should be allowed access. */
     private String m_accessGroup;
 
-    /** Include path patterns. */
-    private List<Pattern> m_include;
-
     /** Exclude path patterns. */
     private List<Pattern> m_exclude;
 
+    /** Include path patterns. */
+    private List<Pattern> m_include;
+
     /** If this is set to a non-null value, that value will always be returned from checkAccess. */
     private Boolean m_overrideValue;
+
+    /** The property filter regex - only properties with names it matches are written to JSON .*/
+    private Pattern m_propertyFilter;
 
     /**
      * Creates new access policy with a fixed return value for checkAccess.
@@ -82,12 +85,20 @@ public class CmsJsonAccessPolicy {
      * @param accessGroup the access group (may be null)
      * @param includePatterns the include regexes
      * @param excludePatterns the exclude regexes
+     * @param propertyFilterRegex the regular expresion to filter property names with
      */
-    public CmsJsonAccessPolicy(String accessGroup, List<String> includePatterns, List<String> excludePatterns) {
+    public CmsJsonAccessPolicy(
+        String accessGroup,
+        List<String> includePatterns,
+        List<String> excludePatterns,
+        String propertyFilterRegex) {
 
         m_accessGroup = accessGroup;
         m_include = includePatterns.stream().map(Pattern::compile).collect(Collectors.toList());
         m_exclude = excludePatterns.stream().map(Pattern::compile).collect(Collectors.toList());
+        if (propertyFilterRegex != null) {
+            m_propertyFilter = Pattern.compile(propertyFilterRegex);
+        }
     }
 
     /**
@@ -105,7 +116,6 @@ public class CmsJsonAccessPolicy {
         } catch (IOException e) {
             return null;
         }
-
     }
 
     /**
@@ -115,7 +125,7 @@ public class CmsJsonAccessPolicy {
      * @return the access policy
      *
      * @throws DocumentException if parsing fails
-    
+
      */
     public static CmsJsonAccessPolicy parse(InputStream stream) throws DocumentException {
 
@@ -127,11 +137,16 @@ public class CmsJsonAccessPolicy {
         if (groupElem != null) {
             groupName = groupElem.getTextTrim();
         }
+        Element propertyFilterElem = root.element("property-filter");
+        String propertyFilterRegex = null;
+        if (propertyFilterElem != null) {
+            propertyFilterRegex = propertyFilterElem.getTextTrim();
+        }
         List<String> includes = root.elements("include").stream().map(elem -> elem.getTextTrim()).collect(
             Collectors.toList());
         List<String> excludes = root.elements("exclude").stream().map(elem -> elem.getTextTrim()).collect(
             Collectors.toList());
-        return new CmsJsonAccessPolicy(groupName, includes, excludes);
+        return new CmsJsonAccessPolicy(groupName, includes, excludes, propertyFilterRegex);
     }
 
     /**
@@ -168,6 +183,17 @@ public class CmsJsonAccessPolicy {
             && !m_exclude.stream().anyMatch(exclude -> exclude.matcher(path).matches());
         return included;
 
+    }
+
+    /**
+     * Checks if the property can be accessed (i.e. is not filtered out by property filter).
+     *
+     * @param property the property name to check
+     * @return true if the property can be written to JSON
+     */
+    public boolean checkPropertyAccess(String property) {
+
+        return (m_propertyFilter == null) || m_propertyFilter.matcher(property).matches();
     }
 
 }

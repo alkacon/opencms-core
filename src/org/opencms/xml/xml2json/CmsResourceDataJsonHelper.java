@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Helper class for formatting resource data as JSON.
@@ -45,6 +46,9 @@ public class CmsResourceDataJsonHelper {
     /** The CMS context. */
     private CmsObject m_cms;
 
+    /** The property filter which decides whether properties should be written to JSON or not. */
+    private Predicate<String> m_propertyFilter;
+
     /** The resource. */
     private CmsResource m_resource;
 
@@ -53,11 +57,13 @@ public class CmsResourceDataJsonHelper {
      *
      * @param cms the CMS context
      * @param resource the resource
+     * @param propertyFilter the property filter, which decides whether properties should be written to JSON or not
      */
-    public CmsResourceDataJsonHelper(CmsObject cms, CmsResource resource) {
+    public CmsResourceDataJsonHelper(CmsObject cms, CmsResource resource, Predicate<String> propertyFilter) {
 
         m_cms = cms;
         m_resource = resource;
+        m_propertyFilter = propertyFilter;
     }
 
     /**
@@ -100,7 +106,9 @@ public class CmsResourceDataJsonHelper {
         List<CmsProperty> props = m_cms.readPropertyObjects(m_resource, false);
         JSONObject propJson = new JSONObject(true);
         for (CmsProperty prop : props) {
-            propJson.put(prop.getName(), prop.getValue());
+            if ((m_propertyFilter == null) || m_propertyFilter.test(prop.getName())) {
+                propJson.put(prop.getName(), prop.getValue());
+            }
         }
         return propJson;
     }

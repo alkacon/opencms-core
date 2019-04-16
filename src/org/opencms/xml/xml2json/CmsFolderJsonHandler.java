@@ -111,7 +111,10 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
     throws JSONException, CmsException {
 
         JSONObject result = new JSONObject(true);
-        CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(context.getCms(), resource);
+        CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(
+            context.getCms(),
+            resource,
+            context.getAccessPolicy()::checkPropertyAccess);
         helper.addPathAndLink(result);
         result.put("isFolder", resource.isFolder());
         boolean isContent = false;
