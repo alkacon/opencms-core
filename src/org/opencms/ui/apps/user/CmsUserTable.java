@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -764,7 +765,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                             }
                             window.close();
                         } catch (CmsException e) {
-                            //
+                            LOG.error("Unable to swith user", e);
                         }
                     }
                 },
@@ -792,8 +793,14 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
          */
         public CmsMenuItemVisibilityMode getVisibility(Set<String> context) {
 
-            return CmsMenuItemVisibilityMode.activeInactive(
-                onlyVisibleForOU(new CmsUUID(context.iterator().next())) && (context.size() <= 1));
+            try {
+                OpenCms.getRoleManager().checkRole(m_cms, CmsRole.ADMINISTRATOR);
+                return CmsMenuItemVisibilityMode.activeInactive(
+                    onlyVisibleForOU(new CmsUUID(context.iterator().next())) && (context.size() <= 1));
+            } catch (CmsRoleViolationException e) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
         }
 
     }
@@ -962,6 +969,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         return m_emptyLayout;
     }
 
+    /**
+     * Gets currently visible user.
+     *
+     * @return List of user
+     */
     public List<CmsUser> getVisibleUser() {
 
         if (!m_fullyLoaded) {

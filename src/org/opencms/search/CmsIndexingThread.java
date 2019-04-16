@@ -68,6 +68,9 @@ public class CmsIndexingThread extends Thread {
     /** The result document. */
     private I_CmsSearchDocument m_result;
 
+    /** Flag, indicating if a default document for the resource should be created. */
+    private boolean m_addDefaultDocument = true;
+
     /**
      * Create a new indexing thread.<p>
      *
@@ -98,6 +101,16 @@ public class CmsIndexingThread extends Thread {
      */
     public I_CmsSearchDocument getResult() {
 
+        if ((null == m_result) && m_addDefaultDocument) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(
+                    "Creating default document without content for "
+                        + m_res.getRootPath()
+                        + " in index "
+                        + m_index.getName());
+            }
+            return createDefaultIndexDocument();
+        }
         return m_result;
     }
 
@@ -175,6 +188,29 @@ public class CmsIndexingThread extends Thread {
     }
 
     /**
+     * Creates a document for the resource without extracting the content. The aim is to get a content indexed,
+     * even if extraction runs into a timeout.
+     *
+     * @return the document for the resource generated if the content is discarded,
+     *         i.e., only meta information are indexed.
+     */
+    protected I_CmsSearchDocument createDefaultIndexDocument() {
+
+        try {
+            return m_index.getFieldConfiguration().createDocument(m_cms, m_res, m_index, null);
+        } catch (CmsException e) {
+            LOG.error(
+                "Default document for "
+                    + m_res.getRootPath()
+                    + " and index "
+                    + m_index.getName()
+                    + " could not be created.",
+                e);
+            return null;
+        }
+    }
+
+    /**
      * Creates the search index document.<p>
      *
      * @param cms the current OpenCms user context
@@ -213,10 +249,9 @@ public class CmsIndexingThread extends Thread {
                 I_CmsReport.FORMAT_DEFAULT);
         }
 
-        // check if this resource should be excluded from the index, if so skip it
-        boolean excludeFromIndex = index.excludeFromIndex(cms, res);
-
-        if (!excludeFromIndex) {
+        if (m_index.excludeFromIndex(m_cms, m_res)) {
+            m_addDefaultDocument = false;
+        } else {
             // resource is to be included in the index
             I_CmsDocumentFactory documentFactory = index.getDocumentFactory(res);
             if (documentFactory != null) {
@@ -230,6 +265,8 @@ public class CmsIndexingThread extends Thread {
                 }
                 // create the document
                 result = documentFactory.createDocument(cms, res, index);
+            } else {
+                m_addDefaultDocument = false;
             }
         }
         if (result == null) {

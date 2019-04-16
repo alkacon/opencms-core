@@ -37,6 +37,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
@@ -1041,6 +1042,25 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
+     * Gets the full user List including additionInfos.<p>
+     *
+     * @param users user list
+     * @return List of user
+     */
+    protected List<CmsUser> getFullUser(List<CmsUser> users) {
+
+        List<CmsUser> res = new ArrayList<CmsUser>();
+        for (CmsUser user : users) {
+            try {
+                res.add(m_cms.readUser(user.getId()));
+            } catch (CmsException e) {
+                LOG.error("Unable to read user", e);
+            }
+        }
+        return res;
+    }
+
+    /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
      */
     @Override
@@ -1182,14 +1202,22 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
             public void buttonClick(ClickEvent event) {
 
+                boolean includeTechnicalFields = false;
+                try {
+                    OpenCms.getRoleManager().checkRole(m_cms, CmsRole.ADMINISTRATOR);
+                    includeTechnicalFields = true;
+                } catch (CmsRoleViolationException e) {
+                    // ok
+                }
                 Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
                 CmsUserCsvExportDialog dialog = new CmsUserCsvExportDialog(
-                    getVisibleUser(),
+                    getFullUser(getVisibleUser()),
                     m_stateBean.getPath(),
                     m_stateBean.getType(),
                     getElementName(m_stateBean),
                     CmsVaadinUtils.isButtonPressed(getToggleButton(m_stateBean)),
-                    window);
+                    window,
+                    includeTechnicalFields);
                 window.setContent(dialog);
                 A_CmsUI.get().addWindow(window);
 

@@ -34,6 +34,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
@@ -786,9 +787,33 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public void valueChange(ValueChangeEvent event) {
 
+                try {
+                    String folderPath = m_simpleFieldParentFolderName.getValue();
+                    if (CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP.equals(
+                        OpenCms.getResourceManager().getResourceType(
+                            m_clonedCms.readResource(folderPath)).getTypeName())) {
+                        String newFolderName = folderPath.split("/")[folderPath.split("/").length - 1];
+                        m_simpleFieldFolderName.setValue(newFolderName);
+                        m_simpleFieldParentFolderName.setValue(
+                            m_simpleFieldParentFolderName.getValue().substring(
+                                0,
+                                folderPath.length() - 1 - newFolderName.length()));
+                        m_isFolderNameTouched = true;
+                        if (m_simpleFieldTitle.isEmpty()) {
+                            CmsProperty title = m_clonedCms.readPropertyObject(
+                                m_clonedCms.readResource(folderPath),
+                                "Title",
+                                false);
+                            if (!CmsProperty.getNullProperty().equals(title)) {
+                                m_simpleFieldTitle.setValue(title.getValue());
+                            }
+                        }
+                    }
+                } catch (CmsException e) {
+                    // Resource was not found. Not ok, but will be validated later
+                }
                 setUpOUComboBox(m_fieldSelectParentOU);
                 setUpOUComboBox(m_fieldSelectOU);
-
             }
 
         });
@@ -1434,7 +1459,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     void setOkButtonEnabled() {
 
         m_ok.setEnabled(true);
-        m_ok.setCaption(m_cancel.getCaption());
+        m_ok.setCaption(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
         m_ok.removeClickListener(m_okClickListener);
         m_ok.addClickListener(new ClickListener() {
 

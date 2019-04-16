@@ -291,9 +291,6 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     /** The lazy initialized Map that checks if a value is available. */
     private Map<String, Boolean> m_hasValue;
 
-    /** Date information as instance date bean. */
-    private CmsJspInstanceDateBean m_instanceDate;
-
     /** The macro resolver used to resolve macros for this value. */
     private CmsMacroResolver m_macroResolver;
 
@@ -856,20 +853,6 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             m_dateSeries = new CmsJspDateSeriesBean(this, m_cms.getRequestContext().getLocale());
         }
         return m_dateSeries;
-    }
-
-    /**
-     * Converts a date to an instance date bean.
-     * @return the instance date bean.
-     */
-    public CmsJspInstanceDateBean getToInstanceDate() {
-
-        if (m_instanceDate == null) {
-            m_instanceDate = new CmsJspInstanceDateBean(
-                getToDate(),
-                new CmsJspDateSeriesBean(this, m_cms.getRequestContext().getLocale()));
-        }
-        return m_instanceDate;
     }
 
     /**

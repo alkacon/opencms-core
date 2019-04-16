@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
@@ -169,9 +170,20 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         public void executeAction(Set<String> context) {
 
+            boolean includeTechnicalFields = false;
+            try {
+                OpenCms.getRoleManager().checkRole(m_cms, CmsRole.ADMINISTRATOR);
+                includeTechnicalFields = true;
+            } catch (CmsRoleViolationException e) {
+                // ok
+            }
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
-            window.setContent(CmsImportExportUserDialog.getExportUserDialogForOU(context.iterator().next(), window));
+            window.setContent(
+                CmsImportExportUserDialog.getExportUserDialogForOU(
+                    context.iterator().next(),
+                    window,
+                    includeTechnicalFields));
 
             A_CmsUI.get().addWindow(window);
         }

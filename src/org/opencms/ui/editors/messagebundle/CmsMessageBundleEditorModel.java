@@ -93,11 +93,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.UI;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.util.DefaultItemSorter;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.ui.UI;
 
 /**
  * The class contains the logic behind the message translation editor.
@@ -120,6 +120,7 @@ public class CmsMessageBundleEditorModel {
          * @param configuredBundle the base name of the configured message bundle (can be <code>null</code>).
          */
         public ConfigurableMessages(CmsMessages defaultMessages, Locale locale, String configuredBundle) {
+
             m_defaultMessages = defaultMessages;
             if (null != configuredBundle) {
                 CmsMessages bundle = new CmsMessages(configuredBundle, locale);
@@ -186,6 +187,7 @@ public class CmsMessageBundleEditorModel {
          * Hide the default constructor.
          */
         private CmsCaseInsensitiveStringComparator() {
+
             // Hide constructor
         }
 
@@ -283,6 +285,7 @@ public class CmsMessageBundleEditorModel {
          * Default constructor.
          */
         public SortedProperties() {
+
             super();
         }
 
@@ -905,6 +908,7 @@ public class CmsMessageBundleEditorModel {
         I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, resources) {
 
             public void focus(CmsUUID structureId) {
+
                 //Nothing to do.
             }
 
@@ -914,6 +918,7 @@ public class CmsMessageBundleEditorModel {
             }
 
             public void updateUserInfo() {
+
                 //Nothing to do.
             }
         };
@@ -1226,6 +1231,7 @@ public class CmsMessageBundleEditorModel {
             LockedFile file = LockedFile.lockResource(m_cms, res);
             file.setCreated(true);
             m_lockedBundleFiles.put(l, file);
+            m_changedTranslations.add(l);
         }
 
     }
@@ -1682,6 +1688,7 @@ public class CmsMessageBundleEditorModel {
      */
     private void removeXmlBundleFile() throws CmsException {
 
+        lockLocalization(null);
         m_cms.deleteResource(m_resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
         m_resource = null;
 

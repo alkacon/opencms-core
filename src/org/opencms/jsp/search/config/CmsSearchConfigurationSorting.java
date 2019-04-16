@@ -32,10 +32,13 @@ import java.util.List;
 /** Configuration for sorting in general. */
 public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSorting {
 
+    /** Default request parameter holding the selected sort option. */
+    public static final String DEFAULT_SORT_PARAM = "sort";
     /** The request parameter used to send the currently chosen search option. */
     private final String m_sortParam;
     /** The available sort options. */
     private final List<I_CmsSearchConfigurationSortOption> m_options;
+
     /** The default sort option. */
     private final I_CmsSearchConfigurationSortOption m_defaultOption;
 
@@ -49,9 +52,25 @@ public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSo
         final List<I_CmsSearchConfigurationSortOption> options,
         final I_CmsSearchConfigurationSortOption defaultOption) {
 
-        m_sortParam = sortParam;
+        m_sortParam = sortParam == null ? DEFAULT_SORT_PARAM : sortParam;
         m_options = options;
         m_defaultOption = defaultOption;
+    }
+
+    /** Creates a sort configuration iff at least one of the parameters is not null and the options list is not empty.
+     * @param sortParam The request parameter used to send the currently chosen search option.
+     * @param options The available sort options.
+     * @param defaultOption The default sort option.
+     * @return the sort configuration or null, depending on the arguments.
+     */
+    public static CmsSearchConfigurationSorting create(
+        final String sortParam,
+        final List<I_CmsSearchConfigurationSortOption> options,
+        final I_CmsSearchConfigurationSortOption defaultOption) {
+
+        return (null != sortParam) || ((null != options) && !options.isEmpty()) || (null != defaultOption)
+        ? new CmsSearchConfigurationSorting(sortParam, options, defaultOption)
+        : null;
     }
 
     /**
