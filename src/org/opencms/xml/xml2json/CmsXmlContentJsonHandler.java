@@ -28,6 +28,7 @@
 package org.opencms.xml.xml2json;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -116,7 +117,8 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
-        return CmsResourceTypeXmlContent.isXmlContent(context.getResource());
+        return CmsResourceTypeXmlContent.isXmlContent(context.getResource())
+            && !CmsResourceTypeXmlContainerPage.isContainerPage(context.getResource());
     }
 
     /**
@@ -134,7 +136,9 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             if ((localeParam == null) && (pathParam == null)) {
                 JSONObject json1 = CmsDefaultXmlContentJsonRenderer.renderAllLocales(content, renderer);
 
-                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(context.getCms(), context.getResource());
+                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(
+                    context.getCms(),
+                    context.getResource());
                 json1.put("properties", helper.properties());
                 json1.put("attributes", helper.attributes());
                 helper.addPathAndLink(json1);
