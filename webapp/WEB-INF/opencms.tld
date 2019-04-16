@@ -2720,12 +2720,13 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                VFS-URI of the search form configuration file (either a JSON file or an XML content of type <code>jsp-search-form</code>.
+                Value specifying the search form configuration file (either a JSON file or an XML content of type <code>jsp-search-form</code>.
+                You can provide path, structure id or resource object to identify the file.
             ]]></description>
             <name>configFile</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
+            <type>java.lang.Object</type>
         </attribute>
         <attribute>
                 <description><![CDATA[
@@ -2805,12 +2806,12 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                VFS-URI of the search form configuration file of type <code>listconfig</code>.
+                VFS-URI, structure id, or resource object identifying the search form configuration file of type <code>listconfig</code>.
             ]]></description>
             <name>configFile</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
+            <type>java.lang.Object</type>
         </attribute>
         <attribute>
             <description><![CDATA[
