@@ -35,12 +35,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -142,14 +141,9 @@ public class CmsFormatterConfigurationCacheState {
     public Collection<I_CmsFormatterBean> getFormattersForType(String resourceType, boolean filterAutoEnabled) {
 
         Collection<I_CmsFormatterBean> result = getFormattersByType().get(resourceType);
+
         if (filterAutoEnabled) {
-            result = Collections2.filter(result, new Predicate<I_CmsFormatterBean>() {
-
-                public boolean apply(I_CmsFormatterBean formatter) {
-
-                    return formatter.isAutoEnabled();
-                }
-            });
+            result = result.stream().filter(formatter -> formatter.isAutoEnabled()).collect(Collectors.toList());
         }
         return result;
     }

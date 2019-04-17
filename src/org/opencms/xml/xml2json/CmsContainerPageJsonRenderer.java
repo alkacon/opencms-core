@@ -48,6 +48,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -353,7 +354,14 @@ public class CmsContainerPageJsonRenderer {
         CmsContainerElementBean elementBean,
         CmsADEConfigData adeConfig) {
 
-        Map<CmsUUID, I_CmsFormatterBean> formatters = adeConfig.getCachedFormatters().getFormatters();
+        Collection<I_CmsFormatterBean> formatterList = adeConfig.getCachedFormatters().getFormattersForType(
+            OpenCms.getResourceManager().getResourceType(elementBean.getResource()).getTypeName(),
+            false);
+        Map<CmsUUID, I_CmsFormatterBean> formatters = new HashMap<>();
+        for (I_CmsFormatterBean formatter : formatterList) {
+            formatters.put(new CmsUUID(formatter.getId()), formatter);
+        }
+
         Map<String, String> settings = elementBean.getIndividualSettings();
         I_CmsFormatterBean result = null;
 
@@ -367,7 +375,12 @@ public class CmsContainerPageJsonRenderer {
         }
         CmsUUID elementJspId = elementBean.getFormatterId();
         if ((result == null) && (elementJspId != null)) {
-            System.out.println("==== WARNING: Formatter id not found.");
+            LOG.warn(
+                "Formatter id not found for element "
+                    + elementBean.getResource().getRootPath()
+                    + "  in "
+                    + m_page.getRootPath());
+
             for (I_CmsFormatterBean bean : formatters.values()) {
                 if (bean.getJspStructureId().equals(elementJspId)) {
                     result = bean;
