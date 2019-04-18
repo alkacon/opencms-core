@@ -51,6 +51,9 @@ import org.dom4j.io.SAXReader;
  */
 public class CmsJsonAccessPolicy {
 
+    /** Default property filter: Property name must not contain secret, api, password or key. */
+    public static final Pattern DEFAULT_PROP_FILTER = Pattern.compile("(?i)^(?!.*(?:secret|api|password|key)).*$");
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJsonAccessPolicy.class);
 
@@ -67,7 +70,7 @@ public class CmsJsonAccessPolicy {
     private Boolean m_overrideValue;
 
     /** The property filter regex - only properties with names it matches are written to JSON .*/
-    private Pattern m_propertyFilter;
+    private Pattern m_propertyFilter = DEFAULT_PROP_FILTER;
 
     /**
      * Creates new access policy with a fixed return value for checkAccess.
@@ -193,7 +196,11 @@ public class CmsJsonAccessPolicy {
      */
     public boolean checkPropertyAccess(String property) {
 
-        return (m_propertyFilter == null) || m_propertyFilter.matcher(property).matches();
+        boolean result = (m_propertyFilter == null) || m_propertyFilter.matcher(property).matches();
+        if (!result) {
+            LOG.info("Filtered property " + property + " because it does not match the JSON property filter.");
+        }
+        return result;
     }
 
 }
