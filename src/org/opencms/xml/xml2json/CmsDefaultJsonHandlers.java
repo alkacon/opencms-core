@@ -42,7 +42,9 @@ public class CmsDefaultJsonHandlers {
     private static CmsFolderJsonHandler m_folderHandler = new CmsFolderJsonHandler();
 
     /** The XML handler instance. */
-    private static CmsXmlContentJsonHandler m_xmlContentHandler = new CmsXmlContentJsonHandler();
+    private static I_CmsJsonHandler m_xmlContentHandler = new CmsOnlineCachingHandlerWrapper(
+        new CmsXmlContentJsonHandler(),
+        "concurrencyLevel=4,maximumSize=10000");
 
     /** The JSP handler instance. */
     private static CmsJspJsonHandler m_jspHandler = new CmsJspJsonHandler();

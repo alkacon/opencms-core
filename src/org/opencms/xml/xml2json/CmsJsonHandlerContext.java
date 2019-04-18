@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,6 +49,70 @@ import org.apache.commons.logging.Log;
  * Also lazily loads the resource or content to be rendered as JSON.
  */
 public class CmsJsonHandlerContext {
+
+    /**
+     * Cache key for JSON handler contexts.
+     *
+     * <p>Contains a weak reference to the context, for use in LoadingCache.
+     *
+     */
+    public static class Key {
+
+        /** The reference to the context from which this key was created. */
+        WeakReference<CmsJsonHandlerContext> m_contextRef;
+
+        /** The key string. */
+        private String m_keyString;
+
+        /**
+         * Creates a new cache key for a context.
+         *
+         * @param context the context
+         */
+        public Key(CmsJsonHandlerContext context) {
+
+            StringBuilder buffer = new StringBuilder();
+            buffer.append(context.getCms().getRequestContext().getCurrentProject().getId());
+            buffer.append("|");
+            buffer.append(context.getCms().getRequestContext().getSiteRoot());
+            buffer.append("|");
+            buffer.append(context.getCms().getRequestContext().getCurrentUser().getId());
+            buffer.append("|");
+            buffer.append(context.getPath());
+            buffer.append("|");
+            buffer.append(context.getParameters());
+            m_keyString = buffer.toString();
+            m_contextRef = new WeakReference<>(context);
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+
+            return (obj instanceof Key) && ((Key)obj).m_keyString.equals(m_keyString);
+        }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            return m_keyString.hashCode();
+        }
+
+        /**
+         * Gets the original context, if it hasn't been garbage collected yet.
+         *
+         * @return the original context or null if it has already been collected
+         */
+        CmsJsonHandlerContext getContext() {
+
+            return m_contextRef.get();
+        }
+    }
 
     /** The logger instance for this class. */
     @SuppressWarnings("unused")
@@ -92,7 +157,7 @@ public class CmsJsonHandlerContext {
      * @param resource the resource (may be null)
      * @param params the request parameters
      * @param handlerConfig the handler parameters from opencms-system.xml
-     * @param the access policy
+     * @param policy the access policy
      */
     public CmsJsonHandlerContext(
         CmsObject cms,
@@ -180,6 +245,16 @@ public class CmsJsonHandlerContext {
     public CmsParameterConfiguration getHandlerConfig() {
 
         return m_handlerConfig;
+    }
+
+    /**
+     * Creates a cache key for this context.
+     *
+     * @return the cache key
+     */
+    public Key getKey() {
+
+        return new Key(this);
     }
 
     /**
