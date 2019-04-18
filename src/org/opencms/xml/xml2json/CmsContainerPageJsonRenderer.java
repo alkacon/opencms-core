@@ -229,7 +229,13 @@ public class CmsContainerPageJsonRenderer {
             containerNodes.add(containerNode);
             for (CmsContainerElementBean cachedElementBean : container.getElements()) {
                 CmsContainerElementBean elementBean = cachedElementBean.clone();
-                elementBean.initResource(m_cms);
+                try {
+                    elementBean.initResource(m_cms);
+                } catch (CmsException e) {
+                    // Skip elements whose resources can't be read
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    continue;
+                }
                 ElementNode elemNode = new ElementNode(elementBean);
                 if (elementBean.getInstanceId() != null) {
                     elementsByInstanceId.put(elementBean.getInstanceId(), elemNode);
