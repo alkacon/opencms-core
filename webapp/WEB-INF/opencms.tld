@@ -2924,6 +2924,108 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+     <tag>
+        <description>Creates a JSON object and adds it to the surrounding JSON context, or stores the JSON in a 
+        page context attribute. The content of the JSON object is provided by nested cms:json... tags.</description>
+        <name>jsonobject</name>
+        <tag-class>org.opencms.jsp.CmsJspTagJsonObject</tag-class>
+        <body-content>JSP</body-content>
+           <attribute>
+            <description>The name of the page context attribute to store the JSON in.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The key used to add this value to the surrounding JSON context. Should be used
+            if and only if the surrounding JSON tag is a jsonobject tag.</description>
+            <name>key</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>This parameter controls what is stored in the page context attribute given by the var 
+            attribute. If mode equals 'text', formatted JSON for the value will be stored; if mode equals 'object', the JSON value itself.
+            The default value is 'text'.   
+            </description>
+            <name>mode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+     <tag>
+        <description>Creates a JSON array and adds it to the surrounding JSON context, or stores the JSON in a 
+        page context attribute. The content of the array is provided by nested cms:json... tags.</description>
+        <name>jsonarray</name>
+        <tag-class>org.opencms.jsp.CmsJspTagJsonArray</tag-class>
+        <body-content>JSP</body-content>
+          <attribute>
+            <description>The name of the page context attribute to store the JSON in.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The key used to add this value to the surrounding JSON context. Should be used
+            if and only if the surrounding JSON tag is a jsonobject tag.</description>
+            <name>key</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+         <attribute>
+            <description>This parameter controls what is stored in the page context attribute given by the var 
+            attribute. If mode equals 'text', formatted JSON for the value will be stored; if mode equals 'object', the JSON value itself.
+            The default value is 'text'.   
+            </description>
+            <name>mode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+     <tag>
+        <description><![CDATA[
+        	Takes a JSON value from the 'value' attribute and adds it to the surrounding JSON context or
+        	sets it as a page context attribute.
+        ]]>				
+        </description>
+        <name>jsonvalue</name>
+        <tag-class>org.opencms.jsp.CmsJspTagJsonValue</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The JSON value.</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+        <attribute>
+            <description>The name of the page context attribute to store the JSON in.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The key used to add this value to the surrounding JSON context. Should be used
+            if and only if the surrounding JSON tag is a jsonobject tag.</description>
+            <name>key</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+         <attribute>
+            <description>This parameter controls what is stored in the page context attribute given by the var 
+            attribute. If mode equals 'text', formatted JSON for the value will be stored; if mode equals 'object', the JSON value itself.
+            The default value is 'text'.   
+            </description>
+            <name>mode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+    
 
     <function>
         <description><![CDATA[
@@ -3503,6 +3605,18 @@
             boolean validateRegex(java.lang.String, java.lang.String)
         </function-signature>
     </function>
+    
+    <function>
+        <description><![CDATA[
+            Parses JSON data into an object. 
+        ]]></description>
+        <name>parseJson</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.Object parseJson(java.lang.String)
+        </function-signature>
+    </function>
+    
 
 
 </taglib>

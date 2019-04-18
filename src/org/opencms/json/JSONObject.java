@@ -600,6 +600,64 @@ public class JSONObject {
     }
 
     /**
+     * Make a JSON text of an Object value.<p>
+     *
+     * If the object has an value.toJSONString() method, then that method will be used to produce
+     * the JSON text. The method is required to produce a strictly
+     * conforming text. If the object does not contain a toJSONString
+     * method (which is the most common case), then a text will be
+     * produced by other means. If the value is an array or Collection,
+     * then a JSONArray will be made from it and its toJSONString method
+     * will be called. If the value is a MAP, then a JSONObject will be made
+     * from it and its toJSONString method will be called. Otherwise, the
+     * value's toString method will be called, and the result will be quoted.<p>
+     *
+     * Warning: This method assumes that the data structure is acyclical.<p>
+     *
+     * @param value the value to be serialized
+     * @return a printable, displayable, transmittable
+     *  representation of the object, beginning
+     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     *  with <code>}</code>&nbsp;<small>(right brace)</small>
+     * @throws JSONException if the value is or contains an invalid number
+     */
+    @SuppressWarnings("unchecked")
+    public static String valueToString(Object value) throws JSONException {
+
+        if ((value == null) || value.equals(null)) {
+            return "null";
+        }
+        if (value instanceof I_JSONString) {
+            Object o;
+            try {
+                o = ((I_JSONString)value).toJSONString();
+            } catch (Exception e) {
+                throw new JSONException(e);
+            }
+            if (o instanceof String) {
+                return (String)o;
+            }
+            throw new JSONException("Bad value from toJSONString: " + o);
+        }
+        if (value instanceof Number) {
+            return numberToString((Number)value);
+        }
+        if ((value instanceof Boolean) || (value instanceof JSONObject) || (value instanceof JSONArray)) {
+            return value.toString();
+        }
+        if (value instanceof Map) {
+            return new JSONObject((Map<String, Object>)value).toString();
+        }
+        if (value instanceof Collection) {
+            return new JSONArray((Collection<Object>)value).toString();
+        }
+        if (value.getClass().isArray()) {
+            return new JSONArray(value).toString();
+        }
+        return quote(value.toString());
+    }
+
+    /**
      * Make a pretty printed JSON text of an object value.<p>
      *
      * Warning: This method assumes that the data structure is acyclical.<p>
@@ -673,64 +731,6 @@ public class JSONObject {
                 }
             }
         }
-    }
-
-    /**
-     * Make a JSON text of an Object value.<p>
-     *
-     * If the object has an value.toJSONString() method, then that method will be used to produce
-     * the JSON text. The method is required to produce a strictly
-     * conforming text. If the object does not contain a toJSONString
-     * method (which is the most common case), then a text will be
-     * produced by other means. If the value is an array or Collection,
-     * then a JSONArray will be made from it and its toJSONString method
-     * will be called. If the value is a MAP, then a JSONObject will be made
-     * from it and its toJSONString method will be called. Otherwise, the
-     * value's toString method will be called, and the result will be quoted.<p>
-     *
-     * Warning: This method assumes that the data structure is acyclical.<p>
-     *
-     * @param value the value to be serialized
-     * @return a printable, displayable, transmittable
-     *  representation of the object, beginning
-     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
-     *  with <code>}</code>&nbsp;<small>(right brace)</small>
-     * @throws JSONException if the value is or contains an invalid number
-     */
-    @SuppressWarnings("unchecked")
-    static String valueToString(Object value) throws JSONException {
-
-        if ((value == null) || value.equals(null)) {
-            return "null";
-        }
-        if (value instanceof I_JSONString) {
-            Object o;
-            try {
-                o = ((I_JSONString)value).toJSONString();
-            } catch (Exception e) {
-                throw new JSONException(e);
-            }
-            if (o instanceof String) {
-                return (String)o;
-            }
-            throw new JSONException("Bad value from toJSONString: " + o);
-        }
-        if (value instanceof Number) {
-            return numberToString((Number)value);
-        }
-        if ((value instanceof Boolean) || (value instanceof JSONObject) || (value instanceof JSONArray)) {
-            return value.toString();
-        }
-        if (value instanceof Map) {
-            return new JSONObject((Map<String, Object>)value).toString();
-        }
-        if (value instanceof Collection) {
-            return new JSONArray((Collection<Object>)value).toString();
-        }
-        if (value.getClass().isArray()) {
-            return new JSONArray(value).toString();
-        }
-        return quote(value.toString());
     }
 
     /**

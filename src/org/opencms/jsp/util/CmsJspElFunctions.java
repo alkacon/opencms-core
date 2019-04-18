@@ -33,7 +33,9 @@ import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.json.JSONTokener;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -722,6 +724,23 @@ public final class CmsJspElFunctions {
             }
         }
         return result;
+    }
+
+    /**
+     * Parses JSON object.
+     *
+     * @param value
+     * @return
+     */
+    public static Object parseJson(String value) {
+
+        value = value.trim();
+        JSONTokener tok = new JSONTokener(value);
+        try {
+            return tok.nextValue();
+        } catch (JSONException e) {
+            return null;
+        }
     }
 
     /**
