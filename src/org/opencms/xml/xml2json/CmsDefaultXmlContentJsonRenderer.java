@@ -40,6 +40,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Node;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Locale;
 
@@ -161,11 +162,11 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * Renders a tree field as a field in the given JSON object.
      *
      * @param field the field to render
-     * @param result the result in which to put the field
+     * @return the key/value pair for the field
      *
      * @throws JSONException if something goes wrong
      */
-    protected void renderField(Field field, JSONObject result) throws JSONException {
+    protected SimpleEntry<String, Object> renderField(Field field) throws JSONException {
 
         String name = field.getName();
         if (field.isMultivalue()) {
@@ -189,18 +190,20 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
                 }
 
             }
-            result.put(name, array);
+            return new SimpleEntry<>(name, array);
         } else if (field.getNodes().size() == 1) {
             if (field.getFieldDefinition().isChoiceType() && !field.isMultiChoice()) {
                 // field *and* choice single-valued, so we can unwrap the single value
                 JSONArray array = (JSONArray)renderNode(field.getNode());
                 if (array.length() == 1) {
-                    result.put(name, array.get(0));
+                    return new SimpleEntry<>(name, array.get(0));
+
                 }
             } else {
-                result.put(name, renderNode(field.getNodes().get(0)));
+                return new SimpleEntry<>(name, renderNode(field.getNodes().get(0)));
             }
         }
+        return null;
     }
 
     /**
@@ -218,15 +221,23 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
                 List<Field> fields = node.getFields();
                 JSONObject result = new JSONObject(true);
                 for (Field field : fields) {
-                    renderField(field, result);
+                    SimpleEntry<String, Object> keyAndValue = renderField(field);
+                    if (keyAndValue != null) {
+                        result.put(keyAndValue.getKey(), keyAndValue.getValue());
+                    }
                 }
                 return result;
             case choice:
                 JSONArray array = new JSONArray();
                 for (Field field : node.getFields()) {
-                    JSONObject choiceObj = new JSONObject(true);
-                    renderField(field, choiceObj);
-                    array.put(choiceObj);
+
+                    SimpleEntry<String, Object> keyAndValue = renderField(field);
+                    if (keyAndValue != null) {
+                        JSONObject choiceObj = new JSONObject(true);
+                        choiceObj.put(keyAndValue.getKey(), keyAndValue.getValue());
+                        array.put(choiceObj);
+                    }
+
                 }
                 return array;
             case simple:

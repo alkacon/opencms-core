@@ -67,6 +67,9 @@ public class CmsXmlContentTree {
         /** The nested content definition (may be null). */
         private CmsXmlContentDefinition m_nestedDef;
 
+        /** The parent node of the field. */ 
+        protected Node m_parentNode;
+
         /**
         * Create a new instance.
         *
@@ -127,6 +130,16 @@ public class CmsXmlContentTree {
         }
 
         /**
+         * Gets the parent node.
+         * 
+         * @return the parent node 
+         */
+        public Node getParentNode() {
+
+            return m_parentNode;
+        }
+
+        /**
          * Returns true if the field refers to a choice element with maxOccurs greater than 1.
          *
          * @return true if this is a multichoice attribute
@@ -155,6 +168,16 @@ public class CmsXmlContentTree {
         public boolean isOptional() {
 
             return m_fieldDef.getMinOccurs() == 0;
+        }
+
+        /**
+         * Sets the parent node of the field.
+         * 
+         * @param parentNode the parent node 
+         */
+        public void setParentNode(Node parentNode) {
+
+            m_parentNode = parentNode;
         }
 
         /**
@@ -213,6 +236,11 @@ public class CmsXmlContentTree {
             m_elem = elem;
             m_fields = fields;
             m_value = value;
+            if (m_fields != null) {
+                for (Field field : m_fields) {
+                    field.setParentNode(this);
+                }
+            }
         }
 
         /**
