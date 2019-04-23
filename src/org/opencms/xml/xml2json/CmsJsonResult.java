@@ -70,6 +70,16 @@ public class CmsJsonResult {
     }
 
     /**
+     * Gets the JSON data.
+     * @return the JSON data
+     */
+    public Object getJson() {
+
+        return m_json;
+
+    }
+
+    /**
      * Gets the next resource which should be loaded.
      *
      * @return the resource which should be loaded
@@ -80,21 +90,11 @@ public class CmsJsonResult {
     }
 
     /**
-     * Gets the JSON data.
-     * @return the JSON data
-     */
-    Object getJson() {
-
-        return m_json;
-
-    }
-
-    /**
      * Gets the HTTP status code to set.
      *
      * @return the HTTP status
      */
-    int getStatus() {
+    public int getStatus() {
 
         return m_status;
     }
