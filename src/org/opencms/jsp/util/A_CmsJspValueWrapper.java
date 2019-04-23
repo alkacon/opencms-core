@@ -28,6 +28,7 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -134,6 +135,9 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
 
     /** Image bean instance created from the wrapped value. */
     private CmsJspImageBean m_imageBean;
+
+    /** Resource created from the wrapped value. */
+    private CmsJspResourceWrapper m_resource;
 
     /** The lazy initialized Map that checks if a Object is equal. */
     private Map<Object, Boolean> m_isEqual;
@@ -506,6 +510,24 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
             }
         }
         return m_long;
+    }
+
+    /**
+     * Converts a date to an instance date bean.
+     * @return the instance date bean.
+     */
+    public CmsJspResourceWrapper getToResource() {
+
+        if (m_resource == null) {
+            try {
+                m_resource = CmsJspElFunctions.convertResource(m_cms, getToString());
+            } catch (CmsException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Failed to convert wrapper \"" + getToString() + "\" to a resource.", e);
+                }
+            }
+        }
+        return m_resource;
     }
 
     /**
