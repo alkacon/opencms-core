@@ -28,12 +28,13 @@
 package org.opencms.xml.xml2json;
 
 import org.opencms.file.CmsResource;
-import org.opencms.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * Result of rendering JSON.
+ *
+ * Can be either a JSON value together with a response status, or a resource that should be loaded for the current request.
  */
 public class CmsJsonResult {
 
@@ -54,17 +55,6 @@ public class CmsJsonResult {
     public CmsJsonResult(CmsResource resource) {
 
         m_nextResource = resource;
-    }
-
-    /**
-     * Creates a new instance.
-     *
-     * @param json the JSON data.
-     **/
-    public CmsJsonResult(JSONObject json) {
-
-        this(json, HttpServletResponse.SC_OK);
-
     }
 
     /**
