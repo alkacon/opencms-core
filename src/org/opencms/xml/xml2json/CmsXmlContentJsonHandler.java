@@ -142,6 +142,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
                     context.getAccessPolicy()::checkPropertyAccess);
                 json1.put("properties", helper.properties());
                 json1.put("attributes", helper.attributes());
+                JSONArray locales = new JSONArray();
+                for (Locale locale : context.getContent().getLocales()) {
+                    locales.put(locale.toString());
+                }
+                json1.put("locales", locales);
                 helper.addPathAndLink(json1);
                 json = json1;
             } else if (localeParam != null) {
