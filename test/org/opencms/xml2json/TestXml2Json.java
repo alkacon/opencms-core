@@ -40,10 +40,14 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
 import org.opencms.xml.xml2json.CmsJsonAccessPolicy;
+import org.opencms.xml.xml2json.CmsJsonHandlerContext;
+import org.opencms.xml.xml2json.CmsJsonResult;
+import org.opencms.xml.xml2json.CmsXmlContentJsonHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.framework.Test;
 
@@ -149,6 +153,49 @@ public class TestXml2Json extends OpenCmsTestCase {
     }
 
     /**
+     * Tests use of custom XML content renderer.
+     *
+     * @throws Exception
+     */
+    public void testCustomRenderer() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String folder = "/system/jsontest";
+        if (cms.existsResource(folder)) {
+            cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+        cms.createResource(folder, 0);
+        I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
+        CmsParameterConfiguration data = readXmlTestData(getClass(), "custom-test.xml");
+        String testFile = folder + "/test.xml";
+        CmsResource testFileRes = cms.createResource(
+            testFile,
+            contentType,
+            data.get("input").trim().getBytes("UTF-8"),
+            new ArrayList<>());
+        String expected = new String(data.get("output").trim());
+
+        CmsXmlContentJsonHandler handler = new CmsXmlContentJsonHandler();
+        CmsObject rootCms = OpenCms.initCmsObject(cms);
+        Map<String, String> params = new HashMap<>();
+        params.put("locale", "en");
+        CmsJsonHandlerContext context = new CmsJsonHandlerContext(
+            cms,
+            rootCms,
+            testFile,
+            testFileRes,
+            params,
+            new CmsParameterConfiguration(),
+            new CmsJsonAccessPolicy(true));
+        CmsJsonResult result = handler.renderJson(context);
+        Object jsonObj = result.getJson();
+
+        String actual = JSONObject.valueToString(jsonObj, 0, 4);
+        expected = JSONObject.valueToString(new JSONObject(expected), 0, 4);
+        assertEquals(expected, actual);
+    }
+
+    /**
      * Test case.
      *
      * @throws Exception
@@ -206,4 +253,5 @@ public class TestXml2Json extends OpenCmsTestCase {
         assertEquals(expected, actual);
 
     }
+
 }

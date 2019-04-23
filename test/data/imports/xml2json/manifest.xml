@@ -83,5 +83,17 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+            <source>system/modules/org.opencms.test.xml2json/schemas/xjparent-custom.xsd</source>
+            <destination>system/modules/org.opencms.test.xml2json/schemas/xjparent-custom.xsd</destination>
+            <type>plain</type>
+        <uuidstructure>373bc0d3-5445-11e9-bde5-1b3402713b9c</uuidstructure>
+            <uuidresource>373bc0e3-5445-11e9-bde5-1b3402713b9c</uuidresource>
+            <datecreated>Mon, 01 Apr 2019 06:13:06 GMT</datecreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
 	</files>
 </export>

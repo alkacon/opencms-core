@@ -29,7 +29,7 @@
     </xsd:complexType>
    <xsd:annotation>
         <xsd:appinfo>
-
+                    <jsonrenderer class="org.opencms.xml2json.CmsDummyContentRenderer" />
         </xsd:appinfo> 
     </xsd:annotation>    
 </xsd:schema>
