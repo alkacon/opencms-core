@@ -228,8 +228,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         Map<String, CmsContextMenuEntryBean> entries = new LinkedHashMap<String, CmsContextMenuEntryBean>();
         try {
+            final List<CmsResource> resources;
             CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            final List<CmsResource> resources = Collections.singletonList(resource);
+            // in case of sitemap editor check visibility with empty list
+            if (context.equals(AdeContext.sitemapeditor)) {
+                resources = Collections.emptyList();
+            } else {
+                resources = Collections.singletonList(resource);
+            }
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             // context to check item visibility
             I_CmsDialogContext dcontext = new I_CmsDialogContextWithAdeContext() {

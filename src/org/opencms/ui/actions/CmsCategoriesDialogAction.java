@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
@@ -112,7 +111,7 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction implements I
     /**
      * Add the option specifying if the categories should be displayed collapsed
      * when the dialog opens.
-     * 
+     *
      * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
      */
     public Map<String, String> getParams() {
@@ -128,17 +127,6 @@ public class CmsCategoriesDialogAction extends A_CmsWorkplaceAction implements I
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
-    }
-
-    /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
-     */
-    @Override
-    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
-
-        return ContextType.sitemapToolbar.equals(context.getContextType())
-        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
-        : super.getVisibility(context);
     }
 
     /**
