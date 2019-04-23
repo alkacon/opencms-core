@@ -51,16 +51,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * Handles /json requests.
@@ -78,8 +74,6 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
 
     /** Configuration from config file. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
-
-    private Cache<String, CmsJsonResult> m_cache;
 
     /** Service loader used to load external JSON handler classes. */
     private ServiceLoader<I_CmsJsonHandlerProvider> m_serviceLoader = ServiceLoader.load(
@@ -99,15 +93,6 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_config.add(paramName, paramValue);
-    }
-
-    public void foo() {
-
-        CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().concurrencyLevel(4).expireAfterWrite(
-            10,
-            TimeUnit.SECONDS);
-        m_cache = builder.build();
-
     }
 
     /**
