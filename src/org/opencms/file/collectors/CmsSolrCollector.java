@@ -34,6 +34,7 @@ package org.opencms.file.collectors;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
@@ -181,8 +182,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
             Boolean.valueOf(paramsAsMap.get(PARAM_DECODE_URL)).booleanValue(),
             cms.getRequestContext().getEncoding());
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
-        boolean excludeTimerange = Boolean.valueOf(
-            paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
+        boolean excludeTimerange = !cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && Boolean.valueOf(paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
         if (excludeTimerange) {
             q.removeExpiration();
         }
@@ -192,7 +193,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         // Do only return the minimal set of fields, since on can never access the solr result at all, but only the resource itself
         q.setFields(CmsSolrQuery.MINIMUM_FIELDS);
         CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
-        return new ArrayList<CmsResource>(index.search(cms, q, true));
+        return new ArrayList<CmsResource>(
+            index.search(cms, q, true, excludeTimerange ? CmsResourceFilter.IGNORE_EXPIRATION : null));
     }
 
     /**
