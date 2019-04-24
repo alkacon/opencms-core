@@ -237,7 +237,9 @@ public class CmsSolrQuery extends SolrQuery {
     public CmsSolrQuery clone() {
 
         CmsSolrQuery sq = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
-        sq.m_ignoreExpiration = m_ignoreExpiration;
+        if (m_ignoreExpiration) {
+            sq.removeExpiration();
+        }
         return sq;
     }
 
