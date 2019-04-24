@@ -50,7 +50,7 @@
 		<explorertypes>
 			<explorertype name="unknown_folder" key="fileicon.unknown_folder"
 				icon="unknown_folder.png">
-				<newresource noncreatable="true" order="0" autosetnavigation="false"
+				<newresource creatable="false" order="0" autosetnavigation="false"
 					autosettitle="false" />
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v" />
@@ -64,7 +64,7 @@
 			</explorertype>
 			<explorertype name="unknown_file" key="fileicon.unknown_file"
 				icon="unknown_file.png">
-				<newresource noncreatable="true" order="0" autosetnavigation="false"
+				<newresource creatable="false" order="0" autosetnavigation="false"
 					autosettitle="false" />
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v" />
@@ -77,7 +77,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource noncreatable="false" order="5"
+				<newresource creatable="true" order="5"
 					autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -87,17 +87,17 @@
 			</explorertype>
 			<explorertype name="extendedfolder" key="fileicon.extendedfolder"
 				icon="gallery.gif" reference="folder">
-				<newresource noncreatable="false"
+				<newresource creatable="true"
 					order="10" autosetnavigation="false" autosettitle="false" />
 			</explorertype>
 			<explorertype name="structurecontent" key="fileicon.structurecontent"
 				icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource noncreatable="false"
+				<newresource creatable="true"
 					order="15" autosetnavigation="false" autosettitle="false" />
 			</explorertype>
 			<explorertype name="xmlpage" key="fileicon.xmlpage"
 				icon="page.gif">
-				<newresource noncreatable="false" order="20"
+				<newresource creatable="true" order="20"
 					autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -108,7 +108,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource noncreatable="false"
+				<newresource creatable="true"
 					order="30" autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -118,7 +118,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="image" key="fileicon.image" icon="image.gif">
-				<newresource noncreatable="true" order="40" autosetnavigation="false"
+				<newresource creatable="false" order="40" autosetnavigation="false"
 					autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -128,7 +128,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-				<newresource noncreatable="false"
+				<newresource creatable="true"
 					order="50" autosetnavigation="false" autosettitle="false" />
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v" />
@@ -146,7 +146,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="binary" key="fileicon.binary" icon="binary.gif">
-				<newresource noncreatable="true" order="60" autosetnavigation="false"
+				<newresource creatable="false" order="60" autosetnavigation="false"
 					autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -156,7 +156,7 @@
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer"
 				icon="pointer.gif">
-				<newresource noncreatable="false" order="70"
+				<newresource creatable="true" order="70"
 					autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -165,16 +165,16 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="link" key="fileicon.link" icon="link.gif">
-				<newresource noncreatable="false" order="90"
+				<newresource creatable="true" order="90"
 					autosetnavigation="false" autosettitle="false" />
 			</explorertype>
 			<explorertype name="upload" key="fileicon.upload" icon="upload.png">
-				<newresource noncreatable="false" order="100"
+				<newresource creatable="true" order="100"
 					autosetnavigation="false" autosettitle="false" />
 			</explorertype>
 			<explorertype name="imagegallery" key="fileicon.imagegallery"
 				icon="imagegallery.gif">
-				<newresource noncreatable="false" order="10"
+				<newresource creatable="true" order="10"
 					autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -184,7 +184,7 @@
 			</explorertype>
 			<explorertype name="downloadgallery" key="fileicon.downloadgallery"
 				icon="downloadgallery.gif">
-				<newresource noncreatable="false" order="20"
+				<newresource creatable="true" order="20"
 					autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -194,12 +194,12 @@
 			</explorertype>
 			<explorertype name="linkgallery" key="fileicon.linkgallery"
 				icon="linkgallery.gif" reference="downloadgallery">
-				<newresource noncreatable="false" order="30"
+				<newresource creatable="true" order="30"
 					autosetnavigation="false" autosettitle="false" />
 			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent"
 				icon="xmlcontent.gif">
-				<newresource noncreatable="false" order="500"
+				<newresource creatable="true" order="500"
 					autosetnavigation="false" autosettitle="false" />
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">

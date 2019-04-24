@@ -304,7 +304,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                 String typeName = type.getType();
                 CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
                 boolean noCreate = !(type.isCreatableType() && !type.isDeactivated());
-                return noCreate || (explorerType == null) || explorerType.isNonCreatable();
+                return noCreate || (explorerType == null) || !explorerType.isCreatable();
             }
         };
 
