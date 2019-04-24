@@ -33,18 +33,29 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.pdftools.CmsPdfLink;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Locale;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * JSP tag to generate a link to a PDF produced from a given XML content.<p>
  */
-public class CmsJspTagPdf extends TagSupport {
+public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamParent {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagPdf.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -58,6 +69,9 @@ public class CmsJspTagPdf extends TagSupport {
     /** The locale attribute. */
     private String m_locale;
 
+    /** The map of parameters. */
+    private SortedMap<String, String> m_parameters;
+
     /**
      * The implementation of the tag.<p>
      *
@@ -65,12 +79,18 @@ public class CmsJspTagPdf extends TagSupport {
      * @param format the format path
      * @param content the content path
      * @param localeStr the name of the locale to include in the PDF link
+     * @param params map of parameters
      *
      * @return the link to the PDF
      *
      * @throws CmsException if something goes wrong
      */
-    public static String pdfTagAction(ServletRequest request, String format, String content, String localeStr)
+    public static String pdfTagAction(
+        ServletRequest request,
+        String format,
+        String content,
+        String localeStr,
+        SortedMap<String, String> params)
     throws CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(request);
@@ -82,7 +102,40 @@ public class CmsJspTagPdf extends TagSupport {
         CmsResource formatterRes = cms.readResource(format);
         CmsResource contentRes = cms.readResource(content, CmsResourceFilter.ignoreExpirationOffline(cms));
         CmsPdfLink pdfLink = new CmsPdfLink(cms, formatterRes, contentRes);
-        return pdfLink.getLink();
+        StringBuilder paramBuf = new StringBuilder();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            try {
+                paramBuf.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                // can't happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return pdfLink.getLink() + "?" + paramBuf.toString();
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagParamParent#addParameter(java.lang.String, java.lang.String)
+     */
+    public void addParameter(String name, String value) {
+
+        m_parameters.put(name, value);
+
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     */
+    @Override
+    public int doEndTag() {
+
+        try {
+            pageContext.getOut().print(
+                pdfTagAction(pageContext.getRequest(), m_format, m_content, m_locale, m_parameters));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return EVAL_PAGE;
     }
 
     /**
@@ -91,12 +144,8 @@ public class CmsJspTagPdf extends TagSupport {
     @Override
     public int doStartTag() {
 
-        try {
-            pageContext.getOut().print(pdfTagAction(pageContext.getRequest(), m_format, m_content, m_locale));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return SKIP_BODY;
+        m_parameters = new TreeMap<>();
+        return EVAL_BODY_BUFFERED;
     }
 
     /**
