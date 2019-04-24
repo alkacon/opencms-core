@@ -33,7 +33,9 @@ import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -132,7 +134,12 @@ public class CmsVfsNameBasedDiskCache {
         // check if parameters are provided, if so add them as well
         if (parameters != null) {
             buf.append('_');
-            buf.append(parameters.hashCode());
+            try {
+                buf.append(DigestUtils.md5Hex(parameters.getBytes("UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                // can't happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
         // finally append the extension from the original file name
