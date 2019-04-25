@@ -55,6 +55,20 @@ import org.apache.commons.logging.Log;
  */
 public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
 
+    /**
+     * Exception thrown when path lookup fails.
+     */
+    public static class PathNotFoundException extends Exception {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        public PathNotFoundException(String string) {
+
+            super(string);
+        }
+    }
+
     /** Request parameter name. */
     public static final String PARAM_LOCALE = "locale";
 
@@ -86,8 +100,9 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      * @return the sub-object
      *
      * @throws JSONException if something goes wrong
+     * @throws PathNotFoundException if the path can not be found in the JSON object
      */
-    public static Object lookupPath(Object current, String path) throws JSONException {
+    public static Object lookupPath(Object current, String path) throws JSONException, PathNotFoundException {
 
         String[] tokens = path.split("[/\\[\\]]");
         for (String token : tokens) {
@@ -95,9 +110,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
                 continue;
             }
             if (StringUtils.isNumeric(token) && (current instanceof JSONArray)) {
-                current = ((JSONArray)current).get(Integer.parseInt(token) - 1);
-            } else {
+                current = ((JSONArray)current).get(Integer.parseInt(token));
+            } else if (current instanceof JSONObject) {
                 current = ((JSONObject)current).get(token);
+            } else {
+                throw new PathNotFoundException("Path not found");
             }
         }
         return current;
@@ -155,18 +172,23 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
                     locale,
                     Collections.emptyList(),
                     context.getContent().getLocales());
+                if ((selectedLocale == null) || !context.getContent().hasLocale(selectedLocale)) {
+                    throw new PathNotFoundException("Locale not found");
+                }
                 json = renderer.render(context.getContent(), selectedLocale);
                 if (pathParam != null) {
                     Object result = lookupPath(json, pathParam);
                     json = result;
                 }
             } else {
-                throw new IllegalArgumentException("Can not use path parameter without locale parameter.");
+                return new CmsJsonResult(
+                    "Can not use path parameter without locale parameter.",
+                    HttpServletResponse.SC_BAD_REQUEST);
             }
             CmsJsonResult res = new CmsJsonResult(json, HttpServletResponse.SC_OK);
             return res;
 
-        } catch (JSONException e) {
+        } catch (JSONException | PathNotFoundException e) {
             LOG.info(e.getLocalizedMessage(), e);
             return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {
