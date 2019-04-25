@@ -45,6 +45,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -110,9 +111,7 @@ public class CmsRfsFileViewer implements Cloneable {
      */
     public CmsRfsFileViewer() {
 
-        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-            m_rootPath = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
-        }
+        m_rootPath = getLogFolderPath();
         m_isLogfile = true;
         // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
         m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
@@ -142,9 +141,7 @@ public class CmsRfsFileViewer implements Cloneable {
             }
         }
         if (m_rootPath == null) {
-            if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-                m_rootPath = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
-            }
+            m_rootPath = getLogFolderPath();
         }
         CmsRfsFileViewer clone = new CmsRfsFileViewer();
         clone.m_rootPath = m_rootPath;
@@ -327,7 +324,17 @@ public class CmsRfsFileViewer implements Cloneable {
      */
     public void setAdditionalRoots(List<String> roots) {
 
-        m_additionalRoots = roots;
+        List<String> additionalRoots = new ArrayList<>();
+        // making sure all paths end with the path separator CHAR
+        for (String path : roots) {
+            if (path != null) {
+                if (!path.endsWith(File.separator)) {
+                    path += File.separator;
+                }
+            }
+            additionalRoots.add(path);
+        }
+        m_additionalRoots = additionalRoots;
     }
 
     /**
@@ -618,6 +625,25 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
+     * Reads the log folder RFS path.<p>
+     *
+     * @return the log folder path
+     */
+    private String getLogFolderPath() {
+
+        String path = null;
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+            path = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
+            // making sure the path ends with the file separator CHAR
+            if ((path != null) && !path.endsWith(File.separator)) {
+                path += File.separator;
+            }
+
+        }
+        return path;
+    }
+
+    /**
      * Check if the given path is below any of the configured roots.<p>
      *
      * @param canonicalPath the path to check
@@ -625,19 +651,18 @@ public class CmsRfsFileViewer implements Cloneable {
      */
     private boolean isInRoots(String canonicalPath) {
 
-        if (CmsStringUtil.isPrefixPath(m_rootPath, canonicalPath)) {
+        if (canonicalPath.startsWith(m_rootPath)) {
             return true;
         }
         if (m_additionalRoots != null) {
             for (String root : m_additionalRoots) {
-                if (CmsStringUtil.isPrefixPath(root, canonicalPath)) {
+                if (canonicalPath.startsWith(root)) {
                     return true;
                 }
 
             }
         }
         return false;
-
     }
 
     /**
