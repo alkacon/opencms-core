@@ -30,6 +30,7 @@ package org.opencms.pdftools;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.wrapper.CmsWrappedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
@@ -121,6 +122,9 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
             } catch (CmsSecurityException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 throw e;
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return null;
             } catch (CmsPdfLink.CmsPdfLinkParseException e) {
                 // not a valid PDF link, just continue with the resource init chain
                 LOG.warn(e.getLocalizedMessage(), e);
