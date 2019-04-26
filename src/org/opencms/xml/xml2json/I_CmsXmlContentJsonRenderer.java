@@ -27,6 +27,7 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
 import org.opencms.xml.content.CmsXmlContent;
@@ -36,7 +37,7 @@ import java.util.Locale;
 /**
  * Renders a single-locale content tree as JSON.
  */
-public interface I_CmsXmlContentJsonRenderer {
+public interface I_CmsXmlContentJsonRenderer extends I_CmsConfigurationParameterHandler {
 
     /**
      * Initializes the context for the renderer.

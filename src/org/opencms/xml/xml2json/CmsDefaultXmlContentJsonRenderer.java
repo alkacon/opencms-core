@@ -27,6 +27,7 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -122,6 +123,28 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
             result.put(locale.toString(), jsonForLocale);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // do nothing
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public CmsParameterConfiguration getConfiguration() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+        // do nothing
     }
 
     /**

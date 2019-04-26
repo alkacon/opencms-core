@@ -27,7 +27,6 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
@@ -215,16 +214,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
             renderer = new CmsDefaultXmlContentJsonRenderer();
         } else {
             renderer = (I_CmsXmlContentJsonRenderer)Class.forName(settings.getClassName()).newInstance();
-            if (renderer instanceof I_CmsConfigurationParameterHandler) {
-                for (Map.Entry<String, String> entry : settings.getParameters().entrySet()) {
-                    ((I_CmsConfigurationParameterHandler)renderer).addConfigurationParameter(
-                        entry.getKey(),
-                        entry.getValue());
-                }
-                ((I_CmsConfigurationParameterHandler)renderer).initConfiguration();
+            for (Map.Entry<String, String> entry : settings.getParameters().entrySet()) {
+                renderer.addConfigurationParameter(entry.getKey(), entry.getValue());
             }
+            renderer.initConfiguration();
         }
-
         renderer.initialize(context);
         return renderer;
     }
