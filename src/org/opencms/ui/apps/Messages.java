@@ -51,6 +51,11 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0 = "ERR_PROJECTS_CAN_NOT_DISPLAY_FILES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_EXPORTPOINT_SOURCE_0 = "GUI_MODULES_EXPORTPOINT_SOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_EXPORTPOINT_TARGET_0 = "GUI_MODULES_EXPORTPOINT_TARGET_0";
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
