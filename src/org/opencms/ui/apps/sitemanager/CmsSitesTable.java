@@ -42,6 +42,7 @@ import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.user.I_CmsFilterableTable;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenu;
@@ -80,7 +81,8 @@ import com.vaadin.v7.ui.VerticalLayout;
 /**
  *  Class to create Vaadin Table object with all available sites.<p>
  */
-public class CmsSitesTable extends Table implements I_CmsSitesTable {
+@SuppressWarnings("deprecation")
+public class CmsSitesTable extends Table implements I_CmsFilterableTable {
 
     /**
      * The edit project context menu entry.<p>
@@ -307,7 +309,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
      */
     class FavIconColumn implements Table.ColumnGenerator {
 
-        /**vaadin serial id.*/
+        /**Serial version id.*/
         private static final long serialVersionUID = -3772456970393398685L;
 
         /**
@@ -572,6 +574,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     /**
      * @see org.opencms.ui.apps.user.I_CmsFilterableTable#filter(java.lang.String)
      */
+    @SuppressWarnings("unchecked")
     public void filter(String search) {
 
         m_container.removeAllContainerFilters();
@@ -589,7 +592,9 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     }
 
     /**
-     * @see org.opencms.ui.apps.sitemanager.I_CmsSitesTable#getContainer()
+     * Get the container.<p>
+     *
+     * @return IndexedContainer
      */
     public IndexedContainer getContainer() {
 
@@ -632,7 +637,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     }
 
     /**
-     *  Reads sites from Site Manager and adds them to tabel.<p>
+     *  Reads sites from Site Manager and adds them to table.<p>
      */
     public void loadSites() {
 
@@ -641,7 +646,6 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
         m_siteCounter = 0;
         CmsCssIcon icon = new CmsCssIcon(OpenCmsTheme.ICON_SITE);
         icon.setOverlay(OpenCmsTheme.STATE_CHANGED + " " + CmsResourceIcon.ICON_CLASS_CHANGED);
-        boolean showPublishButton = false;
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 m_siteCounter++;
@@ -655,11 +659,10 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                     item.getItemProperty(TableProperty.New).setValue(new Boolean(true));
                     item.getItemProperty(TableProperty.Icon).setValue(
                         new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
-                    showPublishButton = true;
                 } else {
                     item.getItemProperty(TableProperty.Icon).setValue(new Label(icon.getHtml(), ContentMode.HTML));
                 }
-                item.getItemProperty(TableProperty.OK).setValue(!isSiteUnderSite(site, sites));
+                item.getItemProperty(TableProperty.OK).setValue(isNotNestedSite(site, sites));
             }
         }
 
@@ -681,10 +684,6 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
                         item.getItemProperty(TableProperty.Changed).setValue(new Boolean(true));
                         item.getItemProperty(TableProperty.Icon).setValue(
                             new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
-                        showPublishButton = true;
-                    } else {
-                        //Site root deleted, publish makes no sense any more (-> OK=FALSE)
-
                     }
                 }
             }
@@ -821,20 +820,21 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
     }
 
     /**
-     * Is site in other site?<p>
+     * Is the given site NOT nested in any of the given sites?<p>
      *
      * @param site to check
      * @param sites to check
-     * @return Boolean
+     *
+     * @return TRUE if the site is NOT nested
      */
-    private Boolean isSiteUnderSite(CmsSite site, List<CmsSite> sites) {
+    private Boolean isNotNestedSite(CmsSite site, List<CmsSite> sites) {
 
         for (CmsSite s : sites) {
             if ((site.getSiteRoot().length() > s.getSiteRoot().length())
                 & site.getSiteRoot().startsWith(CmsFileUtil.addTrailingSeparator(s.getSiteRoot()))) {
-                return Boolean.TRUE;
+                return Boolean.FALSE;
             }
         }
-        return Boolean.FALSE;
+        return Boolean.TRUE;
     }
 }

@@ -353,9 +353,9 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
      * @return a vaadin table component
      */
 
-    protected I_CmsSitesTable createSitesTable() {
+    protected CmsSitesTable createSitesTable() {
 
-        I_CmsSitesTable table = new CmsSitesTable(this);
+        CmsSitesTable table = new CmsSitesTable(this);
         table.loadSites();
         return table;
     }
@@ -377,7 +377,7 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
     @Override
     protected Component getComponentForState(String state) {
 
-        m_sitesTable = (CmsSitesTable)createSitesTable();
+        m_sitesTable = createSitesTable();
 
         m_rootLayout.setMainHeightFull(true);
         m_siteTableFilter = new TextField();
