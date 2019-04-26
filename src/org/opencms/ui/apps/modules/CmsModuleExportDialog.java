@@ -34,6 +34,7 @@ import org.opencms.ui.report.CmsReportWidget;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 /**
@@ -68,8 +69,10 @@ public class CmsModuleExportDialog extends CmsBasicDialog {
         setHeight("100%");
         report.setWidth("100%");
         report.setHeight("100%");
-
-        setContent(report);
+        VerticalLayout container = new VerticalLayout();
+        container.setHeight("100%");
+        container.addComponent(report);
+        setContent(container);
         thread.start();
     }
 }
