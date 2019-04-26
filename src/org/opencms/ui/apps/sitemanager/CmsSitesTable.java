@@ -289,6 +289,7 @@ public class CmsSitesTable extends Table implements I_CmsSitesTable {
             }
             try {
                 CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                cms.getRequestContext().setSiteRoot("");
                 if (cms.existsResource(data.iterator().next())) {
                     return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                 }
