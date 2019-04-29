@@ -30,6 +30,7 @@ package org.opencms.setup.updater.dialogs;
 import org.opencms.setup.CmsUpdateBean;
 import org.opencms.setup.CmsUpdateUI;
 import org.opencms.setup.db.CmsUpdateDBManager;
+import org.opencms.setup.ui.CmsSetupErrorDialog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 
@@ -77,13 +78,20 @@ public class CmsUpdateStep02DBDialog extends A_CmsUpdateDialog {
 
         bean.setDetectedVersion(m_dbBean.getDetectedVersion());
 
-        if (m_dbBean.needUpdate()) {
-            m_icon.setContentMode(ContentMode.HTML);
-            m_icon.setValue(FontOpenCms.WARNING.getHtml());
-            m_contentLayout.addComponent(getDisplayContent(m_dbBean));
-            return true;
-        } else {
-            ui.displayDialog(new CmsUpdateStep04SettingsDialog());
+        try {
+            if (m_dbBean.needUpdate()) {
+                m_icon.setContentMode(ContentMode.HTML);
+                m_icon.setValue(FontOpenCms.WARNING.getHtml());
+                m_contentLayout.addComponent(getDisplayContent(m_dbBean));
+                return true;
+            } else {
+                ui.displayDialog(new CmsUpdateStep04SettingsDialog());
+                return false;
+            }
+        } catch (NullPointerException en) {
+            CmsSetupErrorDialog.showErrorDialog(
+                "Database error",
+                "Your database version is not compatible with OpenCms 11.");
             return false;
         }
     }
