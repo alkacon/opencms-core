@@ -76,9 +76,8 @@ public class CmsUpdateStep02DBDialog extends A_CmsUpdateDialog {
             //
         }
 
-        bean.setDetectedVersion(m_dbBean.getDetectedVersion());
-
         try {
+            bean.setDetectedVersion(m_dbBean.getDetectedVersion());
             if (m_dbBean.needUpdate()) {
                 m_icon.setContentMode(ContentMode.HTML);
                 m_icon.setValue(FontOpenCms.WARNING.getHtml());
