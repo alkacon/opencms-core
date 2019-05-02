@@ -68,7 +68,7 @@ public class CmsUpdateStep02DBDialog extends A_CmsUpdateDialog {
         super.init(ui, true, true);
         setCaption("OpenCms Update-Wizard - Database upgrade");
         CmsUpdateBean bean = ui.getUpdateBean();
-        bean.updateDBDriverClassName();
+        bean.updateDBDriverProperties();
         m_dbBean = new CmsUpdateDBManager();
         try {
             m_dbBean.initialize(bean);

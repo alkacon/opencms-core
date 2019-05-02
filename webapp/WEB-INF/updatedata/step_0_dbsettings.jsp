@@ -1,13 +1,11 @@
 <%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:useBean id="dbBean" class="org.opencms.setup.db.CmsUpdateDBManager" scope="page" /><%--
---%><jsp:setProperty name="Bean" property="*" /><%
-	
-	// previous page
+--%><jsp:setProperty name="Bean" property="*" /><%// previous page
 	String prevPage = "index.jsp";	
     // next page
 	String nextPage = "step_1_update_db.jsp";
-	Bean.updateDBDriverClassName();
+	Bean.updateDBDriverProperties();
 	dbBean.initialize(Bean);
 		
     boolean isFormSubmitted = (request.getParameter("submit") != null);
@@ -19,8 +17,7 @@
 	if (!dbBean.needUpdate()) {
 		response.sendRedirect("step_2_settings.jsp");
 		return;
-	}
-%>
+	}%>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>

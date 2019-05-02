@@ -956,21 +956,47 @@ public class CmsUpdateBean extends CmsSetupBean {
      * Updates the JDBC driver class names.<p>
      * Needs to be executed before any database access.<p>
      */
-    public void updateDBDriverClassName() {
+    public void updateDBDriverProperties() {
 
-        Set<String> keys = new HashSet<String>();
+        Map<String, String> modifiedElements = new HashMap<String, String>();
         // replace MySQL JDBC driver class name
         CmsParameterConfiguration properties = getProperties();
         for (Entry<String, String> propertyEntry : properties.entrySet()) {
             if (MYSQL_DRIVER_CLASS_OLD.equals(propertyEntry.getValue())) {
-                keys.add(propertyEntry.getKey());
+                modifiedElements.put(propertyEntry.getKey(), MYSQL_DRIVER_CLASS_NEW);
             }
         }
-        for (String key : keys) {
-            properties.put(key, MYSQL_DRIVER_CLASS_NEW);
+
+        if (properties.containsValue(MYSQL_DRIVER_CLASS_NEW) || properties.containsValue(MYSQL_DRIVER_CLASS_OLD)) {
+            for (Entry<String, String> propertyEntry : properties.entrySet()) {
+                if (MYSQL_DRIVER_CLASS_OLD.equals(propertyEntry.getValue())
+                    || MYSQL_DRIVER_CLASS_NEW.equals(propertyEntry.getValue())) {
+
+                    String mysqlkey = propertyEntry.getKey().substring(0, propertyEntry.getKey().lastIndexOf("."));
+                    String parameterKey = mysqlkey + ".jdbcUrl.params";
+                    String currentParameter = properties.get(parameterKey);
+                    if (currentParameter == null) {
+                        currentParameter = "";
+                    }
+                    if (!currentParameter.contains("serverTimezone")) {
+                        String parameterSeperator = "?";
+                        if (currentParameter.contains("?")) {
+                            parameterSeperator = "&";
+                        }
+                        modifiedElements.put(
+                            parameterKey,
+                            currentParameter + parameterSeperator + "serverTimezone=UTC");
+                    }
+                }
+            }
         }
-        if (!keys.isEmpty()) {
-            saveProperties(properties, CmsSystemInfo.FILE_PROPERTIES, false, keys);
+
+        for (String key : modifiedElements.keySet()) {
+            properties.put(key, modifiedElements.get(key));
+        }
+
+        if (!modifiedElements.isEmpty()) {
+            saveProperties(properties, CmsSystemInfo.FILE_PROPERTIES, false, modifiedElements.keySet());
         }
     }
 
