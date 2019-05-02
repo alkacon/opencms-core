@@ -77,7 +77,7 @@
                 </iconrules>
             </explorertype>
             <explorertype name="image" key="fileicon.image" smalliconstyle="oc-icon-16-image" bigiconstyle="oc-icon-24-image">
-                <newresource noncreatable="true" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />
+                <newresource creatable="false" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="false">
                         <defaultproperty name="Title" />
@@ -103,7 +103,7 @@
                 </editoptions>
             </explorertype>
             <explorertype name="binary" key="fileicon.binary" smalliconstyle="oc-icon-16-binary" bigiconstyle="oc-icon-24-binary">
-                <newresource noncreatable="true" order="60" autosetnavigation="false" autosettitle="false" info="desc.binary" />
+                <newresource creatable="false" order="60" autosetnavigation="false" autosettitle="false" info="desc.binary" />
                 <editoptions>
                     <defaultproperties enabled="true" shownavigation="false">
                         <defaultproperty name="Title" />
@@ -187,7 +187,7 @@
                 </editoptions>
             </explorertype>
             <explorertype name="unknown_folder" key="fileicon.unknown_folder" smalliconstyle="oc-icon-16-unknown_folder" bigiconstyle="oc-icon-24-unknown_folder">
-                <newresource noncreatable="true" order="0" autosetnavigation="false" autosettitle="false" />
+                <newresource creatable="false" order="0" autosetnavigation="false" autosettitle="false" />
                 <accesscontrol>
                     <accessentry principal="DEFAULT" permissions="+r+v" />
                     <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
@@ -198,7 +198,7 @@
                 </editoptions>
             </explorertype>
             <explorertype name="unknown_file" key="fileicon.unknown_file" smalliconstyle="oc-icon-16-unknown_file" bigiconstyle="oc-icon-24-unknown_file">
-                <newresource noncreatable="true" order="0" autosetnavigation="false" autosettitle="false" />
+                <newresource creatable="false" order="0" autosetnavigation="false" autosettitle="false" />
                 <accesscontrol>
                     <accessentry principal="DEFAULT" permissions="+r+v" />
                     <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />

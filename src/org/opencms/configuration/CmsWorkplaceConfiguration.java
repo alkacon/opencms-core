@@ -124,8 +124,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The 'widget-config' attribute. */
     public static final String A_NICE_NAME = "nice-name";
 
-    /** The 'noncreatable' attribute. */
-    public static final String A_NON_CREATABLE = "noncreatable";
+    /** The 'creatable' attribute. */
+    public static final String A_CREATABLE = "creatable";
 
     /** The attribute name of the optional attribute for the user-info node. */
     public static final String A_OPTIONAL = "optional";
@@ -619,8 +619,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 3, A_SMALLICONSTYLE);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 4, A_BIGICONSTYLE);
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNonCreatable", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_NON_CREATABLE);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setCreatable", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_CREATABLE);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
 
@@ -737,7 +737,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
                 // create subnode <newresource>
                 Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
-                newResElement.addAttribute(A_NON_CREATABLE, String.valueOf(settings.isNonCreatable()));
+                newResElement.addAttribute(A_CREATABLE, String.valueOf(settings.isCreatable()));
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
                 newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
                 newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));

@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
@@ -103,17 +102,6 @@ public final class CmsResourceInfoAction extends A_CmsWorkplaceAction implements
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return m_visibility.getVisibility(cms, resources);
-    }
-
-    /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
-     */
-    @Override
-    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
-
-        return ContextType.sitemapToolbar.equals(context.getContextType())
-        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
-        : super.getVisibility(context);
     }
 
     /**

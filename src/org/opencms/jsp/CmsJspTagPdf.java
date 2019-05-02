@@ -36,9 +36,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.pdftools.CmsPdfLink;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
@@ -72,6 +75,9 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
     /** The map of parameters. */
     private SortedMap<String, String> m_parameters;
 
+    /** Parameter encoding. */
+    private String m_paramEncoding;
+
     /**
      * The implementation of the tag.<p>
      *
@@ -80,6 +86,7 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
      * @param content the content path
      * @param localeStr the name of the locale to include in the PDF link
      * @param params map of parameters
+     * @param paramEncoding the character encoding to use for URL parameters
      *
      * @return the link to the PDF
      *
@@ -90,7 +97,8 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
         String format,
         String content,
         String localeStr,
-        SortedMap<String, String> params)
+        SortedMap<String, String> params,
+        String paramEncoding)
     throws CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(request);
@@ -103,15 +111,22 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
         CmsResource contentRes = cms.readResource(content, CmsResourceFilter.ignoreExpirationOffline(cms));
         CmsPdfLink pdfLink = new CmsPdfLink(cms, formatterRes, contentRes);
         StringBuilder paramBuf = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            try {
-                paramBuf.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                // can't happen
-                LOG.error(e.getLocalizedMessage(), e);
+        if ((params != null) && !params.isEmpty()) {
+            paramBuf.append("?");
+            List<String> paramList = new ArrayList<>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                try {
+                    paramList.add(
+                        URLEncoder.encode(entry.getKey(), paramEncoding)
+                            + "="
+                            + URLEncoder.encode(entry.getValue(), paramEncoding));
+                } catch (UnsupportedEncodingException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
+            paramBuf.append(CmsStringUtil.listAsString(paramList, "&amp;"));
         }
-        return pdfLink.getLink() + "?" + paramBuf.toString();
+        return pdfLink.getLink() + paramBuf.toString();
     }
 
     /**
@@ -131,7 +146,13 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
 
         try {
             pageContext.getOut().print(
-                pdfTagAction(pageContext.getRequest(), m_format, m_content, m_locale, m_parameters));
+               pdfTagAction(
+                    pageContext.getRequest(),
+                    m_format,
+                    m_content,
+                    m_locale,
+                    m_parameters,
+                    getParamEncoding()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -176,6 +197,29 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
     public void setLocale(String locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Sets the parameter encoding.
+     *
+     * @param encoding the parameter encoding
+     */
+    public void setParamEncoding(String encoding) {
+
+        m_paramEncoding = encoding;
+    }
+
+    /**
+     * Gets the parameter encoding.
+     *
+     * @return the parameter encoding
+     */
+    private String getParamEncoding() {
+
+        if (m_paramEncoding != null) {
+            return m_paramEncoding;
+        }
+        return "UTF-8";
     }
 
 }

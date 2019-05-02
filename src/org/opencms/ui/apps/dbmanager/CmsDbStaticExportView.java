@@ -34,9 +34,8 @@ import org.opencms.ui.report.CmsReportWidget;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -48,7 +47,7 @@ public class CmsDbStaticExportView extends VerticalLayout {
     private static final long serialVersionUID = 6812301161700680358L;
 
     /**Vaadin component.*/
-    private FormLayout m_layout;
+    private VerticalLayout m_layout;
 
     /**Vaadin component.*/
     private Button m_ok;
@@ -66,8 +65,10 @@ public class CmsDbStaticExportView extends VerticalLayout {
      * public constructor.<p>
      */
     public CmsDbStaticExportView() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_report.setHeight("500px");
+        m_layout.setWidth("100%");
         m_report.addStyleName("v-scrollable");
         m_report.addStyleName("o-report");
 

@@ -460,10 +460,10 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				<newresource order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
 			</explorertype>
 			<explorertype name="modelpage" key="fileicon.modelpage" smalliconstyle="oc-icon-16-modelpage" bigiconstyle="oc-icon-24-modelpage" reference="folder">
-				<newresource noncreatable="true" order="490" autosetnavigation="false" autosettitle="false" info=""/>
+				<newresource creatable="false" order="490" autosetnavigation="false" autosettitle="false" info=""/>
 			</explorertype>
 			<explorertype name="category" key="fileicon.category" smalliconstyle="oc-icon-16-category" bigiconstyle="oc-icon-24-category" reference="folder">
-				<newresource noncreatable="true" order="490" autosetnavigation="false" autosettitle="false" info=""/>
+				<newresource creatable="false" order="490" autosetnavigation="false" autosettitle="false" info=""/>
 			</explorertype>
 			<explorertype name="htmlredirect" key="fileicon.htmlredirect" smalliconstyle="oc-icon-16-htmlredirect" bigiconstyle="oc-icon-24-htmlredirect" reference="xmlcontent">
 				<newresource order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
@@ -600,25 +600,25 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="view_basic" key="fileicon.view_basic" reference="folder" isview="true">
-				<newresource noncreatable="true" order="1000" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
+				<newresource creatable="false" order="1000" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="view_folders" key="fileicon.view_folders" reference="folder" isview="true">
-				<newresource noncreatable="true" order="2100" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
+				<newresource creatable="false" order="2100" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="view_configs" key="fileicon.view_configs" reference="folder" isview="true">
-				<newresource noncreatable="true" order="2200" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
+				<newresource creatable="false" order="2200" autosetnavigation="false" autosettitle="false" info="desc.otheroptions"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="view_other" key="fileicon.view_other" reference="folder" isview="true">
-				<newresource noncreatable="true" order="2300" autosetnavigation="false" autosettitle="false" info=""/>
+				<newresource creatable="false" order="2300" autosetnavigation="false" autosettitle="false" info=""/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 				</accesscontrol>

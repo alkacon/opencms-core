@@ -15,6 +15,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 11.0.0 final - April 30, 2019
+! Updated Vaadin libraries to version 8.7.1.
+- Fixed issue #646 where edit module dialog localization was not complete.
+- Fixed issue #643 where PDF links pointing to non existing resource would trigger a response code 500 instead of a 404.
+- Fixed issue #642 where static export app localization was not complete.
+- Fixed issue #640 where workplace dialog scrolling failed to show the complete dialog content.
+- Fixed issue #639 where log file viewer failed on Windows based servers.
+- Fixed issue #634 where link selector was not showing in WYSIWYG editor.
+- Fixed issue #627 where DateTimeWidget would not respect the users workplace locale.
+
 OpenCms 11.0.0 release candidate - March 29, 2019
 ! Includes the new 'Mercury' default template.
 - Setup wizard: Modernized the user interface.

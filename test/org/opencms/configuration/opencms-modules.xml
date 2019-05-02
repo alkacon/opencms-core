@@ -58,7 +58,7 @@
 			</resourcetypes>		
             <explorertypes>
             	<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
-					<newresource noncreatable="false" order="25" autosetnavigation="false" autosettitle="false"/>
+					<newresource creatable="true" order="25" autosetnavigation="false" autosettitle="false"/>
            		</explorertype>	
            </explorertypes>	
     	</module>

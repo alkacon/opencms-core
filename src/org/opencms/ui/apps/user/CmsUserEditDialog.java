@@ -803,6 +803,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_startfolder.setValue(cmsCopy.getRequestContext().addSiteRoot(startFolder == null ? "/" : startFolder));
             m_startfolder.setCmsObject(cmsCopy);
             m_startfolder.setUseRootPaths(true);
+            if (!m_visSites) {
+                try {
+                    m_startfolder.setValue(
+                        OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cmsCopy, m_ou.getValue()).get(
+                            0).getRootPath());
+                } catch (CmsException e1) {
+                    LOG.error("unable to read resources for ou", e1);
+                }
+            }
+            m_startfolder.setEnabled(m_visSites);
         } catch (CmsException e) {
             LOG.error("Unable to ini CmsObject", e);
         }
@@ -923,7 +933,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      */
     void iniSite(CmsUserSettings settings) {
 
-        List<CmsSite> sitesList = OpenCms.getSiteManager().getAvailableSites(m_cms, true, false, m_ou.getValue());
+        List<CmsSite> sitesList = OpenCms.getSiteManager().getAvailableSites(m_cms, false, false, m_ou.getValue());
 
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty("caption", String.class, "");
@@ -945,6 +955,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
         }
         if (container.size() == 0) {
+            if (!container.containsId(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot())) {
+                Item defaultItem = container.addItem(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+                defaultItem.getItemProperty("caption").setValue(
+                    A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+            }
             m_visSites = false;
         }
         m_site.setContainerDataSource(container);
@@ -958,13 +973,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 LOG.error("The start site is unvalid configured");
             }
         } else {
+
             if (firstNoRootSite != null) {
                 m_site.select(firstNoRootSite.getSiteRoot());
             } else {
-                Iterator<?> it = m_site.getItemIds().iterator();
-                if (it.hasNext()) {
-                    m_site.select(it);
-                }
+                m_site.select(container.getItemIds().get(0));
             }
         }
     }

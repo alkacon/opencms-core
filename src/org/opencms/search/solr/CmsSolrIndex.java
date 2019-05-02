@@ -1534,11 +1534,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
     protected boolean isIndexing(CmsResource res) {
 
         if ((res != null) && (getSources() != null)) {
-            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
+            I_CmsDocumentFactory documentFactory = OpenCms.getSearchManager().getDocumentFactory(res);
             for (CmsSearchIndexSource source : getSources()) {
                 if (source.isIndexing(res.getRootPath(), CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR)
                     || source.isIndexing(res.getRootPath(), CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR)
-                    || source.isIndexing(res.getRootPath(), result.getName())) {
+                    || ((documentFactory != null) && source.isIndexing(res.getRootPath(), documentFactory.getName()))) {
                     return true;
                 }
             }

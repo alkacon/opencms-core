@@ -172,8 +172,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The new resource order value. */
     private Integer m_newResourceOrder;
 
-    /** The non creatable flag, <code>true</code> for types that can not be created through the workplace UI. */
-    private boolean m_nonCreatable;
+    /** The creatable flag, <code>false</code> for types that can not be created through the workplace UI. */
+    private boolean m_creatable;
 
     /** The properties. */
     private List<String> m_properties;
@@ -203,6 +203,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
         m_access = new CmsExplorerTypeAccess();
         m_properties = new ArrayList<String>();
+        m_creatable = true;
         m_hasEditOptions = false;
         m_propertiesEnabled = false;
         m_showNavigation = false;
@@ -558,6 +559,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
+     * Returns if this type is creatable.<p>
+     *
+     * @return <code>true</code> in case this type is creatable
+     */
+    public boolean isCreatable() {
+
+        return m_creatable;
+    }
+
+    /**
      * Checks if the current user has write permissions on the given resource.<p>
      *
      * @param cms the current cms context
@@ -574,16 +585,6 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         // determine if this resource type is editable for the current user
         CmsPermissionSet permissions = getAccess().getPermissions(cms, resource);
         return permissions.requiresWritePermission();
-    }
-
-    /**
-     * Returns if this type is non creatable.<p>
-     *
-     * @return <code>true</code> in case this type is non creatable
-     */
-    public boolean isNonCreatable() {
-
-        return m_nonCreatable;
     }
 
     /**
@@ -683,6 +684,26 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
+     * Sets the creatable flag.<p>
+     *
+     * @param creatable the non creatable flag to set
+     */
+    public void setCreatable(boolean creatable) {
+
+        m_creatable = creatable;
+    }
+
+    /**
+     * Sets the creatable flag.<p>
+     *
+     * @param creatable the creatable flag to set
+     */
+    public void setCreatable(String creatable) {
+
+        m_creatable = Boolean.parseBoolean(creatable);
+    }
+
+    /**
      * Sets the flag if this explorer type entry has explicit edit options set.<p>
      *
      * This is determined by the presence of the &lt;editoptions&gt; node in the Cms workplace configuration.<p>
@@ -777,26 +798,6 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
             }
             m_newResourceOrder = new Integer(0);
         }
-    }
-
-    /**
-     * Sets the non creatable flag.<p>
-     *
-     * @param nonCreatable the non creatable flag to set
-     */
-    public void setNonCreatable(boolean nonCreatable) {
-
-        m_nonCreatable = nonCreatable;
-    }
-
-    /**
-     * Sets the non creatable flag.<p>
-     *
-     * @param nonCreatable the non creatable flag to set
-     */
-    public void setNonCreatable(String nonCreatable) {
-
-        m_nonCreatable = Boolean.parseBoolean(nonCreatable);
     }
 
     /**

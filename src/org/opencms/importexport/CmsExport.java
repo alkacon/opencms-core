@@ -71,7 +71,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
@@ -795,8 +797,21 @@ public class CmsExport {
         getSaxWriter().writeOpen(m_resourceNode);
 
         if (m_parameters.isRecursive()) {
-            // remove the possible redundancies in the list of resources
-            resourcesToExport = CmsFileUtil.removeRedundancies(resourcesToExport);
+            String siteRoot = m_cms.getRequestContext().getSiteRoot();
+            if (siteRoot.equals("") || siteRoot.equals("/")) {
+                resourcesToExport = CmsFileUtil.removeRedundancies(resourcesToExport);
+            } else {
+                // Prevent resources in /system or other sites from being removed when '/' for current site is also selected
+                Map<String, String> rootToSitePaths = new HashMap<>();
+                for (String sitePath : resourcesToExport) {
+                    String rootPath = m_cms.addSiteRoot(sitePath);
+                    rootToSitePaths.put(rootPath, sitePath);
+                }
+                resourcesToExport = CmsFileUtil.removeRedundancies(
+                    new ArrayList<>(rootToSitePaths.keySet())).stream().map(rootToSitePaths::get).collect(
+                        Collectors.toList());
+
+            }
         }
 
         // distinguish folder and file names
