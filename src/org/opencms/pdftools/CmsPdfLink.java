@@ -71,6 +71,7 @@ public class CmsPdfLink {
         + ")"
         + "/"
         + NOSLASH_GROUP
+        + "(?:/[^/]+)?" // optional filename to make the download name more user-readable, not used by the handler
         + "\\.pdf/?";
 
     /** Compiled regular expression for parsing PDF links. */
@@ -94,9 +95,11 @@ public class CmsPdfLink {
      * @param cms the current CMS context
      * @param formatter the formatter resource
      * @param content the content resource
+     * @param filename the file name to use for the PDF download link
+     *
      * @throws CmsException if something goes wrong
      */
-    public CmsPdfLink(CmsObject cms, CmsResource formatter, CmsResource content)
+    public CmsPdfLink(CmsObject cms, CmsResource formatter, CmsResource content, String filename)
     throws CmsException {
 
         Locale locale = cms.getRequestContext().getLocale();
@@ -106,7 +109,16 @@ public class CmsPdfLink {
             content,
             cms.getRequestContext().getLocale(),
             OpenCms.getLocaleManager().getDefaultLocales());
-        String s = "/" + PDF_LINK_PREFIX + "/" + locale + "/" + formatter.getStructureId() + "/" + detailName + ".pdf";
+        String s = "/"
+            + PDF_LINK_PREFIX
+            + "/"
+            + locale
+            + "/"
+            + formatter.getStructureId()
+            + "/"
+            + detailName
+            + (filename != null ? "/" + filename : "")
+            + ".pdf";
         m_link = OpenCms.getLinkManager().substituteLink(cms, s);
     }
 
