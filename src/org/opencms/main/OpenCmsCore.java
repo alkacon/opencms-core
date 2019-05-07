@@ -133,6 +133,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -197,6 +198,9 @@ public final class OpenCmsCore {
 
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
+
+    /** Admin CMS object. */
+    private CmsObject m_configAdminCms;
 
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
@@ -296,6 +300,9 @@ public final class OpenCmsCore {
 
     /** The site manager contains information about all configured sites. */
     private CmsSiteManagerImpl m_siteManager;
+
+    /** List of start/stop handlers. */
+    private List<I_CmsStartStopHandler> m_startStopHandlers = new ArrayList<>();
 
     /** The static export manager. */
     private CmsStaticExportManager m_staticExportManager;
@@ -1592,6 +1599,7 @@ public final class OpenCmsCore {
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
+        m_configAdminCms = adminCms;
 
         m_repositoryManager.initializeCms(adminCms);
         // now initialize the other managers
@@ -2073,6 +2081,14 @@ public final class OpenCmsCore {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
+                for (I_CmsStartStopHandler handler : m_startStopHandlers) {
+                    try {
+                        handler.shutdown();
+                    } catch (Throwable e) {
+                        CmsLog.INIT.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
                 try {
                     // the first thing we have to do is to wait until the current publish process finishes
                     if (null != m_publishEngine) {
@@ -2444,6 +2460,18 @@ public final class OpenCmsCore {
         }
         // everything is initialized, now start publishing
         m_publishManager.startPublishing();
+
+        for (I_CmsStartStopHandler handler : ServiceLoader.load(I_CmsStartStopHandler.class)) {
+            m_startStopHandlers.add(handler);
+        }
+
+        for (I_CmsStartStopHandler handler : m_startStopHandlers) {
+            try {
+                handler.startup(m_configAdminCms);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
