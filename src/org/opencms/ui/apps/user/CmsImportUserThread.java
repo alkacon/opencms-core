@@ -31,6 +31,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
@@ -46,10 +47,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Class for the import user thread.<p>
  */
 public class CmsImportUserThread extends A_CmsReportThread {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportUserThread.class);
 
     /**List of user. */
     private List<CmsUser> m_userList;
@@ -184,7 +190,7 @@ public class CmsImportUserThread extends A_CmsReportThread {
                     settings.setStartProject("Offline");
                     settings.save(getCms());
                 } catch (CmsException e) {
-                    //
+                    LOG.error("Unable to create user", e);
                 }
                 if (createdUser != null) {
                     getReport().println(

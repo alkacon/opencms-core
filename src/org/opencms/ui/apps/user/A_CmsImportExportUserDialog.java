@@ -41,6 +41,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -151,37 +152,44 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
      */
     ByteArrayInputStream getExportStream() {
 
+        //TODO use same CSV Writer like currently used in Apollo
+
         Map<CmsUUID, CmsUser> exportUsers = getUserToExport();
+
+        CmsCsvWriter csvWriter = new CmsCsvWriter();
 
         StringBuffer buffer = new StringBuffer(BOM);
 
         CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
 
-        String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
         List<String> values = settings.getColumns();
 
         buffer.append("name");
         Iterator<String> itValues = values.iterator();
+        List<String> columns = new ArrayList<String>();
+        columns.add("name");
         while (itValues.hasNext()) {
             String colName = itValues.next();
             if (isColumnExportable(colName)) {
-                buffer.append(separator);
-                buffer.append(colName);
+                columns.add(colName);
             }
         }
-        buffer.append("\n");
+        String[] cols = new String[columns.size()];
+        csvWriter.addLine(columns.toArray(cols));
 
         Object[] users = exportUsers.values().toArray();
 
         for (int i = 0; i < users.length; i++) {
             CmsUser exportUser = (CmsUser)users[i];
+            String[] colValues = new String[columns.size()];
             if (!isExportable(exportUser)) {
                 continue;
             }
-            buffer.append(exportUser.getSimpleName());
+            colValues[0] = exportUser.getSimpleName();
+            int colNumber = 1;
             itValues = values.iterator();
             while (itValues.hasNext()) {
-                buffer.append(separator);
+
                 String curValue = itValues.next();
                 if (isColumnExportable(curValue)) {
                     try {
@@ -197,27 +205,33 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
                         }
 
                         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
-                            buffer.append(curOutput);
+                            colValues[colNumber] = curOutput;
                         }
                     } catch (NoSuchMethodException e) {
                         Object obj = exportUser.getAdditionalInfo(curValue);
                         if (obj != null) {
                             String curOutput = String.valueOf(obj);
                             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
-                                buffer.append(curOutput);
+                                colValues[colNumber] = curOutput;
                             }
+                        } else {
+                            colValues[colNumber] = "";
                         }
                     } catch (IllegalAccessException e) {
-                        //
+                        colValues[colNumber] = "";
                     } catch (InvocationTargetException e) {
-                        //
+                        colValues[colNumber] = "";
                     }
+                    if (colValues[colNumber] == null) {
+                        colValues[colNumber] = "";
+                    }
+                    colNumber++;
                 }
             }
-            buffer.append("\n");
+            csvWriter.addLine(colValues);
 
         }
-        return new ByteArrayInputStream(buffer.toString().getBytes());
+        return new ByteArrayInputStream(csvWriter.toString().getBytes());
     }
 
     /**

@@ -89,6 +89,9 @@ import com.vaadin.ui.Window;
 public final class CmsImportExportUserDialog extends A_CmsImportExportUserDialog
 implements Receiver, I_CmsPasswordFetcher {
 
+    /** The "bom" bytes as String that need to be placed at the very beginning of the produced csv. */
+    private static final String BOM = "\ufeff";
+
     /**The dialog height. */
     public static final String DIALOG_HEIGHT = "650px";
 
@@ -560,7 +563,7 @@ implements Receiver, I_CmsPasswordFetcher {
                 new InputStreamReader(new ByteArrayInputStream(m_importFileStream.toByteArray())));
             String line;
             boolean headline = true;
-
+            boolean hasBOM = false;
             while ((line = bufferedReader.readLine()) != null) {
                 if (users == null) {
                     users = new ArrayList<CmsUser>();
@@ -573,7 +576,16 @@ implements Receiver, I_CmsPasswordFetcher {
                     values = new ArrayList();
                     Iterator itLineValues = lineValues.iterator();
                     while (itLineValues.hasNext()) {
-                        values.add(itLineValues.next());
+                        String va = (String)itLineValues.next();
+                        if (va.startsWith(BOM) && va.substring(1, 2).equals("\"")) {
+                            hasBOM = true;
+                            va = va.substring(1); //Cut BOM
+                        }
+                        if (hasBOM) {
+                            va = va.substring(1, va.length() - 1);
+                        }
+                        //}
+                        values.add(va);
                     }
                     headline = false;
                 } else if (values != null) {
@@ -588,6 +600,10 @@ implements Receiver, I_CmsPasswordFetcher {
                                 String value = "";
                                 if ((lineValues.size() > i) && (lineValues.get(i) != null)) {
                                     value = (String)lineValues.get(i);
+                                    if (hasBOM) {
+
+                                        value = value.substring(1, value.length() - 1);
+                                    }
 
                                 }
                                 if (curValue.equals("password")) {
