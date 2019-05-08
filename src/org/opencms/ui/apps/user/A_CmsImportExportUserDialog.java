@@ -58,6 +58,9 @@ import com.vaadin.ui.Window;
  */
 public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
 
+    /** The "bom" bytes as String that need to be placed at the very beginning of the produced csv. */
+    private static final String BOM = "\ufeff";
+
     /**vaadin serial id. */
     private static final long serialVersionUID = -3990661225158677324L;
 
@@ -150,7 +153,8 @@ public abstract class A_CmsImportExportUserDialog extends CmsBasicDialog {
 
         Map<CmsUUID, CmsUser> exportUsers = getUserToExport();
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer(BOM);
+
         CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
 
         String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
