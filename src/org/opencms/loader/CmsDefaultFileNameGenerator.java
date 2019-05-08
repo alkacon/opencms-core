@@ -32,6 +32,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -41,13 +42,13 @@ import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.Factory;
+import org.apache.commons.logging.Log;
 
 /**
  * The default class used for generating file names either for the <code>urlName</code> mapping
@@ -100,6 +101,8 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             m_number = number;
         }
     }
+
+    private static final Log LOG = CmsLog.getLog(CmsDefaultFileNameGenerator.class);
 
     /** Start sequence for macro with digits. */
     private static final String MACRO_NUMBER_DIGIT_SEPARATOR = ":";
@@ -215,11 +218,26 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         // must check ALL resources in folder because name doesn't care for type
         List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
+        CmsObject onlineCms = OpenCms.initCmsObject(cms);
+        onlineCms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         // now create a list of all the file names
-        List<String> fileNames = new ArrayList<String>(resources.size());
+        Set<String> fileNames = new HashSet<>();
         for (CmsResource res : resources) {
             fileNames.add(cms.getSitePath(res));
+        }
+
+        try {
+            CmsResource offlineFolder = cms.readResource(folderName);
+            CmsResource onlineFolder = onlineCms.readResource(offlineFolder.getStructureId());
+            String onlinePath = onlineCms.getSitePath(onlineFolder);
+            List<CmsResource> onlineContents = onlineCms.readResources(onlinePath, CmsResourceFilter.ALL, false);
+            for (CmsResource res : onlineContents) {
+                fileNames.add(cms.getSitePath(res));
+            }
+
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
         }
 
         return getNewFileNameFromList(fileNames, checkPattern, defaultDigits, explorerMode);
@@ -275,7 +293,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      * @return a new resource name based on the provided OpenCms user context and name pattern
      */
     protected String getNewFileNameFromList(
-        List<String> fileNames,
+        Set<String> fileNames,
         String checkPattern,
         int defaultDigits,
         final boolean explorerMode) {

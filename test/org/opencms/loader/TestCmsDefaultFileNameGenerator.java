@@ -31,7 +31,8 @@ import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Tests the default file name generation.<p>
@@ -39,10 +40,12 @@ import java.util.List;
 public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
 
     /** List of names with 5 digits. */
-    public static final List<String> NAMES_5 = Arrays.asList(new String[] {"/file_00001.xml", "/file_00002.xml"});
+    public static final Set<String> NAMES_5 = new HashSet<>(
+        Arrays.asList(new String[] {"/file_00001.xml", "/file_00002.xml"}));
 
     /** List of names with 4 digits. */
-    public static final List<String> NAMES_4 = Arrays.asList(new String[] {"/file_0001.xml", "/file_0002.xml"});
+    public static final Set<String> NAMES_4 = new HashSet<>(
+        Arrays.asList(new String[] {"/file_0001.xml", "/file_0002.xml"}));
 
     /**
      * Tests the default file name generation.<p>
@@ -66,7 +69,7 @@ public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
         assertEquals("/file_00003.xml", next54Name);
 
         String nextEmptyName = defaultGenerator.getNewFileNameFromList(
-            Collections.<String> emptyList(),
+            new HashSet<>(),
             "/file_%(number:1).xml",
             4,
             false);
