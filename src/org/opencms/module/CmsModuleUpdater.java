@@ -773,13 +773,23 @@ public class CmsModuleUpdater {
         if (!newRelations.equals(noContentRelations)) {
 
             CmsRelationFilter relFilter = CmsRelationFilter.TARGETS.filterNotDefinedInContent();
+            try {
+                cms.deleteRelationsFromResource(importResource, relFilter);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                m_report.println(e);
+            }
 
-            cms.deleteRelationsFromResource(importResource, relFilter);
             for (CmsRelation newRel : newRelations) {
-                cms.addRelationToResource(
-                    importResource,
-                    cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION),
-                    newRel.getType().getName());
+                try {
+                    cms.addRelationToResource(
+                        importResource,
+                        cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION),
+                        newRel.getType().getName());
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    m_report.println(e);
+                }
 
             }
         }
