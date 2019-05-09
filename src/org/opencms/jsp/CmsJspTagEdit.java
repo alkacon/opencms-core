@@ -108,7 +108,8 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         String sitePath,
         String modelFileName,
         String mode,
-        String postCreateHandler) {
+        String postCreateHandler)
+    throws CmsException {
 
         String[] newLinkParts = newLink.split("\\|");
         String rootPath = newLinkParts[1];
@@ -126,22 +127,19 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cmsObject, rootPath);
         CmsResourceTypeConfig typeConfig = adeConfig.getResourceType(typeName);
         CmsResource newElement = null;
-        try {
-            CmsObject cmsClone = cmsObject;
-            if ((locale != null) && !cmsObject.getRequestContext().getLocale().equals(locale)) {
-                // in case the content locale does not match the request context locale, use a clone cms with the appropriate locale
-                cmsClone = OpenCms.initCmsObject(cmsObject);
-                cmsClone.getRequestContext().setLocale(locale);
-            }
-            newElement = typeConfig.createNewElement(cmsClone, modelFile, rootPath);
-            CmsPair<String, String> handlerParameter = I_CmsCollectorPostCreateHandler.splitClassAndConfig(
-                postCreateHandler);
-            I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(
-                handlerParameter.getFirst());
-            handler.onCreate(cmsClone, cmsClone.readFile(newElement), modelFile != null, handlerParameter.getSecond());
-        } catch (CmsException e) {
-            LOG.error("Could not create resource.", e);
+
+        CmsObject cmsClone = cmsObject;
+        if ((locale != null) && !cmsObject.getRequestContext().getLocale().equals(locale)) {
+            // in case the content locale does not match the request context locale, use a clone cms with the appropriate locale
+            cmsClone = OpenCms.initCmsObject(cmsObject);
+            cmsClone.getRequestContext().setLocale(locale);
         }
+        newElement = typeConfig.createNewElement(cmsClone, modelFile, rootPath);
+        CmsPair<String, String> handlerParameter = I_CmsCollectorPostCreateHandler.splitClassAndConfig(
+            postCreateHandler);
+        I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(
+            handlerParameter.getFirst());
+        handler.onCreate(cmsClone, cmsClone.readFile(newElement), modelFile != null, handlerParameter.getSecond());
         return newElement == null ? null : cmsObject.getSitePath(newElement);
     }
 

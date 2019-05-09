@@ -36,6 +36,7 @@
 			</tabs>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" useDefault="true" />
+                <mapping element="Title" mapto="urlName" useDefault="true" />
 			</mappings>
 			<defaults>
 				<default element="CategoryMode" value="OR" />

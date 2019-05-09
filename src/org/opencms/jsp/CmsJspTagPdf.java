@@ -66,17 +66,20 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
     /** The path of the content resource for which the PDF link should be generated. */
     private String m_content;
 
+    /** File name (optional). */
+    private String m_filename;
+
     /** The path of the JSP used to generate the XHTML for the content (which is used to generate the PDF). */
     private String m_format;
 
     /** The locale attribute. */
     private String m_locale;
 
-    /** The map of parameters. */
-    private SortedMap<String, String> m_parameters;
-
     /** Parameter encoding. */
     private String m_paramEncoding;
+
+    /** The map of parameters. */
+    private SortedMap<String, String> m_parameters;
 
     /**
      * The implementation of the tag.<p>
@@ -97,10 +100,12 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
         String format,
         String content,
         String localeStr,
+        String filename,
         SortedMap<String, String> params,
         String paramEncoding)
     throws CmsException {
 
+        filename = filename != null ? filename.replaceFirst("\\.pdf$", "") : null;
         CmsFlexController controller = CmsFlexController.getController(request);
         CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
         if (localeStr != null) {
@@ -109,7 +114,7 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
         }
         CmsResource formatterRes = cms.readResource(format);
         CmsResource contentRes = cms.readResource(content, CmsResourceFilter.ignoreExpirationOffline(cms));
-        CmsPdfLink pdfLink = new CmsPdfLink(cms, formatterRes, contentRes);
+        CmsPdfLink pdfLink = new CmsPdfLink(cms, formatterRes, contentRes, filename);
         StringBuilder paramBuf = new StringBuilder();
         if ((params != null) && !params.isEmpty()) {
             paramBuf.append("?");
@@ -151,6 +156,7 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
                     m_format,
                     m_content,
                     m_locale,
+                    m_filename,
                     m_parameters,
                     getParamEncoding()));
         } catch (Exception e) {
@@ -177,6 +183,16 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
     public void setContent(String content) {
 
         m_content = content;
+    }
+
+    /**
+     * Sets the file name for the PDF download link.
+     *
+     * @param filename the file name
+     */
+    public void setFilename(String filename) {
+
+        m_filename = filename;
     }
 
     /**

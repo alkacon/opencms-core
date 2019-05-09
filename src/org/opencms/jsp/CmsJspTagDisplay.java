@@ -177,6 +177,8 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             null,
                             creationSiteMap,
                             postCreateHandler);
+                    }
+                    if (contextBean.getIsEditMode()) {
                         CmsADESessionCache.getCache(
                             (HttpServletRequest)(context.getRequest()),
                             cms).setCacheContainerElement(element.editorHash(), element);

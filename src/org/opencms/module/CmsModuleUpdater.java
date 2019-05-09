@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -680,6 +681,15 @@ public class CmsModuleUpdater {
         keys.addAll(importProps.keySet());
 
         for (String key : keys) {
+            if (existingResource.isFile() && CmsPropertyDefinition.PROPERTY_IMAGE_SIZE.equals(key)) {
+                // Depending on the configuration of the image loader, an image is potentially resized when importing/creating it,
+                // and the image.size property is set to the size of the resized image. However, the property value in the import may
+                // be from a system with different image loader settings, and thus may not correspond to the actual size of the image
+                // in the current system anymore, leading to problems with image scaling later.
+                //
+                // To prevent this state, we skip setting the image.size property for module updates.
+                continue;
+            }
             CmsProperty existingProp = existingProps.get(key);
             CmsProperty importProp = importProps.get(key);
             if (existingProp == null) {
@@ -763,13 +773,23 @@ public class CmsModuleUpdater {
         if (!newRelations.equals(noContentRelations)) {
 
             CmsRelationFilter relFilter = CmsRelationFilter.TARGETS.filterNotDefinedInContent();
+            try {
+                cms.deleteRelationsFromResource(importResource, relFilter);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                m_report.println(e);
+            }
 
-            cms.deleteRelationsFromResource(importResource, relFilter);
             for (CmsRelation newRel : newRelations) {
-                cms.addRelationToResource(
-                    importResource,
-                    cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION),
-                    newRel.getType().getName());
+                try {
+                    cms.addRelationToResource(
+                        importResource,
+                        cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION),
+                        newRel.getType().getName());
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    m_report.println(e);
+                }
 
             }
         }
