@@ -47,7 +47,7 @@ import com.google.common.cache.LoadingCache;
 public class CmsOnlineCachingHandlerWrapper implements I_CmsJsonHandler {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExceptionSafeHandlerWrapper.class);
+    private static final Log LOG = CmsLog.getLog(CmsOnlineCachingHandlerWrapper.class);
 
     /** The wrapped handler. */
     private I_CmsJsonHandler m_handler;
