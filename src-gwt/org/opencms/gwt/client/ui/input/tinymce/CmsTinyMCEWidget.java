@@ -651,7 +651,7 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
 			skin_variant : 'ocms',
 			mode : "exact",
 			theme : "silver",
-			plugins : "autolink,lists,pagebreak,table,save,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
+			plugins : "autolink lists pagebreak table save hr image link emoticons spellchecker insertdatetime preview media searchreplace print paste directionality noneditable visualchars nonbreaking template wordcount advlist",
 			paste_as_text : true,
 			menubar : false,
 		};
@@ -665,9 +665,8 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
 		// extend the defaults with any given options
 		if (options != null) {
 			defaults = merge(defaults, options);
-			defaults.plugins = "autoresize," + defaults.plugins;
 		}
-
+		defaults.plugins = "autoresize " + defaults.plugins;
 		// add the setup function
 		defaults.setup = function(ed) {
 			self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor = ed;
@@ -690,8 +689,6 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
 								if (content != null) {
 									ed.setContent(content);
 								}
-								// ensure the body height is set to 'auto', otherwise the autoresize plugin will not work
-								ed.getDoc().body.style.height = 'auto';
 								self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_initialized = true;
 							});
 
