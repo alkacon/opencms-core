@@ -128,6 +128,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      * Constructor.<p>
      */
     public CmsAppWorkplaceUi() {
+
         m_cachedViews = new HashMap<String, I_CmsAppView>();
     }
 
@@ -217,32 +218,35 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     public void checkBroadcasts() {
 
         CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
-        Buffer queue = info.getBroadcastQueue();
-        if (!queue.isEmpty()) {
-            StringBuffer broadcasts = new StringBuffer();
-            while (!queue.isEmpty()) {
-                CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
-                String from = broadcastMessage.getUser() != null
-                ? broadcastMessage.getUser().getName()
-                : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
-                String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
-                    broadcastMessage.getSendTime());
-                String content = broadcastMessage.getMessage();
-                content = content.replaceAll("\\n", "<br />");
-                broadcasts.append("<p><em>").append(date).append("</em><br />");
-                broadcasts.append(
-                    CmsVaadinUtils.getMessageText(
-                        org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
-                            from).append("</b>:</p><p>");
-                broadcasts.append(content).append("<br /></p>");
+        // may be null in weird cases
+        if (info != null) {
+            Buffer queue = info.getBroadcastQueue();
+            if (!queue.isEmpty()) {
+                StringBuffer broadcasts = new StringBuffer();
+                while (!queue.isEmpty()) {
+                    CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
+                    String from = broadcastMessage.getUser() != null
+                    ? broadcastMessage.getUser().getName()
+                    : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
+                    String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
+                        broadcastMessage.getSendTime());
+                    String content = broadcastMessage.getMessage();
+                    content = content.replaceAll("\\n", "<br />");
+                    broadcasts.append("<p><em>").append(date).append("</em><br />");
+                    broadcasts.append(
+                        CmsVaadinUtils.getMessageText(
+                            org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
+                                from).append("</b>:</p><p>");
+                    broadcasts.append(content).append("<br /></p>");
+                }
+                Notification notification = new Notification(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
+                    broadcasts.toString(),
+                    Type.WARNING_MESSAGE,
+                    true);
+                notification.setDelayMsec(-1);
+                notification.show(getPage());
             }
-            Notification notification = new Notification(
-                CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
-                broadcasts.toString(),
-                Type.WARNING_MESSAGE,
-                true);
-            notification.setDelayMsec(-1);
-            notification.show(getPage());
         }
     }
 
