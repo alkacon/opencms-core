@@ -290,19 +290,21 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             rootCms.getRequestContext().setSiteRoot("");
             CmsJspNavBuilder builder = new CmsJspNavBuilder(rootCms);
             CmsJspNavElement nav = builder.getNavigationForResource(resource.getRootPath(), m_filter);
-            boolean inNavigation = nav.isInNavigation();
+            boolean inNavigation = (nav != null) && nav.isInNavigation();
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).setValue(
                 Boolean.valueOf(inNavigation));
-
-            if (inNavigation) {
-                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).setValue(
-                    Float.valueOf(nav.getNavPosition()));
-            }
             String navText = null;
-            if (nav.getProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)) {
-                navText = nav.getProperties().get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
-            } else if (nav.getProperties().containsKey(CmsPropertyDefinition.PROPERTY_TITLE)) {
-                navText = nav.getProperties().get(CmsPropertyDefinition.PROPERTY_TITLE);
+            if (nav != null) {
+                if (inNavigation) {
+                    resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).setValue(
+                        Float.valueOf(nav.getNavPosition()));
+                }
+
+                if (nav.getProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)) {
+                    navText = nav.getProperties().get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+                } else if (nav.getProperties().containsKey(CmsPropertyDefinition.PROPERTY_TITLE)) {
+                    navText = nav.getProperties().get(CmsPropertyDefinition.PROPERTY_TITLE);
+                }
             }
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT).setValue(navText);
             String folderCaption;
