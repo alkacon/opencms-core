@@ -289,9 +289,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             CmsObject rootCms = OpenCms.initCmsObject(cms);
             rootCms.getRequestContext().setSiteRoot("");
             CmsJspNavBuilder builder = new CmsJspNavBuilder(rootCms);
-            CmsJspNavElement nav = builder.getNavigationForResource(
-                resource.getRootPath(),
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            CmsJspNavElement nav = builder.getNavigationForResource(resource.getRootPath(), m_filter);
             boolean inNavigation = nav.isInNavigation();
             resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).setValue(
                 Boolean.valueOf(inNavigation));
