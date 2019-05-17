@@ -105,6 +105,66 @@ import com.vaadin.v7.data.util.IndexedContainer;
  */
 public class CmsMessageBundleEditorModel {
 
+    /** Comparator that compares strings case insensitive. */
+    public static final class CmsCaseInsensitiveStringComparator implements Comparator<Object> {
+
+        /** Single instance of the comparator. */
+        private static CmsCaseInsensitiveStringComparator m_instance = new CmsCaseInsensitiveStringComparator();
+
+        /**
+         * Hide the default constructor.
+         */
+        private CmsCaseInsensitiveStringComparator() {
+
+            // Hide constructor
+        }
+
+        /**
+         * Returns the comparator instance.
+         * @return the comparator
+         */
+        public static CmsCaseInsensitiveStringComparator getInstance() {
+
+            // is never null, because it's directly initialized on class load.
+            return m_instance;
+        }
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @SuppressWarnings("unchecked")
+        public int compare(Object o1, Object o2) {
+
+            int r = 0;
+            // Normal non-null comparison
+            if ((o1 != null) && (o2 != null)) {
+                if ((o1 instanceof String) && (o2 instanceof String)) {
+                    String string1 = (String)o1;
+                    String string2 = (String)o2;
+                    r = String.CASE_INSENSITIVE_ORDER.compare(string1, string2);
+                    if (r == 0) {
+                        r = string1.compareTo(string2);
+                    }
+                } else {
+                    // Assume the objects can be cast to Comparable, throw
+                    // ClassCastException otherwise.
+                    r = ((Comparable<Object>)o1).compareTo(o2);
+                }
+            } else if (o1 == o2) {
+                // Objects are equal if both are null
+                r = 0;
+            } else {
+                if (o1 == null) {
+                    r = -1; // null is less than non-null
+                } else {
+                    r = 1; // non-null is greater than null
+                }
+            }
+
+            return r;
+        }
+    }
+
     /** Wrapper for the configurable messages for the column headers of the message bundle editor. */
     public static final class ConfigurableMessages {
 
@@ -177,76 +237,6 @@ public class CmsMessageBundleEditorModel {
 
     }
 
-    /** Comparator that compares strings case insensitive. */
-    static final class CmsCaseInsensitiveStringComparator implements Comparator<Object> {
-
-        /** Single instance of the comparator. */
-        private static CmsCaseInsensitiveStringComparator m_instance = new CmsCaseInsensitiveStringComparator();
-
-        /**
-         * Hide the default constructor.
-         */
-        private CmsCaseInsensitiveStringComparator() {
-
-            // Hide constructor
-        }
-
-        /**
-         * Returns the comparator instance.
-         * @return the comparator
-         */
-        public static CmsCaseInsensitiveStringComparator getInstance() {
-
-            // is never null, because it's directly initialized on class load.
-            return m_instance;
-        }
-
-        /**
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        @SuppressWarnings("unchecked")
-        public int compare(Object o1, Object o2) {
-
-            int r = 0;
-            // Normal non-null comparison
-            if ((o1 != null) && (o2 != null)) {
-                if ((o1 instanceof String) && (o2 instanceof String)) {
-                    String string1 = (String)o1;
-                    String string2 = (String)o2;
-                    r = String.CASE_INSENSITIVE_ORDER.compare(string1, string2);
-                    if (r == 0) {
-                        r = string1.compareTo(string2);
-                    }
-                } else {
-                    // Assume the objects can be cast to Comparable, throw
-                    // ClassCastException otherwise.
-                    r = ((Comparable<Object>)o1).compareTo(o2);
-                }
-            } else if (o1 == o2) {
-                // Objects are equal if both are null
-                r = 0;
-            } else {
-                if (o1 == null) {
-                    r = -1; // null is less than non-null
-                } else {
-                    r = 1; // non-null is greater than null
-                }
-            }
-
-            return r;
-        }
-    }
-
-    /** The result of a key change. */
-    enum KeyChangeResult {
-        /** Key change was successful. */
-        SUCCESS,
-        /** Key change failed, because the new key already exists. */
-        FAILED_DUPLICATED_KEY,
-        /** Key change failed, because the key could not be changed for one or more languages. */
-        FAILED_FOR_OTHER_LANGUAGE
-    }
-
     /** Extension of {@link Properties} to allow saving with keys alphabetically ordered and without time stamp as first comment.
      *
      * NOTE: Can't handle comments. They are just discarded.
@@ -254,7 +244,7 @@ public class CmsMessageBundleEditorModel {
      * NOTE: The solution was taken to guarantee correct escaping when storing properties.
      *
      */
-    private static final class SortedProperties extends Properties {
+    public static final class SortedProperties extends Properties {
 
         /** Serialization id to implement Serializable. */
         private static final long serialVersionUID = 8814525892788043348L;
@@ -429,6 +419,16 @@ public class CmsMessageBundleEditorModel {
             }
             bw.flush();
         }
+    }
+
+    /** The result of a key change. */
+    enum KeyChangeResult {
+        /** Key change was successful. */
+        SUCCESS,
+        /** Key change failed, because the new key already exists. */
+        FAILED_DUPLICATED_KEY,
+        /** Key change failed, because the key could not be changed for one or more languages. */
+        FAILED_FOR_OTHER_LANGUAGE
     }
 
     /** The log object for this class. */
