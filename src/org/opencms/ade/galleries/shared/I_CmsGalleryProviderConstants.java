@@ -168,7 +168,10 @@ public interface I_CmsGalleryProviderConstants {
         type_asc,
 
         /** Resource type descending sorting. */
-        type_desc;
+        type_desc,
+
+        /** Score sorting. */
+        score;
     }
 
     /** The request attribute name for the close link. */

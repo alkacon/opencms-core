@@ -746,6 +746,7 @@ public class CmsResultsTab extends A_CmsListTab {
             Messages.get().key(Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0));
         list.put(SortParams.path_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_PATH_ASC_0));
         list.put(SortParams.path_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_PATH_DESC_0));
+        list.put(SortParams.score.name(), Messages.get().key(Messages.GUI_SORT_LABEL_SCORE_0));
         if (includeType) {
             list.put(SortParams.type_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_ASC_0));
             list.put(SortParams.type_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_DESC_0));
