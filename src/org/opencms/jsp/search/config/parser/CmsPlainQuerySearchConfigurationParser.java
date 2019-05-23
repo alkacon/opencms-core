@@ -38,6 +38,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsPair;
 
 import java.util.Collections;
 import java.util.Map;
@@ -87,6 +88,10 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
      */
     public I_CmsSearchConfigurationCommon parseCommon() {
 
+        String index = null;
+        String queryString = m_queryString;
+        CmsPair<String, String> idxExtract = extractParam(queryString, "index");
+        CmsPair<String, String> coreExtract = extractParam(idxExtract.getFirst(), "core");
         return new CmsSearchConfigurationCommon(
             null,
             null,
@@ -95,17 +100,17 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
             Boolean.TRUE,
             Boolean.TRUE,
             null,
-            null,
-            null,
-            m_queryString,
+            idxExtract.getSecond(),
+            coreExtract.getSecond(),
+            coreExtract.getFirst(),
             null,
             null,
             null);
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
-     */
+    * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
+    */
     public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
 
         return null != m_baseConfig ? m_baseConfig.getDidYouMeanConfig() : null;
@@ -157,5 +162,32 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     public I_CmsSearchConfigurationSorting parseSorting() {
 
         return null != m_baseConfig ? m_baseConfig.getSortConfig() : null;
+    }
+
+    /**
+     * Extracts the value of a parameter from a query string.
+     *
+     * For example, extractParam("a=foo&b=bar", "a") will return CmsPair("b=bar", "foo").
+     * @param params the parameter string.
+     * @param paramKey the key of the parameter to extract the value for.
+     * @return a pair of "params without the extracted parameter" and the value of the extracted parameter.
+     */
+    CmsPair<String, String> extractParam(String params, String paramKey) {
+
+        String extract = null;
+        int beginIdx = params.indexOf(paramKey + "=");
+        if (beginIdx >= 0) {
+            String sub = params.substring(beginIdx + paramKey.length() + 1);
+            int endIdx = sub.indexOf("&");
+            if (endIdx >= 0) {
+                extract = sub.substring(0, endIdx);
+                params = params.substring(0, beginIdx) + sub.substring(endIdx + 1);
+            } else {
+                extract = sub;
+                params = beginIdx > 0 ? params.substring(0, beginIdx - 1) : ""; // cut trailing '&'
+            }
+        }
+        return new CmsPair<>(params, extract);
+
     }
 }
