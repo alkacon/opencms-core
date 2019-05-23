@@ -300,6 +300,17 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
+     * Check, if the start date of the instance date is 0 milliseconds.
+     * If this is the case, we assume the instance date is not set.
+     *
+     * @return a flag, indicating if the instance date is set.
+     */
+    public boolean getIsSet() {
+
+        return m_start.getTime() == 0;
+    }
+
+    /**
      * Returns some time of the last day, the event takes place. </p>
      *
      * For whole day events the end date is adjusted by subtracting one day,
