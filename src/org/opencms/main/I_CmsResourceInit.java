@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.security.CmsSecurityException;
@@ -42,6 +43,15 @@ import javax.servlet.http.HttpServletResponse;
  * @since 6.0.0
  */
 public interface I_CmsResourceInit {
+
+    /**
+     * Initializes parameters.
+     *
+     * @param params the configuration parameters
+     */
+    default void initParameters(CmsParameterConfiguration params) {
+        // do nothing
+    }
 
     /**
      * Possibility to modify or change the CmsFile with the CmsObject.<p>

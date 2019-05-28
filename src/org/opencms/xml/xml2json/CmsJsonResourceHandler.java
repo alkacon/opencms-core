@@ -29,7 +29,6 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
 /**
  * Handles /json requests.
  */
-public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigurationParameterHandler {
+public class CmsJsonResourceHandler implements I_CmsResourceInit {
 
     /** Request attribute for storing the JSON handler context. */
     public static final String ATTR_CONTEXT = "jsonHandlerContext";
@@ -88,22 +87,6 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
-     */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-
-        m_config.add(paramName, paramValue);
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
-     */
-    public CmsParameterConfiguration getConfiguration() {
-
-        return m_config;
-    }
-
-    /**
      * Gets the list of sub-handlers, sorted by ascending order.
      *
      * @return the sorted list of sub-handlers
@@ -121,15 +104,14 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsConfigura
         result.sort((h1, h2) -> Double.compare(h1.getOrder(), h2.getOrder()));
         result = result.stream().map(h -> new CmsExceptionSafeHandlerWrapper(h)).collect(Collectors.toList());
         return result;
-
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     * @see org.opencms.main.I_CmsResourceInit#initParameters(org.opencms.configuration.CmsParameterConfiguration)
      */
-    public void initConfiguration() {
+    public void initParameters(CmsParameterConfiguration params) {
 
-        m_config = CmsParameterConfiguration.unmodifiableVersion(m_config);
+        m_config = CmsParameterConfiguration.unmodifiableVersion(params);
     }
 
     /**

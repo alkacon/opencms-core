@@ -658,14 +658,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             return;
         }
         if (initClass instanceof I_CmsResourceInit) {
-            if (initClass instanceof I_CmsConfigurationParameterHandler) {
-                for (String key : params.keySet()) {
-                    for (String val : params.getList(key)) {
-                        ((I_CmsConfigurationParameterHandler)initClass).addConfigurationParameter(key, val);
-                    }
-                }
-                ((I_CmsConfigurationParameterHandler)initClass).initConfiguration();
-            }
+            ((I_CmsResourceInit)initClass).initParameters(params);
             m_resourceInitHandlers.add((I_CmsResourceInit)initClass);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, clazz));
@@ -733,7 +726,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add event classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, "addEventManager", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_EVENTS + "/" + N_EVENTMANAGER, 0, A_CLASS);
-        CmsParameterConfiguration resourceHandlerParams = new CmsParameterConfiguration();
+
+        // use array so we can modify it in the inner class and give each resource init handler a fresh CmsParameterConfiguration instance
+        CmsParameterConfiguration resourceHandlerParams[] = new CmsParameterConfiguration[] {null};
 
         digester.addRule("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, new Rule() {
 
@@ -743,13 +738,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             public void begin(String namespace, String name, Attributes attributes) throws Exception {
 
                 m_class = attributes.getValue(A_CLASS);
-                resourceHandlerParams.clear();
+                resourceHandlerParams[0] = new CmsParameterConfiguration();
             }
 
             @Override
             public void end(String namespace, String name) throws Exception {
 
-                addResourceInitHandler(m_class, resourceHandlerParams);
+                addResourceInitHandler(m_class, resourceHandlerParams[0]);
 
             }
         });
@@ -777,7 +772,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 @Override
                 public void end(String namespace, String name) throws Exception {
 
-                    resourceHandlerParams.add(m_name, m_value);
+                    resourceHandlerParams[0].add(m_name, m_value);
                 }
             });
 
