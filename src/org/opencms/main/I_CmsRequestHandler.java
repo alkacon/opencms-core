@@ -27,6 +27,8 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsParameterConfiguration;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -72,4 +74,13 @@ public interface I_CmsRequestHandler {
      * @throws IOException in case an error occurs
      */
     void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException, ServletException;
+
+    /**
+     * Initializes parameters.
+     *
+     * @param params the map of parameters
+     */
+    default void initParameters(CmsParameterConfiguration params) {
+        // do nothing
+    }
 }

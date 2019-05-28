@@ -619,17 +619,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      *
      * @param clazz the class name of the request handler to instantiate and add
      */
-    public void addRequestHandler(String clazz) {
+    public void addRequestHandler(String clazz, CmsParameterConfiguration params) {
 
-        Object initClass;
+        Object handler;
         try {
-            initClass = Class.forName(clazz).newInstance();
+            handler = Class.forName(clazz).newInstance();
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_REQUEST_HANDLER_FAILURE_1, clazz), t);
             return;
         }
-        if (initClass instanceof I_CmsRequestHandler) {
-            m_requestHandlers.add((I_CmsRequestHandler)initClass);
+        if (handler instanceof I_CmsRequestHandler) {
+            ((I_CmsRequestHandler)handler).initParameters(params);
+            m_requestHandlers.add((I_CmsRequestHandler)handler);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_REQUEST_HANDLER_SUCCESS_1, clazz));
             }
@@ -780,12 +781,51 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 }
             });
 
-        // add request handler classes
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER,
-            "addRequestHandler",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, 0, A_CLASS);
+        CmsParameterConfiguration[] requestHandlerParams = new CmsParameterConfiguration[] {null};
+        digester.addRule(
+            "*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER + "/" + N_PARAM,
+            new Rule() {
+
+                private String m_name;
+                private String m_value;
+
+                @Override
+                public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                    m_name = attributes.getValue(A_NAME);
+                    m_value = null;
+                }
+
+                @Override
+                public void body(String namespace, String name, String text) throws Exception {
+
+                    m_value = text;
+                }
+
+                @Override
+                public void end(String namespace, String name) throws Exception {
+
+                    requestHandlerParams[0].add(m_name, m_value);
+                }
+            });
+        digester.addRule("*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, new Rule() {
+
+            private String m_class;
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                m_class = attributes.getValue(A_CLASS);
+                requestHandlerParams[0] = new CmsParameterConfiguration();
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                addRequestHandler(m_class, requestHandlerParams[0]);
+            }
+
+        });
 
         // add password handler creation rule
         digester.addObjectCreate(

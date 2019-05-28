@@ -112,7 +112,7 @@
 # See the JavaDoc of interface org.opencms.main.I_CmsRequestHandler for more details.
 -->
 <!ELEMENT requesthandlers (requesthandler*)>
-<!ELEMENT requesthandler EMPTY>
+<!ELEMENT requesthandler (param*)>
 <!ATTLIST requesthandler class CDATA #REQUIRED>
 
 <!--
