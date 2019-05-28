@@ -470,7 +470,7 @@ public class CmsResourceTypesTable extends Table {
         ShortName(Messages.GUI_RESOURCETYPE_EDIT_SHORT_NAME_0, String.class, "", false),
 
         /**Is Broadcast send but not displayed.*/
-        ID(Messages.GUI_RESOURCETYPE_ID_0, String.class, "", false),
+        ID(Messages.GUI_RESOURCETYPE_ID_0, Integer.class, null, false),
 
         /**Icon column.*/
         Module(Messages.GUI_RESOURCETYPE_MODULE_0, String.class, "", false);
@@ -681,7 +681,7 @@ public class CmsResourceTypesTable extends Table {
             CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 type.getTypeName());
             Item item = m_container.addItem(type.getTypeName());
-            item.getItemProperty(TableProperty.ID).setValue(String.valueOf(type.getTypeId()));
+            item.getItemProperty(TableProperty.ID).setValue(Integer.valueOf(type.getTypeId()));
             item.getItemProperty(TableProperty.Icon).setValue(CmsResourceUtil.getBigIconResource(typeSetting, null));
             item.getItemProperty(TableProperty.Name).setValue(CmsVaadinUtils.getMessageText(typeSetting.getKey()));
             item.getItemProperty(TableProperty.ShortName).setValue(type.getTypeName());

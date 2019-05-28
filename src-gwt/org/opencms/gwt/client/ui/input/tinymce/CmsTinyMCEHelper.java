@@ -101,7 +101,10 @@ public final class CmsTinyMCEHelper {
 				options.importcss_selector_filter = new $wnd.RegExp("$.^"); // never matches
 			}
 			if (config.height) {
-				options.editorHeight = config.height;
+				var height = parseInt(config.height);
+				if (height != NaN) {
+					options.editorHeight = height;
+				}
 			}
 			if (config.block_formats) {
 				options.block_formats = config.block_formats;
@@ -124,9 +127,9 @@ public final class CmsTinyMCEHelper {
 			if (config.cmsGalleryUseThickbox) {
 				options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
 			}
-			options.plugins = "anchor,charmap,importcss,autolink,lists,pagebreak,table,save,hr,codemirror,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,spellchecker,-opencms";
+			options.plugins = "anchor charmap importcss autolink lists pagebreak table save hr codemirror image link emoticons insertdatetime preview media searchreplace print paste directionality fullscreen noneditable visualchars nonbreaking template wordcount advlist spellchecker -opencms";
 			if (config.fullpage) {
-				options.plugins += ",fullpage";
+				options.plugins += " fullpage";
 			}
 			// add codemirror source view plugin configuration
 			options.codemirror = {

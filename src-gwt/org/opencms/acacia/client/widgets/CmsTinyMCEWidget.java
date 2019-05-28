@@ -511,8 +511,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 		var needsRefocus = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::shouldReceiveFocus()();
 		var elementId = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_id;
 		var mainElement = $wnd.document.getElementById(elementId);
-		var editorHeight = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editorHeight
-				+ "px";
+		var editorHeight = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editorHeight;
 
 		var fireChange = function() {
 			self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::fireChangeFromNative()();
@@ -547,7 +546,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 				skin_variant : 'ocms',
 				mode : "exact",
 				theme : "silver",
-				plugins : "autolink,lists,pagebreak,table,save,codemirror,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
+				plugins : "autolink lists pagebreak table save codemirror hr image link emoticons spellchecker insertdatetime preview media searchreplace print paste directionality noneditable visualchars nonbreaking template wordcount advlist",
 				paste_as_text : true,
 				menubar : false,
 			};
@@ -573,14 +572,13 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 				}
 				options.style_formats = formats;
 			}
-
 			defaults = merge(defaults, options);
-			if (this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
-				delete defaults.content_css;
-			} else {
-				// enable autoresize
-				defaults.plugins = "autoresize," + defaults.plugins;
-			}
+		}
+		if (this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_inline) {
+			delete defaults.content_css;
+		} else {
+			// enable autoresize
+			defaults.plugins = "autoresize " + defaults.plugins;
 		}
 		if (needsRefocus) {
 			defaults.auto_focus = elementId;
@@ -609,8 +607,6 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 									if (content != null) {
 										ed.setContent(content);
 									}
-									// ensure the body height is set to 'auto', otherwise the autoresize plugin will not work
-									ed.getDoc().body.style.height = 'auto';
 								}
 							});
 			ed

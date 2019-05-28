@@ -3599,8 +3599,9 @@ public final class CmsContainerpageController {
         }
         element.setId(newElementData.getClientId());
         element.setSitePath(newElementData.getSitePath());
-
-        setPageChanged();
+        if (!isGroupcontainerEditing()) {
+            setPageChanged();
+        }
         getHandler().hidePageOverlay();
         getHandler().openEditorForElement(element, inline, true);
     }
