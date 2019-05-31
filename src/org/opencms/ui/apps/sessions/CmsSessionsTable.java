@@ -37,6 +37,9 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceIcon;
@@ -45,6 +48,7 @@ import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,25 +57,71 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.MouseEvents;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the table to show all current sessions.<p>
  */
 public class CmsSessionsTable extends Table {
+
+    /**
+     * The menu entry to switch to the explorer of concerning site.<p>
+     */
+    class ExplorerEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            try {
+                String sessionId = data.iterator().next();
+                CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(new CmsUUID(sessionId));
+                String siteRoot = session.getSiteRoot();
+                A_CmsUI.getCmsObject().getRequestContext().setSiteRoot(siteRoot);
+                A_CmsUI.getCmsObject().getRequestContext().setCurrentProject(
+                    A_CmsUI.getCmsObject().readProject(session.getProject()));
+                CmsAppWorkplaceUi.get().getNavigator().navigateTo(
+                    CmsFileExplorerConfiguration.APP_ID + "/" + session.getProject() + "!!" + siteRoot + "!!");
+            } catch (CmsException e) {
+                LOG.error("Cannot read project", e);
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_TITLE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if ((data == null) || (data.size() > 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+
+        }
+    }
 
     /**
      * The menu entry to switch to the explorer of concerning site.<p>
@@ -109,6 +159,58 @@ public class CmsSessionsTable extends Table {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
 
+            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        }
+
+    }
+
+    /**
+     * The menu entry to switch to the page editor of concerning site.<p>
+     */
+    class PageEditorEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> data) {
+
+            try {
+                String sessionId = data.iterator().next();
+                CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(new CmsUUID(sessionId));
+                String siteRoot = session.getSiteRoot();
+                A_CmsUI.get().changeSite(siteRoot);
+                A_CmsUI.get().changeProject(A_CmsUI.getCmsObject().readProject(session.getProject()));
+
+                CmsPageEditorConfiguration pageeditorApp = new CmsPageEditorConfiguration();
+                pageeditorApp.getAppLaunchCommand().run();
+            } catch (CmsException e) {
+                LOG.error("Cannot read project", e);
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return CmsVaadinUtils.getMessageText(Messages.GUI_PAGEEDITOR_TITLE_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if ((data == null) || (data.size() > 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+            String sessionId = data.iterator().next();
+            CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(new CmsUUID(sessionId));
+            String siteRoot = session.getSiteRoot();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)
+                || OpenCms.getSiteManager().getSharedFolder().startsWith(siteRoot)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            }
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
 
@@ -597,6 +699,8 @@ public class CmsSessionsTable extends Table {
         if (m_menuEntries == null) {
             m_menuEntries = new ArrayList<I_CmsSimpleContextMenuEntry<Set<String>>>();
             m_menuEntries.add(new UserEntry());
+            m_menuEntries.add(new ExplorerEntry());
+            m_menuEntries.add(new PageEditorEntry());
             m_menuEntries.add(new SendBroadcastEntry());
             m_menuEntries.add(new KillEntry());
         }

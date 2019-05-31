@@ -284,6 +284,9 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
 
             public void buttonClick(ClickEvent event) {
 
+                CmsLog.INIT.info(
+                    "Logfile was reloaded by user "
+                        + A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().getName());
                 m_fileView.updateView();
 
             }
