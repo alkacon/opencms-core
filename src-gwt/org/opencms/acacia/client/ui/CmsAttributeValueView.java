@@ -50,7 +50,6 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -1284,8 +1283,6 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
 
         int windowTop = Window.getScrollTop();
         int windowBottom = Window.getScrollTop() + Window.getClientHeight();
-        CmsDebugLog.consoleLog("window bottom: " + windowBottom + "    window height: " + Window.getClientHeight());
-
         int distanceFromWindowTop = top - windowTop - TOOLBAR_HEIGHT;
 
         int distanceToWindowBottom = windowBottom - (top + widgetElement.getOffsetHeight());

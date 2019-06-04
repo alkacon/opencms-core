@@ -1863,7 +1863,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         for (CmsTabInfo info : definition.getTabInfos()) {
             tabs += info.getTabId() + ":" + info.getStartName() + "   ";
         }
-        CmsDebugLog.consoleLog("Tabs: " + tabs);
         m_tabInfos = definition.getTabInfos();
         m_iconClasses = definition.getIconClasses();
         addContentDefinition(definition);
