@@ -63,6 +63,9 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
     /** The configuration key for the Google maps API key. */
     public static final String CONFIG_API_KEY = "apiKey";
 
+    /** The configuration key for the Google maps API key. */
+    public static final String CONFIG_API_KEY_MESSAGE = "apiKeyMessage";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocationPickerWidget.class);
 
@@ -106,22 +109,50 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
         try {
             // make sure the configuration is a parsable JSON string
             JSONObject conf = new JSONObject(config);
-            if (!conf.has(CONFIG_API_KEY)) {
-                String sitePath;
+            String keyMessage = Messages.get().getBundle().key(Messages.LOG_API_KEY_FROM_CONFIG_0);
+            String apiKey = conf.has(CONFIG_API_KEY) ? conf.getString(CONFIG_API_KEY) : "";
+            String sitePath = null;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(apiKey)) {
                 if (resource.getStructureId().isNullUUID()) {
                     sitePath = "/";
                 } else {
                     sitePath = cms.getSitePath(resource);
                 }
                 try {
-                    String apiKey = getApiKey(cms, sitePath);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apiKey)) {
-                        conf.put(CONFIG_API_KEY, apiKey);
+                    apiKey = cms.readPropertyObject(
+                        sitePath,
+                        CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY_WORKPLACE,
+                        true).getValue();
+                    keyMessage = Messages.get().getBundle().key(
+                        Messages.LOG_API_KEY_FROM_PROPERTY_1,
+                        CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY_WORKPLACE);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(apiKey)) {
+                        apiKey = cms.readPropertyObject(
+                            sitePath,
+                            CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY,
+                            true).getValue();
+                        keyMessage = Messages.get().getBundle().key(
+                            Messages.LOG_API_KEY_FROM_PROPERTY_1,
+                            CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY);
                     }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apiKey)) {
+                apiKey = apiKey.trim();
+                conf.put(CONFIG_API_KEY, apiKey);
+                conf.put(CONFIG_API_KEY_MESSAGE, keyMessage);
+                if (LOG.isDebugEnabled()) {
+                    if (sitePath != null) {
+                        keyMessage += Messages.get().getBundle().key(
+                            Messages.LOG_API_KEY_FOR_PATH_1,
+                            cms.getRequestContext().addSiteRoot(sitePath));
+                    }
+                    LOG.debug(keyMessage);
+                }
+            }
+
             config = conf.toString();
         } catch (JSONException e) {
             config = DEFAULT_CONFIG;
@@ -295,29 +326,6 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
     public I_CmsWidget newInstance() {
 
         return new CmsLocationPickerWidget(getConfiguration());
-    }
-
-    /**
-     * Get the correct google api key.
-     * Tries to read a workplace key first.
-     *
-     * @param cms CmsObject
-     * @param sitePath site path
-     * @return key value
-     * @throws CmsException exception
-     */
-    private String getApiKey(CmsObject cms, String sitePath) throws CmsException {
-
-        String res = cms.readPropertyObject(
-            sitePath,
-            CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY_WORKPLACE,
-            true).getValue();
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(res)) {
-            res = cms.readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_GOOGLE_API_KEY, true).getValue();
-        }
-        return res;
-
     }
 
     /**

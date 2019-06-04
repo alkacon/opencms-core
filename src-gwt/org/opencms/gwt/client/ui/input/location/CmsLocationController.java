@@ -32,7 +32,6 @@ import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -588,6 +587,15 @@ public class CmsLocationController {
     }-*/;
 
     /**
+     * Returns the Google API key message.<p>
+     *
+     * @return the Google API key message
+     */
+    private native String getAPIKeyMessage()/*-{
+		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKeyMessage;
+    }-*/;
+
+    /**
      * Returns the value display string.<p>
      *
      * @return the value
@@ -689,7 +697,6 @@ public class CmsLocationController {
         if (!m_hasInsertedDynamicStyle) {
             String message = Messages.get().key(Messages.ERR_LOCATION_MISSING_API_KEY_1, "\\a");
             message.replace("<br />", "\\\\a");
-            CmsDebugLog.consoleLog("Setting missing key message: " + message);
             CmsDomUtil.addDynamicStyleRule(
                 "div.gm-err-content:after, div.mapPreview > div > div:empty:after{ content:'"
                     + message
@@ -731,6 +738,12 @@ public class CmsLocationController {
 		if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::hasAPIKey()()) {
 			uri += '&key='
 					+ this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getAPIKey()();
+			if ($wnd.console) {
+				$wnd.console
+						.log(this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getAPIKeyMessage()());
+			}
+		} else if ($wnd.console) {
+			$wnd.console.log("No Google API key available");
 		}
 		uri += '&callback=cmsLocationPickerApiReady';
 
