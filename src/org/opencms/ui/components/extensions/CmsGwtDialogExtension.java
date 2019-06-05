@@ -165,6 +165,16 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
+     * Opens the content editor in a dialog for editing the provided file.
+     * @param structureId structure id of the file to edit.
+     * @param sitePath site path of the file to edit.
+     */
+    public void openContentEditor(String structureId, String sitePath) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openContentEditor(structureId, sitePath);
+    }
+
+    /**
      * Opens the gallery dialog for the given gallery folder.<p>
      *
      * @param resource the gallery folder resource
