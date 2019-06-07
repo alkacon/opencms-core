@@ -4,8 +4,7 @@
 	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:cmsd="urn:import:org.opencms.gwt.client.ui.input.datebox"
-	xmlns:cmsw="urn:import:org.opencms.acacia.client.widgets.serialdate"
-	xmlns:cmssd="urn:import:org.opencms.acacia.client.widgets.serialdate">
+>
 	<ui:style>
 	 
 	 @def buttonColor eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().textColorDisabledButton()");
@@ -57,6 +56,7 @@
 			<cms:CmsPushButton ui:field="m_addButton" />
 			<cms:CmsPushButton ui:field="m_upButton" />
 			<cms:CmsPushButton ui:field="m_downButton" />
+            <cms:CmsPushButton ui:field="m_editButton" />
 			<cms:CmsPushButton ui:field="m_deleteButton" />
 		</g:FlowPanel>
 	</g:FlowPanel>

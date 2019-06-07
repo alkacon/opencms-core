@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -108,7 +109,13 @@ public class CmsFavoriteEntry {
     public static final String JSON_STRUCTUREID = "i";
 
     /** JSON key. */
+    public static final String JSON_TITLE = "ti";
+
+    /** JSON key. */
     public static final String JSON_TYPE = "t";
+
+    /** The custom title. */
+    private String m_customTitle;
 
     /** The detail id. */
     private CmsUUID m_detailId;
@@ -142,6 +149,7 @@ public class CmsFavoriteEntry {
         setSiteRoot(obj.optString(JSON_SITEROOT));
         m_structureId = readId(obj, JSON_STRUCTUREID);
         m_type = Type.fromJsonId(obj.optString(JSON_TYPE));
+        m_customTitle = obj.optString(JSON_TITLE);
     }
 
     /**
@@ -161,6 +169,16 @@ public class CmsFavoriteEntry {
             return null;
         }
         return new CmsUUID(strValue);
+    }
+
+    /**
+     * Gets the custom title.
+     *
+     * @return the custom title
+     */
+    public String getCustomTitle() {
+
+        return m_customTitle;
     }
 
     /**
@@ -211,6 +229,20 @@ public class CmsFavoriteEntry {
     public Type getType() {
 
         return m_type;
+    }
+
+    /**
+     * Sets the custom title.
+     *
+     * @param title the custom title
+     */
+    public void setCustomTitle(String title) {
+
+        if (CmsStringUtil.isEmpty(title)) {
+            m_customTitle = null;
+        } else {
+            m_customTitle = title;
+        }
     }
 
     /**
@@ -289,6 +321,10 @@ public class CmsFavoriteEntry {
         }
         if (m_type != null) {
             result.put(JSON_TYPE, "" + m_type.getJsonId());
+        }
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_customTitle)) {
+            result.put(JSON_TITLE, m_customTitle);
         }
         return result;
     }

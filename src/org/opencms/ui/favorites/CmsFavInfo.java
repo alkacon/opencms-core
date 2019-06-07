@@ -27,6 +27,7 @@
 
 package org.opencms.ui.favorites;
 
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsResourceIcon;
@@ -72,6 +73,9 @@ public class CmsFavInfo extends CustomLayout implements I_CmsEditableGroupRow {
 
     /** The project label. */
     private Label m_projectLabel = new Label();
+
+    /** The resource. */
+    private CmsResource m_resource;
 
     /** The site label. */
     private Label m_siteLabel = new Label();
@@ -155,12 +159,22 @@ public class CmsFavInfo extends CustomLayout implements I_CmsEditableGroupRow {
      * @return the project label
         // TODO Auto-generated method stub
         return null;
-    
+
      */
     public Label getProjectLabel() {
 
         return m_projectLabel;
 
+    }
+
+    /**
+     * Gets the resource.
+     *
+     * @return the resource
+     */
+    public CmsResource getResource() {
+
+        return m_resource;
     }
 
     /**
@@ -212,6 +226,27 @@ public class CmsFavInfo extends CustomLayout implements I_CmsEditableGroupRow {
     public void setButtonWidget(Component button) {
 
         addComponent(button, BUTTON_CONTAINER);
+    }
+
+    /**
+     * Sets the bookmark entry.
+     *
+     * @param entry the bookmark entry
+     */
+    public void setEntry(CmsFavoriteEntry entry) {
+
+        m_entry = entry;
+    }
+
+    /**
+     * Sets the resource
+     *
+     * @param resource the resource to set
+     */
+    public void setResource(CmsResource resource) {
+
+        m_resource = resource;
+
     }
 
 }

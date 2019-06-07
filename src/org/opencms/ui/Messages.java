@@ -182,6 +182,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FAVORITES_DIALOG_TITLE_0 = "GUI_FAVORITES_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_EDIT_TITLE_0 = "GUI_FAVORITES_EDIT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAVORITES_EDIT_TITLE_FIELD_0 = "GUI_FAVORITES_EDIT_TITLE_FIELD_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FAVORITES_EMPTY_LIST_PLACEHOLDER_0 = "GUI_FAVORITES_EMPTY_LIST_PLACEHOLDER_0";
 
     /** Message constant for key in the resource bundle. */

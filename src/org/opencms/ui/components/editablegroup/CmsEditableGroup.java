@@ -170,6 +170,9 @@ public class CmsEditableGroup {
     /** The container in which to render the individual rows of the multivalue widget group. */
     private AbstractOrderedLayout m_container;
 
+    /** Flag which controls whether the edit option is enabled. */
+    private boolean m_editEnabled;
+
     private I_EmptyHandler m_emptyHandler;
 
     /** The error label. */
@@ -372,6 +375,10 @@ public class CmsEditableGroup {
         updateButtonBars();
     }
 
+    public void onEdit(I_CmsEditableGroupRow row) {
+
+    }
+
     /**
      * Removes the given row.
      *
@@ -395,6 +402,16 @@ public class CmsEditableGroup {
 
         m_hideAdd = !visible;
 
+    }
+
+    /**
+     * Enables / disables edit button.
+     *
+     * @param enabled true if edit button should be enabled
+     */
+    public void setEditEnabled(boolean enabled) {
+
+        m_editEnabled = enabled;
     }
 
     /**
@@ -471,6 +488,7 @@ public class CmsEditableGroup {
             boolean first = i == 0;
             boolean last = i == (rows.size() - 1);
             row.getButtonBar().setFirstLast(first, last, m_hideAdd);
+            row.getButtonBar().getState().setEditEnabled(m_editEnabled);
             i += 1;
         }
     }

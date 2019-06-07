@@ -50,6 +50,11 @@ public interface I_CmsEditableGroupButtonsServerRpc extends ServerRpc {
     void onDown();
 
     /**
+     * Called when user clicks on the 'Edit' button.
+     */
+    void onEdit();
+
+    /**
      * Called when user clicks on 'Up' button.<p>
      */
     void onUp();

@@ -51,6 +51,7 @@ public class CmsEditableGroupButtons extends AbstractComponent implements I_CmsE
      * @param actionHandler handler which should be called for different button presses
      */
     public CmsEditableGroupButtons(I_CmsEditableGroupActionHandler actionHandler) {
+
         registerRpc(this, I_CmsEditableGroupButtonsServerRpc.class);
         m_handler = actionHandler;
     }
@@ -86,6 +87,14 @@ public class CmsEditableGroupButtons extends AbstractComponent implements I_CmsE
     public void onDown() {
 
         m_handler.onDown();
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsEditableGroupButtonsServerRpc#onEdit()
+     */
+    public void onEdit() {
+
+        m_handler.onEdit();
     }
 
     /**
