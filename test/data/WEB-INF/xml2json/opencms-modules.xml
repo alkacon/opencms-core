@@ -79,7 +79,7 @@
             </resourcetypes>
             <explorertypes>
                 <explorertype name="xjparent" key="type.xjparent.name" smalliconstyle="oc-icon-16-default" bigiconstyle="oc-icon-24-default" reference="xmlcontent">
-                    <newresource noncreatable="false" order="10" autosetnavigation="false" autosettitle="false" info="type.xjparent.description" key="type.xjparent.title"/>
+                    <newresource order="10" autosetnavigation="false" autosettitle="false" info="type.xjparent.description" key="type.xjparent.title"/>
                 </explorertype>
             </explorertypes>
         </module>
