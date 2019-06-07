@@ -63,6 +63,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 
@@ -85,7 +86,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         @SuppressWarnings("synthetic-access")
         public SaveAfterChangeActionHandler(I_CmsEditableGroupRow row) {
 
-            super(m_group, row);
+            super(CmsFavoriteDialog.this.m_group, row);
         }
 
         /**
@@ -120,6 +121,23 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
 
             super.onDown();
             doSave();
+
+        }
+
+        @Override
+        public void onEdit() {
+
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+            window.setCaption(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_FAVORITES_EDIT_TITLE_0));
+            CmsFavInfo info = (CmsFavInfo)m_row.getComponent();
+
+            CmsEditFavoriteDialog dialog = new CmsEditFavoriteDialog(info, entry -> {
+                info.setEntry(entry);
+                doSave();
+                initEntries(getEntries());
+            });
+            window.setContent(dialog);
+            A_CmsUI.get().addWindow(window);
 
         }
 
@@ -238,22 +256,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         m_addButton.setEnabled(m_currentLocation.isPresent());
         m_addButton.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_FAVORITES_ADD_BUTTON_0));
         m_addButton.addClickListener(evt -> onClickAdd());
-        m_favContainer.removeAllComponents();
-        m_group = new CmsEditableGroup(m_favContainer, null, new EmptyHandler());
-        m_group.setAddButtonVisible(false);
-        m_group.setRowBuilder(this);
-        m_group.init();
-
-        for (CmsFavoriteEntry favEntry : entries) {
-            Component favInfo;
-            try {
-                favInfo = createFavInfo(favEntry);
-                m_group.addRow(favInfo);
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-
-        }
+        initEntries(entries);
     }
 
     /**
@@ -289,6 +292,32 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     }
 
     /**
+     * Initializes the bookmark widgets.
+     *
+     * @param entries the list of bookmark entries
+     */
+    protected void initEntries(List<CmsFavoriteEntry> entries) {
+
+        m_favContainer.removeAllComponents();
+        m_group = new CmsEditableGroup(m_favContainer, null, new EmptyHandler());
+        m_group.setEditEnabled(true);
+        m_group.setAddButtonVisible(false);
+        m_group.setRowBuilder(this);
+        m_group.init();
+
+        for (CmsFavoriteEntry favEntry : entries) {
+            Component favInfo;
+            try {
+                favInfo = createFavInfo(favEntry);
+                m_group.addRow(favInfo);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+
+        }
+    }
+
+    /**
      * Gets the favorite entries corresponding to the currently displayed favorite widgets.
      *
      * @return the list of favorite entries
@@ -319,19 +348,24 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         CmsObject cms = A_CmsUI.getCmsObject();
         String project = getProject(cms, entry);
         String site = getSite(cms, entry);
+        CmsResource resource = null;
         try {
             CmsUUID idToLoad = entry.getDetailId() != null ? entry.getDetailId() : entry.getStructureId();
-            CmsResource resource = cms.readResource(idToLoad, CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
+            resource = cms.readResource(idToLoad, CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
             CmsResourceUtil resutil = new CmsResourceUtil(cms, resource);
-            switch (entry.getType()) {
-                case explorerFolder:
-                    title = CmsStringUtil.isEmpty(resutil.getTitle())
-                    ? CmsResource.getName(resource.getRootPath())
-                    : resutil.getTitle();
-                    break;
-                case page:
-                    title = resutil.getTitle();
-                    break;
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getCustomTitle())) {
+                title = entry.getCustomTitle();
+            } else {
+                switch (entry.getType()) {
+                    case explorerFolder:
+                        title = CmsStringUtil.isEmpty(resutil.getTitle())
+                        ? CmsResource.getName(resource.getRootPath())
+                        : resutil.getTitle();
+                        break;
+                    case page:
+                        title = resutil.getTitle();
+                        break;
+                }
             }
             subtitle = resource.getRootPath();
             CmsResourceIcon icon = result.getResourceIcon();
@@ -339,6 +373,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
+        result.setResource(resource);
         result.getTopLine().setValue(title);
         result.getBottomLine().setValue(subtitle);
         result.getProjectLabel().setValue(project);

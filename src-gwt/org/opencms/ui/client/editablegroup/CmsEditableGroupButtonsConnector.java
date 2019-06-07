@@ -48,6 +48,7 @@ public class CmsEditableGroupButtonsConnector extends AbstractComponentConnector
      * Creates a new instance.<p>
      */
     public CmsEditableGroupButtonsConnector() {
+
         super();
     }
 
@@ -89,6 +90,7 @@ public class CmsEditableGroupButtonsConnector extends AbstractComponentConnector
         getWidget().setFirst(getState().isFirst());
         getWidget().setLast(getState().isLast());
         getWidget().setHideAdd(getState().isAddOptionHidden());
+        getWidget().setEditVisible(getState().isEditEnabled());
 
     }
 

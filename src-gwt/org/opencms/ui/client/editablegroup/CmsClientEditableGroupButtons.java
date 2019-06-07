@@ -50,31 +50,35 @@ public class CmsClientEditableGroupButtons extends Composite {
         // nothing to do
     }
 
-    /** The UI binder instance. */
-    private static I_UiBinder uiBinder = GWT.create(I_UiBinder.class);
-
     /** Indicates whether we have already flushed the UiBinder style. */
     private static boolean flushedStyle;
 
-    /** The 'up' button. */
-    @UiField
-    protected CmsPushButton m_upButton;
-
-    /** The 'down' button. */
-    @UiField
-    protected CmsPushButton m_downButton;
-
-    /** The 'delete' button. */
-    @UiField
-    protected CmsPushButton m_deleteButton;
+    /** The UI binder instance. */
+    private static I_UiBinder uiBinder = GWT.create(I_UiBinder.class);
 
     /** The 'add' button. */
     @UiField
     protected CmsPushButton m_addButton;
 
+    /** The 'delete' button. */
+    @UiField
+    protected CmsPushButton m_deleteButton;
+
+    /** The 'down' button. */
+    @UiField
+    protected CmsPushButton m_downButton;
+
     /** OpenCms 'bullseye' dummy button, does nothing. */
     @UiField
     protected CmsPushButton m_dummyButton;
+
+    /** The 'edit' button. */
+    @UiField
+    protected CmsPushButton m_editButton;
+
+    /** The 'up' button. */
+    @UiField
+    protected CmsPushButton m_upButton;
 
     /** The connector instance. */
     private CmsEditableGroupButtonsConnector m_connector;
@@ -98,7 +102,8 @@ public class CmsClientEditableGroupButtons extends Composite {
             m_upButton,
             m_downButton,
             m_deleteButton,
-            m_addButton}) {
+            m_addButton,
+            m_editButton}) {
             button.setButtonStyle(ButtonStyle.FONT_ICON, null);
         }
 
@@ -106,8 +111,19 @@ public class CmsClientEditableGroupButtons extends Composite {
         m_upButton.setImageClass(I_CmsButton.EDIT_UP_SMALL);
         m_deleteButton.setImageClass(I_CmsButton.CUT_SMALL);
         m_addButton.setImageClass(I_CmsButton.ADD_SMALL);
+        m_editButton.setImageClass(I_CmsButton.EDIT_SMALL);
         m_dummyButton.setImageClass(I_CmsButton.EDIT_POINT_SMALL);
 
+    }
+
+    /**
+     * Shows / hides the edit button.
+     *
+     * @param editEnabled true if edit button should be shown
+     */
+    public void setEditVisible(boolean editEnabled) {
+
+        m_editButton.setVisible(editEnabled);
     }
 
     /**
@@ -176,6 +192,17 @@ public class CmsClientEditableGroupButtons extends Composite {
 
         //HANDLER.closeAll();
         m_connector.getRpc().onDown();
+    }
+
+    /**
+     * Handler for the edit button.
+     *
+     * @param event the event
+     */
+    @UiHandler("m_editButton")
+    void clickEdit(ClickEvent event) {
+
+        m_connector.getRpc().onEdit();
     }
 
     /**

@@ -48,6 +48,11 @@ public interface I_CmsEditableGroupActionHandler {
     void onDown();
 
     /**
+     * Triggered when the 'edit' button is clicked.<p>
+     */
+    void onEdit();
+
+    /**
      * Triggered when the 'up' button is clicked.<p>
      */
     void onUp();

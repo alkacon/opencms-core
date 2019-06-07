@@ -33,10 +33,10 @@ package org.opencms.ui.components.editablegroup;
 public class CmsDefaultActionHandler implements I_CmsEditableGroupActionHandler {
 
     /** The editable group. */
-    private CmsEditableGroup m_group;
+    protected CmsEditableGroup m_group;
 
     /** The row. */
-    private I_CmsEditableGroupRow m_row;
+    protected I_CmsEditableGroupRow m_row;
 
     /**
      * Creates a new instance.
@@ -72,6 +72,13 @@ public class CmsDefaultActionHandler implements I_CmsEditableGroupActionHandler 
     public void onDown() {
 
         m_group.moveDown(m_row);
+    }
+
+    /**
+     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroupActionHandler#onEdit()
+     */
+    public void onEdit() {
+        // nop
     }
 
     /**

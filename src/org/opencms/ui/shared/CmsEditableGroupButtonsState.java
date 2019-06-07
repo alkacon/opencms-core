@@ -37,14 +37,17 @@ public class CmsEditableGroupButtonsState extends AbstractComponentState {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** True if hide option should be disabled.*/
+    protected boolean m_hideAddOption;
+
     /** True if this is the button bar of the first row. */
     protected boolean m_isFirst;
 
     /** True if this is the button bar of the last row. */
     protected boolean m_isLast;
 
-    /** True if hide option should be disabled.*/
-    protected boolean m_hideAddOption;
+    /** Edit button visibility. */
+    private boolean m_editEnabled;
 
     /**
      * Default constructor.<p>
@@ -61,6 +64,16 @@ public class CmsEditableGroupButtonsState extends AbstractComponentState {
     public boolean isAddOptionHidden() {
 
         return m_hideAddOption;
+    }
+
+    /**
+     * Returns true if the edit button should be enabled.
+     *
+     * @return true if the edit button should be enabled
+     */
+    public boolean isEditEnabled() {
+
+        return m_editEnabled;
     }
 
     /**
@@ -91,6 +104,16 @@ public class CmsEditableGroupButtonsState extends AbstractComponentState {
     public void setAddOptionHidden(boolean hidden) {
 
         m_hideAddOption = hidden;
+    }
+
+    /**
+     * Enables/disables edit button.
+     *
+     * @param editEnabled true if edit button should be enabled
+     */
+    public void setEditEnabled(boolean editEnabled) {
+
+        m_editEnabled = editEnabled;
     }
 
     /**
