@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsPrincipalSelectHandler;
@@ -37,9 +38,12 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -47,7 +51,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Handler for embedded VAADIN dialogs.<p>
  */
-public class CmsEmbeddedDialogHandler {
+public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
 
     /** The iframe element. */
     private CmsIFrame m_frame;
@@ -77,6 +81,73 @@ public class CmsEmbeddedDialogHandler {
 
         this();
         m_handler = handler;
+    }
+
+    /**
+     * Encodes a parameter value for use in a query string.
+     *
+     * @param str the string to encode
+     * @return the encoded string
+     */
+    public static String encodeParam(String str) {
+
+        return com.google.gwt.http.client.URL.encodeQueryString(str);
+
+    }
+
+    /**
+     * Exports native JS function cmsOpenEmbeddedDialog.
+     */
+    public static native void exportNativeFunctions() /*-{
+        $wnd.cmsOpenEmbeddedDialog = function(dialogId, callback, structureIds,
+                params) {
+            @org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::openEmbeddedDialog(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(dialogId, callback, structureIds, params);
+        };
+    }-*/;
+
+    /**
+     * Called on load, exports native functions.
+     */
+    public static void initClass() {
+
+        exportNativeFunctions();
+    }
+
+    /**
+     * Opens an embedded dialog.
+     *
+     * @param dialogId the dialog
+     * @param callback the onClose callback
+     * @param structureIds the structure ids
+     * @param params the parameters
+     */
+    public static void openEmbeddedDialog(
+        String dialogId,
+        JavaScriptObject callback,
+        JsArrayString structureIds,
+        JavaScriptObject params) {
+
+        CmsEmbeddedDialogHandler handler = new CmsEmbeddedDialogHandler();
+        if (callback != null) {
+            Command command = CmsJsUtil.convertCallbackToCommand(callback);
+            handler.setOnCloseCommand(command);
+        }
+        Map<String, String> paramsMap = new HashMap<>();
+        if (params != null) {
+            CmsJsUtil.fillStringMapFromJsObject(params, paramsMap);
+        }
+        List<CmsUUID> uuids = new ArrayList<>();
+        if (structureIds != null) {
+            for (int i = 0; i < structureIds.length(); i++) {
+                String uuidStr = structureIds.get(i);
+                try {
+                    uuids.add(new CmsUUID(uuidStr));
+                } catch (Exception e) {
+                    CmsDebugLog.consoleLog(e.getClass() + ":" + e.getLocalizedMessage());
+                }
+            }
+        }
+        handler.openDialog(dialogId, null, uuids, paramsMap);
     }
 
     /**
@@ -191,7 +262,7 @@ public class CmsEmbeddedDialogHandler {
         if ((rawParams != null) && !rawParams.isEmpty()) {
             List<String> params = new ArrayList<String>();
             for (Map.Entry<String, String> entry : rawParams.entrySet()) {
-                params.add(entry.getKey() + "=" + entry.getValue());
+                params.add(encodeParam(entry.getKey()) + "=" + encodeParam(entry.getValue()));
             }
             url = url + "&" + CmsStringUtil.listAsString(params, "&");
         }

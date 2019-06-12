@@ -27,7 +27,11 @@
 
 package org.opencms.gwt.client.util;
 
+import java.util.Map;
+
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -84,6 +88,41 @@ public final class CmsJsUtil {
     }-*/;
 
     /**
+     * Creates a Command object which calls the given native JS function.
+     *
+     * @param func a Javascript function
+     * @return a Command object which calls the native function
+     */
+    public static Command convertCallbackToCommand(final JavaScriptObject func) {
+
+        return new Command() {
+
+            public void execute() {
+
+                callWithString(func, null);
+            }
+        };
+
+    }
+
+    /**
+     * Iterates over attributes of a Javascript object and copies them to a string map.
+     *
+     * <p>Converts all values to strings.
+     *
+     *
+     * @param jso the Javascript object
+     * @param map the map to fill
+     */
+    public static native void fillStringMapFromJsObject(JavaScriptObject jso, Map<String, String> map) /*-{
+        var k;
+        for (k in jso) { 
+            var v = jso[k];
+            map.@java.util.Map::put(Ljava/lang/Object;Ljava/lang/Object;)(k, String(v));
+        }
+    }-*/;
+
+    /**
      * Reads an attribute from a Javascript object.<p>
      *
      * @param jso the Javascript object
@@ -113,6 +152,15 @@ public final class CmsJsUtil {
     public static native JavaScriptObject getWindow() /*-{
         var result = $wnd;
         return result;
+    }-*/;
+
+    /**
+     * Creates an empty Javascript string array.
+     *
+     * @return the new array
+     */
+    public static native JsArrayString newArray() /*-{
+        return [];
     }-*/;
 
     /**
