@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:cms="urn:import:org.opencms.gwt.client.ui.input"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+    
+    .filterLine { 
+		display: flex; 
+		width: 100%; 
+    }
+    
+    .filterLabel { 
+		margin-top: 5px;
+    }
+    
+    .categorySelect {
+		-ms-flex: 1;
+		flex: 1;
+		padding-left: 5px; 
+    } 
+    
+    .catselect > * { 
+		margin-top: 5px;
+		margin-bottom: 5px;
+		width: 100%; 
+    }
+		
+		
+            
+    </ui:style>
+    <g:FlowPanel styleName="{style.catselect}">
+        <g:FlowPanel styleName="{style.filterLine}">
+            <g:Label ui:field="m_filterLabel" styleName="{style.filterLabel}" />
+            <cms:CmsSelectBox addStyleNames="{style.categorySelect}" ui:field="m_categorySelect" />
+        </g:FlowPanel>
+        <cms:CmsSelectBox ui:field="m_mainSelect" />
+    </g:FlowPanel>
+</ui:UiBinder>
