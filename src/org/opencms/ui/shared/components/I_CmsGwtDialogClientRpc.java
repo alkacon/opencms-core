@@ -58,6 +58,14 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
     void openCategoriesDialog(String structureId, boolean collapsed);
 
     /**
+     * Opens the XML content editor for the resource with the given structure id.<p>
+     *
+     * @param structureId the structure id of a resource
+     * @param fileName the site path to the resource to edit
+     */
+    void openContentEditor(String structureId, String fileName);
+
+    /**
      * Opens the gallery dialog with the given JSON configuration.<p>
      *
      * @param galleryConfiguration the gallery configuration

@@ -34,11 +34,14 @@ import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPreviewDialog.I_PreviewInfoProvider;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
@@ -53,6 +56,7 @@ import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsHistoryVersion;
+import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
@@ -266,6 +270,31 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     }
 
     /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openContentEditor(java.lang.String, java.lang.String)
+     */
+    public void openContentEditor(String structureId, String sitePath) {
+
+        CmsRpcAction<CmsPrepareEditResponse> prepareEdit = new CmsRpcAction<CmsPrepareEditResponse>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                CmsCoreProvider.getVfsService().prepareEdit(new CmsUUID(structureId), sitePath, this);
+            }
+
+            @Override
+            public void onResponse(CmsPrepareEditResponse response) {
+
+                stop(false);
+                doEdit(response.getSitePath(), response.getStructureId());
+            }
+        };
+        prepareEdit.execute();
+
+    }
+
+    /**
      * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openGalleryDialog(java.lang.String)
      */
     public void openGalleryDialog(String galleryConfiguration) {
@@ -463,6 +492,107 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     protected void close(long delayMillis) {
 
         getRpcProxy(I_CmsGwtDialogServerRpc.class).onClose(m_changed, delayMillis);
+    }
+
+    /**
+     * Actually starts the XML content editor for a given file.<p>
+     *
+     * @param sitePath the site path of the file
+     * @param structureId the file structure id
+     */
+    protected void doEdit(String sitePath, CmsUUID structureId) {
+
+        I_CmsEditableData editData = new I_CmsEditableData() {
+
+            public String getContextId() {
+
+                return "";
+            }
+
+            public String getEditId() {
+
+                return null;
+            }
+
+            public String getElementId() {
+
+                return null;
+            }
+
+            public String getElementLanguage() {
+
+                return null;
+            }
+
+            public String getElementName() {
+
+                return null;
+            }
+
+            public String getNewLink() {
+
+                return null;
+            }
+
+            public String getNewTitle() {
+
+                return null;
+            }
+
+            public String getNoEditReason() {
+
+                return null;
+            }
+
+            public String getPostCreateHandler() {
+
+                return null;
+            }
+
+            public String getSitePath() {
+
+                return sitePath;
+            }
+
+            public CmsUUID getStructureId() {
+
+                return structureId;
+            }
+
+            public boolean hasEditHandler() {
+
+                return false;
+            }
+
+            public boolean hasResource() {
+
+                return true;
+            }
+
+            public boolean isUnreleasedOrExpired() {
+
+                return false;
+            }
+
+            public void setSitePath(String path) {
+
+                // nothing to do
+            }
+        };
+
+        I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
+
+            public void onClose(
+                String editedFilesitePath,
+                CmsUUID editedFilestructureId,
+                boolean isNew,
+                boolean hasChangedSettings) {
+
+                close(0);
+            }
+        };
+        CmsContentEditorDialog.get().openEditDialog(editData, false, null, new DialogOptions(), handler);
+
     }
 
     /**
