@@ -80,21 +80,60 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
                 return new CmsJsonResult(indexJson);
 
             } catch (CmsVfsResourceNotFoundException e) {
-                List<CmsResource> children = context.getCms().readResources(
-                    context.getResource(),
-                    CmsResourceFilter.DEFAULT,
-                    false);
-                JSONObject result = new JSONObject(true);
-                for (CmsResource resource : children) {
-                    JSONObject childEntry = formatResource(context, resource);
-                    result.put(resource.getName(), childEntry);
+                String levelsStr = context.getParameters().get("levels");
+                int levels = 1;
+                if (levelsStr != null) {
+                    boolean invalidLevels = false;
+                    try {
+                        levels = Integer.parseInt(levelsStr);
+                        if (levels < 1) {
+                            invalidLevels = true;
+                        }
+                    } catch (NumberFormatException nfe) {
+                        invalidLevels = true;
+                    }
+                    if (invalidLevels) {
+                        return new CmsJsonResult(
+                            "Invalid parameter value for 'levels'",
+                            HttpServletResponse.SC_BAD_REQUEST);
+                    }
                 }
+                CmsResource target = context.getResource();
+                JSONObject result = folderListingJson(context, target, levels);
                 return new CmsJsonResult(result, 200);
             }
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Formats folder listing as a JSON object, with the individual file names in the folder as keys.
+     *
+     * @param context the context
+     * @param target the folder
+     * @param levelsLeft the number of levels to format (if 1, only the direct children are listed)
+     *
+     * @return the JSON representation of the folder listing
+     *
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong with the JSON processing
+     */
+    protected JSONObject folderListingJson(CmsJsonHandlerContext context, CmsResource target, int levelsLeft)
+    throws CmsException, JSONException {
+
+        List<CmsResource> children = context.getCms().readResources(target, CmsResourceFilter.DEFAULT, false);
+        JSONObject result = new JSONObject(true);
+        for (CmsResource resource : children) {
+            JSONObject childEntry = formatResource(context, resource);
+            if (resource.isFolder() && (levelsLeft > 1)) {
+                JSONObject childrenJson = folderListingJson(context, resource, levelsLeft - 1);
+                childEntry.put("children", childrenJson);
+            }
+            result.put(resource.getName(), childEntry);
+        }
+        return result;
     }
 
     /**
