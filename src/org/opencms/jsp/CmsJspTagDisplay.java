@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
@@ -62,9 +63,11 @@ import java.util.Map.Entry;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.logging.Log;
 
 /**
@@ -92,6 +95,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
 
     /** The display formatter paths. */
     private Map<String, String> m_displayFormatterPaths;
+
+    /** The base URI. */
+    private String m_baseUri;
 
     /** The editable flag. */
     private boolean m_editable;
@@ -303,7 +309,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
-    public int doEndTag() {
+    public int doEndTag() throws JspException {
 
         ServletRequest request = pageContext.getRequest();
         ServletResponse response = pageContext.getResponse();
@@ -323,7 +329,22 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     ? cms.readResource(m_value)
                     : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
                 }
-                I_CmsFormatterBean formatter = getFormatterForType(cms, res, isOnline);
+
+                CmsObject cmsForFormatterLookup = cms;
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_baseUri)) {
+                    cmsForFormatterLookup = OpenCms.initCmsObject(cms);
+                    cmsForFormatterLookup.getRequestContext().setUri(m_baseUri);
+                }
+                I_CmsFormatterBean formatter = getFormatterForType(cmsForFormatterLookup, res, isOnline);
+                if (formatter == null) {
+                    String error = "cms:display - could not find display formatter for " + m_value + "\n";
+                    try {
+                        error += "\n\nTag instance: " + ReflectionToStringBuilder.toString(this);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                    throw new JspException(error);
+                }
                 Map<String, String> settings = new HashMap<String, String>();
                 String formatterId = formatter.getId();
                 int prefixLength = formatterId.length() + 1;
@@ -435,6 +456,16 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         m_passSettings = false;
         m_editable = false;
         m_value = null;
+    }
+
+    /**
+     * Sets the base URI to use for finding the 'default' display formatter.
+     *
+     * @param uri the base URI
+     */
+    public void setBaseUri(String uri) {
+
+        m_baseUri = uri;
     }
 
     /** Setter for the "create" attribute of the tag.
