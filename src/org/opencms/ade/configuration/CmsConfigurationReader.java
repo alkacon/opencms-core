@@ -453,10 +453,12 @@ public class CmsConfigurationReader {
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(
             content.getFile().getTypeId()).getTypeName().equals(CmsADEManager.MODULE_CONFIG_TYPE);
 
-        String masterConfig = getString(root.getSubValue(N_MASTER_CONFIG));
-        CmsResource masterConfigResource = null;
-        if (masterConfig != null) {
-            masterConfigResource = m_cms.readResource(masterConfig, CmsResourceFilter.IGNORE_EXPIRATION);
+        List<CmsUUID> masterConfigIds = new ArrayList<>();
+        for (I_CmsXmlContentValueLocation masterConfigLoc : root.getSubValues(N_MASTER_CONFIG)) {
+            CmsUUID id = masterConfigLoc.asId(m_cms);
+            if (id != null) {
+                masterConfigIds.add(id);
+            }
         }
         Set<CmsUUID> functions = new LinkedHashSet<>();
         for (I_CmsXmlContentValueLocation node : root.getSubValues(N_FUNCTION)) {
@@ -474,7 +476,7 @@ public class CmsConfigurationReader {
             content.getFile(),
             isModuleConfig,
             basePath,
-            masterConfigResource,
+            masterConfigIds,
             m_resourceTypeConfigs,
             discardInheritedTypes,
             m_propertyConfigs,

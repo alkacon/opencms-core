@@ -2289,6 +2289,16 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+             <description><![CDATA[
+                Change the URI of the request context used for formatter lookup to the provided value.<p>
+                This is useful when using the display tag in JSPs called via AJAX and you want to use the default display formatter for the current page.
+            ]]></description>
+            <name>baseUri</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
     </tag>
         <tag>
         <description><![CDATA[

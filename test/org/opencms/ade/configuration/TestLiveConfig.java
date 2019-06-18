@@ -43,6 +43,7 @@ import org.opencms.util.CmsFileUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,11 +79,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Generates a sitemap config XML with the given types.<p>
      *
      * @param types the types to use
-     * @param masterConfigId the master configuration id
+     * @param masterConfigIds the master configuration ids
      *
      * @return the XML string
      */
-    public static String generateSitemapConfigWithTypes(Map<String, String> types, String masterConfigId) {
+    public static String generateSitemapConfigWithTypes(Map<String, String> types, List<String> masterConfigIds) {
 
         String template = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\r\n"
@@ -108,9 +109,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         StringTemplate st = new StringTemplate(template);
         st.setAttribute("types", types);
-        st.setAttribute(
-            "masterConfigs",
-            masterConfigId != null ? Collections.singletonList(masterConfigId) : Collections.emptyList());
+        st.setAttribute("masterConfigs", masterConfigIds != null ? masterConfigIds : Collections.emptyList());
         return st.toString();
     }
 
@@ -307,7 +306,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
             Map<String, String> types3 = Maps.newHashMap();
             types3.put("cc", "cc3");
-            String config3 = generateSitemapConfigWithTypes(types3, "" + masterConfigResource.getStructureId());
+            String config3 = generateSitemapConfigWithTypes(
+                types3,
+                Arrays.asList("" + masterConfigResource.getStructureId()));
             cms.createResource(
                 "/system/mastertest/subfolder/.content/.config",
                 configType,
@@ -319,6 +320,74 @@ public class TestLiveConfig extends OpenCmsTestCase {
             cms.deleteResource("/system/.master", CmsResource.DELETE_PRESERVE_SIBLINGS);
             OpenCms.getADEManager().waitForCacheUpdate(false);
             checkResourceTypesSet(cms, "/system/mastertest/subfolder", "foldername", "aa1", "bb1", "cc3");
+
+        } finally {
+            cms.deleteResource("/system/mastertest", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+
+    }
+
+    /**
+     * Tests the master configuration feature.<p>
+     *
+     * @throws Exception -
+     */
+    public void testMasterConfigurationMultiple() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType("folder");
+        cms.createResource("/system/mastertest", folderType);
+        try {
+            I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType("sitemap_config");
+            I_CmsResourceType masterConfigType = OpenCms.getResourceManager().getResourceType("sitemap_master_config");
+
+            cms.createResource("/system/mastertest/.content", folderType);
+            cms.createResource("/system/mastertest/subfolder", folderType);
+            cms.createResource("/system/mastertest/subfolder/.content", folderType);
+            Map<String, String> types1 = Maps.newHashMap();
+            types1.put("aa", "aa1");
+            types1.put("bb", "bb1");
+            types1.put("cc", "cc1");
+            String config1 = generateSitemapConfigWithTypes(types1, null);
+            cms.createResource(
+                "/system/mastertest/.content/.config",
+                configType,
+                config1.getBytes("UTF-8"),
+                Collections.<CmsProperty> emptyList());
+
+            Map<String, String> types2 = Maps.newHashMap();
+            types2.put("bb", "bb2");
+            types2.put("cc", "cc2");
+            types2.put("dd", "dd2");
+            String config2 = generateSitemapConfigWithTypes(types2, null);
+            CmsResource masterConfigResource = cms.createResource(
+                "/system/.master",
+                masterConfigType,
+                config2.getBytes("UTF-8"),
+                Collections.<CmsProperty> emptyList());
+
+            Map<String, String> types3 = new HashMap<>();
+            types3.put("bb", "bb3");
+            types3.put("cc", "cc3");
+            String config3 = generateSitemapConfigWithTypes(types3, null);
+            CmsResource masterConfigResource2 = cms.createResource(
+                "/system/.master2",
+                masterConfigType,
+                config3.getBytes("UTF-8"),
+                Collections.<CmsProperty> emptyList());
+
+            Map<String, String> types4 = Maps.newHashMap();
+            types4.put("cc", "cc4");
+            String config4 = generateSitemapConfigWithTypes(
+                types4,
+                Arrays.asList("" + masterConfigResource.getStructureId(), "" + masterConfigResource2.getStructureId()));
+            cms.createResource(
+                "/system/mastertest/subfolder/.content/.config",
+                configType,
+                config4.getBytes("UTF-8"),
+                Collections.<CmsProperty> emptyList());
+            OpenCms.getADEManager().waitForCacheUpdate(false);
+            checkResourceTypesSet(cms, "/system/mastertest/subfolder", "foldername", "aa1", "bb3", "cc4", "dd2");
 
         } finally {
             cms.deleteResource("/system/mastertest", CmsResource.DELETE_PRESERVE_SIBLINGS);
