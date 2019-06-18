@@ -52,10 +52,13 @@ public class CmsADEConfigDataInternal {
 
     /** The "create contents locally" flag. */
     protected boolean m_createContentsLocally;
+
     /** Should inherited model pages be discarded? */
     protected boolean m_discardInheritedModelPages;
+
     /** Should inherited properties be discard? */
     protected boolean m_discardInheritedProperties;
+
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
 
@@ -64,10 +67,13 @@ public class CmsADEConfigDataInternal {
 
     /** True if this is a module configuration, not a normal sitemap configuration. */
     protected boolean m_isModuleConfig;
-    /** The master configuration resource (possibly null). */
-    protected CmsResource m_masterConfig;
+
+    /** The master configuration structure ids. */
+    protected List<CmsUUID> m_masterConfigs;
+
     /** The base path of this configuration. */
     private String m_basePath;
+
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = Lists.newArrayList();
 
@@ -97,11 +103,11 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-    
+
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
-     * @param masterConfig the master configuration resource (possibly null)
+     * @param masterConfigs structure ids of master configuration files
      * @param resourceTypeConfig the resource type configuration
      * @param discardInheritedTypes the "discard inherited types" flag
      * @param propertyConfig the property configuration
@@ -119,7 +125,7 @@ public class CmsADEConfigDataInternal {
         CmsResource resource,
         boolean isModuleConfig,
         String basePath,
-        CmsResource masterConfig,
+        List<CmsUUID> masterConfigs,
         List<CmsResourceTypeConfig> resourceTypeConfig,
         boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
@@ -141,7 +147,10 @@ public class CmsADEConfigDataInternal {
         m_ownDetailPages = detailPageInfos;
         m_functionReferences = functionReferences;
         m_isModuleConfig = isModuleConfig;
-        m_masterConfig = masterConfig;
+        m_masterConfigs = masterConfigs;
+        if (m_masterConfigs == null) {
+            m_masterConfigs = Collections.emptyList();
+        }
 
         m_discardInheritedTypes = discardInheritedTypes;
         m_discardInheritedProperties = discardInheritedProperties;
@@ -217,13 +226,13 @@ public class CmsADEConfigDataInternal {
     }
 
     /**
-     * Gets the master configuration resource (may be null).<p>
+     * Gets the structure ids of the master configuration files.
      *
-     * @return the master configuration resource
+     * @return the structure ids of the master configurations
      */
-    public CmsResource getMasterConfig() {
+    public List<CmsUUID> getMasterConfigs() {
 
-        return m_masterConfig;
+        return Collections.unmodifiableList(m_masterConfigs);
     }
 
     /**

@@ -498,16 +498,15 @@ public class CmsADEConfigCacheState {
             List<String> siteConfigPaths = getSiteConfigPaths(path);
             for (String siteConfigPath : siteConfigPaths) {
                 CmsADEConfigDataInternal currentConfig = m_siteConfigurationsByPath.get(siteConfigPath);
-                CmsResource masterConfigResource = currentConfig.getMasterConfig();
-                if (currentConfig.getMasterConfig() != null) {
-                    CmsADEConfigDataInternal masterConfig = m_siteConfigurations.get(
-                        masterConfigResource.getStructureId());
+                List<CmsUUID> masterConfigs = currentConfig.getMasterConfigs();
+                for (CmsUUID id : masterConfigs) {
+                    CmsADEConfigDataInternal masterConfig = m_siteConfigurations.get(id);
                     if (masterConfig != null) {
                         configList.add(masterConfig);
                     } else {
                         LOG.warn(
                             "Master configuration "
-                                + masterConfigResource.getRootPath()
+                                + id
                                 + " not found for sitemap configuration in "
                                 + currentConfig.getBasePath());
                     }
