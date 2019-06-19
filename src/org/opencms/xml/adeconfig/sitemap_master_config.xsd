@@ -34,6 +34,13 @@
 			<layouts>
 				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
 			</layouts>
+            <relations>
+                <relation element="AddFormatters/AddFormatter" invalidate="false" />
+                <relation element="RemoveFormatters/RemoveFormatter" invalidate="false" />
+                <relation element="ResourceType/Folder/Path" invalidate="false" />
+                <relation element="Function" invalidate="false" />
+            </relations>
+            
 			<tabs>
 				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
 				<tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
