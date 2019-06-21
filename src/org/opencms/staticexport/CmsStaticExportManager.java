@@ -28,7 +28,7 @@
 package org.opencms.staticexport;
 
 import org.opencms.ade.detailpage.CmsDetailPageUtil;
-import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
+import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -1333,7 +1333,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // Accessing the ADEManager during setup may not work.
                 try {
                     vfsRes = cms.readResource(vfsName);
-                    I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
+                    I_CmsDetailPageHandler finder = OpenCms.getADEManager().getDetailPageHandler();
                     String detailPage = finder.getDetailPage(
                         cms,
                         vfsRes.getRootPath(),

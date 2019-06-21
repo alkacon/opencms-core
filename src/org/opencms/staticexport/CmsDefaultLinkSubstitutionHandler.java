@@ -27,7 +27,7 @@
 
 package org.opencms.staticexport;
 
-import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
+import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -183,7 +183,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             }
             if (!rootVfsName.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
                 // never use the ADE manager for workplace links, to be sure the workplace stays usable in case of configuration errors
-                I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
+                I_CmsDetailPageHandler finder = OpenCms.getADEManager().getDetailPageHandler();
                 detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri(), targetDetailPage);
             }
             if (detailPage != null) {

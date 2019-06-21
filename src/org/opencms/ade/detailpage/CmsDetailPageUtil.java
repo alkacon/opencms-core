@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is a utility class which provides convenience methods for finding detail page names for resources which include
  * the URL names of the resources themselves.<p>
  *
- * @see I_CmsDetailPageFinder
+ * @see I_CmsDetailPageHandler
  *
  * @since 8.0.0
  */
@@ -72,7 +72,7 @@ public final class CmsDetailPageUtil {
     public static List<String> getAllDetailPagesWithUrlName(CmsObject cms, CmsResource res) throws CmsException {
 
         List<String> result = new ArrayList<String>();
-        Collection<String> detailPages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
+        Collection<String> detailPages = OpenCms.getADEManager().getDetailPageHandler().getAllDetailPages(
             cms,
             res.getTypeId());
         if (detailPages.isEmpty()) {

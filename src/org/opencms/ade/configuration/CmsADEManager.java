@@ -36,8 +36,7 @@ import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationWriter;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
-import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
-import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
+import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsFile;
@@ -118,12 +117,12 @@ public class CmsADEManager {
 
     /** JSON property name constant. */
     protected enum FavListProp {
-        /** element property. */
-        ELEMENT,
-        /** formatter property. */
-        FORMATTER,
-        /** properties property. */
-        PROPERTIES;
+    /** element property. */
+    ELEMENT,
+    /** formatter property. */
+    FORMATTER,
+    /** properties property. */
+    PROPERTIES;
     }
 
     /**
@@ -201,8 +200,8 @@ public class CmsADEManager {
     /** The sitemap configuration file type. */
     private I_CmsResourceType m_configType;
 
-    /** The detail page finder. */
-    private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+    /** The detail page handler. */
+    private I_CmsDetailPageHandler m_detailPageHandler;
 
     /** The element view configuration file type. */
     private I_CmsResourceType m_elementViewType;
@@ -266,8 +265,53 @@ public class CmsADEManager {
         m_onlineCms = adminCms;
         m_cache = new CmsADECache(memoryMonitor, cacheSettings);
         m_parameters = new LinkedHashMap<String, String>(systemConfiguration.getAdeParameters());
+        m_detailPageHandler = systemConfiguration.getDetailPageHandler();
         // further initialization is done by the initialize() method. We don't do that in the constructor,
         // because during the setup the configuration resource types don't exist yet.
+    }
+
+    /*
+     * Gets the detail page for a content element.<p>
+     *
+     * @param manager the ADE manager instance.
+     * @param cms the CMS context
+     * @param pageRootPath the element's root path
+     * @param originPath the path in which the the detail page is being requested
+     * @param targetDetailPage the target detail page to use
+     *
+     * @return the detail page for the content element
+     */
+    public static String getDetailPage(
+        CmsADEManager manager,
+        CmsObject cms,
+        String pageRootPath,
+        String originPath,
+        String targetDetailPage) {
+
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        String resType = manager.getParentFolderType(online, pageRootPath);
+        if (resType == null) {
+            return null;
+        }
+        if ((targetDetailPage != null) && manager.getDetailPages(cms, resType).contains(targetDetailPage)) {
+            return targetDetailPage;
+        }
+
+        String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
+        CmsADEConfigData configData = manager.lookupConfiguration(cms, originRootPath);
+        CmsADEConfigData targetConfigData = manager.lookupConfiguration(cms, pageRootPath);
+        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
+        List<CmsADEConfigData> configs = targetFirst
+        ? Arrays.asList(targetConfigData, configData)
+        : Arrays.asList(configData, targetConfigData);
+        for (CmsADEConfigData config : configs) {
+            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
+            if ((pageInfo != null) && !pageInfo.isEmpty()) {
+                return pageInfo.get(0).getUri();
+            }
+        }
+        return null;
+
     }
 
     /**
@@ -282,7 +326,6 @@ public class CmsADEManager {
         CmsFormatterConfigurationCache cache = online ? m_onlineFormatterCache : m_offlineFormatterCache;
         cache.addWaitHandle(handle);
         return handle;
-
     }
 
     /**
@@ -416,64 +459,13 @@ public class CmsADEManager {
     }
 
     /**
-     * Gets the detail page for a content element.<p>
-     *
-     * @param cms the CMS context
-     * @param pageRootPath the element's root path
-     * @param originPath the path in which the the detail page is being requested
-     *
-     * @return the detail page for the content element
-     */
-    public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
-
-        return getDetailPage(cms, pageRootPath, originPath, null);
-    }
-
-    /**
-     * Gets the detail page for a content element.<p>
-     *
-     * @param cms the CMS context
-     * @param pageRootPath the element's root path
-     * @param originPath the path in which the the detail page is being requested
-     * @param targetDetailPage the target detail page to use
-     *
-     * @return the detail page for the content element
-     */
-    public String getDetailPage(CmsObject cms, String pageRootPath, String originPath, String targetDetailPage) {
-
-        boolean online = isOnline(cms);
-        String resType = getCacheState(online).getParentFolderType(pageRootPath);
-        if (resType == null) {
-            return null;
-        }
-        if ((targetDetailPage != null) && getDetailPages(cms, resType).contains(targetDetailPage)) {
-            return targetDetailPage;
-        }
-
-        String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
-        CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
-        CmsADEConfigData targetConfigData = lookupConfiguration(cms, pageRootPath);
-        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
-        List<CmsADEConfigData> configs = targetFirst
-        ? Arrays.asList(targetConfigData, configData)
-        : Arrays.asList(configData, targetConfigData);
-        for (CmsADEConfigData config : configs) {
-            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
-            if ((pageInfo != null) && !pageInfo.isEmpty()) {
-                return pageInfo.get(0).getUri();
-            }
-        }
-        return null;
-    }
-
-    /**
      * Gets the detail page finder.<p>
      *
      * @return the detail page finder
      */
-    public I_CmsDetailPageFinder getDetailPageFinder() {
+    public I_CmsDetailPageHandler getDetailPageHandler() {
 
-        return m_detailPageFinder;
+        return m_detailPageHandler;
     }
 
     /**
@@ -779,6 +771,20 @@ public class CmsADEManager {
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the content element type for the given path's parent folder.
+     *
+     * @param online true if we want to use the Online project's configuration
+     * @param rootPath the root path of a content
+     *
+     * @return the parent folder type name, or null if none is defined
+     */
+    public String getParentFolderType(boolean online, String rootPath) {
+
+        return getCacheState(online).getParentFolderType(rootPath);
+
     }
 
     /**
@@ -1090,6 +1096,7 @@ public class CmsADEManager {
                 m_initStatus = Status.notInitialized;
                 LOG.error(e.getLocalizedMessage(), e);
             }
+            m_detailPageHandler.initialize(m_offlineCms, m_onlineCms);
         }
     }
 

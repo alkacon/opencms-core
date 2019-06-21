@@ -40,7 +40,6 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -213,16 +212,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
      */
     protected boolean isValidDetailPage(CmsObject cms, CmsResource page, CmsResource detailRes) {
 
-        if (OpenCms.getSystemInfo().isRestrictDetailContents()) {
-            // in 'restrict detail contents mode', do not allow detail contents from a real site on a detail page of a different real site
-            CmsSite pageSite = OpenCms.getSiteManager().getSiteForRootPath(page.getRootPath());
-            CmsSite detailSite = OpenCms.getSiteManager().getSiteForRootPath(detailRes.getRootPath());
-            if ((pageSite != null)
-                && (detailSite != null)
-                && !pageSite.getSiteRoot().equals(detailSite.getSiteRoot())) {
-                return false;
-            }
-        }
-        return OpenCms.getADEManager().isDetailPage(cms, page);
+        return OpenCms.getADEManager().getDetailPageHandler().isValidDetailPage(cms, page, detailRes);
+
     }
 }

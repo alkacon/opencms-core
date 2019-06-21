@@ -676,6 +676,20 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
+     * Checks whether the page/detail content combination is a valid detail page.<p>
+     *
+     * @param page the container page
+     * @param locale the locale
+     * @param detailRes the detail content resource
+     *
+     * @return true if this is a valid detail page combination
+     */
+    protected boolean isValidDetailPageCombination(CmsResource page, Locale locale, CmsResource detailRes) {
+
+        return OpenCms.getADEManager().getDetailPageHandler().isValidDetailPage(m_guestCms, page, detailRes);
+    }
+
+    /**
      * Replaces the protocol/host/port of a link with the ones from the configured server URI, if it's not empty.<p>
      *
      * @param link the link to change
@@ -784,20 +798,6 @@ public class CmsXmlSitemapGenerator {
             }
         }
 
-    }
-
-    /**
-     * Checks whether the page/detail content combination is a valid detail page.<p>
-     *
-     * @param page the container page
-     * @param locale the locale
-     * @param detailRes the detail content resource
-     *
-     * @return true if this is a valid detail page combination
-     */
-    protected boolean isValidDetailPageCombination(CmsResource page, Locale locale, CmsResource detailRes) {
-
-        return true;
     }
 
 }
