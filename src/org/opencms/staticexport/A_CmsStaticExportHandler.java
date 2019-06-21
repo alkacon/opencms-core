@@ -592,7 +592,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 return files;
             }
             List<String> urlNames = cms.getAllUrlNames(res.getStructureId());
-            Collection<String> detailpages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
+            Collection<String> detailpages = OpenCms.getADEManager().getDetailPageHandler().getAllDetailPages(
                 cms,
                 res.getType());
             for (String urlName : urlNames) {

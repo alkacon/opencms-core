@@ -27,6 +27,8 @@
 
 package org.opencms.configuration;
 
+import org.opencms.ade.detailpage.CmsSitemapDetailPageHandler;
+import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
@@ -96,12 +98,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The attribute name for the deleted node. */
     public static final String A_DELETED = "deleted";
 
+    /** The "error" attribute. */
+    public static final String A_ERROR = "error";
+    /** The "errorPage" attribute. */
+    public static final String A_ERROR_PAGE = "errorPage";
+    /** The "exclusive" attribute. */
+    public static final String A_EXCLUSIVE = "exclusive";
+
     /** The attribute name for the localization mode. */
     public static final String A_LOCALIZATION_MODE = "localizationMode";
-
     /** The "maxvisited" attribute. */
     public static final String A_MAXVISITED = "maxvisited";
-
     /** The "offline" attribute. */
     public static final String A_OFFLINE = "offline";
 
@@ -144,6 +151,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the cache-offline node. */
     public static final String N_CACHE_OFFLINE = "cache-offline";
 
+    /** The node name for a job class. */
+    public static final String N_CLASS = "class";
+
     /** The configuration node name. */
     public static final String N_CONFIGURATION = "configuration";
 
@@ -158,6 +168,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the defaultusers expression. */
     public static final String N_DEFAULTUSERS = "defaultusers";
+
+    public static final String N_DETAIL_PAGE_HANDLER = "detail-page-handler";
 
     /** The node name for the device selector node. */
     public static final String N_DEVICESELECTOR = "device-selector";
@@ -435,6 +447,21 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the warning-interval node. */
     public static final String N_WARNING_INTERVAL = "warning-interval";
 
+    /** The node name which indicates if apache should be configurable in sitemanager. */
+    public static final String N_WEBSERVERSCRIPTING = "webserver-scripting";
+
+    public static final String N_WEBSERVERSCRIPTING_CONFIGTEMPLATE = "configtemplate";
+
+    public static final String N_WEBSERVERSCRIPTING_FILENAMEPREFIX = "filenameprefix";
+
+    public static final String N_WEBSERVERSCRIPTING_LOGGINGDIR = "loggingdir";
+
+    public static final String N_WEBSERVERSCRIPTING_SECURETEMPLATE = "securetemplate";
+
+    public static final String N_WEBSERVERSCRIPTING_TARGETPATH = "targetpath";
+
+    public static final String N_WEBSERVERSCRIPTING_WEBSERVERSCRIPT = "webserverscript";
+
     /** The node name for the workflow configuration. */
     public static final String N_WORKFLOW = "workflow";
 
@@ -488,6 +515,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The default content encoding. */
     private String m_defaultContentEncoding;
+
+    /** The detail page handler. */
+    private I_CmsDetailPageHandler m_detailPageHandler = new CmsSitemapDetailPageHandler();
 
     /** The configured OpenCms event manager. */
     private CmsEventManager m_eventManager;
@@ -1111,6 +1141,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(shellServerPath, "setShellServerOptions", 2);
         digester.addCallParam(shellServerPath, 0, A_ENABLED);
         digester.addCallParam(shellServerPath, 1, A_PORT);
+
+        String detailPageHandlerPath = "*/" + N_SYSTEM + "/" + N_DETAIL_PAGE_HANDLER;
+        digester.addObjectCreate(detailPageHandlerPath, CmsSitemapDetailPageHandler.class.getName(), A_CLASS);
+        digester.addSetNext(detailPageHandlerPath, "setDetailPageHandler");
+
     }
 
     /**
@@ -1660,6 +1695,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Gets the detail page handler.
+     *
+     * @return the detail page handler
+     */
+    public I_CmsDetailPageHandler getDetailPageHandler() {
+
+        return m_detailPageHandler;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */
     public String getDtdFilename() {
@@ -2183,6 +2228,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setDefaultContentEncoding(String defaultContentEncoding) {
 
         m_defaultContentEncoding = defaultContentEncoding;
+    }
+
+    /**
+     * Sets the detail page handler.
+     *
+     * @param handler the detail page handler
+     */
+    public void setDetailPageHandler(I_CmsDetailPageHandler handler) {
+
+        m_detailPageHandler = handler;
+
     }
 
     /**

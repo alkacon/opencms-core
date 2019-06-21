@@ -1792,7 +1792,7 @@ public final class CmsJspStandardContextBean {
             && !m_element.isInMemoryOnly()
             && (m_element.getResource() != null)) {
             try {
-                String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
+                String detailPage = OpenCms.getADEManager().getDetailPageHandler().getDetailPage(
                     m_cms,
                     m_element.getResource().getRootPath(),
                     m_cms.getRequestContext().getUri(),

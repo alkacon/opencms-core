@@ -213,7 +213,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         // root site
         waitForUpdate(false);
         CmsObject cms = rootCms();
-        String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
+        String detailPage = OpenCms.getADEManager().getDetailPageHandler().getDetailPage(
             cms,
             "/sites/default/.content/a1/blarg.html",
             "/sites/default/today/news",
@@ -223,7 +223,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         // default site
 
         cms = getCmsObject();
-        detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
+        detailPage = OpenCms.getADEManager().getDetailPageHandler().getDetailPage(
             cms,
             "/sites/default/.content/a1/blarg.html",
             "/today/news",

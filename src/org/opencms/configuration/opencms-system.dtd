@@ -41,6 +41,7 @@
 	user-session-mode?,
 	credentials-resolver?,
 	publish-list-remove-mode?,
+	detail-page-handler?,
 	restrict-detail-contents?,
 	shell-server?,
 	letsencrypt?
@@ -570,6 +571,7 @@
 -->
 <!ELEMENT restrict-detail-contents (#PCDATA) >
 
+
 <!-- 
 # RMI based CmsShell server configuration.
 # Can be enabled or disabled, also the RMI registry port can be configured 
@@ -595,3 +597,10 @@
 <!ATTLIST letsencrypt certconfig CDATA #REQUIRED>
 
 <!ATTLIST letsencrypt trigger (siteConfig|webserverThread) #IMPLIED>
+
+<!--
+# The detail page handler class with parameters. 
+-->  
+<!ELEMENT detail-page-handler (param*) >
+<!ATTLIST detail-page-handler class CDATA #REQUIRED >
+

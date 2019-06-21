@@ -27,17 +27,31 @@
 
 package org.opencms.ade.detailpage;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
 import java.util.Collection;
 
 /**
- * Interface for classes which can find the detail page for a given resource.<p>
+ * Interface for classes which can find the detail page for a given resource,
+ * and determine whether a given detail page / detail content combination is valid.
  *
  * @since 8.0.0
  */
-public interface I_CmsDetailPageFinder {
+public interface I_CmsDetailPageHandler extends I_CmsConfigurationParameterHandler {
+
+    /**
+     * Checks whether the given detail page is valid for the given resource.<p>
+     *
+     * @param cms the CMS context
+     * @param page the detail page
+     * @param detailRes the detail resource
+     *
+     * @return true if the given detail page is valid
+     */
+    public boolean isValidDetailPage(CmsObject cms, CmsResource page, CmsResource detailRes);
 
     /**
      * Finds all detail pages for a given resource.<p>
@@ -65,5 +79,13 @@ public interface I_CmsDetailPageFinder {
      */
     String getDetailPage(CmsObject cms, String rootPath, String linkSource, String targetDetailPage)
     throws CmsException;
+
+    /**
+     * Initializes the detail page handler.
+     *
+     * @param offlineCms offline CMS context
+     * @param onlineCms online CMS context
+     */
+    void initialize(CmsObject offlineCms, CmsObject onlineCms);
 
 }
