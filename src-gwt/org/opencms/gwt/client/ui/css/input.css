@@ -38,7 +38,7 @@ input.textboxGhostMode {
 }
 
 .textBoxPanelWhite {
-	background-color: white; 
+	background-color: white;
 }
 
 
@@ -52,17 +52,17 @@ input.textboxGhostMode {
 	cursor: default;
 }
 
-.showDisabledAsGhostMode .textBoxPanelDisabled { 
+.showDisabledAsGhostMode .textBoxPanelDisabled {
 	background-color: white;
 }
 
 .showDisabledAsGhostMode .textBoxPanelDisabled input {
-	font-style: oblique; 
+	font-style: oblique;
 	color: value("constants.css.textColorDisabled");
 }
-	
-	
-	
+
+
+
 
 
 .textBoxPanelError {
@@ -84,7 +84,7 @@ input.textboxGhostMode {
 }
 
 .checkBox div.html-face {
-	font-weight: normal; 
+	font-weight: normal;
 	line-height: value("constants.css.inputHeight");
 	vertical-align: middle;
 }
@@ -133,7 +133,7 @@ div.textArea textarea{
 	font-family: value("constants.css.fontFamilyMono");
 }
 
-div.textArea.textAreaGhostMode textarea { 
+div.textArea.textAreaGhostMode textarea {
 	font-style: oblique;
 	color: value("constants.css.textColorDisabled") /*!important*/;
 }
@@ -150,7 +150,7 @@ div.textArea.textAreaGhostMode textarea {
 	width: 16px;
 }
 .checkBoxImageUnchecked{}
-.cmsState .checkBoxImage, 
+.cmsState .checkBoxImage,
 .triState .triStateOn, .triState .triStateOff, .triState .triStateMedium,
 .cmsState .radioButtonImage {
     border: 1px solid value("constants.css.textColorDisabledButton");
@@ -192,7 +192,7 @@ div.textArea.textAreaGhostMode textarea {
 .cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before{
 	content: "\e62b";
 }
-.cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before, 
+.cmsState-down .checkBoxImage:before, .cmsState-down-hovering .checkBoxImage:before, .cmsState-down-disabled .checkBoxImage:before,
 .checkBoxImageChecked:before, .triState .triStateOn:before, .triState .triStateMedium:before,
 .cmsState-down .radioButtonImage:before, .cmsState-down-hovering .radioButtonImage:before, .cmsState-down-disabled .radioButtonImage:before {
 	font-family: opencms-font;
@@ -215,7 +215,7 @@ div.textArea.textAreaGhostMode textarea {
 .radioButton .gwt-ToggleButton {
 	outline: none;
 }
-	
+
 /* Style for edited text box */
 .changed{
 	color: value("constants.css.textColorChanged") !important;
@@ -283,7 +283,7 @@ div.error, .error {
 }
 
 .openerNoHover.selectBoxSelected, .openerHover.selectBoxSelected {
-	width: auto; 
+	width: auto;
 	height:auto;
 	min-height: 0px;
 	position: relative;
@@ -296,9 +296,9 @@ div.error, .error {
 	position:relative;
 }
 
-.comboBox .openerNoHover.selectBoxSelected, .comboBox .openerHover.selectBoxSelected { 
+.comboBox .openerNoHover.selectBoxSelected, .comboBox .openerHover.selectBoxSelected {
 	background-image: none;
-	background-color: white; 
+	background-color: white;
 }
 
 
@@ -316,21 +316,21 @@ div.error, .error {
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 .comboBox .openerHover.selectBoxSelected:before {
-	display: none;	
+	display: none;
 }
 
 .noSelectionSelectBox .openerNoHover.selectBoxSelected, .noSelectionSelectBox .openerHover.selectBoxSelected {
 	background-image: none !important;
-	font-style: oblique !important; 
-	background-color: white !important; 
+	font-style: oblique !important;
+	background-color: white !important;
 }
 
 /*.noSelectionSelectBox * {
-	background-color: white !important; 
+	background-color: white !important;
 }*/
 
 .noSelectionSelectBox .selectBoxOpener {
-	color: value("constants.css.textColorDisabled") !important; 
+	color: value("constants.css.textColorDisabled") !important;
 }
 
 div.selectBoxSelector, div.selectorPopup.selectBoxSelector{
@@ -377,7 +377,7 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 	background-color: value("constants.css.backgroundColorHighlight");
 }
 
-.selectIcon { 
+.selectIcon {
 	position: absolute !important;
 	right: 2px;
 	top: 8px;
@@ -385,7 +385,7 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 
 div.selectComboIcon {
 	position: absolute !important;
-	right: 20px; 
+	right: 20px;
 	top: 4px;
 	color: value("constants.css.textColor") !important;
 }
@@ -415,7 +415,7 @@ div.selectBoxOpener {
     padding: 0px 15px 0px 0px;
     box-shadow: none;
     background:  value("constants.css.backgroundColorDialog");
-    margin: 0 12px 0 5px; 
+    margin: 0 12px 0 5px;
     position: relative;
 }
 
@@ -434,7 +434,7 @@ div.dataValue {
 div.categoryScrollPanel{
 	margin-top: 6px;
 	border: 1px solid value("constants.css.borderColor");
-	background-color: value("constants.css.backgroundColorDialog"); 
+	background-color: value("constants.css.backgroundColorDialog");
 }
 
 .disabled div.dataValue{
@@ -450,7 +450,7 @@ div.fader, div.textArea div.fader {
 }
 div.textArea div.fader{
 	background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%) !important;
-} 
+}
 
 div.fader{
 	cursor: pointer;
@@ -460,7 +460,7 @@ div.fader{
     position: absolute;
 }
 
-div.selectBoxRoot div.fader{   	
+div.selectBoxRoot div.fader{
 	bottom: 1px;
     right: 15px;
 }
@@ -477,7 +477,7 @@ div.selectionInput>input[type=text]{
 	border: none;
 }
 
-div.selectionInput div.fader{   	
+div.selectionInput div.fader{
 	right: 21px;
 	bottom: 0px;
 	position: absolute;
@@ -537,22 +537,22 @@ div.formRow {
 @eval formLabelWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth();
 @eval openerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth();
 @eval widgetContainerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth();
-@eval widgetContainerMargin org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin();  
+@eval widgetContainerMargin org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin();
 
 div.formOpener {
 	width: openerWidth;
 	float: left;
-	vertical-align: top; 
+	vertical-align: top;
 }
 
 div.formInfo {
 	margin-left: 5px;
 	margin-top: 5px;
 	margin-bottom: 12px;
-	font-weight: bold; 
+	font-weight: bold;
 }
 
-div.formLabel { 
+div.formLabel {
 	width: formLabelWidth;
 	overflow: hidden;
 	vertical-align: top;
@@ -589,12 +589,12 @@ div.formDescriptionLabel {
 .textAreaBox, .selectBoxPopup{}
 
 
-.formGradientBackground .fieldset-fieldsetVisible, .formGradientBackground .properties-vfsModeSimplePropertiesBox { 
-	background: transparent !important; 
+.formGradientBackground .fieldset-fieldsetVisible, .formGradientBackground .properties-vfsModeSimplePropertiesBox {
+	background: transparent !important;
 }
 
-.formWidgetContainer .checkBox { 
-	margin-top: 2px; 
+.formWidgetContainer .checkBox {
+	margin-top: 2px;
 }
 
 .multiCheckboxPanel {
@@ -602,38 +602,4 @@ div.formDescriptionLabel {
 	overflow:hidden;
 }
 
-
-@external mce-branding-powered-by, mce-branding, mce-toolbar, mce-toolbar-grp, mce-btn, mce-tinymce, mce-statusbar, mce-wordcount, mce-path; 
-.mce-branding-powered-by, .mce-branding { 
-	display: none !important; 
-}
-
-.formWidgetContainer .mce-toolbar-grp {
-	background-color: white !important;
-	border-radius: 4px !important; 
-}
-
-.mce-toolbar .mce-btn {
-	background-color: white !important; 
-}
-
-.formWidgetContainer > * > .mce-tinymce {
-	border-radius: 4px !important;
-}
-
-.mce-statusbar .mce-wordcount, .mce-statusbar .mce-path {
-    padding: 2px;
-    margin-right: 8px;
-}
-
-.mce-statusbar {
-	background-color: white !important;
-	box-shadow: none !important;
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
-}
-
-.mce-tinymce {
-	box-sizing: border-box !important; 
-}
 
