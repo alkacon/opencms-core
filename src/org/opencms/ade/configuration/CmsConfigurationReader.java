@@ -385,7 +385,10 @@ public class CmsConfigurationReader {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)addLoc.getValue();
             CmsLink link = value.getLink(m_cms);
             if (link != null) {
-                addFormatters.add(link.getStructureId().toString());
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    addFormatters.add(structureId.toString());
+                }
             }
         }
         return addFormatters;
@@ -465,7 +468,10 @@ public class CmsConfigurationReader {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
             CmsLink link = value.getLink(m_cms);
             if (link != null) {
-                functions.add(link.getStructureId());
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    functions.add(link.getStructureId());
+                }
             }
         }
         if (functions.isEmpty()) {
@@ -588,7 +594,10 @@ public class CmsConfigurationReader {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)removeLoc.getValue();
             CmsLink link = value.getLink(m_cms);
             if (link != null) {
-                removeFormatters.add(link.getStructureId().toString());
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    removeFormatters.add(structureId.toString());
+                }
             }
         }
         return removeFormatters;
