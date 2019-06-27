@@ -161,7 +161,7 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             settings.setPaths(Collections.singletonList(A_CmsWorkplaceApp.getParamFromState(state, FOLDER)));
             String resType = A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_TYPE);
             if (resType != null) {
-                settings.setTypes(typeString);
+                settings.setTypes(resType);
             }
             String project = A_CmsWorkplaceApp.getParamFromState(state, PROJECT);
             if (project != null) {
