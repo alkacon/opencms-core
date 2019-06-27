@@ -33,6 +33,8 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
 				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
+                <layout element="AddFormatters/AddFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter"/>
+                <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter"/>
 			</layouts>
             <relations>
                 <relation element="AddFormatters/AddFormatter" invalidate="false" />
