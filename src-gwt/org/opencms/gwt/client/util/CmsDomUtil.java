@@ -1923,7 +1923,7 @@ public final class CmsDomUtil {
 		if (context != null) {
 			return context.querySelector(selector);
 		} else {
-			$doc.querySelector(selector);
+			return $doc.querySelector(selector);
 		}
     }-*/;
 

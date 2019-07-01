@@ -1,5 +1,5 @@
 @external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled,
-	tox, tox-tinymce, tox-statusbar__branding;
+	tox, tox-tinymce, tox-statusbar__branding, picker_wrapper, picker_selector, picker_done;
 
 /* inner text box of the text box widget */
 input.textBox {
@@ -613,6 +613,15 @@ div.formDescriptionLabel {
 .multiCheckboxPanel {
 	border: 1px solid value("constants.css.borderColor");
 	overflow:hidden;
+}
+
+/* Color picker style. */
+.picker_wrapper div.picker_selector{
+  color: inherit;
+}
+
+.picker_wrapper div.picker_done{
+  display: none;
 }
 
 /* TinyMCE styles, hiding the branding and using rounded corners. */
