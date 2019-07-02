@@ -326,6 +326,34 @@ public class CmsCategoryService {
             }
             path = CmsResource.getParentFolder(path);
         } while (path != null);
+
+        String additionalRepo = null;
+
+        try {
+            CmsProperty repoProp = cms.readPropertyObject(
+                referencePath,
+                CmsPropertyDefinition.PROPERTY_CATEGORY_REPOSITORY,
+                true);
+
+            if (repoProp.getValue() != null) {
+                LOG.debug("Found category.base with value " + repoProp.getValue() + " on " + repoProp.getOrigin());
+                additionalRepo = repoProp.getValue();
+                additionalRepo = CmsStringUtil.joinPaths("/", additionalRepo, "/");
+                if (!additionalRepo.endsWith(categoryBase)) {
+                    additionalRepo = CmsStringUtil.joinPaths(additionalRepo, categoryBase);
+                }
+                if (cms.existsResource(additionalRepo)) {
+                    ret.add(additionalRepo);
+                } else {
+                    LOG.warn("Additional category repository " + additionalRepo + " not found.");
+                }
+            }
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         ret.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
         // the order is important in case of conflicts
         Collections.reverse(ret);

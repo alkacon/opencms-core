@@ -38,10 +38,17 @@ import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
+
+import com.google.common.collect.Sets;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -104,6 +111,8 @@ public class TestCategories extends OpenCmsTestCase {
         suite.addTest(new TestCategories("testPublishMovedResourceWithCategories1"));
         suite.addTest(new TestCategories("testPublishMovedResourceWithCategories2"));
 
+        suite.addTest(new TestCategories("testAdditionalRepository"));
+
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -135,6 +144,79 @@ public class TestCategories extends OpenCmsTestCase {
             m_storedError = null;
             result.addError(this, new RuntimeException(error));
         }
+    }
+
+    /**
+     * Tests configuration of additional category repository.
+     *
+     * @throws Exception -
+     */
+    public void testAdditionalRepository() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        cms.createResource("/shared/.categories", CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource("/shared/.categories/foo", CmsResourceTypeFolder.getStaticTypeId());
+
+        cms.lockResourceTemporary("/");
+        CmsProperty repoProp = new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_CATEGORY_REPOSITORY,
+            "/shared/.categories",
+            null);
+        cms.writePropertyObjects("/", Collections.singletonList(repoProp));
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        cms.createResource("/testAdditional.txt", CmsResourceTypePlain.getStaticTypeId());
+        catService.addResourceToCategory(cms, "/testAdditional.txt", "a/aa");
+        catService.addResourceToCategory(cms, "/testAdditional.txt", "foo");
+        {
+            List<CmsCategory> categories = catService.readResourceCategories(cms, "/testAdditional.txt");
+            Set<String> actualPaths = new HashSet<>(
+                categories.stream().map(cat -> cat.getPath()).collect(Collectors.toList()));
+            Set<String> expectedPaths = new HashSet<>(Arrays.asList("foo/", "a/aa/", "a/"));
+            assertEquals(expectedPaths, actualPaths);
+        }
+
+        {
+            Set<String> available = catService.readCategories(cms, "/", true, "/").stream().map(
+                cat -> cat.getPath()).collect(Collectors.toSet());
+            assertEquals(Sets.newHashSet("publishRepair_cat1/", "foo/", "a/aa/", "a/", "b/"), available);
+        }
+
+        repoProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_CATEGORY_REPOSITORY, "/shared", "");
+        cms.writePropertyObjects("/", Collections.singletonList(repoProp));
+        {
+            Set<String> available = catService.readCategories(cms, "/", true, "/").stream().map(
+                cat -> cat.getPath()).collect(Collectors.toSet());
+            assertEquals(Sets.newHashSet("publishRepair_cat1/", "foo/", "a/aa/", "a/", "b/"), available);
+        }
+
+        repoProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_CATEGORY_REPOSITORY, "/shared/", "");
+        cms.writePropertyObjects("/", Collections.singletonList(repoProp));
+        {
+            Set<String> available = catService.readCategories(cms, "/", true, "/").stream().map(
+                cat -> cat.getPath()).collect(Collectors.toSet());
+            assertEquals(Sets.newHashSet("publishRepair_cat1/", "foo/", "a/aa/", "a/", "b/"), available);
+        }
+
+        repoProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_CATEGORY_REPOSITORY, "/shared/.categories/", "");
+        cms.writePropertyObjects("/", Collections.singletonList(repoProp));
+        {
+            Set<String> available = catService.readCategories(cms, "/", true, "/").stream().map(
+                cat -> cat.getPath()).collect(Collectors.toSet());
+            assertEquals(Sets.newHashSet("publishRepair_cat1/", "foo/", "a/aa/", "a/", "b/"), available);
+        }
+
+        repoProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_CATEGORY_REPOSITORY, "", "");
+        cms.writePropertyObjects("/", Collections.singletonList(repoProp));
+
+        {
+            Set<String> available = catService.readCategories(cms, "/", true, "/").stream().map(
+                cat -> cat.getPath()).collect(Collectors.toSet());
+            assertEquals(Sets.newHashSet("publishRepair_cat1/", "a/aa/", "a/", "b/"), available);
+        }
+
+        cms.unlockResource("/");
+
     }
 
     /**

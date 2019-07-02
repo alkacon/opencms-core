@@ -267,6 +267,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
         "",
         TYPE_NORMAL);
 
+    /** The property to read an additional category folder from.  */
+    public static final String PROPERTY_CATEGORY_REPOSITORY = "category.repository";
+
     /** The id of this property definition. */
     private CmsUUID m_id;
 
