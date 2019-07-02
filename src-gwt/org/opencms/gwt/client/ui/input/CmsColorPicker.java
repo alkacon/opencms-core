@@ -49,20 +49,11 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -73,32 +64,6 @@ import com.google.gwt.user.client.ui.TextBox;
  *
  */
 public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsHasInit {
-
-    /**
-     * Drag and drop event preview handler.<p>
-     *
-     * To be used while dragging.<p>
-     */
-    protected class CloseEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONKEYDOWN:
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    closePopup();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
-    }
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "colorPicker";
@@ -117,8 +82,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /** The parent to the native color picker. */
     private Label m_nativePickerParent;
-    /***/
-    protected HandlerRegistration m_previewHandlerRegistration;
 
     /** The field to display the value. */
     protected SimplePanel m_textboxpanel = new SimplePanel();
@@ -405,14 +368,9 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      */
     protected void closePopup() {
 
-        if (m_previewHandlerRegistration != null) {
-            m_previewHandlerRegistration.removeHandler();
-        }
-        m_previewHandlerRegistration = null;
         if (checkvalue(m_nativePickerValue)) {
             m_popup.hide();
         }
-
     }
 
     /**
@@ -421,10 +379,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      */
     protected void closePopupDefault() {
 
-        if (m_previewHandlerRegistration != null) {
-            m_previewHandlerRegistration.removeHandler();
-        }
-        m_previewHandlerRegistration = null;
         if (checkvalue(m_textboxColorValue.getText())) {
             m_popup.hide();
         }
@@ -467,37 +421,13 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     protected void openPopup() {
 
         m_popup.setWidth(262);
-        m_popup.setAutoHideEnabled(true);
-        m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
-
-            public void onClose(CloseEvent<PopupPanel> event) {
-
-                closePopupDefault();
-
-            }
-        });
-
-        m_popup.addDialogClose(new Command() {
-
-            public void execute() {
-
-                // nothing to do all will be done in onClose();
-
-            }
-        });
-
-        if (m_previewHandlerRegistration != null) {
-            m_previewHandlerRegistration.removeHandler();
-
-        }
-        m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
+        m_popup.setAutoHideEnabled(false);
         m_popup.showRelativeTo(m_colorField);
 
-        m_popup.setModal(false);
+        m_popup.setModal(true);
         if (m_popup.getWidgetCount() != 0) {
             m_popup.remove(m_popup.getWidget(0));
         }
-
         m_nativePickerParent = new Label();
         String id = Document.get().createUniqueId();
         m_nativePickerParent.getElement().setId(id);
