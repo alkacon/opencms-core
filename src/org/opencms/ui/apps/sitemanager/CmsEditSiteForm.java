@@ -1924,7 +1924,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                         m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
                     }
                 }
-                m_simpleFieldTemplate.setEnabled(enableAll);
+                m_simpleFieldTemplate.setEnabled(false);
             }
         } catch (CmsException e) {
             LOG.error("Unable to read template property.", e);
