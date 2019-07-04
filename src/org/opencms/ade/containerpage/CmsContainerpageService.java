@@ -2184,6 +2184,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             elementData.setDndId(dndId);
             result.put(entry.getKey(), elementData);
+            // ensuring the element bean is cached with the right id
+            m_sessionCache.setCacheContainerElement(elementData.getClientId(), element);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container
                 CmsResource elementRes = cms.readResource(element.getId());
