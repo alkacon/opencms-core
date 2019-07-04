@@ -797,9 +797,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     }
                 }
 
-                writeContent(cms, file, content, getFileEncoding(cms, file));
-
                 writeCategories(file, content, lastEditedEntity);
+
+                writeContent(cms, file, content, getFileEncoding(cms, file));
 
                 // update offline indices
                 OpenCms.getSearchManager().updateOfflineIndexes();
