@@ -128,6 +128,9 @@ public class CmsConfigurationReader {
     /** The formatter node name. */
     public static final String N_FORMATTER = "Formatter";
 
+    /** Field name for the 'Remove all functions' setting. */
+    public static final String N_REMOVE_ALL_FUNCTIONS = "RemoveAllFunctions";
+
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
 
@@ -463,6 +466,10 @@ public class CmsConfigurationReader {
                 masterConfigIds.add(id);
             }
         }
+
+        boolean removeFunctions = false;
+        removeFunctions = getBoolean(root, N_REMOVE_ALL_FUNCTIONS);
+
         Set<CmsUUID> functions = new LinkedHashSet<>();
         for (I_CmsXmlContentValueLocation node : root.getSubValues(N_FUNCTION)) {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
@@ -473,9 +480,6 @@ public class CmsConfigurationReader {
                     functions.add(link.getStructureId());
                 }
             }
-        }
-        if (functions.isEmpty()) {
-            functions = null;
         }
 
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
@@ -494,6 +498,7 @@ public class CmsConfigurationReader {
             createContentsLocally,
             preferDetailPagesForLocalContents,
             formatterChangeSet,
+            removeFunctions,
             functions);
         return result;
     }

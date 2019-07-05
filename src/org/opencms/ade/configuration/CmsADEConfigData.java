@@ -521,18 +521,42 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Returns the restricted dynamic functions or <code>null</code>.<p>
+     * Returns the restricted dynamic functions or <code>null</code> if there are no restrictions.<p>
      *
      * @return the dynamic functions
      */
-    public Collection<CmsUUID> getDynamicFunctions() {
+    public Set<CmsUUID> getDynamicFunctions() {
 
         CmsADEConfigData parentData = parent();
-        Collection<CmsUUID> result = m_data.getDynamicFunctions();
-        if ((result == null) && (parentData != null)) {
-            result = parentData.getDynamicFunctions();
+
+        // null means no restrictions, while a set of structure ids means that the only allowed
+        // functions are those with the given ids.
+        Set<CmsUUID> restrictedFunctions = null;
+
+        // First, get the result of getDynamicFunctions for the parent. If there is no parent, there are no restrictions.
+        if (parentData != null) {
+            restrictedFunctions = parentData.getDynamicFunctions();
         }
-        return result;
+
+        // Then, if 'remove all functions' is selected, set the restricted functions to the empty set.
+        if (m_data.isRemoveAllFunctions()) {
+            restrictedFunctions = new HashSet<>();
+        }
+
+        // If we are restricted, add ids of all functions configured here to restricted function set
+        // (since the restricted function set, if it's coming from the parent, is unmodifiable, we need to copy it.)
+        if (restrictedFunctions != null) {
+            restrictedFunctions = new HashSet<>(restrictedFunctions);
+            for (CmsUUID id : m_data.getDynamicFunctions()) {
+                restrictedFunctions.add(id);
+            }
+        }
+        // If we are restricted, wrap the result in an unmodifiable set
+        if (restrictedFunctions != null) {
+            return Collections.unmodifiableSet(restrictedFunctions);
+        } else {
+            return null;
+        }
     }
 
     /**
