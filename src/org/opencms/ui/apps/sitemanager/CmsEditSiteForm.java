@@ -794,10 +794,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                             m_clonedCms.readResource(folderPath)).getTypeName())) {
                         String newFolderName = folderPath.split("/")[folderPath.split("/").length - 1];
                         m_simpleFieldFolderName.setValue(newFolderName);
-                        m_simpleFieldParentFolderName.setValue(
-                            m_simpleFieldParentFolderName.getValue().substring(
-                                0,
-                                folderPath.length() - 1 - newFolderName.length()));
                         m_isFolderNameTouched = true;
                         if (m_simpleFieldTitle.isEmpty()) {
                             CmsProperty title = m_clonedCms.readPropertyObject(
@@ -808,6 +804,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                                 m_simpleFieldTitle.setValue(title.getValue());
                             }
                         }
+                        setTemplateFieldForSiteroot(folderPath);
+                        m_simpleFieldParentFolderName.setValue(
+                            m_simpleFieldParentFolderName.getValue().substring(
+                                0,
+                                folderPath.length() - 1 - newFolderName.length()));
                     }
                 } catch (CmsException e) {
                     // Resource was not found. Not ok, but will be validated later
@@ -1141,19 +1142,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     protected void setTemplateField() {
 
-        try {
-            CmsProperty template = m_clonedCms.readPropertyObject(
-                getSiteRoot(),
-                CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                false);
-            if (template.isNullProperty()) {
-                m_simpleFieldTemplate.setValue(null);
-            } else {
-                m_simpleFieldTemplate.setValue(template.getStructureValue());
-            }
-        } catch (CmsException e) {
-            m_simpleFieldTemplate.setValue(null);
-        }
+        setTemplateFieldForSiteroot(getSiteRoot());
     }
 
     /**
@@ -1908,26 +1897,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      */
     private void setFieldsForSite(boolean enableAll) {
 
-        try {
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getSiteRoot())) {
-                CmsProperty prop = m_clonedCms.readPropertyObject(
-                    m_site.getSiteRoot(),
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                    false);
-                if (!prop.isNullProperty()) {
-                    if (!m_templates.contains(prop.getValue())) {
-                        m_simpleFieldTemplate.addItem(prop.getValue());
-                    }
-                    m_simpleFieldTemplate.select(prop.getValue());
-                } else {
-                    if (!m_templates.isEmpty()) {
-                        m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
-                    }
-                }
-                m_simpleFieldTemplate.setEnabled(false);
-            }
-        } catch (CmsException e) {
-            LOG.error("Unable to read template property.", e);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getSiteRoot())) {
+            setTemplateFieldForSiteroot(m_site.getSiteRoot());
+            m_simpleFieldTemplate.setEnabled(false);
         }
 
         m_simpleFieldSiteRoot.setVisible(true);
@@ -2038,6 +2010,26 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private void setFieldTitle(String newValue) {
 
         m_simpleFieldTitle.setValue(newValue);
+    }
+
+    private void setTemplateFieldForSiteroot(String siteroot) {
+
+        try {
+            CmsProperty prop = m_clonedCms.readPropertyObject(siteroot, CmsPropertyDefinition.PROPERTY_TEMPLATE, false);
+            if (!prop.isNullProperty()) {
+                if (!m_templates.contains(prop.getValue())) {
+                    m_simpleFieldTemplate.addItem(prop.getValue());
+                }
+                m_simpleFieldTemplate.select(prop.getValue());
+            } else {
+                if (!m_templates.isEmpty()) {
+                    m_simpleFieldTemplate.setValue(m_templates.get(0).getRootPath());
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Unable to read template property.", e);
+            m_simpleFieldTemplate.setValue(null);
+        }
     }
 
     /**
