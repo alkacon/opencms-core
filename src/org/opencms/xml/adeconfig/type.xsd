@@ -29,7 +29,7 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
 				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  />
-				<layout element="Disabled" widget="SelectorWidget" configuration="false*:%(key.disabled.false)\true:%(key.disabled.true)|add:%(key.disabled.add)|create:%(key.disabled.create)" />
+				<layout element="Disabled" widget="SelectorWidget" configuration="false*:%(key.disabled.false)|true:%(key.disabled.true)|add:%(key.disabled.add)|create:%(key.disabled.create)" />
 				<layout element="ElementView" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration=""/>
 				<layout element="ElementDeleteMode" widget="SelectorWidget" configuration="alwaysKeep:%(key.deletemode.alwaysKeep)|alwaysDelete:%(key.deletemode.alwaysDelete)|askKeep*:%(key.deletemode.askKeep)|askDelete:%(key.deletemode.askDelete)" display="singleline"/>
 			</layouts>
