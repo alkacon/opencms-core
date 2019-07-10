@@ -52,21 +52,17 @@ class CmsResourcesCellGenerator implements Table.ColumnGenerator {
      * @param charLimit maximal chars to output ".." instead of next list item.
      */
     public CmsResourcesCellGenerator(int charLimit) {
+
         m_charLimit = charLimit;
     }
 
-    /**
-    * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
-    */
-    public Object generateCell(Table source, Object itemId, Object columnId) {
-
-        List<?> resources = (List<?>)source.getItem(itemId).getItemProperty(columnId).getValue();
+    public static String formatResourcesForTable(List<?> resources, int charLimit) {
 
         String out = "";
         if (!resources.isEmpty()) {
             out = getRootPath(resources.get(0));
             int i = 1;
-            while ((resources.size() > i) & (out.length() < m_charLimit)) {
+            while ((resources.size() > i) & (out.length() < charLimit)) {
                 out += ", " + getRootPath(resources.get(i));
             }
             if (resources.size() > i) {
@@ -82,7 +78,7 @@ class CmsResourcesCellGenerator implements Table.ColumnGenerator {
      * @param resource CmsResource or CmsPublishedResource to get path of
      * @return path
      */
-    private String getRootPath(Object resource) {
+    private static String getRootPath(Object resource) {
 
         if (resource instanceof CmsResource) {
             return ((CmsResource)resource).getRootPath();
@@ -91,6 +87,17 @@ class CmsResourcesCellGenerator implements Table.ColumnGenerator {
             return ((CmsPublishedResource)resource).getRootPath();
         }
         throw new IllegalArgumentException("wrong format of resources"); //should never happen
+    }
+
+    /**
+    * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+    */
+    public Object generateCell(Table source, Object itemId, Object columnId) {
+
+        List<?> resources = (List<?>)source.getItem(itemId).getItemProperty(columnId).getValue();
+
+        String out = formatResourcesForTable(resources, m_charLimit);
+        return out;
     }
 
 }

@@ -95,6 +95,9 @@ public final class CmsPublishJobInfoBean {
     /** User to use for publishing. */
     private CmsUUID m_userId;
 
+    /** The original publish list. */
+    private CmsPublishList m_originalPublishList;
+
     /**
      * Constructor used to initialize a job info bean from the database.<p>
      *
@@ -155,6 +158,7 @@ public final class CmsPublishJobInfoBean {
         m_locale = m_cms.getRequestContext().getLocale();
 
         m_publishList = publishList;
+        m_originalPublishList = publishList;
         m_publishHistoryId = m_publishList.getPublishHistoryId();
 
         m_size = m_publishList.size();
@@ -201,6 +205,17 @@ public final class CmsPublishJobInfoBean {
     public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Gets the original publish list (not nulled after publish job is executed).
+     *
+     * @return the original publish list
+     */
+    public CmsPublishList getOriginalPublishList() {
+
+        return m_originalPublishList;
+
     }
 
     /**
@@ -348,6 +363,7 @@ public final class CmsPublishJobInfoBean {
         m_cms.getRequestContext().setCurrentProject(project);
 
         m_publishList = publishList;
+        m_originalPublishList = publishList;
         m_publishList.revive(m_cms);
     }
 

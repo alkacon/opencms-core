@@ -63,6 +63,16 @@ public class CmsPublishJobRunning extends CmsPublishJobBase {
      *
      * @return the list of resources to publish
      */
+    public CmsPublishList getOriginalPublishList() {
+
+        return m_publishJob.getOriginalPublishList();
+    }
+
+    /**
+     * Returns the list of resources to publish.<p>
+     *
+     * @return the list of resources to publish
+     */
     public CmsPublishList getPublishList() {
 
         return m_publishJob.getPublishList();
