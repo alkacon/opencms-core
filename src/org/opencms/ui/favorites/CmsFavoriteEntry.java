@@ -35,6 +35,7 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.util.CmsStringUtil;
@@ -346,6 +347,7 @@ public class CmsFavoriteEntry {
                 CmsResource folder = cms.readResource(getStructureId(), filter);
                 project = cms.readProject(getProjectId());
                 cms.getRequestContext().setSiteRoot(getSiteRoot());
+                A_CmsUI.get().getWorkplaceSettings().setSite(getSiteRoot());
                 cms.getRequestContext().setCurrentProject(project);
                 String explorerLink = CmsVaadinUtils.getWorkplaceLink()
                     + "#!"
@@ -364,6 +366,7 @@ public class CmsFavoriteEntry {
                 String link = null;
                 cms.getRequestContext().setCurrentProject(project);
                 cms.getRequestContext().setSiteRoot(getSiteRoot());
+                A_CmsUI.get().getWorkplaceSettings().setSite(getSiteRoot());
                 if (getDetailId() != null) {
                     detailContent = cms.readResource(getDetailId());
                     link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(

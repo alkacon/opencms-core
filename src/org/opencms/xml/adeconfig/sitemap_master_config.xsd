@@ -22,6 +22,7 @@
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
+            <xsd:element name="RemoveAllFunctions" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardProperties" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
@@ -33,11 +34,20 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
 				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
+                <layout element="AddFormatters/AddFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter"/>
+                <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter"/>
 			</layouts>
+            <relations>
+                <relation element="AddFormatters/AddFormatter" invalidate="false" />
+                <relation element="RemoveFormatters/RemoveFormatter" invalidate="false" />
+                <relation element="ResourceType/Folder/Path" invalidate="false" />
+                <relation element="Function" invalidate="false" />
+            </relations>
+            
 			<tabs>
 				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
 				<tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
-				<tab element="Function" name="TabFunctions" collapse="false" description="%(key.label.SitemapConfiguration.TabFunctions.description)" />
+				<tab element="RemoveAllFunctions" name="TabFunctions" collapse="false"  />
 				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
 			</tabs>
 			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />

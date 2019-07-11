@@ -74,6 +74,9 @@ public class CmsADEConfigDataInternal {
     /** The base path of this configuration. */
     private String m_basePath;
 
+    /** the dynamic functions available. */
+    private Set<CmsUUID> m_dynamicFunctions;
+
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = Lists.newArrayList();
 
@@ -89,14 +92,11 @@ public class CmsADEConfigDataInternal {
     /** The internal resource type entries. */
     private List<CmsResourceTypeConfig> m_ownResourceTypes = Lists.newArrayList();
 
-    /** The dynamic functions configured for this configuration level. */
-    private Set<CmsUUID> m_ownDynamicFunctions;
-
-    /** the dynamic functions available. */
-    private Set<CmsUUID> m_dynamicFunctions;
-
     /** True if detail pages from this sitemap should be preferred when linking to contents inside this sitemap. */
     private boolean m_preferDetailPagesForLocalContents;
+
+    /** Flag indicating whether all functions should be removed. */
+    private boolean m_removeAllFunctions;
 
     /** The resource from which the configuration data was read. */
     private CmsResource m_resource;
@@ -119,7 +119,8 @@ public class CmsADEConfigDataInternal {
      * @param createContentsLocally the "create contents locally" flag
      * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
      * @param formatterChangeSet the formatter changes
-     * @param dynamicFunctions the dynamic functions available
+     * @param removeAllFunctions flag indicating whether all functions should be removed
+     * @param functionIds the dynamic functions available
      */
     public CmsADEConfigDataInternal(
         CmsResource resource,
@@ -137,7 +138,8 @@ public class CmsADEConfigDataInternal {
         boolean createContentsLocally,
         boolean preferDetailPagesForLocalContents,
         CmsFormatterChangeSet formatterChangeSet,
-        Set<CmsUUID> dynamicFunctions) {
+        boolean removeAllFunctions,
+        Set<CmsUUID> functionIds) {
 
         m_resource = resource;
         m_basePath = basePath;
@@ -158,8 +160,8 @@ public class CmsADEConfigDataInternal {
         m_createContentsLocally = createContentsLocally;
         m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
         m_formatterChangeSet = formatterChangeSet;
-        m_ownDynamicFunctions = dynamicFunctions;
-        m_dynamicFunctions = dynamicFunctions;
+        m_dynamicFunctions = functionIds;
+        m_removeAllFunctions = removeAllFunctions;
     }
 
     /**
@@ -195,13 +197,16 @@ public class CmsADEConfigDataInternal {
     }
 
     /**
-     * Returns the restricted dynamic functions or <code>null</code>.<p>
+     * Returns the set of configured dynamic functions, regardless of whether the 'remove all formatters' option is enabled.
      *
      * @return the dynamic functions
      */
     public Collection<CmsUUID> getDynamicFunctions() {
 
-        return m_dynamicFunctions == null ? null : Collections.unmodifiableSet(m_dynamicFunctions);
+        if (m_dynamicFunctions == null) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(m_dynamicFunctions);
     }
 
     /**
@@ -346,6 +351,16 @@ public class CmsADEConfigDataInternal {
     }
 
     /**
+     * True if all functions should be removed by this sitemap configuration.
+     *
+     * @return true if all functions should be removed
+     */
+    public boolean isRemoveAllFunctions() {
+
+        return m_removeAllFunctions;
+    }
+
+    /**
      * Merges the parent's data into this object.<p>
      *
      * @param parent the parent configuration data
@@ -393,11 +408,8 @@ public class CmsADEConfigDataInternal {
             parentFunctionRefs,
             m_functionReferences,
             false);
-        if ((parent != null) && (m_ownDynamicFunctions == null)) {
-            m_dynamicFunctions = parent.m_dynamicFunctions;
-        } else {
-            m_dynamicFunctions = m_ownDynamicFunctions;
-        }
+
+        // dynamic functions are not used in module configurations, so we do not need to merge them here
     }
 
     /**

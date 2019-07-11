@@ -89,6 +89,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
                 false,
                 false,
                 new CmsFormatterChangeSet(),
+                false,
                 null),
             null,
             null);

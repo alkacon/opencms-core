@@ -104,6 +104,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.ugc.CmsUgcSessionFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
+import org.opencms.ui.dialogs.CmsPublishScheduledDialog;
 import org.opencms.ui.error.CmsErrorUI;
 import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.ui.login.CmsLoginUI;
@@ -1680,6 +1681,8 @@ public final class OpenCmsCore {
             m_workflowManager.initialize(adminCms);
 
             m_remoteShellServer = CmsRemoteShellServer.initialize(systemConfiguration);
+
+            CmsPublishScheduledDialog.setAdminCms(initCmsObject(adminCms));
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);

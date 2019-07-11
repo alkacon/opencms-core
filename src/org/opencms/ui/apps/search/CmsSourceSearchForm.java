@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -277,7 +278,13 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_ignoreSubSites.setValue(new Boolean(settings.ignoreSubSites()));
         if (settings.getType().isContentValuesOnly()) {
             if (settings.getLocale() != null) {
-                m_locale.setValue(settings.getLocale());
+                OpenCms.getLocaleManager();
+                Locale l = CmsLocaleManager.getLocale(settings.getLocale());
+                // if the locale is invalid, the default locale will be returned
+                // we want to prevent setting the default locale in such a case.
+                if (!l.equals(CmsLocaleManager.getDefaultLocale()) || l.toString().equals(settings.getLocale())) {
+                    m_locale.setValue(l);
+                }
             }
             m_xPath.setValue(settings.getXpath());
         }

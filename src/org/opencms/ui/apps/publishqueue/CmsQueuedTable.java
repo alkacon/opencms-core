@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.publishqueue;
 
+import org.opencms.db.CmsPublishList;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -66,8 +67,7 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
@@ -78,6 +78,215 @@ import com.vaadin.v7.ui.Table;
  * Class for Vaadin Table showing history queue elements.<p>
  */
 public class CmsQueuedTable extends Table {
+
+    /**
+     * Row bean for the bean item container.
+     */
+    public class Row {
+
+        /** The underlying job. */
+        private CmsPublishJobBase m_job;
+
+        /** Cached list of resources. */
+        private List<?> m_resourceList;
+
+        /** The icon. */
+        private Resource m_icon;
+
+        /** Cached state. */
+        private String m_state;
+
+        /** Used for initial sorting. */
+        private int m_sortType;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param job the underlying publish job
+         */
+        public Row(CmsPublishJobBase job, int sortType) {
+
+            m_job = job;
+            m_sortType = sortType;
+            if (job == null) {
+                throw new IllegalArgumentException("Job must not be null.");
+            }
+        }
+
+        /**
+         * Gets the file count.
+         *
+         * @return the file count
+         */
+        public int getFilesCount() {
+
+            return m_job.getSize();
+        }
+
+        /**
+         * Gets the icon.
+         *
+         * @return the icon
+         */
+        public Resource getIcon() {
+
+            if (m_icon == null) {
+                m_icon = new CmsCssIcon(OpenCmsTheme.ICON_PUBLISH);
+            }
+            return m_icon;
+        }
+
+        /**
+         * Gets the publish job.
+         *
+         * @return the publish job
+         */
+        public CmsPublishJobBase getJob() {
+
+            return m_job;
+        }
+
+        /**
+         * Gets the project name.
+         *
+         * @return the project name
+         */
+        public String getProject() {
+
+            return m_job.getProjectName().replace("&#47;", "/");
+        }
+
+        /**
+         * Gets the resource list.
+         *
+         * @return the resource list
+         */
+        public List<?> getResourceList() {
+
+            if (m_resourceList == null) {
+                if (m_job instanceof CmsPublishJobFinished) {
+                    try {
+                        m_resourceList = A_CmsUI.getCmsObject().readPublishedResources(m_job.getPublishHistoryId());
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                } else if (m_job instanceof CmsPublishJobEnqueued) {
+                    m_resourceList = ((CmsPublishJobEnqueued)m_job).getOriginalPublishList().getAllResources();
+                } else if (m_job instanceof CmsPublishJobRunning) {
+                    CmsPublishList publishList = ((CmsPublishJobRunning)m_job).getOriginalPublishList();
+                    if (publishList == null) {
+                        // publish job has already finished, can't get the publish list
+                        m_resourceList = Collections.emptyList();
+                    } else {
+                        m_resourceList = publishList.getAllResources();
+                    }
+                }
+            }
+            return m_resourceList;
+        }
+
+        /**
+         * Gets the resource list as a string.
+         *
+         * @return the resource list string representation
+         */
+        public String getResources() {
+
+            List<?> resources = getResourceList();
+            if (resources == null) {
+                return "";
+            }
+            return CmsResourcesCellGenerator.formatResourcesForTable(resources, 50);
+        }
+
+        /**
+         * Used for initial sorting.
+         *
+         * @return the sort type
+         */
+        public int getSortType() {
+
+            return m_sortType;
+        }
+
+        /**
+         * Gets the start date of the job.
+         *
+         * @return the start date
+         */
+        public Date getStart() {
+
+            if (m_job instanceof CmsPublishJobFinished) {
+                return new Date(((CmsPublishJobFinished)m_job).getStartTime());
+            } else if (m_job instanceof CmsPublishJobRunning) {
+                return new Date(((CmsPublishJobRunning)m_job).getStartTime());
+            }
+            return null;
+        }
+
+        /**
+         * Gets the job state.
+         *
+         * @return the job state
+         */
+        @SuppressWarnings("synthetic-access")
+        public String getStatus() {
+
+            if (m_state == null) {
+                if (m_job instanceof CmsPublishJobFinished) {
+                    m_state = getState((CmsPublishJobFinished)m_job);
+                } else if (m_job instanceof CmsPublishJobRunning) {
+                    m_state = STATE_RUNNING;
+                } else if (m_job instanceof CmsPublishJobEnqueued) {
+                    m_state = STATE_ENQUEUE;
+                } else {
+                    m_state = STATE_ERROR;
+                    LOG.error("Invalid job type: " + m_job);
+                }
+            }
+            return m_state;
+        }
+
+        /**
+         * Gets the user friendly label for the state.
+         *
+         * @return the user friendly state description
+         */
+        @SuppressWarnings("synthetic-access")
+        public String getStatusLocale() {
+
+            String state = getStatus();
+            String key = STATUS_MESSAGES.get(state);
+            if (key == null) {
+                LOG.error("KEY is null for state " + state);
+            }
+            return CmsVaadinUtils.getMessageText(key);
+        }
+
+        /**
+         * Gets the stop date for the job.
+         *
+         * @return the stop date
+         */
+        public Date getStop() {
+
+            if (m_job instanceof CmsPublishJobFinished) {
+                return new Date(((CmsPublishJobFinished)m_job).getFinishTime());
+            }
+            return null;
+        }
+
+        /**
+         * Gets the name of the user who started the job.
+         *
+         * @return the user name for the job
+         */
+        public String getUser() {
+
+            return m_job.getUserName(A_CmsUI.getCmsObject());
+        }
+
+    }
 
     /**
      *Menu entry for showing report.<p>
@@ -243,7 +452,7 @@ public class CmsQueuedTable extends Table {
     static Log LOG = CmsLog.getLog(CmsQueuedTable.class.getName());
 
     /**table column. */
-    private static final String PROP_FILESCOUNT = "files";
+    private static final String PROP_FILESCOUNT = "filesCount";
 
     /**table column. */
     private static final String PROP_ICON = "icon";
@@ -260,8 +469,10 @@ public class CmsQueuedTable extends Table {
     /**table column. */
     private static final String PROP_STATUS = "status";
 
+    private static final String PROP_SORT_TYPE = "sortType";
+
     /**table column. */
-    private static final String PROP_STATUS_LOCALE = "status-locale";
+    private static final String PROP_STATUS_LOCALE = "statusLocale";
 
     /**table column. */
     private static final String PROP_STOP = "stop";
@@ -291,7 +502,7 @@ public class CmsQueuedTable extends Table {
     private static final Map<String, String> STATUS_MESSAGES = getStatusMap();
 
     /**Container. */
-    IndexedContainer m_container;
+    BeanItemContainer<Row> m_container;
 
     /**Instance of calling class.*/
     CmsPublishQueue m_manager;
@@ -319,16 +530,7 @@ public class CmsQueuedTable extends Table {
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
 
-        m_container = new IndexedContainer();
-        m_container.addContainerProperty(PROP_ICON, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_PUBLISH));
-        m_container.addContainerProperty(PROP_STATUS, String.class, null);
-        m_container.addContainerProperty(PROP_STATUS_LOCALE, String.class, null);
-        m_container.addContainerProperty(PROP_PROJECT, String.class, "");
-        m_container.addContainerProperty(PROP_START, Date.class, null);
-        m_container.addContainerProperty(PROP_STOP, Date.class, null);
-        m_container.addContainerProperty(PROP_USER, String.class, "");
-        m_container.addContainerProperty(PROP_FILESCOUNT, Integer.class, Integer.valueOf(1));
-        m_container.addContainerProperty(PROP_RESOURCES, List.class, null);
+        m_container = new BeanItemContainer<Row>(Row.class);
 
         setContainerDataSource(m_container);
         //        setItemIconPropertyId(PROP_ICON);
@@ -408,7 +610,7 @@ public class CmsQueuedTable extends Table {
             }
         });
 
-        addGeneratedColumn(PROP_RESOURCES, new CmsResourcesCellGenerator(50));
+        // addGeneratedColumn(PROP_RESOURCES, new CmsResourcesCellGenerator(50));
         loadJobs();
     }
 
@@ -544,13 +746,13 @@ public class CmsQueuedTable extends Table {
         if (event.getButton().equals(MouseButton.RIGHT) || (propertyId == null)) {
             m_menu.setEntries(
                 getMenuEntries(),
-                Collections.singleton((((CmsPublishJobBase)getValue()).getPublishHistoryId()).getStringValue()));
+                Collections.singleton(((((Row)getValue()).getJob()).getPublishHistoryId()).getStringValue()));
             m_menu.openForTable(event, itemId, propertyId, CmsQueuedTable.this);
         } else if (event.getButton().equals(MouseButton.LEFT) && PROP_RESOURCES.equals(propertyId)) {
-            showResourceDialog(((CmsPublishJobBase)getValue()).getPublishHistoryId().getStringValue());
+            showResourceDialog((((Row)getValue()).getJob()).getPublishHistoryId().getStringValue());
         } else if (event.getButton().equals(MouseButton.LEFT) && PROP_PROJECT.equals(propertyId)) {
             if (!(getValue() instanceof CmsPublishJobEnqueued)) {
-                showReportDialog((((CmsPublishJobBase)getValue()).getPublishHistoryId().getStringValue()));
+                showReportDialog(((((Row)getValue()).getJob()).getPublishHistoryId().getStringValue()));
             }
         }
     }
@@ -601,23 +803,7 @@ public class CmsQueuedTable extends Table {
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentUser());
         }
         for (CmsPublishJobFinished job : publishJobs) {
-            String state = getState(job);
-            Item item = m_container.addItem(job);
-            item.getItemProperty(PROP_PROJECT).setValue(job.getProjectName().replace("&#47;", "/")); //TODO better way for unescaping..
-            try {
-                item.getItemProperty(PROP_RESOURCES).setValue(
-                    A_CmsUI.getCmsObject().readPublishedResources(job.getPublishHistoryId()));
-            } catch (com.vaadin.v7.data.Property.ReadOnlyException | CmsException e) {
-                LOG.error("Error while read published Resources", e);
-            }
-            item.getItemProperty(PROP_STATUS).setValue(state);
-            item.getItemProperty(PROP_STATUS_LOCALE).setValue(
-                CmsVaadinUtils.getMessageText(STATUS_MESSAGES.get(state)));
-            item.getItemProperty(PROP_START).setValue(new Date(job.getStartTime()));
-            item.getItemProperty(PROP_STOP).setValue(new Date(job.getFinishTime()));
-            item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
-            item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
-
+            m_container.addBean(new Row(job, 0));
         }
         //Sort table according to start time of jobs
         m_container.sort(new String[] {PROP_START}, new boolean[] {false});
@@ -626,34 +812,18 @@ public class CmsQueuedTable extends Table {
 
         //a) running jobs
         if (OpenCms.getPublishManager().isRunning()) {
-            jobs.add(OpenCms.getPublishManager().getCurrentPublishJob());
-        }
-
-        //b) queued jobs
-        jobs.addAll(OpenCms.getPublishManager().getPublishQueue());
-        for (CmsPublishJobBase job : jobs) {
-            Item item = m_container.addItemAt(0, job);
-            item.getItemProperty(PROP_PROJECT).setValue(job.getProjectName().replace("&#47;", "/")); //TODO better way for unescaping..
-
-            //distinguish between running and enqueued jobs
-            if (job instanceof CmsPublishJobRunning) {
-                item.getItemProperty(PROP_RESOURCES).setValue(
-                    ((CmsPublishJobRunning)job).getPublishList().getAllResources());
-                item.getItemProperty(PROP_START).setValue(new Date(((CmsPublishJobRunning)job).getStartTime()));
-                item.getItemProperty(PROP_STATUS).setValue(STATE_RUNNING);
-                item.getItemProperty(PROP_STATUS_LOCALE).setValue(
-                    CmsVaadinUtils.getMessageText(STATUS_MESSAGES.get(STATE_RUNNING)));
-
-            } else {
-                item.getItemProperty(PROP_RESOURCES).setValue(
-                    ((CmsPublishJobEnqueued)job).getPublishList().getAllResources());
-                item.getItemProperty(PROP_STATUS).setValue(STATE_ENQUEUE);
-                item.getItemProperty(PROP_STATUS_LOCALE).setValue(
-                    CmsVaadinUtils.getMessageText(STATUS_MESSAGES.get(STATE_ENQUEUE)));
-
+            CmsPublishJobRunning currentJob = OpenCms.getPublishManager().getCurrentPublishJob();
+            if (currentJob != null) {
+                m_container.addBean(new Row(currentJob, 1));
             }
-            item.getItemProperty(PROP_USER).setValue(job.getUserName(A_CmsUI.getCmsObject()));
-            item.getItemProperty(PROP_FILESCOUNT).setValue(Integer.valueOf(job.getSize()));
         }
+
+        int i = 0;
+        for (CmsPublishJobBase job : OpenCms.getPublishManager().getPublishQueue()) {
+            m_container.addBean(new Row(job, 2 + i));
+            i += 1;
+        }
+        m_container.sort(new String[] {PROP_SORT_TYPE, PROP_START}, new boolean[] {false, false});
+
     }
 }

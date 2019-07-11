@@ -128,6 +128,9 @@ public class CmsConfigurationReader {
     /** The formatter node name. */
     public static final String N_FORMATTER = "Formatter";
 
+    /** Field name for the 'Remove all functions' setting. */
+    public static final String N_REMOVE_ALL_FUNCTIONS = "RemoveAllFunctions";
+
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
 
@@ -385,7 +388,10 @@ public class CmsConfigurationReader {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)addLoc.getValue();
             CmsLink link = value.getLink(m_cms);
             if (link != null) {
-                addFormatters.add(link.getStructureId().toString());
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    addFormatters.add(structureId.toString());
+                }
             }
         }
         return addFormatters;
@@ -460,16 +466,20 @@ public class CmsConfigurationReader {
                 masterConfigIds.add(id);
             }
         }
+
+        boolean removeFunctions = false;
+        removeFunctions = getBoolean(root, N_REMOVE_ALL_FUNCTIONS);
+
         Set<CmsUUID> functions = new LinkedHashSet<>();
         for (I_CmsXmlContentValueLocation node : root.getSubValues(N_FUNCTION)) {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
             CmsLink link = value.getLink(m_cms);
             if (link != null) {
-                functions.add(link.getStructureId());
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    functions.add(link.getStructureId());
+                }
             }
-        }
-        if (functions.isEmpty()) {
-            functions = null;
         }
 
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
@@ -488,6 +498,7 @@ public class CmsConfigurationReader {
             createContentsLocally,
             preferDetailPagesForLocalContents,
             formatterChangeSet,
+            removeFunctions,
             functions);
         return result;
     }
@@ -588,7 +599,10 @@ public class CmsConfigurationReader {
             CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)removeLoc.getValue();
             CmsLink link = value.getLink(m_cms);
             if (link != null) {
-                removeFormatters.add(link.getStructureId().toString());
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    removeFormatters.add(structureId.toString());
+                }
             }
         }
         return removeFormatters;

@@ -49,7 +49,6 @@ import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.commons.Messages;
 
 import java.text.DateFormat;
@@ -81,6 +80,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishScheduledDialog.class);
+
+    /** The Admin CmsObject. */
+    private static CmsObject m_adminCms;
 
     /** The dialog context. */
     private I_CmsDialogContext m_context;
@@ -154,6 +156,15 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
     }
 
     /**
+     * Sets the admin cms object. This must happen during start up.
+     * @param cms the admin cms.
+     */
+    public static void setAdminCms(CmsObject cms) {
+
+        m_adminCms = cms;
+    }
+
+    /**
      * Cancels the dialog action.<p>
      */
     void cancel() {
@@ -177,23 +188,20 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 new CmsException(Messages.get().container(Messages.ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1, dateValue)));
         } else {
             try {
-                // make copies from the admin cmsobject and the user cmsobject
-                // get the admin cms object
-                CmsWorkplaceAction action = CmsWorkplaceAction.getInstance();
-                CmsObject cmsAdmin = action.getCmsAdminObject();
                 // get the user cms object
                 CmsObject cms = OpenCms.initCmsObject(m_context.getCms());
 
                 // set the current user site to the admin cms object
-                cmsAdmin.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
-                CmsProject tmpProject = createTempProject(cmsAdmin, m_context.getResources(), dateValue);
+                CmsObject adminCms = getAdminCms();
+                adminCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+                CmsProject tmpProject = createTempProject(adminCms, m_context.getResources(), dateValue);
                 // set project as current project
-                cmsAdmin.getRequestContext().setCurrentProject(tmpProject);
+                adminCms.getRequestContext().setCurrentProject(tmpProject);
                 cms.getRequestContext().setCurrentProject(tmpProject);
 
                 Set<CmsUUID> changeIds = new HashSet<CmsUUID>();
                 for (CmsResource resource : m_context.getResources()) {
-                    addToTempProject(cmsAdmin, cms, resource, tmpProject);
+                    addToTempProject(adminCms, cms, resource, tmpProject);
                     if (resource.isFolder() && m_includeSubResources.getValue().booleanValue()) {
                         List<CmsResource> subResources = cms.readResources(
                             resource,
@@ -206,7 +214,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                                 false,
                                 CmsResourceFilter.ALL)) {
-                                addToTempProject(cmsAdmin, cms, sub, tmpProject);
+                                addToTempProject(adminCms, cms, sub, tmpProject);
                             }
                         }
                     }
@@ -245,7 +253,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 // create the context info
                 CmsContextInfo contextInfo = new CmsContextInfo();
                 contextInfo.setProjectName(tmpProject.getName());
-                contextInfo.setUserName(cmsAdmin.getRequestContext().getCurrentUser().getName());
+                contextInfo.setUserName(adminCms.getRequestContext().getCurrentUser().getName());
                 // create the job schedule parameter
                 SortedMap<String, String> params = new TreeMap<String, String>();
                 // the user to send mail to
@@ -260,7 +268,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 // add the context info to the scheduled job
                 job.setContextInfo(contextInfo);
                 // add the job to the scheduled job list
-                OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
+                OpenCms.getScheduleManager().scheduleJob(adminCms, job);
                 // update the XML configuration
                 OpenCms.writeConfiguration(CmsSchedulerConfiguration.class);
                 m_context.finish(changeIds);
@@ -383,6 +391,16 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
         // write the project to the database
         adminCms.writeProject(tmpProject);
         return tmpProject;
+    }
+
+    /**
+     * Returns a copy of the admin cms object.
+     * @return a copy of the admin cms object.
+     * @throws CmsException thrown if copying the cms object fails.
+     */
+    private CmsObject getAdminCms() throws CmsException {
+
+        return OpenCms.initCmsObject(m_adminCms);
     }
 
     /**

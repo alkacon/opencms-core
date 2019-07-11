@@ -615,7 +615,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
             m_cms.lockResource(siteRootResource);
             // add template  property
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_template)) {
-                CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, m_template, m_template);
+                CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, m_template, null);
                 m_cms.writePropertyObject(siteRootResource.getRootPath(), prop);
             }
             m_cms.unlockResource(siteRootResource);

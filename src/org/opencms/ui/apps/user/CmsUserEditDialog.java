@@ -31,6 +31,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -469,7 +470,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         setPasswordFields();
         m_ou.setValue(ou.isEmpty() ? "/" : ou);
         m_group.setWidgetType(WidgetType.groupwidget);
-        m_group.setValue(ou + OpenCms.getDefaultUsers().getGroupUsers());
+        try {
+            CmsGroup group = m_cms.readGroup(ou + OpenCms.getDefaultUsers().getGroupUsers());
+            m_group.setValue(group.getName());
+        } catch (CmsException e1) {
+            //There is no user group -> ok, keep field empty
+        }
         m_group.setRealPrincipalsOnly(true);
         m_group.setOU(m_ou.getValue());
         try {
@@ -805,9 +811,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_startfolder.setUseRootPaths(true);
             if (!m_visSites) {
                 try {
-                    m_startfolder.setValue(
-                        OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cmsCopy, m_ou.getValue()).get(
-                            0).getRootPath());
+                    List<CmsResource> ouResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                        cmsCopy,
+                        m_ou.getValue());
+                    if (!ouResources.isEmpty()) {
+                        m_startfolder.setValue(ouResources.get(0).getRootPath());
+                    }
                 } catch (CmsException e1) {
                     LOG.error("unable to read resources for ou", e1);
                 }
@@ -1042,7 +1051,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_group.getValue())) {
             m_cms.addUserToGroup(user.getName(), m_group.getValue());
         }
-        OpenCms.getRoleManager().addUserToRole(m_cms, (CmsRole)m_role.getValue(), user.getName());
+        if (m_role.isVisible()) {
+            OpenCms.getRoleManager().addUserToRole(m_cms, (CmsRole)m_role.getValue(), user.getName());
+        }
         m_user = user;
 
     }
@@ -1101,7 +1112,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 CmsGroup group = m_cms.readGroup(m_group.getValue());
                 CmsRole roleFromGroup = CmsRole.valueOf(group);
                 CmsRole roleFromField = (CmsRole)m_role.getValue();
-                if (!roleFromGroup.getChildren(true).contains(roleFromField)) {
+                if ((roleFromGroup == null) || !roleFromGroup.getChildren(true).contains(roleFromField)) {
                     roleFromGroup = roleFromField;
                 }
                 if (roleFromGroup == null) {

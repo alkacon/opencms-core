@@ -43,7 +43,6 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.widgets.A_CmsWidget;
-import org.opencms.widgets.CmsWidgetConfigurationException;
 import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
@@ -702,11 +701,8 @@ public class CmsContentTypeVisitor {
                 }
                 m_complexWidgets.put(CmsContentService.getAttributeName(schemaType), widgetData);
             }
-        } catch (CmsWidgetConfigurationException e) {
-            LOG.error(e.getLocalizedMessage(), e);
         } catch (Exception e) {
-            // may happen if no widget was set for the value
-            CmsContentService.LOG.debug(e.getMessage(), e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         // remove the leading slash from element path to check visibility
