@@ -96,14 +96,18 @@ public class CmsQueuedTable extends Table {
         /** Cached state. */
         private String m_state;
 
+        /** Used for initial sorting. */
+        private int m_sortType;
+
         /**
          * Creates a new instance.
          *
          * @param job the underlying publish job
          */
-        public Row(CmsPublishJobBase job) {
+        public Row(CmsPublishJobBase job, int sortType) {
 
             m_job = job;
+            m_sortType = sortType;
             if (job == null) {
                 throw new IllegalArgumentException("Job must not be null.");
             }
@@ -193,6 +197,16 @@ public class CmsQueuedTable extends Table {
                 return "";
             }
             return CmsResourcesCellGenerator.formatResourcesForTable(resources, 50);
+        }
+
+        /**
+         * Used for initial sorting.
+         *
+         * @return the sort type
+         */
+        public int getSortType() {
+
+            return m_sortType;
         }
 
         /**
@@ -454,6 +468,8 @@ public class CmsQueuedTable extends Table {
 
     /**table column. */
     private static final String PROP_STATUS = "status";
+
+    private static final String PROP_SORT_TYPE = "sortType";
 
     /**table column. */
     private static final String PROP_STATUS_LOCALE = "statusLocale";
@@ -787,7 +803,7 @@ public class CmsQueuedTable extends Table {
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentUser());
         }
         for (CmsPublishJobFinished job : publishJobs) {
-            m_container.addBean(new Row(job));
+            m_container.addBean(new Row(job, 0));
         }
         //Sort table according to start time of jobs
         m_container.sort(new String[] {PROP_START}, new boolean[] {false});
@@ -798,15 +814,16 @@ public class CmsQueuedTable extends Table {
         if (OpenCms.getPublishManager().isRunning()) {
             CmsPublishJobRunning currentJob = OpenCms.getPublishManager().getCurrentPublishJob();
             if (currentJob != null) {
-                jobs.add(currentJob);
+                m_container.addBean(new Row(currentJob, 1));
             }
         }
 
-        //b) queued jobs
-        jobs.addAll(OpenCms.getPublishManager().getPublishQueue());
-        for (CmsPublishJobBase job : jobs) {
-            m_container.addBean(new Row(job));
-
+        int i = 0;
+        for (CmsPublishJobBase job : OpenCms.getPublishManager().getPublishQueue()) {
+            m_container.addBean(new Row(job, 2 + i));
+            i += 1;
         }
+        m_container.sort(new String[] {PROP_SORT_TYPE, PROP_START}, new boolean[] {false, false});
+
     }
 }
