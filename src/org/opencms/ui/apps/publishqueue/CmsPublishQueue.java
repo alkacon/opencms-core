@@ -27,14 +27,20 @@
 
 package org.opencms.ui.apps.publishqueue;
 
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.TextField;
 
@@ -45,6 +51,30 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
 
     /** The file table filter input. */
     private TextField m_siteTableFilter;
+
+    /** Reload button. */
+    private Button m_refreshButton;
+
+    /**
+     * Creates a new instance.
+     */
+    public CmsPublishQueue() {
+
+        super();
+        m_refreshButton = CmsToolBar.createButton(
+            FontOpenCms.RESET,
+            CmsVaadinUtils.getMessageText(Messages.GUI_APP_RELOAD_0));
+        m_refreshButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                A_CmsUI.get().getPage().reload();
+
+            }
+        });
+    }
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
@@ -68,12 +98,7 @@ public class CmsPublishQueue extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        //remove filter field
-        if (m_siteTableFilter != null) {
-            m_infoLayout.removeComponent(m_siteTableFilter);
-            m_siteTableFilter = null;
-        }
-
+        m_uiContext.addToolbarButton(m_refreshButton);
         //default ->
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             m_rootLayout.setMainHeightFull(true);
