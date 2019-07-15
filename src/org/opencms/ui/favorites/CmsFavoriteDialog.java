@@ -34,6 +34,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -52,14 +53,17 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -124,6 +128,9 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
 
         }
 
+        /**
+         * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onEdit()
+         */
         @Override
         public void onEdit() {
 
@@ -211,6 +218,12 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** The favorite context. */
     private I_CmsFavoriteContext m_context;
 
+    /** Site selector. */
+    private ComboBox<String> m_siteBox;
+
+    /** Project selector. */
+    private ComboBox<CmsUUID> m_projectBox;
+
     /** Current favorite location. */
     private Optional<CmsFavoriteEntry> m_currentLocation;
 
@@ -229,11 +242,16 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** Container for the sites, used for their labels. */
     private IndexedContainer m_sitesContainer;
 
+    /** Label for project selector. */
+    private Label m_projectBoxLabel;
+
     /**
      * Creates a new dialog instance.
      *
      * @param context the favorite context
      * @param favDao the favorite load/save handler
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsFavoriteDialog(I_CmsFavoriteContext context, CmsFavoriteDAO favDao)
     throws CmsException {
@@ -257,6 +275,32 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         m_addButton.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_FAVORITES_ADD_BUTTON_0));
         m_addButton.addClickListener(evt -> onClickAdd());
         initEntries(entries);
+        CmsObject cms = A_CmsUI.getCmsObject();
+        LinkedHashMap<String, String> sites = CmsVaadinUtils.getAvailableSitesMap(cms);
+        m_siteBox.setDataProvider(new ListDataProvider<>(sites.keySet()));
+        m_siteBox.setItemCaptionGenerator(site -> sites.get(site));
+        m_siteBox.setEmptySelectionAllowed(false);
+        m_siteBox.setValue(cms.getRequestContext().getSiteRoot());
+        m_siteBox.addValueChangeListener(evt -> {
+            if (!evt.getOldValue().equals(evt.getValue())) {
+                m_context.changeSite(evt.getValue());
+            }
+        });
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER)) {
+            LinkedHashMap<CmsUUID, String> projects = CmsVaadinUtils.getProjectsMap(cms);
+            m_projectBox.setDataProvider(new ListDataProvider<>(projects.keySet()));
+            m_projectBox.setItemCaptionGenerator(project -> projects.get(project));
+            m_projectBox.setEmptySelectionAllowed(false);
+            m_projectBox.setValue(cms.getRequestContext().getCurrentProject().getId());
+            m_projectBox.addValueChangeListener(evt -> {
+                if (!evt.getOldValue().equals(evt.getValue())) {
+                    m_context.changeProject(evt.getValue());
+                }
+            });
+        } else {
+            m_projectBox.setVisible(false);
+            m_projectBoxLabel.setVisible(false);
+        }
     }
 
     /**
@@ -288,6 +332,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
      */
     @Override
     protected void enableMaxHeight() {
+
         // do nothing here, we want to disable the max height mechanism
     }
 

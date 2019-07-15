@@ -28,6 +28,9 @@
 package org.opencms.ui.favorites;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsFileExplorer;
@@ -37,6 +40,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Optional;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.ui.Component;
 
 /**
@@ -44,8 +49,14 @@ import com.vaadin.ui.Component;
  */
 public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExplorerFavoriteContext.class);
+
     /** Current dialog instance. */
     private Component m_dialog;
+
+    /** The active explorer instance. */
+    private CmsFileExplorer m_explorer;
 
     /** Favorite entry for current location. */
     private CmsFavoriteEntry m_entry;
@@ -59,6 +70,7 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
     public CmsExplorerFavoriteContext(CmsObject cms, CmsFileExplorer explorer) {
 
         if (explorer != null) {
+            m_explorer = explorer;
             CmsUUID currentFolder = explorer.getCurrentFolder();
             String siteRoot = cms.getRequestContext().getSiteRoot();
             CmsUUID project = cms.getRequestContext().getCurrentProject().getId();
@@ -69,6 +81,35 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
             entry.setProjectId(project);
             m_entry = entry;
         }
+    }
+
+    /**
+     * @see org.opencms.ui.favorites.I_CmsFavoriteContext#changeProject(org.opencms.util.CmsUUID)
+     */
+    public void changeProject(CmsUUID value) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            CmsProject project = cms.readProject(value);
+            close();
+            A_CmsUI.get().changeProject(project);
+            m_explorer.onSiteOrProjectChange(project, null);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            CmsErrorDialog.showErrorDialog(e);
+        }
+
+    }
+
+    /**
+    * @see org.opencms.ui.favorites.I_CmsFavoriteContext#changeSite(java.lang.String)
+     */
+    public void changeSite(String value) {
+
+        close();
+        A_CmsUI.get().changeSite(value);
+        m_explorer.onSiteOrProjectChange(null, value);
+
     }
 
     /**

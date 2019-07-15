@@ -27,8 +27,11 @@
 
 package org.opencms.ui.favorites;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
@@ -39,6 +42,8 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
@@ -47,6 +52,9 @@ import com.vaadin.ui.Component;
  * in an iframe.
  */
 public class CmsPageEditorFavoriteContext implements I_CmsFavoriteContext {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPageEditorFavoriteContext.class);
 
     /** The dialog context. */
     private CmsEmbeddedDialogContext m_dialogContext;
@@ -92,6 +100,34 @@ public class CmsPageEditorFavoriteContext implements I_CmsFavoriteContext {
     }
 
     /**
+     * @see org.opencms.ui.favorites.I_CmsFavoriteContext#changeProject(org.opencms.util.CmsUUID)
+     */
+    public void changeProject(CmsUUID value) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            CmsProject project = cms.readProject(value);
+            close();
+            A_CmsUI.get().changeProject(project);
+            m_dialogContext.finish(project, null);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            CmsErrorDialog.showErrorDialog(e);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ui.favorites.I_CmsFavoriteContext#changeSite(java.lang.String)
+     */
+    public void changeSite(String value) {
+
+        A_CmsUI.get().changeSite(value);
+        m_dialogContext.finish(null, value);
+
+    }
+
+    /**
      * @see org.opencms.ui.favorites.I_CmsFavoriteContext#close()
      */
     public void close() {
@@ -125,6 +161,7 @@ public class CmsPageEditorFavoriteContext implements I_CmsFavoriteContext {
      * @see org.opencms.ui.favorites.I_CmsFavoriteContext#setDialog(com.vaadin.ui.Component)
      */
     public void setDialog(Component component) {
+
         // not needed
     }
 

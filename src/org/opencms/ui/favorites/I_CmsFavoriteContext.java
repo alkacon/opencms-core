@@ -27,6 +27,8 @@
 
 package org.opencms.ui.favorites;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Optional;
 
 import com.vaadin.ui.Component;
@@ -35,6 +37,20 @@ import com.vaadin.ui.Component;
  * Interface the favorite dialog uses to interact with the rest of the application.
  */
 public interface I_CmsFavoriteContext {
+
+    /**
+     * Change the project to one with the given id.
+     *
+     * @param id the project id
+     */
+    public void changeProject(CmsUUID id);
+
+    /**
+     * Changes current site.
+     *
+     * @param siteRoot the site root
+     */
+    public void changeSite(String siteRoot);
 
     /**
      * Sets the dialog instance.<p>

@@ -55,6 +55,7 @@ import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -70,6 +71,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -198,7 +200,6 @@ public final class CmsVaadinUtils {
             return !((Boolean)item.getItemProperty(PropertyId.isFolder).getValue()).booleanValue();
         }
     };
-
     /** Container filter for the resource type container to show XML content types only. */
     public static final Filter FILTER_XML_CONTENTS = new Filter() {
 
@@ -214,6 +215,7 @@ public final class CmsVaadinUtils {
             return ((Boolean)item.getItemProperty(PropertyId.isXmlContent).getValue()).booleanValue();
         }
     };
+
     /** The combo box label item property id. */
     public static final String PROPERTY_LABEL = "label";
 
@@ -470,20 +472,36 @@ public final class CmsVaadinUtils {
      */
     public static IndexedContainer getAvailableSitesContainer(CmsObject cms, String captionPropertyName) {
 
+        IndexedContainer availableSites = new IndexedContainer();
+        availableSites.addContainerProperty(captionPropertyName, String.class, null);
+        for (Map.Entry<String, String> entry : getAvailableSitesMap(cms).entrySet()) {
+            Item siteItem = availableSites.addItem(entry.getKey());
+            siteItem.getItemProperty(captionPropertyName).setValue(entry.getValue());
+        }
+        return availableSites;
+    }
+
+    /**
+     * Gets available sites as a LinkedHashMap, with site roots as keys and site labels as values.
+     *
+     * @param cms the current CMS context
+     * @return the map of available sites
+     */
+    public static LinkedHashMap<String, String> getAvailableSitesMap(CmsObject cms) {
+
         CmsSiteSelectorOptionBuilder optBuilder = new CmsSiteSelectorOptionBuilder(cms);
         optBuilder.addNormalSites(true, (new CmsUserSettings(cms)).getStartFolder());
         optBuilder.addSharedSite();
-        IndexedContainer availableSites = new IndexedContainer();
-        availableSites.addContainerProperty(captionPropertyName, String.class, null);
+        LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
         for (CmsSiteSelectorOption option : optBuilder.getOptions()) {
-            Item siteItem = availableSites.addItem(option.getSiteRoot());
-            siteItem.getItemProperty(captionPropertyName).setValue(option.getMessage());
+            result.put(option.getSiteRoot(), option.getMessage());
         }
         String currentSiteRoot = cms.getRequestContext().getSiteRoot();
-        if (!availableSites.containsId(currentSiteRoot)) {
-            availableSites.addItem(currentSiteRoot).getItemProperty(captionPropertyName).setValue(currentSiteRoot);
+        if (!result.containsKey(currentSiteRoot)) {
+            result.put(currentSiteRoot, currentSiteRoot);
         }
-        return availableSites;
+        return result;
+
     }
 
     /**
@@ -786,9 +804,25 @@ public final class CmsVaadinUtils {
 
         IndexedContainer result = new IndexedContainer();
         result.addContainerProperty(captionPropertyName, String.class, null);
+        for (Map.Entry<CmsUUID, String> entry : getProjectsMap(cms).entrySet()) {
+            Item projectItem = result.addItem(entry.getKey());
+            projectItem.getItemProperty(captionPropertyName).setValue(entry.getValue());
+        }
+        return result;
+    }
+
+    /**
+     * Gets the available projects for the current user as a map, wth project ids as keys and project names as values.
+     *
+     * @param cms the current CMS context
+     * @return the map of projects
+     */
+    public static LinkedHashMap<CmsUUID, String> getProjectsMap(CmsObject cms) {
+
         Locale locale = A_CmsUI.get().getLocale();
         List<CmsProject> projects = getAvailableProjects(cms);
         boolean isSingleOu = isSingleOu(projects);
+        LinkedHashMap<CmsUUID, String> result = new LinkedHashMap<>();
         for (CmsProject project : projects) {
             String projectName = project.getSimpleName();
             if (!isSingleOu && !project.isOnlineProject()) {
@@ -802,10 +836,10 @@ public final class CmsVaadinUtils {
                     projectName = projectName + " - " + project.getOuFqn();
                 }
             }
-            Item projectItem = result.addItem(project.getUuid());
-            projectItem.getItemProperty(captionPropertyName).setValue(projectName);
+            result.put(project.getUuid(), projectName);
         }
         return result;
+
     }
 
     /**
