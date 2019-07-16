@@ -93,7 +93,7 @@ public final class CmsEncoder {
     public static final String ENCODING_UTF_8 = "UTF-8";
 
     /** The regex pattern to match HTML entities. */
-    private static final Pattern ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
+    private static final Pattern ENTITIY_PATTERN = Pattern.compile("\\&#(\\d+);");
 
     /** The prefix for HTML entities. */
     private static final String ENTITY_PREFIX = "&#";
@@ -125,7 +125,7 @@ public final class CmsEncoder {
      * in the given charset are contained as chars, whereas all other non-displayable
      * characters are converted to HTML entities.<p>
      *
-     * Just calls {@link #decodeHtmlEntities(String, String)} first and feeds the result
+     * Just calls {@link #decodeHtmlEntities(String)} first and feeds the result
      * to {@link #encodeHtmlEntities(String, String)}. <p>
      *
      * @param input the input to adjust the HTML encoding for
@@ -135,7 +135,7 @@ public final class CmsEncoder {
      */
     public static String adjustHtmlEncoding(String input, String encoding) {
 
-        return encodeHtmlEntities(decodeHtmlEntities(input, encoding), encoding);
+        return encodeHtmlEntities(decodeHtmlEntities(input), encoding);
     }
 
     /**
@@ -287,6 +287,28 @@ public final class CmsEncoder {
     }
 
     /**
+     * Decodes HTML entity references like <code>&amp;#8364;</code>.
+     *
+     * @param input the input to decode the HTML entities in
+     * @return the input with the decoded HTML entities
+     *
+     * @see #encodeHtmlEntities(String, String)
+     */
+    public static String decodeHtmlEntities(String input) {
+
+        Matcher matcher = ENTITIY_PATTERN.matcher(input);
+        StringBuffer result = new StringBuffer(input.length());
+        while (matcher.find()) {
+            String value = matcher.group(1);
+            int c = Integer.valueOf(value).intValue();
+            String replacement = new String(Character.toChars(c));
+            matcher.appendReplacement(result, replacement);
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+    /**
      * Decodes HTML entity references like <code>&amp;#8364;</code> that are contained in the
      * String to a regular character, but only if that character is contained in the given
      * encodings charset.<p>
@@ -297,6 +319,7 @@ public final class CmsEncoder {
      *
      * @see #encodeHtmlEntities(String, String)
      */
+    @Deprecated
     public static String decodeHtmlEntities(String input, String encoding) {
 
         Matcher matcher = ENTITIY_PATTERN.matcher(input);
@@ -308,6 +331,7 @@ public final class CmsEncoder {
             String entity = matcher.group();
             String value = entity.substring(2, entity.length() - 1);
             int c = Integer.valueOf(value).intValue();
+
             if (c < 128) {
                 // first 128 chars are contained in almost every charset
                 entity = new String(new char[] {(char)c});
@@ -431,26 +455,19 @@ public final class CmsEncoder {
     public static String encodeHtmlEntities(String input, String encoding) {
 
         StringBuffer result = new StringBuffer(input.length() * 2);
-        CharBuffer buffer = CharBuffer.wrap(input.toCharArray());
         Charset charset = Charset.forName(encoding);
         CharsetEncoder encoder = charset.newEncoder();
-        for (int i = 0; i < buffer.length(); i++) {
-            int c = buffer.get(i);
-            if (c < 128) {
-                // first 128 chars are contained in almost every charset
-                result.append((char)c);
-                // this is intended as performance improvement since
-                // the canEncode() operation appears quite CPU heavy
-            } else if (encoder.canEncode((char)c)) {
-                // encoder can encode this char
-                result.append((char)c);
+        input.codePoints().forEach(codepoint -> {
+            char[] charsForCodepoint = Character.toChars(codepoint);
+            boolean isSimple = (charsForCodepoint.length == 1) && (charsForCodepoint[0] < 128);
+            if (isSimple || encoder.canEncode(new String(charsForCodepoint))) {
+                result.append(charsForCodepoint);
             } else {
-                // append HTML entity reference
                 result.append(ENTITY_PREFIX);
-                result.append(c);
+                result.append(codepoint);
                 result.append(";");
             }
-        }
+        });
         return result.toString();
     }
 
