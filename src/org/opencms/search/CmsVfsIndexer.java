@@ -188,8 +188,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     public void rebuildIndex(
         I_CmsIndexWriter writer,
         CmsIndexingThreadManager threadManager,
-        CmsSearchIndexSource source)
-    throws CmsIndexException {
+        CmsSearchIndexSource source) {
 
         List<String> resourceNames = source.getResourcesNames();
         Iterator<String> i = resourceNames.iterator();
@@ -236,8 +235,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     public void updateResources(
         I_CmsIndexWriter writer,
         CmsIndexingThreadManager threadManager,
-        List<CmsPublishedResource> resourcesToUpdate)
-    throws CmsIndexException {
+        List<CmsPublishedResource> resourcesToUpdate) {
 
         if ((resourcesToUpdate == null) || resourcesToUpdate.isEmpty()) {
             // nothing to update
@@ -340,11 +338,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @param writer the index writer to use
      * @param threadManager the thread manager to use when extracting the document text
      * @param resource the resource to update
-     *
-     * @throws CmsIndexException if something goes wrong
      */
-    protected void updateResource(I_CmsIndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
-    throws CmsIndexException {
+    protected void updateResource(
+        I_CmsIndexWriter writer,
+        CmsIndexingThreadManager threadManager,
+        CmsResource resource) {
 
         if (resource.isFolder() || resource.isTemporaryFile()) {
             // don't ever index folders or temporary files
@@ -353,8 +351,8 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         try {
             // create the index thread for the resource
             threadManager.createIndexingThread(this, writer, resource);
-        } catch (Exception e) {
-
+        } catch (Throwable e) {
+            // Only runtime exceptions can appear here.
             if (m_report != null) {
                 m_report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_FAILED_0),
@@ -368,11 +366,6 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         m_index.getName()),
                     e);
             }
-            throw new CmsIndexException(
-                Messages.get().container(
-                    Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                    resource.getRootPath(),
-                    m_index.getName()));
         }
     }
 
