@@ -77,6 +77,9 @@ public class CmsADEConfigDataInternal {
     /** the dynamic functions available. */
     private Set<CmsUUID> m_dynamicFunctions;
 
+    /** True if detail contents outside the sitemap should not be used with detail pages in the sitemap. */
+    private boolean m_excludeExternalDetailContents;
+
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = Lists.newArrayList();
 
@@ -118,6 +121,7 @@ public class CmsADEConfigDataInternal {
      * @param discardInheritedModelPages the "discard  inherited model pages" flag
      * @param createContentsLocally the "create contents locally" flag
      * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
+     * @param excludeExternalDetailContents the "excludeExternalDetailContents" flag
      * @param formatterChangeSet the formatter changes
      * @param removeAllFunctions flag indicating whether all functions should be removed
      * @param functionIds the dynamic functions available
@@ -137,6 +141,7 @@ public class CmsADEConfigDataInternal {
         boolean discardInheritedModelPages,
         boolean createContentsLocally,
         boolean preferDetailPagesForLocalContents,
+        boolean excludeExternalDetailContents,
         CmsFormatterChangeSet formatterChangeSet,
         boolean removeAllFunctions,
         Set<CmsUUID> functionIds) {
@@ -162,6 +167,7 @@ public class CmsADEConfigDataInternal {
         m_formatterChangeSet = formatterChangeSet;
         m_dynamicFunctions = functionIds;
         m_removeAllFunctions = removeAllFunctions;
+        m_excludeExternalDetailContents = excludeExternalDetailContents;
     }
 
     /**
@@ -328,6 +334,16 @@ public class CmsADEConfigDataInternal {
     public boolean isDiscardInheritedTypes() {
 
         return m_discardInheritedTypes;
+    }
+
+    /**
+     * Returns true if detail pages inside this subsite (and descendant subsites) should not be used for contents outside the subsite (and descendant subsites).<p>
+     *
+     * @return true if external detail contents should be excluded
+     */
+    public boolean isExcludeExternalDetailContents() {
+
+        return m_excludeExternalDetailContents;
     }
 
     /**

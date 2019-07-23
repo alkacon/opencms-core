@@ -117,12 +117,12 @@ public class CmsADEManager {
 
     /** JSON property name constant. */
     protected enum FavListProp {
-    /** element property. */
-    ELEMENT,
-    /** formatter property. */
-    FORMATTER,
-    /** properties property. */
-    PROPERTIES;
+        /** element property. */
+        ELEMENT,
+        /** formatter property. */
+        FORMATTER,
+        /** properties property. */
+        PROPERTIES;
     }
 
     /**
@@ -158,11 +158,11 @@ public class CmsADEManager {
     /** The content folder name. */
     public static final String CONTENT_FOLDER_NAME = ".content";
 
-    /** Default favorite/recent list size constant. */
-    public static final int DEFAULT_ELEMENT_LIST_SIZE = 10;
-
     /** The default detail page type name. */
     public static final String DEFAULT_DETAILPAGE_TYPE = "##DEFAULT##";
+
+    /** Default favorite/recent list size constant. */
+    public static final int DEFAULT_ELEMENT_LIST_SIZE = 10;
 
     /** The name of the element view configuration file type. */
     public static final String ELEMENT_VIEW_TYPE = "elementview";
@@ -270,7 +270,7 @@ public class CmsADEManager {
         // because during the setup the configuration resource types don't exist yet.
     }
 
-    /*
+    /**
      * Gets the detail page for a content element.<p>
      *
      * @param manager the ADE manager instance.

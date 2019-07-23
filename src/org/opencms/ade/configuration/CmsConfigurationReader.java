@@ -122,14 +122,13 @@ public class CmsConfigurationReader {
     /** The error node name. */
     public static final String N_ERROR = "Error";
 
+    public static final String N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS = "ExcludeExternalDetailContents";
+
     /** The folder node name. */
     public static final String N_FOLDER = "Folder";
 
     /** The formatter node name. */
     public static final String N_FORMATTER = "Formatter";
-
-    /** Field name for the 'Remove all functions' setting. */
-    public static final String N_REMOVE_ALL_FUNCTIONS = "RemoveAllFunctions";
 
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
@@ -193,6 +192,9 @@ public class CmsConfigurationReader {
 
     /** Node name for the "Remove all formatters"-option. */
     public static final String N_REMOVE_ALL_FORMATTERS = "RemoveAllFormatters";
+
+    /** Field name for the 'Remove all functions' setting. */
+    public static final String N_REMOVE_ALL_FUNCTIONS = "RemoveAllFunctions";
 
     /** Node name for removed formatters. */
     public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
@@ -455,6 +457,7 @@ public class CmsConfigurationReader {
 
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
         boolean preferDetailPagesForLocalContents = getBoolean(root, N_PREFER_DETAIL_PAGES_FOR_LOCAL_CONTENTS);
+        boolean exludeExternalDetailContents = getBoolean(root, N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS);
 
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(
             content.getFile().getTypeId()).getTypeName().equals(CmsADEManager.MODULE_CONFIG_TYPE);
@@ -497,6 +500,7 @@ public class CmsConfigurationReader {
             discardInheritedModelPages,
             createContentsLocally,
             preferDetailPagesForLocalContents,
+            exludeExternalDetailContents,
             formatterChangeSet,
             removeFunctions,
             functions);

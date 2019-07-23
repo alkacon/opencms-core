@@ -27,7 +27,7 @@
 
 package org.opencms.configuration;
 
-import org.opencms.ade.detailpage.CmsSitemapDetailPageHandler;
+import org.opencms.ade.detailpage.CmsDefaultDetailPageHandler;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
@@ -167,6 +167,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the defaultusers expression. */
     public static final String N_DEFAULTUSERS = "defaultusers";
 
+    /** The node name for the detail page handler. */
     public static final String N_DETAIL_PAGE_HANDLER = "detail-page-handler";
 
     /** The node name for the device selector node. */
@@ -515,7 +516,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     private String m_defaultContentEncoding;
 
     /** The detail page handler. */
-    private I_CmsDetailPageHandler m_detailPageHandler = new CmsSitemapDetailPageHandler();
+    private I_CmsDetailPageHandler m_detailPageHandler = new CmsDefaultDetailPageHandler();
 
     /** The configured OpenCms event manager. */
     private CmsEventManager m_eventManager;
@@ -1056,7 +1057,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(shellServerPath, 1, A_PORT);
 
         String detailPageHandlerPath = "*/" + N_SYSTEM + "/" + N_DETAIL_PAGE_HANDLER;
-        digester.addObjectCreate(detailPageHandlerPath, CmsSitemapDetailPageHandler.class.getName(), A_CLASS);
+        digester.addObjectCreate(detailPageHandlerPath, CmsDefaultDetailPageHandler.class.getName(), A_CLASS);
         digester.addSetNext(detailPageHandlerPath, "setDetailPageHandler");
 
     }

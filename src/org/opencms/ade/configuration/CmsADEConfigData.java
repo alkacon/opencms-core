@@ -488,10 +488,10 @@ public class CmsADEConfigData {
             for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
                 if (detailpage.getType().equals(type)) {
                     result.add(detailpage);
-                } else if ((defaultPage == null)
-                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
-                    defaultPage = detailpage;
-                }
+                } else
+                    if ((defaultPage == null) && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                        defaultPage = detailpage;
+                    }
             }
             if (defaultPage != null) {
                 // add default detail page last
@@ -556,6 +556,30 @@ public class CmsADEConfigData {
             return Collections.unmodifiableSet(restrictedFunctions);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Gets the root path of the closest subsite going up the tree which has the 'exclude external detail contents' option enabled, or '/' if no such subsite exists.
+     *
+     * @return the root path of the closest subsite with 'external detail contents excluded'
+     */
+    public String getExternalDetailContentExclusionFolder() {
+
+        if (m_data.isExcludeExternalDetailContents()) {
+            String basePath = m_data.getBasePath();
+            if (basePath == null) {
+                return "/";
+            } else {
+                return basePath;
+            }
+        } else {
+            CmsADEConfigData parent = parent();
+            if (parent != null) {
+                return parent.getExternalDetailContentExclusionFolder();
+            } else {
+                return "/";
+            }
         }
     }
 
@@ -948,6 +972,16 @@ public class CmsADEConfigData {
     public boolean isDiscardInheritedTypes() {
 
         return m_data.isDiscardInheritedTypes();
+    }
+
+    /**
+     * True if detail contents outside this sitemap should not be rendered in detail pages from this sitemap.
+     *
+     * @return true if detail contents outside this sitemap should not be rendered in detail pages from this sitemap.
+     */
+    public boolean isExcludeExternalDetailContents() {
+
+        return m_data.isExcludeExternalDetailContents();
     }
 
     /**

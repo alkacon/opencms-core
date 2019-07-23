@@ -40,12 +40,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * This class uses information from the detail page information stored in the sitemap to find the detail page for
- * a given resource.<p>
+ * Original detail page handler implementing the detail page logic from OpenCms versions up to 11.0.
  *
- * @since 8.0.0
+ * <p>Disregards the 'exclude external detail contents' option, allows all combinations of detail page / detail content on the same site.
  */
-public class CmsSitemapDetailPageHandler implements I_CmsDetailPageHandler {
+public class CmsPermissiveDetailPageHandler implements I_CmsDetailPageHandler {
 
     /** The configuration. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
