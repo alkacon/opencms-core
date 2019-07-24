@@ -748,6 +748,12 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     public void update(String ou, I_CmsOuTreeType type, CmsUUID roleOrGroupID, String filter) {
 
         CmsStateBean stateBean = new CmsStateBean(ou, type, roleOrGroupID, filter);
+
+        try {
+            m_ouTree.updateOU(OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou));
+        } catch (CmsException e) {
+            LOG.error("Unable to read ou: " + ou);
+        }
         openSubView(stateBean.getState(), true);
 
     }

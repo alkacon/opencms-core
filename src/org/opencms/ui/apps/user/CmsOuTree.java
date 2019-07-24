@@ -55,6 +55,7 @@ import com.vaadin.v7.ui.Tree;
 /**
  * Class for the OU Tree.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsOuTree extends Tree {
 
     /** Log instance for this class. */
@@ -209,6 +210,7 @@ public class CmsOuTree extends Tree {
      *
      * @param itemId item which was clicked
      */
+
     protected void handleItemClick(Object itemId) {
 
         Item item = getItem(itemId);
@@ -248,6 +250,18 @@ public class CmsOuTree extends Tree {
 
     }
 
+    void updateOU(CmsOrganizationalUnit item) {
+
+        for (Object it : m_treeContainer.getChildren(item)) {
+            if (isExpanded(it)) {
+                I_CmsOuTreeType type = (I_CmsOuTreeType)getItem(it).getItemProperty(PROP_TYPE).getValue();
+                if (type.isGroup()) {
+                    addChildrenForGroupsNode(type, "g" + item.getName());
+                }
+            }
+        }
+    }
+
     /**
      * Add groups for given group parent item.
      *
@@ -259,11 +273,19 @@ public class CmsOuTree extends Tree {
         try {
             // Cut of type-specific prefix from ouItem with substring()
             List<CmsGroup> groups = m_app.readGroupsForOu(m_cms, ouItem.substring(1), type, false);
+
+            List<Object> itemsToRemove = new ArrayList<Object>();
+
+            Collection<?> childCol = m_treeContainer.getChildren(ouItem);
+            if (childCol != null) {
+                itemsToRemove.addAll(childCol);
+            }
             for (CmsGroup group : groups) {
                 Pair<String, CmsUUID> key = Pair.of(type.getId(), group.getId());
                 Item groupItem = m_treeContainer.addItem(key);
                 if (groupItem == null) {
                     groupItem = getItem(key);
+                    itemsToRemove.remove(key);
                 }
                 groupItem.getItemProperty(PROP_SID).setValue(group.getId());
                 groupItem.getItemProperty(PROP_NAME).setValue(getIconCaptionHTML(group, CmsOuTreeType.GROUP));
@@ -271,9 +293,15 @@ public class CmsOuTree extends Tree {
                 setChildrenAllowed(key, false);
                 m_treeContainer.setParent(key, ouItem);
             }
+
+            for (Object item : itemsToRemove) {
+                m_treeContainer.removeItem(item);
+            }
+
         } catch (CmsException e) {
             LOG.error("Can not read group", e);
         }
+
     }
 
     /**
