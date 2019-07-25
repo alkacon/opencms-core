@@ -62,6 +62,11 @@ public interface I_CmsSearchStateParameters {
      */
     Map<String, I_CmsSearchStateParameters> getResetFacetState();
 
+    /** Returns the search state parameters with the additional parameter (specified by first key) set to the value (specified by the second key).
+     * @return The search state parameters with the additional parameter (specified by first key) set to the value (specified by the second key).
+     */
+    Map<String, Map<String, I_CmsSearchStateParameters>> getSetAdditionalParam();
+
     /** Returns the search state parameters with the value for the current page's parameter replaced by the key.
      * @return The search state parameters with the value for the current page's parameter replaced by the key.
      */
@@ -76,5 +81,10 @@ public interface I_CmsSearchStateParameters {
      * @return The search state parameters with the filter query for facets (specified by first key) item (specified by the second key) removed.
      */
     Map<String, Map<String, I_CmsSearchStateParameters>> getUncheckFacetItem();
+
+    /** Returns the search state parameters with the additional parameter (specified by the key) removed.
+     * @return The search state parameters with the additional parameter (specified by the key) removed.
+     */
+    Map<String, I_CmsSearchStateParameters> getUnsetAdditionalParam();
 
 }

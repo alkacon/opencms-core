@@ -73,6 +73,10 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     Map<String, Map<String, I_CmsSearchStateParameters>> m_uncheckFacetMap;
     /** Map from facet names to a map from facet items to state parameters with the item checked. */
     Map<String, Map<String, I_CmsSearchStateParameters>> m_checkFacetMap;
+    /** Map from additional parameter names to the values. */
+    Map<String, Map<String, I_CmsSearchStateParameters>> m_setAdditionalParamsMap;
+    /** Map from additional parameter names to the values. */
+    Map<String, I_CmsSearchStateParameters> m_unsetAdditionalParamsMap;
 
     /** Constructor for a state parameters object.
      * @param result The search result, according to which the parameters are manipulated.
@@ -299,6 +303,39 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     }
 
     /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getSetAdditionalParam()
+     */
+    public Map<String, Map<String, I_CmsSearchStateParameters>> getSetAdditionalParam() {
+
+        if (m_setAdditionalParamsMap == null) {
+            m_setAdditionalParamsMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object param) {
+
+                    Map<String, I_CmsSearchStateParameters> m_additionalParamsMap = CmsCollectionsGenericWrapper.createLazyMap(
+                        new Transformer() {
+
+                            @Override
+                            public Object transform(final Object value) {
+
+                                final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                                boolean validParam = m_result.getController().getCommon().getConfig().getAdditionalParameters().keySet().contains(
+                                    param);
+                                if (validParam) {
+                                    parameters.put((String)param, new String[] {(String)value});
+                                }
+                                return new CmsSearchStateParameters(m_result, parameters);
+                            }
+                        });
+                    return m_additionalParamsMap;
+                }
+            });
+        }
+        return m_setAdditionalParamsMap;
+    }
+
+    /**
      * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getSetPage()
      */
     @Override
@@ -388,6 +425,30 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
             });
         }
         return m_uncheckFacetMap;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getUnsetAdditionalParam()
+     */
+    public Map<String, I_CmsSearchStateParameters> getUnsetAdditionalParam() {
+
+        if (m_unsetAdditionalParamsMap == null) {
+            m_unsetAdditionalParamsMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object param) {
+
+                    final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                    boolean validParam = m_result.getController().getCommon().getConfig().getAdditionalParameters().keySet().contains(
+                        param);
+                    if (validParam && parameters.containsKey(param)) {
+                        parameters.remove(param);
+                    }
+                    return new CmsSearchStateParameters(m_result, parameters);
+                }
+            });
+        }
+        return m_unsetAdditionalParamsMap;
     }
 
     /**

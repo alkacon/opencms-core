@@ -79,7 +79,7 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.addTest(new TestSearchStateParameters("testCheckAndUncheckFacetItems"));
-
+        suite.addTest(new TestSearchStateParameters("testAddRemoveAdditionalParam"));
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -105,6 +105,41 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test if adding and removing an additional parameter in the state parameters works.
+     *
+     * @throws CmsException ...
+     * @throws IOException ...
+     * @throws URISyntaxException ...
+     * @throws JSONException ...
+     */
+    @org.junit.Test
+    public void testAddRemoveAdditionalParam() throws CmsException, IOException, URISyntaxException, JSONException {
+
+        I_CmsSearchResultWrapper result = search();
+
+        String v1 = "first";
+        String v2 = "second";
+
+        I_CmsSearchStateParameters stateParams = result.getStateParameters();
+        // parameter  not set in the beginning
+        assertFalse(stateParams.toString().contains("additionalParam="));
+        // set the parameter to a value
+        stateParams = stateParams.getSetAdditionalParam().get("additionalParam").get(v1);
+        assertTrue(stateParams.toString().contains("additionalParam=first"));
+        // overwrite the value
+        stateParams = stateParams.getSetAdditionalParam().get("additionalParam").get(v2);
+        assertTrue(stateParams.toString().contains("additionalParam=second"));
+        assertFalse(stateParams.toString().contains("additionalParam=first"));
+        // unset the parameter
+        stateParams = stateParams.getUnsetAdditionalParam().get("additionalParam");
+        assertFalse(stateParams.toString().contains("additionalParam="));
+        //parameters not configured should not be set.
+        stateParams = stateParams.getSetAdditionalParam().get("nonexisting").get(v1);
+        assertFalse(stateParams.toString().contains("nonexisting="));
+
     }
 
     /**
