@@ -768,6 +768,18 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Updates the position of the helper within the the appropriate target.<p>
+     * Needs to be executed on mouse move or when the list of allowed targets changes.<p>
+     * Uses the currently stored cursor position.<p>
+     */
+    public void updatePosition() {
+
+        checkTargets();
+        positionHelper();
+        scrollAction();
+    }
+
+    /**
      * Clears the drag process with a move animation of the drag element to it's original position.<p>
      *
      * @param draggable the draggable
@@ -899,9 +911,7 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
-        checkTargets();
-        positionHelper();
-        scrollAction();
+        updatePosition();
     }
 
     /**
