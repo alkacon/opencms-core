@@ -39,7 +39,6 @@ import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
 
 import java.util.ArrayList;
@@ -564,6 +563,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
      */
     public void handleValueChange(int valueIndex, String value) {
 
+        if (isSingleValueHandler()) {
+            valueIndex = m_singleValueIndex;
+        }
         changeEntityValue(value, valueIndex);
         CmsUndoRedoHandler handler = CmsUndoRedoHandler.getInstance();
         if (handler.isIntitalized()) {

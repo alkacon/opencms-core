@@ -1859,10 +1859,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_sitePath = definition.getSitePath();
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
-        String tabs = "";
-        for (CmsTabInfo info : definition.getTabInfos()) {
-            tabs += info.getTabId() + ":" + info.getStartName() + "   ";
-        }
         m_tabInfos = definition.getTabInfos();
         m_iconClasses = definition.getIconClasses();
         addContentDefinition(definition);
