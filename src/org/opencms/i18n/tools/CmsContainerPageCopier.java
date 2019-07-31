@@ -308,7 +308,7 @@ public class CmsContainerPageCopier {
                 CmsResource resourceCopy = typeConfig.createNewElement(
                     targetCms,
                     originalResource,
-                    targetPage.getRootPath());
+                    CmsResource.getParentFolder(targetPage.getRootPath()));
                 CmsContainerElementBean copy = new CmsContainerElementBean(
                     resourceCopy.getStructureId(),
                     maybeReplaceFormatter(originalElement.getFormatterId()),

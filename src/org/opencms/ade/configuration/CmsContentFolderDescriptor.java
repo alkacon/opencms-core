@@ -29,6 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -155,6 +156,17 @@ public class CmsContentFolderDescriptor {
             if (pageFolderPath == null) {
                 throw new IllegalArgumentException(
                     "getFolderPath called without page folder, but pageRelative is enabled!");
+            }
+            try {
+                CmsResource folder = cms.readResource(
+                    cms.getRequestContext().removeSiteRoot(pageFolderPath),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                if (folder.isFile()) {
+                    // in case this is not a folder, use the parent
+                    pageFolderPath = CmsResource.getParentFolder(pageFolderPath);
+                }
+            } catch (CmsException e) {
+                // ignore
             }
             return CmsStringUtil.joinPaths(pageFolderPath, ELEMENTS_FOLDER_NAME);
         } else {
