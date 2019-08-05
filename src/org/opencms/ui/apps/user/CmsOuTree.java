@@ -250,13 +250,22 @@ public class CmsOuTree extends Tree {
 
     }
 
+    /**
+     * Updates items of current ou for item.<p>
+     *
+     * @param item to update ou for
+     */
     void updateOU(CmsOrganizationalUnit item) {
 
+        //Check if ou has children ... vaadin returns null if not
+        if (m_treeContainer.getChildren(item) == null) {
+            return;
+        }
         for (Object it : m_treeContainer.getChildren(item)) {
             if (isExpanded(it)) {
                 I_CmsOuTreeType type = (I_CmsOuTreeType)getItem(it).getItemProperty(PROP_TYPE).getValue();
                 if (type.isGroup()) {
-                    addChildrenForGroupsNode(type, "g" + item.getName());
+                    addChildrenForGroupsNode(type, type.getId() + item.getName());
                 }
             }
         }
