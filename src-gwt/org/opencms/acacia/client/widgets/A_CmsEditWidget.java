@@ -70,7 +70,7 @@ public abstract class A_CmsEditWidget extends FocusWidget implements I_CmsEditWi
      */
     public void onAttachWidget() {
 
-        super.onAttach();
+        onAttach();
     }
 
     /**
