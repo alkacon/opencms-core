@@ -71,6 +71,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.actions.I_CmsADEAction;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
@@ -431,14 +432,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public static String getFileExplorerLink(CmsObject cms, String siteRoot) {
 
-        return CmsVaadinUtils.getWorkplaceLink()
-            + "#!"
-            + CmsFileExplorerConfiguration.APP_ID
-            + "/"
-            + cms.getRequestContext().getCurrentProject().getUuid()
-            + "!!"
-            + siteRoot
-            + "!!";
+        return CmsVaadinUtils.getWorkplaceLink(
+            CmsFileExplorerConfiguration.APP_ID,
+            cms.getRequestContext().getCurrentProject().getUuid()
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                + siteRoot
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR);
     }
 
     /**
@@ -706,6 +705,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getBroadcast()
      */
+    @SuppressWarnings("unchecked")
     public List<CmsBroadcastMessage> getBroadcast() {
 
         Set<CmsBroadcast> repeatedBroadcasts = new HashSet<CmsBroadcast>();

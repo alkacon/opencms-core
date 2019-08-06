@@ -195,7 +195,7 @@ public class CmsLinkInFolderValidationApp extends A_CmsWorkplaceApp implements I
     static class CmsStateBean {
 
         /**State seperator. */
-        protected static String STATE_SEPERATOR = "!!";
+        protected static String STATE_SEPERATOR = A_CmsWorkplaceApp.PARAM_SEPARATOR;
 
         /**Seperator for resources in state. */
         private static String RESOURCE_SEPERATOR = ";";

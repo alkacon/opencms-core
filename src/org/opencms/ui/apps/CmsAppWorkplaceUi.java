@@ -104,6 +104,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The OpenCms window title prefix. */
     public static final String WINDOW_TITLE_PREFIX = "OpenCms - ";
 
+    /** The workplace app id separator. */
+    public static final String WORKPLACE_APP_ID_SEPARATOR = "#!";
+
+    /** The workplace state separator. */
+    public static final String WORKPLACE_STATE_SEPARATOR = "/";
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAppWorkplaceUi.class);
 
@@ -223,6 +229,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /**
      * Checks for new broadcasts.<p>
      */
+    @SuppressWarnings("unchecked")
     public void checkBroadcasts() {
 
         Set<CmsBroadcast> repeatedBroadcasts = new HashSet<CmsBroadcast>();
@@ -489,7 +496,18 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public void showApp(I_CmsWorkplaceAppConfiguration appConfig, String state) {
 
-        getNavigator().navigateTo(appConfig.getId() + "/" + state);
+        getNavigator().navigateTo(appConfig.getId() + WORKPLACE_STATE_SEPARATOR + state);
+    }
+
+    /**
+     * Navigates to the given app.<p>
+     *
+     * @param appId the app id
+     * @param state the app state to call
+     */
+    public void showApp(String appId, String state) {
+
+        getNavigator().navigateTo(appId + WORKPLACE_STATE_SEPARATOR + state);
     }
 
     /**

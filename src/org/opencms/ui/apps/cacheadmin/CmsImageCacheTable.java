@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.Messages;
@@ -389,18 +390,16 @@ public class CmsImageCacheTable extends Table {
     void openExplorerForParent(String rootPath, String uuid) {
 
         String parentPath = CmsResource.getParentFolder(rootPath);
-
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-            CmsFileExplorerConfiguration.APP_ID
-                + "/"
-                + A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
-                + "!!"
+        CmsAppWorkplaceUi.get().showApp(
+            CmsFileExplorerConfiguration.APP_ID,
+            A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
                 + A_CmsUI.getCmsObject().getRequestContext().getSiteRoot()
-                + "!!"
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
                 + parentPath.substring(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot().length())
-                + "!!"
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
                 + uuid
-                + "!!");
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR);
     }
 
     /**

@@ -420,8 +420,9 @@ public class CmsResourceTypesTable extends Table {
             settings.setSearchpattern(".*");
             settings.setTypes(data.iterator().next());
             settings.setType(SearchType.fullText);
-            CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-                CmsSourceSearchAppConfiguration.APP_ID + "/" + CmsSourceSearchApp.generateState(settings));
+            CmsAppWorkplaceUi.get().showApp(
+                CmsSourceSearchAppConfiguration.APP_ID,
+                CmsSourceSearchApp.generateState(settings));
 
         }
 

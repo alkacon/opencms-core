@@ -52,17 +52,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the table containing all property definitions in the system.<p>
@@ -94,6 +94,7 @@ public class CmsPropertyTable extends Table {
          * @param defaultValue of column
          */
         TableColumn(String headerMessage, Class<?> type, Object defaultValue) {
+
             m_headerMessage = headerMessage;
             m_type = type;
             m_defaultValue = defaultValue;
@@ -353,8 +354,9 @@ public class CmsPropertyTable extends Table {
         } catch (CmsException e) {
             //
         }
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-            CmsSourceSearchAppConfiguration.APP_ID + "/" + CmsSourceSearchApp.generateState(settings));
+        CmsAppWorkplaceUi.get().showApp(
+            CmsSourceSearchAppConfiguration.APP_ID,
+            CmsSourceSearchApp.generateState(settings));
     }
 
     /**

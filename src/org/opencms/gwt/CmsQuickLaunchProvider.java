@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsLegacyAppConfiguration;
@@ -162,7 +163,7 @@ public final class CmsQuickLaunchProvider {
                         link = sitemapLink + "?path=" + page;
                     }
                 } else {
-                    link = OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + config.getId();
+                    link = CmsVaadinUtils.getWorkplaceLink(config.getId());
                 }
                 Resource icon = config.getIcon();
                 String imageLink = "";

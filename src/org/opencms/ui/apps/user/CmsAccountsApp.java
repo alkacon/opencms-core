@@ -191,7 +191,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**State seperator. */
-    public static String STATE_SEPERATOR = "!!";
+    public static String STATE_SEPERATOR = A_CmsWorkplaceApp.PARAM_SEPARATOR;
 
     /** Default tree type provider. */
     private static final CmsDefaultTreeTypeProvider DEFAULT_TREETYPES = new CmsDefaultTreeTypeProvider();
@@ -827,7 +827,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param type the tree type
      * @param cmsAccountsApp the app instance
      * @param buttonPressed true if toggle button for users is active
-    
+
      * @return the user table
      */
     protected I_CmsFilterableTable createUserTable(

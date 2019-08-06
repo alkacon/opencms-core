@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -1918,8 +1919,7 @@ public class CmsDialog extends CmsToolDialog {
     protected void openLaunchpad() throws JspException {
 
         try {
-            openWorkplaceLink(
-                OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + CmsAppHierarchyConfiguration.APP_ID);
+            openWorkplaceLink(CmsVaadinUtils.getWorkplaceLink(CmsAppHierarchyConfiguration.APP_ID));
         } catch (Exception e) {
             // forward failed
             throw new JspException(e.getMessage(), e);

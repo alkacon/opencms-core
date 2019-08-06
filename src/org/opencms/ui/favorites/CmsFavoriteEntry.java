@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -50,11 +51,11 @@ public class CmsFavoriteEntry {
      * Represents the type of the favorite.
      */
     public enum Type {
-    /** Container page editor favorite. */
-    explorerFolder("f"),
+        /** Container page editor favorite. */
+        explorerFolder("f"),
 
-    /** Page favorite. */
-    page("p");
+        /** Page favorite. */
+        page("p");
 
         /** String representing this type in the JSON format. */
         private String m_jsonId;
@@ -349,15 +350,13 @@ public class CmsFavoriteEntry {
                 cms.getRequestContext().setSiteRoot(getSiteRoot());
                 A_CmsUI.get().getWorkplaceSettings().setSite(getSiteRoot());
                 cms.getRequestContext().setCurrentProject(project);
-                String explorerLink = CmsVaadinUtils.getWorkplaceLink()
-                    + "#!"
-                    + CmsFileExplorerConfiguration.APP_ID
-                    + "/"
-                    + getProjectId()
-                    + "!!"
-                    + getSiteRoot()
-                    + "!!"
-                    + cms.getSitePath(folder);
+                String explorerLink = CmsVaadinUtils.getWorkplaceLink(
+                    CmsFileExplorerConfiguration.APP_ID,
+                    getProjectId()
+                        + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                        + getSiteRoot()
+                        + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                        + cms.getSitePath(folder));
                 return explorerLink;
             case page:
                 project = cms.readProject(getProjectId());

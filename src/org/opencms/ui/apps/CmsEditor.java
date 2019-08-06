@@ -40,6 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
@@ -91,15 +92,31 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     private I_CmsEditor m_editorInstance;
 
     /**
-     * Returns the edit state for the given resource structure id.<p>
+     * Returns the edit link for given resource structure id.<p>
      *
-     * @param resourceId the resource structure is
+     * @param structureId the resource structure is
      * @param plainText if plain text/source editing is required
      * @param backLink the back link location
      *
      * @return the state
      */
-    public static String getEditState(CmsUUID resourceId, boolean plainText, String backLink) {
+    public static String getEditLink(CmsUUID structureId, boolean plainText, String backLink) {
+
+        return CmsVaadinUtils.getWorkplaceLink(
+            org.opencms.ui.apps.CmsEditorConfiguration.APP_ID,
+            getEditState(structureId, plainText, backLink));
+    }
+
+    /**
+     * Returns the edit state for the given resource structure id.<p>
+     *
+     * @param structureId the resource structure id
+     * @param plainText if plain text/source editing is required
+     * @param backLink the back link location
+     *
+     * @return the state
+     */
+    public static String getEditState(CmsUUID structureId, boolean plainText, String backLink) {
 
         try {
             backLink = URLEncoder.encode(backLink, CmsEncoder.ENCODING_UTF_8);
@@ -107,7 +124,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             LOG.error(e.getLocalizedMessage(), e);
         }
         String state = "";
-        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.RESOURCE_ID_PREFIX, resourceId.toString());
+        state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.RESOURCE_ID_PREFIX, structureId.toString());
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.PLAIN_TEXT_PREFIX, String.valueOf(plainText));
         state = A_CmsWorkplaceApp.addParamToState(state, CmsEditor.BACK_LINK_PREFIX, backLink);
         return state;

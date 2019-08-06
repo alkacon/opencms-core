@@ -353,7 +353,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
          */
         public static StateBean parse(String state) {
 
-            List<String> fields = CmsStringUtil.splitAsList(state, "!!");
+            List<String> fields = CmsStringUtil.splitAsList(state, A_CmsWorkplaceApp.PARAM_SEPARATOR);
             if (fields.size() >= 3) {
                 String projectId = fields.get(0);
                 String siteRoot = fields.get(1);
@@ -375,7 +375,12 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
          */
         public String asString() {
 
-            String result = m_projectId + "!!" + m_siteRoot + "!!" + m_folder + "!!";
+            String result = m_projectId
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                + m_siteRoot
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                + m_folder
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR;
             return result;
         }
 
@@ -452,9 +457,6 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
     /** Site selector site root property. */
     public static final String SITE_ROOT = "site_root";
-
-    /** The state separator string. */
-    public static final String STATE_SEPARATOR = "!!";
 
     /** Threshold for updating the complete folder after file changes. */
     public static final int UPDATE_FOLDER_THRESHOLD = 200;
@@ -1898,9 +1900,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     private String normalizeState(String state) {
 
         String result = "";
-        if (state.contains(STATE_SEPARATOR)) {
+        if (state.contains(A_CmsWorkplaceApp.PARAM_SEPARATOR)) {
             result = state;
-            while (result.startsWith("/")) {
+            while (result.startsWith(CmsAppWorkplaceUi.WORKPLACE_STATE_SEPARATOR)) {
                 result = result.substring(1);
             }
         }
