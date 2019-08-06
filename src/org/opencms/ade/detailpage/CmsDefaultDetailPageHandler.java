@@ -244,6 +244,9 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
 
         DetailPageConfigData context = lookupDetailPageConfigData(manager, cms, contentRootPath, originPath, resType);
         List<CmsDetailPageInfo> relevantPages = context.getDetailPages();
+        if (context.getConfigForDetailPages() == null) {
+            return null;
+        }
         if (!CmsStringUtil.isPrefixPath(
             context.getConfigForDetailPages().getExternalDetailContentExclusionFolder(),
             contentRootPath)) {
@@ -350,14 +353,15 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
         String pageFolder = CmsFileUtil.removeTrailingSeparator(CmsResource.getParentFolder(page.getRootPath()));
         boolean foundDetailPage = context.getDetailPages().stream().anyMatch(
             info -> pageFolder.equals(CmsFileUtil.removeTrailingSeparator(info.getUri())));
-        if (!foundDetailPage) {
-            LOG.debug(
-                p
-                    + "Returned false because detail page is not in context "
-                    + context.getConfigForDetailPages().getBasePath());
+        CmsADEConfigData configForPage = context.getConfigForDetailPages();
+        if (configForPage == null) {
+            LOG.debug(p + "Returned false because no valid sitemap configuration found");
             return false;
         }
-        CmsADEConfigData configForPage = context.getConfigForDetailPages();
+        if (!foundDetailPage) {
+            LOG.debug(p + "Returned false because detail page is not in context " + configForPage.getBasePath());
+            return false;
+        }
         if (!CmsStringUtil.isPrefixPath(
             configForPage.getExternalDetailContentExclusionFolder(),
             detailRes.getRootPath())) {
