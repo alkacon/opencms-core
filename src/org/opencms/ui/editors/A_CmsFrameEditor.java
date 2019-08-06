@@ -120,11 +120,6 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
         m_frame = new CmsBrowserFrame();
         m_frame.setDescription("Editor");
         m_frame.setName("edit");
-        try {
-            backLink = URLEncoder.encode(backLink, CmsEncoder.ENCODING_UTF_8);
-        } catch (UnsupportedEncodingException e1) {
-            LOG.error(e1.getLocalizedMessage(), e1);
-        }
         link += "?resource=" + sitepath + "&backlink=" + backLink;
         if (params != null) {
             for (Entry<String, String> entry : params.entrySet()) {
