@@ -278,7 +278,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
         byte[] buf,
         int bufPos,
         int siz,
-        long filePos) throws java.io.IOException {
+        long filePos)
+    throws java.io.IOException {
 
         //    Check if the file is a directory
 
@@ -408,7 +409,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
         byte[] data,
         int bufferOffset,
         int length,
-        long fileOffset) throws IOException {
+        long fileOffset)
+    throws IOException {
 
         if (file.isDirectory()) {
             throw new AccessDeniedException("Can't write data to a directory!");
@@ -449,7 +451,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
         CmsObjectWrapper cms,
         SrvSession session,
         TreeConnection connection,
-        String path) throws CmsException {
+        String path)
+    throws CmsException {
 
         try {
             String cmsPath = getCmsPath(path);
@@ -494,7 +497,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
         SrvSession session,
         TreeConnection connection,
         FileOpenParams params,
-        String typeName) throws IOException {
+        String typeName)
+    throws IOException {
 
         String path = params.getPath();
         String cmsPath = getCmsPath(path);
