@@ -468,8 +468,12 @@ public class CmsWorkplaceAppManager {
 
         List<I_CmsEditor> editors = new ArrayList<I_CmsEditor>();
         for (int i = 0; i < EDITORS.length; i++) {
-            if (EDITORS[i].matchesResource(resource, plainText)) {
-                editors.add(EDITORS[i]);
+            try {
+                if (EDITORS[i].matchesResource(resource, plainText)) {
+                    editors.add(EDITORS[i]);
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         I_CmsEditor result = null;
