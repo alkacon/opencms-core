@@ -1512,12 +1512,13 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (validationContext.hasValidationErrors()) {
             String locales = "";
             for (String id : validationContext.getInvalidEntityIds()) {
-                if (locales.length() > 0) {
-                    locales += ", ";
-                }
+
+                locales += "\n";
+
                 String locale = CmsContentDefinition.getLocaleFromId(id);
                 if (m_availableLocales.containsKey(locale)) {
                     locales += m_availableLocales.get(locale);
+                    locales += ": " + validationContext.getInvalidFields(id);
                 }
             }
             disableSave(Messages.get().key(Messages.GUI_TOOLBAR_VALIDATION_ERRORS_1, locales));
