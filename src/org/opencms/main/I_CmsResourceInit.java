@@ -45,11 +45,22 @@ import javax.servlet.http.HttpServletResponse;
 public interface I_CmsResourceInit {
 
     /**
+     * Gets the configuration data.
+     *
+     * @return the configuration data
+     */
+    default CmsParameterConfiguration getConfiguration() {
+
+        return new CmsParameterConfiguration();
+    }
+
+    /**
      * Initializes parameters.
      *
      * @param params the configuration parameters
      */
     default void initParameters(CmsParameterConfiguration params) {
+
         // do nothing
     }
 

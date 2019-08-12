@@ -40,6 +40,18 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CmsTestDummyResourceInit implements I_CmsResourceInit {
 
+    private CmsParameterConfiguration m_config;
+
+    public CmsParameterConfiguration getConfiguration() {
+
+        return m_config;
+    }
+
+    public void initParameters(CmsParameterConfiguration params) {
+
+        m_config = CmsParameterConfiguration.unmodifiableVersion(params);
+    }
+
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -47,7 +59,8 @@ public class CmsTestDummyResourceInit implements I_CmsResourceInit {
         CmsResource resource,
         CmsObject cms,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsResourceInitException {
+        HttpServletResponse res)
+    throws CmsResourceInitException {
 
         // just a dummy implementation
 

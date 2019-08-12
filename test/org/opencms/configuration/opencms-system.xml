@@ -26,7 +26,11 @@
 		</events>	
 	   	<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
-			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
+			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit">
+                <param name="key1">value1</param>
+                <param name="key2">value2</param>
+                <param name="key3">value3</param>
+            </resourceinithandler>
 			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
 		</resourceinit>

@@ -89,10 +89,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** Enum for the user session mode. */
     public enum UserSessionMode {
-    /** Only a single session per user is allowed. */
-    single,
-    /** Any number of sessions for a user are allowed. */
-    standard
+        /** Only a single session per user is allowed. */
+        single,
+        /** Any number of sessions for a user are allowed. */
+        standard
     }
 
     /** The attribute name for the deleted node. */
@@ -1225,9 +1225,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Element resourceinitElement = systemElement.addElement(N_RESOURCEINIT);
         Iterator<I_CmsResourceInit> resHandlers = m_resourceInitHandlers.iterator();
         while (resHandlers.hasNext()) {
-            I_CmsResourceInit clazz = resHandlers.next();
+            I_CmsResourceInit handler = resHandlers.next();
             Element handlerElement = resourceinitElement.addElement(N_RESOURCEINITHANDLER);
-            handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());
+            handlerElement.addAttribute(A_CLASS, handler.getClass().getName());
+            CmsParameterConfiguration config = handler.getConfiguration();
+            if (config != null) {
+                for (String key : config.keySet()) {
+                    handlerElement.addElement(N_PARAM).addAttribute(A_NAME, key).addText(config.get(key));
+                }
+            }
         }
 
         // request handlers
