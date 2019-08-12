@@ -34,7 +34,13 @@
 			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
 		</resourceinit>
-		<requesthandlers/>
+		<requesthandlers>
+            <requesthandler class="org.opencms.configuration.CmsDummyRequestHandler">
+                <param name="key1">value1</param>
+                <param name="key2">value2</param>
+                <param name="key3">value3</param>
+            </requesthandler>
+        </requesthandlers>
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
 			<digest-type>scrypt</digest-type>

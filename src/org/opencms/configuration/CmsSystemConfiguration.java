@@ -1240,9 +1240,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Element requesthandlersElement = systemElement.addElement(N_REQUESTHANDLERS);
         Iterator<I_CmsRequestHandler> reqHandlers = m_requestHandlers.iterator();
         while (reqHandlers.hasNext()) {
-            I_CmsRequestHandler clazz = reqHandlers.next();
+            I_CmsRequestHandler handler = reqHandlers.next();
             Element handlerElement = requesthandlersElement.addElement(N_REQUESTHANDLER);
-            handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());
+            handlerElement.addAttribute(A_CLASS, handler.getClass().getName());
+            CmsParameterConfiguration config = handler.getConfiguration();
+            if (config != null) {
+                for (String key : config.keySet()) {
+                    handlerElement.addElement(N_PARAM).addAttribute(A_NAME, key).addText(config.get(key));
+                }
+            }
         }
 
         // password handler

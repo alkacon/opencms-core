@@ -58,6 +58,16 @@ import javax.servlet.http.HttpServletResponse;
 public interface I_CmsRequestHandler {
 
     /**
+     * Gets the configuration.
+     *
+     * @return the configuration
+     */
+    default CmsParameterConfiguration getConfiguration() {
+
+        return new CmsParameterConfiguration();
+    }
+
+    /**
      * Returns the handler name.<p>
      *
      * @return the handler name
@@ -81,6 +91,7 @@ public interface I_CmsRequestHandler {
      * @param params the map of parameters
      */
     default void initParameters(CmsParameterConfiguration params) {
+
         // do nothing
     }
 }
