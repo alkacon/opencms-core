@@ -1458,6 +1458,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             systemElement.addElement(N_PUBLISH_LIST_REMOVE_MODE).addAttribute(A_MODE, m_publishListRemoveMode);
         }
 
+        if (m_detailPageHandler != null) {
+            Element handlerElement = systemElement.addElement(N_DETAIL_PAGE_HANDLER).addAttribute(
+                A_CLASS,
+                m_detailPageHandler.getClass().getName());
+            CmsParameterConfiguration config = m_detailPageHandler.getConfiguration();
+            if (config != null) {
+                for (String key : config.keySet()) {
+                    handlerElement.addElement(N_PARAM).addAttribute(A_NAME, key).addText(config.get(key));
+                }
+            }
+        }
+
         if (m_restrictDetailContents != null) {
             Element restrictDetailContentsElem = systemElement.addElement(N_RESTRICT_DETAIL_CONTENTS);
             restrictDetailContentsElem.addText(m_restrictDetailContents);
