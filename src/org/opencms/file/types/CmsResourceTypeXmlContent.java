@@ -66,6 +66,7 @@ import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlContentValue.SearchContentType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -530,6 +531,33 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                     CmsLink link = refValue.getLink(cms);
                     if ((link != null) && link.isInternal()) {
                         links.add(link);
+                    }
+                }
+                if (SearchContentType.CONTENT.equals(xmlContent.getHandler().getSearchContentType(value))) {
+                    String stringValue = value.getStringValue(cms);
+                    try {
+                        if ((null != stringValue) && !stringValue.trim().isEmpty() && cms.existsResource(stringValue)) {
+                            CmsResource res = cms.readResource(stringValue);
+                            if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+                                CmsLink link = new CmsLink(
+                                    "",
+                                    CmsRelationType.INDEX_CONTENT,
+                                    res.getStructureId(),
+                                    res.getRootPath(),
+                                    true);
+                                links.add(link);
+                            }
+                        }
+                    } catch (Throwable t) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(
+                                "Failed to add INDEX_CONTENT relation from resource "
+                                    + file.getRootPath()
+                                    + " to linked resource "
+                                    + stringValue
+                                    + ".",
+                                t);
+                        }
                     }
                 }
             }

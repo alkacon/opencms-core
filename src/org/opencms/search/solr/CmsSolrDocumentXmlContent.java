@@ -55,6 +55,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.serialdate.CmsSerialDateBeanFactory;
 import org.opencms.widgets.serialdate.CmsSerialDateValue;
 import org.opencms.widgets.serialdate.I_CmsSerialDateBean;
@@ -74,6 +75,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -376,6 +378,32 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         Locale forceLocale)
     throws CmsException {
 
+        return extractXmlContent(cms, resource, index, forceLocale, null);
+    }
+
+    /**
+     * Extracts the content of a single XML content resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param index the used index
+     * @param forceLocale if set, only the content values for the given locale will be extracted
+     *
+     * @return the extraction result
+     *
+     * @throws CmsException in case reading or unmarshalling the content fails
+     */
+    public static CmsExtractionResult extractXmlContent(
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsSearchIndex index,
+        Locale forceLocale,
+        Set<CmsUUID> alreadyExtracted)
+    throws CmsException {
+
+        if (null == alreadyExtracted) {
+            alreadyExtracted = Collections.emptySet();
+        }
         // un-marshal the content
         CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
@@ -432,11 +460,64 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
                     localeItems.put(xpath, extracted);
                 }
-                if (value.getContentDefinition().getContentHandler().isSearchable(value)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                    // value is search-able and the extraction is not empty, so added to the textual content
-                    textContent.append(extracted);
-                    textContent.append('\n');
+                switch (xmlContent.getHandler().getSearchContentType(value)) {
+                    case TRUE:
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                            textContent.append(extracted);
+                            textContent.append('\n');
+                        }
+                        break;
+                    case CONTENT:
+                        // TODO: Potentially extend to allow for indexing of non-xml-contents as well.
+                        String potentialLinkValue = value.getStringValue(cms);
+                        try {
+                            if ((null != potentialLinkValue)
+                                && !potentialLinkValue.isEmpty()
+                                && cms.existsResource(potentialLinkValue)) {
+                                CmsResource linkedRes = cms.readResource(potentialLinkValue);
+                                if (CmsResourceTypeXmlContent.isXmlContent(linkedRes)
+                                    && !alreadyExtracted.contains(linkedRes.getStructureId())) {
+                                    Set<CmsUUID> newAlreadyExtracted = new HashSet<>(alreadyExtracted);
+                                    newAlreadyExtracted.add(resource.getStructureId());
+                                    I_CmsExtractionResult exRes = CmsSolrDocumentXmlContent.extractXmlContent(
+                                        cms,
+                                        linkedRes,
+                                        index,
+                                        locale,
+                                        newAlreadyExtracted);
+                                    String exContent = exRes.getContent(locale);
+                                    if ((exContent != null) && !exContent.trim().isEmpty()) {
+                                        textContent.append(exContent.trim());
+                                        textContent.append('\n');
+                                        break; // Success - we break here to not repeatedly programm a warning.
+                                    }
+                                }
+                            }
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(
+                                    "When indexing resource "
+                                        + resource.getRootPath()
+                                        + ", the elements value "
+                                        + value.getPath()
+                                        + " in locale "
+                                        + locale
+                                        + " does not contain a link to an XML content. Hence, the linked element's content is not added to the content indexed for the resource itself.");
+                            }
+                        } catch (Throwable t) {
+                            LOG.error(
+                                "Failed to add content of resource (site path) "
+                                    + potentialLinkValue
+                                    + " to content of resource (root path) "
+                                    + resource.getRootPath()
+                                    + " when indexing the resource for locale "
+                                    + locale
+                                    + ". Skipping this content part.",
+                                t);
+                        }
+                        break;
+                    default:
+                        // we do not index the content element for the content field.
+                        break;
                 }
 
                 List<String> mappings = xmlContent.getHandler().getMappings(value.getPath());

@@ -42,6 +42,40 @@ import org.dom4j.Element;
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
 
     /**
+     * The available search types for element searchsetting.
+     */
+    public static enum SearchContentType {
+        /** Do not merge the value of the field into the content field. */
+        FALSE,
+        /** Merge the value of the field into the content field. */
+        TRUE,
+        /** Merge the extracted content of the resource linked by the element into the content field. */
+        CONTENT;
+
+        /**
+         * Converts the String into a SearchContentType. Returns <code>null</code> if conversion is not possible.
+         * @param type the search content type as String.
+         * @return the search content type specified by the provided String, or <code>null</code> if the String did not specify any search content type.
+         */
+        public static SearchContentType fromString(String type) {
+
+            if (null == type) {
+                return null;
+            }
+            switch (type.toLowerCase()) {
+                case "false":
+                    return FALSE;
+                case "true":
+                    return TRUE;
+                case "content":
+                    return CONTENT;
+                default:
+                    return null;
+            }
+        }
+    }
+
+    /**
      * Returns the XML content instance this value belongs to.<p>
      *
      * @return the XML content instance this value belongs to
@@ -106,6 +140,15 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @return the value of this XML content node as a plain text String
      */
     String getPlainText(CmsObject cms);
+
+    /**
+     * Returns the search content type for the value. Default implementation uses the historic isSearchable() method.
+     * @return the search content type
+     */
+    default SearchContentType getSearchContentType() {
+
+        return isSearchable() ? SearchContentType.TRUE : SearchContentType.FALSE;
+    }
 
     /**
      * Returns the value of this XML content node as a String.<p>

@@ -94,6 +94,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrFieldConfiguration.class.getName());
         suite.addTest(new TestSolrFieldConfiguration("testAppinfoSolrField"));
+        suite.addTest(new TestSolrFieldConfiguration("testAppinfoSearchTypeContent"));
         suite.addTest(new TestSolrFieldConfiguration("testContentLocalesField"));
         suite.addTest(new TestSolrFieldConfiguration("testDependencies"));
         suite.addTest(new TestSolrFieldConfiguration("testLanguageDetection"));
@@ -120,6 +121,42 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests if the search content type "content" works correctly.<p>
+     *
+     * We check if the content is indexed correctly and if cyclic dependencies are correctly handled.
+     *
+     * '@see /sites/default/extractLinked/extract-linked.xsd'
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testAppinfoSearchTypeContent() throws Throwable {
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrQuery squery = new CmsSolrQuery(
+            null,
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/extractLinked/el1.xml\""));
+        CmsSolrResultList results = index.search(getCmsObject(), squery);
+
+        // Test the result count
+        AllTests.printResults(getCmsObject(), results, false);
+        assertEquals(1, results.size());
+
+        // Test if the result contains the expected resource
+        CmsSearchResource res = results.get(0);
+        assertEquals("/sites/default/extractLinked/el1.xml", res.getRootPath());
+
+        ////////////////
+        // FIELD TEST //
+        ////////////////
+        String contentFieldValue = res.getField("content_en");
+        assertNotNull(contentFieldValue);
+        assertTrue(
+            "Field should contain 'Hund' and 'Rind', i.e. the values of el1.xml and el2.xml",
+            contentFieldValue.contains("Hund") && contentFieldValue.contains("Rind"));
+
     }
 
     /**
