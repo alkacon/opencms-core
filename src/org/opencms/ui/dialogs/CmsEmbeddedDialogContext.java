@@ -33,6 +33,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -239,7 +240,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      */
     public void navigateTo(String appId) {
 
-        String targetUri = OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + appId;
+        String targetUri = CmsVaadinUtils.getWorkplaceLink(appId);
         getClientRPC().leavePage(targetUri);
     }
 

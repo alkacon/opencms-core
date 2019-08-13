@@ -37,6 +37,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
@@ -259,14 +260,12 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
 
             String siteRoot = data.iterator().next();
             A_CmsUI.getCmsObject().getRequestContext().setSiteRoot(siteRoot);
-            CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-                CmsFileExplorerConfiguration.APP_ID
-                    + "/"
-                    + A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
-                    + "!!"
+            CmsAppWorkplaceUi.get().showApp(
+                CmsFileExplorerConfiguration.APP_ID,
+                A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getUuid()
+                    + A_CmsWorkplaceApp.PARAM_SEPARATOR
                     + siteRoot
-                    + "!!");
-
+                    + A_CmsWorkplaceApp.PARAM_SEPARATOR);
         }
 
         /**

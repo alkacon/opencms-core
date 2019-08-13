@@ -46,6 +46,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOUHandler;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -946,7 +947,68 @@ public final class CmsVaadinUtils {
      */
     public static String getWorkplaceLink() {
 
-        return CmsStringUtil.joinPaths("/", OpenCms.getSystemInfo().getContextPath(), "workplace");
+        return OpenCms.getSystemInfo().getWorkplaceContext();
+    }
+
+    /**
+     * Returns the workplace link for the given app.<p>
+     *
+     * @param appId the app id
+     *
+     * @return the workplace link
+     */
+    public static String getWorkplaceLink(String appId) {
+
+        return getWorkplaceLink() + CmsAppWorkplaceUi.WORKPLACE_APP_ID_SEPARATOR + appId;
+    }
+
+    /**
+     * Returns the workplace link to the given app with the given state.<p>
+     *
+     * @param appId the app id
+     * @param appState the app state
+     *
+     * @return the workplace link
+     */
+    public static String getWorkplaceLink(String appId, String appState) {
+
+        return getWorkplaceLink(appId) + CmsAppWorkplaceUi.WORKPLACE_STATE_SEPARATOR + appState;
+    }
+
+    /**
+     * Returns the workplace link to the given app with the given state including the given request parameters.<p>
+     *
+     * @param appId the app id
+     * @param appState the app state
+     * @param requestParameters the request parameters
+     *
+     * @return the workplace link
+     */
+    public static String getWorkplaceLink(String appId, String appState, Map<String, String[]> requestParameters) {
+
+        String result = getWorkplaceLink();
+        if ((requestParameters != null) && !requestParameters.isEmpty()) {
+            boolean first = true;
+            for (Entry<String, String[]> param : requestParameters.entrySet()) {
+                for (String value : param.getValue()) {
+                    if (first) {
+                        result += "?";
+                    } else {
+                        result += "&";
+                    }
+                    result += param.getKey() + "=" + value;
+                    first = false;
+                }
+            }
+        }
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(appId)) {
+            result += CmsAppWorkplaceUi.WORKPLACE_APP_ID_SEPARATOR + appId;
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(appState)) {
+            result += CmsAppWorkplaceUi.WORKPLACE_STATE_SEPARATOR + appState;
+        }
+        return result;
     }
 
     /**

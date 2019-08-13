@@ -143,7 +143,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                                         forceLocale));
                             }
                         }
-                    } catch (CmsException e) {
+                    } catch (Exception e) {
                         LOG.debug(
                             Messages.get().getBundle().key(
                                 Messages.LOG_SKIPPING_CONTAINERPAGE_ELEMENT_WITH_UNREADABLE_RESOURCE_2,

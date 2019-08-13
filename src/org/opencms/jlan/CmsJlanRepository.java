@@ -68,8 +68,14 @@ import com.google.common.collect.Lists;
  */
 public class CmsJlanRepository implements I_CmsRepository {
 
+    /** Request context attribute to control error handling for write errors. */
+    public static final String JLAN_IGNORE_WRITE_ERRORS = "jlan.ignoreWriteErrors";
+
     /** Parameter for controlling whether byte order marks should be added to plaintext files. */
     public static final String PARAM_ADD_BOM = "addBOM";
+
+    /** Parameter that controls whether to ignore file write errors. */
+    public static final String PARAM_IGNORE_WRITE_ERRORS = "ignoreWriteErrors";
 
     /** The parameter for the project in which this repository should operate. */
     public static final String PARAM_PROJECT = "project";
@@ -100,6 +106,9 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /** The JLAN disk interface for this repository. */
     private DiskInterface m_diskInterface;
+
+    /** Flag which controls whether write errors should be ignored. */
+    private boolean m_ignoreWriteErrors;
 
     /** The name of the repository. */
     private String m_name;
@@ -226,6 +235,7 @@ public class CmsJlanRepository implements I_CmsRepository {
         CmsObjectWrapper result = new CmsObjectWrapper(newCms, getWrappers());
         result.setAddByteOrderMark(m_addByteOrderMark);
         result.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+        result.getRequestContext().setAttribute(JLAN_IGNORE_WRITE_ERRORS, Boolean.valueOf(m_ignoreWriteErrors));
         return result;
     }
 
@@ -317,6 +327,7 @@ public class CmsJlanRepository implements I_CmsRepository {
         m_projectName = getConfiguration().getString(PARAM_PROJECT, "Offline").trim();
         String addByteOrderMarkStr = getConfiguration().getString(PARAM_ADD_BOM, "" + true).trim();
         m_addByteOrderMark = Boolean.parseBoolean(addByteOrderMarkStr);
+        m_ignoreWriteErrors = Boolean.parseBoolean(getConfiguration().getString(PARAM_IGNORE_WRITE_ERRORS, "false"));
     }
 
     /**
@@ -331,6 +342,16 @@ public class CmsJlanRepository implements I_CmsRepository {
         m_project = m_cms.readProject(m_projectName);
         m_device = new DiskSharedDevice(getName(), getDiskInterface(), getDeviceContext(), 0);
         m_device.addAccessControl(new CmsRepositoryAccessControl(this));
+    }
+
+    /**
+     * Returns true if file write errors should be ignored.
+     *
+     * @return true if file write errors should be ignored
+     */
+    public boolean isIgnoreWriteFileErrors() {
+
+        return m_ignoreWriteErrors;
     }
 
     /**

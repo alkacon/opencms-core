@@ -1602,7 +1602,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     title = getCmsObject().readPropertyObject(
                         sitePath,
                         CmsPropertyDefinition.PROPERTY_TITLE,
-                        false).getValue("");
+                        false,
+                        getWorkplaceLocale()).getValue("");
                 } catch (CmsException e) {
                     // error reading title property
                     logError(e);

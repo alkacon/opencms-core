@@ -45,6 +45,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlContentValue.SearchContentType;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.Arrays;
@@ -52,6 +53,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
@@ -69,17 +71,17 @@ public interface I_CmsXmlContentHandler {
      * The available display types for element widgets.
      */
     public static enum DisplayType {
-    /** The two column type. */
-    column,
+        /** The two column type. */
+        column,
 
-    /** The default display type. */
-    none,
+        /** The default display type. */
+        none,
 
-    /** The single line type. */
-    singleline,
+        /** The single line type. */
+        singleline,
 
-    /** The default wide display type. */
-    wide
+        /** The default wide display type. */
+        wide
     }
 
     /**
@@ -458,6 +460,22 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(String xpath, CmsRelationType defaultType);
 
     /**
+     * Returns the search content type, ie., the way how to integrate the value into full text search.<p>
+     *
+     * For the full text search, the value of all elements in one locale of the XML content are combined
+     * to one big text, which is referred to as the "content" in the context of the full text search.
+     * With this option, it is possible to hide certain elements from this "content" that does not make sense
+     * to include in the full text search.<p>
+     *
+     * Moreover, if the value contains a link to another resource, the content of that other resource can be added.
+     *
+     * @param value the XML content value to check
+     *
+     * @return the search content type, indicating how the element should be added to the content for the full text search
+     */
+    SearchContentType getSearchContentType(I_CmsXmlContentValue value);
+
+    /**
      * Returns all configured Search fields for this XML content.<p>
      *
      * @return the Search fields for this XMl content
@@ -482,7 +500,7 @@ public interface I_CmsXmlContentHandler {
      *
      * @return the search field settings for this XML content schema
      */
-    Map<String, Boolean> getSearchSettings();
+    Map<String, SearchContentType> getSearchSettings();
 
     /**
      * Returns the element settings defined for the container page formatters.<p>
@@ -634,8 +652,14 @@ public interface I_CmsXmlContentHandler {
      * @param value the XML content value to check
      *
      * @return <code>true</code> in case the given value should be searchable
+     *
+     * @deprecated use {@link #getSearchContentType(I_CmsXmlContentValue)} instead. Will be removed if plain lucene search is removed.
      */
-    boolean isSearchable(I_CmsXmlContentValue value);
+    @Deprecated
+    default boolean isSearchable(I_CmsXmlContentValue value) {
+
+        return Objects.equals(getSearchContentType(value), SearchContentType.TRUE);
+    }
 
     /**
      * Returns if the given content field should be visible to the current user.<p>

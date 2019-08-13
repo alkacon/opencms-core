@@ -100,6 +100,7 @@ import com.vaadin.v7.ui.Table.TableDragMode;
 /**
  * Generic table for displaying lists of resources.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsResourceTable extends CustomComponent {
 
     /**
@@ -749,9 +750,10 @@ public class CmsResourceTable extends CustomComponent {
 
         List<CmsUUID> ids = new ArrayList<CmsUUID>();
         for (String itemId : itemIds) {
-            ids.add(getUUIDFromItemID(itemId));
+            if (itemId != null) {
+                ids.add(getUUIDFromItemID(itemId));
+            }
         }
         return ids;
     }
-
 }

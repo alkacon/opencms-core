@@ -2,391 +2,397 @@
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoHandler">
-		<xsd:attribute name="class" type="xsd:string" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoHandler">
+        <xsd:attribute name="class" type="xsd:string" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundle">
-		<xsd:attribute name="name" type="xsd:string" />
-	</xsd:complexType>
-		
-	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundles">
-		<xsd:sequence>
-			<xsd:element name="propertybundle" type="OpenCmsDefaultAppinfoResourcebundlesPropertybundle" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="xmlbundle" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundle" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>		
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesPropertybundle">
-		<xsd:attribute name="name" type="xsd:string" use="required" />
-	</xsd:complexType>
-	
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesXmlbundle">
-		<xsd:sequence>
-			<xsd:element name="bundle" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundleLocale" minOccurs="1" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string" use="required" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoResourcebundle">
+        <xsd:attribute name="name" type="xsd:string" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesXmlbundleLocale">
-		<xsd:sequence>
-			<xsd:element name="resource" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundleResource" minOccurs="1" maxOccurs="unbounded" />
-		</xsd:sequence>		
-		<xsd:attribute name="locale" type="xsd:string" use="required" />
-	</xsd:complexType>	
-		
-	<xsd:complexType
-		name="OpenCmsDefaultAppinfoResourcebundlesXmlbundleResource">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute name="key" type="xsd:string" use="required" />
-				<xsd:attribute name="value" type="xsd:string" use="optional" />
-			</xsd:extension>
-		</xsd:simpleContent>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoResourcebundles">
+        <xsd:sequence>
+            <xsd:element name="propertybundle" type="OpenCmsDefaultAppinfoResourcebundlesPropertybundle" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="xmlbundle" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundle" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoModelfolder">
-		<xsd:attribute name="uri" type="xsd:string" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesPropertybundle">
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoPreview">
-		<xsd:attribute name="uri" type="xsd:string" />
-	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoDefaults">
-		<xsd:sequence>
-			<xsd:element name="default" type="OpenCmsDefaultAppinfoDefault" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesXmlbundle">
+        <xsd:sequence>
+            <xsd:element name="bundle" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundleLocale" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoDefault">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="value" type="xsd:string" use="required" />
-		<xsd:attribute name="resolveMacros" type="xsd:boolean" use="optional" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoResourcebundlesXmlbundleLocale">
+        <xsd:sequence>
+            <xsd:element name="resource" type="OpenCmsDefaultAppinfoResourcebundlesXmlbundleResource" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="locale" type="xsd:string" use="required" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoMappings">
-		<xsd:sequence>
-			<xsd:element name="mapping" type="OpenCmsDefaultAppinfoMapping" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType
+        name="OpenCmsDefaultAppinfoResourcebundlesXmlbundleResource">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="key" type="xsd:string" use="required" />
+                <xsd:attribute name="value" type="xsd:string" use="optional" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoMapping">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="mapto" type="xsd:string" use="required" />
-		<xsd:attribute name="useDefault" type="xsd:boolean" use="optional" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoModelfolder">
+        <xsd:attribute name="uri" type="xsd:string" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoLayouts">
-		<xsd:sequence>
-			<xsd:element name="layout" type="OpenCmsDefaultAppinfoLayout" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="useAcacia" type="xsd:string" use="optional" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoPreview">
+        <xsd:attribute name="uri" type="xsd:string" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoLayout">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="widget" type="xsd:string" use="required" />
-		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
-		<xsd:attribute name="display" type="OpenCmsDefaultAppinfoLayoutDisplay" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:simpleType name="OpenCmsDefaultAppinfoLayoutDisplay">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="column|compact|singleline|wide" />
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoDefaults">
+        <xsd:sequence>
+            <xsd:element name="default" type="OpenCmsDefaultAppinfoDefault" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoValidationrules">
-		<xsd:sequence>
-			<xsd:choice>
-				<xsd:element name="rule" type="OpenCmsDefaultAppinfoValidationrule" minOccurs="0" maxOccurs="unbounded" />
-				<xsd:element name="validationrule" type="OpenCmsDefaultAppinfoValidationrule" minOccurs="0" maxOccurs="unbounded" />
-			</xsd:choice>
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoDefault">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="value" type="xsd:string" use="required" />
+        <xsd:attribute name="resolveMacros" type="xsd:boolean" use="optional" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoValidationrule">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="regex" type="xsd:string" use="required" />
-		<xsd:attribute name="type" type="OpenCmsDefaultAppinfoValidationruleType" use="optional" />
-		<xsd:attribute name="message" type="xsd:string" use="optional" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoMappings">
+        <xsd:sequence>
+            <xsd:element name="mapping" type="OpenCmsDefaultAppinfoMapping" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:simpleType name="OpenCmsDefaultAppinfoValidationruleType">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="warning|WARNING|error|ERROR" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoSearchsettings">
-		<xsd:sequence>
-			<xsd:element name="searchsetting" type="OpenCmsDefaultAppinfoSearchsetting" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
+    <xsd:complexType name="OpenCmsDefaultAppinfoMapping">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="mapto" type="xsd:string" use="required" />
+        <xsd:attribute name="useDefault" type="xsd:boolean" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoLayouts">
+        <xsd:sequence>
+            <xsd:element name="layout" type="OpenCmsDefaultAppinfoLayout" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="useAcacia" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoLayout">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="widget" type="xsd:string" use="required" />
+        <xsd:attribute name="configuration" type="xsd:string" use="optional" />
+        <xsd:attribute name="display" type="OpenCmsDefaultAppinfoLayoutDisplay" use="optional" />
+    </xsd:complexType>
+
+    <xsd:simpleType name="OpenCmsDefaultAppinfoLayoutDisplay">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="column|compact|singleline|wide" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoValidationrules">
+        <xsd:sequence>
+            <xsd:choice>
+                <xsd:element name="rule" type="OpenCmsDefaultAppinfoValidationrule" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element name="validationrule" type="OpenCmsDefaultAppinfoValidationrule" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoValidationrule">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="regex" type="xsd:string" use="required" />
+        <xsd:attribute name="type" type="OpenCmsDefaultAppinfoValidationruleType" use="optional" />
+        <xsd:attribute name="message" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:simpleType name="OpenCmsDefaultAppinfoValidationruleType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="warning|WARNING|error|ERROR" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoSearchsettings">
+        <xsd:sequence>
+            <xsd:element name="searchsetting" type="OpenCmsDefaultAppinfoSearchsetting" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
         <xsd:attribute name="containerPageOnly" type="xsd:boolean" use="optional" default="false" />
-	</xsd:complexType>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoSearchsetting">
-		<xsd:sequence>
-			<xsd:element name="solrfield" type="OpenCmsDefaultAppinfoSolrField" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="searchcontent" type="xsd:boolean" use="optional" default="true" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoSearchsetting">
+        <xsd:sequence>
+            <xsd:element name="solrfield" type="OpenCmsDefaultAppinfoSolrField" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="searchcontent" type="OpenCmsDefaultAppinfoSearchsettingSearchContentType" use="optional" default="true" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoSolrField">
-		<xsd:sequence>
-			<xsd:element name="mapping" type="OpenCmsDefaultAppinfoSolrFieldMapping" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="targetfield" type="xsd:string" use="required" />
-		<xsd:attribute name="sourcefield" type="xsd:string" use="optional" />
-		<xsd:attribute name="copyfields" type="xsd:string" use="optional" />
-		<xsd:attribute name="locale" type="xsd:string" use="optional" />
-		<xsd:attribute name="default" type="xsd:string" use="optional" />
-		<xsd:attribute name="boost" type="xsd:string" use="optional" />
-		<xsd:attribute name="addto" type="xsd:string" use="optional" />
-	</xsd:complexType>
+    <xsd:simpleType name="OpenCmsDefaultAppinfoSearchsettingSearchContentType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="true|TRUE|false|FALSE|content|CONTENT" />
+        </xsd:restriction>
+    </xsd:simpleType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoSolrFieldMapping">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute name="type" type="OpenCmsDefaultAppinfoMappingType" use="required" />
-				<xsd:attribute name="default" type="xsd:string" use="optional" />
-				<xsd:attribute name="class" type="xsd:string" use="optional" />
-			</xsd:extension>
-		</xsd:simpleContent>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoSolrField">
+        <xsd:sequence>
+            <xsd:element name="mapping" type="OpenCmsDefaultAppinfoSolrFieldMapping" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="targetfield" type="xsd:string" use="required" />
+        <xsd:attribute name="sourcefield" type="xsd:string" use="optional" />
+        <xsd:attribute name="copyfields" type="xsd:string" use="optional" />
+        <xsd:attribute name="locale" type="xsd:string" use="optional" />
+        <xsd:attribute name="default" type="xsd:string" use="optional" />
+        <xsd:attribute name="boost" type="xsd:string" use="optional" />
+        <xsd:attribute name="addto" type="xsd:string" use="optional" />
+    </xsd:complexType>
 
-	<xsd:simpleType name="OpenCmsDefaultAppinfoMappingType">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="content|property|property-search|item|dynamic|attribute" />
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoSolrFieldMapping">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="type" type="OpenCmsDefaultAppinfoMappingType" use="required" />
+                <xsd:attribute name="default" type="xsd:string" use="optional" />
+                <xsd:attribute name="class" type="xsd:string" use="optional" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoRelations">
-		<xsd:sequence>
-			<xsd:element name="relation" type="OpenCmsDefaultAppinfoRelation" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:simpleType name="OpenCmsDefaultAppinfoMappingType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="content|property|property-search|item|dynamic|attribute" />
+        </xsd:restriction>
+    </xsd:simpleType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoRelation">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="type" type="OpenCmsDefaultAppinfoRelationType" use="optional" />
-		<xsd:attribute name="invalidate" type="OpenCmsDefaultAppinfoRelationInvalidate" use="optional" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoRelations">
+        <xsd:sequence>
+            <xsd:element name="relation" type="OpenCmsDefaultAppinfoRelation" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:simpleType name="OpenCmsDefaultAppinfoRelationInvalidate">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="node|NODE|parent|PARENT|true|TRUE|false|FALSE" />
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoRelation">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="type" type="OpenCmsDefaultAppinfoRelationType" use="optional" />
+        <xsd:attribute name="invalidate" type="OpenCmsDefaultAppinfoRelationInvalidate" use="optional" />
+    </xsd:complexType>
 
-	<xsd:simpleType name="OpenCmsDefaultAppinfoRelationType">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="attachment|ATTACHMENT|reference|REFERENCE|weak|WEAK|strong|STRONG" />
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:simpleType name="OpenCmsDefaultAppinfoRelationInvalidate">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="node|NODE|parent|PARENT|true|TRUE|false|FALSE" />
+        </xsd:restriction>
+    </xsd:simpleType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoTabs">
-		<xsd:sequence>
-			<xsd:element name="tab" type="OpenCmsDefaultAppinfoTab" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="useall" type="xsd:string" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoTab">
-		<xsd:sequence>
-			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
-		</xsd:sequence>
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="collapse" type="xsd:string" use="optional" />
-		<xsd:attribute name="name" type="xsd:string" use="optional" />
-		<xsd:attribute name="description" type="xsd:string" use="optional" />
-	</xsd:complexType>
+    <xsd:simpleType name="OpenCmsDefaultAppinfoRelationType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="attachment|ATTACHMENT|reference|REFERENCE|weak|WEAK|strong|STRONG" />
+        </xsd:restriction>
+    </xsd:simpleType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoFormatters">
-		<xsd:sequence>
-			<xsd:element name="formatter" type="OpenCmsDefaultAppinfoFormatter" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoFormatter">
-		<xsd:attribute name="uri" type="xsd:string" use="required" />
-		<xsd:attribute name="type" type="xsd:string" use="optional" />		
-		<xsd:attribute name="minwidth" type="xsd:string" use="optional" />
-		<xsd:attribute name="maxwidth" type="xsd:string" use="optional" />
-		<xsd:attribute name="preview"  type="xsd:boolean" use="optional" default="false" />
-		<xsd:attribute name="searchcontent" type="xsd:boolean" use="optional" default="true" />		
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoTabs">
+        <xsd:sequence>
+            <xsd:element name="tab" type="OpenCmsDefaultAppinfoTab" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="useall" type="xsd:string" use="optional" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoHeadIncludes">
-		<xsd:sequence>
-			<xsd:element name="headinclude" type="OpenCmsDefaultAppinfoHeadInclude" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoHeadInclude">
-		<xsd:attribute name="type" type="OpenCmsDefaultAppinfoHeadIncludeType" use="required" />
-		<xsd:attribute name="uri" type="xsd:string" use="required" />
-	</xsd:complexType>
-	
-	<xsd:simpleType name="OpenCmsDefaultAppinfoHeadIncludeType">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="css|javascript" />
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoTab">
+        <xsd:sequence>
+            <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="collapse" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="optional" />
+        <xsd:attribute name="description" type="xsd:string" use="optional" />
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoSettings">
-		<xsd:sequence>
-			<xsd:element name="setting" type="OpenCmsDefaultAppinfoSetting" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoSetting">
-		<xsd:attribute name="name" type="xsd:string" use="required" />
-		<xsd:attribute name="type" type="OpenCmsDefaultAppinfoSettingType" use="required" />
-		<xsd:attribute name="widget" type="xsd:string" use="required" />
-		<xsd:attribute name="widget-config" type="xsd:string" use="optional" />
-		<xsd:attribute name="default" type="xsd:string" use="optional" />
-		<xsd:attribute name="rule-regex" type="xsd:string" use="optional" />
-		<xsd:attribute name="rule-type" type="OpenCmsDefaultAppinfoValidationruleType" use="optional" />
-		<xsd:attribute name="nice-name" type="xsd:string" use="optional" />
-		<xsd:attribute name="description" type="xsd:string" use="optional" />
-		<xsd:attribute name="error" type="xsd:string" use="optional" />
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDefaultAppinfoFormatters">
+        <xsd:sequence>
+            <xsd:element name="formatter" type="OpenCmsDefaultAppinfoFormatter" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDefaultAppinfoEditHandler">
-		<xsd:sequence>
-			<xsd:element name="parameters" type="OpenCmsDefaultAppinfoParameters" minOccurs="0" maxOccurs="1" />
-		</xsd:sequence>
-		<xsd:attribute name="class" type="xsd:string" />
-		
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoTemplates">
-		<xsd:sequence>
-			<xsd:element name="template" type="OpenCmsDefaultAppinfoTemplate" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="enabledByDefault" type="xsd:string" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoTemplate">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute name="enabled" type="xsd:string" />
-			</xsd:extension>
-		</xsd:simpleContent>
-	</xsd:complexType> 
-	
-	
-	<xsd:simpleType name="OpenCmsDefaultAppinfoSettingType">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="string|vfslist" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoDefaultWidget">
-		<xsd:attribute name="widget" type="xsd:string" use="required" />
-		<xsd:attribute name="configuration" type="xsd:string" use="required" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoVisibilities">
-		<xsd:sequence>
-			<xsd:element name="visibility" type="OpenCmsDefaultAppinfoVisibility" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="class" type="xsd:string" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoVisibility">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-		<xsd:attribute name="class" type="xsd:string" use="optional" />
-		<xsd:attribute name="params" type="xsd:string" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoSynchronizations">
-		<xsd:sequence>
-			<xsd:element name="synchronization" type="OpenCmsDefaultAppinfoSynchronization" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoSynchronization">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoEditorChangeHandlers">
-		<xsd:sequence>
-			<xsd:element name="editorchangehandler" type="OpenCmsDefaultAppinfoEditorChangeHandler" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoEditorChangeHandler">
-		<xsd:attribute name="class" type="xsd:string" use="required" />
-		<xsd:attribute name="scope" type="xsd:string" use="optional" />
-		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoNestedFormatters">
-		<xsd:sequence>
-			<xsd:element name="nestedformatter" type="OpenCmsDefaultAppinfoNestedFormatter" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoNestedFormatter">
-		<xsd:attribute name="element" type="xsd:string" use="required" />
-	</xsd:complexType>
-	
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoMessageKeyHandler">
-		<xsd:attribute name="class" type="xsd:string" use="required" />
-		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoParameters">
-		<xsd:sequence>
-			<xsd:element name="param" type="OpenCmsDefaultAppinfoParam" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoParam">
-    	<xsd:simpleContent>
-      		<xsd:extension base="xsd:string">
-        		<xsd:attribute name="name" type="xsd:string" />
-      		</xsd:extension>
-    	</xsd:simpleContent>
-	</xsd:complexType>
-	
-		<xsd:complexType name="OpenCmsDefaultAppinfoFields">
-		<xsd:sequence>
-			<xsd:element name="Setting" type="OpenCmsDefaultAppinfoField" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-    
+    <xsd:complexType name="OpenCmsDefaultAppinfoFormatter">
+        <xsd:attribute name="uri" type="xsd:string" use="required" />
+        <xsd:attribute name="type" type="xsd:string" use="optional" />
+        <xsd:attribute name="minwidth" type="xsd:string" use="optional" />
+        <xsd:attribute name="maxwidth" type="xsd:string" use="optional" />
+        <xsd:attribute name="preview"  type="xsd:boolean" use="optional" default="false" />
+        <xsd:attribute name="searchcontent" type="xsd:boolean" use="optional" default="true" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoHeadIncludes">
+        <xsd:sequence>
+            <xsd:element name="headinclude" type="OpenCmsDefaultAppinfoHeadInclude" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoHeadInclude">
+        <xsd:attribute name="type" type="OpenCmsDefaultAppinfoHeadIncludeType" use="required" />
+        <xsd:attribute name="uri" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:simpleType name="OpenCmsDefaultAppinfoHeadIncludeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="css|javascript" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoSettings">
+        <xsd:sequence>
+            <xsd:element name="setting" type="OpenCmsDefaultAppinfoSetting" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoSetting">
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="type" type="OpenCmsDefaultAppinfoSettingType" use="required" />
+        <xsd:attribute name="widget" type="xsd:string" use="required" />
+        <xsd:attribute name="widget-config" type="xsd:string" use="optional" />
+        <xsd:attribute name="default" type="xsd:string" use="optional" />
+        <xsd:attribute name="rule-regex" type="xsd:string" use="optional" />
+        <xsd:attribute name="rule-type" type="OpenCmsDefaultAppinfoValidationruleType" use="optional" />
+        <xsd:attribute name="nice-name" type="xsd:string" use="optional" />
+        <xsd:attribute name="description" type="xsd:string" use="optional" />
+        <xsd:attribute name="error" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoEditHandler">
+        <xsd:sequence>
+            <xsd:element name="parameters" type="OpenCmsDefaultAppinfoParameters" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string" />
+
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoTemplates">
+        <xsd:sequence>
+            <xsd:element name="template" type="OpenCmsDefaultAppinfoTemplate" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="enabledByDefault" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoTemplate">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="enabled" type="xsd:string" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+
+    <xsd:simpleType name="OpenCmsDefaultAppinfoSettingType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="string|vfslist" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoDefaultWidget">
+        <xsd:attribute name="widget" type="xsd:string" use="required" />
+        <xsd:attribute name="configuration" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoVisibilities">
+        <xsd:sequence>
+            <xsd:element name="visibility" type="OpenCmsDefaultAppinfoVisibility" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoVisibility">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+        <xsd:attribute name="class" type="xsd:string" use="optional" />
+        <xsd:attribute name="params" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoSynchronizations">
+        <xsd:sequence>
+            <xsd:element name="synchronization" type="OpenCmsDefaultAppinfoSynchronization" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoSynchronization">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoEditorChangeHandlers">
+        <xsd:sequence>
+            <xsd:element name="editorchangehandler" type="OpenCmsDefaultAppinfoEditorChangeHandler" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoEditorChangeHandler">
+        <xsd:attribute name="class" type="xsd:string" use="required" />
+        <xsd:attribute name="scope" type="xsd:string" use="optional" />
+        <xsd:attribute name="configuration" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoNestedFormatters">
+        <xsd:sequence>
+            <xsd:element name="nestedformatter" type="OpenCmsDefaultAppinfoNestedFormatter" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoNestedFormatter">
+        <xsd:attribute name="element" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoMessageKeyHandler">
+        <xsd:attribute name="class" type="xsd:string" use="required" />
+        <xsd:attribute name="configuration" type="xsd:string" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoParameters">
+        <xsd:sequence>
+            <xsd:element name="param" type="OpenCmsDefaultAppinfoParam" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoParam">
+        <xsd:simpleContent>
+              <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string" />
+              </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+        <xsd:complexType name="OpenCmsDefaultAppinfoFields">
+        <xsd:sequence>
+            <xsd:element name="Setting" type="OpenCmsDefaultAppinfoField" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:complexType name="OpenCmsFieldRelation">
         <xsd:sequence>
             <xsd:element name="Type" type="xsd:string" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="Invalidate" type="xsd:string" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsFieldVisibility">
         <xsd:sequence>
             <xsd:element name="Class" type="xsd:string" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="Params" type="xsd:string" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsFieldMapping">
         <xsd:sequence>
             <xsd:element name="MapTo" type="xsd:string" />
             <xsd:element name="UseDefault" type="xsd:string" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
     </xsd:complexType>
-	
-	<xsd:complexType name="OpenCmsDefaultAppinfoField">
-    	<xsd:sequence>
-    		<xsd:element name="PropertyName" type="xsd:string" minOccurs="1" maxOccurs="1" />
+
+    <xsd:complexType name="OpenCmsDefaultAppinfoField">
+        <xsd:sequence>
+            <xsd:element name="PropertyName" type="xsd:string" minOccurs="1" maxOccurs="1" />
             <xsd:element name="DisplayName" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Widget" type="xsd:string" minOccurs="0" maxOccurs="1" />

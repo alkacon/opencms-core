@@ -27,7 +27,7 @@
 
 package org.opencms.configuration;
 
-import org.opencms.ade.detailpage.CmsSitemapDetailPageHandler;
+import org.opencms.ade.detailpage.CmsDefaultDetailPageHandler;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
@@ -169,6 +169,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the defaultusers expression. */
     public static final String N_DEFAULTUSERS = "defaultusers";
 
+    /** The node name for the detail page handler. */
     public static final String N_DETAIL_PAGE_HANDLER = "detail-page-handler";
 
     /** The node name for the device selector node. */
@@ -517,7 +518,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     private String m_defaultContentEncoding;
 
     /** The detail page handler. */
-    private I_CmsDetailPageHandler m_detailPageHandler = new CmsSitemapDetailPageHandler();
+    private I_CmsDetailPageHandler m_detailPageHandler = new CmsDefaultDetailPageHandler();
 
     /** The configured OpenCms event manager. */
     private CmsEventManager m_eventManager;
@@ -1143,7 +1144,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(shellServerPath, 1, A_PORT);
 
         String detailPageHandlerPath = "*/" + N_SYSTEM + "/" + N_DETAIL_PAGE_HANDLER;
-        digester.addObjectCreate(detailPageHandlerPath, CmsSitemapDetailPageHandler.class.getName(), A_CLASS);
+        digester.addObjectCreate(detailPageHandlerPath, CmsDefaultDetailPageHandler.class.getName(), A_CLASS);
         digester.addSetNext(detailPageHandlerPath, "setDetailPageHandler");
 
     }
@@ -1554,6 +1555,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         if (m_publishListRemoveMode != null) {
             systemElement.addElement(N_PUBLISH_LIST_REMOVE_MODE).addAttribute(A_MODE, m_publishListRemoveMode);
+        }
+
+        if (m_detailPageHandler != null) {
+            Element handlerElement = systemElement.addElement(N_DETAIL_PAGE_HANDLER).addAttribute(
+                A_CLASS,
+                m_detailPageHandler.getClass().getName());
+            CmsParameterConfiguration config = m_detailPageHandler.getConfiguration();
+            if (config != null) {
+                for (String key : config.keySet()) {
+                    handlerElement.addElement(N_PARAM).addAttribute(A_NAME, key).addText(config.get(key));
+                }
+            }
         }
 
         if (m_restrictDetailContents != null) {

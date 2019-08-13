@@ -28,6 +28,8 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -46,6 +48,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
@@ -61,6 +65,9 @@ import junit.framework.Test;
  *
  */
 public class TestLiveConfig extends OpenCmsTestCase {
+
+    /** Pattern for matching path segment consisting of two characters from {a, b}. */
+    private static final Pattern detailPageTestSubsitePattern = Pattern.compile("/([ab][ab])/");
 
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     String m_vfsPrefix;
@@ -606,6 +613,104 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests new detail page options.
+     *
+     * @throws Exception -
+     */
+    public void testSpecialDetailPageOptions() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String base = "/testDetailPageOptions";
+        cms.createResource(base, 0);
+
+        boolean preferDetailPages;
+        boolean excludeExternalContents;
+
+        preferDetailPages = true;
+        excludeExternalContents = true;
+        createDetailPageTestSitemap(base + "/aa", preferDetailPages, excludeExternalContents);
+
+        preferDetailPages = true;
+        excludeExternalContents = false;
+        createDetailPageTestSitemap(base + "/ab", preferDetailPages, excludeExternalContents);
+
+        preferDetailPages = false;
+        excludeExternalContents = true;
+        createDetailPageTestSitemap(base + "/ba", preferDetailPages, excludeExternalContents);
+
+        preferDetailPages = false;
+        excludeExternalContents = false;
+        createDetailPageTestSitemap(base + "/bb", preferDetailPages, excludeExternalContents);
+
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+        String aa = base + "/aa";
+        String ab = base + "/ab";
+        String ba = base + "/ba";
+        String bb = base + "/bb";
+        String link;
+
+        link = createLinkFromTo(bb, ab);
+        assertTrue(link.contains("detail"));
+        assertEquals("ab", getABSubsite(link));
+
+        link = createLinkFromTo(bb, ba);
+        assertTrue(link.contains("detail"));
+        assertEquals("bb", getABSubsite(link));
+
+        link = createLinkFromTo(ba, bb);
+        assertFalse("Link should not be a detail link", link.contains("detail"));
+
+        link = createLinkFromTo(bb, aa);
+        assertTrue(link.contains("detail"));
+        assertEquals("aa", getABSubsite(link));
+
+        link = createLinkFromTo(aa, aa);
+        assertTrue(link.contains("detail"));
+        assertEquals("aa", getABSubsite(link));
+
+        link = createLinkFromTo(ab, bb);
+        assertTrue(link.contains("detail"));
+        assertEquals("ab", getABSubsite(link));
+
+        link = createLinkFromTo(bb, bb);
+        assertTrue(link.contains("detail"));
+        assertEquals("bb", getABSubsite(link));
+
+        CmsResource page;
+        CmsResource content;
+        final String articlePath = "/.content/blogentries/article.xml";
+        I_CmsDetailPageHandler handler = OpenCms.getADEManager().getDetailPageHandler();
+        page = cms.readResource(bb + "/detail/index.html");
+        content = cms.readResource(ab + articlePath);
+        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+        page = cms.readResource(ab + "/detail/index.html");
+        content = cms.readResource(bb + articlePath);
+        assertTrue("Should be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+        page = cms.readResource(ab + "/detail/index.html");
+        content = cms.readResource(ab + articlePath);
+        assertTrue("Should be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+        page = cms.readResource(ba + "/detail/index.html");
+        content = cms.readResource(bb + articlePath);
+        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+        page = cms.readResource(ba + "/detail/index.html");
+        content = cms.readResource(ab + articlePath);
+        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+        page = cms.readResource(ba + "/detail/index.html");
+        content = cms.readResource(bb + articlePath);
+        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+        page = cms.readResource(ba + "/detail/index.html");
+        content = cms.readResource(ba + articlePath);
+        assertTrue("Should be a valid detail page", handler.isValidDetailPage(cms, page, content));
+
+    }
+
+    /**
      * Waits until the configuration update task has been run.<p>
      *
      * @param online true if we should wait for the Online task, false for the Offline task
@@ -780,5 +885,79 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("");
         return cms;
+    }
+
+    private void createDetailPageTestSitemap(String path, boolean preferDetailPages, boolean excludeExternalContents)
+    throws Exception {
+
+        CmsObject cms = getCmsObject();
+        cms.createResource(path, 0);
+        cms.createResource(path + "/.content", 0);
+        CmsResource detailFolder = cms.createResource(path + "/detail", 0);
+        cms.createResource(path + "/detail/index.html", OpenCms.getResourceManager().getResourceType("containerpage"));
+
+        String config = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "\n"
+            + "<SitemapConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\n"
+            + "  <SitemapConfiguration language=\"en\">\n"
+            + "    <CreateContentsLocally>true</CreateContentsLocally>\n"
+            + "    <PreferDetailPagesForLocalContents>"
+            + preferDetailPages
+            + "</PreferDetailPagesForLocalContents>\n"
+            + "    <ExcludeExternalDetailContents>"
+            + excludeExternalContents
+            + "</ExcludeExternalDetailContents>\n"
+            + " <ResourceType>\n"
+            + "      <TypeName><![CDATA[article1]]></TypeName>\n"
+            + "      <Disabled><![CDATA[false]]></Disabled>\n"
+            + "      <Folder>\n"
+            + "        <Name><![CDATA[blogentries]]></Name>\n"
+            + "      </Folder>\n"
+            + "    </ResourceType>"
+            + "    <DetailPage>\n"
+            + "      <Type><![CDATA[article1]]></Type>\n"
+            + "      <Page>\n"
+            + "        <link type=\"WEAK\">\n"
+            + "          <target><![CDATA["
+            + detailFolder.getRootPath()
+            + "]]></target>\n"
+            + "          <uuid>"
+            + detailFolder.getStructureId()
+            + "</uuid>\n"
+            + "        </link>\n"
+            + "      </Page>\n"
+            + "    </DetailPage>\n"
+            + "  </SitemapConfiguration>\n"
+            + "</SitemapConfigurations>\n"
+            + "";
+        cms.createResource(path + "/.content/.config", OpenCms.getResourceManager().getResourceType("sitemap_config"));
+        CmsFile file = cms.readFile(path + "/.content/.config");
+        file.setContents(config.getBytes("UTF-8"));
+        cms.writeFile(file);
+
+        cms.createResource(path + "/.content/blogentries", 0);
+        cms.createResource(
+            path + "/.content/blogentries/article.xml",
+            OpenCms.getResourceManager().getResourceType("article1"));
+
+    }
+
+    private String createLinkFromTo(String subsite1, String subsite2) throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        cms.getRequestContext().setUri(subsite1);
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            cms,
+            subsite2 + "/.content/blogentries/article.xml");
+
+    }
+
+    private String getABSubsite(String link) {
+
+        Matcher matcher = detailPageTestSubsitePattern.matcher(link);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 }

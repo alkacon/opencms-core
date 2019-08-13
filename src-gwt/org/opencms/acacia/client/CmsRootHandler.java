@@ -173,6 +173,7 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
         I_CmsAttributeHandler handler = this;
         int index = 0;
         for (int i = 0; i < pathNames.length; i++) {
+
             String attributeName = pathNames[i];
             int nextIndex = CmsContentDefinition.extractIndex(attributeName);
             attributeName = CmsContentDefinition.removeIndex(attributeName);
@@ -181,6 +182,7 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
                 // in case of a choice attribute, skip to the next path name
                 attributeName = CmsType.CHOICE_ATTRIBUTE_NAME;
                 i++;
+                nextIndex = CmsContentDefinition.extractIndex(pathNames[i]);
             }
 
             handler = handler.getChildHandler(attributeName, index);

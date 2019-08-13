@@ -83,6 +83,7 @@ public class CmsDetailPageDuplicateEliminatingSitemapGenerator extends CmsXmlSit
      */
     public CmsDetailPageDuplicateEliminatingSitemapGenerator(String sitemapPath)
     throws CmsException {
+
         super(sitemapPath);
         List<DetailInfo> rawDetailInfo = OpenCms.getADEManager().getDetailInfo(m_guestCms);
         List<DetailInfo> filteredDetailInfo = Lists.newArrayList();
@@ -154,19 +155,24 @@ public class CmsDetailPageDuplicateEliminatingSitemapGenerator extends CmsXmlSit
         for (DetailInfo info : detailInfos) {
             List<CmsResource> contents = getContents(info.getFolderPath(), info.getType());
             for (CmsResource detailRes : contents) {
-                List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
-                String detailLink = getDetailLink(containerPage, detailRes, locale);
-                detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
-                CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
-                    replaceServerUri(detailLink),
-                    detailRes.getDateLastModified(),
-                    getChangeFrequency(detailProps),
-                    getPriority(detailProps));
-                detailUrlBean.setLocale(locale);
-                detailUrlBean.setOriginalResource(detailRes);
-                detailUrlBean.setDetailPageResource(containerPage);
-                detailUrlBean.setSubsite(info.getBasePath());
-                addResult(detailUrlBean, 2);
+                if (OpenCms.getADEManager().getDetailPageHandler().isValidDetailPage(
+                    m_guestCms,
+                    containerPage,
+                    detailRes)) {
+                    List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
+                    String detailLink = getDetailLink(containerPage, detailRes, locale);
+                    detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
+                    CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
+                        replaceServerUri(detailLink),
+                        detailRes.getDateLastModified(),
+                        getChangeFrequency(detailProps),
+                        getPriority(detailProps));
+                    detailUrlBean.setLocale(locale);
+                    detailUrlBean.setOriginalResource(detailRes);
+                    detailUrlBean.setDetailPageResource(containerPage);
+                    detailUrlBean.setSubsite(info.getBasePath());
+                    addResult(detailUrlBean, 2);
+                }
             }
         }
     }

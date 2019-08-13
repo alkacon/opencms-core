@@ -123,7 +123,7 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
     public void rebuildIndex(
         I_CmsIndexWriter writer,
         CmsIndexingThreadManager threadManager,
-        CmsSearchIndexSource source) throws CmsIndexException {
+        CmsSearchIndexSource source) {
 
         List<String> resourceNames = source.getResourcesNames();
         Iterator<String> i = resourceNames.iterator();

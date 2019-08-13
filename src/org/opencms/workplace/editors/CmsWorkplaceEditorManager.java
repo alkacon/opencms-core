@@ -27,7 +27,6 @@
 
 package org.opencms.workplace.editors;
 
-import org.opencms.ade.contenteditor.CmsContentTypeVisitor;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsUserSettings;
@@ -148,11 +147,10 @@ public class CmsWorkplaceEditorManager {
      * @param resource the resource to check
      *
      * @return false if for some fields the new Acacia widgets are not available
-     *
-     * @throws CmsException if something goes wrong
      */
     public static boolean checkAcaciaEditorAvailable(CmsObject cms, CmsResource resource) {
 
+        boolean result = false;
         if (resource == null) {
             try {
                 // we want a stack trace
@@ -160,20 +158,23 @@ public class CmsWorkplaceEditorManager {
             } catch (Exception e) {
                 LOG.error("Can't check widget availability because resource is null!", e);
             }
-            return false;
-        }
-        try {
-            CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-            if (content.getContentDefinition().getContentHandler().isAcaciaEditorDisabled()) {
-                return false;
+        } else {
+            try {
+                CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
+                if (file.getContents().length > 0) {
+                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                    if (!content.getContentDefinition().getContentHandler().isAcaciaEditorDisabled()) {
+                        result = true;
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.info(
+                    "error thrown in checkAcaciaEditorAvailable for " + resource + " : " + e.getLocalizedMessage(),
+                    e);
+                result = true;
             }
-            CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
-            return visitor.isEditorCompatible(content.getContentDefinition());
-        } catch (CmsException e) {
-            LOG.info("error thrown in checkAcaciaEditorAvailable for " + resource + " : " + e.getLocalizedMessage(), e);
-            return true;
         }
+        return result;
     }
 
     /**

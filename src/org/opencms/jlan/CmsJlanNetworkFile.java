@@ -145,6 +145,11 @@ public class CmsJlanNetworkFile extends NetworkFile {
     public void flushFile() throws IOException {
 
         int writeCount = getWriteCount();
+        Boolean ignoreErrors = (Boolean)m_cms.getRequestContext().getAttribute(
+            CmsJlanRepository.JLAN_IGNORE_WRITE_ERRORS);
+        if (ignoreErrors == null) {
+            ignoreErrors = Boolean.FALSE;
+        }
         try {
             if (writeCount > m_lastFlush) {
                 CmsFile file = getFile();
@@ -160,9 +165,11 @@ public class CmsJlanNetworkFile extends NetworkFile {
                 }
             }
             m_lastFlush = writeCount;
-        } catch (CmsException e) {
+        } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
-            throw new IOException(e);
+            if (!ignoreErrors.booleanValue()) {
+                throw new IOException(e);
+            }
         }
 
     }

@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.shared;
 
+import org.opencms.util.CmsPair;
+
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -37,10 +39,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CmsValidationResult implements IsSerializable {
 
     /** The error messages by entity and attribute. */
-    private Map<String, Map<String[], String>> m_errors;
+    private Map<String, Map<String[], CmsPair<String, String>>> m_errors;
 
     /** The warning messages by entity and attribute. */
-    private Map<String, Map<String[], String>> m_warnings;
+    private Map<String, Map<String[], CmsPair<String, String>>> m_warnings;
 
     /**
      * Constructor.<p>
@@ -48,7 +50,9 @@ public class CmsValidationResult implements IsSerializable {
      * @param errors the error messages by entity and attribute
      * @param warnings the warning messages by entity and attribute
      */
-    public CmsValidationResult(Map<String, Map<String[], String>> errors, Map<String, Map<String[], String>> warnings) {
+    public CmsValidationResult(
+        Map<String, Map<String[], CmsPair<String, String>>> errors,
+        Map<String, Map<String[], CmsPair<String, String>>> warnings) {
 
         m_errors = errors;
         m_warnings = warnings;
@@ -67,7 +71,7 @@ public class CmsValidationResult implements IsSerializable {
      *
      * @return the error messages by entity id and attribute
      */
-    public Map<String, Map<String[], String>> getErrors() {
+    public Map<String, Map<String[], CmsPair<String, String>>> getErrors() {
 
         return m_errors;
     }
@@ -79,7 +83,7 @@ public class CmsValidationResult implements IsSerializable {
      *
      * @return the error messages for the given entity
      */
-    public Map<String[], String> getErrors(String entityId) {
+    public Map<String[], CmsPair<String, String>> getErrors(String entityId) {
 
         return m_errors != null ? m_errors.get(entityId) : null;
     }
@@ -89,7 +93,7 @@ public class CmsValidationResult implements IsSerializable {
      *
      * @return the warning messages by entity id and attribute
      */
-    public Map<String, Map<String[], String>> getWarnings() {
+    public Map<String, Map<String[], CmsPair<String, String>>> getWarnings() {
 
         return m_warnings;
     }
@@ -101,7 +105,7 @@ public class CmsValidationResult implements IsSerializable {
      *
      * @return the warning messages for the given entity
      */
-    public Map<String[], String> getWarnings(String entityId) {
+    public Map<String[], CmsPair<String, String>> getWarnings(String entityId) {
 
         return m_warnings != null ? m_warnings.get(entityId) : null;
     }

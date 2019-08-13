@@ -127,5 +127,10 @@
             </ade-cache>
         </ade>
         <subscriptionmanager enabled="false" poolname="default" maxvisited="100" />
+        <detail-page-handler class="org.opencms.ade.detailpage.CmsDefaultDetailPageHandler">
+            <param name="testKey1">testValue1</param>
+            <param name="testKey2">testValue2</param>
+            <param name="testKey3">testValue3</param>
+        </detail-page-handler>
 	</system>
 </opencms>

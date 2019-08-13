@@ -1512,12 +1512,13 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (validationContext.hasValidationErrors()) {
             String locales = "";
             for (String id : validationContext.getInvalidEntityIds()) {
-                if (locales.length() > 0) {
-                    locales += ", ";
-                }
+
+                locales += "\n";
+
                 String locale = CmsContentDefinition.getLocaleFromId(id);
                 if (m_availableLocales.containsKey(locale)) {
                     locales += m_availableLocales.get(locale);
+                    locales += ": " + validationContext.getInvalidFields(id);
                 }
             }
             disableSave(Messages.get().key(Messages.GUI_TOOLBAR_VALIDATION_ERRORS_1, locales));
@@ -1859,10 +1860,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_sitePath = definition.getSitePath();
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
-        String tabs = "";
-        for (CmsTabInfo info : definition.getTabInfos()) {
-            tabs += info.getTabId() + ":" + info.getStartName() + "   ";
-        }
         m_tabInfos = definition.getTabInfos();
         m_iconClasses = definition.getIconClasses();
         addContentDefinition(definition);

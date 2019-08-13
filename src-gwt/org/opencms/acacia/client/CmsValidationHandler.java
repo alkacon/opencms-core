@@ -32,6 +32,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.acacia.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.util.CmsPair;
 
 import java.util.Map.Entry;
 
@@ -159,7 +160,7 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
         }
         m_rootHandler.visit(CmsValidationHandler::clearValidation);
         if (validationResult.hasWarnings(entityId)) {
-            for (Entry<String[], String> warning : validationResult.getWarnings(entityId).entrySet()) {
+            for (Entry<String[], CmsPair<String, String>> warning : validationResult.getWarnings(entityId).entrySet()) {
                 String[] pathElements = warning.getKey();
                 // check if there are no errors for this attribute
                 if (!validationResult.hasErrors(entityId)
@@ -169,25 +170,30 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
                         String attributeName = pathElements[pathElements.length - 1];
                         handler.setWarningMessage(
                             CmsContentDefinition.extractIndex(attributeName),
-                            warning.getValue(),
+                            warning.getValue().getFirst(),
                             m_formTabPanel);
                     }
                 }
             }
         }
         if (validationResult.hasErrors(entityId)) {
-            for (Entry<String[], String> error : validationResult.getErrors(entityId).entrySet()) {
+            String invalidFields = "";
+            for (Entry<String[], CmsPair<String, String>> error : validationResult.getErrors(entityId).entrySet()) {
                 String[] pathElements = error.getKey();
                 CmsAttributeHandler handler = m_rootHandler.getHandlerByPath(pathElements);
                 if (handler != null) {
                     String attributeName = pathElements[pathElements.length - 1];
                     handler.setErrorMessage(
                         CmsContentDefinition.extractIndex(attributeName),
-                        error.getValue(),
+                        error.getValue().getFirst(),
                         m_formTabPanel);
                 }
+                invalidFields += error.getValue().getSecond() + ", ";
             }
-            m_validationContext.addInvalidEntity(entityId);
+            if (invalidFields.length() > 0) {
+                invalidFields = invalidFields.substring(0, invalidFields.length() - 2);
+            }
+            m_validationContext.addInvalidEntity(entityId, invalidFields);
         } else {
             m_validationContext.addValidEntity(entityId);
         }

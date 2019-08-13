@@ -43,11 +43,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -201,8 +201,9 @@ public class CmsResourceTypeStatResultList {
                     settings.setTypes(statResult.getType().getTypeName());
                 }
                 settings.setType(SearchType.fullText);
-                CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-                    CmsSourceSearchAppConfiguration.APP_ID + "/" + CmsSourceSearchApp.generateState(settings));
+                CmsAppWorkplaceUi.get().showApp(
+                    CmsSourceSearchAppConfiguration.APP_ID,
+                    CmsSourceSearchApp.generateState(settings));
             }
         });
 

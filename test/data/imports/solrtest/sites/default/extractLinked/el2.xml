@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ExtractLinkeds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://sites/default/extractLinked/extract-linked.xsd">
+  <ExtractLinked language="en">
+    <Title><![CDATA[Rind]]></Title>
+    <Link>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/extractLinked/el1.xml]]></target>
+        <uuid>642e31f4-bccc-11e9-83e2-00505631098c</uuid>
+      </link>
+    </Link>
+  </ExtractLinked>
+</ExtractLinkeds>

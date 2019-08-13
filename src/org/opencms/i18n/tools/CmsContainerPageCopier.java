@@ -181,10 +181,12 @@ public class CmsContainerPageCopier {
     /**
      * Converts locales for the copied container element.<p>
      *
-     * @param elementResource the copied container element
+     * @param elementResource the copied container element resource
+     * @param originalResource the original container element resource
+     *
      * @throws CmsException if something goes wrong
      */
-    public void adjustLocalesForElement(CmsResource elementResource) throws CmsException {
+    public void adjustLocalesForElement(CmsResource elementResource, CmsResource originalResource) throws CmsException {
 
         if (m_copyMode != CopyMode.smartCopyAndChangeLocale) {
             return;
@@ -195,6 +197,15 @@ public class CmsContainerPageCopier {
         Locale newLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, m_targetFolder);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
         try {
+            if (content.hasLocale(newLocale)) {
+                // check if the new locale was already present in the original resource, it may have been created automatically
+                CmsFile origFile = m_cms.readFile(originalResource);
+                CmsXmlContent origContent = CmsXmlContentFactory.unmarshal(m_cms, origFile);
+                if (!origContent.hasLocale(newLocale)) {
+                    // the target locale was not present in the original, remove it to ensure the source locale is moved
+                    content.removeLocale(newLocale);
+                }
+            }
             content.moveLocale(oldLocale, newLocale);
             LOG.info("Replacing locale " + oldLocale + " -> " + newLocale + " for " + elementResource.getRootPath());
             file.setContents(content.marshal());
@@ -308,7 +319,7 @@ public class CmsContainerPageCopier {
                 CmsResource resourceCopy = typeConfig.createNewElement(
                     targetCms,
                     originalResource,
-                    targetPage.getRootPath());
+                    CmsResource.getParentFolder(targetPage.getRootPath()));
                 CmsContainerElementBean copy = new CmsContainerElementBean(
                     resourceCopy.getStructureId(),
                     maybeReplaceFormatter(originalElement.getFormatterId()),
@@ -320,7 +331,7 @@ public class CmsContainerPageCopier {
                 CmsLockActionRecord record = null;
                 try {
                     record = CmsLockUtil.ensureLock(m_cms, resourceCopy);
-                    adjustLocalesForElement(resourceCopy);
+                    adjustLocalesForElement(resourceCopy, originalResource);
                 } finally {
                     if ((record != null) && (record.getChange() == LockChange.locked)) {
                         m_cms.unlockResource(resourceCopy);

@@ -546,7 +546,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 try {
                     JSONObject currentParam = additionalParams.getJSONObject(i);
                     String param = currentParam.getString(JSON_KEY_ADDITIONAL_PARAMETERS_PARAM);
-                    String solrQuery = currentParam.getString(JSON_KEY_ADDITIONAL_PARAMETERS_SOLRQUERY);
+                    String solrQuery = parseOptionalStringValue(currentParam, JSON_KEY_ADDITIONAL_PARAMETERS_SOLRQUERY);
                     result.put(param, solrQuery);
                 } catch (JSONException e) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_ADDITIONAL_PARAMETER_CONFIG_WRONG_0), e);

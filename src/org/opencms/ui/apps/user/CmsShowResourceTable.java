@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.Messages;
@@ -52,11 +53,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.ui.Table;
 
 /**
@@ -146,6 +147,7 @@ public class CmsShowResourceTable extends Table {
      * @param type of dialog
      */
     public CmsShowResourceTable(CmsObject cms, CmsUUID principalID, DialogType type) {
+
         //Set menu
         m_menu = new CmsContextMenu();
         m_menu.setAsTableContextMenu(this);
@@ -248,18 +250,16 @@ public class CmsShowResourceTable extends Table {
         if (!rootPath.startsWith(m_cms.getRequestContext().getSiteRoot())) {
             m_cms.getRequestContext().setSiteRoot("");
         }
-
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(
-            CmsFileExplorerConfiguration.APP_ID
-                + "/"
-                + m_cms.getRequestContext().getCurrentProject().getUuid()
-                + "!!"
+        CmsAppWorkplaceUi.get().showApp(
+            CmsFileExplorerConfiguration.APP_ID,
+            m_cms.getRequestContext().getCurrentProject().getUuid()
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
                 + m_cms.getRequestContext().getSiteRoot()
-                + "!!"
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
                 + parentPath.substring(m_cms.getRequestContext().getSiteRoot().length())
-                + "!!"
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR
                 + uuid
-                + "!!");
+                + A_CmsWorkplaceApp.PARAM_SEPARATOR);
     }
 
     /**

@@ -108,6 +108,16 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the <code>&lt;a href=''&gt;</code> tag in a html page/element. */
     public static final CmsRelationType HYPERLINK = new CmsRelationType(1, "A", false, true, CopyBehavior.copy);
 
+    /** Constant for the index content relation, telling the content of a linked resource should be merged into
+     * the content of the linking XML.
+     */
+    public static final CmsRelationType INDEX_CONTENT = new CmsRelationType(
+        13,
+        "INDEX_CONTENT",
+        true,
+        true,
+        CopyBehavior.copy);
+
     /** Constant for the all types of links in a jsp file using the <code>link.strong</code> macro. */
     public static final CmsRelationType JSP_STRONG = new CmsRelationType(
         5,
@@ -181,7 +191,8 @@ public final class CmsRelationType implements Serializable {
         CATEGORY,
         XSD,
         LOCALE_VARIANT,
-        DETAIL_ONLY};
+        DETAIL_ONLY,
+        INDEX_CONTENT};
 
     /** The copy behavior. */
     private CopyBehavior m_copyBehavior = CopyBehavior.copy;

@@ -568,7 +568,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
         if (isIndexing(res)) {
             I_CmsDocumentFactory defaultFactory = super.getDocumentFactory(res);
-            if (null == defaultFactory) {
+            if ((null == defaultFactory) || defaultFactory.getName().equals("generic")) {
 
                 if (OpenCms.getResourceManager().getResourceType(res) instanceof CmsResourceTypeXmlContainerPage) {
                     return OpenCms.getSearchManager().getDocumentFactory(

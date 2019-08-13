@@ -631,9 +631,9 @@ public class CmsJobTable extends Table {
      */
     void editJob(String jobId) {
 
-        String stateEdit = CmsScheduledJobsAppConfig.APP_ID + "/" + CmsJobManagerApp.PATH_NAME_EDIT;
+        String stateEdit = CmsJobManagerApp.PATH_NAME_EDIT;
         stateEdit = A_CmsWorkplaceApp.addParamToState(stateEdit, CmsJobManagerApp.PARAM_JOB_ID, jobId);
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(stateEdit);
+        CmsAppWorkplaceUi.get().showApp(CmsScheduledJobsAppConfig.APP_ID, stateEdit);
     }
 
     /**

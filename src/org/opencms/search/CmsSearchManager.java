@@ -50,6 +50,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsSolrHandler;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -261,7 +262,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     cms = OpenCms.initCmsObject(m_adminCms);
                     cms.getRequestContext().setCurrentProject(offline);
                 }
-                findRelatedContainerPages(cms, result);
+                addAdditionallyAffectedResources(cms, result);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -2363,6 +2364,66 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Collects the resources whose indexed document depends on one of the updated resources.<p>
+     * We take transitive dependencies into account and handle cyclic dependencies correctly as well.
+     *
+     * @param adminCms an OpenCms user context with Admin permissions
+     * @param updateResources the resources to be re-indexed
+     *
+     * @return the updated list of resource to re-index
+     */
+    protected List<CmsPublishedResource> addAdditionallyAffectedResources(
+        CmsObject adminCms,
+        List<CmsPublishedResource> updateResources) {
+
+        Set<CmsPublishedResource> updateResourceSet = new HashSet<>(updateResources);
+        Collection<CmsPublishedResource> resourcesToCheck = updateResourceSet;
+        Collection<CmsPublishedResource> additionalResources = Collections.emptySet();
+        do {
+            additionalResources = findRelatedContainerPages(adminCms, updateResourceSet, resourcesToCheck);
+            additionalResources.addAll(addIndexContentRelatedResources(adminCms, updateResourceSet, resourcesToCheck));
+            updateResources.addAll(additionalResources);
+            updateResourceSet.addAll(additionalResources);
+            resourcesToCheck = additionalResources;
+        } while (resourcesToCheck.size() > 0);
+        return updateResources;
+    }
+
+    /**
+     * Collects the resources whose indexed document depends on one of the updated resources.<p>
+     *
+     * @param adminCms an OpenCms user context with Admin permissions
+     * @param updateResources the resources to be re-indexed
+     * @param updateResourcesToCheck the resources to check additionally affected resources for, subset of updateResources
+     *
+     * @return the list of resources that need to be additionally re-index
+     */
+    protected Collection<CmsPublishedResource> addIndexContentRelatedResources(
+        CmsObject adminCms,
+        Collection<CmsPublishedResource> updateResources,
+        Collection<CmsPublishedResource> updateResourcesToCheck) {
+
+        Collection<CmsPublishedResource> additionalUpdateResources = new HashSet<>();
+        for (CmsPublishedResource checkedRes : updateResourcesToCheck) {
+            try {
+                CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(checkedRes.getStructureId());
+                filter = filter.filterType(CmsRelationType.INDEX_CONTENT);
+                List<CmsRelation> relations = adminCms.readRelations(filter);
+                for (CmsRelation relation : relations) {
+                    CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                    CmsPublishedResource additionalPubRes = new CmsPublishedResource(res);
+                    if (!updateResources.contains(additionalPubRes)) {
+                        additionalUpdateResources.add(additionalPubRes);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return additionalUpdateResources;
+    }
+
+    /**
      * Cleans up the extraction result cache.<p>
      */
     protected void cleanExtractionCache() {
@@ -2376,12 +2437,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @param adminCms an OpenCms user context with Admin permissions
      * @param updateResources the resources to be re-indexed
+     * @param updateResourcesToCheck the resources to check additionally affected resources for, subset of updateResources
      *
-     * @return the updated list of resource to re-index
+     * @return the list of resources that need to be additionally re-index
      */
-    protected List<CmsPublishedResource> findRelatedContainerPages(
+    protected Collection<CmsPublishedResource> findRelatedContainerPages(
         CmsObject adminCms,
-        List<CmsPublishedResource> updateResources) {
+        Collection<CmsPublishedResource> updateResources,
+        Collection<CmsPublishedResource> updateResourcesToCheck) {
+
+        Collection<CmsPublishedResource> additionalUpdateResources = new HashSet<>();
 
         Set<CmsResource> elementGroups = new HashSet<CmsResource>();
         Set<CmsResource> containerPages = new HashSet<CmsResource>();
@@ -2393,7 +2458,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             LOG.info(e.getLocalizedMessage(), e);
         }
         if (containerPageTypeId != -1) {
-            for (CmsPublishedResource pubRes : updateResources) {
+            for (CmsPublishedResource pubRes : updateResourcesToCheck) {
                 try {
                     if (OpenCms.getResourceManager().getResourceType(
                         pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
@@ -2451,11 +2516,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 CmsPublishedResource pubCont = new CmsPublishedResource(page);
                 if (!updateResources.contains(pubCont)) {
                     // ensure container page is added only once
-                    updateResources.add(pubCont);
+                    additionalUpdateResources.add(pubCont);
                 }
             }
         }
-        return updateResources;
+        return additionalUpdateResources;
     }
 
     /**
@@ -2722,7 +2787,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
 
-            findRelatedContainerPages(adminCms, updateResources);
+            addAdditionallyAffectedResources(adminCms, updateResources);
             if (!updateResources.isEmpty()) {
                 // sort the resource to update
                 Collections.sort(updateResources);

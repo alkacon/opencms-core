@@ -154,6 +154,7 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
      */
     public void setupDb(boolean createDb, boolean createTables, boolean dropDb) throws Exception {
 
+        boolean dbExists = false;
         if (m_setupBean.isInitialized()) {
             System.out.println("Setup-Bean initialized successfully.");
             CmsSetupDb db = new CmsSetupDb(m_setupBean.getWebAppRfsPath());
@@ -177,6 +178,8 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
                         m_setupBean.getDbConStrParams(),
                         m_setupBean.getDbCreateUser(),
                         m_setupBean.getDbCreatePwd());
+                } else {
+                    dbExists = true;
                 }
                 if (!db.noErrors() || !m_setupBean.validateJdbc()) {
                     throw new DBException("DB connection test failed.", db.getErrors());
@@ -190,7 +193,6 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
         System.out.println("DB connection tested successfully.");
 
         CmsSetupDb db = null;
-        boolean dbExists = false;
         if (m_setupBean.isInitialized()) {
             if (createDb || createTables) {
                 db = new CmsSetupDb(m_setupBean.getWebAppRfsPath());

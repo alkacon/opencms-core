@@ -154,6 +154,7 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
         Map<String, String> additionalParameters = new HashMap<String, String>(2);
         additionalParameters.put("p1", "fq=lastmodified:[%(value) TO *]");
         additionalParameters.put("p2", "fq=%(value)");
+        additionalParameters.put("p3", null);
         I_CmsSearchConfigurationCommon commonConfig = new CmsSearchConfigurationCommon(
             "querytest",
             "lastquerytest",

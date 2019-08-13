@@ -233,6 +233,64 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>sites/default/extractLinked</destination>
+			<type>folder</type>
+			<uuidstructure>ea12e320-bccb-11e9-83e2-00505631098c</uuidstructure>
+			<datelastmodified>Mon, 12 Aug 2019 06:39:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Aug 2019 06:39:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/extractLinked/el1.xml</source>
+			<destination>sites/default/extractLinked/el1.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>642e31f4-bccc-11e9-83e2-00505631098c</uuidstructure>
+			<uuidresource>642e31f5-bccc-11e9-83e2-00505631098c</uuidresource>
+			<datelastmodified>Mon, 12 Aug 2019 09:48:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Aug 2019 06:42:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/extractLinked/el2.xml</source>
+			<destination>sites/default/extractLinked/el2.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>ef42e6aa-bccc-11e9-83e2-00505631098c</uuidstructure>
+			<uuidresource>ef42e6ab-bccc-11e9-83e2-00505631098c</uuidresource>
+			<datelastmodified>Mon, 12 Aug 2019 09:48:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Aug 2019 06:46:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/extractLinked/extract-linked.xsd</source>
+			<destination>sites/default/extractLinked/extract-linked.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>fa74c3f2-bccb-11e9-83e2-00505631098c</uuidstructure>
+			<uuidresource>fa74c3f3-bccb-11e9-83e2-00505631098c</uuidresource>
+			<datelastmodified>Mon, 12 Aug 2019 09:48:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Aug 2019 06:39:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
         <file>
             <destination>sites/default/flower</destination>
             <type>folder</type>

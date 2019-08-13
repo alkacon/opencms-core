@@ -32,9 +32,11 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.sessions.CmsSessionsTable.TableProperty;
@@ -46,8 +48,10 @@ import org.opencms.util.CmsDateUtil;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -355,19 +359,19 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
                             session);
 
                         if (path == null) {
-                            path = CmsVaadinUtils.getWorkplaceLink()
-                                + "?_lrid="
-                                + (new Date()).getTime()
-                                + "#!"
-                                + CmsFileExplorerConfiguration.APP_ID
-                                + "/"
-                                + session.getProject().getStringValue()
-                                + "!!"
-                                + session.getSiteRoot()
-                                + "!!!!";
+                            Map<String, String[]> parameters = new HashMap<>();
+                            parameters.put("_lrid", new String[] {String.valueOf(System.currentTimeMillis())});
+                            path = CmsVaadinUtils.getWorkplaceLink(
+                                CmsFileExplorerConfiguration.APP_ID,
+                                session.getProject().getStringValue()
+                                    + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                                    + session.getSiteRoot()
+                                    + A_CmsWorkplaceApp.PARAM_SEPARATOR
+                                    + A_CmsWorkplaceApp.PARAM_SEPARATOR,
+                                parameters);
                         }
                         A_CmsUI.get().getPage().setLocation(path);
-                        if (path.contains("workplace#")) {
+                        if (path.contains(CmsSystemInfo.WORKPLACE_PATH + "#")) {
                             A_CmsUI.get().getPage().reload();
                         }
                     } catch (CmsException e) {

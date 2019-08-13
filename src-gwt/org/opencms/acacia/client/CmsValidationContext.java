@@ -27,7 +27,9 @@
 
 package org.opencms.acacia.client;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,7 +38,7 @@ import java.util.Set;
 public class CmsValidationContext {
 
     /** The invalid entity id's. */
-    private Set<String> m_invalidEntityIds;
+    private Map<String, String> m_invalidEntityIds;
 
     /** The valid entity id's. */
     private Set<String> m_validEntityIds;
@@ -46,7 +48,7 @@ public class CmsValidationContext {
      */
     public CmsValidationContext() {
 
-        m_invalidEntityIds = new HashSet<String>();
+        m_invalidEntityIds = new HashMap<String, String>();
         m_validEntityIds = new HashSet<String>();
     }
 
@@ -54,11 +56,12 @@ public class CmsValidationContext {
      * Adds an invalid entity id.<p>
      *
      * @param entityId the entity id
+     * @param invalidFields the invalid fields
      */
-    public void addInvalidEntity(String entityId) {
+    public void addInvalidEntity(String entityId, String invalidFields) {
 
         m_validEntityIds.remove(entityId);
-        m_invalidEntityIds.add(entityId);
+        m_invalidEntityIds.put(entityId, invalidFields);
     }
 
     /**
@@ -79,7 +82,19 @@ public class CmsValidationContext {
      */
     public Set<String> getInvalidEntityIds() {
 
-        return m_invalidEntityIds;
+        return m_invalidEntityIds.keySet();
+    }
+
+    /**
+     * Returns the invalid fields of the given entity.<p>
+     *
+     * @param entityId the entity id
+     *
+     * @return the invalid fields
+     */
+    public String getInvalidFields(String entityId) {
+
+        return m_invalidEntityIds.get(entityId);
     }
 
     /**

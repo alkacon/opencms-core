@@ -73,6 +73,11 @@ public class CmsEditorContext {
         return m_publishParameters;
     }
 
+    /**
+     * Returns the setting presets.<p>
+     *
+     * @return the setting presets
+     */
     public Map<String, String> getSettingPresets() {
 
         return m_settingPresets;
@@ -98,6 +103,11 @@ public class CmsEditorContext {
         m_publishParameters = publishParams;
     }
 
+    /**
+     * Sets the setting presets.<p>
+     *
+     * @param settingPresets the setting presets to set
+     */
     public void setSettingPresets(Map<String, String> settingPresets) {
 
         m_settingPresets = settingPresets;

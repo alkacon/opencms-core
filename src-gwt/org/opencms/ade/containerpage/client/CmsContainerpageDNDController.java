@@ -248,6 +248,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             public void execute(CmsContainerElementData arg) {
 
                 prepareHelperElements(arg, handler, draggable);
+                handler.updatePosition();
             }
         };
         if (isNewId(clientId)) {
