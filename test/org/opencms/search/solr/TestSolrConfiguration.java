@@ -206,17 +206,17 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         squery.setRows(new Integer(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
         AllTests.printResults(getCmsObject(), results, true);
-        assertEquals(56, results.getNumFound());
+        assertEquals(59, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
         AllTests.printResults(cms, results, false);
-        assertEquals(50, results.getNumFound());
+        assertEquals(53, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
         results = index.search(cms, squery);
         AllTests.printResults(cms, results, true);
-        assertEquals(52, results.getNumFound());
+        assertEquals(55, results.getNumFound());
     }
 
     /**
