@@ -261,7 +261,7 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
 
         Collection<CmsResource> pages = getContainerPages();
         if (pages.isEmpty()) {
-            return null;
+            return "";
         }
         try {
             Map<Locale, String> pagePropsByLocale = Maps.newHashMap();
@@ -289,7 +289,7 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
             return result;
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
-            return null;
+            return "";
         }
     }
 
