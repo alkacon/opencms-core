@@ -27,6 +27,7 @@
 
 package org.opencms.ade.detailpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
@@ -37,7 +38,9 @@ import org.opencms.site.CmsSite;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Original detail page handler implementing the detail page logic from OpenCms versions up to 11.0.
@@ -48,6 +51,50 @@ public class CmsPermissiveDetailPageHandler implements I_CmsDetailPageHandler {
 
     /** The configuration. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
+
+    /**
+     * Gets the detail page for a content element.<p>
+     *
+     * @param manager the ADE manager instance.
+     * @param cms the CMS context
+     * @param pageRootPath the element's root path
+     * @param originPath the path in which the the detail page is being requested
+     * @param targetDetailPage the target detail page to use
+     *
+     * @return the detail page for the content element
+     */
+    public static String getDetailPage(
+        CmsADEManager manager,
+        CmsObject cms,
+        String pageRootPath,
+        String originPath,
+        String targetDetailPage) {
+
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        String resType = manager.getParentFolderType(online, pageRootPath);
+        if (resType == null) {
+            return null;
+        }
+        if ((targetDetailPage != null) && manager.getDetailPages(cms, resType).contains(targetDetailPage)) {
+            return targetDetailPage;
+        }
+
+        String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
+        CmsADEConfigData configData = manager.lookupConfiguration(cms, originRootPath);
+        CmsADEConfigData targetConfigData = manager.lookupConfiguration(cms, pageRootPath);
+        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
+        List<CmsADEConfigData> configs = targetFirst
+        ? Arrays.asList(targetConfigData, configData)
+        : Arrays.asList(configData, targetConfigData);
+        for (CmsADEConfigData config : configs) {
+            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
+            if ((pageInfo != null) && !pageInfo.isEmpty()) {
+                return pageInfo.get(0).getUri();
+            }
+        }
+        return null;
+
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -93,7 +140,7 @@ public class CmsPermissiveDetailPageHandler implements I_CmsDetailPageHandler {
             // exclude these for performance reasons
             return null;
         }
-        String result = CmsADEManager.getDetailPage(manager, cms, rootPath, linkSource, targetDetailPage);
+        String result = getDetailPage(manager, cms, rootPath, linkSource, targetDetailPage);
         if (result == null) {
             return null;
         }

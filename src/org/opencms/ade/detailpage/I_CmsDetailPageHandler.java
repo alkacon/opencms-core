@@ -74,11 +74,8 @@ public interface I_CmsDetailPageHandler extends I_CmsConfigurationParameterHandl
      * @param targetDetailPage the target detail page to use
      *
      * @return the detail page link, or null
-     *
-     * @throws CmsException if something goes wrong
      */
-    String getDetailPage(CmsObject cms, String rootPath, String linkSource, String targetDetailPage)
-    throws CmsException;
+    String getDetailPage(CmsObject cms, String rootPath, String linkSource, String targetDetailPage);
 
     /**
      * Initializes the detail page handler.

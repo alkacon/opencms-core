@@ -1798,7 +1798,7 @@ public final class CmsJspStandardContextBean {
                     m_cms.getRequestContext().getUri(),
                     null);
                 result = detailPage != null;
-            } catch (CmsException e) {
+            } catch (Exception e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
