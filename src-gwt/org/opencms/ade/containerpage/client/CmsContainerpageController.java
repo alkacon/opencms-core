@@ -2123,12 +2123,7 @@ public final class CmsContainerpageController {
 
         updateGalleryData(false, null);
         addContainerpageEventHandler(event -> {
-
-            if (event.getEventType() == EventType.pageSaved) {
-                updateDetailPreviewStyles();
-
-            }
-
+            updateDetailPreviewStyles();
         });
         updateDetailPreviewStyles();
     }
