@@ -928,7 +928,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             m_parentContainer != null ? m_parentContainer.getName() : null,
             m_parentElement != null ? m_parentElement.getInstanceId() : null,
             m_settingPresets);
-        cont.setDeatilOnly(isDetailOnly);
+        cont.setDetailOnly(isDetailOnly);
         String result = "";
         try {
             result = CmsContainerpageService.getSerializedContainerInfo(cont);

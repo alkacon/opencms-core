@@ -287,7 +287,7 @@ public class CmsContainer implements IsSerializable {
      *
      * @param detailOnly <code>true</code> if the container is displayed in detail view only
      */
-    public void setDeatilOnly(boolean detailOnly) {
+    public void setDetailOnly(boolean detailOnly) {
 
         m_detailOnly = detailOnly;
     }

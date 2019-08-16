@@ -276,7 +276,7 @@ public final class CmsContainerpageController {
                 m_currentContainer.getParentContainerName(),
                 m_currentContainer.getParentInstanceId(),
                 m_currentContainer.getSettingPresets());
-            container.setDeatilOnly(m_currentContainer.isDetailOnly());
+            container.setDetailOnly(m_currentContainer.isDetailOnly());
             container.setRootContainer(isRootContainer(m_currentContainer));
             m_resultContainers.add(container);
         }
