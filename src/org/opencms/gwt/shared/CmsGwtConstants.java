@@ -36,16 +36,16 @@ public final class CmsGwtConstants {
     public static final class Favorites {
 
         /** Request parameter. */
-        public static final String PARAM_SITE = "site";
-
-        /** Request parameter. */
-        public static final String PARAM_PROJECT = "project";
+        public static final String PARAM_DETAIL = "detail";
 
         /** Request parameter. */
         public static final String PARAM_PAGE = "page";
 
         /** Request parameter. */
-        public static final String PARAM_DETAIL = "detail";
+        public static final String PARAM_PROJECT = "project";
+
+        /** Request parameter. */
+        public static final String PARAM_SITE = "site";
     }
 
     /**
@@ -132,6 +132,9 @@ public final class CmsGwtConstants {
 
     /** The CSS class name used for the DOM elements containing collector information. */
     public static final String CLASS_COLLECTOR_INFO = "oc-collector-info";
+
+    /** CSS class for elements in detail containers which are used to transfer their settings to the detail eleemnt. */
+    public static final String CLASS_DETAIL_PREVIEW = "oc-detail-preview";
 
     /** The CSS class name for data elements which precede the direct editable elements. */
     public static final String CLASS_EDITABLE = "oc-editable";

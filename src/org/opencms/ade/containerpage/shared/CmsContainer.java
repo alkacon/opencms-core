@@ -58,6 +58,9 @@ public class CmsContainer implements IsSerializable {
     /** The content to display in case the container is empty. */
     private String m_emptyContainerContent;
 
+    /** True if this is a detail view container. */
+    private boolean m_isDetailViewContainer;
+
     /**
      * Indicates whether this container not nested,
      * or in case of a detail only container page the starting point of a detail only container hierarchy.
@@ -76,6 +79,7 @@ public class CmsContainer implements IsSerializable {
     /** The parent instance id. */
     private String m_parentInstanceId;
 
+    /** Presets for settings. */
     private Map<String, String> m_settingPresets = new HashMap<String, String>();
 
     /** The container type. */
@@ -92,7 +96,8 @@ public class CmsContainer implements IsSerializable {
      * @param emptyContainerContent content to display in case the container is empty
      * @param width the width of the container
      * @param maxElements the maximum number of elements displayed by this container
-     * @param detailView flag indicating this container is used for detail views
+     * @param isDetailViewContainer flag indicating this is a detail view container
+     * @param detailView flag indicating this container is currently used for a detail view
      * @param editable flag indicating the container is editable by the current user
      * @param elements the container elements id's
      * @param parentContainerName the parent container name
@@ -105,6 +110,7 @@ public class CmsContainer implements IsSerializable {
         String emptyContainerContent,
         int width,
         int maxElements,
+        boolean isDetailViewContainer,
         boolean detailView,
         boolean editable,
         List<CmsContainerElement> elements,
@@ -118,6 +124,7 @@ public class CmsContainer implements IsSerializable {
         m_emptyContainerContent = emptyContainerContent;
         m_maxElements = maxElements;
         m_width = width;
+        m_isDetailViewContainer = isDetailViewContainer;
         m_detailView = detailView;
         m_editable = editable;
         m_parentContainerName = parentContainerName;
@@ -206,6 +213,11 @@ public class CmsContainer implements IsSerializable {
         return m_parentInstanceId;
     }
 
+    /**
+     * Gets the setting presets.
+     *
+     * @return the setting presets
+     */
     public Map<String, String> getSettingPresets() {
 
         return m_settingPresets;
@@ -249,6 +261,16 @@ public class CmsContainer implements IsSerializable {
     public boolean isDetailView() {
 
         return m_detailView;
+    }
+
+    /**
+     * Checks if this is a detail view container.
+     *
+     * @return true if this is a detail view container
+     */
+    public boolean isDetailViewContainer() {
+
+        return m_isDetailViewContainer;
     }
 
     /**

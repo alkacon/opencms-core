@@ -57,6 +57,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
@@ -1273,6 +1274,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
             CmsResource containerPage = getContainerpage(cms);
+            Set<String> detailTypes = getDetailTypes(cms, containerPage);
             boolean isEditingModelGroup = isEditingModelGroups(cms, containerPage);
             boolean isModelPage = isModelPage(cms, containerPage);
             if (isModelPage) {
@@ -1420,6 +1422,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 sitemapManager,
                 detailResource != null ? detailResource.getStructureId() : null,
                 detailContainerPage,
+                detailTypes,
                 lastModified,
                 getLockInfo(containerPage),
                 pageInfo,
@@ -2146,8 +2149,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     new CmsUUID(formatterConfigId));
             } else if (formatterConfigId.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)
                 && CmsUUID.isValidUUID(formatterConfigId.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length()))) {
-                formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
-            }
+                    formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
+                }
         }
         if (formatter == null) {
             formatter = CmsElementUtil.getFormatterForContainer(cms, element, container, config, getSessionCache());
@@ -2210,6 +2213,41 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return containerPage;
+    }
+
+    /**
+     * Gets the (potentially empty) set of types for which the container page is registered as a detail page.
+     *
+     * @param cms the CMS context
+     * @param containerPage a container page resource
+     *
+     * @return the set of names of types for which the container page is a detail page
+     */
+    private Set<String> getDetailTypes(CmsObject cms, CmsResource containerPage) {
+
+        List<CmsDetailPageInfo> infos = OpenCms.getADEManager().getAllDetailPages(cms);
+        Set<CmsUUID> ids = new HashSet<>();
+        Set<String> result = new HashSet<>();
+        if (containerPage.isFile()) {
+            try {
+                CmsResource folder = cms.readParentFolder(containerPage.getStructureId());
+                if (folder != null) {
+                    ids.add(folder.getStructureId());
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        CmsADESessionCache.getCache(getRequest(), cms);
+        for (CmsDetailPageInfo info : infos) {
+            if (ids.contains(info.getId())) {
+                result.add(info.getType());
+            }
+        }
+
+        return result;
+
     }
 
     /**

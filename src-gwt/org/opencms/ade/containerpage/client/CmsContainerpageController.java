@@ -270,6 +270,7 @@ public final class CmsContainerpageController {
                 null,
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailViewContainer(),
                 m_currentContainer.isDetailView(),
                 true,
                 m_currentElements,
@@ -353,6 +354,7 @@ public final class CmsContainerpageController {
                 null,
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailViewContainer(),
                 m_currentContainer.isDetailView(),
                 true,
                 m_currentElements,
@@ -2120,6 +2122,15 @@ public final class CmsContainerpageController {
         }
 
         updateGalleryData(false, null);
+        addContainerpageEventHandler(event -> {
+
+            if (event.getEventType() == EventType.pageSaved) {
+                updateDetailPreviewStyles();
+
+            }
+
+        });
+        updateDetailPreviewStyles();
     }
 
     /**
@@ -4125,5 +4136,47 @@ public final class CmsContainerpageController {
             }
             progress = containers.size() > size;
         }
+    }
+
+    /**
+     * Sets the oc-detail-preview class on first container elements of an appropriate type in detail containers,
+     * if we are currently not showing a detail content.
+     */
+    private void updateDetailPreviewStyles() {
+
+        Set<String> detailTypes = getData().getDetailTypes();
+        if ((getData().getDetailId() != null) || detailTypes.isEmpty()) {
+            return;
+        }
+        for (Element elem : CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_DETAIL_PREVIEW)) {
+            elem.removeClassName(CmsGwtConstants.CLASS_DETAIL_PREVIEW);
+        }
+
+        processPageContent(new I_PageContentVisitor() {
+
+            boolean m_first = true;
+            boolean m_isdetail = false;
+
+            public boolean beginContainer(String name, CmsContainer container) {
+
+                m_isdetail = container.isDetailViewContainer();
+                m_first = true;
+                return true;
+            }
+
+            public void endContainer() {
+
+                // do nothing
+            }
+
+            public void handleElement(CmsContainerPageElementPanel element) {
+
+                if (m_first && m_isdetail && detailTypes.contains(element.getResourceType())) {
+                    element.addStyleName(CmsGwtConstants.CLASS_DETAIL_PREVIEW);
+                }
+                m_first = false;
+            }
+        });
+
     }
 }

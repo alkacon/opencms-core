@@ -510,16 +510,16 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 } else if ((m_parentElement != null)
                     && !m_detailOnly //ignore parent information for detail only containers to render content on different detail pages.
                     && !m_parentElement.getInstanceId().equals(container.getParentInstanceId())) {
-                    // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
-                    LOG.error(
-                        new CmsIllegalStateException(
-                            Messages.get().container(
-                                Messages.ERR_INVALID_CONTAINER_PARENT_2,
-                                getName(),
-                                m_parentElement.getInstanceId())));
-                    resetState();
-                    return EVAL_PAGE;
-                }
+                        // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
+                        LOG.error(
+                            new CmsIllegalStateException(
+                                Messages.get().container(
+                                    Messages.ERR_INVALID_CONTAINER_PARENT_2,
+                                    getName(),
+                                    m_parentElement.getInstanceId())));
+                        resetState();
+                        return EVAL_PAGE;
+                    }
                 // set the parameter
                 container.setParam(getParam());
                 // set the detail only flag
@@ -922,6 +922,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             m_bodyContent,
             width,
             maxElements,
+            m_detailView,
             isDetailView,
             !m_hasModelGroupAncestor && isEditable(cms),
             null,

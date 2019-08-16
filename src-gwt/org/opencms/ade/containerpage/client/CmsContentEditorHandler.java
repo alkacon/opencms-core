@@ -643,6 +643,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         putString(result, CmsCntPageData.JSONKEY_TYPE, "" + container.getContainerType());
         result.put(CmsCntPageData.JSONKEY_WIDTH, new JSONNumber(container.getConfiguredWidth()));
         result.put(CmsCntPageData.JSONKEY_DETAILVIEW, JSONBoolean.getInstance(container.isDetailView()));
+        result.put(
+            CmsCntPageData.JSONKEY_ISDETAILVIEWCONTAINER,
+            JSONBoolean.getInstance(container.isDetailViewContainer()));
         result.put(CmsCntPageData.JSONKEY_DETAILONLY, JSONBoolean.getInstance(container.isDetailOnly()));
         result.put(CmsCntPageData.JSONKEY_MAXELEMENTS, new JSONNumber(1));
         JSONObject presets = new JSONObject();
