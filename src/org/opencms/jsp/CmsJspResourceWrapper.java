@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleGroup;
+import org.opencms.jsp.util.CmsJspCategoryAccessBean;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.jsp.util.CmsJspImageBean;
 import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer;
@@ -128,6 +129,9 @@ public class CmsJspResourceWrapper extends CmsResource {
     /** Image bean instance created from this resource. */
     private CmsJspImageBean m_imageBean;
 
+    /** The category access bean for this resource. */
+    private CmsJspCategoryAccessBean m_categories;
+
     /**
      * Creates a new instance.<p>
      *
@@ -208,6 +212,19 @@ public class CmsJspResourceWrapper extends CmsResource {
             return ((CmsResource)obj).getStructureId().equals(getStructureId());
         }
         return false;
+    }
+
+    /**
+     * Returns the categories assigned to this resource.<p>
+     *
+     * @return the categories assigned to this resource
+     */
+    public CmsJspCategoryAccessBean getCategories() {
+
+        if (m_categories == null) {
+            m_categories = new CmsJspCategoryAccessBean(m_cms, this);
+        }
+        return m_categories;
     }
 
     /**
