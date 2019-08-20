@@ -970,6 +970,41 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns a lazy initialized map of wrapped container elements beans by container name suffix.<p>
+     *
+     * So in case there is more than one container where the name end with the given suffix,
+     * a joined list of container elements beans is returned.<p>
+     *
+     * @return a lazy initialized map of wrapped container elements beans by container name suffix
+     *
+     * @see #getElementsInContainer()
+     */
+    public Map<String, List<CmsContainerElementBean>> getElementBeansInContainers() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
+            if (obj instanceof String) {
+                List<CmsContainerElementBean> containerElements = new ArrayList<>();
+                for (CmsContainerBean container : getPage().getContainers().values()) {
+                    if (container.getName().endsWith("-" + obj)) {
+                        for (CmsContainerElementBean element : container.getElements()) {
+                            try {
+                                element.initResource(m_cms);
+                                containerElements.add(element);
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                }
+                return containerElements;
+            } else {
+                return null;
+            }
+        });
+
+    }
+
+    /**
      * Returns a lazy initialized map of wrapped element resources by container name.<p>
      *
      * @return the lazy map of element resource wrappers
@@ -1000,9 +1035,13 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns a lazy initialized map of wrapped element resources by container name suffix.<p>
-     * So in case there is more than one container where the name end with the given suffix, a joined list of elements is returned.<p>
+     *
+     * So in case there is more than one container where the name end with the given suffix,
+     * a joined list of elements is returned.<p>
      *
      * @return the lazy map of element resource wrappers
+     *
+     * @see #getElementBeansInContainers()
      */
     public Map<String, List<CmsJspResourceWrapper>> getElementsInContainers() {
 
