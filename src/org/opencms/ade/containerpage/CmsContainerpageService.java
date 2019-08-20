@@ -2227,6 +2227,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         List<CmsDetailPageInfo> infos = OpenCms.getADEManager().getAllDetailPages(cms);
         Set<CmsUUID> ids = new HashSet<>();
+        ids.add(containerPage.getStructureId());
         Set<String> result = new HashSet<>();
         if (containerPage.isFile()) {
             try {
@@ -2238,8 +2239,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-
-        CmsADESessionCache.getCache(getRequest(), cms);
         for (CmsDetailPageInfo info : infos) {
             if (ids.contains(info.getId())) {
                 result.add(info.getType());
