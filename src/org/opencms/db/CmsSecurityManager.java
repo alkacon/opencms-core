@@ -7528,7 +7528,8 @@ public final class CmsSecurityManager {
                                 context.getRequestTime(),
                                 context.getDirectoryTranslator(),
                                 context.getFileTranslator(),
-                                context.getOuFqn());
+                                context.getOuFqn(),
+                                context.isForceAbsoluteLinks());
                             dbc = m_dbContextFactory.getDbContext(context);
                             projectId = dbc.getProjectId();
                             break;

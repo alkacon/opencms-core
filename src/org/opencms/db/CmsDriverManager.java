@@ -764,9 +764,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc.getRequestContext().getSitePath(resource)));
         } else if ((lockType == CmsLockType.EXCLUSIVE)
             && currentLock.isExclusiveOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-            // the current lock requires no change
-            return;
-        }
+                // the current lock requires no change
+                return;
+            }
 
         // duplicate logic from CmsSecurityManager#hasPermissions() because lock state can't be ignored
         // if another user has locked the file, the current user can never get WRITE permissions with the default check
@@ -5185,7 +5185,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 0,
                 null,
                 null,
-                ""));
+                "",
+                false));
         dbc1.clear();
         getUserDriver().createRootOrganizationalUnit(dbc2);
         dbc2.clear();

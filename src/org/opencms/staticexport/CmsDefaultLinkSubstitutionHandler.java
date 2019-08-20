@@ -225,7 +225,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // if the link points to another site, there needs to be a server prefix
         String serverPrefix;
-        if (targetSite != currentSite) {
+        if ((targetSite != currentSite) || cms.getRequestContext().isForceAbsoluteLinks()) {
             serverPrefix = targetSite.getUrl();
         } else {
             serverPrefix = "";

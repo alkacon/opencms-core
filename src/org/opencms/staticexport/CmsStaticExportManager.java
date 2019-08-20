@@ -598,7 +598,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             i18nInfo.getEncoding(),
             remoteAddr,
             CmsContextInfo.CURRENT_TIME,
-            cms.getRequestContext().getOuFqn());
+            cms.getRequestContext().getOuFqn(),
+            cms.getRequestContext().isForceAbsoluteLinks());
         CmsObject exportCms = OpenCms.initCmsObject(null, contextInfo);
 
         // only export those resources where the export property is set

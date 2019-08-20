@@ -178,6 +178,9 @@ import cryptix.jce.provider.CryptixCrypto;
  */
 public final class OpenCmsCore {
 
+    /** Parameter to control whether generated links should always include the host. */
+    public static final String PARAM_FORCE_ABSOLUTE_LINKS = "__forceAbsoluteLinks";
+
     /** The static log object for this class. */
     static final Log LOG = CmsLog.getLog(OpenCmsCore.class);
 
@@ -1995,7 +1998,6 @@ public final class OpenCmsCore {
         CmsObject cms = null;
         try {
             cms = initCmsObject(req, res);
-
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
                 if (uri.startsWith(CmsWorkplace.VFS_PATH_SITES)) {
@@ -2030,6 +2032,9 @@ public final class OpenCmsCore {
             // user is initialized, now deliver the requested resource
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
             if (resource != null) {
+                boolean forceAbsoluteLinks = checkForceAbsoluteLinks(req, cms, resource);
+                cms.getRequestContext().setForceAbsoluteLinks(forceAbsoluteLinks);
+
                 // a file was read, go on process it
                 m_resourceManager.loadResource(cms, resource, req, res);
                 m_sessionManager.updateSessionInfo(cms, req);
@@ -2450,6 +2455,35 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Checks whether 'force absolute links' mode should be enabled in request context.
+     *
+     * @param req the current request
+     * @param cms the CMS context
+     * @param resource the resource to load
+     *
+     * @return true if 'force absolute links' mode should be enabled
+     */
+    private boolean checkForceAbsoluteLinks(HttpServletRequest req, CmsObject cms, CmsResource resource) {
+
+        try {
+            boolean forceAbsoluteLinks = Boolean.parseBoolean(req.getParameter(PARAM_FORCE_ABSOLUTE_LINKS));
+            if (forceAbsoluteLinks) {
+                // only need to read the property if the request parameter is actually set
+                CmsProperty enableForceAbsoluteProp = cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_LINKS_FORCEABSOLUTE_ENABLED,
+                    true);
+                return Boolean.parseBoolean(enableForceAbsoluteProp.getValue());
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return false;
+        }
+    }
+
+    /**
      * This method performs the error handling for OpenCms.<p>
      *
      * @param cms the current cms context, might be null !
@@ -2650,10 +2684,10 @@ public final class OpenCmsCore {
             params = "__loginform=true";
         } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
             && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
-            // login form property value not set, but form login set in configuration
-            // build a redirect URL to the default login form URI configured in opencms.properties
-            loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
-        }
+                // login form property value not set, but form login set in configuration
+                // build a redirect URL to the default login form URI configured in opencms.properties
+                loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
+            }
 
         String callbackURL = CmsRequestUtil.encodeParamsWithUri(path, req);
         if (loginFormURL != null) {
@@ -2804,7 +2838,8 @@ public final class OpenCmsCore {
             contextInfo.getRequestTime(),
             m_resourceManager.getFolderTranslator(),
             m_resourceManager.getFileTranslator(),
-            contextInfo.getOuFqn());
+            contextInfo.getOuFqn(),
+            contextInfo.isForceAbsoluteLinks());
         context.setDetailResource(contextInfo.getDetailResource());
 
         // now initialize and return the CmsObject
@@ -2848,7 +2883,6 @@ public final class OpenCmsCore {
         CmsSiteMatcher requestMatcher;
 
         boolean isSecureRequest = false;
-
         if (request != null) {
             // get path info from request
             requestedResource = getPathInfo(request);
@@ -2870,6 +2904,7 @@ public final class OpenCmsCore {
 
             // create the request matcher
             requestMatcher = new CmsSiteMatcher(request.getRequestURL().toString());
+
         } else {
             // if no request is available, the IP is always set to localhost
             remoteAddr = CmsContextInfo.LOCALHOST;
@@ -2942,7 +2977,8 @@ public final class OpenCmsCore {
             i18nInfo.getEncoding(),
             remoteAddr,
             requestTime,
-            ouFqn);
+            ouFqn,
+            false);
 
         // now generate and return the CmsObject
         return initCmsObject(contextInfo);
