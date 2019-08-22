@@ -216,7 +216,7 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
             inacTime = new Long(System.currentTimeMillis() - m_user.getLastlogin());
             neverActive = m_user.getLastlogin() == 0L;
         } else {
-            inacTime = new Long(System.currentTimeMillis() - currentSession.getTimeUpdated());
+            inacTime = new Long(System.currentTimeMillis() - currentSession.getTimeLastAction());
         }
 
         String[] inactiveTime = CmsSessionInfo.getHourMinuteSecondTimeString(inacTime.longValue());

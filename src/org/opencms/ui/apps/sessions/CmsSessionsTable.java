@@ -53,20 +53,20 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.MouseEvents;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.ui.Component;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Class for the table to show all current sessions.<p>
@@ -552,7 +552,7 @@ public class CmsSessionsTable extends Table {
             item.getItemProperty(TableProperty.DateCreated).setValue(
                 session.getAgeOfSession() + " " + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_HOUR_0));
             item.getItemProperty(TableProperty.IS_ACTIVE).setValue(
-                new Long(System.currentTimeMillis() - session.getTimeUpdated()));
+                new Long(System.currentTimeMillis() - session.getTimeLastAction()));
             item.getItemProperty(TableProperty.OrgUnit).setValue(userOu.getName());
             item.getItemProperty(TableProperty.Project).setValue(
                 A_CmsUI.getCmsObject().readProject(session.getProject()).getName());
