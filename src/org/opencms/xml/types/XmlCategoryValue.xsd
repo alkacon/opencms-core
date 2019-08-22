@@ -1,5 +1,6 @@
 <xsd:complexType name="OpenCmsCategory">
 	<xsd:sequence>
+        <xsd:element name="category-string" type="xsd:string" minOccurs="0" maxOccurs="1" />
  		<xsd:element name="link" type= "OpenCmsCategoryValue" minOccurs="0" maxOccurs="unbounded" /> 
 	</xsd:sequence>
 </xsd:complexType>

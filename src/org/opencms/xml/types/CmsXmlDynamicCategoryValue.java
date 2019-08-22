@@ -45,14 +45,14 @@ import org.dom4j.Element;
  */
 public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
 
+    /** Temporary element used for storing the categories as a string in the XML for validation purposes. This is thrown out before the file is actually saved to the database. */
+    public static final String N_CATEGORY_STRING = "category-string";
+
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsDynamicCategory";
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
-
-    /** The String value of the element node. */
-    private String m_stringValue;
 
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsCategoryValue".<p>
@@ -107,6 +107,7 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
 
         Element element = root.addElement(getName());
         element.addComment("Categories are read dynamically");
+
         return element;
     }
 
@@ -135,7 +136,7 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
      */
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
-        return null == m_stringValue ? "" : m_stringValue;
+        return categoryStringElem().getText();
     }
 
     /**
@@ -169,7 +170,21 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
-        m_stringValue = value;
+        categoryStringElem().setText(value);
+    }
+
+    /**
+     * Gets the category-string subelement, creating it if necessary.
+     *
+     * @return the category-string subelement
+     */
+    Element categoryStringElem() {
+
+        Element result = m_element.element(N_CATEGORY_STRING);
+        if (result == null) {
+            result = m_element.addElement(N_CATEGORY_STRING);
+        }
+        return result;
     }
 
 }

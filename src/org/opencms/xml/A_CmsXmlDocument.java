@@ -35,6 +35,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.types.CmsXmlCategoryValue;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -54,6 +55,7 @@ import java.util.Set;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -330,6 +332,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                 }
             }
             initDocument();
+        }
+
+        for (Node node : m_document.selectNodes("//" + CmsXmlDynamicCategoryValue.N_CATEGORY_STRING)) {
+            node.detach();
         }
 
         // write the modified XML back to the VFS file
