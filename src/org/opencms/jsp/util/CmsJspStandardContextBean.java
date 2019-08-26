@@ -120,6 +120,15 @@ public final class CmsJspStandardContextBean {
         /** The wrapped element instance. */
         private CmsContainerElementBean m_wrappedElement;
 
+        /** Cache for the wrapped element settings. */
+        private Map<String, CmsJspElementSettingValueWrapper> m_wrappedSettings;
+
+        /** Cache for the wrapped element parent. */
+        private CmsContainerElementWrapper m_parent;
+
+        /** Cache for the wrapped element type name. */
+        private String m_resourceTypeName;
+
         /**
          * Constructor.<p>
          *
@@ -210,8 +219,11 @@ public final class CmsJspStandardContextBean {
          */
         public CmsContainerElementWrapper getParent() {
 
-            CmsContainerElementBean parent = getParentElement(m_wrappedElement);
-            return parent != null ? new CmsContainerElementWrapper(getParentElement(m_wrappedElement)) : null;
+            if (m_parent == null) {
+                CmsContainerElementBean parent = getParentElement(m_wrappedElement);
+                m_parent = (parent != null) ? new CmsContainerElementWrapper(getParentElement(m_wrappedElement)) : null;
+            }
+            return m_parent;
         }
 
         /**
@@ -230,13 +242,16 @@ public final class CmsJspStandardContextBean {
          */
         public String getResourceTypeName() {
 
-            String result = "";
-            try {
-                result = OpenCms.getResourceManager().getResourceType(m_wrappedElement.getResource()).getTypeName();
-            } catch (Exception e) {
-                CmsJspStandardContextBean.LOG.error(e.getLocalizedMessage(), e);
+            if (m_resourceTypeName == null) {
+                m_resourceTypeName = "";
+                try {
+                    m_resourceTypeName = OpenCms.getResourceManager().getResourceType(
+                        m_wrappedElement.getResource()).getTypeName();
+                } catch (Exception e) {
+                    CmsJspStandardContextBean.LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-            return result;
+            return m_resourceTypeName;
         }
 
         /**
@@ -248,7 +263,11 @@ public final class CmsJspStandardContextBean {
          */
         public Map<String, CmsJspElementSettingValueWrapper> getSetting() {
 
-            return CmsCollectionsGenericWrapper.createLazyMap(new SettingsTransformer(m_wrappedElement));
+            if (m_wrappedSettings == null) {
+                m_wrappedSettings = CmsCollectionsGenericWrapper.createLazyMap(
+                    new SettingsTransformer(m_wrappedElement));
+            }
+            return m_wrappedSettings;
         }
 
         /**
@@ -979,7 +998,7 @@ public final class CmsJspStandardContextBean {
      *
      * @see #getElementsInContainer()
      */
-    public Map<String, List<CmsContainerElementBean>> getElementBeansInContainers() {
+    public Map<String, List<CmsContainerElementWrapper>> getElementBeansInContainers() {
 
         return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
             if (obj instanceof String) {
@@ -989,7 +1008,7 @@ public final class CmsJspStandardContextBean {
                         for (CmsContainerElementBean element : container.getElements()) {
                             try {
                                 element.initResource(m_cms);
-                                containerElements.add(element);
+                                containerElements.add(new CmsContainerElementWrapper(element));
                             } catch (Exception e) {
                                 LOG.error(e.getLocalizedMessage(), e);
                             }

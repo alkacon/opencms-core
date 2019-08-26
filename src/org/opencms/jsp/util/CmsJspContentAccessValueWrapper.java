@@ -1078,6 +1078,28 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     }
 
     /**
+     * Returns a value wrapper for the provided default in case this value is empty.<p>
+     *
+     * For XML content access value wrappers like this,
+     * the default object returned is of type  {@link CmsJspObjectValueWrapper}.
+     * This means you can only use simple "get me the value as type X" operations on the result safely.<p>
+     *
+     * @param defaultValue the string to generate the default value from
+     *
+     * @return  a value wrapper for the provided default in case this value is empty.
+     *
+     * @see CmsJspObjectValueWrapper#createWrapper(CmsObject, Object)
+     */
+    @Override
+    public A_CmsJspValueWrapper useDefault(Object defaultValue) {
+
+        if (getIsEmptyOrWhitespaceOnly()) {
+            return CmsJspObjectValueWrapper.createWrapper(m_cms, defaultValue);
+        }
+        return this;
+    }
+
+    /**
      * Returns the path to the XML content based on the current element path.<p>
      *
      * This is used to create xpath information for sub-elements in the transformers.<p>
