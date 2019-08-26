@@ -1853,7 +1853,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     if (CmsUUID.isValidUUID(formatterConfigId)) {
                         I_CmsFormatterBean formatter = OpenCms.getADEManager().getCachedFormatters(
                             false).getFormatters().get(new CmsUUID(formatterConfigId));
-                        if (formatterId.equals(formatter.getJspStructureId())) {
+                        if ((formatter != null) && formatterId.equals(formatter.getJspStructureId())) {
                             return formatter;
                         }
                     }
