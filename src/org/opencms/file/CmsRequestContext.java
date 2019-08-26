@@ -78,6 +78,9 @@ public final class CmsRequestContext {
     /** File name translator. */
     private CmsResourceTranslator m_fileTranslator;
 
+    /** Flag to control whether links should be absolute even if we're linking to the current site. */
+    private boolean m_forceAbsoluteLinks;
+
     /** The secure request flag. */
     private boolean m_isSecureRequest;
 
@@ -89,6 +92,9 @@ public final class CmsRequestContext {
 
     /** The remote ip address. */
     private String m_remoteAddr;
+
+    /** the matcher for the current request, that is the host part of the URI from the original http request. */
+    private CmsSiteMatcher m_requestMatcher;
 
     /** The current request time. */
     private long m_requestTime;
@@ -104,9 +110,6 @@ public final class CmsRequestContext {
 
     /** The current user. */
     private CmsUser m_user;
-
-    /** the matcher for the current request, that is the host part of the URI from the original http request. */
-    private CmsSiteMatcher m_requestMatcher;
 
     /**
      * Constructs a new request context.<p>
@@ -124,6 +127,7 @@ public final class CmsRequestContext {
      * @param directoryTranslator the directory translator
      * @param fileTranslator the file translator
      * @param ouFqn the fully qualified name of the organizational unit
+     * @param forceAbsoluteLinks if true, links should be generated with a server prefix even if we're linking to the current site
      */
     public CmsRequestContext(
         CmsUser user,
@@ -138,7 +142,8 @@ public final class CmsRequestContext {
         long requestTime,
         CmsResourceTranslator directoryTranslator,
         CmsResourceTranslator fileTranslator,
-        String ouFqn) {
+        String ouFqn,
+        boolean forceAbsoluteLinks) {
 
         m_updateSession = true;
         m_user = user;
@@ -154,6 +159,7 @@ public final class CmsRequestContext {
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
         setOuFqn(ouFqn);
+        m_forceAbsoluteLinks = forceAbsoluteLinks;
     }
 
     /**
@@ -476,6 +482,16 @@ public final class CmsRequestContext {
     }
 
     /**
+     * Returns true if links to the current site should be generated as absolute links, i.e. with a server prefix.
+     *
+     * @return true if links to the current site should be absolute
+     */
+    public boolean isForceAbsoluteLinks() {
+
+        return m_forceAbsoluteLinks;
+    }
+
+    /**
      * Returns true if this is a secure request.<p>
      *
      * @return true if this is secure
@@ -589,6 +605,16 @@ public final class CmsRequestContext {
     public void setEncoding(String encoding) {
 
         m_encoding = encoding;
+    }
+
+    /**
+     * Enables/disables link generation with full server prefix for the current site.
+     *
+     * @param forceAbsoluteLinks true if links to the current site should be generated with server prefix
+     */
+    public void setForceAbsoluteLinks(boolean forceAbsoluteLinks) {
+
+        m_forceAbsoluteLinks = forceAbsoluteLinks;
     }
 
     /**

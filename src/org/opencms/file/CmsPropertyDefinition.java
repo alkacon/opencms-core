@@ -171,6 +171,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the keywords. */
     public static final String PROPERTY_KEYWORDS = "Keywords";
 
+    /** Property to enable __forceAbsoluteLinks request parameter for a resource. */
+    public static final String PROPERTY_LINKS_FORCEABSOLUTE_ENABLED = "links.forceabsolute.enabled";
+
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
 

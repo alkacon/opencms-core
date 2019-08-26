@@ -517,7 +517,8 @@ public class CmsSessionManager {
             0,
             null,
             null,
-            ouFqn);
+            ouFqn,
+            false);
         // delete the stored workplace settings, so the session has to receive them again
         session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
 

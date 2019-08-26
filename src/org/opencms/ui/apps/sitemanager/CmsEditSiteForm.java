@@ -87,6 +87,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.base.Supplier;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.server.Page;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
@@ -839,7 +840,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
                 setupValidators();
                 setupValidatorAliase();
-                if (isValidInputSimple() & isValidInputSiteTemplate() & isValidAliase()) {
+                if (isValidInputSimple() & isValidInputSiteTemplate() & isValidAliase() & isValidSecureServer()) {
                     submit();
                     return;
                 }
@@ -1318,6 +1319,19 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Checks if manual secure server is valid.<p>
+     *
+     * @return boolean
+     */
+    boolean isValidSecureServer() {
+
+        if (m_fieldSecureServer.isVisible()) {
+            return m_fieldSecureServer.isValid();
+        }
+        return true;
+    }
+
+    /**
      * Loads message bundle from bundle defined inside the site-template which is used to create new site.<p>
      */
     void loadMessageBundle() {
@@ -1528,6 +1542,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
                 m_simpleFieldParentFolderName.addValidator(new ParentFolderValidator());
             }
             m_simpleFieldServer.addValidator(new ServerValidator());
+            if (m_fieldSecureServer.isVisible()) {
+                m_fieldSecureServer.addValidator(new AliasValidator());
+            }
             m_simpleFieldTitle.addValidator(new TitleValidator());
             if (m_site == null) {
                 m_fieldSelectOU.addValidator(new SelectOUValidator());
@@ -1921,13 +1938,13 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         });
         m_simpleFieldParentFolderName.setVisible(false);
         m_simpleFieldFolderName.setVisible(false);
-
-        displayResourceInfoDirectly(
-            Collections.singletonList(
-                new CmsResourceInfo(
-                    m_site.getTitle(),
-                    m_site.getSiteRoot(),
-                    m_manager.getFavIcon(m_site.getSiteRoot()))));
+        CmsResourceInfo resourceInfo = new CmsResourceInfo(
+            m_site.getTitle(),
+            m_site.getSiteRoot(),
+            m_manager.getFavIcon(m_site.getSiteRoot()));
+        resourceInfo.addStyleName("o-res-site-info");
+        Page.getCurrent().getStyles().add(".o-res-site-info img {max-width: 24px;}");
+        displayResourceInfoDirectly(Collections.singletonList(resourceInfo));
 
         m_tab.removeTab(m_tab.getTab(4));
         m_simpleFieldTitle.removeTextChangeListener(null);

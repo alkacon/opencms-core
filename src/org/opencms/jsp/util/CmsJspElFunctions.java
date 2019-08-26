@@ -41,12 +41,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsHtmlConverter;
+import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -63,7 +64,6 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
-
 import com.google.common.collect.Maps;
 
 /**
@@ -779,11 +779,18 @@ public final class CmsJspElFunctions {
             } else {
                 return "";
             }
-        }
-        try {
-            return CmsHtml2TextConverter.html2text(String.valueOf(input), OpenCms.getSystemInfo().getDefaultEncoding());
-        } catch (Exception e) {
-            return CmsMessages.formatUnknownKey(e.getMessage());
+        } else {
+            try {
+                return CmsHtmlExtractor.extractText(
+                    String.valueOf(input),
+                    OpenCms.getSystemInfo().getDefaultEncoding());
+            } catch (org.htmlparser.util.ParserException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return "";
+            } catch (UnsupportedEncodingException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return "";
+            }
         }
     }
 

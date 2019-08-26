@@ -652,13 +652,23 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
-     * Returns true if this is a detail view container.<p>
+     * Returns true if this is a detail view container, being actually used for detail content.<p>
      *
      * @return true if this is a detail view container
      */
     public boolean isDetailView() {
 
         return m_containerData.isDetailView();
+    }
+
+    /**
+     * Checks if this is a detail view container.
+     *
+     * @return true if this is a detail view container
+     */
+    public boolean isDetailViewContainer() {
+
+        return m_containerData.isDetailViewContainer();
     }
 
     /**

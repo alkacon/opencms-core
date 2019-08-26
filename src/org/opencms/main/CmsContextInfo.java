@@ -68,6 +68,9 @@ public class CmsContextInfo implements Serializable {
     /** Indicates if the configuration if this context info can still be changed or not. */
     private boolean m_frozen;
 
+    /** Flag indicating whether links to the current site should be generated with a server prefix. */
+    private boolean m_isForceAbsoluteLinks;
+
     /** True if this was determined to be a request to a secure site. */
     private boolean m_isSecureRequest;
 
@@ -157,6 +160,7 @@ public class CmsContextInfo implements Serializable {
         setIsSecureRequest(requestContext.isSecureRequest());
         setOuFqn(requestContext.getOuFqn());
         setDetailResource(requestContext.getDetailResource());
+        setForceAbsoluteLinks(requestContext.isForceAbsoluteLinks());
     }
 
     /**
@@ -173,6 +177,7 @@ public class CmsContextInfo implements Serializable {
      * @param remoteAddr the remote ip address to create the context with
      * @param requestTime the time of the request (used for resource publication / expiration date)
      * @param ouFqn the fully qualified name of the organizational unit to create the context with
+     * @param isForceAbsoluteLinks a flag indicating whether links to the current site should be generated with a server prefix
      */
     public CmsContextInfo(
         CmsUser user,
@@ -185,7 +190,8 @@ public class CmsContextInfo implements Serializable {
         String encoding,
         String remoteAddr,
         long requestTime,
-        String ouFqn) {
+        String ouFqn,
+        boolean isForceAbsoluteLinks) {
 
         m_user = user;
         setUserName(m_user.getName());
@@ -200,6 +206,7 @@ public class CmsContextInfo implements Serializable {
         setRemoteAddr(remoteAddr);
         setRequestTime(requestTime);
         setOuFqn(ouFqn);
+        setForceAbsoluteLinks(isForceAbsoluteLinks);
     }
 
     /**
@@ -428,6 +435,16 @@ public class CmsContextInfo implements Serializable {
     }
 
     /**
+     * Returns true if links to the current site should be generated with a server prefix.
+     *
+     * @return true if links to current site should be absolute
+     */
+    public boolean isForceAbsoluteLinks() {
+
+        return m_isForceAbsoluteLinks;
+    }
+
+    /**
      * Returns true if this a secure request.<p>
      *
      * @return true if this is a secure request
@@ -458,6 +475,16 @@ public class CmsContextInfo implements Serializable {
 
         checkFrozen();
         m_encoding = CmsEncoder.lookupEncoding(encoding, OpenCms.getSystemInfo().getDefaultEncoding());
+    }
+
+    /**
+     * Enables/disables usage of the server prefix for links to the current site.
+     *
+     * @param isForceAbsoluteLinks true if links to the current site should be generated with a server prefix
+     */
+    public void setForceAbsoluteLinks(boolean isForceAbsoluteLinks) {
+
+        m_isForceAbsoluteLinks = isForceAbsoluteLinks;
     }
 
     /**

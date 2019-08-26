@@ -15,6 +15,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 11.0.1- August xx, 2019
+! Added method to read the categories of a resource from CmsJspResourceWrapper
+! Added method getElementBeansInContainers to CmsJspStandardContextBean
+
 OpenCms 11.0.0 final - April 30, 2019
 ! Updated Vaadin libraries to version 8.7.1.
 - Fixed issue #646 where edit module dialog localization was not complete.

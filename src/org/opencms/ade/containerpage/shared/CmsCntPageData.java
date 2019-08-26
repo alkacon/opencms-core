@@ -33,6 +33,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -45,14 +46,14 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The element delte modes. */
     public enum ElementDeleteMode {
-    /** Don't ask, delete no longer referenced element resources. */
-    alwaysDelete,
-    /** Don't ask, keep no longer referenced element resources. */
-    alwaysKeep,
-    /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
-    askDelete,
-    /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
-    askKeep
+        /** Don't ask, delete no longer referenced element resources. */
+        alwaysDelete,
+        /** Don't ask, keep no longer referenced element resources. */
+        alwaysKeep,
+        /** Ask if no longer referenced element resources should be deleted. Delete is preselected. */
+        askDelete,
+        /** Ask if no longer referenced element resources should be deleted. Keep is preselected. */
+        askKeep
     }
 
     /** Enum representing the different ways dropping elements on a container page can be handled. */
@@ -86,6 +87,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Key 'elements' used within the JSON representation of a container object. */
     public static final String JSONKEY_ELEMENTS = "elements";
 
+    /** Key 'isDetailViewContainer' used within the JSON representation of a container object. */
+    public static final String JSONKEY_ISDETAILVIEWCONTAINER = "isDetailViewContainer";
+
     /** Key 'maxElements' used within the JSON representation of a container object. */
     public static final String JSONKEY_MAXELEMENTS = "maxElements";
 
@@ -118,6 +122,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The detail structure id, if available. */
     private CmsUUID m_detailId;
+
+    /** The set of names of types for which the current page is registered as a detail page. */
+    private Set<String> m_detailTypes;
 
     /** Flag which determines whether small elements should be editable initially. */
     private boolean m_editSmallElementsInitially;
@@ -161,6 +168,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The online link to the current page. */
     private String m_onlineLink;
 
+    /** The current page info. */
+    private CmsListInfoBean m_pageInfo;
+
     /** The original request parameters. */
     private String m_requestParams;
 
@@ -182,9 +192,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
-    /** The current page info. */
-    private CmsListInfoBean m_pageInfo;
-
     /**
      * Constructor.<p>
      *
@@ -195,6 +202,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param sitemapManager if the user has the sitemap manager role
      * @param detailId the detail resource id, if available
      * @param detailContainerPage the detail view container resource path
+     * @param detailTypes the set of names of types for which this page is registered as detail page
      * @param lastModified the last modification date of the page
      * @param lockInfo lock information, if the page is locked by another user
      * @param pageInfo the current page info
@@ -222,6 +230,7 @@ public final class CmsCntPageData implements IsSerializable {
         boolean sitemapManager,
         CmsUUID detailId,
         String detailContainerPage,
+        Set<String> detailTypes,
         long lastModified,
         String lockInfo,
         CmsListInfoBean pageInfo,
@@ -252,6 +261,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_locale = locale;
         m_detailId = detailId;
         m_detailContainerPage = detailContainerPage;
+        m_detailTypes = detailTypes;
         m_useClassicEditor = useClassicEditor;
         m_templateContextInfo = contextInfo;
         m_editSmallElementsInitially = showSmallElementsInitially;
@@ -344,6 +354,16 @@ public final class CmsCntPageData implements IsSerializable {
     public CmsUUID getDetailId() {
 
         return m_detailId;
+    }
+
+    /**
+     * Gets the set of names of types for which the container page is registered as a detail page.
+     *
+     * @return the set of names of detail types
+     */
+    public Set<String> getDetailTypes() {
+
+        return m_detailTypes;
     }
 
     /**

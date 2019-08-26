@@ -726,7 +726,7 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
         if (resource != null) {
 
             Image favIconImage = new Image("", resource);
-
+            favIconImage.setWidth("24px");
             favIconImage.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_0));
 
             favIconImage.addClickListener(new MouseEvents.ClickListener() {

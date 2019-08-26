@@ -280,6 +280,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
             999,
             false,
             false,
+            false,
             Arrays.asList(element),
             null,
             null,

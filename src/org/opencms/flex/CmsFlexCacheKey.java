@@ -122,6 +122,9 @@ public class CmsFlexCacheKey {
     /** Flex cache keyword: container-element. */
     private static final String CACHE_21_CONTAINER_ELEMENT = "container-element";
 
+    /** Flex cache key component for the __forceAbsoluteLinks parameter. */
+    private static final String CACHE_FORCE_ABSOLUTE_LINKS = "force-abs";
+
     /** The list of keywords of the Flex cache language. */
     private static final List<String> CACHE_COMMANDS = Arrays.asList(
         new String[] {
@@ -581,6 +584,8 @@ public class CmsFlexCacheKey {
         }
 
         if (str.length() > 0) {
+            // we don't want an element to just be cached with the __forceAbsoluteLinks parameter as key if it wouldn't be cached otherwise
+            appendKeyValue(str, CACHE_FORCE_ABSOLUTE_LINKS, "" + key.isForceAbsoluteLinks());
             return str.toString();
         } else {
             return null;

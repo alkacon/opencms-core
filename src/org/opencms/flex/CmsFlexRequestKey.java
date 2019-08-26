@@ -419,4 +419,14 @@ public class CmsFlexRequestKey {
 
         return m_context.getCurrentUser().getName();
     }
+
+    /**
+     * Returns true if the 'force absolute links' flag is set in the request context.
+     *
+     * @return the 'force absolute links' flag from the request context
+     */
+    public boolean isForceAbsoluteLinks() {
+
+        return m_context.isForceAbsoluteLinks();
+    }
 }

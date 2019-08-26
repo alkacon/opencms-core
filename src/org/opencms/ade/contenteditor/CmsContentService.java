@@ -178,6 +178,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
 
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
+    /** The current users workplace locale. */
+    private Locale m_workplaceLocale;
+
     static {
         WIDGET_MAPPINGS.put("string", CmsInputWidget.class);
         WIDGET_MAPPINGS.put("select", CmsSelectWidget.class);
@@ -191,12 +197,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         WIDGET_MAPPINGS.put("radio", CmsRadioSelectWidget.class);
         WIDGET_MAPPINGS.put("groupselection", CmsGroupWidget.class);
     }
-
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
-
-    /** The current users workplace locale. */
-    private Locale m_workplaceLocale;
 
     /**
      * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
@@ -903,6 +903,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     int containerWidth = contextInfo.getInt(CmsCntPageData.JSONKEY_WIDTH);
                     int maxElements = contextInfo.getInt(CmsCntPageData.JSONKEY_MAXELEMENTS);
                     boolean detailView = contextInfo.getBoolean(CmsCntPageData.JSONKEY_DETAILVIEW);
+                    boolean isDetailViewContainer = contextInfo.getBoolean(
+                        CmsCntPageData.JSONKEY_ISDETAILVIEWCONTAINER);
                     JSONObject presets = contextInfo.getJSONObject(CmsCntPageData.JSONKEY_PRESETS);
                     HashMap<String, String> presetsMap = new HashMap<String, String>();
                     for (String key : presets.keySet()) {
@@ -915,6 +917,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         null,
                         containerWidth,
                         maxElements,
+                        isDetailViewContainer,
                         detailView,
                         true,
                         Collections.<CmsContainerElement> emptyList(),
@@ -2367,9 +2370,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
                 && !HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
-                values.put(settingsEntry.getKey(), value);
-                hasChangedSettings = true;
-            }
+                    values.put(settingsEntry.getKey(), value);
+                    hasChangedSettings = true;
+                }
         }
         if (hasChangedSettings) {
             containerElement.updateIndividualSettings(values);

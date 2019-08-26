@@ -64,7 +64,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
     private static final long serialVersionUID = 4861877088383896218L;
 
     /** The site manager instance.*/
-    CmsSiteManager m_manager;
+    protected CmsSiteManager m_manager;
 
     /**cancel button.*/
     private Button m_cancelButton;
@@ -76,7 +76,7 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
     private Button m_okButton;
 
     /**sites to delete.*/
-    private final List<CmsSite> m_sitesToDelete = new ArrayList<CmsSite>();
+    protected final List<CmsSite> m_sitesToDelete = new ArrayList<CmsSite>();
 
     /**
      * Public constructor.<p>
@@ -123,49 +123,11 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
     }
 
     /**
-     * delete sites.<p>
-     */
-    void submit() {
-
-        List<String> siteRootsToDelete = new ArrayList<String>();
-        for (CmsSite site : m_sitesToDelete) {
-
-            String currentSite = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
-            if (currentSite.equals(site.getSiteRoot())) {
-                A_CmsUI.getCmsObject().getRequestContext().setSiteRoot("");
-            }
-            siteRootsToDelete.add(site.getSiteRoot());
-        }
-        m_manager.deleteElements(siteRootsToDelete);
-        if (m_deleteResources.getValue().booleanValue()) {
-            for (CmsSite site : m_sitesToDelete) {
-                try {
-                    m_manager.getRootCmsObject().lockResource(site.getSiteRoot());
-                } catch (CmsException e) {
-                    LOG.error("unable to lock resource");
-                }
-                try {
-                    m_manager.getRootCmsObject().deleteResource(
-                        site.getSiteRoot(),
-                        CmsResource.DELETE_PRESERVE_SIBLINGS);
-                    try {
-                        m_manager.getRootCmsObject().unlockResource(site.getSiteRoot());
-                    } catch (CmsLockException e) {
-                        LOG.info("Unlock failed.", e);
-                    }
-                } catch (CmsException e) {
-                    //ok, resource was not published and can not be unlocked anymore..
-                }
-            }
-        }
-    }
-
-    /**
      * Creates content of dialog containing CheckBox if resources should be deleted and a messages.<p>
      *
      * @return vertical layout component.
      */
-    private VerticalLayout getContent() {
+    protected VerticalLayout getContent() {
 
         String message;
 
@@ -198,6 +160,44 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
 
         layout.addComponent(label);
         return layout;
+    }
+
+    /**
+     * delete sites.<p>
+     */
+    protected void submit() {
+
+        List<String> siteRootsToDelete = new ArrayList<String>();
+        for (CmsSite site : m_sitesToDelete) {
+
+            String currentSite = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+            if (currentSite.equals(site.getSiteRoot())) {
+                A_CmsUI.getCmsObject().getRequestContext().setSiteRoot("");
+            }
+            siteRootsToDelete.add(site.getSiteRoot());
+        }
+        m_manager.deleteElements(siteRootsToDelete);
+        if (m_deleteResources.getValue().booleanValue()) {
+            for (CmsSite site : m_sitesToDelete) {
+                try {
+                    m_manager.getRootCmsObject().lockResource(site.getSiteRoot());
+                } catch (CmsException e) {
+                    LOG.error("unable to lock resource");
+                }
+                try {
+                    m_manager.getRootCmsObject().deleteResource(
+                        site.getSiteRoot(),
+                        CmsResource.DELETE_PRESERVE_SIBLINGS);
+                    try {
+                        m_manager.getRootCmsObject().unlockResource(site.getSiteRoot());
+                    } catch (CmsLockException e) {
+                        LOG.info("Unlock failed.", e);
+                    }
+                } catch (CmsException e) {
+                    //ok, resource was not published and can not be unlocked anymore..
+                }
+            }
+        }
     }
 
     /**

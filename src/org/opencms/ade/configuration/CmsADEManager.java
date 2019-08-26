@@ -88,7 +88,6 @@ import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -271,50 +270,6 @@ public class CmsADEManager {
     }
 
     /**
-     * Gets the detail page for a content element.<p>
-     *
-     * @param manager the ADE manager instance.
-     * @param cms the CMS context
-     * @param pageRootPath the element's root path
-     * @param originPath the path in which the the detail page is being requested
-     * @param targetDetailPage the target detail page to use
-     *
-     * @return the detail page for the content element
-     */
-    public static String getDetailPage(
-        CmsADEManager manager,
-        CmsObject cms,
-        String pageRootPath,
-        String originPath,
-        String targetDetailPage) {
-
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        String resType = manager.getParentFolderType(online, pageRootPath);
-        if (resType == null) {
-            return null;
-        }
-        if ((targetDetailPage != null) && manager.getDetailPages(cms, resType).contains(targetDetailPage)) {
-            return targetDetailPage;
-        }
-
-        String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
-        CmsADEConfigData configData = manager.lookupConfiguration(cms, originRootPath);
-        CmsADEConfigData targetConfigData = manager.lookupConfiguration(cms, pageRootPath);
-        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
-        List<CmsADEConfigData> configs = targetFirst
-        ? Arrays.asList(targetConfigData, configData)
-        : Arrays.asList(configData, targetConfigData);
-        for (CmsADEConfigData config : configs) {
-            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
-            if ((pageInfo != null) && !pageInfo.isEmpty()) {
-                return pageInfo.get(0).getUri();
-            }
-        }
-        return null;
-
-    }
-
-    /**
      * Adds a wait handle for the next cache update to a formatter configuration.<p>
      *
      * @param online true if we want to add a wait handle to the online cache, else the offline cache
@@ -456,6 +411,35 @@ public class CmsADEManager {
     public List<DetailInfo> getDetailInfo(CmsObject cms) {
 
         return getCacheState(isOnline(cms)).getDetailInfosForSubsites(cms);
+    }
+
+    /**
+     * Gets the detail page for a content element.<p>
+     *
+     * @param cms the CMS context
+     * @param pageRootPath the element's root path
+     * @param originPath the path in which the the detail page is being requested
+     *
+     * @return the detail page for the content element
+     */
+    public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
+
+        return getDetailPage(cms, pageRootPath, originPath, null);
+    }
+
+    /**
+     * Gets the detail page for a content element.<p>
+     *
+     * @param cms the CMS context
+     * @param rootPath the element's root path
+     * @param linkSource the path in which the the detail page is being requested
+     * @param targetDetailPage the target detail page to use
+     *
+     * @return the detail page for the content element
+     */
+    public String getDetailPage(CmsObject cms, String rootPath, String linkSource, String targetDetailPage) {
+
+        return getDetailPageHandler().getDetailPage(cms, rootPath, linkSource, targetDetailPage);
     }
 
     /**
