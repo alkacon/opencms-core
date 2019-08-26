@@ -183,6 +183,8 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue {
         Element result = m_element.element(N_CATEGORY_STRING);
         if (result == null) {
             result = m_element.addElement(N_CATEGORY_STRING);
+            result.detach();
+            m_element.elements().add(0, result);
         }
         return result;
     }
