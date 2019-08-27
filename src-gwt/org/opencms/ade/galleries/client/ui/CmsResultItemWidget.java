@@ -39,6 +39,8 @@ import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -155,6 +157,13 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     }
 
+    private static Element appendDom(Element parent, String name) {
+
+        Element child = DOM.createElement(name);
+        parent.appendChild(child);
+        return child;
+    }
+
     /**
      * Gets the image tile.<p>
      *
@@ -213,16 +222,17 @@ public class CmsResultItemWidget extends CmsListItemWidget {
      */
     private String generateTooltipHtml(CmsListInfoBean infoBean) {
 
-        StringBuffer result = new StringBuffer();
-        result.append("<p><b>").append(CmsClientStringUtil.shortenString(infoBean.getTitle(), 70)).append("</b></p>");
+        Element root = DOM.createElement("div");
+        appendDom(appendDom(root, "p"), "b").setInnerText(CmsClientStringUtil.shortenString(infoBean.getTitle(), 70));
         if (infoBean.hasAdditionalInfo()) {
             for (CmsAdditionalInfoBean additionalInfo : infoBean.getAdditionalInfo()) {
-                result.append("<p>").append(additionalInfo.getName()).append(":&nbsp;");
-                // shorten the value to max 45 characters
-                result.append(CmsClientStringUtil.shortenString(additionalInfo.getValue(), 45)).append("</p>");
+                appendDom(root, "p").setInnerText(
+                    additionalInfo.getName()
+                        + ":\u00a0"
+                        + CmsClientStringUtil.shortenString(additionalInfo.getValue(), 45));
             }
         }
-        return result.toString();
+        return root.getInnerHTML();
     }
 
     /**
