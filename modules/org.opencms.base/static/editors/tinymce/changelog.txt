@@ -1,3 +1,151 @@
+Version 5.0.14 (2019-08-19)
+    Added an API to reload the autocompleter menu with additional fetch metadata #MENTIONS-17
+    Fixed missing toolbar button border styling options #TINY-3965
+    Fixed image upload progress notification closing before the upload is complete #TINY-3963
+    Fixed inline dialogs not closing on escape when no dialog component is in focus #TINY-3936
+    Fixed plugins not being filtered when defaulting to mobile on phones #TINY-3537
+    Fixed toolbar more drawer showing the content behind it when transitioning between opened and closed states #TINY-3878
+    Fixed focus not returning to the dialog after pressing the "Replace all" button in the search and replace dialog #TINY-3961
+    Removed Oxide variable `@menubar-select-disabled-border-color` and replaced it with `@menubar-select-disabled-border` #TINY-3965
+Version 5.0.13 (2019-08-06)
+    Changed modal dialogs to prevent dragging by default and added new `draggable_modal` setting to restore dragging #TINY-3873
+    Changed the nonbreaking plugin to insert nbsp characters wrapped in spans to aid in filtering. This can be disabled using the `nonbreaking_wrap` setting #TINY-3647
+    Changed backspace behaviour in lists to outdent nested list items when the cursor is at the start of the list item #TINY-3651
+    Fixed sidebar growing beyond editor bounds in IE 11 #TINY-3937
+    Fixed issue with being unable to keyboard navigate disabled toolbar buttons #TINY-3350
+    Fixed issues with backspace and delete in nested contenteditable true and false elements #TINY-3868
+    Fixed issue with losing keyboard navigation in dialogs due to disabled buttons #TINY-3914
+    Fixed `MouseEvent.mozPressure is deprecated` warning in Firefox #TINY-3919
+    Fixed `default_link_target` not being respected when `target_list` is disabled #TINY-3757
+    Fixed mobile plugin filter to only apply to the mobile theme, rather than all mobile platforms #TINY-3405
+    Fixed focus switching to another editor during mode changes #TINY-3852
+    Fixed an exception being thrown when clicking on an uninitialized inline editor #TINY-3925
+    Fixed unable to keyboard navigate to dialog menu buttons #TINY-3933
+    Fixed dialogs being able to be dragged outside the window viewport #TINY-3787
+    Fixed inline dialogs appearing above modal dialogs #TINY-3932
+Version 5.0.12 (2019-07-18)
+    Added ability to utilize UI dialog panels inside other panels #TINY-3305
+    Added help dialog tab explaining keyboard navigation of the editor #TINY-3603
+    Changed the "Find and Replace" design to an inline dialog #TINY-3054
+    Fixed issue where autolink spacebar event was not being fired on Edge #TINY-3891
+    Fixed table selection missing the background color #TINY-3892
+    Fixed removing shortcuts not working for function keys #TINY-3871
+    Fixed non-descriptive UI component type names #TINY-3349
+    Fixed UI registry components rendering as the wrong type when manually specifying a different type #TINY-3385
+    Fixed an issue where dialog checkbox, input, selectbox, textarea and urlinput components couldn't be disabled #TINY-3708
+    Fixed the context toolbar not using viable screen space in inline/distraction free mode #TINY-3717
+    Fixed the context toolbar overlapping the toolbar in various conditions #TINY-3205
+    Fixed IE11 edge case where items were being inserted into the wrong location #TINY-3884
+Version 5.0.11 (2019-07-04)
+    Fixed packaging errors caused by a rollup treeshaking bug (https://github.com/rollup/rollup/issues/2970) #TINY-3866
+    Fixed the customeditor component not able to get data from the dialog api #TINY-3866
+    Fixed collection component tooltips not being translated #TINY-3855
+Version 5.0.10 (2019-07-02)
+    Added support for all HTML color formats in `color_map` setting #TINY-3837
+    Changed backspace key handling to outdent content in appropriate circumstances #TINY-3685
+    Changed default palette for forecolor and backcolor to include some lighter colors suitable for highlights #TINY-2865
+    Changed the search and replace plugin to cycle through results #TINY-3800
+    Fixed inconsistent types causing some properties to be unable to be used in dialog components #TINY-3778
+    Fixed an issue in the Oxide skin where dialog content like outlines and shadows were clipped because of overflow hidden #TINY-3566
+    Fixed the search and replace plugin not resetting state when changing the search query #TINY-3800
+    Fixed backspace in lists not creating an undo level #TINY-3814
+    Fixed the editor to cancel loading in quirks mode where the UI is not supported #TINY-3391
+    Fixed applying fonts not working when the name contained spaces and numbers #TINY-3801
+    Fixed so that initial content is retained when initializing on list items #TINY-3796
+    Fixed inefficient font name and font size current value lookup during rendering #TINY-3813
+    Fixed mobile font copied into the wrong folder for the oxide-dark skin #TINY-3816
+    Fixed an issue where resizing the width of tables would produce inaccurate results #TINY-3827
+    Fixed a memory leak in the Silver theme #TINY-3797
+    Fixed alert and confirm dialogs using incorrect markup causing inconsistent padding #TINY-3835
+    Fixed an issue in the Table plugin with `table_responsive_width` not enforcing units when resizing #TINY-3790
+    Fixed leading, trailing and sequential spaces being lost when pasting plain text #TINY-3726
+    Fixed exception being thrown when creating relative URIs #TINY-3851
+    Fixed focus is no longer set to the editor content during mode changes unless the editor already had focus #TINY-3852
+Version 5.0.9 (2019-06-26)
+    Fixed print plugin not working in Firefox #TINY-3834
+Version 5.0.8 (2019-06-18)
+    Added back support for multiple toolbars #TINY-2195
+    Added support for .m4a files to the media plugin #TINY-3750
+    Added new base_url and suffix editor init options #TINY-3681
+    Fixed incorrect padding for select boxes with visible values #TINY-3780
+    Fixed selection incorrectly changing when programmatically setting selection on contenteditable false elements #TINY-3766
+    Fixed sidebar background being transparent #TINY-3727
+    Fixed the build to remove duplicate iife wrappers #TINY-3689
+    Fixed bogus autocompleter span appearing in content when the autocompleter menu is shown #TINY-3752
+    Fixed toolbar font size select not working with legacyoutput plugin #TINY-2921
+    Fixed the legacyoutput plugin incorrectly aligning images #TINY-3660
+    Fixed remove color not working when using the legacyoutput plugin #TINY-3756
+    Fixed the font size menu applying incorrect sizes when using the legacyoutput plugin #TINY-3773
+    Fixed scrollIntoView not working when the parent window was out of view #TINY-3663
+    Fixed the print plugin printing from the wrong window in IE11 #TINY-3762
+    Fixed content CSS loaded over CORS not loading in the preview plugin with content_css_cors enabled #TINY-3769
+    Fixed the link plugin missing the default "None" option for link list #TINY-3738
+    Fixed small dot visible with menubar and toolbar disabled in inline mode #TINY-3623
+    Fixed space key properly inserts a nbsp before/after block elements #TINY-3745
+    Fixed native context menu not showing with images in IE11 #TINY-3392
+    Fixed inconsistent browser context menu image selection #TINY-3789
+Version 5.0.7 (2019-06-05)
+    Added new toolbar button and menu item for inserting tables via dialog #TINY-3636
+    Added new API for adding/removing/changing tabs in the Help dialog #TINY-3535
+    Added highlighting of matched text in autocompleter items #TINY-3687
+    Added the ability for autocompleters to work with matches that include spaces #TINY-3704
+    Added new `imagetools_fetch_image` callback to allow custom implementations for cors loading of images #TINY-3658
+    Added `'http'` and `https` options to `link_assume_external_targets` to prepend `http://` or `https://` prefixes when URL does not contain a protocol prefix. Patch contributed by francoisfreitag. #GH-4335
+    Changed annotations navigation to work the same as inline boundaries #TINY-3396
+    Changed tabpanel API by adding a `name` field and changing relevant methods to use it #TINY-3535
+    Fixed text color not updating all color buttons when choosing a color #TINY-3602
+    Fixed the autocompleter not working with fragmented text #TINY-3459
+    Fixed the autosave plugin no longer overwrites window.onbeforeunload #TINY-3688
+    Fixed infinite loop in the paste plugin when IE11 takes a long time to process paste events. Patch contributed by lRawd. #GH-4987
+    Fixed image handle locations when using `fixed_toolbar_container`. Patch contributed by t00. #GH-4966
+    Fixed the autoresize plugin not firing `ResizeEditor` events #TINY-3587
+    Fixed editor in fullscreen mode not extending to the bottom of the screen #TINY-3701
+    Fixed list removal when pressing backspace after the start of the list item #TINY-3697
+    Fixed autocomplete not triggering from compositionend events #TINY-3711
+    Fixed `file_picker_callback` could not set the caption field on the insert image dialog #TINY-3172
+    Fixed the autocompleter menu showing up after a selection had been made #TINY-3718
+    Fixed an exception being thrown when a file or number input has focus during initialization. Patch contributed by t00 #GH-2194
+Version 5.0.6 (2019-05-22)
+    Added `icons_url` editor settings to enable icon packs to be loaded from a custom url #TINY-3585
+    Added `image_uploadtab` editor setting to control the visibility of the upload tab in the image dialog #TINY-3606
+    Added new api endpoints to the wordcount plugin and improved character count logic #TINY-3578
+    Changed plugin, language and icon loading errors to log in the console instead of a notification #TINY-3585
+    Fixed the textpattern plugin not working with fragmented text #TINY-3089
+    Fixed various toolbar drawer accessibility issues and added an animation #TINY-3554
+    Fixed issues with selection and ui components when toggling readonly mode #TINY-3592
+    Fixed so readonly mode works with inline editors #TINY-3592
+    Fixed docked inline toolbar positioning when scrolled #TINY-3621
+    Fixed initial value not being set on bespoke select in quickbars and toolbar drawer #TINY-3591
+    Fixed so that nbsp entities aren't trimmed in white-space: pre-line elements #TINY-3642
+    Fixed `mceInsertLink` command inserting spaces instead of url encoded characters #GH-4990
+    Fixed text content floating on top of dialogs in IE11 #TINY-3640
+Version 5.0.5 (2019-05-09)
+    Added menu items to match the forecolor/backcolor toolbar buttons #TINY-2878
+    Added default directionality based on the configured language #TINY-2621
+    Added styles, icons and tests for rtl mode #TINY-2621
+    Fixed autoresize not working with floating elements or when media elements finished loading #TINY-3545
+    Fixed incorrect vertical caret positioning in IE 11 #TINY-3188
+    Fixed submenu anchoring hiding overflowed content #TINY-3564
+    Removed unused and hidden validation icons to avoid displaying phantom tooltips #TINY-2329
+Version 5.0.4 (2019-04-23)
+    Added back URL dialog functionality, which is now available via `editor.windowManager.openUrl()` #TINY-3382
+    Added the missing throbber functionality when calling `editor.setProgressState(true)` #TINY-3453
+    Added function to reset the editor content and undo/dirty state via `editor.resetContent()` #TINY-3435
+    Added the ability to set menu buttons as active #TINY-3274
+    Added `editor.mode` API, featuring a custom editor mode API #TINY-3406
+    Added better styling to floating toolbar drawer #TINY-3479
+    Added the new premium plugins to the Help dialog plugins tab #TINY-3496
+    Added the linkchecker context menu items to the default configuration #TINY-3543
+    Fixed image context menu items showing on placeholder images #TINY-3280
+    Fixed dialog labels and text color contrast within notifications/alert banners to satisfy WCAG 4.5:1 contrast ratio for accessibility #TINY-3351
+    Fixed selectbox and colorpicker items not being translated #TINY-3546
+    Fixed toolbar drawer sliding mode to correctly focus the editor when tabbing via keyboard navigation #TINY-3533
+    Fixed positioning of the styleselect menu in iOS while using the mobile theme #TINY-3505
+    Fixed the menubutton `onSetup` callback to be correctly executed when rendering the menu buttons #TINY-3547
+    Fixed `default_link_target` setting to be correctly utilized when creating a link #TINY-3508
+    Fixed colorpicker floating marginally outside its container #TINY-3026
+    Fixed disabled menu items displaying as active when hovered #TINY-3027
+    Removed redundant mobile wrapper #TINY-3480
 Version 5.0.3 (2019-03-19)
     Changed empty nested-menu items within the style formats menu to be disabled or hidden if the value of `style_formats_autohide` is `true` #TINY-3310
     Changed the entire phrase 'Powered by Tiny' in the status bar to be a link instead of just the word 'Tiny' #TINY-3366
