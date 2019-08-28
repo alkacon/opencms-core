@@ -96,7 +96,7 @@ public class CmsGallerySearchParameters {
         /** Sort by VFS root path descending. */
         path_desc,
 
-        /** Sort by score ascending. */
+        /** Sort by score descending. */
         score,
 
         /** Sort state ascending. */
@@ -825,7 +825,7 @@ public class CmsGallerySearchParameters {
             case path_desc:
                 return CmsPair.create(CmsSearchField.FIELD_PATH, ORDER.desc);
             case score:
-                return CmsPair.create(CmsSearchField.FIELD_SCORE, ORDER.asc);
+                return CmsPair.create(CmsSearchField.FIELD_SCORE, ORDER.desc);
             case state_asc:
                 return CmsPair.create(CmsSearchField.FIELD_STATE, ORDER.asc);
             case state_desc:
