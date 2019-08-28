@@ -650,7 +650,7 @@ public class CmsPublishList implements Externalizable {
         for (CmsResource folder : folders) {
             List<CmsResource> subResources = rootCms.readResources(folder.getRootPath(), CmsResourceFilter.ALL, true);
             for (CmsResource resource : subResources) {
-                if (!containsResource(resource)) {
+                if (!containsResource(resource) && !resource.getState().isNew()) {
                     result.add(resource);
                 }
             }
