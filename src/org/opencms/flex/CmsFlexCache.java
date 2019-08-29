@@ -42,6 +42,7 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -168,7 +169,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             if ((m == null) || (m.size() == 0)) {
                 return true;
             }
-            Collection<I_CmsLruCacheObject> entries = m.values();
+
+            // make a copy to safely iterate over because the line "m_variationCache.remove(e)" modifies the variation map for the key
+            Collection<I_CmsLruCacheObject> entries = new ArrayList<I_CmsLruCacheObject>(m.values());
             synchronized (m_variationCache) {
                 for (I_CmsLruCacheObject e : entries) {
                     m_variationCache.remove(e);
@@ -945,14 +948,15 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                         }
                     }
                     long endTime = System.currentTimeMillis();
-                    LOG.info(p
-                        + "Removed "
-                        + removedEntries
-                        + " of "
-                        + totalEntries
-                        + " Flex cache entries, took "
-                        + (endTime - startTime)
-                        + " milliseconds");
+                    LOG.info(
+                        p
+                            + "Removed "
+                            + removedEntries
+                            + " of "
+                            + totalEntries
+                            + " Flex cache entries, took "
+                            + (endTime - startTime)
+                            + " milliseconds");
                     return true;
                 }
             }
