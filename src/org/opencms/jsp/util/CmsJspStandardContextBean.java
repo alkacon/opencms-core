@@ -117,17 +117,17 @@ public final class CmsJspStandardContextBean {
      */
     public class CmsContainerElementWrapper extends CmsContainerElementBean {
 
-        /** The wrapped element instance. */
-        private CmsContainerElementBean m_wrappedElement;
-
-        /** Cache for the wrapped element settings. */
-        private Map<String, CmsJspElementSettingValueWrapper> m_wrappedSettings;
-
         /** Cache for the wrapped element parent. */
         private CmsContainerElementWrapper m_parent;
 
         /** Cache for the wrapped element type name. */
         private String m_resourceTypeName;
+
+        /** The wrapped element instance. */
+        private CmsContainerElementBean m_wrappedElement;
+
+        /** Cache for the wrapped element settings. */
+        private Map<String, CmsJspElementSettingValueWrapper> m_wrappedSettings;
 
         /**
          * Constructor.<p>
@@ -336,6 +336,15 @@ public final class CmsJspStandardContextBean {
         public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
             return m_wrappedElement.isGroupContainer(cms);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isHistoryContent()
+         */
+        @Override
+        public boolean isHistoryContent() {
+
+            return m_wrappedElement.isHistoryContent();
         }
 
         /**

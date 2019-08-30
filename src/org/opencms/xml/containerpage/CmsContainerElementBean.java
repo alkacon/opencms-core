@@ -83,6 +83,9 @@ public class CmsContainerElementBean implements Cloneable {
     /** Indicates whether the represented resource is in memory only and not in the VFS. */
     private boolean m_inMemoryOnly;
 
+    /** True if the element is used for a historical content. */
+    private boolean m_isHistory;
+
     /** Indicating if the element resource is released and not expired. */
     private boolean m_releasedAndNotExpired;
 
@@ -644,6 +647,16 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Checks if the element is used for displaying a historical content (usually from the history dialog).
+     *
+     * @return true if the element is used for displaying a historical content
+     */
+    public boolean isHistoryContent() {
+
+        return m_isHistory;
+    }
+
+    /**
      * Returns whether this element refers to an inherited container element.<p>
      *
      * @param cms the CmsObject used for VFS operations
@@ -744,6 +757,7 @@ public class CmsContainerElementBean implements Cloneable {
 
         m_resource = file;
         m_inMemoryOnly = true;
+        m_isHistory = true;
     }
 
     /**
