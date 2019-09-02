@@ -32,6 +32,7 @@ OpenCms 11.0.1- yyyy xx, 2019
 * Fixed issue #652: XSS in gallery dialog
 * Fixed issue #659 where the Scheduled Publish dialog did not work without the legacy workplace module installed.
 * Fixed issue #662 where the date picker did not work correctly when selecting Spanish as a workplace locale.
+* Fixed issue #663 where updating a filtered folder content list in the explorer caused a lot of NPEs to be written to the log.
 - Fixed issue #632 where new resources were unnecessarily published if a moved parent folder was published
 - Fixed issue #655 where location picker widget could become unclickable depending on its configuration. 
 * Fixed issue where the context menu in the explorer would not work for empty/invalid XML contents.
@@ -52,6 +53,7 @@ OpenCms 11.0.1- yyyy xx, 2019
 - Updated TinyMCE version to 5.0.14.
 - Updated CodeMirror version to 5.48.4. 
 - Improved session manager tool to not count sessions as active if the only recent activity for them was AJAX heartbeat requests
+- Improved handling of detail pages
 - Changed behavior of stripHtml EL function so that it does not insert unnecessary spaces. 
 - Improved options for detail page configuration
 - Improved error display for failed validation in the inline editor.  
