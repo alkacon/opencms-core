@@ -43,7 +43,7 @@ import java.util.Set;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.ui.CheckBox;
 
 /**
  * Class for the dialiog to send broadcasts.<p>
