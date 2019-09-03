@@ -101,6 +101,7 @@ import com.vaadin.v7.ui.TextField;
 /**
  * Class for the dialog to edit user settings.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFetcher {
 
     /**
@@ -287,11 +288,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     ComboBox m_site;
 
-    /**vaadin component.*/
-    CmsPathSelectField m_startfolder;
-
     /**Holder for authentification fields. */
     //    private VerticalLayout m_authHolder;
+
+    /**vaadin component.*/
+    CmsPathSelectField m_startfolder;
 
     /**vaadin component.*/
     private Button m_cancel;
@@ -806,7 +807,13 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             }
             m_startfolder.requireFolder();
             m_startfolder.disableSiteSwitch();
-            m_startfolder.setValue(cmsCopy.getRequestContext().addSiteRoot(startFolder == null ? "/" : startFolder));
+            String defaultFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
+            if ((startFolder == null)
+                && (CmsStringUtil.isEmptyOrWhitespaceOnly(defaultFolder) || !cmsCopy.existsResource(defaultFolder))) {
+                defaultFolder = "/";
+            }
+            m_startfolder.setValue(
+                cmsCopy.getRequestContext().addSiteRoot(startFolder == null ? defaultFolder : startFolder));
             m_startfolder.setCmsObject(cmsCopy);
             m_startfolder.setUseRootPaths(true);
             if (!m_visSites) {
@@ -982,8 +989,10 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 LOG.error("The start site is unvalid configured");
             }
         } else {
-
-            if (firstNoRootSite != null) {
+            String defaultSite = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+            if (container.containsId(defaultSite)) {
+                m_site.select(defaultSite);
+            } else if (firstNoRootSite != null) {
                 m_site.select(firstNoRootSite.getSiteRoot());
             } else {
                 m_site.select(container.getItemIds().get(0));
@@ -1006,9 +1015,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_startview.setNullSelectionAllowed(false);
             m_startview.setNewItemsAllowed(false);
             if (container.getItemIds().size() > 0) {
-                m_startview.select(container.getItemIds().get(0));
+
                 if (settings != null) {
                     m_startview.select(settings.getStartView());
+                } else {
+                    String defaultView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
+                    if (container.containsId(defaultView)) {
+                        m_startview.select(defaultView);
+                    } else {
+                        m_startview.select(container.getItemIds().get(0));
+                    }
                 }
             }
         } else {
@@ -1139,14 +1155,20 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      */
     private void iniLanguage(CmsUserSettings settings) {
 
-        m_language.setContainerDataSource(CmsVaadinUtils.getLanguageContainer("caption"));
+        IndexedContainer container = CmsVaadinUtils.getLanguageContainer("caption");
+        m_language.setContainerDataSource(container);
         m_language.setItemCaptionPropertyId("caption");
         m_language.setNewItemsAllowed(false);
         m_language.setNullSelectionAllowed(false);
+
         if (settings != null) {
             m_language.select(settings.getLocale());
         } else {
-            m_language.select(m_language.getItemIds().iterator().next());
+            if (OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale() != null) {
+                m_language.select(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale());
+            } else {
+                m_language.select(m_language.getItemIds().iterator().next());
+            }
         }
     }
 
@@ -1174,11 +1196,13 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 }
                 m_project.select(projString);
             } else {
-
-                Iterator<?> it = m_project.getItemIds().iterator();
-                if (m_project.containsId("Offline")) {
+                String defaultProject = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
+                if (m_project.containsId(defaultProject)) {
+                    m_project.select(defaultProject);
+                } else if (m_project.containsId("Offline")) {
                     m_project.select("Offline");
                 } else {
+                    Iterator<?> it = m_project.getItemIds().iterator();
                     String p = (String)it.next();
                     while (p.equals(CmsProject.ONLINE_PROJECT_NAME) & it.hasNext()) {
                         p = (String)it.next();
