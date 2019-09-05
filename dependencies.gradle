@@ -68,6 +68,7 @@ dependencies {
     distribution group: 'com.github.librepdf', name: 'openpdf', version: '1.2.10'
     distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.1'
     distribution group: 'com.google.errorprone', name: 'error_prone_annotations', version: '2.0.18'
+    // stuck on version 20 of Guava until we upgrade Solr to 8.1 or 9, for binary compatibility reasons 
     distribution group: 'com.google.guava', name: 'guava', version: '20.0'
     distribution group: 'com.google.guava', name: 'guava-gwt', version: '20.0'
     distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.8.2'
