@@ -217,9 +217,6 @@ public class CmsFlexCacheKey {
     /** Cache key variable: The user id. */
     private String m_user;
 
-    /** The cache behaviour description for the resource. */
-    private String m_variation;
-
     /** Resource without online / offline suffix. */
     private String m_actualResource;
 
@@ -243,7 +240,6 @@ public class CmsFlexCacheKey {
 
         m_actualResource = resourcename;
         m_resource = getKeyName(resourcename, online);
-        m_variation = "never";
         m_always = -1;
         m_timeout = -1;
         if (cacheDirectives != null) {
@@ -807,26 +803,6 @@ public class CmsFlexCacheKey {
     protected long getTimeout() {
 
         return m_timeout;
-    }
-
-    /**
-     * Returns the variation.<p>
-     *
-     * @return the variation
-     */
-    protected String getVariation() {
-
-        return m_variation;
-    }
-
-    /**
-     * Sets the variation.<p>
-     *
-     * @param variation the variation to set
-     */
-    protected void setVariation(String variation) {
-
-        m_variation = variation;
     }
 
     /**
