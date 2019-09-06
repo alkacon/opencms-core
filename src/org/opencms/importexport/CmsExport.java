@@ -35,11 +35,13 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportManager.TimestampMode;
 import org.opencms.main.CmsEvent;
@@ -554,8 +556,8 @@ public class CmsExport {
             // <destination>
             fileElement.addElement(CmsImportVersion10.N_DESTINATION).addText(fileName);
             // <type>
-            fileElement.addElement(CmsImportVersion10.N_TYPE).addText(
-                OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
+            Element typeElem = fileElement.addElement(CmsImportVersion10.N_TYPE);
+            typeElem.addText(OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
 
             if (!isMinimalMetaData) {
                 //  <uuidstructure>
@@ -615,6 +617,11 @@ public class CmsExport {
                 // write the properties to the manifest
                 Element propertiesElement = fileElement.addElement(CmsImportVersion10.N_PROPERTIES);
                 List<CmsProperty> properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
+                CmsProperty exportTypeProp = CmsProperty.get(CmsPropertyDefinition.PROPERTY_EXPORT_TYPE, properties);
+                String exportType = exportTypeProp.getValue();
+                if ((exportType != null) && CmsResourceTypePlain.getStaticTypeName().equals(typeElem.getText())) {
+                    typeElem.setText(exportType);
+                }
                 // sort the properties for a well defined output order
                 Collections.sort(properties);
                 for (int i = 0, n = properties.size(); i < n; i++) {
@@ -1445,7 +1452,9 @@ public class CmsExport {
         if (property == null) {
             return true;
         }
-        // default implementation is to export all properties not null
+        if (property.getName().equals(CmsPropertyDefinition.PROPERTY_EXPORT_TYPE)) {
+            return true;
+        }
         return false;
     }
 

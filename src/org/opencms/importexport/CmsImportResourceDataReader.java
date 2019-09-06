@@ -28,9 +28,12 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModuleImportData;
 import org.opencms.module.CmsResourceImportData;
 import org.opencms.report.I_CmsReport;
@@ -67,6 +70,7 @@ public class CmsImportResourceDataReader extends CmsImportVersion10 {
      */
     @Override
     public void importAccessControlEntries() {
+
         // do nothing, ACLS handled by module updater
     }
 
@@ -131,7 +135,10 @@ public class CmsImportResourceDataReader extends CmsImportVersion10 {
                 setDefaultsForEmptyResourceFields();
                 // create a new CmsResource
                 CmsResource resource = createResourceObjectFromFields(translatedName, size);
-
+                if (!OpenCms.getResourceManager().hasResourceType(m_typeName)) {
+                    CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT_TYPE, null, m_typeName);
+                    m_properties.put(CmsPropertyDefinition.PROPERTY_EXPORT_TYPE, prop);
+                }
                 CmsResourceImportData resData = new CmsResourceImportData(
                     resource,
                     translatedName,
@@ -155,6 +162,7 @@ public class CmsImportResourceDataReader extends CmsImportVersion10 {
      */
     @Override
     public void rewriteParseables() {
+
         // do nothing , parseables handled by module updater
     }
 
