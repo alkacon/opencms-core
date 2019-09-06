@@ -417,6 +417,41 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    public void testNewTypeWithContents() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+        String typeName = "tntwc";
+        int typeId = 77994;
+        File[] exports = new File[] {null, null};
+        for (int version : new int[] {0, 1}) {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            if (version == 1) {
+                builder.addType(typeName, typeId);
+            }
+            builder.addModule();
+            builder.addFolder("");
+            builder.addTextFile("plain.txt", "test");
+            if (version == 1) {
+                builder.addFile(typeName, "special.txt", "special");
+            }
+            builder.publish();
+            File exportFile = tempExport();
+            builder.export(exportFile.getAbsolutePath());
+            exports[version] = exportFile;
+            builder.delete();
+        }
+
+        CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getModuleManager().replaceModule(cms, exports[0].getAbsolutePath(), report);
+        OpenCms.getModuleManager().replaceModule(cms, exports[1].getAbsolutePath(), report);
+        assertEquals(typeId, cms.readResource("/system/modules/" + MODULE + "/special.txt").getTypeId());
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
     public void testParseLinks() throws Exception {
 
         CmsObject cms = cms();

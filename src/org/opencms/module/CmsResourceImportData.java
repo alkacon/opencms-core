@@ -72,6 +72,9 @@ public class CmsResourceImportData {
     /** The CmsResource object containing the attributes for the resource. */
     private CmsResource m_resource;
 
+    /** The original type name from the manifest. */
+    private String m_typeName;
+
     /**
      * Creats a new instance.<p>
      *
@@ -83,6 +86,7 @@ public class CmsResourceImportData {
      * @param relationData the relation data
      * @param hasStructureId true if has a structure id
      * @param hasDateLastModified true if has a modification date
+     * @param typeName the type name from the manifest
      */
     public CmsResourceImportData(
         CmsResource resource,
@@ -92,8 +96,10 @@ public class CmsResourceImportData {
         List<CmsAccessControlEntry> aces,
         List<RelationData> relationData,
         boolean hasStructureId,
-        boolean hasDateLastModified) {
+        boolean hasDateLastModified,
+        String typeName) {
 
+        m_typeName = typeName;
         m_resource = resource;
         m_path = path;
         if (content != null) {
@@ -219,6 +225,16 @@ public class CmsResourceImportData {
 
         return m_resource;
 
+    }
+
+    /**
+     * Gets the original type name from the manifest.
+     *
+     * @return the type name
+     */
+    public String getTypeName() {
+
+        return m_typeName;
     }
 
     /**

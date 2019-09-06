@@ -147,7 +147,8 @@ public class CmsImportResourceDataReader extends CmsImportVersion10 {
                     m_aces,
                     m_relationsForResource,
                     m_hasStructureId,
-                    m_hasDateLastModified);
+                    m_hasDateLastModified,
+                    m_typeName);
                 m_moduleData.addResource(resData);
             }
         } catch (Exception e) {
