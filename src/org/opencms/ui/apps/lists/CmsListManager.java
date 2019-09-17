@@ -57,6 +57,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
@@ -87,6 +88,7 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListCategoryFolderRestrictionBean;
 import org.opencms.ui.apps.lists.CmsOptionDialog.I_OptionHandler;
 import org.opencms.ui.apps.lists.daterestrictions.CmsDateRestrictionParser;
 import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
@@ -111,6 +113,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsDateSeriesEditHandler;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -180,6 +183,73 @@ I_CmsCachableApp {
      */
     public static class ListConfigurationBean {
 
+        /** Wrapper for a combined category and folder restriction. */
+        public static class ListCategoryFolderRestrictionBean {
+
+            /** The categories to restrict the search to. */
+            private List<String> m_categories;
+
+            /** The folders to restrict the search to. */
+            private List<String> m_folders;
+
+            /** The category combination mode, i.e., "AND" or "OR". */
+            private CategoryMode m_categoryMode;
+
+            /**
+             * Constructor for the wrapper.
+             * @param categories the categories to filter
+             * @param folders the folders to filter
+             * @param categoryMode the combination mode for categories
+             */
+            public ListCategoryFolderRestrictionBean(
+                List<String> categories,
+                List<String> folders,
+                CategoryMode categoryMode) {
+
+                m_categories = categories == null ? Collections.<String> emptyList() : categories;
+                m_folders = folders == null ? Collections.<String> emptyList() : folders;
+                m_categoryMode = categoryMode == null ? CategoryMode.OR : categoryMode;
+            }
+
+            /**
+             * Outputs the restriction as Solr filter query.
+             *
+             * @see java.lang.Object#toString()
+             */
+            @Override
+            public String toString() {
+
+                if (m_categories.isEmpty() && m_folders.isEmpty()) {
+                    return "";
+                }
+                String result = "(";
+                if (!m_categories.isEmpty()) {
+                    result += "category_exact:(";
+                    if (m_categories.size() > 1) {
+                        result += m_categories.stream().reduce(
+                            (cat1, cat2) -> "\"" + cat1 + "\" " + m_categoryMode + " \"" + cat2 + "\"").get();
+                    } else {
+                        result += "\"" + m_categories.get(0) + "\"";
+                    }
+                    result += ")";
+                }
+                if (!m_folders.isEmpty()) {
+                    if (!m_categories.isEmpty()) {
+                        result += " AND ";
+                    }
+                    result += "parent-folders:(";
+                    if (m_folders.size() > 1) {
+                        result += m_folders.stream().reduce((f1, f2) -> "\"" + f1 + "\" OR \"" + f2 + "\"").get();
+                    } else {
+                        result += "\"" + m_folders.get(0) + "\"";
+                    }
+                    result += ")";
+                }
+                result += ")";
+                return result;
+            }
+        }
+
         /** The additional content parameters. */
         private Map<String, String> m_additionalParameters;
 
@@ -204,12 +274,25 @@ I_CmsCachableApp {
         /** Search parameters by configuration node name. */
         private Map<String, String> m_parameterFields;
 
+        /** Combined category and folder restrictions. */
+        private List<ListCategoryFolderRestrictionBean> m_categoryFolderRestrictions = new ArrayList<>();
+
         /**
          * Constructor.<p>
          */
         public ListConfigurationBean() {
 
             m_parameterFields = new HashMap<String, String>();
+        }
+
+        /**
+         * Add a combined category-folder restriction.
+         * @param listCategoryFolderRestrictionBean the category-folder restriction to add.
+         */
+        public void addCategoryFolderFilter(ListCategoryFolderRestrictionBean listCategoryFolderRestrictionBean) {
+
+            m_categoryFolderRestrictions.add(listCategoryFolderRestrictionBean);
+
         }
 
         /**
@@ -240,6 +323,16 @@ I_CmsCachableApp {
         public List<String> getCategories() {
 
             return m_categories;
+        }
+
+        /**
+         * Returns the combined category-folder restrictions.<p>
+         *
+         * @return the combined category-folder restrictions
+         */
+        public List<ListCategoryFolderRestrictionBean> getCategoryFolderRestrictions() {
+
+            return m_categoryFolderRestrictions;
         }
 
         /**
@@ -676,6 +769,12 @@ I_CmsCachableApp {
     /** List configuration node name and field key. */
     public static final String N_CATEGORY = "Category";
 
+    /** List configuration node name and field key. */
+    private static final String N_CATEGORY_FOLDER_RESTRICTION = "CategoryFolderFilter";
+
+    /** List configuration node name and field key. */
+    private static final String N_FOLDER = "Folder";
+
     /** List configuration node name for the category mode. */
     public static final String N_CATEGORY_MODE = "CategoryMode";
 
@@ -978,6 +1077,54 @@ I_CmsCachableApp {
                     if (link != null) {
                         blackList.add(link.getStructureId());
                     }
+                }
+            }
+            List<I_CmsXmlContentValue> categoryFolderRestrictions = content.getValues(
+                N_CATEGORY_FOLDER_RESTRICTION,
+                locale);
+            if (!categoryFolderRestrictions.isEmpty()) {
+                for (I_CmsXmlContentValue restriction : categoryFolderRestrictions) {
+                    List<String> restrictionFolders = new ArrayList<>();
+                    List<I_CmsXmlContentValue> folderVals = content.getValues(
+                        CmsXmlUtils.concatXpath(restriction.getPath(), N_FOLDER),
+                        locale);
+                    for (I_CmsXmlContentValue folderVal : folderVals) {
+                        CmsLink val = ((CmsXmlVfsFileValue)folderVal).getLink(cms);
+                        if (val != null) {
+                            // we are using root paths
+                            restrictionFolders.add(cms.getRequestContext().addSiteRoot(val.getSitePath(cms)));
+                        }
+                    }
+                    List<String> restrictionCategorySitePaths;
+                    I_CmsXmlContentValue categoryVal = content.getValue(
+                        CmsXmlUtils.concatXpath(restriction.getPath(), N_CATEGORY),
+                        locale);
+                    String categoryString = null != categoryVal ? categoryVal.getStringValue(cms) : "";
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryString)) {
+                        restrictionCategorySitePaths = Arrays.asList(categoryString.split(","));
+                    } else {
+                        restrictionCategorySitePaths = Collections.<String> emptyList();
+                    }
+                    List<String> restrictionCategories = new ArrayList<>(restrictionCategorySitePaths.size());
+                    for (String sitePath : restrictionCategorySitePaths) {
+                        try {
+                            String path = CmsCategoryService.getInstance().getCategory(
+                                cms,
+                                cms.getRequestContext().addSiteRoot(sitePath)).getPath();
+                            restrictionCategories.add(path);
+                        } catch (CmsException e) {
+                            LOG.warn(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    String restrictionCategoryMode = content.getValue(
+                        CmsXmlUtils.concatXpath(restriction.getPath(), N_CATEGORY_MODE),
+                        locale).getStringValue(cms);
+                    result.addCategoryFolderFilter(
+                        new ListCategoryFolderRestrictionBean(
+                            restrictionCategories,
+                            restrictionFolders,
+                            null == restrictionCategoryMode ? null : CategoryMode.valueOf(restrictionCategoryMode)));
+
                 }
             }
             result.setBlacklist(blackList);

@@ -1,0 +1,33 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
+    <xsd:element name="ListCategoryFolderFilters" type="OpenCmsListCategoryFolderFilters" />
+
+    <xsd:complexType name="OpenCmsListCategoryFolderFilters">
+        <xsd:sequence>
+            <xsd:element name="ListCategoryFolderFilter" type="OpenCmsListCategoryFolderFilter" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsListCategoryFolderFilter">
+        <xsd:sequence>
+            <xsd:element name="Folder" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Category" type="OpenCmsCategory" />
+            <xsd:element name="CategoryMode" type="OpenCmsString" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <layouts>
+                <layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
+                <layout element="CategoryMode" widget="SelectorWidget" configuration="AND:%(key.list_config.categoryModeAnd)|OR:%(key.list_config.categoryModeOr)" />
+            </layouts>
+            <defaults>
+                <default element="CategoryMode" value="OR" />
+            </defaults>
+        </xsd:appinfo>
+    </xsd:annotation>
+</xsd:schema>

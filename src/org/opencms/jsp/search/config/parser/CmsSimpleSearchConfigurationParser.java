@@ -44,6 +44,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
+import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListCategoryFolderRestrictionBean;
 import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -375,11 +376,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String params = super.getExtraSolrParams();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(params)) {
-            params = getFolderFilter()
-                + getResourceTypeFilter()
-                + getCategoryFilter()
-                + getFilterQuery()
-                + getBlacklistFilter();
+            params = getCategoryFolderFilter() + getResourceTypeFilter() + getFilterQuery() + getBlacklistFilter();
         }
         return params;
     }
@@ -500,7 +497,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      *
      * @return the category filter
      */
-    String getCategoryFilter() {
+    String getCategoryFilterPart() {
 
         String result = "";
         if (!m_config.getCategories().isEmpty()) {
@@ -518,11 +515,40 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             if (!categoryVals.isEmpty()) {
                 String operator = " " + m_config.getCategoryMode() + " ";
                 String valueExpression = CmsStringUtil.listAsString(categoryVals, operator);
-                result = "&fq=category_exact:(" + valueExpression + ")";
+                result = "category_exact:(" + valueExpression + ")";
 
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the category filter string.<p>
+     *
+     * @return the category filter
+     */
+    String getCategoryFolderFilter() {
+
+        String result = "";
+        String defaultPart = getFolderFilterPart();
+        String categoryFilterPart = getCategoryFilterPart();
+        if (!categoryFilterPart.isEmpty()) {
+            defaultPart = "((" + defaultPart + ") AND (" + categoryFilterPart + "))";
+        }
+        for (ListCategoryFolderRestrictionBean restriction : m_config.getCategoryFolderRestrictions()) {
+            String restrictionQuery = restriction.toString();
+            if (!restrictionQuery.isEmpty()) {
+                restrictionQuery = "(" + restrictionQuery + " AND " + defaultPart + ")";
+                if (!result.isEmpty()) {
+                    result += " OR ";
+                }
+                result += restrictionQuery;
+            }
+        }
+        if (result.isEmpty()) {
+            result = defaultPart;
+        }
+        return "fq=" + result;
     }
 
     /**
@@ -589,7 +615,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      *
      * @return the folder filter
      */
-    String getFolderFilter() {
+    String getFolderFilterPart() {
 
         String result = "";
         List<String> parentFolderVals = Lists.newArrayList();
@@ -599,9 +625,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             }
         }
         if (parentFolderVals.isEmpty()) {
-            result = "fq=parent-folders:(\"/\")";
+            result = "parent-folders:(\"/\")";
         } else {
-            result = "fq=parent-folders:(" + CmsStringUtil.listAsString(parentFolderVals, " OR ") + ")";
+            result = "parent-folders:(" + CmsStringUtil.listAsString(parentFolderVals, " OR ") + ")";
         }
         return result;
     }
