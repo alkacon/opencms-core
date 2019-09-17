@@ -2696,6 +2696,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             params.setDateLastModifiedTimeRange(Long.MIN_VALUE, dateModifiedEnd);
         }
         params.setIgnoreSearchExclude(searchData.isIgnoreSearchExclude());
+        
+        // set include expired/unreleased
+        if (searchData.isIncludeExpired()) {
+            params.setIncludeExpired(true);
+        }
+
         return params;
     }
 

@@ -210,6 +210,9 @@ public class CmsGallerySearchParameters {
     /** Indicates the search exclude property should be ignored. */
     private boolean m_ignoreSearchExclude;
 
+    /** Indicates if expired and unreleased resources should be included in the search. */
+    private boolean m_includeExpired;
+
     /** The locale for the search. */
     private String m_locale;
 
@@ -447,6 +450,11 @@ public class CmsGallerySearchParameters {
         // set sort order
         query.setSort(getSort().getFirst(), getSort().getSecond());
 
+        // include expired/unreleased
+        if (m_includeExpired) {
+            query.removeExpiration();
+        }
+
         return query;
     }
 
@@ -536,6 +544,16 @@ public class CmsGallerySearchParameters {
     public boolean isIgnoreSearchExclude() {
 
         return m_ignoreSearchExclude;
+    }
+
+    /**
+     * Returns a flag, indicating if release and expiration date should be ignored.<p>
+     *
+     * @return a flag, indicating if release and expiration date should be ignored
+     */
+    public boolean isIncludeExpired() {
+
+        return m_includeExpired;
     }
 
     /**
@@ -630,6 +648,16 @@ public class CmsGallerySearchParameters {
     public void setIgnoreSearchExclude(boolean excludeForPageEditor) {
 
         m_ignoreSearchExclude = excludeForPageEditor;
+    }
+
+    /**
+     * Set the flag, determining if expired and unreleased resources should be shown.
+     * @param includeExpired iff <code>true</code> expired and unreleased resources are shown.
+     */
+    public void setIncludeExpired(boolean includeExpired) {
+
+        m_includeExpired = includeExpired;
+
     }
 
     /**
