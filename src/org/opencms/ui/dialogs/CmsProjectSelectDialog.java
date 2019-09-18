@@ -47,16 +47,16 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.UI;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.UI;
 
 /**
  * The project select dialog.<p>
@@ -90,6 +90,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsProjectSelectDialog(I_CmsDialogContext context) {
+
         m_context = context;
         setContent(initForm());
         m_cancelButton = createButtonCancel();
@@ -123,6 +124,46 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
     }
 
     /**
+     * Static method for actually changing the site/project.
+     *
+     * @param context the dialog context
+     * @param projectId the project id (possibly null)
+     * @param siteRoot the site root (possibly null)
+     */
+    public static void changeSiteOrProject(I_CmsDialogContext context, CmsUUID projectId, String siteRoot) {
+
+        try {
+            CmsProject project = null;
+            if (projectId != null) {
+                project = context.getCms().readProject(projectId);
+                if (!context.getCms().getRequestContext().getCurrentProject().equals(project)) {
+                    A_CmsUI.get().changeProject(project);
+                } else {
+                    project = null;
+                }
+            }
+            if (siteRoot != null) {
+                if (!context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
+                    A_CmsUI.get().changeSite(siteRoot);
+                } else {
+                    siteRoot = null;
+                }
+            }
+            if ((siteRoot != null) && CmsFileExplorerConfiguration.APP_ID.equals(context.getAppId())) {
+                I_CmsWorkplaceAppConfiguration editorConf = OpenCms.getWorkplaceAppManager().getAppConfiguration(
+                    CmsPageEditorConfiguration.APP_ID);
+                if (editorConf.getVisibility(context.getCms()).isActive()) {
+                    ((I_CmsHasAppLaunchCommand)editorConf).getAppLaunchCommand().run();
+                    return;
+                }
+            }
+            context.finish(project, siteRoot);
+        } catch (CmsException e) {
+            context.error(e);
+        }
+    }
+
+    /**
      * Cancels the dialog action.<p>
      */
     void cancel() {
@@ -135,31 +176,10 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
      */
     void submit() {
 
-        try {
-            CmsProject project = m_context.getCms().readProject((CmsUUID)m_projectComboBox.getValue());
-            if (!m_context.getCms().getRequestContext().getCurrentProject().equals(project)) {
-                A_CmsUI.get().changeProject(project);
-            } else {
-                project = null;
-            }
-            String siteRoot = (String)m_siteComboBox.getValue();
-            if (!m_context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-                A_CmsUI.get().changeSite(siteRoot);
-            } else {
-                siteRoot = null;
-            }
-            if ((siteRoot != null) && CmsFileExplorerConfiguration.APP_ID.equals(m_context.getAppId())) {
-                I_CmsWorkplaceAppConfiguration editorConf = OpenCms.getWorkplaceAppManager().getAppConfiguration(
-                    CmsPageEditorConfiguration.APP_ID);
-                if (editorConf.getVisibility(m_context.getCms()).isActive()) {
-                    ((I_CmsHasAppLaunchCommand)editorConf).getAppLaunchCommand().run();
-                    return;
-                }
-            }
-            m_context.finish(project, siteRoot);
-        } catch (CmsException e) {
-            m_context.error(e);
-        }
+        I_CmsDialogContext context = m_context;
+        CmsUUID projectId = (CmsUUID)m_projectComboBox.getValue();
+        String siteRoot = (String)m_siteComboBox.getValue();
+        changeSiteOrProject(context, projectId, siteRoot);
     }
 
     /**

@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
+import org.opencms.ui.dialogs.CmsSiteSelectDialog;
 import org.opencms.ui.favorites.CmsFavoriteEntry.Type;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -122,8 +123,7 @@ public class CmsPageEditorFavoriteContext implements I_CmsFavoriteContext {
      */
     public void changeSite(String value) {
 
-        A_CmsUI.get().changeSite(value);
-        m_dialogContext.finish(null, value);
+        CmsSiteSelectDialog.changeSite(m_dialogContext, value);
 
     }
 

@@ -43,17 +43,17 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.server.Page;
-import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
+import com.vaadin.v7.ui.ComboBox;
 
 /**
  * The site select dialog.<p>
@@ -84,6 +84,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsSiteSelectDialog(I_CmsDialogContext context) {
+
         m_context = context;
         setContent(initForm());
         m_cancelButton = createButtonCancel();
@@ -117,6 +118,28 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
     }
 
     /**
+     * Actually changes the site.
+     *
+     * @param context the dialog context
+     * @param siteRoot the site root
+     */
+    public static void changeSite(I_CmsDialogContext context, String siteRoot) {
+
+        if (!context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
+            A_CmsUI.get().changeSite(siteRoot);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot) || OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
+                // switch to explorer view when selecting shared or root site
+
+                Page.getCurrent().open(CmsCoreService.getFileExplorerLink(A_CmsUI.getCmsObject(), siteRoot), "_top");
+                return;
+            }
+        } else {
+            siteRoot = null;
+        }
+        context.finish(null, siteRoot);
+    }
+
+    /**
      * Cancels the dialog action.<p>
      */
     void cancel() {
@@ -130,18 +153,8 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
     void submit() {
 
         String siteRoot = (String)m_siteComboBox.getValue();
-        if (!m_context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-            A_CmsUI.get().changeSite(siteRoot);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot) || OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
-                // switch to explorer view when selecting shared or root site
-
-                Page.getCurrent().open(CmsCoreService.getFileExplorerLink(A_CmsUI.getCmsObject(), siteRoot), "_top");
-                return;
-            }
-        } else {
-            siteRoot = null;
-        }
-        m_context.finish(null, siteRoot);
+        I_CmsDialogContext context = m_context;
+        changeSite(context, siteRoot);
     }
 
     /**
