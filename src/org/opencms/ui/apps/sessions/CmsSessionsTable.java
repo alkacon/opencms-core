@@ -315,7 +315,7 @@ public class CmsSessionsTable extends Table {
     static Log LOG = CmsLog.getLog(CmsSessionsTable.class.getName());
 
     /**Time limit (in milliseconds) since when a user is inactive.*/
-    public static final long INACTIVE_LIMIT = 3 * 60 * 1000; //3 minute
+    public static final long INACTIVE_LIMIT = 450 * 1000; //7.5 minutes
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4136423899776482696L;
