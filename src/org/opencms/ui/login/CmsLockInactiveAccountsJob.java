@@ -104,6 +104,7 @@ public class CmsLockInactiveAccountsJob implements I_CmsScheduledJob {
             template.setAttribute("users", lockedUsers);
             template.toString();
             mail.setHtmlMsg(template.toString());
+            mail.setCharset("UTf-8");
             try {
                 mail.send();
             } catch (Exception e) {
