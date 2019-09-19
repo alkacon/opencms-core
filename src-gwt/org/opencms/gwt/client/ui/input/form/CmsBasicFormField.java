@@ -182,7 +182,11 @@ public class CmsBasicFormField implements I_CmsFormField {
             widget);
         String ruleRegex = propertyConfig.getRuleRegex();
         if (!CmsStringUtil.isEmpty(ruleRegex)) {
-            field.setValidator(new CmsRegexValidator(ruleRegex, propertyConfig.getError(), alwaysAllowEmpty));
+            String error = propertyConfig.getError();
+            if (error == null) {
+                error = "??? validation error";
+            }
+            field.setValidator(new CmsRegexValidator(ruleRegex, error, alwaysAllowEmpty));
         }
         return field;
     }

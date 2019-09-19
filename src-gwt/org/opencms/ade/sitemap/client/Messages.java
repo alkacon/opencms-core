@@ -162,6 +162,9 @@ public final class Messages {
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORY_TITLE_LABEL_0 = "GUI_CATEGORY_TITLE_LABEL_0";
 
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_VALIDATION_TITLE_NOTEMPTY_0 = "GUI_CATEGORY_VALIDATION_TITLE_NOTEMPTY_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLIPBOARD_CLEAR_LIST_0 = "GUI_CLIPBOARD_CLEAR_LIST_0";
 
