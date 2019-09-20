@@ -360,8 +360,17 @@ public class CmsModuleManager {
 
         try {
             I_CmsModuleAction moduleAction = module.getActionInstance();
+            String className = module.getActionClass();
+            if ((moduleAction == null) && (className != null)) {
+                Class<?> actionClass = Class.forName(className, false, getClass().getClassLoader());
+                if (I_CmsModuleAction.class.isAssignableFrom(actionClass)) {
+                    moduleAction = ((Class<? extends I_CmsModuleAction>)actionClass).newInstance();
+                    module.setActionInstance(moduleAction);
+                }
+            }
             // handle module action instance if initialized
             if (moduleAction != null) {
+
                 moduleAction.moduleUpdate(module);
             }
         } catch (Throwable t) {
