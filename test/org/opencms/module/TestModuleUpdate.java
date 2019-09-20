@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -621,6 +622,87 @@ public class TestModuleUpdate extends OpenCmsTestCase {
         }
         assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
 
+    }
+
+    /**
+     * Test case for exporting / importing relations to immutables.
+     *
+     * @throws Exception
+     */
+    public void testRelationsToImmutable() throws Exception {
+
+        CmsObject cms = cms();
+
+        CmsResource sysWorkplace = cms.createResource("/system/workplace", 0);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        removeTestModuleIfExists(cms);
+        File export = null;
+        CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+        builder.addModule();
+        builder.addFolder("");
+        CmsResource foo = builder.addTextFile("foo.txt", "text");
+        cms.addRelationToResource(foo, sysWorkplace, CmsRelationType.CATEGORY.getName());
+        export = tempExport();
+        builder.publish();
+        builder.export(export.getAbsolutePath());
+        builder.delete();
+        cms.lockResource(sysWorkplace);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
+        CmsResource sysWorkplace2 = cms.createResource("/system/workplace", 0);
+        assertNotSame(sysWorkplace.getStructureId(), sysWorkplace2.getStructureId());
+        builder.publish();
+        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        List<CmsRelation> relations = cms.readRelations(
+            CmsRelationFilter.relationsFromStructureId(foo.getStructureId()));
+        assertEquals(1, relations.size());
+        CmsRelation rel = relations.get(0);
+        assertEquals(sysWorkplace2.getStructureId(), rel.getTargetId());
+        builder.delete();
+        cms.lockResource(sysWorkplace2);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
+    }
+
+    /**
+     * Test case for exporting / importing relations to immutables.
+     *
+     * @throws Exception
+     */
+    public void testRelationsToImmutable2() throws Exception {
+
+        CmsObject cms = cms();
+
+        CmsResource sysWorkplace = cms.createResource("/system/workplace", 0);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        removeTestModuleIfExists(cms);
+        File export = null;
+        CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+        builder.addModule();
+        builder.addFolder("");
+        CmsResource foo = builder.addTextFile("foo.txt", "text");
+        cms.addRelationToResource(foo, sysWorkplace, CmsRelationType.CATEGORY.getName());
+        export = tempExport();
+        builder.publish();
+        builder.export(export.getAbsolutePath());
+        cms.lockResource(sysWorkplace);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
+        CmsResource sysWorkplace2 = cms.createResource("/system/workplace", 0);
+        assertNotSame(sysWorkplace.getStructureId(), sysWorkplace2.getStructureId());
+        builder.publish();
+        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        List<CmsRelation> relations = cms.readRelations(
+            CmsRelationFilter.relationsFromStructureId(foo.getStructureId()));
+        assertEquals(1, relations.size());
+        CmsRelation rel = relations.get(0);
+        assertEquals(sysWorkplace2.getStructureId(), rel.getTargetId());
+        builder.delete();
+        cms.lockResource(sysWorkplace2);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
     }
 
     /**
