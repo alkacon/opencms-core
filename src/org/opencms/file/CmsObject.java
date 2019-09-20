@@ -3876,6 +3876,19 @@ public final class CmsObject {
     }
 
     /**
+     * Helper method to temporarily change the site root in a try-with-resources statement.
+     *
+     * @param siteRoot the site root to switch to
+     * @return an AutoCloseable that restores the original site root when closed
+     */
+    public AutoCloseable tempChangeSiteRoot(String siteRoot) {
+
+        final String oldSiteRoot = m_context.getSiteRoot();
+        m_context.setSiteRoot(siteRoot);
+        return () -> m_context.setSiteRoot(oldSiteRoot);
+    }
+
+    /**
      * Undeletes a resource.<p>
      *
      * Only resources that have already been published once can be undeleted,

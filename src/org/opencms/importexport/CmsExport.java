@@ -471,10 +471,11 @@ public class CmsExport {
      */
     protected void addRelationNode(Element relationsElement, String structureId, String sitePath, String relationType) {
 
-        if ((structureId != null) && (sitePath != null) && (relationType != null)) {
+        if ((sitePath != null) && (relationType != null)) {
             Element relationElement = relationsElement.addElement(CmsImportVersion10.N_RELATION);
-
-            relationElement.addElement(CmsImportVersion10.N_ID).addText(structureId);
+            if (structureId != null) {
+                relationElement.addElement(CmsImportVersion10.N_ID).addText(structureId);
+            }
             relationElement.addElement(CmsImportVersion10.N_PATH).addText(sitePath);
             relationElement.addElement(CmsImportVersion10.N_TYPE).addText(relationType);
         }
@@ -646,6 +647,9 @@ public class CmsExport {
                         String structureId = target.getStructureId().toString();
                         String sitePath = getCms().getSitePath(target);
                         String relationType = relation.getType().getName();
+                        if (OpenCms.getImportExportManager().isImmutable(target.getRootPath())) {
+                            structureId = null;
+                        }
                         addRelationNode(relationsElement, structureId, sitePath, relationType);
                     } catch (CmsVfsResourceNotFoundException crnfe) {
                         // skip this relation:

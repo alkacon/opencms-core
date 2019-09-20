@@ -1934,10 +1934,12 @@ public class CmsImportVersion10 implements I_CmsImport {
                 boolean withErrors = false;
                 for (RelationData relationData : relationDataList) {
                     CmsResource target = null;
-                    try {
-                        target = m_cms.readResource(relationData.getTargetId(), filter);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore
+                    if (relationData.getTargetId() != null) {
+                        try {
+                            target = m_cms.readResource(relationData.getTargetId(), filter);
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            // ignore
+                        }
                     }
                     if (target == null) {
                         try {

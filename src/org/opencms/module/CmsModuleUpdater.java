@@ -754,6 +754,29 @@ public class CmsModuleUpdater {
     }
 
     /**
+     * Compares list of existing relations with list of relations to import and returns true if they are different.
+     *
+     * @param noContentRelations the existing relations which are not in-content relations
+     * @param newRelations the relations to import
+     *
+     * @return true if the relations need to be updated
+     */
+    private boolean needToUpdateRelations(List<CmsRelation> noContentRelations, Set<CmsRelation> newRelations) {
+
+        if (noContentRelations.size() != newRelations.size()) {
+            return true;
+        }
+
+        for (CmsRelation relation : noContentRelations) {
+            if (!(newRelations.contains(relation) || newRelations.contains(relation.withTargetId(null)))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Compares the relation (not defined in content) for a resource with those to be imported, and makes
      * the necessary modifications.
      *
@@ -786,7 +809,8 @@ public class CmsModuleUpdater {
                         rel.getType()));
             }
         }
-        if (!newRelations.equals(noContentRelations)) {
+
+        if (needToUpdateRelations(noContentRelations, newRelations)) {
 
             CmsRelationFilter relFilter = CmsRelationFilter.TARGETS.filterNotDefinedInContent();
             try {
@@ -798,15 +822,23 @@ public class CmsModuleUpdater {
 
             for (CmsRelation newRel : newRelations) {
                 try {
-                    cms.addRelationToResource(
-                        importResource,
-                        cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION),
-                        newRel.getType().getName());
-                } catch (CmsException e) {
+                    CmsResource targetResource;
+                    if (newRel.getTargetId() != null) {
+                        targetResource = cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                    } else {
+                        try (AutoCloseable ac = cms.tempChangeSiteRoot("")) {
+                            targetResource = cms.readResource(
+                                newRel.getTargetPath(),
+                                CmsResourceFilter.IGNORE_EXPIRATION);
+                        }
+                    }
+                    if (targetResource != null) {
+                        cms.addRelationToResource(importResource, targetResource, newRel.getType().getName());
+                    }
+                } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                     m_report.println(e);
                 }
-
             }
         }
     }
