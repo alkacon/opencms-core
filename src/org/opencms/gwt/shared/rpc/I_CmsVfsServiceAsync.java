@@ -172,6 +172,15 @@ public interface I_CmsVfsServiceAsync {
     void getDefinedProperties(AsyncCallback<ArrayList<String>> callback);
 
     /**
+     * Gets the detail name for the given structure id.
+     *
+     * @param id a structure id
+     * @param localeStr the locale as a string
+     * @param callback the callback for the result
+     */
+    void getDetailName(CmsUUID id, String localeStr, AsyncCallback<String> callback);
+
+    /**
      * Returns the file replace info.<p>
      *
      * @param structureId the structure id of the file to replace
