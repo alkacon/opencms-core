@@ -1301,9 +1301,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(
                 request.getSession());
             if (detailResource != null) {
-                locationCache.setPageEditorLocation(
-                    cms.getRequestContext().getSiteRoot(),
-                    cms.getSitePath(detailResource));
+                locationCache.setPageEditorResource(cms.getRequestContext().getSiteRoot(), detailResource);
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 String detailResourcePath = detailResource.getRootPath();
@@ -1328,9 +1326,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             } else {
                 if (!isModelPage && !isEditingModelGroup) {
-                    locationCache.setPageEditorLocation(
-                        cms.getRequestContext().getSiteRoot(),
-                        cms.getSitePath(containerPage));
+                    locationCache.setPageEditorResource(cms.getRequestContext().getSiteRoot(), containerPage);
                 }
                 noEditReason = getNoEditReason(cms, containerPage);
             }

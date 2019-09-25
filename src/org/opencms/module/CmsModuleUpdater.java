@@ -333,7 +333,7 @@ public class CmsModuleUpdater {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(module.getImportScript())) {
                 runImportScript(cms, module);
             }
-            cms.unlockProject(importProject.getUuid());
+
             OpenCms.getModuleManager().updateModule(cms, module);
             module.setCheckpointTime(System.currentTimeMillis());
             // reinitialize the resource manager with additional module resource types if necessary
@@ -344,6 +344,22 @@ public class CmsModuleUpdater {
             if (module.getExplorerTypes() != Collections.EMPTY_LIST) {
                 OpenCms.getWorkplaceManager().addExplorerTypeSettings(module);
             }
+            for (CmsResourceImportData resData : m_moduleData.getResourceData()) {
+                if (m_importIds.contains(resData.getResource().getStructureId())
+                    && !OpenCms.getResourceManager().matchResourceType(
+                        resData.getTypeName(),
+                        resData.getResource().getTypeId())) {
+                    if (OpenCms.getResourceManager().hasResourceType(resData.getTypeName())) {
+                        try {
+                            CmsResource res = cms.readResource(resData.getResource().getStructureId());
+                            cms.chtype(res, OpenCms.getResourceManager().getResourceType(resData.getTypeName()));
+                        } catch (Exception e) {
+                            m_report.println(e);
+                        }
+                    }
+                }
+            }
+            cms.unlockProject(importProject.getUuid());
             OpenCms.getPublishManager().publishProject(cms, m_report);
             OpenCms.getPublishManager().waitWhileRunning();
             CmsModuleImportExportHandler.reportEndImport(m_report);
@@ -544,21 +560,21 @@ public class CmsModuleUpdater {
                 } else if (oldRes.getState().isUnchanged()
                     && !needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
 
-                    // if resource is changed or new, we don't want to go into this code block
-                    // because even if the content / metaadata are the same, we still want the file to be published at the end,
-                    // so we import it to add it to the current working project
+                        // if resource is changed or new, we don't want to go into this code block
+                        // because even if the content / metaadata are the same, we still want the file to be published at the end,
+                        // so we import it to add it to the current working project
 
-                    if (oldRes.isFile() && (content != null)) {
-                        CmsFile file = cms.readFile(oldRes);
-                        if (Arrays.equals(file.getContents(), content)) {
-                            needsImport = false;
+                        if (oldRes.isFile() && (content != null)) {
+                            CmsFile file = cms.readFile(oldRes);
+                            if (Arrays.equals(file.getContents(), content)) {
+                                needsImport = false;
+                            } else {
+                                LOG.debug("Content mismatch for " + file.getRootPath());
+                            }
                         } else {
-                            LOG.debug("Content mismatch for " + file.getRootPath());
+                            needsImport = false;
                         }
-                    } else {
-                        needsImport = false;
                     }
-                }
             }
             if (needsImport || (oldRes == null)) { // oldRes null check is redundant, we just do it to remove the warning in Eclipse
                 currentRes = cms.importResource(
@@ -738,6 +754,29 @@ public class CmsModuleUpdater {
     }
 
     /**
+     * Compares list of existing relations with list of relations to import and returns true if they are different.
+     *
+     * @param noContentRelations the existing relations which are not in-content relations
+     * @param newRelations the relations to import
+     *
+     * @return true if the relations need to be updated
+     */
+    private boolean needToUpdateRelations(List<CmsRelation> noContentRelations, Set<CmsRelation> newRelations) {
+
+        if (noContentRelations.size() != newRelations.size()) {
+            return true;
+        }
+
+        for (CmsRelation relation : noContentRelations) {
+            if (!(newRelations.contains(relation) || newRelations.contains(relation.withTargetId(null)))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Compares the relation (not defined in content) for a resource with those to be imported, and makes
      * the necessary modifications.
      *
@@ -770,7 +809,8 @@ public class CmsModuleUpdater {
                         rel.getType()));
             }
         }
-        if (!newRelations.equals(noContentRelations)) {
+
+        if (needToUpdateRelations(noContentRelations, newRelations)) {
 
             CmsRelationFilter relFilter = CmsRelationFilter.TARGETS.filterNotDefinedInContent();
             try {
@@ -782,15 +822,23 @@ public class CmsModuleUpdater {
 
             for (CmsRelation newRel : newRelations) {
                 try {
-                    cms.addRelationToResource(
-                        importResource,
-                        cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION),
-                        newRel.getType().getName());
-                } catch (CmsException e) {
+                    CmsResource targetResource;
+                    if (newRel.getTargetId() != null) {
+                        targetResource = cms.readResource(newRel.getTargetId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                    } else {
+                        try (AutoCloseable ac = cms.tempChangeSiteRoot("")) {
+                            targetResource = cms.readResource(
+                                newRel.getTargetPath(),
+                                CmsResourceFilter.IGNORE_EXPIRATION);
+                        }
+                    }
+                    if (targetResource != null) {
+                        cms.addRelationToResource(importResource, targetResource, newRel.getType().getName());
+                    }
+                } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                     m_report.println(e);
                 }
-
             }
         }
     }

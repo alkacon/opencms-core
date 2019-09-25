@@ -187,6 +187,17 @@ public interface I_CmsVfsService extends RemoteService {
     ArrayList<String> getDefinedProperties() throws CmsRpcException;
 
     /**
+     * Gets the detail name for the given structure id.
+     *
+     * @param id the structure id of a content
+     * @param locale the locale to use
+     * @return the detail name for the structure id
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getDetailName(CmsUUID id, String locale) throws CmsRpcException;
+
+    /**
      * Returns the file replace info.<p>
      *
      * @param structureId the structure id of the file to replace

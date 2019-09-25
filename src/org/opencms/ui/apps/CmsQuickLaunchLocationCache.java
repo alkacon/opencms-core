@@ -27,22 +27,37 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.util.CmsStringUtil;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Stores the last opened locations for file explorer, page editor and sitemap editor.<p>
  */
 public class CmsQuickLaunchLocationCache implements Serializable {
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsQuickLaunchLocationCache.class);
+
     /** The serial version id. */
     private static final long serialVersionUID = -6144984854691623070L;
 
     /** The page editor locations. */
-    private Map<String, String> m_pageEditorLocations;
+    private Map<String, CmsResource> m_pageEditorResources = new HashMap<>();
 
     /** The sitemap editor locations. */
     private Map<String, String> m_sitemapEditorLocations;
@@ -54,7 +69,7 @@ public class CmsQuickLaunchLocationCache implements Serializable {
      * Constructor.<p>
      */
     public CmsQuickLaunchLocationCache() {
-        m_pageEditorLocations = new HashMap<String, String>();
+
         m_sitemapEditorLocations = new HashMap<String, String>();
         m_fileExplorerLocations = new HashMap<String, String>();
     }
@@ -92,13 +107,56 @@ public class CmsQuickLaunchLocationCache implements Serializable {
     /**
      * Returns the page editor location for the given site root.<p>
      *
+     * @param cms the current CMS context
      * @param siteRoot the site root
      *
      * @return the location
      */
-    public String getPageEditorLocation(String siteRoot) {
+    public String getPageEditorLocation(CmsObject cms, String siteRoot) {
 
-        return m_pageEditorLocations.get(siteRoot);
+        CmsResource res = m_pageEditorResources.get(siteRoot);
+        if (res == null) {
+            return null;
+        }
+        try {
+            String sitePath = cms.getSitePath(res);
+            cms.readResource(sitePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            return sitePath;
+        } catch (CmsVfsResourceNotFoundException e) {
+            try {
+                CmsResource newRes = cms.readResource(res.getStructureId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(newRes.getRootPath());
+                if (site == null) {
+                    return null;
+                }
+                if (normalizePath(site.getSiteRoot()).equals(normalizePath(siteRoot))) {
+                    return cms.getSitePath(newRes);
+                } else {
+                    return null;
+                }
+
+            } catch (CmsVfsResourceNotFoundException e2) {
+                return null;
+            } catch (CmsException e2) {
+                LOG.error(e.getLocalizedMessage(), e2);
+                return null;
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
+
+    }
+
+    /**
+     * Gets the cached location resource for the given site root.
+     *
+     * @param siteRoot the site root
+     * @return the location resource
+     */
+    public CmsResource getPageEditorResource(String siteRoot) {
+
+        return m_pageEditorResources.get(siteRoot);
     }
 
     /**
@@ -128,11 +186,11 @@ public class CmsQuickLaunchLocationCache implements Serializable {
      * Sets the latest page editor location for the given site.<p>
      *
      * @param siteRoot the site root
-     * @param location the location
+     * @param resource the location resource
      */
-    public void setPageEditorLocation(String siteRoot, String location) {
+    public void setPageEditorResource(String siteRoot, CmsResource resource) {
 
-        m_pageEditorLocations.put(siteRoot, location);
+        m_pageEditorResources.put(siteRoot, resource);
     }
 
     /**
@@ -144,5 +202,16 @@ public class CmsQuickLaunchLocationCache implements Serializable {
     public void setSitemapEditorLocation(String siteRoot, String location) {
 
         m_sitemapEditorLocations.put(siteRoot, location);
+    }
+
+    /**
+     * Ensures the given path begins and ends with a slash.
+     *
+     * @param path the path
+     * @return the normalized path
+     */
+    private String normalizePath(String path) {
+
+        return CmsStringUtil.joinPaths("/", path, "/");
     }
 }

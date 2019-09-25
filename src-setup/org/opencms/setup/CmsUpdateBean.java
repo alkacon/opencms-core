@@ -63,6 +63,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -93,6 +98,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The empty jar marker attribute key. */
     public static final String EMPTY_JAR_ATTRIBUTE_KEY = "OpenCms-empty-jar";
 
+    /** Folder constant name.<p> */
+    public static final String FOLDER_UPDATE = "WEB-INF/updatedata" + File.separatorChar;
+
     /** The static log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
@@ -104,9 +112,6 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** replace pattern constant for the cms script. */
     private static final String C_ADMIN_USER = "@ADMIN_USER@";
-
-    /** Folder constant name.<p> */
-    public static final String FOLDER_UPDATE = "WEB-INF/updatedata" + File.separatorChar;
 
     /** replace pattern constant for the cms script. */
     private static final String C_UPDATE_PROJECT = "@UPDATE_PROJECT@";
@@ -309,6 +314,50 @@ public class CmsUpdateBean extends CmsSetupBean {
         } finally {
             m_cms.getRequestContext().setSiteRoot(originalSiteRoot);
             m_cms.getRequestContext().setCurrentProject(originalProject);
+        }
+
+    }
+
+    /**
+     * CmsShell command to delete spellcheck index.<p>
+     *
+     * Called by cmsupdate.ori to remove spellcheck index. Necessary because Solr/Lucene versions might have
+     * incompatible changes, and deleting the index causes the spellcheck index to be rebuilt.
+     */
+    public void deleteSpellcheckIndex() {
+
+        String dataPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("solr/spellcheck/data");
+        File dataDir = new File(dataPath);
+        if (dataDir.exists()) {
+            try {
+                Files.walkFileTree(dataDir.toPath(), new FileVisitor<Path>() {
+
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+
+                        dir.toFile().delete();
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+
+                        file.toFile().delete();
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+
+                        return FileVisitResult.CONTINUE;
+
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
         }
 
     }

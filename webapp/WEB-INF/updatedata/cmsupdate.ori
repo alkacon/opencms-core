@@ -22,4 +22,6 @@ createSharedFolder
 # purge the jsp repository
 purgeJspRepository
 
+deleteSpellcheckIndex
+
 exit

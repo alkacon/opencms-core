@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -417,6 +418,41 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    public void testNewTypeWithContents() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+        String typeName = "tntwc";
+        int typeId = 77994;
+        File[] exports = new File[] {null, null};
+        for (int version : new int[] {0, 1}) {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            if (version == 1) {
+                builder.addType(typeName, typeId);
+            }
+            builder.addModule();
+            builder.addFolder("");
+            builder.addTextFile("plain.txt", "test");
+            if (version == 1) {
+                builder.addFile(typeName, "special.txt", "special");
+            }
+            builder.publish();
+            File exportFile = tempExport();
+            builder.export(exportFile.getAbsolutePath());
+            exports[version] = exportFile;
+            builder.delete();
+        }
+
+        CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getModuleManager().replaceModule(cms, exports[0].getAbsolutePath(), report);
+        OpenCms.getModuleManager().replaceModule(cms, exports[1].getAbsolutePath(), report);
+        assertEquals(typeId, cms.readResource("/system/modules/" + MODULE + "/special.txt").getTypeId());
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
     public void testParseLinks() throws Exception {
 
         CmsObject cms = cms();
@@ -586,6 +622,87 @@ public class TestModuleUpdate extends OpenCmsTestCase {
         }
         assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
 
+    }
+
+    /**
+     * Test case for exporting / importing relations to immutables.
+     *
+     * @throws Exception
+     */
+    public void testRelationsToImmutable() throws Exception {
+
+        CmsObject cms = cms();
+
+        CmsResource sysWorkplace = cms.createResource("/system/workplace", 0);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        removeTestModuleIfExists(cms);
+        File export = null;
+        CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+        builder.addModule();
+        builder.addFolder("");
+        CmsResource foo = builder.addTextFile("foo.txt", "text");
+        cms.addRelationToResource(foo, sysWorkplace, CmsRelationType.CATEGORY.getName());
+        export = tempExport();
+        builder.publish();
+        builder.export(export.getAbsolutePath());
+        builder.delete();
+        cms.lockResource(sysWorkplace);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
+        CmsResource sysWorkplace2 = cms.createResource("/system/workplace", 0);
+        assertNotSame(sysWorkplace.getStructureId(), sysWorkplace2.getStructureId());
+        builder.publish();
+        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        List<CmsRelation> relations = cms.readRelations(
+            CmsRelationFilter.relationsFromStructureId(foo.getStructureId()));
+        assertEquals(1, relations.size());
+        CmsRelation rel = relations.get(0);
+        assertEquals(sysWorkplace2.getStructureId(), rel.getTargetId());
+        builder.delete();
+        cms.lockResource(sysWorkplace2);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
+    }
+
+    /**
+     * Test case for exporting / importing relations to immutables.
+     *
+     * @throws Exception
+     */
+    public void testRelationsToImmutable2() throws Exception {
+
+        CmsObject cms = cms();
+
+        CmsResource sysWorkplace = cms.createResource("/system/workplace", 0);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        removeTestModuleIfExists(cms);
+        File export = null;
+        CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+        builder.addModule();
+        builder.addFolder("");
+        CmsResource foo = builder.addTextFile("foo.txt", "text");
+        cms.addRelationToResource(foo, sysWorkplace, CmsRelationType.CATEGORY.getName());
+        export = tempExport();
+        builder.publish();
+        builder.export(export.getAbsolutePath());
+        cms.lockResource(sysWorkplace);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
+        CmsResource sysWorkplace2 = cms.createResource("/system/workplace", 0);
+        assertNotSame(sysWorkplace.getStructureId(), sysWorkplace2.getStructureId());
+        builder.publish();
+        OpenCms.getModuleManager().replaceModule(cms, export.getAbsolutePath(), new CmsShellReport(Locale.ENGLISH));
+        List<CmsRelation> relations = cms.readRelations(
+            CmsRelationFilter.relationsFromStructureId(foo.getStructureId()));
+        assertEquals(1, relations.size());
+        CmsRelation rel = relations.get(0);
+        assertEquals(sysWorkplace2.getStructureId(), rel.getTargetId());
+        builder.delete();
+        cms.lockResource(sysWorkplace2);
+        cms.deleteResource("/system/workplace", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        builder.publish();
     }
 
     /**

@@ -143,7 +143,11 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue implements 
      */
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
-        return categoryStringElem().getText();
+        Element categoryElement = categoryStringElem(false);
+        if (categoryElement == null) {
+            return "";
+        }
+        return categoryElement.getText();
     }
 
     /**
@@ -177,19 +181,22 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue implements 
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
-        categoryStringElem().setText(value);
+        categoryStringElem(true).setText(value);
     }
 
     /**
      * Gets the category-string subelement, creating it if necessary.
      *
+     * @param create if true, the category string element is created if it doesn't exist; if false, null is returned in that case.
      * @return the category-string subelement
      */
-    Element categoryStringElem() {
+    Element categoryStringElem(boolean create) {
 
         Element result = m_element.element(N_CATEGORY_STRING);
-        if (result == null) {
+        if ((result == null) && create) {
             result = m_element.addElement(N_CATEGORY_STRING);
+            result.detach();
+            m_element.elements().add(0, result);
         }
         return result;
     }

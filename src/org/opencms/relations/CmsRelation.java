@@ -36,6 +36,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Comparator;
 
+import com.google.common.base.Objects;
+
 /**
  * A relation between two opencms resources.<p>
  *
@@ -127,10 +129,8 @@ public class CmsRelation {
         if (obj instanceof CmsRelation) {
             CmsRelation other = (CmsRelation)obj;
             return (m_type == other.m_type)
-                // && (m_dateBegin == other.m_dateBegin)
-                // && (m_dateEnd == other.m_dateEnd)
-                && (m_sourcePath.equals(other.m_sourcePath) || m_sourceId.equals(other.m_sourceId))
-                && (m_targetPath.equals(other.m_targetPath) || m_targetId.equals(other.m_targetId));
+                && (Objects.equal(m_sourcePath, other.m_sourcePath) || Objects.equal(m_sourceId, other.m_sourceId))
+                && (Objects.equal(m_targetPath, other.m_targetPath) || Objects.equal(m_targetId, other.m_targetId));
         }
         return false;
     }
@@ -274,5 +274,16 @@ public class CmsRelation {
         str.append("type: ").append(m_type);
         str.append("]");
         return str.toString();
+    }
+
+    /**
+     * Copies this relation, but sets the target id in the copy to the given value.
+     *
+     * @param id the new target id for the copy
+     * @return the copy with the target id
+     */
+    public CmsRelation withTargetId(CmsUUID id) {
+
+        return new CmsRelation(m_sourceId, m_sourcePath, id, m_targetPath, m_type);
     }
 }

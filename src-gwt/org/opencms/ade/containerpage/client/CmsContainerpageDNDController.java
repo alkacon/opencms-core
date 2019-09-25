@@ -90,6 +90,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
 
+    /** Callback to be executed to fix the container layout after leaving it. */
+    private Runnable m_containerLayoutCallback;
+
     /** The container page controller. */
     protected CmsContainerpageController m_controller;
 
@@ -169,7 +172,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_imageDndController = null;
             return;
         }
-
         stopDrag(handler);
     }
 
@@ -276,7 +278,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_imageDndController = null;
             return;
         }
-
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
                 final I_CmsDropContainer container = (I_CmsDropContainer)target;
@@ -472,6 +473,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return m_imageDndController.onTargetEnter(draggable, target, handler);
         }
 
+        clearContainerLayoutCallback();
+        if (target instanceof CmsContainerPageContainer) {
+            CmsContainerPageContainer container = (CmsContainerPageContainer)target;
+            if (container.isShowingEmptyContainerElement()) {
+                m_containerLayoutCallback = container.setMinHeightToCurrentHeight();
+            }
+        }
+
         Element placeholder = m_dragInfos.get(target);
         if (placeholder != null) {
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
@@ -493,7 +502,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_imageDndController.onTargetLeave(draggable, target, handler);
             return;
         }
-
+        clearContainerLayoutCallback();
         m_currentTarget = null;
         m_currentIndex = -1;
         Element placeholder = m_dragInfos.get(m_initialDropTarget);
@@ -721,6 +730,18 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Clears the container layout callback, and also executes it if it was set.
+     */
+    private void clearContainerLayoutCallback() {
+
+        if (m_containerLayoutCallback != null) {
+            Runnable callback = m_containerLayoutCallback;
+            m_containerLayoutCallback = null;
+            callback.run();
+        }
+    }
+
+    /**
      * Checks if the placeholder position has changed.<p>
      *
      * @param target the current drop target
@@ -921,6 +942,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     private void stopDrag(final CmsDNDHandler handler) {
 
         removeDragOverlay();
+        clearContainerLayoutCallback();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
             target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
             target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());

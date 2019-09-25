@@ -1953,8 +1953,7 @@ public final class OpenCmsCore {
                 lock = new Object();
             }
             rpcService.service(req, res);
-            // update the session info
-            m_sessionManager.updateSessionInfo(cms, req);
+            m_sessionManager.updateSessionInfo(cms, req, rpcService.isBroadcastCall());
         } catch (CmsRoleViolationException rv) {
             // don't log these into the error channel
             LOG.debug(rv.getLocalizedMessage(), rv);
@@ -2712,10 +2711,10 @@ public final class OpenCmsCore {
             params = "__loginform=true";
         } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
             && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
-                // login form property value not set, but form login set in configuration
-                // build a redirect URL to the default login form URI configured in opencms.properties
-                loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
-            }
+            // login form property value not set, but form login set in configuration
+            // build a redirect URL to the default login form URI configured in opencms.properties
+            loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
+        }
 
         String callbackURL = CmsRequestUtil.encodeParamsWithUri(path, req);
         if (loginFormURL != null) {

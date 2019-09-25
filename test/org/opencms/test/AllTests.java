@@ -98,6 +98,7 @@ public final class AllTests {
         suite.addTest(org.opencms.i18n.AllTests.suite());
         suite.addTest(org.opencms.importexport.AllTests.suite());
         suite.addTest(org.opencms.jsp.decorator.AllTests.suite());
+        suite.addTest(org.opencms.jsp.search.AllTests.suite());
         suite.addTest(org.opencms.jsp.search.config.AllTests.suite());
         suite.addTest(org.opencms.jsp.search.config.parser.AllTests.suite());
         suite.addTest(org.opencms.jsp.util.AllTests.suite());

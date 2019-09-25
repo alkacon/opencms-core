@@ -211,7 +211,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     private String getPath(CmsObject cms, HttpSession session) {
 
         CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(session);
-        String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+        String page = locationCache.getPageEditorLocation(cms, cms.getRequestContext().getSiteRoot());
         if (page == null) {
             try {
                 CmsResource mainDefaultFile = cms.readDefaultFile("/");

@@ -84,6 +84,9 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     /** The time this session info was last updated. */
     private long m_timeUpdated;
 
+    /** The time of the last user action. */
+    private long m_timeLastAction;
+
     /** The id of user to which this session info belongs. */
     private CmsUUID m_userId;
 
@@ -262,6 +265,16 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     }
 
     /**
+     * Returns the time of the last user action.<p>
+     *
+     * @return the list user action time
+     */
+    public long getTimeLastAction() {
+
+        return m_timeLastAction;
+    }
+
+    /**
      * Returns the time this session info was last updated.<p>
      *
      * @return the time this session info was last updated
@@ -339,7 +352,22 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
      */
     protected void update(CmsRequestContext context) {
 
+        update(context, false);
+    }
+
+    /**
+     * Updates the session info object with the information from
+     * the given request context.<p>
+     *
+     * @param context the request context to update the session with
+     * @param isHeartBeatRequest in case of heart beat requests
+     */
+    protected void update(CmsRequestContext context, boolean isHeartBeatRequest) {
+
         m_timeUpdated = System.currentTimeMillis();
+        if (!isHeartBeatRequest) {
+            m_timeLastAction = m_timeUpdated;
+        }
         m_siteRoot = context.getSiteRoot();
         setProject(context.getCurrentProject().getUuid());
         m_ouFqn = context.getOuFqn();

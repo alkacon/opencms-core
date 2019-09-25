@@ -417,7 +417,7 @@ public class CmsSessionsTable extends Table {
     static Log LOG = CmsLog.getLog(CmsSessionsTable.class.getName());
 
     /**Time limit (in milliseconds) since when a user is inactive.*/
-    public static final long INACTIVE_LIMIT = 3 * 60 * 1000; //3 minute
+    public static final long INACTIVE_LIMIT = 450 * 1000; //7.5 minutes
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 4136423899776482696L;
@@ -654,7 +654,7 @@ public class CmsSessionsTable extends Table {
             item.getItemProperty(TableProperty.DateCreated).setValue(
                 session.getAgeOfSession() + " " + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_HOUR_0));
             item.getItemProperty(TableProperty.IS_ACTIVE).setValue(
-                new Long(System.currentTimeMillis() - session.getTimeUpdated()));
+                new Long(System.currentTimeMillis() - session.getTimeLastAction()));
             item.getItemProperty(TableProperty.OrgUnit).setValue(userOu.getName());
             item.getItemProperty(TableProperty.Project).setValue(
                 A_CmsUI.getCmsObject().readProject(session.getProject()).getName());

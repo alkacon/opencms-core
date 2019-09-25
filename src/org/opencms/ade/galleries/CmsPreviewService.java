@@ -65,9 +65,11 @@ import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -132,10 +134,20 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     CmsResource formatterResource = tempCms.readResource(formatter.getJspStructureId());
                     request.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, tempCms);
                     CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(request);
+
+                    Map<String, String> settings = new HashMap<>();
+                    for (Map.Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
+                        CmsXmlContentProperty settingConfig = entry.getValue();
+                        String defaultValue = settingConfig.getDefault();
+                        if (defaultValue != null) {
+                            settings.put(entry.getKey(), settingConfig.getDefault());
+                        }
+                    }
+
                     CmsContainerElementBean element = new CmsContainerElementBean(
                         resource.getStructureId(),
                         formatter.getJspStructureId(),
-                        null,
+                        settings,
                         false);
                     if ((resource instanceof I_CmsHistoryResource) && (resource instanceof CmsFile)) {
                         element.setHistoryFile((CmsFile)resource);

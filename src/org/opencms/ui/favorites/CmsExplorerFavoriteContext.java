@@ -28,16 +28,18 @@
 package org.opencms.ui.favorites;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.apps.CmsExplorerDialogContext;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.dialogs.CmsProjectSelectDialog;
 import org.opencms.ui.favorites.CmsFavoriteEntry.Type;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -55,11 +57,11 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
     /** Current dialog instance. */
     private Component m_dialog;
 
-    /** The active explorer instance. */
-    private CmsFileExplorer m_explorer;
-
     /** Favorite entry for current location. */
     private CmsFavoriteEntry m_entry;
+
+    /** The active explorer instance. */
+    private CmsFileExplorer m_explorer;
 
     /**
      * Creates a new instance.<p>
@@ -88,17 +90,13 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
      */
     public void changeProject(CmsUUID value) {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            CmsProject project = cms.readProject(value);
-            close();
-            A_CmsUI.get().changeProject(project);
-            m_explorer.onSiteOrProjectChange(project, null);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            CmsErrorDialog.showErrorDialog(e);
-        }
-
+        close();
+        CmsExplorerDialogContext context = new CmsExplorerDialogContext(
+            ContextType.fileTable,
+            null,
+            m_explorer,
+            new ArrayList<>());
+        CmsProjectSelectDialog.changeSiteOrProject(context, value, null);
     }
 
     /**
@@ -107,9 +105,12 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
     public void changeSite(String value) {
 
         close();
-        A_CmsUI.get().changeSite(value);
-        m_explorer.onSiteOrProjectChange(null, value);
-
+        CmsExplorerDialogContext context = new CmsExplorerDialogContext(
+            ContextType.fileTable,
+            null,
+            m_explorer,
+            new ArrayList<>());
+        CmsProjectSelectDialog.changeSiteOrProject(context, null, value);
     }
 
     /**

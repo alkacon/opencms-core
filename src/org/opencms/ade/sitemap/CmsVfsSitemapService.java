@@ -380,6 +380,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     public void createCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException {
 
         try {
+            if ((name == null) || (name.length() == 0)) {
+                name = title;
+            }
             name = OpenCms.getResourceManager().getFileTranslator().translateResource(name.trim().replace('/', '-'));
             CmsObject cms = getCmsObject();
             CmsCategoryService catService = CmsCategoryService.getInstance();

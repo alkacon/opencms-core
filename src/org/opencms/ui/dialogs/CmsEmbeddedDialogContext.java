@@ -135,7 +135,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
             if (siteRoot != null) {
                 CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(
                     A_CmsUI.get().getHttpSession());
-                sitePath = locationCache.getPageEditorLocation(siteRoot);
+                sitePath = locationCache.getPageEditorLocation(A_CmsUI.getCmsObject(), siteRoot);
                 if (sitePath == null) {
                     sitePath = locationCache.getFileExplorerLocation(siteRoot);
                     if (sitePath != null) {

@@ -141,6 +141,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the static export. */
     public static final String PROPERTY_EXPORT = "export";
 
+    /** Property used to record the resource type for resources whose type is unknown at import time, so they can be exported with that type later. */
+    public static final String PROPERTY_EXPORT_TYPE = "export.type";
+
     /** Property for the resource export name, during export this name is used instead of the resource name. */
     public static final String PROPERTY_EXPORTNAME = "exportname";
 

@@ -490,6 +490,25 @@ public final class CmsObject {
      * makes sense e.g. if you want to make a plain text file a JSP resource,
      * or a binary file an image, etc.<p>
      *
+     * @param resource the resource whose type should be changed
+     * @param type the new resource type for this resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void chtype(CmsResource resource, I_CmsResourceType type) throws CmsException {
+
+        getResourceType(resource).chtype(this, m_securityManager, resource, type);
+    }
+
+    /**
+     * Changes the resource type of a resource.<p>
+     *
+     * OpenCms handles resources according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image, etc.<p>
+     *
      * @param resourcename the name of the resource to change the type for (full current site relative path)
      * @param type the new resource type for this resource
      *
@@ -3854,6 +3873,19 @@ public final class CmsObject {
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
 
         m_securityManager.resetPassword(m_context, username, oldPassword, newPassword);
+    }
+
+    /**
+     * Helper method to temporarily change the site root in a try-with-resources statement.
+     *
+     * @param siteRoot the site root to switch to
+     * @return an AutoCloseable that restores the original site root when closed
+     */
+    public AutoCloseable tempChangeSiteRoot(String siteRoot) {
+
+        final String oldSiteRoot = m_context.getSiteRoot();
+        m_context.setSiteRoot(siteRoot);
+        return () -> m_context.setSiteRoot(oldSiteRoot);
     }
 
     /**

@@ -58,8 +58,8 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Dialog to show user information and to switch to user session.<p>
@@ -216,7 +216,7 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
             inacTime = new Long(System.currentTimeMillis() - m_user.getLastlogin());
             neverActive = m_user.getLastlogin() == 0L;
         } else {
-            inacTime = new Long(System.currentTimeMillis() - currentSession.getTimeUpdated());
+            inacTime = new Long(System.currentTimeMillis() - currentSession.getTimeLastAction());
         }
 
         String[] inactiveTime = CmsSessionInfo.getHourMinuteSecondTimeString(inacTime.longValue());

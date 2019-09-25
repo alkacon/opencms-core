@@ -44,6 +44,7 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
@@ -1083,7 +1084,33 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         UrlBuilder location = Window.Location.createUrlBuilder();
         location.setParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT, Boolean.toString(true));
         location.setParameter(CmsGwtConstants.PARAM_BUTTON_LEFT, Integer.toString(buttonLeft));
-        Window.Location.assign(location.buildString());
+        CmsUUID detailId = CmsContainerpageController.get().getData().getDetailId();
+        if (detailId != null) {
+            // current URL may no longer be valid because the field mapped to URL name may have been edited.
+            CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+                @Override
+                public void execute() {
+
+                    start(0, false);
+                    CmsCoreProvider.getVfsService().getDetailName(detailId, CmsCoreProvider.get().getLocale(), this);
+                }
+
+                @Override
+                protected void onResponse(String name) {
+
+                    stop(false);
+                    String path = Window.Location.getPath();
+                    path = path.replaceFirst("/[^/]+(/?)$", "/" + name + "$1");
+                    location.setPath(path);
+                    Window.Location.assign(location.buildString());
+                }
+            };
+            action.execute();
+
+        } else {
+            Window.Location.assign(location.buildString());
+        }
     }
 
     /**

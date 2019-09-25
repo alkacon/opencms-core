@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceBuilder;
@@ -520,6 +521,9 @@ public class CmsImportVersion10 implements I_CmsImport {
 
     /** The total number of files to import. */
     protected int m_totalFiles;
+
+    /** The type name. */
+    protected String m_typeName;
 
     /** The current imported user. */
     protected CmsUser m_user;
@@ -1930,10 +1934,12 @@ public class CmsImportVersion10 implements I_CmsImport {
                 boolean withErrors = false;
                 for (RelationData relationData : relationDataList) {
                     CmsResource target = null;
-                    try {
-                        target = m_cms.readResource(relationData.getTargetId(), filter);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore
+                    if (relationData.getTargetId() != null) {
+                        try {
+                            target = m_cms.readResource(relationData.getTargetId(), filter);
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            // ignore
+                        }
                     }
                     if (target == null) {
                         try {
@@ -2038,7 +2044,11 @@ public class CmsImportVersion10 implements I_CmsImport {
                 setDefaultsForEmptyResourceFields();
                 // create a new CmsResource
                 CmsResource resource = createResourceObjectFromFields(translatedName, size);
-
+                if (!OpenCms.getResourceManager().hasResourceType(m_typeName)) {
+                    m_properties.put(
+                        CmsPropertyDefinition.PROPERTY_EXPORT_TYPE,
+                        new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT_TYPE, null, m_typeName, true));
+                }
                 if (m_resourceBuilder.getType().isFolder()
                     || m_resourceIdWasNull
                     || hasContentInVfsOrImport(resource)) {
@@ -3011,6 +3021,7 @@ public class CmsImportVersion10 implements I_CmsImport {
      */
     public void setType(String typeName) {
 
+        m_typeName = typeName;
         try {
             try {
                 m_resourceBuilder.setType(OpenCms.getResourceManager().getResourceType(typeName));

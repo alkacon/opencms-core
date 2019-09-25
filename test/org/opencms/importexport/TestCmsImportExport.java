@@ -41,9 +41,11 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockFilter;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
+import org.opencms.module.CmsTestModuleBuilder;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
@@ -68,6 +70,7 @@ import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -125,6 +128,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         suite.addTest(new TestCmsImportExport("testImportChangedContent"));
         suite.addTest(new TestCmsImportExport("testImportRelations"));
         suite.addTest(new TestCmsImportExport("testImportContentIssue"));
+        suite.addTest(new TestCmsImportExport("testExportType"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -142,6 +146,68 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Creates a temporary file for module exports.<p>
+     *
+     * @return the created file
+     * @throws IOException if something goes wrong
+     */
+    public File tempExport() throws IOException {
+
+        File file = File.createTempFile("opencms-test-export_", ".zip");
+        file.deleteOnExit();
+        return file;
+    }
+
+    public void testExportType() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String typeModName = "testExportType.type";
+        String contentModName = "testExportType.content";
+        String typeName = "testtype";
+        CmsTestModuleBuilder typeBuilder = new CmsTestModuleBuilder(cms, typeModName);
+        int typeId = 7333;
+        typeBuilder.addType(typeName, typeId);
+        typeBuilder.addModule();
+        File typeExport = tempExport();
+        typeBuilder.export(typeExport.getAbsolutePath());
+
+        CmsTestModuleBuilder contentBuilder = new CmsTestModuleBuilder(cms, contentModName);
+        contentBuilder.addModule();
+        contentBuilder.addFolder("");
+        String contentPath = contentBuilder.addFile(typeName, "content.xml", "gnarf").getRootPath();
+        contentBuilder.publish();
+        File contentExport = tempExport();
+        contentBuilder.export(contentExport.getAbsolutePath());
+
+        contentBuilder.delete();
+        typeBuilder.delete();
+        CmsShellReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getModuleManager().replaceModule(cms, contentExport.getAbsolutePath(), report);
+        File contentExport2 = tempExport();
+        contentBuilder.export(contentExport2.getAbsolutePath());
+        contentBuilder.delete();
+
+        OpenCms.getModuleManager().replaceModule(cms, contentExport2.getAbsolutePath(), report);
+        CmsResource content = cms.readResource(contentPath);
+        assertEquals(CmsResourceTypePlain.getStaticTypeId(), content.getTypeId());
+        contentBuilder.delete();
+
+        OpenCms.getModuleManager().replaceModule(cms, typeExport.getAbsolutePath(), report);
+        OpenCms.getModuleManager().replaceModule(cms, contentExport2.getAbsolutePath(), report);
+        content = cms.readResource(contentPath);
+        assertEquals(typeId, content.getTypeId());
+        CmsFile file = cms.readFile(content);
+        file.setContents(new byte[] {65, 66, 67});
+        // modify file so it's not skipped during module update
+        try (AutoCloseable ac = CmsLockUtil.withLockedResources(cms, file)) {
+            cms.writeFile(file);
+        }
+        OpenCms.getModuleManager().replaceModule(cms, contentExport2.getAbsolutePath(), report);
+        content = cms.readResource(contentPath);
+        assertEquals(typeId, content.getTypeId());
     }
 
     /**

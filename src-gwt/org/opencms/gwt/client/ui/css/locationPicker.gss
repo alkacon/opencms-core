@@ -93,10 +93,6 @@ div.locationInfo{
 	min-height: 40px;
 	border: 1px solid #bbbbbb;
 	padding: 2px;
-	position: absolute;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
 	max-height: 80px;
 	overflow: auto;
 }

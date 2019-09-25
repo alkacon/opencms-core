@@ -2763,6 +2763,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 params.setAllowedFunctions(config.getDynamicFunctions());
             }
         }
+
+        // set include expired/unreleased
+        if (searchData.isIncludeExpired()) {
+            params.setIncludeExpired(true);
+        }
         return params;
     }
 
@@ -2980,9 +2985,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         // search
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
-        org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         CmsObject searchCms = getSearchCms(searchObj);
-        searchBean.init(searchCms);
 
         CmsGallerySearchResultList searchResults = OpenCms.getSearchManager().getIndexSolr(
             "Solr Offline").gallerySearch(searchCms, params);

@@ -120,12 +120,12 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
         while (i.hasNext()) {
             Locale currentLocale = i.next();
             // add all locales to the select box
-            String language = currentLocale.getDisplayLanguage(setLocale);
+            String language = currentLocale.getDisplayLanguage(currentLocale);
             if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
-                language = language + " (" + currentLocale.getDisplayCountry(setLocale) + ")";
+                language = language + " (" + currentLocale.getDisplayCountry(currentLocale) + ")";
             }
             if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
-                language = language + " (" + currentLocale.getDisplayVariant(setLocale) + ")";
+                language = language + " (" + currentLocale.getDisplayVariant(currentLocale) + ")";
             }
             if (counter != 0) {
                 resultBuffer.append("|");

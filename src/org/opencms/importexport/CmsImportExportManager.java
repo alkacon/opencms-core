@@ -44,6 +44,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.InputStream;
@@ -72,12 +73,12 @@ public class CmsImportExportManager {
 
     /** Time modes to specify how time stamps should be handled. */
     public static enum TimestampMode {
-    /** Use the timestamp of the imported file. */
-    FILETIME,
-    /** Use the time of import for the timestamp. */
-    IMPORTTIME,
-    /** The timestamp is explicitly given. */
-    VFSTIME;
+        /** Use the timestamp of the imported file. */
+        FILETIME,
+        /** Use the time of import for the timestamp. */
+        IMPORTTIME,
+        /** The timestamp is explicitly given. */
+        VFSTIME;
 
         /** Returns the default timestamp mode.
          * @return the default timestamp mode
@@ -933,6 +934,25 @@ public class CmsImportExportManager {
 
         CmsImportParameters parameters = new CmsImportParameters(importFile, importPath, false);
         importData(cms, report, parameters);
+    }
+
+    /**
+     * Checks if the given root path belongs to an immutable resource.
+     *
+     * @param rootPath the root path to check
+     * @return true if the path is the path of an immutable resource
+     */
+    public boolean isImmutable(String rootPath) {
+
+        rootPath = CmsStringUtil.joinPaths("/", rootPath, "/");
+        for (String immutable : getImmutableResources()) {
+            immutable = CmsStringUtil.joinPaths("/", immutable, "/");
+            if (immutable.equals(rootPath)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**

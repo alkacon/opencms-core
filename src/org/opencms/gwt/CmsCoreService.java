@@ -708,6 +708,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     @SuppressWarnings("unchecked")
     public List<CmsBroadcastMessage> getBroadcast() {
 
+        setBroadcastPoll();
         Set<CmsBroadcast> repeatedBroadcasts = new HashSet<CmsBroadcast>();
         OpenCms.getWorkplaceManager().checkWorkplaceRequest(getRequest(), getCmsObject());
         CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());

@@ -74,6 +74,7 @@ public final class CmsQuickLaunchProvider {
      * Hiding default constructor.<p>
      */
     private CmsQuickLaunchProvider() {
+
         // nothing to do
     }
 
@@ -134,7 +135,9 @@ public final class CmsQuickLaunchProvider {
                         if ((currentPage != null)
                             && CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
                                 OpenCms.getResourceManager().getResourceType(currentPage).getTypeName())) {
-                            String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+                            String page = locationCache.getPageEditorLocation(
+                                cms,
+                                cms.getRequestContext().getSiteRoot());
                             if (page != null) {
                                 link = OpenCms.getLinkManager().substituteLink(cms, page);
                             } else {
@@ -144,7 +147,7 @@ public final class CmsQuickLaunchProvider {
                             reload = true;
                         }
                     } else if (params.isSitemapContext()) {
-                        String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+                        String page = locationCache.getPageEditorLocation(cms, cms.getRequestContext().getSiteRoot());
                         if (page == null) {
                             page = locationCache.getSitemapEditorLocation(cms.getRequestContext().getSiteRoot());
                         }
@@ -159,7 +162,7 @@ public final class CmsQuickLaunchProvider {
                         String sitemapLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                             cms,
                             CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
-                        String page = locationCache.getPageEditorLocation(cms.getRequestContext().getSiteRoot());
+                        String page = locationCache.getPageEditorLocation(cms, cms.getRequestContext().getSiteRoot());
                         link = sitemapLink + "?path=" + page;
                     }
                 } else {

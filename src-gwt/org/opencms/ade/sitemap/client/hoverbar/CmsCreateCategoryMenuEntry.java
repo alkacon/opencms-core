@@ -142,8 +142,13 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
         fh.setDialog(dlg);
         String nameLabel = Messages.get().key(Messages.GUI_CATEGORY_NAME_LABEL_0);
         String titleLabel = Messages.get().key(Messages.GUI_CATEGORY_TITLE_LABEL_0);
-        dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("title", titleLabel)), "");
-        dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("name", nameLabel)), "");
+        String notEmptyMessage = Messages.get().key(Messages.GUI_CATEGORY_VALIDATION_TITLE_NOTEMPTY_0);
+        dlg.getForm().addField(
+            CmsBasicFormField.createField(createBasicStringProperty("title", titleLabel, ".+", notEmptyMessage)),
+            "");
+        dlg.getForm().addField(
+            CmsBasicFormField.createField(createBasicStringProperty("name", nameLabel, null, null)),
+            "");
         dlg.getForm().render();
         dlg.center();
 
@@ -154,21 +159,28 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
      *
      * @param name the name of the field
      * @param niceName the display name of the field
+     * @param validationRegex the validation regex
+     * @param error the validation error message 
      *
      * @return the property configuration
      */
-    public static CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
+    public static CmsXmlContentProperty createBasicStringProperty(
+        String name,
+        String niceName,
+        String validationRegex,
+        String error) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name, //name
             "string", // type
             "string", // widget
             "", // widgetconfig
-            null, //regex
-            null, //ruletype
+            validationRegex, //regex
+            "error", //ruletype
             null, //default
             niceName, //nicename
             null, //description
-            null, //error
+            error, //error
             null //preferfolder
         );
         return prop;

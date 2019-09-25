@@ -101,7 +101,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSING_PAGE_SIZES_FAILED_1 = "LOG_PARSING_PAGE_SIZES_FAILED_1";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.jsp.search.config.parser";
+    private static final String BUNDLE_NAME = "org.opencms.jsp.search.config.parser.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

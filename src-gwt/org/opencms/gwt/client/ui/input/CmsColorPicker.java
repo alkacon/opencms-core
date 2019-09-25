@@ -423,7 +423,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         m_popup.setWidth(262);
         m_popup.setAutoHideEnabled(false);
         m_popup.showRelativeTo(m_colorField);
-
         m_popup.setModal(true);
         if (m_popup.getWidgetCount() != 0) {
             m_popup.remove(m_popup.getWidget(0));
@@ -464,6 +463,14 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
         m_xcoordspopup = m_popup.getPopupLeft();
         m_ycoordspopup = m_popup.getPopupTop();
+        // reposition to take used height into account
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                m_popup.showRelativeTo(m_colorField);
+            }
+        });
 
     }
 
@@ -474,24 +481,24 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      * @param selector the parent element selector
      */
     private native void initNativePicker(String value, String selector) /*-{
-		var self = this;
-		self.@org.opencms.gwt.client.ui.input.CmsColorPicker::m_nativePickerValue = value;
-		var parentEl = $doc.querySelector(selector);
-		var picker = new $wnd.Picker(
-				{
-					parent : parentEl,
-					color : value,
-					popup : false,
-					alpha : false,
-					editorFormat : 'hex',
-					editor : true,
-					onChange : function(color) {
-						// cut off the last two digits to remove the alpha value
-						var hexVal = color.hex;
-						hexVal = hexVal.substring(0, 7)
-						self.@org.opencms.gwt.client.ui.input.CmsColorPicker::m_nativePickerValue = hexVal;
-					},
-				});
+        var self = this;
+        self.@org.opencms.gwt.client.ui.input.CmsColorPicker::m_nativePickerValue = value;
+        var parentEl = $doc.querySelector(selector);
+        var picker = new $wnd.Picker(
+                {
+                    parent : parentEl,
+                    color : value,
+                    popup : false,
+                    alpha : false,
+                    editorFormat : 'hex',
+                    editor : true,
+                    onChange : function(color) {
+                        // cut off the last two digits to remove the alpha value
+                        var hexVal = color.hex;
+                        hexVal = hexVal.substring(0, 7)
+                        self.@org.opencms.gwt.client.ui.input.CmsColorPicker::m_nativePickerValue = hexVal;
+                    },
+                });
     }-*/;
 
     /**

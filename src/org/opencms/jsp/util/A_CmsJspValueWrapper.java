@@ -688,4 +688,12 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
         return m_long;
     }
 
+    /**
+     * Returns a value wrapper for the provided default in case this value is empty.<p>
+     *
+     * @param defaultValue the string to generate the default value from
+     *
+     * @return a value wrapper for the provided default in case this value is empty.
+     */
+    public abstract A_CmsJspValueWrapper useDefault(Object defaultValue);
 }

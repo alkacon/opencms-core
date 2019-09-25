@@ -76,6 +76,9 @@ public class CmsGwtService extends RemoteServiceServlet {
     /** The current CMS context. */
     private ThreadLocal<CmsObject> m_perThreadCmsObject;
 
+    /** Stores whether the current request is a broadcast poll. */
+    private ThreadLocal<Boolean> m_perThreadBroadcastPoll;
+
     /**
      * Constructor.<p>
      */
@@ -148,6 +151,18 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
+     * Returns whether the current request is a broadcast call.<p>
+     *
+     * @return <code>true</code> if the current request is a broadcast call
+     */
+    public boolean isBroadcastCall() {
+
+        return (m_perThreadBroadcastPoll != null)
+            && (m_perThreadBroadcastPoll.get() != null)
+            && m_perThreadBroadcastPoll.get().booleanValue();
+    }
+
+    /**
      * @see javax.servlet.GenericServlet#log(java.lang.String)
      */
     @Override
@@ -195,6 +210,17 @@ public class CmsGwtService extends RemoteServiceServlet {
         } finally {
             clearThreadStorage();
         }
+    }
+
+    /**
+     * Sets that the current request is a broadcast call.<p>
+     */
+    public void setBroadcastPoll() {
+
+        if (m_perThreadBroadcastPoll == null) {
+            m_perThreadBroadcastPoll = new ThreadLocal<>();
+        }
+        m_perThreadBroadcastPoll.set(Boolean.TRUE);
     }
 
     /**
@@ -259,6 +285,9 @@ public class CmsGwtService extends RemoteServiceServlet {
         }
         if (perThreadResponse != null) {
             perThreadResponse.remove();
+        }
+        if (m_perThreadBroadcastPoll != null) {
+            m_perThreadBroadcastPoll.remove();
         }
     }
 

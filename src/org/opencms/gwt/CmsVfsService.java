@@ -574,6 +574,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getDetailName(org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public String getDetailName(CmsUUID id, String localeStr) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            OpenCms.getLocaleManager();
+            Locale locale = CmsLocaleManager.getLocale(localeStr);
+            return cms.readBestUrlName(id, locale, OpenCms.getLocaleManager().getDefaultLocales());
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getFileReplaceInfo(org.opencms.util.CmsUUID)
      */
     public CmsReplaceInfo getFileReplaceInfo(CmsUUID structureId) throws CmsRpcException {
@@ -1630,49 +1646,56 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } else if (OpenCms.getResourceManager().matchResourceType(
             CmsResourceTypeImage.getStaticTypeName(),
             resource.getTypeId())) {
-            CmsImageScaler scaler = new CmsImageScaler(cms, resource);
-            String imageLink = null;
-            if (resource instanceof I_CmsHistoryResource) {
-                int version = ((I_CmsHistoryResource)resource).getVersion();
-                imageLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                    cms,
-                    CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
-            } else {
-                imageLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
-            }
-            imageLink = CmsRequestUtil.appendParameter(imageLink, "random", "" + Math.random());
-            previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
-            height = scaler.getHeight();
-            width = scaler.getWidth();
-        } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)
-            || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-            String link = "";
-            if (resource instanceof I_CmsHistoryResource) {
-                int version = ((I_CmsHistoryResource)resource).getVersion();
-                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                    cms,
-                    CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
-            } else {
-                link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
-            }
-            return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
-        } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-            if (!locales.containsKey(locale.toString())) {
-                locale = CmsLocaleManager.getMainLocale(cms, resource);
-            }
-            previewContent = CmsPreviewService.getPreviewContent(getRequest(), getResponse(), cms, resource, locale);
+                CmsImageScaler scaler = new CmsImageScaler(cms, resource);
+                String imageLink = null;
+                if (resource instanceof I_CmsHistoryResource) {
+                    int version = ((I_CmsHistoryResource)resource).getVersion();
+                    imageLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        cms,
+                        CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+                } else {
+                    imageLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+                }
+                imageLink = CmsRequestUtil.appendParameter(imageLink, "random", "" + Math.random());
+                previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
+                height = scaler.getHeight();
+                width = scaler.getWidth();
+            } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)
+                || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+                    String link = "";
+                    if (resource instanceof I_CmsHistoryResource) {
+                        int version = ((I_CmsHistoryResource)resource).getVersion();
+                        link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                            cms,
+                            CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+                    } else {
+                        link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+                    }
+                    return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
+                } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                    if (!locales.containsKey(locale.toString())) {
+                        locale = CmsLocaleManager.getMainLocale(cms, resource);
+                    }
+                    previewContent = CmsPreviewService.getPreviewContent(
+                        getRequest(),
+                        getResponse(),
+                        cms,
+                        resource,
+                        locale);
 
-        } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
-            try {
-                previewContent = "<pre><code>" + new String(cms.readFile(resource).getContents()) + "</code></pre>";
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-                previewContent = "<div>"
-                    + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-                        Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
-                    + "</div>";
-            }
-        }
+                } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
+                    try {
+                        previewContent = "<pre><code>"
+                            + new String(cms.readFile(resource).getContents())
+                            + "</code></pre>";
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        previewContent = "<div>"
+                            + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                                Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
+                            + "</div>";
+                    }
+                }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
             CmsPreviewInfo result = new CmsPreviewInfo(
                 previewContent,

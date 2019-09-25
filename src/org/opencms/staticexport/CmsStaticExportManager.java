@@ -55,6 +55,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.site.xmlsitemap.CmsXmlSeoConfiguration;
 import org.opencms.staticexport.CmsExportname.CmsExportNameComparator;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -1869,8 +1870,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // not the current users permissions
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setSiteRoot(siteRoot);
-            // let's look up export property in VFS
+            // exportRes is usually the resource at path vfsName, but in case of detail page URIs it's the detail content
             CmsResource exportRes = CmsDetailPageUtil.lookupPage(exportCms, vfsName);
+            // if we are handling request for robots.txt, don't export
+            if (OpenCms.getResourceManager().matchResourceType(
+                CmsXmlSeoConfiguration.SEO_FILE_TYPE,
+                exportRes.getTypeId())) {
+                if (vfsName.endsWith("robots.txt")) {
+                    return false;
+                }
+            }
             String exportValue = exportCms.readPropertyObject(
                 exportCms.getSitePath(exportRes),
                 CmsPropertyDefinition.PROPERTY_EXPORT,

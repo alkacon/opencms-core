@@ -1663,6 +1663,7 @@ install {
                 }
             }
             pom('core').scopeMappings.addMapping(1, configurations.distribution, 'runtime')
+            pom('core').scopeMappings.addMapping(1, configurations.distribution, 'compile')
             // all dependencies are non transitive, as gradle is ignoring this setting when creating the pom, we have to manipulate the pom
             pom('core').whenConfigured {pom ->
                 pom.dependencies.each { dependency ->
