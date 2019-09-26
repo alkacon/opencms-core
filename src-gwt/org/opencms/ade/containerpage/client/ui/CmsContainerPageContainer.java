@@ -42,7 +42,6 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -301,12 +300,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         if (getWidgetCount() == 0) {
             if (m_emptyContainerElement != null) {
-                CmsDebugLog.consoleLog("cec: clearDisplay on 'empty' element.");
                 m_emptyContainerElement.getStyle().clearDisplay();
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_containerData.getEmptyContainerContent())) {
                 // add empty container element
                 try {
-                    CmsDebugLog.consoleLog("Creating 'empty' element " + new java.util.Date());
                     m_emptyContainerElement = CmsDomUtil.createElement(m_containerData.getEmptyContainerContent());
                     getElement().appendChild(m_emptyContainerElement);
                 } catch (Exception e) {
@@ -360,7 +357,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             add(m_overflowingElement);
         }
         if (m_emptyContainerElement != null) {
-            CmsDebugLog.consoleLog("cmeol: clearDisplay on 'empty' element.");
             m_emptyContainerElement.getStyle().clearDisplay();
         }
     }
@@ -684,16 +680,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
-     * Checks if the container is showing the empty container element.
-     *
-     * @return true if the empty container element is shown in the container
-     */
-    public boolean isShowingEmptyContainerElement() {
-
-        return (m_emptyContainerElement != null) && (m_emptyContainerElement.getParentElement() == getElement());
-    }
-
-    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#onConsumeChildren(java.util.List)
      */
     public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
@@ -789,23 +775,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void setEmptyContainerElement(Element emptyContainerElement) {
 
         m_emptyContainerElement = emptyContainerElement;
-    }
-
-    /**
-     * Measures the height of the container and sets its min-height to that value.
-     *
-     * @return a runnable used to undo the style changes
-     */
-    public Runnable setMinHeightToCurrentHeight() {
-
-        int h1 = measureHeight(getElement());
-        Map<String, String> props = new HashMap<>();
-        props.put("minHeight", h1 + "px");
-        com.google.gwt.dom.client.Style style = getElement().getStyle();
-        final Map<String, String> oldVals = CmsDomUtil.updateStyle(style, props);
-        return () -> {
-            CmsDomUtil.updateStyle(style, oldVals);
-        };
     }
 
     /**
@@ -939,25 +908,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         // over bottom half, insert as last child
         getElement().appendChild(m_placeholder);
         return getElement().getChildCount() - 1;
-    }
-
-    /**
-     * Measures the height of the container's element.
-     *
-     * This sets the overflow-y style property to auto to prevent margin collapsing.
-     *
-     * @param elem the element
-     * @return
-     */
-    private int measureHeight(Element elem) {
-
-        Map<String, String> props = new HashMap<>();
-        props.put("overflowY", "auto");
-        Map<String, String> old = CmsDomUtil.updateStyle(elem.getStyle(), props);
-        int result = elem.getOffsetHeight();
-        CmsDomUtil.updateStyle(elem.getStyle(), old);
-        return result;
-
     }
 
     /**
