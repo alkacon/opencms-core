@@ -301,10 +301,12 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         if (getWidgetCount() == 0) {
             if (m_emptyContainerElement != null) {
+                CmsDebugLog.consoleLog("cec: clearDisplay on 'empty' element.");
                 m_emptyContainerElement.getStyle().clearDisplay();
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_containerData.getEmptyContainerContent())) {
                 // add empty container element
                 try {
+                    CmsDebugLog.consoleLog("Creating 'empty' element " + new java.util.Date());
                     m_emptyContainerElement = CmsDomUtil.createElement(m_containerData.getEmptyContainerContent());
                     getElement().appendChild(m_emptyContainerElement);
                 } catch (Exception e) {
@@ -358,6 +360,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             add(m_overflowingElement);
         }
         if (m_emptyContainerElement != null) {
+            CmsDebugLog.consoleLog("cmeol: clearDisplay on 'empty' element.");
             m_emptyContainerElement.getStyle().clearDisplay();
         }
     }
