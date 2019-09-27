@@ -145,6 +145,9 @@ public final class CmsGwtConstants {
     /** The CSS class name for elements which mark elements to be skipped during direct edit. */
     public static final String CLASS_EDITABLE_SKIP = CLASS_EDITABLE + "-skip";
 
+    /** Class for dnd placeholders which are too big. */
+    public static final String CLASS_PLACEHOLDER_TOO_BIG = "oc-placeholder-too-big";
+
     /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
     public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
 
@@ -171,6 +174,9 @@ public final class CmsGwtConstants {
 
     /** Name of the Javascript callback used to open the locale comparison view. */
     public static final String LOCALECOMPARE_EDIT_PROPERTIES = "cmsLocaleCompareEditProperties";
+
+    /** The maximum DND placeholder height. */
+    public static final int MAX_PLACEHOLDER_HEIGHT = 300;
 
     /** Parameter for the button left position. */
     public static final String PARAM_BUTTON_LEFT = "__buttonLeft";
@@ -230,5 +236,15 @@ public final class CmsGwtConstants {
 
         // nop
 
+    }
+
+    /**
+     * Maximum DND placeholder height, as a string for stylesheets.
+     *
+     * @return the maximum DND placeholder height as a string
+     */
+    public static String getPlaceholderMaxHeight() {
+
+        return MAX_PLACEHOLDER_HEIGHT + "px";
     }
 }

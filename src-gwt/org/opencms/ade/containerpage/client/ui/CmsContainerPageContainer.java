@@ -38,6 +38,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 
@@ -815,6 +816,12 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_requiresPositionUpdate = true;
             if (m_placeholderVisible) {
                 m_placeholder.getStyle().clearDisplay();
+                if (!m_placeholder.hasClassName(CmsGwtConstants.CLASS_PLACEHOLDER_TOO_BIG)) {
+                    int height = m_placeholder.getOffsetHeight();
+                    if (height > CmsGwtConstants.MAX_PLACEHOLDER_HEIGHT) {
+                        m_placeholder.addClassName(CmsGwtConstants.CLASS_PLACEHOLDER_TOO_BIG);
+                    }
+                }
             } else {
                 m_placeholder.getStyle().setDisplay(Display.NONE);
             }
@@ -944,7 +951,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      * This sets the overflow-y style property to auto to prevent margin collapsing.
      *
      * @param elem the element
-     * @return
+     * @return the height
      */
     private int measureHeight(Element elem) {
 
