@@ -90,9 +90,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
 
-    /** Callback to be executed to fix the container layout after leaving it. */
-    private Runnable m_containerLayoutCallback;
-
     /** The container page controller. */
     protected CmsContainerpageController m_controller;
 
@@ -423,28 +420,28 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         } else if ((target instanceof I_CmsDropContainer)
             && (draggable instanceof CmsContainerPageElementPanel)
             && isChangedPosition(target)) {
-            CmsDomUtil.showOverlay(draggable.getElement(), false);
-            I_CmsDropContainer container = (I_CmsDropContainer)target;
-            int count = container.getWidgetCount();
-            handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-            if (container.getPlaceholderIndex() >= count) {
-                container.add((CmsContainerPageElementPanel)draggable);
-            } else {
-                container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
+                CmsDomUtil.showOverlay(draggable.getElement(), false);
+                I_CmsDropContainer container = (I_CmsDropContainer)target;
+                int count = container.getWidgetCount();
+                handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
+                if (container.getPlaceholderIndex() >= count) {
+                    container.add((CmsContainerPageElementPanel)draggable);
+                } else {
+                    container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
+                }
+                m_controller.addToRecentList(m_draggableId, null);
+                // changes are only relevant to the container page if not group-container editing
+                if (!m_controller.isGroupcontainerEditing()) {
+                    m_controller.setPageChanged();
+                }
+            } else if (draggable instanceof CmsContainerPageElementPanel) {
+                CmsDomUtil.showOverlay(draggable.getElement(), false);
+                // to reset mouse over state remove and attach the option bar
+                CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
+                CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
+                optionBar.removeFromParent();
+                containerElement.setElementOptionBar(optionBar);
             }
-            m_controller.addToRecentList(m_draggableId, null);
-            // changes are only relevant to the container page if not group-container editing
-            if (!m_controller.isGroupcontainerEditing()) {
-                m_controller.setPageChanged();
-            }
-        } else if (draggable instanceof CmsContainerPageElementPanel) {
-            CmsDomUtil.showOverlay(draggable.getElement(), false);
-            // to reset mouse over state remove and attach the option bar
-            CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
-            CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
-            optionBar.removeFromParent();
-            containerElement.setElementOptionBar(optionBar);
-        }
         stopDrag(handler);
     }
 
@@ -473,11 +470,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return m_imageDndController.onTargetEnter(draggable, target, handler);
         }
 
-        clearContainerLayoutCallback();
         if (target instanceof CmsContainerPageContainer) {
             CmsContainerPageContainer container = (CmsContainerPageContainer)target;
             if (container.isShowingEmptyContainerElement()) {
-                m_containerLayoutCallback = container.setMinHeightToCurrentHeight();
+                CmsContainerPageContainer.newResizeHelper(container).initMinHeight();
             }
         }
 
@@ -502,7 +498,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_imageDndController.onTargetLeave(draggable, target, handler);
             return;
         }
-        clearContainerLayoutCallback();
+        CmsContainerPageContainer.clearResizeHelper();
         m_currentTarget = null;
         m_currentIndex = -1;
         Element placeholder = m_dragInfos.get(m_initialDropTarget);
@@ -730,18 +726,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-     * Clears the container layout callback, and also executes it if it was set.
-     */
-    private void clearContainerLayoutCallback() {
-
-        if (m_containerLayoutCallback != null) {
-            Runnable callback = m_containerLayoutCallback;
-            m_containerLayoutCallback = null;
-            callback.run();
-        }
-    }
-
-    /**
      * Checks if the placeholder position has changed.<p>
      *
      * @param target the current drop target
@@ -942,7 +926,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     private void stopDrag(final CmsDNDHandler handler) {
 
         removeDragOverlay();
-        clearContainerLayoutCallback();
+        CmsContainerPageContainer.clearResizeHelper();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
             target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
             target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());

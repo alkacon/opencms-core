@@ -67,6 +67,69 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDropContainer {
 
     /**
+     * Helper class for resizing containers in the drag/drop process when an element is dropped into them that is of lower height than the empty container HTML.
+     */
+    public static class ContainerResizeHelper {
+
+        /** The container. */
+        private CmsContainerPageContainer m_container;
+
+        /** Minimum height. */
+        private int m_minHeight;
+
+        /** Previous value for minHeight style. */
+        private String m_origMinHeightStyle;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param container the container
+         */
+        public ContainerResizeHelper(CmsContainerPageContainer container) {
+
+            m_container = container;
+
+        }
+
+        /**
+         * Initializes the minimum height.
+         */
+        public void initMinHeight() {
+
+            int h = measureHeight(m_container.getElement());
+            m_minHeight = h;
+            m_origMinHeightStyle = m_container.getElement().getStyle().getProperty("minHeight");
+            m_container.getElement().getStyle().setProperty("minHeight", h + "px");
+        }
+
+        /**
+         * Called when the placeholder is shown.
+         *
+         * @param placeholder the placeholder
+         */
+        public void onShowPlaceholder(Element placeholder) {
+
+            if (placeholder.getOffsetHeight() < m_minHeight) {
+                m_container.getElement().addClassName(CmsGwtConstants.CLASS_CONTAINER_INFLATED);
+            }
+        }
+
+        /**
+         * Resets the style changes.
+         */
+        public void reset() {
+
+            if (m_origMinHeightStyle != null) {
+                m_container.getElement().getStyle().setProperty("minHeight", m_origMinHeightStyle);
+            } else {
+                m_container.getElement().getStyle().clearProperty("minHeight");
+            }
+            m_container.getElement().removeClassName(CmsGwtConstants.CLASS_CONTAINER_INFLATED);
+        }
+
+    }
+
+    /**
      * Element position info class.<p>
      */
     protected class ElementPositionInfo {
@@ -208,6 +271,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Name of a special property for the container id. */
     public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
+    /** Static variable for storing the container layout change helper for the current drag/drop process. */
+    private static ContainerResizeHelper RESIZE_HELPER;
+
     /** The container data. */
     private CmsContainer m_containerData;
 
@@ -263,6 +329,54 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
         }
         onAttach();
+    }
+
+    /**
+     * Clears the static layout change object, resetting it if it's not null.
+     */
+    public static void clearResizeHelper() {
+
+        if (RESIZE_HELPER != null) {
+            try {
+                RESIZE_HELPER.reset();
+            } finally {
+                RESIZE_HELPER = null;
+            }
+        }
+    }
+
+    /**
+     * Measures the height of the container's element.
+     *
+     * This sets the overflow-y style property to auto to prevent margin collapsing.
+     *
+     * @param elem the element
+     * @return the height
+     */
+    public static int measureHeight(Element elem) {
+
+        Map<String, String> props = new HashMap<>();
+        props.put("overflowY", "auto");
+        Map<String, String> old = CmsDomUtil.updateStyle(elem.getStyle(), props);
+        int result = elem.getOffsetHeight();
+        CmsDomUtil.updateStyle(elem.getStyle(), old);
+        return result;
+
+    }
+
+    /**
+     * Creates a new layout helper for resizing containers.<p>
+     *
+     * The previously created layout changes object (if any) will be reset.
+     *
+     * @param container the container
+     * @return the new layout helper
+     */
+    public static ContainerResizeHelper newResizeHelper(CmsContainerPageContainer container) {
+
+        clearResizeHelper();
+        RESIZE_HELPER = new ContainerResizeHelper(container);
+        return RESIZE_HELPER;
     }
 
     /**
@@ -799,8 +913,12 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         int h1 = measureHeight(getElement());
         Map<String, String> props = new HashMap<>();
         props.put("minHeight", h1 + "px");
+        props.put(
+            "background",
+            "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 0, 242, 1) 10px, rgba(240, 0, 242, 1) 20px)");
         com.google.gwt.dom.client.Style style = getElement().getStyle();
         final Map<String, String> oldVals = CmsDomUtil.updateStyle(style, props);
+        CmsDebugLog.consoleLog("h1 = " + h1 + ", h2=" + getElement().getOffsetHeight());
         return () -> {
             CmsDomUtil.updateStyle(style, oldVals);
         };
@@ -821,6 +939,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                     if (height > CmsGwtConstants.MAX_PLACEHOLDER_HEIGHT) {
                         m_placeholder.addClassName(CmsGwtConstants.CLASS_PLACEHOLDER_TOO_BIG);
                     }
+                }
+                if (RESIZE_HELPER != null) {
+                    RESIZE_HELPER.onShowPlaceholder(m_placeholder);
                 }
             } else {
                 m_placeholder.getStyle().setDisplay(Display.NONE);
@@ -943,25 +1064,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         // over bottom half, insert as last child
         getElement().appendChild(m_placeholder);
         return getElement().getChildCount() - 1;
-    }
-
-    /**
-     * Measures the height of the container's element.
-     *
-     * This sets the overflow-y style property to auto to prevent margin collapsing.
-     *
-     * @param elem the element
-     * @return the height
-     */
-    private int measureHeight(Element elem) {
-
-        Map<String, String> props = new HashMap<>();
-        props.put("overflowY", "auto");
-        Map<String, String> old = CmsDomUtil.updateStyle(elem.getStyle(), props);
-        int result = elem.getOffsetHeight();
-        CmsDomUtil.updateStyle(elem.getStyle(), old);
-        return result;
-
     }
 
     /**

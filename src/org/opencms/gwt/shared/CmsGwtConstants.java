@@ -229,6 +229,9 @@ public final class CmsGwtConstants {
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
 
+    /** CSS class for containers inflated due to an element dragged into them that is of lower height than the empty container HTML. */
+    public static final String CLASS_CONTAINER_INFLATED = "oc-container-inflated";
+
     /**
      * Hide constructor.<p>
      */
