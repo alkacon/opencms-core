@@ -2060,6 +2060,26 @@ public final class CmsDomUtil {
     }-*/;
 
     /**
+     * Sets the stylesheet text for the stylesheet with the given ID.<p>
+     *
+     * If the stylesheet with the id does not already exist, it is created.
+     *
+     * @param id the stylesheet id
+     * @param styleText the stylesheet text
+     */
+    public static void setStylesheetText(String id, String styleText) {
+
+        Document document = Document.get();
+        Element elem = document.getElementById(id);
+        if (elem == null) {
+            elem = document.createStyleElement();
+            elem.setId(id);
+            document.getHead().appendChild(elem);
+        }
+        elem.setInnerHTML(styleText);
+    }
+
+    /**
      * Sets a CSS class to show or hide a given overlay. Will not add an overlay to the element.<p>
      *
      * @param element the parent element of the overlay

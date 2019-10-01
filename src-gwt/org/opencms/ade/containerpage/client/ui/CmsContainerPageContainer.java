@@ -75,10 +75,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         private CmsContainerPageContainer m_container;
 
         /** Minimum height. */
-        private int m_minHeight;
-
-        /** Previous value for minHeight style. */
-        private String m_origMinHeightStyle;
+        private int m_origHeight;
 
         /**
          * Creates a new instance.
@@ -94,12 +91,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         /**
          * Initializes the minimum height.
          */
-        public void initMinHeight() {
+        public void initHeight() {
 
-            int h = measureHeight(m_container.getElement());
-            m_minHeight = h;
-            m_origMinHeightStyle = m_container.getElement().getStyle().getProperty("minHeight");
-            m_container.getElement().getStyle().setProperty("minHeight", h + "px");
+            int h = m_container.getElement().getOffsetHeight();
+            m_origHeight = h;
         }
 
         /**
@@ -109,8 +104,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
          */
         public void onShowPlaceholder(Element placeholder) {
 
-            if (placeholder.getOffsetHeight() < m_minHeight) {
+            int curHeight = m_container.getElement().getOffsetHeight();
+            if (curHeight < m_origHeight) {
+                // We want an artificial element to 'blow up' the container to its original size,
+                // but adding a normal element would interfere with drag and drop, so we use the ::after pseudoelement
+                // of the container. We can't just set its style directly, so we modify a stylesheet with
+                // a fixed ID to set the height.
                 m_container.getElement().addClassName(CmsGwtConstants.CLASS_CONTAINER_INFLATED);
+                String styleText = "." + CmsGwtConstants.CLASS_CONTAINER_INFLATED + "::after { ";
+                styleText += "height: " + (m_origHeight - curHeight) + "px;";
+                styleText += " } ";
+                CmsDomUtil.setStylesheetText("oc-dnd-inflated-container-style", styleText);
             }
         }
 
@@ -119,14 +123,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
          */
         public void reset() {
 
-            if (m_origMinHeightStyle != null) {
-                m_container.getElement().getStyle().setProperty("minHeight", m_origMinHeightStyle);
-            } else {
-                m_container.getElement().getStyle().clearProperty("minHeight");
-            }
             m_container.getElement().removeClassName(CmsGwtConstants.CLASS_CONTAINER_INFLATED);
         }
-
     }
 
     /**

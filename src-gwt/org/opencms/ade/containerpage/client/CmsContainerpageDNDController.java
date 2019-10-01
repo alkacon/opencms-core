@@ -473,7 +473,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (target instanceof CmsContainerPageContainer) {
             CmsContainerPageContainer container = (CmsContainerPageContainer)target;
             if (container.isShowingEmptyContainerElement()) {
-                CmsContainerPageContainer.newResizeHelper(container).initMinHeight();
+                CmsContainerPageContainer.newResizeHelper(container).initHeight();
             }
         }
 

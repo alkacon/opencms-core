@@ -134,6 +134,12 @@ div.oc-option-bar .cmsState, div.oc-option-bar .html-face, div.oc-option-bar spa
 .oc-groupcontainer .oc-drag-element .oc-option-bar{
 	display: none;
 }
+
+@external oc-container; 
+.dragStarted .oc-container {
+	overflow: auto;
+}
+
 .emptyGroupContainer{
 	min-height: 27px;
 	background-image: value("constants.css.gradientInvalid");
