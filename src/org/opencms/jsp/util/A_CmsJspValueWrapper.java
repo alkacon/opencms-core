@@ -513,8 +513,12 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     }
 
     /**
-     * Converts a date to an instance date bean.
-     * @return the instance date bean.
+     * Returns the resource this value if pointing to.<p>
+     *
+     * It is assumed the value holds a valid resource UIR in the OpenCms VFS.
+     * In case the value cannot be converted to a resource, an error is logged but no exception is thrown.<p>
+     *
+     * @return the resource this value if pointing to
      */
     public CmsJspResourceWrapper getToResource() {
 
