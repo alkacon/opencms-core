@@ -49,6 +49,7 @@ public class CmsListDateFromTodayRestriction implements I_CmsListDateRestriction
      * @param direction the time direction
      */
     public CmsListDateFromTodayRestriction(int count, TimeUnit unit, TimeDirection direction) {
+
         m_count = count;
         m_unit = unit;
         m_direction = direction;
@@ -61,11 +62,11 @@ public class CmsListDateFromTodayRestriction implements I_CmsListDateRestriction
 
         boolean isFuture = m_direction == TimeDirection.future;
         String sign = isFuture ? "+" : "-";
-        String time = "NOW" + sign + m_unit.formatForRange(m_count);
+        String time = "NOW/DAY" + sign + m_unit.formatForRange(m_count);
         if (isFuture) {
-            return "[NOW TO " + time + "]";
+            return "[NOW TO " + time + "+1DAYS}";
         } else {
-            return "[" + time + " TO NOW]";
+            return "[" + time + " TO NOW}";
         }
     }
 
