@@ -215,6 +215,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         CmsJspResourceWrapper topFolderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/"));
+        CmsJspResourceWrapper folder1Res = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/"));
         CmsJspResourceWrapper folderRes = CmsJspResourceWrapper.wrap(cms, cms.readResource("/folder1/subfolder12/"));
         CmsJspResourceWrapper fileRes = CmsJspResourceWrapper.wrap(
             cms,
@@ -251,6 +252,16 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         assertTrue(fileRes.isChildResourceOf(topFolderRes));
         assertTrue(folderRes.isChildResourceOf(topFolderRes));
         assertTrue(fileRes.isChildResourceOf(folderRes));
+
+        assertEquals(folderRes, fileRes.getParentFolder());
+        assertEquals(folder1Res, folderRes.getParentFolder());
+        assertEquals(topFolderRes, folder1Res.getParentFolder());
+
+        assertEquals("/folder1/subfolder12/", fileRes.getSitePathFolder());
+        assertEquals("/folder1/", fileRes.getSitePathParentFolder());
+        assertEquals("/folder1/", folderRes.getParentFolder().getSitePathFolder());
+        assertEquals("/folder1/", folderRes.getSitePathParentFolder());
+        assertEquals("/", folder1Res.getSitePathParentFolder());
     }
 
     /**

@@ -475,7 +475,9 @@ public class CmsJspResourceWrapper extends CmsResource {
     /**
      * Returns the parent folder of this resource in the current site.<p>
      *
-     * In case this resource represents the site root folder, <code>null</code> is returned.<p>
+     * The parent folder of a file is the folder of the file.
+     * The parent folder of a folder is the parent folder of the folder.
+     * The parent folder of the root folder is <code>null</code>.<p>
      *
      * @return the parent folder of this resource in the current site
      *
@@ -738,6 +740,10 @@ public class CmsJspResourceWrapper extends CmsResource {
 
     /**
      * Returns the parent folder of this resource in the current site.<p>
+     *
+     * The parent folder of a file is the folder of the file.
+     * The parent folder of a folder is the parent folder of the folder.
+     * The parent folder of the root folder is <code>null</code>.<p>
      *
      * @return the parent folder of this resource in the current site
      *
