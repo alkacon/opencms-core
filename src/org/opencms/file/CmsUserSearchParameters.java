@@ -44,20 +44,28 @@ public class CmsUserSearchParameters {
     /** An enum used for indicating searchable columns. */
     public enum SearchKey {
         /** Email address. */
-        email, /** Full name. */
-        fullName, /** Organizational unit. */
+        email,
+        /** Full name. */
+        fullName,
+        /** Organizational unit. */
         orgUnit;
     }
 
     /** An enum used for indicating sort order. */
     public enum SortKey {
         /** User activation status. */
-        activated, /** Email address. */
-        email, /** Flags. */
-        flagStatus, /** Full name: "firstname lastname (loginname)". */
-        fullName, /** Last login date. */
-        lastLogin, /** Login name. */
-        loginName, /** Organizational unit. */
+        activated,
+        /** Email address. */
+        email,
+        /** Flags. */
+        flagStatus,
+        /** Full name: "firstname lastname (loginname)". */
+        fullName,
+        /** Last login date. */
+        lastLogin,
+        /** Login name. */
+        loginName,
+        /** Organizational unit. */
         orgUnit
     }
 
@@ -72,6 +80,9 @@ public class CmsUserSearchParameters {
 
     /** Indicates whether search should be case sensitive. */
     private boolean m_caseSensitive = true;
+
+    /** The email address to filter. */
+    private String m_email;
 
     /** Indicates whether only users which match the given group's OU should be returned. */
     private boolean m_filterByGroupOu;
@@ -146,6 +157,16 @@ public class CmsUserSearchParameters {
     public Collection<CmsGroup> getAnyGroups() {
 
         return m_anyGroups;
+    }
+
+    /**
+     * Gets the email address to search for.
+     *
+     * @return the email address to search for
+     */
+    public String getEmail() {
+
+        return m_email;
     }
 
     /**
@@ -370,6 +391,16 @@ public class CmsUserSearchParameters {
     public void setFilterCore(boolean filterCore) {
 
         m_filterCore = filterCore;
+    }
+
+    /**
+     * Sets the email address to search for.
+     *
+     * @param email the email address to search for
+     */
+    public void setFilterEmail(String email) {
+
+        m_email = email;
     }
 
     /**

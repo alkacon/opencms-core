@@ -30,6 +30,7 @@ package org.opencms.file;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsImportParameters;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
@@ -39,8 +40,12 @@ import org.opencms.test.OpenCmsTestProperties;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Sets;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -68,6 +73,8 @@ public class TestUser extends OpenCmsTestCase {
      */
     public static Test suite() {
 
+        //return OpenCmsTestCase.generateSetupTestWrapper(TestUser.class, "simpletest", "/");
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
@@ -77,6 +84,7 @@ public class TestUser extends OpenCmsTestCase {
         suite.addTest(new TestUser("testUserInfo"));
         suite.addTest(new TestUser("testUserExport"));
         suite.addTest(new TestUser("testUserSelfManagement"));
+        suite.addTest(new TestUser("testSearchByEmail"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -94,6 +102,36 @@ public class TestUser extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests searching for user by email address.
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testSearchByEmail() throws Throwable {
+        CmsObject cms = getCmsObject();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        String email1 = "foo@foo.org";
+        String email2 = "bar@bar.org";
+        createUserWithEmail(cms, "xtest1", email1);
+        createUserWithEmail(cms, "xtest2", email2);
+        createUserWithEmail(cms, "xtest3", email1);
+        createUserWithEmail(cms, "xtest4", email2);
+        createUserWithEmail(cms, "xtest5", email1);
+        params.setFilterEmail(email1);
+        params.setPaging(9999,  1);
+        List<CmsUser> users1 = OpenCms.getOrgUnitManager().searchUsers(cms, params);
+        params.setFilterEmail(email2);
+        List<CmsUser> users2 = OpenCms.getOrgUnitManager().searchUsers(cms, params);
+        params.setFilterEmail("xyzzy@xyzzy.org");
+        List<CmsUser> users3 = OpenCms.getOrgUnitManager().searchUsers(cms, params);
+
+        assertEquals(Sets.newHashSet("xtest1", "xtest3", "xtest5"), users1.stream().map(user -> user.getName()).collect(Collectors.toSet()));
+        assertEquals(Sets.newHashSet("xtest2", "xtest4"), users2.stream().map(user -> user.getName()).collect(Collectors.toSet()));
+        assertEquals(0, users3.size());
+
+
     }
 
     /**
@@ -232,5 +270,22 @@ public class TestUser extends OpenCmsTestCase {
         } catch (CmsDataAccessException e) {
             // ignore, ok
         }
+    }
+
+    /**
+     * Creates a user with a given email address.
+     *
+     * @param cms the current CMS context
+     * @param name the user name
+     * @param email the user email address
+     * @return the created user
+     * @throws CmsException if something goes wrong
+     */
+    private CmsUser createUserWithEmail(CmsObject cms, String name, String email) throws CmsException {
+        CmsUser user = cms.createUser(name, "password1!", "", null);
+        user.setEmail(email);
+        cms.writeUser(user);
+        return user;
+
     }
 }

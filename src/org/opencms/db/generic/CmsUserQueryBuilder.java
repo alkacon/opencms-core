@@ -98,6 +98,7 @@ public class CmsUserQueryBuilder {
         if (searchParams.isFilterCore()) {
             select.addCondition(createCoreCondition(users));
         }
+        addEmailCondition(select, users, searchParams.getEmail());
         addAllowedOuCondition(select, users, searchParams.getAllowedOus());
         addFlagCondition(select, users, searchParams.getFlags(), searchParams.keepCoreUsers());
         if (orgUnit != null) {
@@ -137,6 +138,23 @@ public class CmsUserQueryBuilder {
                 ouCondition.add(new CmsSimpleQueryFragment(users.column(colOu()) + " = ? ", ouName));
             }
             select.addCondition(ouCondition);
+        }
+    }
+
+    /**
+     * Adds an equality test for the email address.
+     *
+     * If the email address is null, no test is added.
+     *
+     * @param select the select statement to add the test to
+     * @param users the user table alias
+     * @param email the email address to compare the column to
+     */
+    protected void addEmailCondition(CmsSelectQuery select, TableAlias users, String email) {
+
+        if (email != null) {
+            CmsSimpleQueryFragment condition = new CmsSimpleQueryFragment(users.column(colEmail()) + " = ? ", email);
+            select.addCondition(condition);
         }
     }
 
@@ -323,9 +341,10 @@ public class CmsUserQueryBuilder {
                                 searchFilter));
                         break;
                     case orgUnit:
-                        searchCondition.add(new CmsSimpleQueryFragment(
-                            wrapLower(users.column(colOu()), caseInsensitive) + like,
-                            searchFilter));
+                        searchCondition.add(
+                            new CmsSimpleQueryFragment(
+                                wrapLower(users.column(colOu()), caseInsensitive) + like,
+                                searchFilter));
                         break;
                     default:
                         break;
