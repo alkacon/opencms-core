@@ -402,6 +402,7 @@ div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
 }
 .hasError div.helpBubble, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasError{
 	background-color: #ffcccc;
+	background-image: unset;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasWarning{
