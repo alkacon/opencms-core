@@ -36,6 +36,7 @@ import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
@@ -606,6 +607,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
 
+    private CmsUserDataRequestManager m_userDataRequestManager;
+
     /**
      * Adds an ADE configuration parameter.<p>
      *
@@ -1147,6 +1150,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate(detailPageHandlerPath, CmsDefaultDetailPageHandler.class.getName(), A_CLASS);
         digester.addSetNext(detailPageHandlerPath, "setDetailPageHandler");
 
+        String userdataPath = "*/" + N_SYSTEM + "/" + CmsUserDataRequestManager.N_USERDATA;
+        CmsUserDataRequestManager.addDigesterRules(digester, userdataPath);
+        digester.addSetNext(userdataPath, "setUserDataRequestManager");
     }
 
     /**
@@ -1580,6 +1586,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 "" + m_shellServerOptions.isEnabled()).addAttribute(A_PORT, "" + m_shellServerOptions.getPort());
         }
         CmsLetsEncryptConfiguration.CONFIG_HELPER.generateXml(systemElement, m_letsEncryptConfig);
+
+        if (m_userDataRequestManager != null) {
+            m_userDataRequestManager.appendToXml(systemElement);
+        }
 
         // return the system node
         return systemElement;
@@ -2024,6 +2034,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public int getTempFileProjectId() {
 
         return m_tempFileProjectId;
+    }
+
+    public CmsUserDataRequestManager getUserDataRequestManager() {
+        return m_userDataRequestManager;
     }
 
     /**
@@ -2599,6 +2613,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(Messages.INIT_TEMPFILE_PROJECT_ID_1, new Integer(m_tempFileProjectId)));
         }
+    }
+
+    public void setUserDataRequestManager(CmsUserDataRequestManager manager) {
+        m_userDataRequestManager = manager;
+
     }
 
     /**

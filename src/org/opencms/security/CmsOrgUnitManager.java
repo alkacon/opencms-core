@@ -38,7 +38,9 @@ import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -118,7 +120,8 @@ public class CmsOrgUnitManager {
         String ouFqn,
         String description,
         int flags,
-        String resourceName) throws CmsException {
+        String resourceName)
+    throws CmsException {
 
         CmsResource resource = null;
         if (((flags & CmsOrganizationalUnit.FLAG_WEBUSERS) == 0) || (resourceName != null)) {
@@ -225,6 +228,23 @@ public class CmsOrgUnitManager {
 
         CmsOrganizationalUnit parent = readOrganizationalUnit(cms, ouFqn);
         return m_securityManager.getOrganizationalUnits(cms.getRequestContext(), parent, includeChildren);
+    }
+
+    /**
+     * Gets all organizational units x such that x and all of its ancestor org. units, up to the root
+     * organizational unit contain a given path.
+     *
+     * @param cms the CMS context
+     * @param rootPath the root path of a resource
+     * @return the list of organizational units containing the path
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsOrganizationalUnit> getOrgUnitsForResource(CmsObject cms, String rootPath) throws CmsException {
+
+        CmsOrganizationalUnit rootOU = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/");
+        List<CmsOrganizationalUnit> result = new ArrayList<>();
+        collectOrgUnitsForResource(cms, rootPath, rootOU, result);
+        return result;
     }
 
     /**
@@ -375,5 +395,48 @@ public class CmsOrgUnitManager {
     public void writeOrganizationalUnit(CmsObject cms, CmsOrganizationalUnit organizationalUnit) throws CmsException {
 
         m_securityManager.writeOrganizationalUnit(cms.getRequestContext(), organizationalUnit);
+    }
+
+    /**
+     * Helper method for collecting all organizational units such that they and their ancestors all contain a given resource.
+     *
+     * @param cms the CMS context
+     * @param resourceRootPath the resource root path to check for
+     * @param parentOU the current OU
+     * @param ous the list of results
+     *
+     * @throws CmsException if something goes wrong
+     */
+    void collectOrgUnitsForResource(
+        CmsObject cms,
+        String resourceRootPath,
+        CmsOrganizationalUnit parentOU,
+        List<CmsOrganizationalUnit> ous)
+    throws CmsException {
+
+        List<CmsResource> resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+            cms,
+            parentOU.getName());
+        boolean insideOU = false;
+
+        for (CmsResource res : resources) {
+            if (resourceRootPath.startsWith(res.getRootPath())) {
+                insideOU = true;
+                break;
+            }
+        }
+        if (insideOU) {
+            for (CmsOrganizationalUnit ou : OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                cms,
+                parentOU.getName(),
+                false)) {
+                try {
+                    collectOrgUnitsForResource(cms, resourceRootPath, ou, ous);
+                } catch (CmsException e) {
+                    // ignore
+                }
+            }
+            ous.add(parentOU);
+        }
     }
 }

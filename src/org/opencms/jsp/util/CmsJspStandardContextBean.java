@@ -465,36 +465,13 @@ public final class CmsJspStandardContextBean {
         @Override
         public Object transform(Object input) {
 
-            String type = m_prefix + String.valueOf(input);
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                m_cms,
-                m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
-            List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
-            CmsDetailPageInfo detailPage = null;
-            boolean usingDefault = false;
-            if ((detailPages == null) || (detailPages.size() == 0)) {
-                detailPage = config.getDefaultDetailPage();
-                usingDefault = true;
-            } else {
-                detailPage = detailPages.get(0);
-            }
-            if (detailPage == null) {
-                return "[No detail page configured for type =" + type + "=]";
-            }
+            String prefix = m_prefix;
+            CmsObject cms = m_cms;
+            String inputStr = String.valueOf(input);
 
-            CmsUUID id = detailPage.getId();
-            try {
-                CmsResource r = m_cms.readResource(id);
-                String link = OpenCms.getLinkManager().substituteLink(m_cms, r);
-                if (usingDefault) {
-                    link = CmsStringUtil.joinPaths(link, (String)input);
-                }
-                return link;
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-                return "[Error reading detail page for type =" + type + "=]";
-            }
+            return getFunctionDetailLink(cms, prefix, inputStr, false);
         }
+
     }
 
     /**
@@ -824,6 +801,56 @@ public final class CmsJspStandardContextBean {
 
         m_detailContentResource = CmsDetailPageResourceHandler.getDetailResource(req);
         m_detailFunctionPage = CmsDetailPageResourceHandler.getDetailFunctionPage(req);
+    }
+
+    /**
+     * Gets the link to a function detail page.
+     *
+     * @param cms the CMS context
+     * @param prefix the function detail prefix
+     * @param functionName the function name
+     * @param fullLink true if links should be generated with server prefix
+     *
+     * @return the link
+     */
+    public static String getFunctionDetailLink(CmsObject cms, String prefix, String functionName, boolean fullLink) {
+
+        String type = prefix + functionName;
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.addSiteRoot(cms.getRequestContext().getUri()));
+        List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
+        CmsDetailPageInfo detailPage = null;
+        boolean usingDefault = false;
+        if ((detailPages == null) || (detailPages.size() == 0)) {
+            detailPage = config.getDefaultDetailPage();
+            usingDefault = true;
+        } else {
+            detailPage = detailPages.get(0);
+        }
+        if (detailPage == null) {
+            return "[No detail page configured for type =" + type + "=]";
+        }
+
+        CmsUUID id = detailPage.getId();
+        try {
+            CmsResource r = cms.readResource(id);
+            boolean originalForceAbsoluteLinks = cms.getRequestContext().isForceAbsoluteLinks();
+            try {
+                cms.getRequestContext().setForceAbsoluteLinks(fullLink || originalForceAbsoluteLinks);
+                String link = OpenCms.getLinkManager().substituteLink(cms, r);
+                if (usingDefault) {
+                    link = CmsStringUtil.joinPaths(link, functionName);
+                }
+                return link;
+            } finally {
+                cms.getRequestContext().setForceAbsoluteLinks(originalForceAbsoluteLinks);
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return "[Error reading detail page for type =" + type + "=]";
+        }
     }
 
     /**

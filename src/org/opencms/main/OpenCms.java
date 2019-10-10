@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -212,10 +213,10 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getCredentialsResolver();
     }
 
-    /** 
+    /**
      * Gets the database pool names.<p>
-     * 
-     * @return the database pool names 
+     *
+     * @return the database pool names
      */
     public static List<String> getDbPoolNames() {
 
@@ -599,6 +600,10 @@ public final class OpenCms {
     public static CmsThreadStore getThreadStore() {
 
         return OpenCmsCore.getInstance().getThreadStore();
+    }
+
+    public static CmsUserDataRequestManager getUserDataRequestManager() {
+        return OpenCmsCore.getInstance().getUserDataRequestManager();
     }
 
     /**

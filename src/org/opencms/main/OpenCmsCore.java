@@ -71,6 +71,7 @@ import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
+import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -340,6 +341,9 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
+
+    /** The user data request manager. */
+    private CmsUserDataRequestManager m_userDataRequestManager;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -919,6 +923,16 @@ public final class OpenCmsCore {
     protected CmsThreadStore getThreadStore() {
 
         return m_threadStore;
+    }
+
+    /**
+     * Gets the user data request manager.
+     *
+     * @return the user data request manager
+     */
+    protected CmsUserDataRequestManager getUserDataRequestManager() {
+
+        return m_userDataRequestManager;
     }
 
     /**
@@ -1677,6 +1691,12 @@ public final class OpenCmsCore {
             m_templateContextManager = new CmsTemplateContextManager(initCmsObject(adminCms));
             m_workflowManager = systemConfiguration.getWorkflowManager();
             m_letsEncryptConfig = systemConfiguration.getLetsEncryptConfig();
+
+            m_userDataRequestManager = systemConfiguration.getUserDataRequestManager();
+            if (m_userDataRequestManager != null) {
+                m_userDataRequestManager.initialize(initCmsObject(adminCms));
+            }
+
             if (m_workflowManager == null) {
                 m_workflowManager = new CmsDefaultWorkflowManager();
                 m_workflowManager.setParameters(new HashMap<String, String>());
@@ -2711,10 +2731,10 @@ public final class OpenCmsCore {
             params = "__loginform=true";
         } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
             && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
-            // login form property value not set, but form login set in configuration
-            // build a redirect URL to the default login form URI configured in opencms.properties
-            loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
-        }
+                // login form property value not set, but form login set in configuration
+                // build a redirect URL to the default login form URI configured in opencms.properties
+                loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
+            }
 
         String callbackURL = CmsRequestUtil.encodeParamsWithUri(path, req);
         if (loginFormURL != null) {

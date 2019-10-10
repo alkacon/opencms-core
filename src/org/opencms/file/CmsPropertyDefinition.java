@@ -102,6 +102,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** The name of the VFS property that controls the caching. */
     public static final String PROPERTY_CACHE = "cache";
 
+    /** The property to read an additional category folder from.  */
+    public static final String PROPERTY_CATEGORY_REPOSITORY = "category.repository";
+
     /** Property to define the function detail container for a template. */
     public static final String PROPERTY_CONTAINER_INFO = "container.info";
 
@@ -246,6 +249,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the resource title. */
     public static final String PROPERTY_TITLE = "Title";
 
+    /** Property for user data request configuration. */
+    public static final String PROPERTY_UDR_CONFIG = "udr.config";
+
+    /** Property used to configure default organizational unit. */
+    public static final String PROPERTY_UDR_DEFAULTOU = "udr.defaultou";
+
     /** Name of the property used to control whether mapped URL names should replace previous URL names. */
     public static final String PROPERTY_URLNAME_REPLACE = "urlname.replace";
 
@@ -272,9 +281,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
         CmsUUID.getNullUUID(),
         "",
         TYPE_NORMAL);
-
-    /** The property to read an additional category folder from.  */
-    public static final String PROPERTY_CATEGORY_REPOSITORY = "category.repository";
 
     /** The id of this property definition. */
     private CmsUUID m_id;

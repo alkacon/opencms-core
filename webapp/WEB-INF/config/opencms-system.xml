@@ -29,6 +29,7 @@
             <resourceinithandler class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler" />
             <resourceinithandler class="org.opencms.main.CmsAliasResourceHandler" />
             <resourceinithandler class="org.opencms.pdftools.CmsPdfResourceHandler" />
+            <resourceinithandler class="org.opencms.jsp.userdata.CmsUserDataResourceHandler" />
         </resourceinit>
         <requesthandlers>
             <requesthandler class="org.opencms.main.CmsStaticResourceHandler" />
@@ -118,5 +119,8 @@
         </ade>
         <subscriptionmanager enabled="true" poolname="default" maxvisited="100" />
         <shell-server enabled="false" port="1101" />
+        <userdata>
+            <userdata-domain class="org.opencms.jsp.userdata.CmsDefaultUserDataDomain" />
+        </userdata> 
     </system>
 </opencms>

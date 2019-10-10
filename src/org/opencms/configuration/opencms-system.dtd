@@ -44,7 +44,8 @@
 	detail-page-handler?,
 	restrict-detail-contents?,
 	shell-server?,
-	letsencrypt?
+	letsencrypt?,
+	userdata?
 	)>
 
 <!--
@@ -603,4 +604,14 @@
 -->  
 <!ELEMENT detail-page-handler (param*) >
 <!ATTLIST detail-page-handler class CDATA #REQUIRED >
+
+
+<!ELEMENT userdata (userdata-domain*) >
+<!ELEMENT userdata-domain (param*) >
+<!ATTLIST userdata-domain class CDATA #REQUIRED>
+
+
+
+
+
 
