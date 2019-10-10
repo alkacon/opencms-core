@@ -258,7 +258,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
         assertEquals(topFolderRes, folder1Res.getParentFolder());
 
         assertEquals("/folder1/subfolder12/", fileRes.getSitePathFolder());
-        assertEquals("/folder1/", fileRes.getSitePathParentFolder());
+        assertEquals("/folder1/subfolder12/", fileRes.getSitePathParentFolder());
         assertEquals("/folder1/", folderRes.getParentFolder().getSitePathFolder());
         assertEquals("/folder1/", folderRes.getSitePathParentFolder());
         assertEquals("/", folder1Res.getSitePathParentFolder());
