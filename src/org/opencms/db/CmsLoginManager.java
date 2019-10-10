@@ -283,8 +283,10 @@ public class CmsLoginManager {
         if (m_maxInactive == null) {
             return false;
         }
-
         try {
+            if (user.getLastlogin() == 0) {
+                return false;
+            }
             long maxInactive = CmsStringUtil.parseDuration(m_maxInactive, Long.MAX_VALUE);
             return (System.currentTimeMillis() - user.getLastlogin()) > maxInactive;
         } catch (Exception e) {
