@@ -316,6 +316,9 @@ public class CmsContainerPageCopier {
                 && (typeConfig != null)
                 && (originalElement.isCreateNew() || typeConfig.isCopyInModels())
                 && !type.getTypeName().equals(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME)) {
+                // set the request context locale to the target content locale as this is used during content creation
+                Locale targetLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, m_targetFolder);
+                targetCms.getRequestContext().setLocale(targetLocale);
                 CmsResource resourceCopy = typeConfig.createNewElement(
                     targetCms,
                     originalResource,
