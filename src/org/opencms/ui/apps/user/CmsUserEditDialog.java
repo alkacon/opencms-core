@@ -60,6 +60,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
+import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.login.CmsPasswordForm;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -1458,10 +1459,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         setUserPasswordStatus(user, m_forceResetPassword.getValue().booleanValue());
         user.setDescription(m_description.getValue());
         user.setManaged(!m_selfmanagement.getValue().booleanValue());
-        user.setEnabled(m_enabled.getValue().booleanValue());
+        boolean enabled = m_enabled.getValue().booleanValue();
+        user.setEnabled(enabled);
+        if (enabled) {
+            user.getAdditionalInfo().remove(CmsLoginController.KEY_ACCOUNT_LOCKED);
+        }
         m_userdata.submit(user, m_cms, new Runnable() {
 
             public void run() {
+
                 //
             }
         }, true);
