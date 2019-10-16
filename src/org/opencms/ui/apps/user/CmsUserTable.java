@@ -1118,13 +1118,13 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsUserTable.this);
                 } else if (event.getButton().equals(MouseButton.LEFT)
                     && TableProperty.Name.equals(event.getPropertyId())) {
-                    CmsUser user = ((Set<CmsUser>)getValue()).iterator().next();
-                    try {
-                        openInfoDialog(user.getId());
-                    } catch (CmsException e) {
-                        LOG.error("Error on opening user info dialog", e);
+                        CmsUser user = ((Set<CmsUser>)getValue()).iterator().next();
+                        try {
+                            openInfoDialog(user.getId());
+                        } catch (CmsException e) {
+                            LOG.error("Error on opening user info dialog", e);
+                        }
                     }
-                }
 
             }
 
@@ -1163,12 +1163,12 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                     return OpenCmsTheme.TABLE_COLUMN_BOX_GRAY;
                 }
 
-                if (((Boolean)item.getItemProperty(TableProperty.NEWUSER).getValue()).booleanValue()) {
-                    return OpenCmsTheme.TABLE_COLUMN_BOX_BLUE;
-                }
-
                 if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
                     return OpenCmsTheme.TABLE_COLUMN_BOX_RED;
+                }
+
+                if (((Boolean)item.getItemProperty(TableProperty.NEWUSER).getValue()).booleanValue()) {
+                    return OpenCmsTheme.TABLE_COLUMN_BOX_BLUE;
                 }
 
                 if (isUserPasswordReset(user)) {
@@ -1353,11 +1353,11 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         if (disabled) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_DISABLED_0);
         }
-        if (newUser) {
-            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
-        }
         if (OpenCms.getLoginManager().isUserTempDisabled(user.getName())) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_UNLOCK_USER_STATUS_0);
+        }
+        if (newUser) {
+            return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_INACTIVE_0);
         }
         if (isUserPasswordReset(user)) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_PASSWORT_RESET_0);
