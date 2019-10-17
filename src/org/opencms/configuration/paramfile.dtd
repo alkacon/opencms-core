@@ -1,0 +1,13 @@
+<!-- DTD for parameter files used by org.opencms.configuration.CmsParameterStore. -->
+<!-- weight on individual param elements takes precendence over weight on params element. -->
+
+<!ELEMENT params (param*)>
+<!ATTLIST params
+	weight CDATA #IMPLIED
+>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param 
+	name CDATA #REQUIRED
+	weight CDATA #IMPLIED
+>
