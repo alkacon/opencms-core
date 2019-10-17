@@ -27,6 +27,7 @@
 
 package org.opencms.util;
 
+import org.opencms.configuration.CmsParameterStore;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -143,6 +144,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** The prefix indicating that the key represents a page context object. */
     public static final String KEY_PAGE_CONTEXT = "pageContext.";
+
+    /** Prefix for getting parameters from the CmsParameterStore. */
+    public static final String KEY_PARAM = "param:";
 
     /** Key used to specify the project id as macro value. */
     public static final String KEY_PROJECT_ID = "projectid";
@@ -958,6 +962,28 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 }
 
                 return value;
+            }
+
+            if (macro.startsWith(KEY_PARAM)) {
+                String remaining = macro.substring(KEY_PARAM.length());
+                int colPos = remaining.indexOf(":");
+                String defaultValue = null;
+                String key = null;
+                if (colPos > -1) {
+                    defaultValue = remaining.substring(colPos + 1);
+                    key = remaining.substring(0, colPos);
+                } else {
+                    key = remaining;
+                }
+                String val = CmsParameterStore.getInstance().getValue(m_cms, key);
+                if (val == null) {
+                    val = defaultValue;
+                }
+                if (val == null) {
+                    LOG.warn("Parameter not defined: " + remaining);
+                }
+                return val;
+
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_NAME.equals(macro)) {
