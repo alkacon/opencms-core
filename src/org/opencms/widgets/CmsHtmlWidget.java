@@ -97,16 +97,6 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
      *
      * @param configuration the configuration to use
      */
-    public CmsHtmlWidget(CmsHtmlWidgetOption configuration) {
-
-        super(configuration);
-    }
-
-    /**
-     * Creates a new html editing widget with the given configuration.<p>
-     *
-     * @param configuration the configuration to use
-     */
     public CmsHtmlWidget(String configuration) {
 
         super(configuration);
@@ -399,9 +389,9 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
         Locale contentLocale)
     throws JSONException {
 
-        String embeddedImageGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get("imagegallery");
-        String embeddedDownloadGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get(
-            "downloadgallery");
+        CmsHtmlWidgetOption widgetOption = parseWidgetOptions(cms);
+        String embeddedImageGalleryOptions = widgetOption.getEmbeddedConfigurations().get("imagegallery");
+        String embeddedDownloadGalleryOptions = widgetOption.getEmbeddedConfigurations().get("downloadgallery");
 
         if (embeddedDownloadGalleryOptions != null) {
             CmsAdeDownloadGalleryWidget widget = new CmsAdeDownloadGalleryWidget();
@@ -439,7 +429,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
      */
     protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource, Locale contentLocale) {
 
-        return getJSONConfiguration(getHtmlWidgetOption(), cms, resource, contentLocale);
+        return getJSONConfiguration(parseWidgetOptions(cms), cms, resource, contentLocale);
     }
 
     /**
@@ -489,7 +479,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                     // get widget instance and set the widget configuration
                     Class<?> widgetClass = Class.forName(widgetClassName);
                     A_CmsHtmlWidget editorWidget = (A_CmsHtmlWidget)widgetClass.newInstance();
-                    editorWidget.setHtmlWidgetOption(getHtmlWidgetOption());
+                    editorWidget.setConfiguration(getConfiguration());
                     m_editorWidget = editorWidget;
                 } else {
                     // set the text area to display 15 rows for editing

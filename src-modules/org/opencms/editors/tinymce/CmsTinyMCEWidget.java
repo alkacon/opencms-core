@@ -58,16 +58,6 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
      *
      * @param configuration the configuration to use
      */
-    public CmsTinyMCEWidget(CmsHtmlWidgetOption configuration) {
-
-        super(configuration);
-    }
-
-    /**
-     * Creates a new TinyMCE widget with the given configuration.<p>
-     *
-     * @param configuration the configuration to use
-     */
     public CmsTinyMCEWidget(String configuration) {
 
         super(configuration);
@@ -143,7 +133,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsTinyMCEWidget(getHtmlWidgetOption());
+        return new CmsTinyMCEWidget(getConfiguration());
     }
 
     /**
@@ -159,9 +149,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         JSONObject result = new JSONObject();
         CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
         Properties displayOptions = options.getDisplayOptions(cms);
+        CmsHtmlWidgetOption optionBean = parseWidgetOptions(cms);
         try {
             result.put("elements", "ta_" + param.getId());
-            String editorHeight = getHtmlWidgetOption().getEditorHeight();
+            String editorHeight = optionBean.getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");
                 result.put("height", editorHeight);
@@ -179,17 +170,17 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                     "paste_text"));
             result.put("paste_as_text", pasteText);
 
-            result.put("fullpage", getHtmlWidgetOption().isFullPage());
-            result.merge(getToolbarJson(), true, false);
+            result.put("fullpage", optionBean.isFullPage());
+            result.merge(getToolbarJson(cms), true, false);
 
             result.put("language", OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage());
             // set CSS style sheet for current editor widget if configured
             boolean cssConfigured = false;
             String cssPath = "";
-            if (getHtmlWidgetOption().useCss()) {
-                cssPath = getHtmlWidgetOption().getCssPath();
+            if (optionBean.useCss()) {
+                cssPath = optionBean.getCssPath();
                 // set the CSS path to null (the created configuration String passed to JS will not include this path then)
-                getHtmlWidgetOption().setCssPath(null);
+                optionBean.setCssPath(null);
                 cssConfigured = true;
             } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
                 Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
@@ -221,20 +212,20 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                 contentCssLinks.add(OpenCms.getLinkManager().substituteLink(cms, cssPath));
             }
             result.put("content_css", CmsStringUtil.listAsString(contentCssLinks, ","));
-            if (getHtmlWidgetOption().showStylesFormat()) {
+            if (optionBean.showStylesFormat()) {
                 try {
-                    CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath());
+                    CmsFile file = cms.readFile(optionBean.getStylesFormatPath());
                     String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     result.put("style_formats", new String(file.getContents(), characterEncoding));
                 } catch (CmsException cmsException) {
-                    LOG.error("Can not open file:" + getHtmlWidgetOption().getStylesFormatPath(), cmsException);
+                    LOG.error("Can not open file:" + optionBean.getStylesFormatPath(), cmsException);
                 } catch (UnsupportedEncodingException ex) {
                     LOG.error(ex);
                 }
             }
-            String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions();
+            String formatSelectOptions = optionBean.getFormatSelectOptions();
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
-                && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
+                && !optionBean.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
                 result.put("block_formats", CmsHtmlWidget.getTinyMceBlockFormats(formatSelectOptions));
             }
             result.put("entity_encoding", "named");
@@ -253,10 +244,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
      *
      * @throws JSONException if something goes wrong manipulating the JSON object
      */
-    private JSONObject getToolbarJson() throws JSONException {
+    private JSONObject getToolbarJson(CmsObject cms) throws JSONException {
 
         JSONObject result = new JSONObject();
-        List<String> barItems = getHtmlWidgetOption().getButtonBarShownItems();
+        List<String> barItems = parseWidgetOptions(cms).getButtonBarShownItems();
         String toolbar = CmsTinyMceToolbarHelper.createTinyMceToolbarStringFromGenericToolbarItems(barItems);
         result.put("toolbar", toolbar);
         String contextmenu = CmsTinyMceToolbarHelper.getContextMenuEntries(barItems);
