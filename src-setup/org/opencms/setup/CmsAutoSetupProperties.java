@@ -50,6 +50,9 @@ public final class CmsAutoSetupProperties {
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(CmsAutoSetupProperties.class);
 
+    /** The DB connection string parameters property name. */
+    public static final String PROP_DB_CONNECTION_STRING_PARAMS = "db.constrparams";
+
     /** The property key <code>db.connection.url</code> for providing the JDBC connection string,
      * e.g., <code>jdbc:mysql://localhost:3306/</code> for the default MySQL installation.
      */
@@ -152,6 +155,9 @@ public final class CmsAutoSetupProperties {
     /** The connection String/URL. */
     private String m_connectionUrl;
 
+    /** The db connection string parameters. */
+    private String m_conStrParams;
+
     /** The create db flag. */
     private boolean m_createDb;
 
@@ -191,20 +197,23 @@ public final class CmsAutoSetupProperties {
     /** The name of the jdbc driver to use. */
     private String m_jdbcDriver;
 
-    /** The servlet mapping. */
-    private String m_servletMapping;
-
     /** The server name. */
     private String m_serverName;
 
     /** The server URL. */
     private String m_serverUrl;
 
+    /** The servlet mapping. */
+    private String m_servletMapping;
+
     /** The name of the OpenCms webapp. */
     private String m_setupDefaultWebappName;
 
     /** The path to the webapp setup folder. */
     private String m_setupWebappPath;
+
+    /** Indicates if dots '.' should be printed to the real STDOUT while a setup is in progress. */
+    private boolean m_showProgress;
 
     /** The template DB for PostgreSQL. */
     private String m_templateDb;
@@ -220,9 +229,6 @@ public final class CmsAutoSetupProperties {
 
     /** The db user pwd for production. */
     private String m_workerUser;
-
-    /** Indicates if dots '.' should be printed to the real STDOUT while a setup is in progress. */
-    private boolean m_showProgress;
 
     /**
      * Public constructor.<p>
@@ -260,6 +266,7 @@ public final class CmsAutoSetupProperties {
         m_ethernetAddress = addProperty(PROP_SERVER_ETHERNET_ADDRESS);
         m_servletMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
         m_showProgress = Boolean.valueOf(addProperty(PROP_SETUP_SHOW_PROGRESS)).booleanValue();
+        m_conStrParams = addProperty(PROP_DB_CONNECTION_STRING_PARAMS);
 
         if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
             m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
@@ -277,6 +284,16 @@ public final class CmsAutoSetupProperties {
     public String getConnectionUrl() {
 
         return m_connectionUrl;
+    }
+
+    /**
+     * Returns the DB connection string parameters.<p>
+     *
+     * @return the DB connection string parameters
+     */
+    public String getConStrParams() {
+
+        return m_conStrParams;
     }
 
     /**

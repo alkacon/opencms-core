@@ -169,6 +169,9 @@ public class CmsAutoSetup {
         m_bean.setDbCreateConStr(m_props.getConnectionUrl());
         m_bean.setDbWorkConStr(m_props.getConnectionUrl());
         m_bean.setDbParamaters(m_props.toParameterMap(), m_props.getDbProvider(), "/opencms/", null);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_props.getConStrParams())) {
+            m_bean.setDbConStrParams(m_props.getConStrParams());
+        }
 
         m_bean.setServerName(m_props.getServerName());
         m_bean.setWorkplaceSite(m_props.getServerUrl());
