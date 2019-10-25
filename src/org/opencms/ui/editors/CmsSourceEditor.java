@@ -27,6 +27,7 @@
 
 package org.opencms.ui.editors;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
@@ -54,6 +55,7 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.codemirror.CmsCodeMirror;
 import org.opencms.ui.components.codemirror.CmsCodeMirror.CodeMirrorLanguage;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -707,15 +709,19 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
      */
     void save() {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         try {
             byte[] content = m_codeMirror.getValue().getBytes(m_file.getEncoding());
             m_file.getFile().setContents(content);
-            A_CmsUI.getCmsObject().writeFile(m_file.getFile());
+            cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+            cms.writeFile(m_file.getFile());
             m_changed = false;
             m_save.setEnabled(false);
             m_saveAndExit.setEnabled(false);
         } catch (Exception e) {
             CmsErrorDialog.showErrorDialog(e);
+        } finally {
+            cms.getRequestContext().removeAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
         }
     }
 
