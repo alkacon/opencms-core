@@ -55,6 +55,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message bundle key. */
     public static final String ERR_RESOURCE_INIT_HANDLER_NOT_CONFIGURED_0 = "ERR_RESOURCE_INIT_HANDLER_NOT_CONFIGURED_0";
 
+    /** Message bundle key. */
+    public static final String GUI_USER_INFORMATION_FOR_1 = "GUI_USER_INFORMATION_FOR_1";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
