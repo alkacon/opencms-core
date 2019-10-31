@@ -93,14 +93,25 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_BLOCK_START = "[";
 
     /** The default editor widget button bar configuration. */
-    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;pastetext;-;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
-        + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
-        + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
-        + "[;imagegallery;downloadgallery;linkgallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
-        // additional buttons from TinyMCE
-        + "[;abbr;absolute;acronym;advhr;attribs;backcolor;blockquote;cite;cleanup;del;emotions;fontselect;fontsizeselect;forecolor;hr"
-        + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;rtl"
-        + ";styleprops;template;visualaid;visualchars;];";
+    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;];"
+        + "[;find;replace;];"
+        + "[;copy;paste;pastetext;];"
+        + "[;visualchars;-;ltr;rtl;];"
+        + "[;removeformat;-;formatselect;-;style;];"
+        + "[;bold;italic;underline;strikethrough;];"
+        + "[;subscript;superscript;];"
+        + "[;orderedlist;unorderedlist;];"
+        + "[;alignleft;aligncenter;alignright;justify;];"
+        + "[;outdent;indent;-;blockquote;];"
+        + "[;link;unlink;-;anchor;];"
+        + "[;fontselect;-;fontsizeselect;];"
+        + "[;backcolor;forecolor;];"
+        + "[;imagegallery;downloadgallery;linkgallery;-;media;];"
+        + "[;specialchar;emotions;];"
+        + "[;table;-;hr;-;nonbreaking;];"
+        // the next line of options seem to be broken or useless:
+        + "[;editorlink;abbr;absolute;acronym;advhr;attribs;cite;cleanup;del;ins;insertdate;insertlayer;inserttime;movebackward;moveforward;newdocument;pagebreak;styleprops;template;visualaid;];"
+        + "[;print;-;spellcheck;-;fitwindow;-;source;];";
 
     /** The default button bar configuration as List. */
     public static final List<String> BUTTONBAR_DEFAULT_LIST = CmsStringUtil.splitAsList(BUTTONBAR_DEFAULT, ';');
@@ -114,8 +125,8 @@ public class CmsHtmlWidgetOption {
     /** The delimiter to use for separation of option values. */
     public static final char DELIMITER_VALUE = ';';
 
-    /** The editor widget default height to use. */
-    public static final String EDITOR_DEFAULTHEIGHT = "260px";
+    /** The editor widget default maximum height to use. */
+    public static final String EDITOR_DEFAULMAXTHEIGHT = "400px";
 
     /** Option for the "abbreviation" button. */
     public static final String OPTION_ABBR = "abbr";
@@ -240,6 +251,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "paste from word" button. */
     public static final String OPTION_PASTEWORD = "pasteword";
 
+    /** Option for the "print" button. */
+    public static final String OPTION_PRINT = "print";
+
     /** Option for the "replace" dialog. */
     public static final String OPTION_REPLACE = "replace";
 
@@ -248,6 +262,9 @@ public class CmsHtmlWidgetOption {
 
     /** Option for the "source" code mode. */
     public static final String OPTION_SOURCE = "source";
+
+    /** Option for the "special char dialog" button. */
+    public static final String OPTION_SPECIALCHAR = "specialchar";
 
     /** Option for the "spell check" dialog. */
     public static final String OPTION_SPELLCHECK = "spellcheck";
@@ -293,12 +310,14 @@ public class CmsHtmlWidgetOption {
         OPTION_STYLE,
         OPTION_TABLE,
         OPTION_UNLINK,
+        OPTION_HR,
         OPTION_ABBR,
         OPTION_ABSOLUTE,
         OPTION_ACRONYM,
         OPTION_ADVHR,
         OPTION_ATTRIBS,
         OPTION_BACKCOLOR,
+        OPTION_BLOCKQUOTE,
         OPTION_CITE,
         OPTION_CLEANUP,
         OPTION_DEL,
@@ -318,11 +337,12 @@ public class CmsHtmlWidgetOption {
         OPTION_NONBREAKING,
         OPTION_PAGEBREAK,
         OPTION_PASTEWORD,
+        OPTION_PRINT,
         OPTION_RTL,
         OPTION_STYLEPROPS,
+        OPTION_SPECIALCHAR,
         OPTION_TEMPLATE,
         OPTION_VISUALAID,
-        OPTION_VISUALCHARS,
         CmsAjaxImageGallery.GALLERYTYPE_NAME,
         CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
         CmsAjaxLinkGallery.GALLERYTYPE_NAME};
@@ -416,7 +436,7 @@ public class CmsHtmlWidgetOption {
 
         StringBuffer result = new StringBuffer(512);
         boolean added = false;
-        if (!option.getEditorHeight().equals(EDITOR_DEFAULTHEIGHT)) {
+        if (!option.getEditorHeight().equals(EDITOR_DEFAULMAXTHEIGHT)) {
             // append the height configuration
             result.append(OPTION_HEIGHT);
             result.append(option.getEditorHeight());
@@ -851,7 +871,7 @@ public class CmsHtmlWidgetOption {
         // initialize the members
         m_additionalButtons = new ArrayList<String>(OPTIONAL_BUTTONS_LIST.size());
         m_configuration = configuration;
-        m_editorHeight = EDITOR_DEFAULTHEIGHT;
+        m_editorHeight = EDITOR_DEFAULMAXTHEIGHT;
         m_hiddenButtons = new ArrayList<String>();
         // initialize the widget options
         parseOptions(configuration);
