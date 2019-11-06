@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
@@ -997,7 +998,7 @@ public final class CmsJspStandardContextBean {
     /**
      * Returns the detail function page.<p>
      *
-     * @return the detai function page
+     * @return the detail function page
      */
     public CmsJspResourceWrapper getDetailFunctionPage() {
 
@@ -1011,6 +1012,10 @@ public final class CmsJspStandardContextBean {
      */
     public CmsContainerPageBean getDetailOnlyPage() {
 
+        if ((null == m_detailOnlyPage) && (null != m_detailContentResource)) {
+            String pageRootPath = m_cms.getRequestContext().addSiteRoot(m_cms.getRequestContext().getUri());
+            m_detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(m_cms, m_request, pageRootPath);
+        }
         return m_detailOnlyPage;
     }
 
@@ -1340,6 +1345,15 @@ public final class CmsJspStandardContextBean {
      */
     public CmsContainerPageBean getPage() {
 
+        if (null == m_page) {
+            try {
+                initPage();
+            } catch (CmsException e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e, e);
+                }
+            }
+        }
         return m_page;
     }
 
