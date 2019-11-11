@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.user;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -106,7 +107,7 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
             List<CmsUser> userList = OpenCms.getOrgUnitManager().getUsers(m_cms, ouName, true);
             List<CmsOrganizationalUnit> oUs = OpenCms.getOrgUnitManager().getOrganizationalUnits(m_cms, ouName, true);
 
-            if (userList.isEmpty() && oUs.isEmpty()) {
+            if (userList.isEmpty() && oUs.isEmpty() && hasNoGroups()) {
                 m_label.setValue(
                     CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_DELETE_OU_CONFIRM_1, ouName));
             } else {
@@ -128,7 +129,32 @@ public class CmsDeleteOUDialog extends CmsBasicDialog {
         try {
             OpenCms.getOrgUnitManager().deleteOrganizationalUnit(m_cms, m_ouName);
         } catch (CmsException e) {
-            LOG.error("Unable to delete OU");
+            LOG.error("Unable to delete OU", e);
+        }
+    }
+
+    /**
+     * Ou has no groups which have to be deleted first? (all except for the Users group)
+     *
+     * @return true if Ou can be deleted directly
+     */
+    private boolean hasNoGroups() {
+
+        try {
+            List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(m_cms, m_ouName, true);
+            if (groups.size() == 0) {
+                return true;
+            }
+            for (CmsGroup g : groups) {
+                if (!g.getSimpleName().equals("Users")) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (CmsException e) {
+            LOG.error("Unable to reade groups of OU", e);
+            return false;
+
         }
     }
 
