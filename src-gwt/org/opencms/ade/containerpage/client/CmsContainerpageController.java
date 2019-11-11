@@ -771,6 +771,7 @@ public final class CmsContainerpageController {
                     CmsCoreProvider.get().getStructureId(),
                     m_data.getTemplateContextInfo().getCurrentContext()));
         }
+
     }
 
     /**
@@ -2126,6 +2127,8 @@ public final class CmsContainerpageController {
             updateDetailPreviewStyles();
         });
         updateDetailPreviewStyles();
+        updateButtonsForCurrentView();
+
     }
 
     /**
@@ -3256,8 +3259,10 @@ public final class CmsContainerpageController {
                 }
             };
             action.execute();
+
             m_currentEditLevel = -1;
             reinitializeButtons();
+            updateButtonsForCurrentView();
             reInitInlineEditing();
             updateGalleryData(true, nextAction);
         }
@@ -3369,6 +3374,17 @@ public final class CmsContainerpageController {
     public boolean unlockResource(CmsUUID structureId) {
 
         return CmsCoreProvider.get().unlock(structureId);
+    }
+
+    public void updateButtonsForCurrentView() {
+
+        String nonDefaultViewClass = I_CmsLayoutBundle.INSTANCE.containerpageCss().nonDefaultView();
+        CmsUUID viewId = getElementView().getRootViewId();
+        if (viewId.isNullUUID()) {
+            RootPanel.get().removeStyleName(nonDefaultViewClass);
+        } else {
+            RootPanel.get().addStyleName(nonDefaultViewClass);
+        }
     }
 
     /**

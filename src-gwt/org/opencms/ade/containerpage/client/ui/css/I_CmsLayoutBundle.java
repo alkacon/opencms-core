@@ -148,6 +148,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String menuTabContainer();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        @ClassName("oc-nondefault-view")
+        String nonDefaultView();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */
