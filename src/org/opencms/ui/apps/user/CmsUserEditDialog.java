@@ -67,6 +67,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -950,7 +951,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      */
     void iniSite(CmsUserSettings settings) {
 
-        List<CmsSite> sitesList = OpenCms.getSiteManager().getAvailableSites(m_cms, false, false, m_ou.getValue());
+        List<CmsSite> sitesList = OpenCms.getSiteManager().getAvailableSites(m_cms, true, false, m_ou.getValue());
 
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty("caption", String.class, "");
@@ -959,7 +960,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getSiteRoot())) {
                 if (hasRole(CmsRole.VFS_MANAGER)
                     | ((m_user == null)
-                        & m_group.getValue().equals(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
+                        & Arrays.asList(
+                            CmsRole.ACCOUNT_MANAGER.forOrgUnit(m_ou.getValue()),
+                            CmsRole.ADMINISTRATOR.forOrgUnit(m_ou.getValue()),
+                            CmsRole.WORKPLACE_MANAGER.forOrgUnit(m_ou.getValue()),
+                            CmsRole.DATABASE_MANAGER.forOrgUnit(m_ou.getValue()),
+                            CmsRole.PROJECT_MANAGER.forOrgUnit(m_ou.getValue()),
+                            CmsRole.VFS_MANAGER.forOrgUnit(m_ou.getValue()),
+                            CmsRole.ROOT_ADMIN.forOrgUnit(m_ou.getValue())).contains(
+                                ((CmsRole)(m_role.getValue())).forOrgUnit(m_ou.getValue())))) {
                     Item item = container.addItem(site.getSiteRoot());
                     item.getItemProperty("caption").setValue(site.getTitle());
                 }

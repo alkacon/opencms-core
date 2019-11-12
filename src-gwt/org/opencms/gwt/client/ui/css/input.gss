@@ -1,5 +1,5 @@
 @external html-face, gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled,
-	tox, tox-tinymce, tox-statusbar__branding, picker_wrapper, picker_selector, picker_done;
+	tox, tox-tinymce, tox-icon, tox-statusbar__branding, picker_wrapper, picker_selector, picker_done;
 
 /* inner text box of the text box widget */
 input.textBox {
@@ -631,4 +631,9 @@ div.formDescriptionLabel {
 
 .tox.tox-tinymce {
 	border-radius: 4px; 
+}
+
+.tox .tox-icon > svg {
+	width: 24px !important;
+	height: 24px !important; 
 }
