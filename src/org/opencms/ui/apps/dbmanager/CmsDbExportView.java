@@ -63,6 +63,7 @@ import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
@@ -391,8 +392,8 @@ public class CmsDbExportView extends VerticalLayout {
         m_site.setContainerDataSource(container);
         m_site.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         m_site.setItemCaptionPropertyId("title");
+        m_site.setFilteringMode(FilteringMode.CONTAINS);
         m_site.setNullSelectionAllowed(false);
-        m_site.setTextInputAllowed(false);
         m_site.setValue(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
         m_site.addValueChangeListener(new ValueChangeListener() {
 
