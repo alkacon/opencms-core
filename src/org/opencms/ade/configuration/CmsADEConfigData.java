@@ -985,6 +985,16 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns true if the subsite should be included in the site selector.
+     *
+     * @return true if the subsite should be included in the site selector
+     */
+    public boolean isIncludeInSiteSelector() {
+
+        return m_configSequence.getConfig().isIncludeInSiteSelector();
+    }
+
+    /**
      * Returns true if this is a module configuration instead of a normal sitemap configuration.<p>
      *
      * @return true if this is a module configuration

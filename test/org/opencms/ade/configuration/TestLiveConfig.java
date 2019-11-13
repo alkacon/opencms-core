@@ -46,8 +46,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -236,6 +238,29 @@ public class TestLiveConfig extends OpenCmsTestCase {
             "/today/news",
             null);
         assertEquals("/sites/default/", detailPage);
+    }
+
+    /**
+     * Tests whether the 'include in site selector' flag is processed correctly.
+     *
+     * @throws Exception -
+     */
+    public void testIncludeInSiteSelector() throws Exception {
+
+        createDetailPageTestSitemap("/includeInSiteSelector", false, false, true);
+        createDetailPageTestSitemap("/includeInSiteSelector/alpha", false, false, false);
+        createDetailPageTestSitemap("/includeInSiteSelector/beta", false, false, true);
+        createDetailPageTestSitemap("/includeInSiteSelector/alpha/gamma", false, false, true);
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+
+        List<String> subsites = OpenCms.getADEManager().getSubsitesForSiteSelector(false);
+        Set<String> subsiteSet = new HashSet<>(subsites);
+        Set<String> expected = new HashSet<>(
+            list(
+                "/sites/default/includeInSiteSelector/",
+                "/sites/default/includeInSiteSelector/alpha/gamma/",
+                "/sites/default/includeInSiteSelector/beta/"));
+        assertEquals(expected, subsiteSet);
     }
 
     /**
@@ -628,19 +653,19 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         preferDetailPages = true;
         excludeExternalContents = true;
-        createDetailPageTestSitemap(base + "/aa", preferDetailPages, excludeExternalContents);
+        createDetailPageTestSitemap(base + "/aa", preferDetailPages, excludeExternalContents, false);
 
         preferDetailPages = true;
         excludeExternalContents = false;
-        createDetailPageTestSitemap(base + "/ab", preferDetailPages, excludeExternalContents);
+        createDetailPageTestSitemap(base + "/ab", preferDetailPages, excludeExternalContents, false);
 
         preferDetailPages = false;
         excludeExternalContents = true;
-        createDetailPageTestSitemap(base + "/ba", preferDetailPages, excludeExternalContents);
+        createDetailPageTestSitemap(base + "/ba", preferDetailPages, excludeExternalContents, false);
 
         preferDetailPages = false;
         excludeExternalContents = false;
-        createDetailPageTestSitemap(base + "/bb", preferDetailPages, excludeExternalContents);
+        createDetailPageTestSitemap(base + "/bb", preferDetailPages, excludeExternalContents, false);
 
         OpenCms.getADEManager().waitForCacheUpdate(false);
         String aa = base + "/aa";
@@ -887,7 +912,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         return cms;
     }
 
-    private void createDetailPageTestSitemap(String path, boolean preferDetailPages, boolean excludeExternalContents)
+    private void createDetailPageTestSitemap(
+        String path,
+        boolean preferDetailPages,
+        boolean excludeExternalContents,
+        boolean includeInSiteSelector)
     throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -907,6 +936,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
             + "    <ExcludeExternalDetailContents>"
             + excludeExternalContents
             + "</ExcludeExternalDetailContents>\n"
+            + "<IncludeInSiteSelector>"
+            + includeInSiteSelector
+            + "</IncludeInSiteSelector>"
             + " <ResourceType>\n"
             + "      <TypeName><![CDATA[article1]]></TypeName>\n"
             + "      <Disabled><![CDATA[false]]></Disabled>\n"

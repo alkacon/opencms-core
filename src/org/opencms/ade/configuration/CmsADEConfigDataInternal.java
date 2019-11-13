@@ -65,6 +65,9 @@ public class CmsADEConfigDataInternal {
     /** The configured formatter changes. */
     protected CmsFormatterChangeSet m_formatterChangeSet = new CmsFormatterChangeSet();
 
+    /** True if subsite should be included in site selector. */
+    protected boolean m_includeInSiteSelector;
+
     /** True if this is a module configuration, not a normal sitemap configuration. */
     protected boolean m_isModuleConfig;
 
@@ -106,7 +109,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-
+    
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -122,6 +125,7 @@ public class CmsADEConfigDataInternal {
      * @param createContentsLocally the "create contents locally" flag
      * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
      * @param excludeExternalDetailContents the "excludeExternalDetailContents" flag
+     * @param includeInSiteSelector the "includeInSiteSelector" flag
      * @param formatterChangeSet the formatter changes
      * @param removeAllFunctions flag indicating whether all functions should be removed
      * @param functionIds the dynamic functions available
@@ -142,6 +146,7 @@ public class CmsADEConfigDataInternal {
         boolean createContentsLocally,
         boolean preferDetailPagesForLocalContents,
         boolean excludeExternalDetailContents,
+        boolean includeInSiteSelector,
         CmsFormatterChangeSet formatterChangeSet,
         boolean removeAllFunctions,
         Set<CmsUUID> functionIds) {
@@ -168,6 +173,7 @@ public class CmsADEConfigDataInternal {
         m_dynamicFunctions = functionIds;
         m_removeAllFunctions = removeAllFunctions;
         m_excludeExternalDetailContents = excludeExternalDetailContents;
+        m_includeInSiteSelector = includeInSiteSelector;
     }
 
     /**
@@ -344,6 +350,16 @@ public class CmsADEConfigDataInternal {
     public boolean isExcludeExternalDetailContents() {
 
         return m_excludeExternalDetailContents;
+    }
+
+    /**
+     * Returns true if the subsite should be included in the site selector.
+     *
+     * @return true if the subsite should be included in the site selector
+     */
+    public boolean isIncludeInSiteSelector() {
+
+        return m_includeInSiteSelector;
     }
 
     /**

@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -82,6 +83,9 @@ public class CmsADEConfigCacheState {
 
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigDataInternal> m_siteConfigurationsByPath = new HashMap<String, CmsADEConfigDataInternal>();
+
+    /** Cached list of subsites to be included in the site selector. */
+    private volatile List<String> m_subsitesForSiteSelector;
 
     /**
      * Creates a new configuration cache state.<p>
@@ -277,6 +281,21 @@ public class CmsADEConfigCacheState {
     public Set<String> getSiteConfigurationPaths() {
 
         return m_siteConfigurationsByPath.keySet();
+    }
+
+    /**
+     * Gets subsites to be included in the site selector.
+     *
+     * @return the list of root paths of subsites that should be included in the site selector
+     */
+    public List<String> getSubsitesForSiteSelector() {
+
+        if (m_subsitesForSiteSelector == null) {
+            List<String> paths = m_siteConfigurations.values().stream().filter(
+                conf -> conf.isIncludeInSiteSelector()).map(conf -> conf.getBasePath()).collect(Collectors.toList());
+            m_subsitesForSiteSelector = Collections.unmodifiableList(paths);
+        }
+        return m_subsitesForSiteSelector;
     }
 
     /**

@@ -122,6 +122,7 @@ public class CmsConfigurationReader {
     /** The error node name. */
     public static final String N_ERROR = "Error";
 
+    /** The 'exclude external detail contents' node name. */
     public static final String N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS = "ExcludeExternalDetailContents";
 
     /** The folder node name. */
@@ -138,6 +139,9 @@ public class CmsConfigurationReader {
 
     /** The function reference node name. */
     public static final String N_FUNCTION_REF = "FunctionRef";
+
+    /** The 'include in site selector' node name. */
+    public static final String N_INCLUDE_IN_SITE_SELECTOR = "IncludeInSiteSelector";
 
     /** The is default node name. */
     public static final String N_IS_DEFAULT = "IsDefault";
@@ -458,6 +462,7 @@ public class CmsConfigurationReader {
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
         boolean preferDetailPagesForLocalContents = getBoolean(root, N_PREFER_DETAIL_PAGES_FOR_LOCAL_CONTENTS);
         boolean exludeExternalDetailContents = getBoolean(root, N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS);
+        boolean includeInSiteSelector = getBoolean(root, N_INCLUDE_IN_SITE_SELECTOR);
 
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(
             content.getFile().getTypeId()).getTypeName().equals(CmsADEManager.MODULE_CONFIG_TYPE);
@@ -501,6 +506,7 @@ public class CmsConfigurationReader {
             createContentsLocally,
             preferDetailPagesForLocalContents,
             exludeExternalDetailContents,
+            includeInSiteSelector,
             formatterChangeSet,
             removeFunctions,
             functions);

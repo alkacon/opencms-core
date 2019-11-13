@@ -928,6 +928,19 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets the subsites to be displayed in the site selector.
+     *
+     * @param online true if we want the subsites for the Online project
+     *
+     * @return the subsites to be displayed in the site selector
+     */
+    public List<String> getSubsitesForSiteSelector(boolean online) {
+
+        return getCacheState(online).getSubsitesForSiteSelector();
+
+    }
+
+    /**
      * Processes a HTML redirect content.<p>
      *
      * This needs to be in the ADE manager because the user for whom the HTML redirect is being loaded
