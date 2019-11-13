@@ -1014,7 +1014,7 @@ public final class CmsJspStandardContextBean {
 
         if ((null == m_detailOnlyPage) && (null != m_detailContentResource)) {
             String pageRootPath = m_cms.getRequestContext().addSiteRoot(m_cms.getRequestContext().getUri());
-            m_detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(m_cms, m_request, pageRootPath);
+            m_detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(m_cms, m_request, pageRootPath, false);
         }
         return m_detailOnlyPage;
     }

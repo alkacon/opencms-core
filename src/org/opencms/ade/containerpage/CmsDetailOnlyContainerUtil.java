@@ -174,8 +174,27 @@ public final class CmsDetailOnlyContainerUtil {
      */
     public static CmsContainerPageBean getDetailOnlyPage(CmsObject cms, ServletRequest req, String pageRootPath) {
 
+        return getDetailOnlyPage(cms, req, pageRootPath, true);
+    }
+
+    /**
+     * Returns the detail only container page bean or <code>null</code> if none available.<p>
+     *
+     * @param cms the cms context
+     * @param req the current request
+     * @param pageRootPath the root path of the page
+     * @param lookupContextFirst flag, indicating if the bean should be looked up in the standard context first.
+     *
+     * @return the container page bean
+     */
+    public static CmsContainerPageBean getDetailOnlyPage(
+        CmsObject cms,
+        ServletRequest req,
+        String pageRootPath,
+        boolean lookupContextFirst) {
+
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
-        CmsContainerPageBean detailOnlyPage = standardContext.getDetailOnlyPage();
+        CmsContainerPageBean detailOnlyPage = lookupContextFirst ? standardContext.getDetailOnlyPage() : null;
         if (standardContext.isDetailRequest() && (detailOnlyPage == null)) {
 
             try {
