@@ -862,14 +862,15 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             }
             openPath(path, true);
             Container container = m_siteSelector.getContainerDataSource();
+            SiteSelectorOption optionToSelect = null;
             for (Object id : container.getItemIds()) {
                 SiteSelectorOption option = (SiteSelectorOption)id;
                 if ((option != null) && CmsStringUtil.comparePaths(option.getSite(), siteRoot)) {
-                    siteRoot = option.getSite();
+                    optionToSelect = option;
                     break;
                 }
             }
-            m_siteSelector.select(siteRoot);
+            m_siteSelector.select(optionToSelect);
         }
     }
 
