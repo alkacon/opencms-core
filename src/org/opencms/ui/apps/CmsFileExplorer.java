@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.CmsVaadinUtils.SiteSelectorOption;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
@@ -105,8 +106,8 @@ import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.HierarchicalContainer;
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.v7.event.ItemClickEvent;
@@ -845,7 +846,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         String currentSiteRoot = cms.getRequestContext().getSiteRoot();
-        if (force || !currentSiteRoot.equals(siteRoot)) {
+        if (force || !currentSiteRoot.equals(siteRoot) || (path != null)) {
             CmsAppWorkplaceUi.get().changeSite(siteRoot);
             if (path == null) {
                 path = m_locationCache.getFileExplorerLocation(siteRoot);
@@ -862,9 +863,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             openPath(path, true);
             Container container = m_siteSelector.getContainerDataSource();
             for (Object id : container.getItemIds()) {
-                String key = (String)id;
-                if (CmsStringUtil.comparePaths(key, siteRoot)) {
-                    siteRoot = key;
+                SiteSelectorOption option = (SiteSelectorOption)id;
+                if ((option != null) && CmsStringUtil.comparePaths(option.getSite(), siteRoot)) {
+                    siteRoot = option.getSite();
                     break;
                 }
             }
@@ -1051,18 +1052,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 changeSite(siteRoot, path, true);
             } else if ((siteRoot != null)
                 && !CmsStringUtil.comparePaths(siteRoot, cms.getRequestContext().getSiteRoot())) {
-                String saveState = m_currentState;
-                changeSite(siteRoot, path);
-                if (!getSelectionFromState(saveState).isEmpty()) {
-                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                    String saveState = m_currentState;
+                    changeSite(siteRoot, path);
+                    if (!getSelectionFromState(saveState).isEmpty()) {
+                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                    }
+                } else {
+                    String saveState = m_currentState;
+                    openPath(path, true);
+                    if (!getSelectionFromState(saveState).isEmpty()) {
+                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                    }
                 }
-            } else {
-                String saveState = m_currentState;
-                openPath(path, true);
-                if (!getSelectionFromState(saveState).isEmpty()) {
-                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
-                }
-            }
         }
     }
 
@@ -1731,27 +1732,45 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      */
     private ComboBox createSiteSelect(CmsObject cms) {
 
-        final IndexedContainer availableSites = CmsVaadinUtils.getAvailableSitesContainer(cms, SITE_CAPTION);
-        ComboBox combo = new ComboBox(null, availableSites);
+        final List<CmsVaadinUtils.SiteSelectorOption> sites = CmsVaadinUtils.getExplorerSiteSelectorOptions(cms);
+        final BeanItemContainer<SiteSelectorOption> container = new BeanItemContainer<>(SiteSelectorOption.class);
+        for (SiteSelectorOption option : sites) {
+            container.addItem(option);
+        }
+        ComboBox combo = new ComboBox(null, container);
         combo.setTextInputAllowed(true);
         combo.setNullSelectionAllowed(false);
         combo.setWidth("200px");
         combo.setInputPrompt(
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
-        combo.setItemCaptionPropertyId(SITE_CAPTION);
-        combo.select(cms.getRequestContext().getSiteRoot());
+        combo.setItemCaptionPropertyId("label");
+        combo.select(new SiteSelectorOption(cms.getRequestContext().getSiteRoot(), null, null));
         combo.setFilteringMode(FilteringMode.CONTAINS);
         combo.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
 
+            /** Flag used to temporarily disable the standard listener behavior, used when we change the combo box's value programatically. */
+            private boolean m_disabled;
+
             public void valueChange(ValueChangeEvent event) {
 
-                String value = (String)event.getProperty().getValue();
-                if (availableSites.containsId(value)) {
-                    changeSite(value, null);
+                if (m_disabled) {
+                    return;
+                }
+                SiteSelectorOption option = (SiteSelectorOption)(event.getProperty().getValue());
+                if (container.containsId(option)) {
+                    changeSite(option.getSite(), option.getPath());
                     m_appContext.updateOnChange();
-                    availableSites.removeAllContainerFilters();
+                    container.removeAllContainerFilters();
+                    if (option.getPath() != null) {
+                        try {
+                            m_disabled = true;
+                            combo.select(new SiteSelectorOption(option.getSite(), null, null));
+                        } finally {
+                            m_disabled = false;
+                        }
+                    }
                 }
             }
         });

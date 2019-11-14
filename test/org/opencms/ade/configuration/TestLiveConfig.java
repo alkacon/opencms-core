@@ -40,7 +40,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.CmsVaadinUtils.SiteSelectorOption;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -261,6 +264,21 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 "/sites/default/includeInSiteSelector/alpha/gamma/",
                 "/sites/default/includeInSiteSelector/beta/"));
         assertEquals(expected, subsiteSet);
+        List<SiteSelectorOption> options = CmsVaadinUtils.getExplorerSiteSelectorOptions(getCmsObject());
+
+        Set<String> actual = new HashSet<>();
+        for (SiteSelectorOption option : options) {
+            if (option.getPath() != null) {
+                actual.add(option.getPath());
+                assertTrue(
+                    "Site does not match",
+                    CmsStringUtil.comparePaths(option.getSite(), getCmsObject().getRequestContext().getSiteRoot()));
+            }
+        }
+        expected = new HashSet<>(
+            list("/includeInSiteSelector", "/includeInSiteSelector/alpha/gamma", "/includeInSiteSelector/beta"));
+        assertEquals(expected, actual);
+
     }
 
     /**

@@ -150,6 +150,15 @@ public final class CmsStringUtil {
     /** Day constant. */
     private static final long DAYS = 1000 * 60 * 60 * 24;
 
+    /** Multipliers used for duration parsing. */
+    private static final long[] DURATION_MULTIPLIERS = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000L, 1L};
+
+    /** Number and unit pattern for duration parsing. */
+    private static final Pattern DURATION_NUMBER_AND_UNIT_PATTERN = Pattern.compile("([0-9]+)([a-z]+)");
+
+    /** Units used for duration parsing. */
+    private static final String[] DURATION_UNTIS = {"d", "h", "m", "s", "ms"};
+
     /** Hour constant. */
     private static final long HOURS = 1000 * 60 * 60;
 
@@ -175,15 +184,6 @@ public final class CmsStringUtil {
 
     /** Regex that matches an xml head. */
     private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
-
-    /** Units used for duration parsing. */
-    private static final String[] DURATION_UNTIS = {"d", "h", "m", "s", "ms"};
-
-    /** Multipliers used for duration parsing. */
-    private static final long[] DURATION_MULTIPLIERS = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000L, 1L};
-
-    /** Number and unit pattern for duration parsing. */
-    private static final Pattern DURATION_NUMBER_AND_UNIT_PATTERN = Pattern.compile("([0-9]+)([a-z]+)");
 
     /**
      * Default constructor (empty), private because this class has only
@@ -1440,6 +1440,22 @@ public final class CmsStringUtil {
             LOG.error(e.getLocalizedMessage(), e);
             return new StringTemplateGroup("dummy");
         }
+    }
+
+    public static java.util.Optional<String> removePrefixPath(String prefix, String path) {
+
+        prefix = CmsFileUtil.addTrailingSeparator(prefix);
+        path = CmsFileUtil.addTrailingSeparator(path);
+        if (path.startsWith(prefix)) {
+            String result = path.substring(prefix.length() - 1);
+            if (result.length() > 1) {
+                result = CmsFileUtil.removeTrailingSeparator(result);
+            }
+            return java.util.Optional.of(result);
+        } else {
+            return java.util.Optional.empty();
+        }
+
     }
 
     /**

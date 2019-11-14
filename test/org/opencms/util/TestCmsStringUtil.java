@@ -372,6 +372,26 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the 'removePrefixPath' method.
+     */
+    public void testRemovePrefixPath() {
+
+        assertEquals(java.util.Optional.empty(), CmsStringUtil.removePrefixPath("/foo", "/foobar"));
+        assertEquals(java.util.Optional.empty(), CmsStringUtil.removePrefixPath("/foo", "/bar"));
+        assertEquals(java.util.Optional.of("/bar"), CmsStringUtil.removePrefixPath("/foo", "/foo/bar"));
+        assertEquals(java.util.Optional.of("/bar"), CmsStringUtil.removePrefixPath("/foo/", "/foo/bar"));
+        assertEquals(java.util.Optional.of("/bar"), CmsStringUtil.removePrefixPath("/foo/", "/foo/bar/"));
+        assertEquals(java.util.Optional.of("/bar"), CmsStringUtil.removePrefixPath("/foo", "/foo/bar/"));
+        assertEquals(
+            java.util.Optional.of("/foo/bar"),
+            CmsStringUtil.removePrefixPath("/xyzzy/blargh", "/xyzzy/blargh/foo/bar"));
+        assertEquals(java.util.Optional.of("/"), CmsStringUtil.removePrefixPath("/foo", "/foo"));
+        assertEquals(java.util.Optional.of("/"), CmsStringUtil.removePrefixPath("/foo/", "/foo/"));
+        assertEquals(java.util.Optional.of("/"), CmsStringUtil.removePrefixPath("/foo/", "/foo"));
+        assertEquals(java.util.Optional.of("/"), CmsStringUtil.removePrefixPath("/foo", "/foo/"));
+    }
+
+    /**
      * Tests <code>{@link CmsStringUtil#replacePrefix(String, String, String, boolean)}</code>.<p>
      */
     public void testReplacePrefix() {
