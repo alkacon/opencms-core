@@ -698,7 +698,7 @@ public final class CmsVaadinUtils {
                                 SiteSelectorOption option = new SiteSelectorOption(
                                     site.getSiteRoot(),
                                     remainingPath.get(),
-                                    "\u3009 " + title);
+                                    "\u2013 " + title);
                                 subsitesForSite.put(siteRootPath, option);
                             } catch (CmsPermissionViolationException e) {
                                 LOG.info(e.getLocalizedMessage(), e);
@@ -1556,7 +1556,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
