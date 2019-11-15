@@ -36,6 +36,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.A_CmsResourceTypeFolderBase;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -689,7 +690,7 @@ public final class CmsVaadinUtils {
                             try {
                                 CmsResource subsiteRes = titleCms.readResource(
                                     subsite,
-                                    CmsResourceFilter.IGNORE_EXPIRATION);
+                                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                                 CmsResourceUtil resUtil = new CmsResourceUtil(titleCms, subsiteRes);
                                 String title = resUtil.getTitle();
                                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
@@ -700,7 +701,7 @@ public final class CmsVaadinUtils {
                                     remainingPath.get(),
                                     "\u2013 " + title);
                                 subsitesForSite.put(siteRootPath, option);
-                            } catch (CmsPermissionViolationException e) {
+                            } catch (CmsPermissionViolationException | CmsVfsResourceNotFoundException e) {
                                 LOG.info(e.getLocalizedMessage(), e);
                             } catch (CmsException e) {
                                 LOG.warn(e.getLocalizedMessage(), e);
