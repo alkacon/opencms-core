@@ -123,7 +123,10 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
             if (!m_state.getIgnoreChecked() && parameters.containsKey(m_config.getParamKey())) {
                 final String[] checked = parameters.get(m_config.getParamKey());
                 for (int i = 0; i < checked.length; i++) {
-                    m_state.addChecked(checked[i]);
+                    String checkedEntry = checked[i];
+                    if ((null != checkedEntry) && !checkedEntry.isEmpty()) {
+                        m_state.addChecked(checkedEntry);
+                    }
                 }
 
             }
