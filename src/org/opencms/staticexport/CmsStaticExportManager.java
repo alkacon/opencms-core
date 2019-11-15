@@ -485,6 +485,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_DISABLED_0));
             }
+            // we still need to clear all caches
+            switch (event.getType()) {
+                case I_CmsEventListener.EVENT_UPDATE_EXPORTS:
+                case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                    clearCaches(event);
+                    break;
+                default:
+                    // no operation
+            }
             return;
         }
         I_CmsReport report = null;
