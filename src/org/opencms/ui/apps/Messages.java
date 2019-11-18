@@ -2489,6 +2489,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_STATISTICS_NUM_WORKPLACESERVER_0 = "GUI_SITE_STATISTICS_NUM_WORKPLACESERVER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SUBSITE_SELECTION_0 = "GUI_SITE_SUBSITE_SELECTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SUBSITE_SELECTION_DISABLED_0 = "GUI_SITE_SUBSITE_SELECTION_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SUBSITE_SELECTION_ENABLED_0 = "GUI_SITE_SUBSITE_SELECTION_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_SUBSITE_SELECTION_HELP_0 = "GUI_SITE_SUBSITE_SELECTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_TAB_ADVANCED_0 = "GUI_SITE_TAB_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2719,6 +2731,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_XPATH_HELP_0 = "GUI_SOURCESEARCH_XPATH_HELP_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SQLCONSOLE_APP_HELP_0 = "GUI_SQLCONSOLE_APP_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -3631,11 +3644,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SQLCONSOLE_END_0 = "RPT_SQLCONSOLE_END_0";
 
     /** Message constant for key in the resource bundle. */
-
     public static final String RPT_SQLCONSOLE_NUM_ROWS_RETRIEVED_1 = "RPT_SQLCONSOLE_NUM_ROWS_RETRIEVED_1";
 
     /** Message constant for key in the resource bundle. */
-
     public static final String RPT_SQLCONSOLE_ROWS_AFFECTED_1 = "RPT_SQLCONSOLE_ROWS_AFFECTED_1";
 
     /** Message constant for key in the resource bundle. */

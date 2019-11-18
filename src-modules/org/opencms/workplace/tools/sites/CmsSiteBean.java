@@ -96,6 +96,9 @@ public class CmsSiteBean implements Serializable {
     /** The secure server. */
     private boolean m_secureServer;
 
+    /** True if subsite selection should be enabled. */
+    private boolean m_subsiteSelection;
+
     /** The secure URL. */
     private String m_secureUrl;
 
@@ -654,7 +657,8 @@ public class CmsSiteBean implements Serializable {
             m_exclusiveUrl,
             m_exclusiveError,
             m_webserver,
-            aliases);
+            aliases,
+            m_subsiteSelection);
         result.setParameters(m_parameters);
         try {
             result.setSSLMode(CmsSSLMode.valueOf(m_mode));

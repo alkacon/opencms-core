@@ -107,6 +107,7 @@ import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.AbstractField;
+import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.TextField;
@@ -583,6 +584,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin coponent.*/
     ComboBox m_fieldSelectParentOU;
 
+    private ComboBox m_subsiteSelectionEnabled;
+
     /**vaadin component. */
     Upload m_fieldUploadFavIcon;
 
@@ -714,8 +717,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         setUpComboBoxPosition();
         setUpComboBoxTemplate();
         setUpComboBoxSSL();
+        setupSubsiteSelectionMode();
         setUpOUComboBox(m_fieldSelectOU);
         setUpOUComboBox(m_fieldSelectParentOU);
+
         m_tab.setHeight("400px");
         m_report.setVisible(false);
         m_ok.setVisible(editable);
@@ -882,6 +887,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         setUpComboBoxPosition();
         setUpComboBoxTemplate();
         setUpComboBoxSSL();
+        setupSubsiteSelectionMode();
         setUpOUComboBox(m_fieldSelectOU);
         setUpOUComboBox(m_fieldSelectParentOU);
 
@@ -1597,7 +1603,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
                     public void run() {
 
-                }
+                    }
 
                 });
 
@@ -1826,7 +1832,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             m_fieldExclusiveURL.getValue().booleanValue(),
             m_fieldExclusiveError.getValue().booleanValue(),
             m_fieldWebServer.getValue().booleanValue(),
-            aliases);
+            aliases,
+            ((Boolean)m_subsiteSelectionEnabled.getValue()).booleanValue());
         ret.setParameters((SortedMap<String, String>)getParameter());
         ret.setSSLMode((CmsSSLMode)m_simpleFieldEncryption.getValue());
         return ret;
@@ -1964,6 +1971,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         setFieldTitle(m_site.getTitle());
         setFieldFolder(getFolderNameFromSiteRoot(m_site.getSiteRoot()));
+        m_subsiteSelectionEnabled.setValue(Boolean.valueOf(m_site.isSubsiteSelectionEnabled()));
         m_simpleFieldFolderName.setEnabled(false);
         m_simpleFieldTitle.setEnabled(enableAll);
 
@@ -2197,5 +2205,19 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         } catch (CmsException e) {
             // should not happen
         }
+    }
+
+    private void setupSubsiteSelectionMode() {
+
+        m_subsiteSelectionEnabled.addItem(Boolean.FALSE);
+        m_subsiteSelectionEnabled.addItem(Boolean.TRUE);
+        m_subsiteSelectionEnabled.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
+        m_subsiteSelectionEnabled.setNullSelectionAllowed(false);
+        m_subsiteSelectionEnabled.setItemCaption(
+            Boolean.FALSE,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SUBSITE_SELECTION_DISABLED_0));
+        m_subsiteSelectionEnabled.setItemCaption(
+            Boolean.TRUE,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SUBSITE_SELECTION_ENABLED_0));
     }
 }

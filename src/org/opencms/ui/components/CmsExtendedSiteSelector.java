@@ -225,7 +225,7 @@ public class CmsExtendedSiteSelector extends ComboBox<SiteSelectorOption> {
                 titleCms.getRequestContext().setSiteRoot("");
                 for (String subsite : subsites) {
                     CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(subsite);
-                    if (site != null) { // only use subsites that are in an actual site
+                    if ((site != null) && site.isSubsiteSelectionEnabled()) { // only use subsites that are in an actual site; also, subsite selection must be enabled on the site
                         CmsPath siteRootPath = new CmsPath(site.getSiteRoot());
                         if (!siteRootPath.equals(new CmsPath(subsite))) { // Don't allow the site itself as a subsite
                             Optional<String> remainingPath = CmsStringUtil.removePrefixPath(

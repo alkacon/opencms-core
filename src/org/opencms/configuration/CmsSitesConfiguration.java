@@ -70,17 +70,20 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
     /** The "position" attribute. */
     public static final String A_POSITION = "position";
 
-    /** The "server" attribute. */
-    public static final String A_SERVER = "server";
-
     /** The "redirect" attribute. */
     public static final String A_REDIRECT = "redirect";
 
-    /** The "title" attribute. */
-    public static final String A_TITLE = "title";
+    /** The "server" attribute. */
+    public static final String A_SERVER = "server";
 
     /** The ssl mode attribute.*/
     public static final String A_SSL = "sslmode";
+
+    /** Attribute name for the subsiteSelection option. */
+    public static final String A_SUBSITE_SELECTION = "subsiteSelection";
+
+    /** The "title" attribute. */
+    public static final String A_TITLE = "title";
 
     /** The "usePermanentRedirects" attribute. */
     public static final String A_USE_PERMANENT_REDIRECTS = "usePermanentRedirects";
@@ -100,6 +103,9 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
     /** The node name for the default-uri node. */
     public static final String N_DEFAULT_URI = "default-uri";
 
+    /** New secure modes node. */
+    public static final String N_OLD_STYLE_SECURE_SERVER = "oldStyleSecureServer";
+
     /** The node name for the parameters. */
     public static final String N_PARAMETERS = "parameters";
 
@@ -108,9 +114,6 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
 
     /** Shared folder node name. */
     public static final String N_SHARED_FOLDER = "shared-folder";
-
-    /** New secure modes node. */
-    public static final String N_OLD_STYLE_SECURE_SERVER = "oldStyleSecureServer";
 
     /** The node name for the sites node. */
     public static final String N_SITES = "sites";
@@ -175,7 +178,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
         // add site configuration rule
         String siteXpath = "*/" + N_SITES + "/" + N_SITE;
 
-        digester.addCallMethod(siteXpath, "addSiteInternally", 11);
+        digester.addCallMethod(siteXpath, "addSiteInternally", 12);
         digester.addCallParam(siteXpath, 0, A_SERVER);
         digester.addCallParam(siteXpath, 1, A_URI);
         digester.addCallParam(siteXpath, 2, A_TITLE);
@@ -187,6 +190,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
         digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_EXCLUSIVE);
         digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 9, A_ERROR);
         digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 10, A_USE_PERMANENT_REDIRECTS);
+        digester.addCallParam(siteXpath, 11, A_SUBSITE_SELECTION);
         digester.addCallMethod(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "addParamToConfigSite", 2);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
@@ -251,6 +255,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
             siteElement.addAttribute(A_ERROR_PAGE, site.getErrorPage());
             siteElement.addAttribute(A_WEBSERVER, String.valueOf(site.isWebserver()));
             siteElement.addAttribute(A_SSL, site.getSSLMode().getXMLValue());
+            siteElement.addAttribute(A_SUBSITE_SELECTION, "" + site.isSubsiteSelectionEnabled());
 
             // create <secure server=""/> subnode
             if (site.hasSecureServer()) {

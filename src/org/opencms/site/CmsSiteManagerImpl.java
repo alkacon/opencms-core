@@ -270,7 +270,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             secureUrl,
             Boolean.toString(site.isExclusiveUrl()),
             Boolean.toString(site.isExclusiveError()),
-            Boolean.toString(site.usesPermanentRedirects()));
+            Boolean.toString(site.usesPermanentRedirects()),
+            Boolean.toString(site.isSubsiteSelectionEnabled()));
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
@@ -296,6 +297,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
      *                             if set to <code>false</code> will redirect to secure URL
      * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
+     * @param subsiteSelection true if subsite selection should be enabled
      *
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
@@ -310,7 +312,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         String secureServer,
         String exclusive,
         String error,
-        String usePermanentRedirects)
+        String usePermanentRedirects,
+        String subsiteSelection)
     throws CmsConfigurationException {
 
         if (m_frozen) {
@@ -351,6 +354,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             site.setExclusiveError(Boolean.valueOf(error).booleanValue());
             site.setUsePermanentRedirects(Boolean.valueOf(usePermanentRedirects).booleanValue());
         }
+        site.setSubsiteSelectionEnabled(Boolean.parseBoolean(subsiteSelection));
 
         // note that Digester first calls the addAliasToConfigSite method.
         // therefore, the aliases are already set
@@ -401,6 +405,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
      *                             if set to <code>false</code> will redirect to secure URL
      * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
+     * @param subsiteSelection true if subsite selection should be enabled for this site
      *
      * @throws CmsConfigurationException in case the site was not configured correctly
      *
@@ -417,7 +422,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         String secureServer,
         String exclusive,
         String error,
-        String usePermanentRedirects)
+        String usePermanentRedirects,
+        String subsiteSelection)
     throws CmsConfigurationException {
 
         try {
@@ -432,10 +438,11 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 secureServer,
                 exclusive,
                 error,
-                usePermanentRedirects);
+                usePermanentRedirects,
+                subsiteSelection);
 
         } catch (CmsConfigurationException e) {
-            LOG.error("Error reading definitions. Try to read without aliase..", e);
+            LOG.error("Error reading definitions. Trying to read without aliases.", e);
 
             //If the aliases are making problems, just remove them
             m_aliases.clear();
@@ -452,7 +459,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 secureServer,
                 exclusive,
                 error,
-                usePermanentRedirects);
+                usePermanentRedirects,
+                subsiteSelection);
 
         }
     }

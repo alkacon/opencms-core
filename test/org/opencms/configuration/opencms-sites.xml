@@ -6,7 +6,7 @@
 		<workplace-server sslmode="no">http://localhost:8080</workplace-server>
 		<default-uri>/sites/default/</default-uri>
 		<oldStyleSecureServer>true</oldStyleSecureServer>
-		<site server="http://localhost:8080" uri="/sites/default/" position="10.0" webserver="true" sslmode="secure-server">
+		<site server="http://localhost:8080" uri="/sites/default/" position="10.0" webserver="true" sslmode="secure-server" subsiteSelection="true">
 			<secure server="http://www.mysecureserver.com" exclusive="true" error="true"/>	
             <parameters>
             	<param name="test1">test1</param>

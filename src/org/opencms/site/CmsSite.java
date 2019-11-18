@@ -122,6 +122,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     /**The SSL Mode of the site. */
     private CmsSSLMode m_sslMode = CmsSSLMode.SECURE_SERVER;
 
+    /** True if subsite selection is enabled for this site. */
+    private boolean m_subsiteSelectionEnabled;
+
     /** Display title of this site. */
     private String m_title;
 
@@ -196,6 +199,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
      * @param exclusiveError the exclusive error flag
      * @param webserver indicates whether to write the web server configuration for this site or not
      * @param aliases the aliases
+     * @param subsiteSelection enable/disable subsite selection for this site
      */
     public CmsSite(
         String siteRoot,
@@ -208,7 +212,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
         boolean exclusiveUrl,
         boolean exclusiveError,
         boolean webserver,
-        List<CmsSiteMatcher> aliases) {
+        List<CmsSiteMatcher> aliases,
+        boolean subsiteSelection) {
 
         setSiteRoot(siteRoot);
         setSiteRootUUID(siteRootUUID);
@@ -227,6 +232,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
         setExclusiveError(exclusiveError);
         setWebserver(webserver);
         setAliases(aliases);
+        m_subsiteSelectionEnabled = subsiteSelection;
     }
 
     /**
@@ -262,7 +268,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
             isExclusiveUrl(),
             isExclusiveError(),
             isWebserver(),
-            getAliases());
+            getAliases(),
+            m_subsiteSelectionEnabled);
         res.setParameters(getParameters());
         res.setSSLMode(getSSLMode());
         return res;
@@ -670,6 +677,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Returns true if subsite selection is enabled for this site.
+     *
+     * @return true if subsite selection is enabled for this site
+     */
+    public boolean isSubsiteSelectionEnabled() {
+
+        return m_subsiteSelectionEnabled;
+    }
+
+    /**
      * Returns the web server.<p>
      *
      * @return the web server
@@ -753,6 +770,17 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     public void setSSLMode(CmsSSLMode mode) {
 
         m_sslMode = mode;
+    }
+
+    /**
+     * Enables / disables subsite selection for this site.
+     *
+     * @param enabled true if subsite selection should be enabled
+     */
+    public void setSubsiteSelectionEnabled(boolean enabled) {
+
+        m_subsiteSelectionEnabled = enabled;
+
     }
 
     /**

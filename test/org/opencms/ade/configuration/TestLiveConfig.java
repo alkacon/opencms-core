@@ -249,37 +249,44 @@ public class TestLiveConfig extends OpenCmsTestCase {
      */
     public void testIncludeInSiteSelector() throws Exception {
 
-        createDetailPageTestSitemap("/includeInSiteSelector", false, false, true);
-        createDetailPageTestSitemap("/includeInSiteSelector/alpha", false, false, false);
-        createDetailPageTestSitemap("/includeInSiteSelector/beta", false, false, true);
-        createDetailPageTestSitemap("/includeInSiteSelector/alpha/gamma", false, false, true);
-        OpenCms.getADEManager().waitForCacheUpdate(false);
+        try {
+            OpenCms.getSiteManager().getSiteForRootPath(
+                getCmsObject().getRequestContext().getSiteRoot()).setSubsiteSelectionEnabled(true);
 
-        List<String> subsites = OpenCms.getADEManager().getSubsitesForSiteSelector(false);
-        Set<String> subsiteSet = new HashSet<>(subsites);
-        Set<String> expected = new HashSet<>(
-            list(
-                "/sites/default/includeInSiteSelector/",
-                "/sites/default/includeInSiteSelector/alpha/gamma/",
-                "/sites/default/includeInSiteSelector/beta/"));
-        assertEquals(expected, subsiteSet);
-        List<CmsExtendedSiteSelector.SiteSelectorOption> options = CmsExtendedSiteSelector.getExplorerSiteSelectorOptions(
-            getCmsObject(),
-            true);
+            createDetailPageTestSitemap("/includeInSiteSelector", false, false, true);
+            createDetailPageTestSitemap("/includeInSiteSelector/alpha", false, false, false);
+            createDetailPageTestSitemap("/includeInSiteSelector/beta", false, false, true);
+            createDetailPageTestSitemap("/includeInSiteSelector/alpha/gamma", false, false, true);
+            OpenCms.getADEManager().waitForCacheUpdate(false);
 
-        Set<String> actual = new HashSet<>();
-        for (CmsExtendedSiteSelector.SiteSelectorOption option : options) {
-            if (option.getPath() != null) {
-                actual.add(option.getPath());
-                assertTrue(
-                    "Site does not match",
-                    CmsStringUtil.comparePaths(option.getSite(), getCmsObject().getRequestContext().getSiteRoot()));
+            List<String> subsites = OpenCms.getADEManager().getSubsitesForSiteSelector(false);
+            Set<String> subsiteSet = new HashSet<>(subsites);
+            Set<String> expected = new HashSet<>(
+                list(
+                    "/sites/default/includeInSiteSelector/",
+                    "/sites/default/includeInSiteSelector/alpha/gamma/",
+                    "/sites/default/includeInSiteSelector/beta/"));
+            assertEquals(expected, subsiteSet);
+            List<CmsExtendedSiteSelector.SiteSelectorOption> options = CmsExtendedSiteSelector.getExplorerSiteSelectorOptions(
+                getCmsObject(),
+                true);
+
+            Set<String> actual = new HashSet<>();
+            for (CmsExtendedSiteSelector.SiteSelectorOption option : options) {
+                if (option.getPath() != null) {
+                    actual.add(option.getPath());
+                    assertTrue(
+                        "Site does not match",
+                        CmsStringUtil.comparePaths(option.getSite(), getCmsObject().getRequestContext().getSiteRoot()));
+                }
             }
+            expected = new HashSet<>(
+                list("/includeInSiteSelector", "/includeInSiteSelector/alpha/gamma", "/includeInSiteSelector/beta"));
+            assertEquals(expected, actual);
+        } finally {
+            OpenCms.getSiteManager().getSiteForRootPath(
+                getCmsObject().getRequestContext().getSiteRoot()).setSubsiteSelectionEnabled(false);
         }
-        expected = new HashSet<>(
-            list("/includeInSiteSelector", "/includeInSiteSelector/alpha/gamma", "/includeInSiteSelector/beta"));
-        assertEquals(expected, actual);
-
     }
 
     /**
