@@ -35,6 +35,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -51,9 +52,6 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.shared.ui.combobox.FilteringMode;
-import com.vaadin.v7.ui.ComboBox;
 
 /**
  * The site select dialog.<p>
@@ -62,9 +60,6 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsSiteSelectDialog.class);
-
-    /** The project name property. */
-    private static final String CAPTION_PROPERTY = "caption";
 
     /** The serial version id. */
     private static final long serialVersionUID = 4455901453008760434L;
@@ -76,14 +71,14 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
     private I_CmsDialogContext m_context;
 
     /** The site select. */
-    private ComboBox m_siteComboBox;
+    private CmsExtendedSiteSelector m_siteComboBox;
 
     /**
      * Constructor.<p>
      *
      * @param context the dialog context
      */
-    public CmsSiteSelectDialog(I_CmsDialogContext context) {
+    public CmsSiteSelectDialog(CmsEmbeddedDialogContext context) {
 
         m_context = context;
         setContent(initForm());
@@ -121,22 +116,24 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
      * Actually changes the site.
      *
      * @param context the dialog context
-     * @param siteRoot the site root
+     * @param option the site selector option
      */
-    public static void changeSite(I_CmsDialogContext context, String siteRoot) {
+    public static void changeSite(CmsEmbeddedDialogContext context, CmsExtendedSiteSelector.SiteSelectorOption option) {
 
-        if (!context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-            A_CmsUI.get().changeSite(siteRoot);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot) || OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
+        if ((option.getPath() != null)
+            || !CmsStringUtil.comparePaths(context.getCms().getRequestContext().getSiteRoot(), option.getSite())) {
+            String siteRoot = option.getSite();
+            A_CmsUI.get().changeSite(option.getSite());
+            if (CmsStringUtil.comparePaths(siteRoot, "/") || OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
                 // switch to explorer view when selecting shared or root site
 
                 Page.getCurrent().open(CmsCoreService.getFileExplorerLink(A_CmsUI.getCmsObject(), siteRoot), "_top");
                 return;
             }
+            context.finish(option);
         } else {
-            siteRoot = null;
+            context.finish(null, null);
         }
-        context.finish(null, siteRoot);
     }
 
     /**
@@ -152,9 +149,9 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
      */
     void submit() {
 
-        String siteRoot = (String)m_siteComboBox.getValue();
+        CmsExtendedSiteSelector.SiteSelectorOption option = m_siteComboBox.getValue();
         I_CmsDialogContext context = m_context;
-        changeSite(context, siteRoot);
+        changeSite((CmsEmbeddedDialogContext)context, option);
     }
 
     /**
@@ -166,10 +163,12 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         form.setWidth("100%");
-
-        IndexedContainer sites = CmsVaadinUtils.getAvailableSitesContainer(m_context.getCms(), CAPTION_PROPERTY);
-        m_siteComboBox = prepareComboBox(sites, org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
-        m_siteComboBox.select(m_context.getCms().getRequestContext().getSiteRoot());
+        m_siteComboBox = prepareSiteSelector(org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
+        m_siteComboBox.setValue(
+            new CmsExtendedSiteSelector.SiteSelectorOption(
+                A_CmsUI.getCmsObject().getRequestContext().getSiteRoot(),
+                null,
+                null));
         form.addComponent(m_siteComboBox);
         ValueChangeListener changeListener = new ValueChangeListener() {
 
@@ -180,28 +179,26 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
                 submit();
             }
         };
-        m_siteComboBox.addValueChangeListener(changeListener);
+        m_siteComboBox.addValueChangeListener(evt -> submit());
         return form;
     }
 
     /**
      * Prepares a combo box.<p>
      *
-     * @param container the indexed item container
      * @param captionKey the caption message key
      *
      * @return the combo box
      */
-    private ComboBox prepareComboBox(IndexedContainer container, String captionKey) {
+    private CmsExtendedSiteSelector prepareSiteSelector(String captionKey) {
 
-        ComboBox result = new ComboBox(CmsVaadinUtils.getWpMessagesForCurrentLocale().key(captionKey), container);
-        result.setTextInputAllowed(true);
-        result.setNullSelectionAllowed(false);
+        CmsExtendedSiteSelector result = new CmsExtendedSiteSelector();
+        String caption = CmsVaadinUtils.getWpMessagesForCurrentLocale().key(captionKey);
+        result.setCaption(caption);
+        result.initOptions(m_context.getCms(), true);
         result.setWidth("100%");
-        result.setInputPrompt(
+        result.setPlaceholder(
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
-        result.setItemCaptionPropertyId(CAPTION_PROPERTY);
-        result.setFilteringMode(FilteringMode.CONTAINS);
         return result;
     }
 }

@@ -41,6 +41,8 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsExtendedSiteSelector;
+import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.editablegroup.CmsDefaultActionHandler;
@@ -68,8 +70,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.IndexedContainer;
 
 /**
  * Dialog which shows the list of favorites for the current user and allows them to jump to individual favorites,
@@ -96,7 +96,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         /**
          * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onAdd()
          */
-        @SuppressWarnings("synthetic-access")
         @Override
         public void onAdd() {
 
@@ -119,7 +118,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         /**
          * @see org.opencms.ui.components.editablegroup.CmsDefaultActionHandler#onDown()
          */
-        @SuppressWarnings("synthetic-access")
         @Override
         public void onDown() {
 
@@ -218,12 +216,6 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** The favorite context. */
     private I_CmsFavoriteContext m_context;
 
-    /** Site selector. */
-    private ComboBox<String> m_siteBox;
-
-    /** Project selector. */
-    private ComboBox<CmsUUID> m_projectBox;
-
     /** Current favorite location. */
     private Optional<CmsFavoriteEntry> m_currentLocation;
 
@@ -236,14 +228,20 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     /** The group for the favorite widgets. */
     private CmsEditableGroup m_group;
 
-    /** Map of project labels. */
-    private Map<CmsUUID, String> m_projectLabels = new HashMap<>();
-
-    /** Container for the sites, used for their labels. */
-    private IndexedContainer m_sitesContainer;
+    /** Project selector. */
+    private ComboBox<CmsUUID> m_projectBox;
 
     /** Label for project selector. */
     private Label m_projectBoxLabel;
+
+    /** Map of project labels. */
+    private Map<CmsUUID, String> m_projectLabels = new HashMap<>();
+
+    /** Site selector. */
+    private CmsExtendedSiteSelector m_siteBox;
+
+    /** Site labels. */
+    private Map<String, String> m_siteLabels;
 
     /**
      * Creates a new dialog instance.
@@ -258,9 +256,9 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
 
         super();
         m_favDao = favDao;
+        m_siteLabels = CmsVaadinUtils.getAvailableSitesMap(A_CmsUI.getCmsObject());
         m_context = context;
         context.setDialog(this);
-        m_sitesContainer = CmsVaadinUtils.getAvailableSitesContainer(A_CmsUI.getCmsObject(), "caption");
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         List<CmsFavoriteEntry> entries = m_favDao.loadFavorites();
         m_cancelButton.addClickListener(evt -> m_context.close());
@@ -276,11 +274,8 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         m_addButton.addClickListener(evt -> onClickAdd());
         initEntries(entries);
         CmsObject cms = A_CmsUI.getCmsObject();
-        LinkedHashMap<String, String> sites = CmsVaadinUtils.getAvailableSitesMap(cms);
-        m_siteBox.setDataProvider(new ListDataProvider<>(sites.keySet()));
-        m_siteBox.setItemCaptionGenerator(site -> sites.get(site));
-        m_siteBox.setEmptySelectionAllowed(false);
-        m_siteBox.setValue(cms.getRequestContext().getSiteRoot());
+        m_siteBox.initOptions(cms, true);
+        m_siteBox.setValue(new SiteSelectorOption(cms.getRequestContext().getSiteRoot(), null, null));
         m_siteBox.addValueChangeListener(evt -> {
             if (!evt.getOldValue().equals(evt.getValue())) {
                 m_context.changeSite(evt.getValue());
@@ -403,6 +398,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
             } else {
                 switch (entry.getType()) {
                     case explorerFolder:
+                    default:
                         title = CmsStringUtil.isEmpty(resutil.getTitle())
                         ? CmsResource.getName(resource.getRootPath())
                         : resutil.getTitle();
@@ -473,9 +469,8 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
     private String getSite(CmsObject cms, CmsFavoriteEntry entry) {
 
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(entry.getSiteRoot());
-        Item item = m_sitesContainer.getItem(entry.getSiteRoot());
-        if (item != null) {
-            return (String)(item.getItemProperty("caption").getValue());
+        if (m_siteLabels.containsKey(entry.getSiteRoot())) {
+            return m_siteLabels.get(entry.getSiteRoot());
         }
         String result = entry.getSiteRoot();
         if (site != null) {

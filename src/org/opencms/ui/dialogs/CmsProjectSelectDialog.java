@@ -28,6 +28,8 @@
 package org.opencms.ui.dialogs;
 
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.gwt.CmsCoreService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -40,6 +42,8 @@ import org.opencms.ui.apps.I_CmsHasAppLaunchCommand;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsExtendedSiteSelector;
+import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsUUID;
 
@@ -47,13 +51,12 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
@@ -82,7 +85,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
     private ComboBox m_projectComboBox;
 
     /** The site select. */
-    private ComboBox m_siteComboBox;
+    private CmsExtendedSiteSelector m_siteComboBox;
 
     /**
      * Constructor.<p>
@@ -128,10 +131,14 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
      *
      * @param context the dialog context
      * @param projectId the project id (possibly null)
-     * @param siteRoot the site root (possibly null)
+     * @param siteOption the option from the site selector
      */
-    public static void changeSiteOrProject(I_CmsDialogContext context, CmsUUID projectId, String siteRoot) {
+    public static void changeSiteOrProject(
+        I_CmsDialogContext context,
+        CmsUUID projectId,
+        SiteSelectorOption siteOption) {
 
+        String siteRoot = null;
         try {
             CmsProject project = null;
             if (projectId != null) {
@@ -142,19 +149,42 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
                     project = null;
                 }
             }
-            if (siteRoot != null) {
+            if (siteOption != null) {
+
+                siteRoot = siteOption.getSite();
                 if (!context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
                     A_CmsUI.get().changeSite(siteRoot);
-                } else {
+                } else if (siteOption.getPath() == null) {
                     siteRoot = null;
                 }
             }
             if ((siteRoot != null) && CmsFileExplorerConfiguration.APP_ID.equals(context.getAppId())) {
-                I_CmsWorkplaceAppConfiguration editorConf = OpenCms.getWorkplaceAppManager().getAppConfiguration(
-                    CmsPageEditorConfiguration.APP_ID);
-                if (editorConf.getVisibility(context.getCms()).isActive()) {
-                    ((I_CmsHasAppLaunchCommand)editorConf).getAppLaunchCommand().run();
-                    return;
+                if (siteOption.getPath() != null) {
+                    CmsResource defaultFile = null;
+                    try {
+                        defaultFile = A_CmsUI.getCmsObject().readDefaultFile(siteOption.getPath());
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                    if (defaultFile != null) {
+                        Page.getCurrent().setLocation(
+                            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                                A_CmsUI.getCmsObject(),
+                                siteOption.getPath()));
+                        return;
+                    } else {
+                        Page.getCurrent().open(
+                            CmsCoreService.getFileExplorerLink(A_CmsUI.getCmsObject(), siteOption.getSite())
+                                + siteOption.getPath(),
+                            "_top");
+                    }
+                } else {
+                    I_CmsWorkplaceAppConfiguration editorConf = OpenCms.getWorkplaceAppManager().getAppConfiguration(
+                        CmsPageEditorConfiguration.APP_ID);
+                    if (editorConf.getVisibility(context.getCms()).isActive()) {
+                        ((I_CmsHasAppLaunchCommand)editorConf).getAppLaunchCommand().run();
+                        return;
+                    }
                 }
             }
             context.finish(project, siteRoot);
@@ -178,8 +208,8 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
 
         I_CmsDialogContext context = m_context;
         CmsUUID projectId = (CmsUUID)m_projectComboBox.getValue();
-        String siteRoot = (String)m_siteComboBox.getValue();
-        changeSiteOrProject(context, projectId, siteRoot);
+        SiteSelectorOption option = m_siteComboBox.getValue();
+        changeSiteOrProject(context, projectId, option);
     }
 
     /**
@@ -192,20 +222,12 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         FormLayout form = new FormLayout();
         form.setWidth("100%");
 
-        IndexedContainer sites = CmsVaadinUtils.getAvailableSitesContainer(m_context.getCms(), CAPTION_PROPERTY);
-        m_siteComboBox = prepareComboBox(sites, org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
-        m_siteComboBox.select(m_context.getCms().getRequestContext().getSiteRoot());
+        m_siteComboBox = prepareSiteSelector(org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
+
+        m_siteComboBox.selectSite(m_context.getCms().getRequestContext().getSiteRoot());
         form.addComponent(m_siteComboBox);
-        ValueChangeListener changeListener = new ValueChangeListener() {
 
-            private static final long serialVersionUID = 1L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                submit();
-            }
-        };
-        m_siteComboBox.addValueChangeListener(changeListener);
+        m_siteComboBox.addValueChangeListener(evt -> submit());
         IndexedContainer projects = CmsVaadinUtils.getProjectsContainer(m_context.getCms(), CAPTION_PROPERTY);
         m_projectComboBox = prepareComboBox(projects, org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0);
         CmsUUID currentProjectId = m_context.getCms().getRequestContext().getCurrentProject().getUuid();
@@ -225,7 +247,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         }
 
         form.addComponent(m_projectComboBox);
-        m_projectComboBox.addValueChangeListener(changeListener);
+        m_projectComboBox.addValueChangeListener(evt -> submit());
         return form;
     }
 
@@ -247,6 +269,25 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
         result.setItemCaptionPropertyId(CAPTION_PROPERTY);
         result.setFilteringMode(FilteringMode.CONTAINS);
+        return result;
+    }
+
+    /**
+     * Prepares a combo box.<p>
+     *
+     * @param captionKey the caption message key
+     *
+     * @return the combo box
+     */
+    private CmsExtendedSiteSelector prepareSiteSelector(String captionKey) {
+
+        CmsExtendedSiteSelector result = new CmsExtendedSiteSelector();
+        boolean isExplorer = CmsFileExplorerConfiguration.APP_ID.equals(m_context.getAppId());
+        result.initOptions(m_context.getCms(), isExplorer);
+        result.setCaption(CmsVaadinUtils.getWpMessagesForCurrentLocale().key(captionKey));
+        result.setWidth("100%");
+        result.setPlaceholder(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
         return result;
     }
 }

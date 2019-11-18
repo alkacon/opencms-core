@@ -33,10 +33,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.A_CmsResourceTypeFolderBase;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -47,10 +44,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.site.CmsSite;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.user.CmsOUHandler;
@@ -59,7 +54,6 @@ import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -82,7 +76,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -90,11 +83,8 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
@@ -193,112 +183,6 @@ public final class CmsVaadinUtils {
         isFolder,
         /** The is XML content id. */
         isXmlContent
-    }
-
-    /**
-     * Extended site selector option which can also include VFS path information.
-     */
-    public static class SiteSelectorOption {
-
-        /** The label for the option. */
-        private String m_label;
-
-        /** The path in the site (may be null). */
-        private String m_path;
-
-        /** The site root. */
-        private String m_site;
-
-        /**
-         * Creates a new instance.
-         *
-         * @param site the site root
-         * @param path the path in the site (may be null)
-         * @param label the option label
-         */
-        public SiteSelectorOption(String site, String path, String label) {
-
-            m_site = normalizePath(site);
-            m_path = normalizePath(path);
-            m_label = label;
-        }
-
-        /**
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public boolean equals(Object obj) {
-
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            SiteSelectorOption other = (SiteSelectorOption)obj;
-            return Objects.equal(m_site, other.m_site) && Objects.equal(m_path, other.m_path);
-        }
-
-        /**
-         * Gets the option label.
-         *
-         * @return the option label
-         */
-        public String getLabel() {
-
-            return m_label;
-        }
-
-        /**
-         * Gets the path to jump to as a site path (may be null).
-         *
-         * @return the path to jump to
-         */
-        public String getPath() {
-
-            return m_path;
-        }
-
-        /**
-         * Gets the site root
-         *
-         * @return the site root
-         */
-        public String getSite() {
-
-            return m_site;
-        }
-
-        /**
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public int hashCode() {
-
-            final int prime = 31;
-            int result = 1;
-            result = (prime * result) + ((m_path == null) ? 0 : m_path.hashCode());
-            result = (prime * result) + ((m_site == null) ? 0 : m_site.hashCode());
-            return result;
-        }
-
-        /**
-         * Cuts off trailing slashes if the path is not null.
-         *
-         * @param path a path
-         * @return the normalized path
-         */
-        private String normalizePath(String path) {
-
-            if (path == null) {
-                return null;
-            }
-            return CmsFileUtil.removeTrailingSeparator(path);
-        }
-
     }
 
     /** Container filter for the resource type container to show not folder types only. */
@@ -661,65 +545,6 @@ public final class CmsVaadinUtils {
         String className = component.getClass().getName();
         String designPath = className.replace(".", "/") + ".html";
         return designPath;
-    }
-
-    /**
-     * Builds a list of site selector option that also includes subsites with the 'include in site selector' option enabled in their configuration.
-     *
-     * @param cms the current CMS context
-     * @return the the extended site selecctor options
-     */
-    public static List<SiteSelectorOption> getExplorerSiteSelectorOptions(CmsObject cms) {
-
-        LinkedHashMap<String, String> siteOptions = getAvailableSitesMap(cms);
-        List<String> subsites = new ArrayList<>(
-            OpenCms.getADEManager().getSubsitesForSiteSelector(
-                cms.getRequestContext().getCurrentProject().isOnlineProject()));
-        Collections.sort(subsites);
-        Multimap<CmsPath, SiteSelectorOption> subsitesForSite = ArrayListMultimap.create();
-        try {
-            CmsObject titleCms = OpenCms.initCmsObject(cms);
-            titleCms.getRequestContext().setSiteRoot("");
-            for (String subsite : subsites) {
-                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(subsite);
-                if (site != null) { // only use subsites that are in an actual site
-                    CmsPath siteRootPath = new CmsPath(site.getSiteRoot());
-                    if (!siteRootPath.equals(new CmsPath(subsite))) { // Don't allow the site itself as a subsite
-                        Optional<String> remainingPath = CmsStringUtil.removePrefixPath(site.getSiteRoot(), subsite);
-                        if (remainingPath.isPresent()) {
-                            try {
-                                CmsResource subsiteRes = titleCms.readResource(
-                                    subsite,
-                                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                                CmsResourceUtil resUtil = new CmsResourceUtil(titleCms, subsiteRes);
-                                String title = resUtil.getTitle();
-                                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                                    title = subsiteRes.getName();
-                                }
-                                SiteSelectorOption option = new SiteSelectorOption(
-                                    site.getSiteRoot(),
-                                    remainingPath.get(),
-                                    "\u2013 " + title);
-                                subsitesForSite.put(siteRootPath, option);
-                            } catch (CmsPermissionViolationException | CmsVfsResourceNotFoundException e) {
-                                LOG.info(e.getLocalizedMessage(), e);
-                            } catch (CmsException e) {
-                                LOG.warn(e.getLocalizedMessage(), e);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        List<SiteSelectorOption> result = new ArrayList<>();
-        for (Map.Entry<String, String> entry : siteOptions.entrySet()) {
-            result.add(new SiteSelectorOption(entry.getKey(), null, entry.getValue()));
-            result.addAll(subsitesForSite.get(new CmsPath(entry.getKey())));
-        }
-        return result;
-
     }
 
     /**

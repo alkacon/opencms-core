@@ -30,8 +30,9 @@ package org.opencms.ui.actions;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.Messages;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
+import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.ui.dialogs.CmsSiteSelectDialog;
 
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class CmsSiteDialogAction extends A_CmsToolbarAction implements I_CmsADEA
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        openDialog(new CmsSiteSelectDialog(context), context);
+        openDialog(new CmsSiteSelectDialog((CmsEmbeddedDialogContext)context), context);
     }
 
     /**

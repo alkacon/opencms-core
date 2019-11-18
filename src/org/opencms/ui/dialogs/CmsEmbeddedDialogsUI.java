@@ -47,6 +47,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -62,11 +63,11 @@ import com.vaadin.server.VaadinRequest;
 @Theme("opencms")
 public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEmbeddedDialogsUI.class);
-
     /** The dialogs path fragment. */
     public static final String DIALOGS_PATH = "dialogs/";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEmbeddedDialogsUI.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 1201184887611215370L;
@@ -181,7 +182,7 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                 public void run() {
 
                     m_currentContext = new CmsEmbeddedDialogContext("", null, Collections.<CmsResource> emptyList());
-                    m_currentContext.finish(null);
+                    m_currentContext.finish((Collection<CmsUUID>)null);
                 }
             });
         }

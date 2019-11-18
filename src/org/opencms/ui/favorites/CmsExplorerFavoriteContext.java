@@ -35,6 +35,7 @@ import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.CmsExplorerDialogContext;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.ui.dialogs.CmsProjectSelectDialog;
 import org.opencms.ui.favorites.CmsFavoriteEntry.Type;
 import org.opencms.util.CmsUUID;
@@ -100,9 +101,9 @@ public class CmsExplorerFavoriteContext implements I_CmsFavoriteContext {
     }
 
     /**
-    * @see org.opencms.ui.favorites.I_CmsFavoriteContext#changeSite(java.lang.String)
+     * @see org.opencms.ui.favorites.I_CmsFavoriteContext#changeSite(org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption)
      */
-    public void changeSite(String value) {
+    public void changeSite(SiteSelectorOption value) {
 
         close();
         CmsExplorerDialogContext context = new CmsExplorerDialogContext(

@@ -40,8 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.CmsVaadinUtils.SiteSelectorOption;
+import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -264,10 +263,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 "/sites/default/includeInSiteSelector/alpha/gamma/",
                 "/sites/default/includeInSiteSelector/beta/"));
         assertEquals(expected, subsiteSet);
-        List<SiteSelectorOption> options = CmsVaadinUtils.getExplorerSiteSelectorOptions(getCmsObject());
+        List<CmsExtendedSiteSelector.SiteSelectorOption> options = CmsExtendedSiteSelector.getExplorerSiteSelectorOptions(
+            getCmsObject(),
+            true);
 
         Set<String> actual = new HashSet<>();
-        for (SiteSelectorOption option : options) {
+        for (CmsExtendedSiteSelector.SiteSelectorOption option : options) {
             if (option.getPath() != null) {
                 actual.add(option.getPath());
                 assertTrue(

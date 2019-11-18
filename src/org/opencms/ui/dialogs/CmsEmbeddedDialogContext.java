@@ -31,6 +31,9 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.CmsCoreService;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -39,6 +42,7 @@ import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -48,7 +52,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.server.AbstractExtension;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -59,6 +66,9 @@ import com.vaadin.ui.Window.CloseListener;
  * Context for dialogs embedded into plain GWT modules.<p>
  */
 public class CmsEmbeddedDialogContext extends AbstractExtension implements I_CmsDialogContext {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEmbeddedDialogContext.class);
 
     /** Pattern to check if a given server link starts with with a protocol string. */
     private static Pattern PROTOCOL_PATTERN = Pattern.compile("^http.?://.*");
@@ -158,7 +168,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
 
             getClientRPC().finishForProjectOrSiteChange(sitePath, serverLink);
         } else {
-            finish(null);
+            finish((Collection<CmsUUID>)null);
         }
     }
 
@@ -175,6 +185,43 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
             }
         }
         getClientRPC().finish(resources);
+    }
+
+    /**
+     * Opens the location from the site selector option.
+     *
+     * @param option the site selector option
+     */
+    public void finish(SiteSelectorOption option) {
+
+        String path = option.getPath();
+        CmsObject cms = A_CmsUI.getCmsObject();
+        if (path == null) {
+            finish(null, option.getSite());
+        } else {
+            String sitePath = option.getPath();
+            boolean foundPage = false;
+            try {
+                CmsResource res = cms.readDefaultFile(sitePath);
+                if (res != null) {
+                    foundPage = true;
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            if (foundPage) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(sitePath)) {
+                    sitePath = "/";
+                }
+                String serverLink = OpenCms.getLinkManager().getServerLink(getCms(), sitePath);
+                if (!PROTOCOL_PATTERN.matcher(serverLink).matches()) {
+                    serverLink = "http://" + serverLink;
+                }
+                getClientRPC().finishForProjectOrSiteChange(sitePath, serverLink);
+            } else {
+                Page.getCurrent().open(CmsCoreService.getFileExplorerLink(cms, option.getSite()) + sitePath, "_top");
+            }
+        }
     }
 
     /**

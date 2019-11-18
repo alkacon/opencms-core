@@ -39,7 +39,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.CmsVaadinUtils.SiteSelectorOption;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
@@ -49,6 +48,7 @@ import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.ui.components.CmsResourceTableProperty;
@@ -57,6 +57,7 @@ import org.opencms.ui.components.CmsUploadButton;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
@@ -862,9 +863,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             }
             openPath(path, true);
             Container container = m_siteSelector.getContainerDataSource();
-            SiteSelectorOption optionToSelect = null;
+            CmsExtendedSiteSelector.SiteSelectorOption optionToSelect = null;
             for (Object id : container.getItemIds()) {
-                SiteSelectorOption option = (SiteSelectorOption)id;
+                CmsExtendedSiteSelector.SiteSelectorOption option = (CmsExtendedSiteSelector.SiteSelectorOption)id;
                 if ((option != null) && CmsStringUtil.comparePaths(option.getSite(), siteRoot)) {
                     optionToSelect = option;
                     break;
@@ -1733,9 +1734,12 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      */
     private ComboBox createSiteSelect(CmsObject cms) {
 
-        final List<CmsVaadinUtils.SiteSelectorOption> sites = CmsVaadinUtils.getExplorerSiteSelectorOptions(cms);
-        final BeanItemContainer<SiteSelectorOption> container = new BeanItemContainer<>(SiteSelectorOption.class);
-        for (SiteSelectorOption option : sites) {
+        final List<CmsExtendedSiteSelector.SiteSelectorOption> sites = CmsExtendedSiteSelector.getExplorerSiteSelectorOptions(
+            cms,
+            true);
+        final BeanItemContainer<CmsExtendedSiteSelector.SiteSelectorOption> container = new BeanItemContainer<>(
+            CmsExtendedSiteSelector.SiteSelectorOption.class);
+        for (CmsExtendedSiteSelector.SiteSelectorOption option : sites) {
             container.addItem(option);
         }
         ComboBox combo = new ComboBox(null, container);
@@ -1745,7 +1749,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         combo.setInputPrompt(
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
         combo.setItemCaptionPropertyId("label");
-        combo.select(new SiteSelectorOption(cms.getRequestContext().getSiteRoot(), null, null));
+        combo.select(new CmsExtendedSiteSelector.SiteSelectorOption(cms.getRequestContext().getSiteRoot(), null, null));
         combo.setFilteringMode(FilteringMode.CONTAINS);
         combo.addValueChangeListener(new ValueChangeListener() {
 
@@ -1759,7 +1763,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 if (m_disabled) {
                     return;
                 }
-                SiteSelectorOption option = (SiteSelectorOption)(event.getProperty().getValue());
+                CmsExtendedSiteSelector.SiteSelectorOption option = (CmsExtendedSiteSelector.SiteSelectorOption)(event.getProperty().getValue());
                 if (container.containsId(option)) {
                     changeSite(option.getSite(), option.getPath());
                     m_appContext.updateOnChange();
@@ -1767,7 +1771,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                     if (option.getPath() != null) {
                         try {
                             m_disabled = true;
-                            combo.select(new SiteSelectorOption(option.getSite(), null, null));
+                            combo.select(new CmsExtendedSiteSelector.SiteSelectorOption(option.getSite(), null, null));
                         } finally {
                             m_disabled = false;
                         }

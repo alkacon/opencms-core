@@ -27,6 +27,7 @@
 
 package org.opencms.ui.favorites;
 
+import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.util.CmsUUID;
 
 import java.util.Optional;
@@ -48,9 +49,9 @@ public interface I_CmsFavoriteContext {
     /**
      * Changes current site.
      *
-     * @param siteRoot the site root
+     * @param option the site selector option
      */
-    public void changeSite(String siteRoot);
+    public void changeSite(SiteSelectorOption option);
 
     /**
      * Sets the dialog instance.<p>
