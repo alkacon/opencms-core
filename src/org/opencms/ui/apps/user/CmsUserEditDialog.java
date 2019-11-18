@@ -960,7 +960,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getSiteRoot())) {
                 if (hasRole(CmsRole.VFS_MANAGER)
                     | ((m_user == null)
-                        & Arrays.asList(
+                        && Arrays.asList(
                             CmsRole.ACCOUNT_MANAGER.forOrgUnit(m_ou.getValue()),
                             CmsRole.ADMINISTRATOR.forOrgUnit(m_ou.getValue()),
                             CmsRole.WORKPLACE_MANAGER.forOrgUnit(m_ou.getValue()),
