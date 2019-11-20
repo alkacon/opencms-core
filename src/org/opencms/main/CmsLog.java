@@ -38,6 +38,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,6 +78,17 @@ public final class CmsLog {
 
     /** The absolute path to the OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsPath;
+
+    /** Set of names of channels that should not be managed via the GUI. */
+    private static CopyOnWriteArraySet<String> NON_MANAGEABLE_CHANNELS = new CopyOnWriteArraySet<>();
+
+    /**
+     * Hides the public constructor.<p>
+     */
+    private CmsLog() {
+
+        // hides the public constructor
+    }
 
     /**
      * Initializes the OpenCms logger configuration.<p>
@@ -132,14 +144,6 @@ public final class CmsLog {
     }
 
     /**
-     * Hides the public constructor.<p>
-     */
-    private CmsLog() {
-
-        // hides the public constructor
-    }
-
-    /**
      * Returns the log for the selected object.<p>
      *
      * If the provided object is a String, this String will
@@ -158,6 +162,28 @@ public final class CmsLog {
         } else {
             return LogFactory.getLog(obj.getClass());
         }
+    }
+
+    /**
+     * Checks whether a log channel should be manageable through the GUI.
+     *
+     * @param channel the name of the channel
+     *
+     * @return true if the channel should be manageable through the GUI
+     */
+    public static boolean isManageable(String channel) {
+
+        return !NON_MANAGEABLE_CHANNELS.contains(channel);
+    }
+
+    /**
+    * Adds a log channel that should not be manageable via the GUI.
+    *
+    * @param channel the channel to add
+    */
+    public static void makeChannelNonManageable(String channel) {
+
+        NON_MANAGEABLE_CHANNELS.add(channel);
     }
 
     /**
