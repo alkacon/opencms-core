@@ -88,11 +88,21 @@ public class CmsSessionManager {
     /** Request header containing the real client IP address. */
     public static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 
+    /** Name of the logger for logging user switches. */
+    public static final String NAME_USERSWITCH = "userswitch";
+
     /** Session attribute key for client token. */
     private static final String CLIENT_TOKEN = "client-token";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSessionManager.class);
+
+    /** Special logger for logging user switches. */
+    private static final Log USERSWITCH = CmsLog.getLog(NAME_USERSWITCH);
+
+    static {
+        CmsLog.makeChannelNonManageable(NAME_USERSWITCH);
+    }
 
     /** Lock object for synchronized session count updates. */
     private Object m_lockSessionCount;
@@ -511,6 +521,7 @@ public class CmsSessionManager {
         if (!OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ELEMENT_AUTHOR)) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_NO_WORKPLACE_PERMISSIONS_0));
         }
+        String oldUser = cms.getRequestContext().getCurrentUser().getName();
 
         // get the user settings for the given user and set the start project and the site root
         CmsUserSettings settings = new CmsUserSettings(user);
@@ -560,6 +571,7 @@ public class CmsSessionManager {
         cms.getRequestContext().setSiteRoot(userSiteRoot);
         cms.getRequestContext().setCurrentProject(userProject);
         cms.getRequestContext().setOuFqn(user.getOuFqn());
+        USERSWITCH.info("User '" + oldUser + "' switched to user '" + user.getName() + "'");
         String directEditTarget = CmsLoginHelper.getDirectEditPath(cms, new CmsUserSettings(user), false);
         return directEditTarget != null
         ? OpenCms.getLinkManager().substituteLink(cms, directEditTarget, userSiteRoot)
