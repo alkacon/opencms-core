@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
 public class CmsSessionManager {
 
     /** Header key 'true-client-ip' used by akamai proxies. */
-    public static final String HEADER_TRUE_CLIENT_IP = "true-clinet-ip";
+    public static final String HEADER_TRUE_CLIENT_IP = "true-client-ip";
 
     /** Header key 'user-agent'. */
     public static final String HEADER_USER_AGENT = "user-agent";
