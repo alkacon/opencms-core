@@ -27,6 +27,8 @@
 
 package org.opencms.ui.apps.logfile;
 
+import org.opencms.main.CmsLog;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -296,6 +299,12 @@ public class CmsLogChannelTable extends Table {
 
     }
 
+    /** Channel name for logging logger configuration changes. */
+    public static final String LOGCHANGES_NAME = "logchanges";
+
+    /** Logger for logging logger configuration changes. */
+    private static final Log LOGCHANGES = CmsLog.getLog(LOGCHANGES_NAME);
+
     /** The prefix of opencms classes. */
     private static final String OPENCMS_CLASS_PREFIX = "org.opencms";
 
@@ -433,6 +442,7 @@ public class CmsLogChannelTable extends Table {
         // if the button is activated check the value of the button
         // the button was active
         if (isloggingactivated(logchannel)) {
+            log("Disabling separate log file for channel '" + logchannel.getName() + "'");
             // remove the private Appender from logger
             for (Appender appender : logchannel.getAppenders().values()) {
                 logchannel.removeAppender(appender);
@@ -443,6 +453,7 @@ public class CmsLogChannelTable extends Table {
         }
         // the button was inactive
         else {
+            log("Enabling separate log file for channel '" + logchannel.getName() + "'");
             // get the layout and file path from root logger
             for (Appender appender : ((Logger)LogManager.getRootLogger()).getAppenders().values()) {
                 if (CmsLogFileApp.isFileAppender(appender)) {
@@ -504,6 +515,7 @@ public class CmsLogChannelTable extends Table {
     void changeLoggerLevel(LoggerLevel clickedLevel, Set<Logger> clickedLogger) {
 
         for (Logger logger : clickedLogger) {
+            logLogLevelChange(logger, clickedLevel.getLevel());
             @SuppressWarnings("resource")
             LoggerContext context = logger.getContext();
             Configuration config = context.getConfiguration();
@@ -665,6 +677,35 @@ public class CmsLogChannelTable extends Table {
         }
 
         return test;
+    }
+
+    /**
+     * Helper method for logging user actions.
+     *
+     * @param message the message to write
+     */
+    private void log(String message) {
+
+        String user = A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().getName();
+        LOGCHANGES.info("[User: " + user + "] " + message);
+    }
+
+    /**
+     * Logs a log level change.
+     *
+     * @param logger the logger
+     * @param newLevel the new level to be set on the logger
+     */
+    private void logLogLevelChange(Logger logger, Level newLevel) {
+
+        String oldLevelDesc = null;
+        LoggerConfig config = logger.get();
+        if (logger.getName().equals(config.getName())) {
+            oldLevelDesc = config.getLevel().toString();
+        } else {
+            oldLevelDesc = config.getLevel().toString() + " (inherited from '" + config.getName() + "')";
+        }
+        log("Switching channel '" + logger.getName() + "' from " + oldLevelDesc + " to " + newLevel.toString());
     }
 
     /**
