@@ -11,7 +11,7 @@
     <xsd:complexType name="OpenCmsHeadIncludeCss">
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
         	<xsd:element name="CssInline" type="OpenCmsString" minOccurs="0"  />
-        	<xsd:element name="CssLink" type="OpenCmsVfsFile" minOccurs="0"   />
+        	<xsd:element name="CssLink" type="OpenCmsVarLink" minOccurs="0"   />
         </xsd:choice>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

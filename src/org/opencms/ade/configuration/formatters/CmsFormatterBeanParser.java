@@ -54,6 +54,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -709,7 +710,7 @@ public class CmsFormatterBeanParser {
             }
 
             for (I_CmsXmlContentValueLocation cssLinkLoc : headIncludeCss.getSubValues(N_CSS_LINK)) {
-                CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)cssLinkLoc.getValue();
+                CmsXmlVarLinkValue fileValue = (CmsXmlVarLinkValue)cssLinkLoc.getValue();
                 CmsLink link = fileValue.getLink(m_cms);
                 if (link != null) {
                     String cssPath = link.getTarget();
@@ -724,7 +725,7 @@ public class CmsFormatterBeanParser {
                 m_inlineJs.append(inlineJs);
             }
             for (I_CmsXmlContentValueLocation jsLinkLoc : headIncludeJs.getSubValues(N_JAVASCRIPT_LINK)) {
-                CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)jsLinkLoc.getValue();
+                CmsXmlVarLinkValue fileValue = (CmsXmlVarLinkValue)jsLinkLoc.getValue();
                 CmsLink link = fileValue.getLink(m_cms);
                 if (link != null) {
                     String jsPath = link.getTarget();
