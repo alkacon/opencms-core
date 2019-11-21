@@ -111,6 +111,7 @@ import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsTaskWatcher;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workflow.I_CmsWorkflowManager;
@@ -1730,6 +1731,7 @@ public final class OpenCmsCore {
         } catch (Exception e) {
             CmsLog.INIT.error("Problem with clearing caches after initialization: " + e.getLocalizedMessage(), e);
         }
+        CmsTaskWatcher.initialize();
     }
 
     /**
