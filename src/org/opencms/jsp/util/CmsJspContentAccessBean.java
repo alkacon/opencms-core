@@ -36,6 +36,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -46,9 +48,11 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -436,6 +440,8 @@ public class CmsJspContentAccessBean {
     /** Lazy map for imageDnd annotations. */
     private Map<String, String> m_imageDnd;
 
+    private Map<String, String> m_json;
+
     /** The locale used for accessing entries from the XML content, this may be a fallback default locale. */
     private Locale m_locale;
 
@@ -803,6 +809,39 @@ public class CmsJspContentAccessBean {
             // should not happen, in case it does just assume not editable
         }
         return result;
+    }
+
+    /**
+     * Gets a lazy map from locales (can be provided as strings or java.util.Locale) to the (default) JSON representation of an XML content.
+     *
+     * @return the lazy map from locales to JSON strings
+     */
+    public Map<String, String> getJson() {
+
+        if (m_json == null) {
+            m_json = CmsCollectionsGenericWrapper.createLazyMap(key -> {
+                CmsXmlContent content = (CmsXmlContent)getRawContent();
+
+                Locale locale;
+                if (key instanceof Locale) {
+                    locale = (Locale)key;
+                } else {
+                    locale = CmsLocaleManager.getLocale("" + key);
+                }
+                if (content.hasLocale(locale)) {
+                    CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer();
+                    try {
+                        Object jsonObj = renderer.render(content, locale);
+                        return JSONObject.valueToString(jsonObj, 4, 0);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    return "null";
+                }
+            });
+        }
+        return m_json;
     }
 
     /**
