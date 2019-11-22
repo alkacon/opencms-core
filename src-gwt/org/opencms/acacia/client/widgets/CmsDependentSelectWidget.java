@@ -27,7 +27,9 @@
 
 package org.opencms.acacia.client.widgets;
 
+import org.opencms.acacia.client.CmsAttributeHandler;
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
+import org.opencms.acacia.client.ui.CmsAttributeValueView;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener;
@@ -35,6 +37,7 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -47,6 +50,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Select widget which uses other values from the content as select options.<p>
@@ -55,6 +59,7 @@ import com.google.gwt.user.client.ui.Composite;
  * The first path is used to select a set of nested content values. The second and third paths are relative to the first path
  * and are used to select a select option and a select option display text from the nested contents matching the first path.
  * Note that if you omit indexes on a component of the first path, all indexes will be matched.
+ * You can also use relative paths for the first path. Like '../NestedNode' or '../../OtherNode'.<p>
  *
  * The widget attaches event listeners to the editor so it can dynamically update the list of select options when the content changes.
  */
@@ -264,7 +269,7 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
      */
     public void update(CmsEntity entity) {
 
-        List<Object> baseObjects = CmsEntity.getValuesForPath(entity, m_basePath);
+        List<Object> baseObjects = CmsEntity.getValuesForPath(entity, getAbsolutePath(m_basePath));
         LinkedHashMap<String, String> options = Maps.newLinkedHashMap();
         for (Object baseObject : baseObjects) {
             List<Object> valueValues = CmsEntity.getValuesForPath(baseObject, m_valuePath);
@@ -279,6 +284,49 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
             }
         }
         replaceOptions(options);
+    }
+
+    /**
+     * Returns the absolute path elements.
+     * In case off a relative path indicated by leading '..' elements, the local value path will be used as a starting point.
+     * Otherwise the given path elements will be returned.<p>
+     *
+     * @param pathElements the path elements
+     *
+     * @return the absolute path elements
+     */
+    private String[] getAbsolutePath(String[] pathElements) {
+
+        String[] result = pathElements;
+        if (pathElements[0].equals("..")) {
+            Widget parent = getParent();
+            CmsAttributeValueView valueView = null;
+            while ((parent != null) && !(parent instanceof CmsAttributeValueView)) {
+                parent = parent.getParent();
+            }
+            if (parent instanceof CmsAttributeValueView) {
+                valueView = (CmsAttributeValueView)parent;
+            }
+            if (valueView != null) {
+                CmsAttributeHandler handler = valueView.getHandler();
+                String localPath = handler.getSimplePath(-1);
+                int pathIndex = 0;
+                while (pathElements[pathIndex].equals("..")) {
+                    pathIndex++;
+                    localPath = localPath.substring(0, localPath.lastIndexOf("/"));
+                }
+                String[] localPathElements = splitPath(localPath);
+                // join the to arrays
+                result = Arrays.copyOf(localPathElements, (localPathElements.length + pathElements.length) - pathIndex);
+                System.arraycopy(
+                    pathElements,
+                    pathIndex,
+                    result,
+                    localPathElements.length,
+                    pathElements.length - pathIndex);
+            }
+        }
+        return result;
     }
 
     /**
