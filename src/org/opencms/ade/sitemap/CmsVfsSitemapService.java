@@ -151,6 +151,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -901,6 +902,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         getCmsObject(),
                         configData.getResourceTypes(),
                         configData.getFunctionReferences(),
+                        configData.getDynamicFunctions(),
                         modelResource,
                         getWorkplaceLocale());
                     try {
@@ -2491,6 +2493,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param cms the current CMS context
      * @param resourceTypeConfigs the resource type configurations
      * @param functionReferences the function references
+     * @param dynamicFunctionRestriction
      * @param modelResource the model resource
      * @param locale the locale used for retrieving descriptions/titles
      *
@@ -2500,6 +2503,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms,
         List<CmsResourceTypeConfig> resourceTypeConfigs,
         List<CmsFunctionReference> functionReferences,
+        Set<CmsUUID> dynamicFunctionRestriction,
         CmsResource modelResource,
         Locale locale) {
 
@@ -2542,6 +2546,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         for (CmsFunctionReference functionRef : functionReferences) {
+            if ((dynamicFunctionRestriction != null) && (dynamicFunctionRestriction.size() > 0)) {
+                if (!dynamicFunctionRestriction.contains(functionRef.getStructureId())) {
+                    continue;
+                }
+            }
             try {
                 CmsResource functionRes = cms.readResource(functionRef.getStructureId());
                 String description = cms.readPropertyObject(
