@@ -812,11 +812,37 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Gets the JSON for the current locale.
+     *
+     * @return the JSON for the current locale
+     */
+    public String getJson() {
+
+        Locale locale = getLocale();
+        return getLocaleJson().get(locale);
+
+    }
+
+    /**
+     * Returns the Locale this bean is using for content access, this may be a default fall back Locale.<p>
+     *
+     * @return the Locale this bean is using for content access, this may be a default fall back Locale
+     */
+    public Locale getLocale() {
+
+        // check the content if the locale has not been set yet
+        if (m_locale == null) {
+            getRawContent();
+        }
+        return m_locale;
+    }
+
+    /**
      * Gets a lazy map from locales (can be provided as strings or java.util.Locale) to the (default) JSON representation of an XML content.
      *
      * @return the lazy map from locales to JSON strings
      */
-    public Map<String, String> getJson() {
+    public Map<String, String> getLocaleJson() {
 
         if (m_json == null) {
             m_json = CmsCollectionsGenericWrapper.createLazyMap(key -> {
@@ -842,20 +868,6 @@ public class CmsJspContentAccessBean {
             });
         }
         return m_json;
-    }
-
-    /**
-     * Returns the Locale this bean is using for content access, this may be a default fall back Locale.<p>
-     *
-     * @return the Locale this bean is using for content access, this may be a default fall back Locale
-     */
-    public Locale getLocale() {
-
-        // check the content if the locale has not been set yet
-        if (m_locale == null) {
-            getRawContent();
-        }
-        return m_locale;
     }
 
     /**
