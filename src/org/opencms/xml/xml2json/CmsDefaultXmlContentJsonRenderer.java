@@ -66,6 +66,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * If this constructor is used, you still have to call one of the initialize() methods before rendering XML content to JSON.
      */
     public CmsDefaultXmlContentJsonRenderer() {
+
         // do nothing
     }
 
@@ -129,6 +130,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
+
         // do nothing
     }
 
@@ -144,6 +146,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
+
         // do nothing
     }
 
@@ -179,6 +182,50 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
         CmsXmlContentTree tree = new CmsXmlContentTree(content, locale);
         Node root = tree.getRoot();
         return renderNode(root);
+
+    }
+
+    /**
+     * Renders a tree node as JSON.
+     *
+     * @param node the tree node
+     * @return the JSON (may be JSONObject, JSONArray, or String)
+     *
+     * @throws JSONException if something goes wrong
+     */
+    public Object renderNode(Node node) throws JSONException {
+
+        switch (node.getType()) {
+            case sequence:
+                List<Field> fields = node.getFields();
+                JSONObject result = new JSONObject(true);
+                for (Field field : fields) {
+                    SimpleEntry<String, Object> keyAndValue = renderField(field);
+                    if (keyAndValue != null) {
+                        result.put(keyAndValue.getKey(), keyAndValue.getValue());
+                    }
+                }
+                return result;
+            case choice:
+                JSONArray array = new JSONArray();
+                for (Field field : node.getFields()) {
+
+                    SimpleEntry<String, Object> keyAndValue = renderField(field);
+                    if (keyAndValue != null) {
+                        JSONObject choiceObj = new JSONObject(true);
+                        choiceObj.put(keyAndValue.getKey(), keyAndValue.getValue());
+                        array.put(choiceObj);
+                    }
+
+                }
+                return array;
+            case simple:
+                Object valueJson = renderSimpleValue(node);
+                return valueJson;
+            default:
+                throw new IllegalArgumentException("Unsupported node: " + node.getType());
+
+        }
 
     }
 
@@ -228,50 +275,6 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
             }
         }
         return null;
-    }
-
-    /**
-     * Renders a tree node as JSON.
-     *
-     * @param node the tree node
-     * @return the JSON (may be JSONObject, JSONArray, or String)
-     *
-     * @throws JSONException if something goes wrong
-     */
-    protected Object renderNode(Node node) throws JSONException {
-
-        switch (node.getType()) {
-            case sequence:
-                List<Field> fields = node.getFields();
-                JSONObject result = new JSONObject(true);
-                for (Field field : fields) {
-                    SimpleEntry<String, Object> keyAndValue = renderField(field);
-                    if (keyAndValue != null) {
-                        result.put(keyAndValue.getKey(), keyAndValue.getValue());
-                    }
-                }
-                return result;
-            case choice:
-                JSONArray array = new JSONArray();
-                for (Field field : node.getFields()) {
-
-                    SimpleEntry<String, Object> keyAndValue = renderField(field);
-                    if (keyAndValue != null) {
-                        JSONObject choiceObj = new JSONObject(true);
-                        choiceObj.put(keyAndValue.getKey(), keyAndValue.getValue());
-                        array.put(choiceObj);
-                    }
-
-                }
-                return array;
-            case simple:
-                Object valueJson = renderSimpleValue(node);
-                return valueJson;
-            default:
-                throw new IllegalArgumentException("Unsupported node: " + node.getType());
-
-        }
-
     }
 
     /**

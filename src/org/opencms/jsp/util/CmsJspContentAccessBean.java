@@ -36,7 +36,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.lock.CmsLock;
@@ -440,7 +439,8 @@ public class CmsJspContentAccessBean {
     /** Lazy map for imageDnd annotations. */
     private Map<String, String> m_imageDnd;
 
-    private Map<String, String> m_json;
+    /** Lazy map from locales to JSON representations of the content. */
+    private Map<Object, String> m_json;
 
     /** The locale used for accessing entries from the XML content, this may be a fallback default locale. */
     private Locale m_locale;
@@ -842,7 +842,7 @@ public class CmsJspContentAccessBean {
      *
      * @return the lazy map from locales to JSON strings
      */
-    public Map<String, String> getLocaleJson() {
+    public Map<Object, String> getLocaleJson() {
 
         if (m_json == null) {
             m_json = CmsCollectionsGenericWrapper.createLazyMap(key -> {
@@ -855,11 +855,12 @@ public class CmsJspContentAccessBean {
                     locale = CmsLocaleManager.getLocale("" + key);
                 }
                 if (content.hasLocale(locale)) {
-                    CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer();
+                    CmsDefaultXmlContentJsonRenderer renderer;
                     try {
+                        renderer = new CmsDefaultXmlContentJsonRenderer(m_cms);
                         Object jsonObj = renderer.render(content, locale);
                         return JSONObject.valueToString(jsonObj, 4, 0);
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else {

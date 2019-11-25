@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -89,6 +90,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /** Reference for named elements in the document. */
     private Map<String, I_CmsXmlContentValue> m_bookmarks;
+
+    /** Cache for temporary data associated with the content. */
+    private Map<String, Object> m_tempDataCache = new ConcurrentHashMap<>();
 
     /**
      * Default constructor for a XML document
@@ -494,6 +498,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the temporary data cache.
+     *
+     * @return the temporary data cache
+     */
+    public Map<String, Object> getTempDataCache() {
+
+        return m_tempDataCache;
     }
 
     /**

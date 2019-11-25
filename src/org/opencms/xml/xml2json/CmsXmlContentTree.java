@@ -38,10 +38,13 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.dom4j.Element;
 
@@ -67,7 +70,7 @@ public class CmsXmlContentTree {
         /** The nested content definition (may be null). */
         private CmsXmlContentDefinition m_nestedDef;
 
-        /** The parent node of the field. */ 
+        /** The parent node of the field. */
         protected Node m_parentNode;
 
         /**
@@ -131,8 +134,8 @@ public class CmsXmlContentTree {
 
         /**
          * Gets the parent node.
-         * 
-         * @return the parent node 
+         *
+         * @return the parent node
          */
         public Node getParentNode() {
 
@@ -172,8 +175,8 @@ public class CmsXmlContentTree {
 
         /**
          * Sets the parent node of the field.
-         * 
-         * @param parentNode the parent node 
+         *
+         * @param parentNode the parent node
          */
         public void setParentNode(Node parentNode) {
 
@@ -240,6 +243,8 @@ public class CmsXmlContentTree {
                 for (Field field : m_fields) {
                     field.setParentNode(this);
                 }
+            } else {
+                m_fields = Collections.emptyList();
             }
         }
 
@@ -334,6 +339,9 @@ public class CmsXmlContentTree {
         simple;
     }
 
+    /** Map from values to nodes. */
+    private IdentityHashMap<I_CmsXmlContentValue, Node> m_valueToNodeCache = new IdentityHashMap<>();
+
     /** The content. */
     private CmsXmlContent m_content;
 
@@ -354,6 +362,27 @@ public class CmsXmlContentTree {
         m_content = content;
         m_locale = locale;
         m_root = createNode(content.getLocaleNode(locale), content.getContentDefinition());
+        visitNodes(m_root, node -> {
+            if (node.getValue() != null) {
+                m_valueToNodeCache.put(node.getValue(), node);
+            }
+        });
+    }
+
+    /**
+     * Visits all Node instances that are descendants of a given node (including that node itself).
+     *
+     * @param node the root node
+     * @param handler the handler to be invoked for all descendant nodes
+     */
+    public static void visitNodes(Node node, Consumer<Node> handler) {
+
+        handler.accept(node);
+        for (Field field : node.getFields()) {
+            for (Node child : field.getNodes()) {
+                visitNodes(child, handler);
+            }
+        }
     }
 
     /**
@@ -426,6 +455,17 @@ public class CmsXmlContentTree {
     }
 
     /**
+     * Gets the node corresponding to the given value.
+     *
+     * @param value a content value
+     * @return the node for the value, or null if no node is found
+     */
+    public Node getNodeForValue(I_CmsXmlContentValue value) {
+
+        return m_valueToNodeCache.get(value);
+    }
+
+    /**
      * Returns the root node.
      *
      * @return the root node
@@ -460,4 +500,5 @@ public class CmsXmlContentTree {
         }
         return result;
     }
+
 }

@@ -31,13 +31,19 @@ import org.opencms.ade.contenteditor.CmsContentService;
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
+import org.opencms.xml.xml2json.CmsXmlContentTree;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -278,6 +284,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
     /** Constant for the null (non existing) value. */
     protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
+
+    /** Attribute for used to cache the tree format of the XML content which is used to generate JSON. */
+    public static final String TEMP_XML2JSON_TREE = "xml2json.tree";
 
     /** The wrapped XML content value. */
     private I_CmsXmlContentValue m_contentValue;
@@ -623,6 +632,36 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         } else {
             // nested types are not empty if they have any children in the XML
             return m_contentValue.getElement().elements().isEmpty();
+        }
+    }
+
+    /**
+     * Gets the default JSON representation of a value.
+     *
+     * @return the default JSON representation of the value
+     */
+    public String getJson() throws CmsException {
+
+        if (!getExists()) {
+            return "null";
+        }
+        CmsXmlContent content = (CmsXmlContent)m_contentValue.getDocument();
+        CmsXmlContentTree tree = (CmsXmlContentTree)content.getTempDataCache().get(TEMP_XML2JSON_TREE);
+        CmsXmlContentTree.Node node = null;
+        if (tree == null) {
+            tree = new CmsXmlContentTree(content, getLocale());
+            content.getTempDataCache().put(TEMP_XML2JSON_TREE, tree);
+        }
+        node = tree.getNodeForValue(m_contentValue);
+        if (node == null) {
+            return "null";
+        }
+        CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(getCmsObject());
+        try {
+            Object jsonObj = renderer.renderNode(node);
+            return JSONObject.valueToString(jsonObj, 4, 0);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
