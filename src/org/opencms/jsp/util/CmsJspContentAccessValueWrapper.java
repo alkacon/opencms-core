@@ -659,7 +659,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(getCmsObject());
         try {
             Object jsonObj = renderer.renderNode(node);
-            return JSONObject.valueToString(jsonObj, 4, 0);
+            return JSONObject.valueToString(jsonObj);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

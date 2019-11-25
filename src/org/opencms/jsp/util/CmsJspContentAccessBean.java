@@ -859,7 +859,7 @@ public class CmsJspContentAccessBean {
                     try {
                         renderer = new CmsDefaultXmlContentJsonRenderer(m_cms);
                         Object jsonObj = renderer.render(content, locale);
-                        return JSONObject.valueToString(jsonObj, 4, 0);
+                        return JSONObject.valueToString(jsonObj);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
