@@ -29,6 +29,7 @@ package org.opencms.jsp;
 
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.util.CmsJspJsonWrapper;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -43,11 +44,12 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
 
     /** JSON processing mode, decides what is stored in the variable given by var. */
     enum Mode {
-    /** Store result of tag as an object. */
-    object,
-
-    /** Store result of tag as formatted JSON (i.e. a string) . */
-    text;
+        /** Store result of tag as an object. */
+        object,
+        /** Store result as wrapper object. */
+        wrapper,
+        /** Store result of tag as formatted JSON (i.e. a string) . */
+        text;
 
     }
 
@@ -76,7 +78,7 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
         if (m_var != null) {
             Object obj = getValue();
             String modeStr = m_mode;
-            Mode mode = Mode.text;
+            Mode mode = Mode.wrapper;
             if (modeStr != null) {
                 try {
                     mode = Mode.valueOf(modeStr);
@@ -90,12 +92,15 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
                     pageContext.setAttribute(m_var, obj);
                     break;
                 case text:
-                default:
                     try {
                         pageContext.setAttribute(m_var, JSONObject.valueToString(obj));
                     } catch (JSONException e) {
                         throw new IllegalArgumentException("Could not format JSON", e);
                     }
+                    break;
+                case wrapper:
+                default:
+                    pageContext.setAttribute(m_var, new CmsJspJsonWrapper(obj));
                     break;
             }
         }

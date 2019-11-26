@@ -32,7 +32,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
@@ -640,10 +639,10 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      *
      * @return the default JSON representation of the value
      */
-    public String getJson() throws CmsException {
+    public CmsJspJsonWrapper getJson() throws CmsException {
 
         if (!getExists()) {
-            return "null";
+            return new CmsJspJsonWrapper(null);
         }
         CmsXmlContent content = (CmsXmlContent)m_contentValue.getDocument();
         CmsXmlContentTree tree = (CmsXmlContentTree)content.getTempDataCache().get(TEMP_XML2JSON_TREE);
@@ -654,12 +653,12 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         }
         node = tree.getNodeForValue(m_contentValue);
         if (node == null) {
-            return "null";
+            return new CmsJspJsonWrapper(null);
         }
         CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(getCmsObject());
         try {
             Object jsonObj = renderer.renderNode(node);
-            return JSONObject.valueToString(jsonObj);
+            return new CmsJspJsonWrapper(jsonObj);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

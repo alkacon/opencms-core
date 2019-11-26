@@ -36,7 +36,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -440,7 +439,7 @@ public class CmsJspContentAccessBean {
     private Map<String, String> m_imageDnd;
 
     /** Lazy map from locales to JSON representations of the content. */
-    private Map<Object, String> m_json;
+    private Map<Object, CmsJspJsonWrapper> m_json;
 
     /** The locale used for accessing entries from the XML content, this may be a fallback default locale. */
     private Locale m_locale;
@@ -816,7 +815,7 @@ public class CmsJspContentAccessBean {
      *
      * @return the JSON for the current locale
      */
-    public String getJson() {
+    public CmsJspJsonWrapper getJson() {
 
         Locale locale = getLocale();
         return getLocaleJson().get(locale);
@@ -842,7 +841,7 @@ public class CmsJspContentAccessBean {
      *
      * @return the lazy map from locales to JSON strings
      */
-    public Map<Object, String> getLocaleJson() {
+    public Map<Object, CmsJspJsonWrapper> getLocaleJson() {
 
         if (m_json == null) {
             m_json = CmsCollectionsGenericWrapper.createLazyMap(key -> {
@@ -859,12 +858,12 @@ public class CmsJspContentAccessBean {
                     try {
                         renderer = new CmsDefaultXmlContentJsonRenderer(m_cms);
                         Object jsonObj = renderer.render(content, locale);
-                        return JSONObject.valueToString(jsonObj);
+                        return new CmsJspJsonWrapper(jsonObj);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    return "null";
+                    return new CmsJspJsonWrapper(null);
                 }
             });
         }
