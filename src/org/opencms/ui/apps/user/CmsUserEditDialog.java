@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
@@ -281,6 +282,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5198443053070008413L;
 
+    /**Visible sites? */
+    protected boolean m_visSites = true;
+
     /**Flag indicates is user is in webou. */
     boolean m_isWebOU;
 
@@ -289,9 +293,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
     /**vaadin component.*/
     ComboBox m_site;
-
-    /**Holder for authentification fields. */
-    //    private VerticalLayout m_authHolder;
 
     /**vaadin component.*/
     CmsPathSelectField m_startfolder;
@@ -305,20 +306,20 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     private TextArea m_description;
 
+    /** Label containing invisible dummy password fields to dissuade Firefox from saving the password *after* the user edit dialog. */
+    private Label m_dummyPasswordLabel;
+
+    /**User edit parameter. */
+    private CmsUserEditParameters m_editParams = new CmsUserEditParameters();
+
     /**vaadin component.*/
     private CheckBox m_enabled;
 
     /**vaadin component. */
     private CheckBox m_forceResetPassword;
 
-    /**vaadin component. */
-    private CheckBox m_sendEmail;
-
     /**Vaadin component. */
     private Button m_generateButton;
-
-    /**Visible sites? */
-    protected boolean m_visSites = true;
 
     /**Select view for principals.*/
     private CmsPrincipalSelect m_group;
@@ -350,8 +351,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     private CheckBox m_selfmanagement;
 
-    /** Label containing invisible dummy password fields to dissuade Firefox from saving the password *after* the user edit dialog. */
-    private Label m_dummyPasswordLabel;
+    /**vaadin component. */
+    private CheckBox m_sendEmail;
 
     /**vaadin component.*/
     private ComboBox m_startview;
@@ -365,16 +366,13 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**User data form.<p>*/
     private CmsUserDataFormLayout m_userdata;
 
-    private CmsUserEditParameters m_editParams = new CmsUserEditParameters();
-
     /**
      * public constructor.<p>
-     * @param callingOu
      *
      * @param cms CmsObject
      * @param userId id of user
      * @param window to be closed
-     * @param app
+     * @param app account app instance
      */
     public CmsUserEditDialog(CmsObject cms, CmsUUID userId, final Window window, final CmsAccountsApp app) {
 
@@ -440,6 +438,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * @param cms CmsObject
      * @param window Window
      * @param ou organizational unit
+     * @param app accounts app instance
      */
     public CmsUserEditDialog(CmsObject cms, final Window window, String ou, final CmsAccountsApp app) {
 
@@ -462,7 +461,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 m_selfmanagement.setValue(Boolean.FALSE);
                 m_isWebOU = true;
             } else {
-                iniRole(m_cms, ou, m_role, LOG);
+                iniRole(m_cms, ou, m_role, LOG, true);
                 m_role.select(CmsRole.EDITOR.forOrgUnit(ou));
                 m_selfmanagement.setValue(new Boolean(true));
 
@@ -506,7 +505,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
-     * Initialized the role ComboBox.<p>
+     * Initialized the role ComboBox. (Vaadin 8 version)<p>
      *
      * @param cms CmsObject
      * @param ou to load roles for
@@ -539,7 +538,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
-     * Initialized the role ComboBox.<p>
+     * Initialized the role ComboBox (vaadin-v7-version).<p>
      *
      * @param cms CmsObject
      * @param ou to load roles for
@@ -547,6 +546,25 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * @param log LOG
      */
     protected static void iniRole(CmsObject cms, String ou, ComboBox roleComboBox, Log log) {
+
+        iniRole(cms, ou, roleComboBox, log, false);
+    }
+
+    /**
+     * Initialized the role ComboBox (vaadin-v7-version).<p>
+     *
+     * @param cms CmsObject
+     * @param ou to load roles for
+     * @param roleComboBox ComboBox
+     * @param log LOG
+     * @param includeNoRoleEntry with noRole entry?
+     */
+    protected static void iniRole(
+        CmsObject cms,
+        String ou,
+        ComboBox roleComboBox,
+        Log log,
+        boolean includeNoRoleEntry) {
 
         try {
             List<CmsRole> roles = OpenCms.getRoleManager().getRoles(cms, ou, false);
@@ -557,7 +575,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 Item item = container.addItem(role);
                 item.getItemProperty("caption").setValue(role.getDisplayName(cms, A_CmsUI.get().getLocale()));
             }
-
+            if (includeNoRoleEntry) {
+                Item item = container.addItem("NoRole");
+                item.getItemProperty("caption").setValue(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_NO_ROLE_0));
+            }
             roleComboBox.setContainerDataSource(container);
             roleComboBox.setItemCaptionPropertyId("caption");
             roleComboBox.setNullSelectionAllowed(false);
@@ -572,7 +594,11 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**
      * Sends an email to the user.<p>
      *
-     * @param newUser is the user new?
+     * @param cms CmsObject
+     * @param password of the user
+     * @param user user to send mail to
+     * @param newUser flag indicates if user is new
+     * @param changePassword has the user to change password?
      */
     protected static void sendMail(
         CmsObject cms,
@@ -584,6 +610,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         sendMail(cms, password, user, user.getOuFqn(), newUser, changePassword);
     }
 
+    /**
+     * Sends an email to the user.<p>
+     *
+     * @param cms CmsObject
+     * @param password of the user
+     * @param user user to send mail to
+     * @param ou name
+     * @param newUser flag indicates if user is new
+     * @param changePassword has the user to change password?
+     */
     protected static void sendMail(
         CmsObject cms,
         String password,
@@ -968,7 +1004,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                             CmsRole.PROJECT_MANAGER.forOrgUnit(m_ou.getValue()),
                             CmsRole.VFS_MANAGER.forOrgUnit(m_ou.getValue()),
                             CmsRole.ROOT_ADMIN.forOrgUnit(m_ou.getValue())).contains(
-                                ((CmsRole)(m_role.getValue())).forOrgUnit(m_ou.getValue())))) {
+                                m_role.getValue() instanceof CmsRole
+                                ? ((CmsRole)(m_role.getValue())).forOrgUnit(m_ou.getValue())
+                                : ""))) {
                     Item item = container.addItem(site.getSiteRoot());
                     item.getItemProperty("caption").setValue(site.getTitle());
                 }
@@ -1029,15 +1067,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 if (settings != null) {
                     m_startview.select(settings.getStartView());
                 } else {
-                    String defaultView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
-                    if (container.containsId(defaultView)) {
-                        m_startview.select(defaultView);
+                    if (container.containsId("pageeditor")) {
+                        m_startview.select("pageeditor");
                     } else {
                         m_startview.select(container.getItemIds().get(0));
                     }
                 }
             }
         } else {
+            m_startview.setValue(null);
             m_startview.setEnabled(false);
         }
     }
@@ -1077,7 +1115,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_group.getValue())) {
             m_cms.addUserToGroup(user.getName(), m_group.getValue());
         }
-        if (m_role.isVisible()) {
+        if (m_role.isVisible() && (m_role.getValue() instanceof CmsRole)) {
             OpenCms.getRoleManager().addUserToRole(m_cms, (CmsRole)m_role.getValue(), user.getName());
         }
         m_user = user;
@@ -1132,7 +1170,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         if (m_user != null) {
             return OpenCms.getRoleManager().hasRole(m_cms, m_user.getName(), app.getRequiredRole());
         }
-
+        if (!(m_role.getValue() instanceof CmsRole)) {
+            return false;
+        }
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_group.getValue())) {
             try {
                 CmsGroup group = m_cms.readGroup(m_group.getValue());
@@ -1174,8 +1214,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         if (settings != null) {
             m_language.select(settings.getLocale());
         } else {
-            if (OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale() != null) {
-                m_language.select(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale());
+            OpenCms.getLocaleManager();
+            if (CmsLocaleManager.getDefaultLocale() != null) {
+                m_language.select(CmsLocaleManager.getDefaultLocale());
             } else {
                 m_language.select(m_language.getItemIds().iterator().next());
             }
@@ -1195,15 +1236,12 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 m_ou.getValue(),
                 false);
             for (CmsProject project : projects) {
-                m_project.addItem(project.getSimpleName());
+                m_project.addItem(project.getName());
             }
             m_project.setNewItemsAllowed(false);
             m_project.setNullSelectionAllowed(false);
             if (settings != null) {
                 String projString = settings.getStartProject();
-                if (projString.contains("/")) {
-                    projString = projString.split("/")[projString.split("/").length - 1];
-                }
                 m_project.select(projString);
             } else {
                 String defaultProject = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
@@ -1229,8 +1267,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      * A initialization method.<p>
      *
      * @param window to be closed
-     * @param app
+     * @param app opening this dialog
      * @param settings user settings, null if new user
+     * @param enabled enable edit
      */
     private void init(final Window window, final CmsAccountsApp app, final CmsUserSettings settings, boolean enabled) {
 
@@ -1386,7 +1425,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         CmsUserSettings settings = new CmsUserSettings(m_user);
         settings.setLocale((Locale)m_language.getValue());
         settings.setStartSite((String)m_site.getValue() + "/");
-        settings.setStartProject(m_ou.getValue() + (String)m_project.getValue());
+        settings.setStartProject((String)m_project.getValue());
         if (m_visSites) {
             settings.setStartFolder(m_startfolder.getValue().substring(((String)m_site.getValue()).length()));
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly((String)m_startview.getValue())) {
