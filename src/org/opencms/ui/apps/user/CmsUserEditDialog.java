@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
@@ -1067,10 +1066,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 if (settings != null) {
                     m_startview.select(settings.getStartView());
                 } else {
-                    if (container.containsId("pageeditor")) {
-                        m_startview.select("pageeditor");
+                    String defaultView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
+                    if (container.containsId(defaultView)) {
+                        m_startview.select(defaultView);
                     } else {
-                        m_startview.select(container.getItemIds().get(0));
+                        if (container.containsId("pageeditor")) {
+                            m_startview.select("pageeditor");
+                        } else {
+                            m_startview.select(container.getItemIds().get(0));
+                        }
                     }
                 }
             }
@@ -1214,9 +1218,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         if (settings != null) {
             m_language.select(settings.getLocale());
         } else {
-            OpenCms.getLocaleManager();
-            if (CmsLocaleManager.getDefaultLocale() != null) {
-                m_language.select(CmsLocaleManager.getDefaultLocale());
+            if (container.containsId(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale())) {
+                m_language.select(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale());
             } else {
                 m_language.select(m_language.getItemIds().iterator().next());
             }
