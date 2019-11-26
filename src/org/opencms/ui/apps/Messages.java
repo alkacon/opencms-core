@@ -2822,6 +2822,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1 = "GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_NO_ROLE_0 = "GUI_USERMANAGEMENT_USER_NO_ROLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_DELETE_USER_1 = "GUI_USERMANAGEMENT_DELETE_USER_1";
 
     /** Message constant for key in the resource bundle. */

@@ -443,21 +443,6 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
         IndexedContainer res = null;
         List<FontIcon> icon = new ArrayList<FontIcon>();
-        if (!OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
-            List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(
-                m_cms,
-                m_cms.getRequestContext().getOuFqn(),
-                false);
-            return CmsVaadinUtils.getPrincipalContainer(
-                A_CmsUI.getCmsObject(),
-                groups,
-                ID_CAPTION,
-                ID_DESC,
-                ID_ICON,
-                ID_OU,
-                OpenCmsTheme.ICON_GROUP,
-                icon);
-        }
 
         if (type.equals(WidgetType.groupwidget) | type.equals(WidgetType.principalwidget)) {
             List<CmsGroup> groups = OpenCms.getRoleManager().getManageableGroups(m_cms, ou, false);
