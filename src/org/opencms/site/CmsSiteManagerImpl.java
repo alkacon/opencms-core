@@ -44,24 +44,28 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -71,6 +75,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Manages all configured sites in OpenCms.<p>
@@ -80,6 +85,77 @@ import com.google.common.collect.Maps;
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl implements I_CmsEventListener {
+
+    /**
+     * Holds data for the alternative site root mappings.
+     */
+    private static class AlternativeSiteData {
+
+        /** Map from site roots as strings to the corresponding alternative site roots. */
+        private Map<CmsPath, CmsSite> m_alternativeSites = new HashMap<>();
+
+        /** Site roots for the alternative site data. */
+        private Set<String> m_siteRoots = new HashSet<>();
+
+        /**
+         * Creates a new instance from the alternative site root mappings of the given site.
+         *
+         * @param normalSites the normal sites
+         */
+        public AlternativeSiteData(Collection<CmsSite> normalSites) {
+
+            for (CmsSite site : normalSites) {
+                if (site.getAlternativeSiteRootMapping().isPresent()) {
+                    CmsSite extensionSite = site.createAlternativeSiteRootSite();
+                    CmsPath key = new CmsPath(extensionSite.getSiteRoot());
+                    m_alternativeSites.put(key, extensionSite);
+                    m_siteRoots.add(key.asString());
+                }
+
+            }
+        }
+
+        /**
+         * Gets the site for the given root path, or null if no site for that path is found.
+         *
+         * @param path a root path
+         * @return the site for the root path, or null
+         */
+        public CmsSite getSiteForRootPath(String path) {
+
+            for (Map.Entry<CmsPath, CmsSite> entry : m_alternativeSites.entrySet()) {
+                CmsPath key = entry.getKey();
+                if (key.isPrefixOfStr(path)) {
+                    return entry.getValue();
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Gets the site for the given site root.
+         *
+         * @param path a site root
+         * @return the site for the site root
+         */
+        public CmsSite getSiteForSiteRoot(String path) {
+
+            CmsPath key = new CmsPath(path);
+            CmsSite result = m_alternativeSites.get(key);
+            return result;
+        }
+
+        /**
+         * Gets the site roots for the alternative site root mappings.
+         *
+         * @return the site roots
+         */
+        public Set<String> getSiteRoots() {
+
+            return Collections.unmodifiableSet(m_siteRoots);
+        }
+
+    }
 
     /** The default shared folder name. */
     public static final String DEFAULT_SHARED_FOLDER = "shared";
@@ -124,10 +200,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
     private List<String> m_additionalSiteRoots;
 
-    /**
-     * The list of aliases for the site that is configured at the moment,
-     * needed for the sites added during configuration. */
-    private List<CmsSiteMatcher> m_aliases;
+    /** Data for the alternative site root rules. */
+    private volatile AlternativeSiteData m_alternativeSiteData = new AlternativeSiteData(new ArrayList<>());
 
     /**Map with webserver scripting parameter. */
     private Map<String, String> m_apacheConfig;
@@ -162,9 +236,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
-    /** Temporary store for site parameter values. */
-    private SortedMap<String, String> m_siteParams;
-
     /** Maps site roots to sites. */
     private Map<String, CmsSite> m_siteRootSites;
 
@@ -185,26 +256,25 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         m_siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
         m_siteRootSites = new HashMap<String, CmsSite>();
-        m_aliases = new ArrayList<CmsSiteMatcher>();
-        m_siteParams = new TreeMap<String, String>();
         m_additionalSiteRoots = new ArrayList<String>();
         m_workplaceServers = new LinkedHashMap<String, CmsSSLMode>();
         m_workplaceMatchers = new ArrayList<CmsSiteMatcher>();
         m_oldStyleSecureServer = true;
-
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SITE_CONFIG_0));
         }
     }
 
     /**
-     * Adds an alias to the currently configured site.
+     * Creates a site matcher for an alias read from the configuration.
      *
-     * @param alias the URL of the alias server
-     * @param redirect <code>true</code> to always redirect to main URL
-     * @param offset the optional time offset for this alias
+     * @param alias the alias
+     * @param redirect redirection enabled (true/false)
+     * @param offset time offset or empty
+     *
+     * @return the alias site matcher
      */
-    public void addAliasToConfigSite(String alias, String redirect, String offset) {
+    public static CmsSiteMatcher createAliasSiteMatcher(String alias, String redirect, String offset) {
 
         long timeOffset = 0;
         try {
@@ -215,18 +285,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias, timeOffset);
         boolean redirectVal = new Boolean(redirect).booleanValue();
         siteMatcher.setRedirect(redirectVal);
-        m_aliases.add(siteMatcher);
-    }
-
-    /**
-     * Adds a parameter to the currently configured site.<p>
-     *
-     * @param name the parameter name
-     * @param value the parameter value
-     */
-    public void addParamToConfigSite(String name, String value) {
-
-        m_siteParams.put(name, value);
+        return siteMatcher;
     }
 
     /**
@@ -248,11 +307,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         // un-freeze
         m_frozen = false;
 
-        // set aliases and parameters, they will be used in the addSite method
-        // this is necessary because of a digester workaround
-        m_siteParams = site.getParameters();
-        m_aliases = site.getAliases();
-
         String secureUrl = null;
         if (site.hasSecureServer()) {
             secureUrl = site.getSecureUrl();
@@ -271,7 +325,10 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             Boolean.toString(site.isExclusiveUrl()),
             Boolean.toString(site.isExclusiveError()),
             Boolean.toString(site.usesPermanentRedirects()),
-            Boolean.toString(site.isSubsiteSelectionEnabled()));
+            Boolean.toString(site.isSubsiteSelectionEnabled()),
+            site.getParameters(),
+            site.getAliases(),
+            site.getAlternativeSiteRootMapping());
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
@@ -298,6 +355,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      *                             if set to <code>false</code> will redirect to secure URL
      * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
      * @param subsiteSelection true if subsite selection should be enabled
+     * @param params the site parameters
+     * @param aliases the aliases for the site
+     * @param alternativeSiteRootMapping an optional alternative site root mapping
      *
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
@@ -313,7 +373,10 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         String exclusive,
         String error,
         String usePermanentRedirects,
-        String subsiteSelection)
+        String subsiteSelection,
+        SortedMap<String, String> params,
+        List<CmsSiteMatcher> aliases,
+        java.util.Optional<CmsAlternativeSiteRootMapping> alternativeSiteRootMapping)
     throws CmsConfigurationException {
 
         if (m_frozen) {
@@ -358,7 +421,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         // note that Digester first calls the addAliasToConfigSite method.
         // therefore, the aliases are already set
-        site.setAliases(m_aliases);
+        site.setAliases(aliases);
 
         boolean valid = true;
         List<CmsSiteMatcher> toAdd = new ArrayList<CmsSiteMatcher>();
@@ -376,9 +439,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             addServer(matcherToAdd, site);
         }
 
-        m_aliases = new ArrayList<CmsSiteMatcher>();
-        site.setParameters(m_siteParams);
-        m_siteParams = new TreeMap<String, String>();
+        site.setParameters(params);
+        site.setAlternativeSiteRootMapping(alternativeSiteRootMapping);
         m_siteRootSites = new HashMap<String, CmsSite>(m_siteRootSites);
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -406,11 +468,13 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      *                             if set to <code>false</code> will redirect to secure URL
      * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
      * @param subsiteSelection true if subsite selection should be enabled for this site
+     * @param params the site parameters
+     * @param aliases the aliases
+     * @param alternativeSiteRoot an optional alternative site root mapping
      *
      * @throws CmsConfigurationException in case the site was not configured correctly
      *
      */
-
     public void addSiteInternally(
         String server,
         String uri,
@@ -423,7 +487,10 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         String exclusive,
         String error,
         String usePermanentRedirects,
-        String subsiteSelection)
+        String subsiteSelection,
+        SortedMap<String, String> params,
+        List<CmsSiteMatcher> aliases,
+        java.util.Optional<CmsAlternativeSiteRootMapping> alternativeSiteRoot)
     throws CmsConfigurationException {
 
         try {
@@ -439,15 +506,16 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 exclusive,
                 error,
                 usePermanentRedirects,
-                subsiteSelection);
+                subsiteSelection,
+                params,
+                aliases,
+                alternativeSiteRoot);
 
         } catch (CmsConfigurationException e) {
             LOG.error("Error reading definitions. Trying to read without aliases.", e);
 
-            //If the aliases are making problems, just remove them
-            m_aliases.clear();
-
             //If this fails, the webserver was defined before ->throw exception
+
             addSite(
                 server,
                 uri,
@@ -460,7 +528,10 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 exclusive,
                 error,
                 usePermanentRedirects,
-                subsiteSelection);
+                subsiteSelection,
+                params,
+                new ArrayList<>(),
+                alternativeSiteRoot); //If the aliases are making problems, just remove thems
 
         }
     }
@@ -607,15 +678,19 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         Map<String, CmsSiteMatcher> siteServers = new HashMap<String, CmsSiteMatcher>(m_siteMatcherSites.size() + 1);
         List<CmsSite> result = new ArrayList<CmsSite>(m_siteMatcherSites.size() + 1);
 
-        Iterator<CmsSiteMatcher> i;
-        // add site list
-        i = m_siteMatcherSites.keySet().iterator();
-        while (i.hasNext()) {
-            CmsSite site = m_siteMatcherSites.get(i.next());
-            String folder = CmsFileUtil.addTrailingSeparator(site.getSiteRoot());
-            if (!siteroots.contains(folder)) {
-                siteroots.add(folder);
-                siteServers.put(folder, site.getSiteMatcher());
+        for (CmsSite mainSite : m_siteMatcherSites.values()) {
+            List<CmsSite> sitesToProcess = new ArrayList<>();
+            sitesToProcess.add(mainSite);
+            CmsSite extensionFolderSite = mainSite.createAlternativeSiteRootSite();
+            if (extensionFolderSite != null) {
+                sitesToProcess.add(extensionFolderSite);
+            }
+            for (CmsSite site : sitesToProcess) {
+                String folder = CmsFileUtil.addTrailingSeparator(site.getSiteRoot());
+                if (!siteroots.contains(folder)) {
+                    siteroots.add(folder);
+                    siteServers.put(folder, site.getSiteMatcher());
+                }
             }
         }
         // add default site
@@ -682,7 +757,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                                 CmsResourceFilter.ONLY_VISIBLE)) {
 
                             // get the title and the position from the system configuration first
-                            CmsSite configuredSite = m_siteRootSites.get(CmsFileUtil.removeTrailingSeparator(folder));
+                            CmsSite configuredSite = getSiteForSiteRoot(CmsFileUtil.removeTrailingSeparator(folder));
+                            // CmsSite configuredSite = m_siteRootSites.get(CmsFileUtil.removeTrailingSeparator(folder));
 
                             // get the title
                             String title = null;
@@ -912,7 +988,11 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         }
         // look through all folders that are not below "/sites/"
         String siteRoot = lookupAdditionalSite(rootPath);
-        return (siteRoot != null) ? getSiteForSiteRoot(siteRoot) : null;
+        if (siteRoot != null) {
+            return getSiteForSiteRoot(siteRoot);
+        }
+        return m_alternativeSiteData.getSiteForRootPath(rootPath);
+
     }
 
     /**
@@ -932,7 +1012,12 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     public CmsSite getSiteForSiteRoot(String siteRoot) {
 
-        return m_siteRootSites.get(siteRoot);
+        CmsSite result = m_siteRootSites.get(siteRoot);
+        if (result != null) {
+            return result;
+        } else {
+            return m_alternativeSiteData.getSiteForSiteRoot(siteRoot);
+        }
     }
 
     /**
@@ -962,7 +1047,16 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             return site.getSiteRoot();
         }
         // look through all folders that are not below "/sites/"
-        return lookupAdditionalSite(rootPath);
+        String result = lookupAdditionalSite(rootPath);
+        if (result != null) {
+            return result;
+        }
+        CmsSite extSite = m_alternativeSiteData.getSiteForRootPath(rootPath);
+        if (extSite != null) {
+            result = extSite.getSiteRoot();
+        }
+        return result;
+
     }
 
     /**
@@ -972,7 +1066,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     public Set<String> getSiteRoots() {
 
-        return m_siteRootSites.keySet();
+        return Sets.union(m_siteRootSites.keySet(), m_alternativeSiteData.getSiteRoots());
+
     }
 
     /**
@@ -1192,6 +1287,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                 }
             }
 
+            initExtensionSites();
+
             if (m_sharedFolder == null) {
                 m_sharedFolder = DEFAULT_SHARED_FOLDER;
             }
@@ -1372,6 +1469,19 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             }
         }
         CmsSite site = matchSite(matcher);
+        if (site.matchAlternativeSiteRoot(OpenCmsCore.getPathInfo(req))) {
+            CmsSite alternativeSite = site.createAlternativeSiteRootSite();
+            if (alternativeSite != null) {
+                LOG.debug(
+                    req.getRequestURL().toString()
+                        + ": "
+                        + "Matched extension folder rule, changing site root from "
+                        + site.getSiteRoot()
+                        + " to "
+                        + alternativeSite.getSiteRoot());
+                site = alternativeSite;
+            }
+        }
 
         if (LOG.isDebugEnabled()) {
             String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
@@ -1387,6 +1497,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /**
      * Return the configured site that matches the given site matcher,
      * or the default site if no sites matches.<p>
+     *
+     * Does NOT match auto-generated sites from alternative site root mappings, since the site matcher does not contain path information.
      *
      * @param matcher the site matcher to match the site with
      * @return the matching site, or the default site if no sites matches
@@ -1706,13 +1818,34 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
 
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
+        String scheme = null;
+        String host = null;
+        int port = 0;
+        try {
+            URI uri = URI.create(req.getRequestURL().toString());
+            scheme = uri.getScheme();
+            host = uri.getHost();
+            port = uri.getPort();
+        } catch (Exception e) {
+            // can happen in test cases, just log a warning
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+
+        CmsSiteMatcher matcher = new CmsSiteMatcher(scheme, host, port);
         // this is required to get the right configured time offset
         int index = m_siteMatchers.indexOf(matcher);
         if (index < 0) {
             return matcher;
         }
         return m_siteMatchers.get(index);
+    }
+
+    /**
+     * Finds the configured extension folders for all normal sites and stores them in a separate list.
+     */
+    private void initExtensionSites() {
+
+        m_alternativeSiteData = new AlternativeSiteData(m_siteMatcherSites.values());
     }
 
     /**

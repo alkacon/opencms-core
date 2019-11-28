@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public class CmsSiteSelectorOptionBuilder {
     /** The option list. */
     private List<CmsSiteSelectorOption> m_options = new ArrayList<CmsSiteSelectorOption>();
 
+    /** The macro resolver to use. */
+    private CmsMacroResolver m_resolver;
+
     /** The current site root. */
     private String m_siteRoot;
 
@@ -76,6 +80,10 @@ public class CmsSiteSelectorOptionBuilder {
 
         m_cms = cms;
         m_siteRoot = m_cms.getRequestContext().getSiteRoot();
+        m_resolver = new CmsMacroResolver();
+        m_resolver.setCmsObject(cms);
+        m_resolver.setMessages(
+            OpenCms.getWorkplaceManager().getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)));
     }
 
     /**
@@ -187,6 +195,9 @@ public class CmsSiteSelectorOptionBuilder {
         }
     }
 
+    /**
+     * Adds the system folder.
+     */
     public void addSystemFolder() {
 
         addOption(Type.site, "/system/", "/system/");
@@ -214,6 +225,8 @@ public class CmsSiteSelectorOptionBuilder {
         if (m_usedSiteRoots.contains(CmsStringUtil.joinPaths(siteRoot, "/"))) {
             return;
         }
+        message = m_resolver.resolveMacros(message);
+
         CmsSiteSelectorOption option = new CmsSiteSelectorOption(type, siteRoot, m_siteRoot.equals(siteRoot), message);
 
         // make sure to insert the root site is first and the shared site as second entry

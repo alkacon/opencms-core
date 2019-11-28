@@ -45,6 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.site.CmsAlternativeSiteRootMapping;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
@@ -60,6 +61,7 @@ import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -77,6 +79,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
@@ -103,6 +106,7 @@ import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.data.Validator.InvalidValueException;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
@@ -566,8 +570,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -1011525709082939562L;
 
+    protected CmsPathSelectField m_altSiteRoot;
+
+    protected FormLayout m_altSiteRootPathContainer;
+
+    protected TextField m_altSiteRootSuffix;
+
     /**Flag to block change events. */
     protected boolean m_blockChange;
+
+    protected Button m_clearAltSiteRoot;
 
     /**List of all folder names already used for sites. */
     List<String> m_alreadyUsedFolderPath = new ArrayList<String>();
@@ -583,8 +595,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
     /**vaadin coponent.*/
     ComboBox m_fieldSelectParentOU;
-
-    private ComboBox m_subsiteSelectionEnabled;
 
     /**vaadin component. */
     Upload m_fieldUploadFavIcon;
@@ -612,6 +622,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
     /**Edit group for workplace servers.*/
     private CmsEditableGroup m_aliasGroup;
+
+    private CmsEditableGroup m_alternativeSiteRootPrefixGroup;
 
     /**automatic setted folder name.*/
     private String m_autoSetFolderName;
@@ -694,54 +706,13 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     /**vaadin component.*/
     private TextField m_simpleFieldTitle;
 
+    private ComboBox m_subsiteSelectionEnabled;
+
     /**List of templates. */
     private List<CmsResource> m_templates;
 
     /**Layout for the report widget. */
     private FormLayout m_threadReport;
-
-    /**
-     * Public constructor.<p>
-     *
-     * @param cms CmsObject
-     * @param site Site to be shown / edited
-     * @param manager calling the dialog
-     * @param editable flag indicates if fields should be editable
-     */
-    public CmsEditSiteForm(CmsObject cms, CmsSite site, CmsSiteManager manager, boolean editable) {
-
-        m_clonedCms = cms;
-        m_site = site;
-        m_manager = manager;
-        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        setUpComboBoxPosition();
-        setUpComboBoxTemplate();
-        setUpComboBoxSSL();
-        setupSubsiteSelectionMode();
-        setUpOUComboBox(m_fieldSelectOU);
-        setUpOUComboBox(m_fieldSelectParentOU);
-
-        m_tab.setHeight("400px");
-        m_report.setVisible(false);
-        m_ok.setVisible(editable);
-        m_infoSiteRoot.setVisible(false);
-        if (editable) {
-            m_aliasGroup = new CmsEditableGroup(m_aliases, new Supplier<Component>() {
-
-                public Component get() {
-
-                    Component c = createAliasComponent("", true);
-                    c.setEnabled(false);
-                    return c;
-
-                }
-
-            }, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_ALIAS_0));
-            m_aliasGroup.init();
-        }
-        setFieldsForSite(editable);
-        m_cancel.addClickListener(e -> CmsVaadinUtils.getWindow(CmsEditSiteForm.this).close());
-    }
 
     /**
      * Constructor.<p>
@@ -843,21 +814,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                setupValidators();
-                setupValidatorAliase();
-                if (isValidInputSimple() & isValidInputSiteTemplate() & isValidAliase() & isValidSecureServer()) {
-                    submit();
-                    return;
-                }
-                if (isValidInputSimple()) {
-                    if (isValidAliase()) {
-                        m_tab.setSelectedTab(4);
-                        return;
-                    }
-                    m_tab.setSelectedTab(3);
-                    return;
-                }
-                m_tab.setSelectedTab(0);
+                validateAndSubmit();
             }
         };
 
@@ -869,7 +826,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                closeDailog(false);
+                closeDialog(false);
             }
         });
 
@@ -977,7 +934,19 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             }
 
         }, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_ALIAS_0));
+
+        m_alternativeSiteRootPrefixGroup = new CmsEditableGroup(m_altSiteRootPathContainer, () -> {
+            TextField pathField = new TextField();
+            return pathField;
+
+        }, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ADD_PATH_0));
+        m_clearAltSiteRoot.addClickListener(evt -> {
+            m_alternativeSiteRootPrefixGroup.removeAll();
+            m_altSiteRootSuffix.setValue("");
+            m_altSiteRoot.setValue("");
+        });
         m_aliasGroup.init();
+        m_alternativeSiteRootPrefixGroup.init();
 
     }
 
@@ -1176,7 +1145,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      *
      * @param updateTable <code>true</code> to update the site table
      */
-    void closeDailog(boolean updateTable) {
+    void closeDialog(boolean updateTable) {
 
         m_manager.closeDialogWindow(updateTable);
     }
@@ -1297,6 +1266,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             ret = ret & field.isValid();
         }
         return ret;
+    }
+
+    boolean isValidAltSiteRootSettings() {
+
+        return m_altSiteRoot.isValid();
     }
 
     /**
@@ -1476,7 +1450,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                closeDailog(true);
+                closeDialog(true);
             }
         });
     }
@@ -1558,6 +1532,40 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             if (m_fieldCreateOU.getValue().booleanValue()) {
                 m_fieldSelectParentOU.addValidator(new SelectParentOUValidator());
             }
+
+            m_altSiteRoot.addValidator(fieldValue -> {
+                String path = (String)fieldValue;
+                if (path == null) {
+                    return;
+                }
+                path = path.trim();
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(path);
+                if (site != null) {
+                    if (site.isGenerated()) {
+                        if (!m_site.getSiteMatcher().equals(site.getSiteMatcher())) {
+                            throw new InvalidValueException(
+                                CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1, path));
+                        }
+                    } else {
+                        throw new InvalidValueException(
+                            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FOLDERNAME_ALREADYUSED_1, path));
+                    }
+                }
+
+                for (String forbiddenPrefix : new String[] {OpenCms.getSiteManager().getSharedFolder(), "/system"}) {
+                    if (CmsStringUtil.isPrefixPath(forbiddenPrefix, path)) {
+                        throw new InvalidValueException("Forbidden path for alternative site root rule.");
+                    }
+                }
+
+                try {
+                    CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                    cms.getRequestContext().setSiteRoot("");
+                    cms.readResource(path);
+                } catch (CmsException e) {
+                    throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
+                }
+            });
         }
     }
 
@@ -1648,6 +1656,19 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_fieldSelectOU.setEnabled(!create);
         m_fieldSelectParentOU.setEnabled(create);
         m_fieldSelectOU.select("/");
+    }
+
+    private void fillAlternativeSiteRootTab(CmsAlternativeSiteRootMapping alternativeSiteRootMapping) {
+
+        if (alternativeSiteRootMapping != null) {
+            m_altSiteRoot.setValue(alternativeSiteRootMapping.getSiteRoot().asString());
+            m_altSiteRootSuffix.setValue(alternativeSiteRootMapping.getTitleSuffix());
+            for (CmsPath prefix : alternativeSiteRootMapping.getPrefixes()) {
+                TextField prefixField = new TextField();
+                prefixField.setValue(prefix.asString());
+                m_alternativeSiteRootPrefixGroup.addRow(prefixField);
+            }
+        }
     }
 
     /**
@@ -1836,6 +1857,18 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             ((Boolean)m_subsiteSelectionEnabled.getValue()).booleanValue());
         ret.setParameters((SortedMap<String, String>)getParameter());
         ret.setSSLMode((CmsSSLMode)m_simpleFieldEncryption.getValue());
+        String alternativeSiteRoot = m_altSiteRoot.getValue();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(alternativeSiteRoot)) {
+            String suffix = m_altSiteRootSuffix.getValue();
+            List<String> prefixPaths = new ArrayList<>();
+            for (I_CmsEditableGroupRow prefixRow : m_alternativeSiteRootPrefixGroup.getRows()) {
+                TextField prefixField = (TextField)(prefixRow.getComponent());
+                prefixPaths.add(prefixField.getValue());
+            }
+            ret.setAlternativeSiteRootMapping(
+                Optional.of(new CmsAlternativeSiteRootMapping(alternativeSiteRoot, prefixPaths, suffix)));
+        }
+
         return ret;
     }
 
@@ -1953,7 +1986,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         Page.getCurrent().getStyles().add(".o-res-site-info img {max-width: 24px;}");
         displayResourceInfoDirectly(Collections.singletonList(resourceInfo));
 
-        m_tab.removeTab(m_tab.getTab(4));
+        m_tab.removeTab(m_tab.getTab(5));
+
         m_simpleFieldTitle.removeTextChangeListener(null);
         m_simpleFieldTitle.setEnabled(enableAll);
         m_simpleFieldParentFolderName.setEnabled(false);
@@ -2025,6 +2059,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_fieldErrorPage.setEnabled(enableAll);
         m_addParameter.setVisible(enableAll);
         m_fieldPosition.setEnabled(enableAll);
+
+        fillAlternativeSiteRootTab(m_site.getAlternativeSiteRootMapping().orElse(null));
     }
 
     /**
@@ -2223,5 +2259,37 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_subsiteSelectionEnabled.setItemCaption(
             Boolean.TRUE,
             CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SUBSITE_SELECTION_ENABLED_0));
+    }
+
+    private void validateAndSubmit() {
+
+        setupValidators();
+        setupValidatorAliase();
+        if (isValidInputSimple()
+            & isValidInputSiteTemplate()
+            & isValidAliase()
+            & isValidSecureServer()
+            & isValidAltSiteRootSettings()) {
+            submit();
+            return;
+        }
+        if (!isValidInputSimple()) {
+            m_tab.setSelectedTab(0);
+        }
+
+        if (!isValidSecureServer()) {
+            m_tab.setSelectedTab(1);
+        }
+
+        if (!isValidAliase()) {
+            m_tab.setSelectedTab(3);
+        }
+        if (!isValidAltSiteRootSettings()) {
+            m_tab.setSelectedTab(4);
+        }
+
+        if (!isValidInputSiteTemplate()) {
+            m_tab.setSelectedTab(5);
+        }
     }
 }

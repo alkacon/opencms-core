@@ -395,6 +395,15 @@ public class CmsEditableGroup {
         updateGroupValidation();
     }
 
+    public void removeAll() {
+
+        m_container.removeAllComponents();
+        updatePlaceholder();
+        updateButtonBars();
+        updateGroupValidation();
+
+    }
+
     /**
      * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#setAddButtonVisible(boolean)
      */

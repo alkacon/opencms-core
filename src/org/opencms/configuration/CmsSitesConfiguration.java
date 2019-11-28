@@ -34,21 +34,35 @@ import org.opencms.letsencrypt.CmsSiteConfigToLetsEncryptConfigConverter;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
+import org.opencms.site.CmsAlternativeSiteRootMapping;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.digester3.CallMethodRule;
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.NodeCreateRule;
+import org.apache.commons.digester3.ObjectCreateRule;
+import org.apache.commons.digester3.Rule;
 
 import org.dom4j.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 
 /**
  * Class to read and write the OpenCms site configuration.<p>
@@ -177,8 +191,37 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
 
         // add site configuration rule
         String siteXpath = "*/" + N_SITES + "/" + N_SITE;
+        digester.addRule(
+            siteXpath,
+            new CallMethodRule(
+                "addSiteInternally",
+                15,
+                new Class[] {
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    String.class,
+                    SortedMap.class,
+                    List.class,
+                    Optional.class}) {
 
-        digester.addCallMethod(siteXpath, "addSiteInternally", 12);
+                @Override
+                public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                    super.begin(namespace, name, attributes);
+                    getDigester().peekParams()[12] = new TreeMap();
+                    getDigester().peekParams()[13] = new ArrayList();
+                    getDigester().peekParams()[14] = Optional.empty(); // non-string parameters must be initialized to a non-null value, so we have to use Optional
+                }
+            });
         digester.addCallParam(siteXpath, 0, A_SERVER);
         digester.addCallParam(siteXpath, 1, A_URI);
         digester.addCallParam(siteXpath, 2, A_TITLE);
@@ -191,15 +234,65 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
         digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 9, A_ERROR);
         digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 10, A_USE_PERMANENT_REDIRECTS);
         digester.addCallParam(siteXpath, 11, A_SUBSITE_SELECTION);
-        digester.addCallMethod(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "addParamToConfigSite", 2);
+
+        digester.addRule(siteXpath + "/" + N_PARAMETERS, new ObjectCreateRule(TreeMap.class) {
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                getDigester().peekParams()[12] = getDigester().peek();
+                super.end(namespace, name);
+            }
+        });
+        digester.addCallMethod(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "put", 2);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
         digester.addCallParam(siteXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
-        // add an alias to the currently configured site
-        digester.addCallMethod("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, "addAliasToConfigSite", 3);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_REDIRECT);
-        digester.addCallParam("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 2, A_OFFSET);
 
+        digester.addRule("*/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, new Rule() {
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                String server = attributes.getValue(A_SERVER);
+                String redirect = attributes.getValue(A_REDIRECT);
+                String offset = attributes.getValue(A_OFFSET);
+                CmsSiteMatcher matcher = CmsSiteManagerImpl.createAliasSiteMatcher(server, redirect, offset);
+                Object[] params = getDigester().peekParams();
+                ((ArrayList)params[13]).add(matcher);
+
+            }
+        });
+
+        try {
+            digester.addRule(
+                "*/" + N_SITES + "/" + N_SITE + "/" + CmsAlternativeSiteRootMapping.N_ALTERNATIVE_SITE_ROOT_MAPPING,
+                new NodeCreateRule() {
+
+                    @Override
+                    public void end(String namespace, String name) throws Exception {
+
+                        org.w3c.dom.Element elem = (org.w3c.dom.Element)digester.peek();
+                        String uri = elem.getAttribute(I_CmsXmlConfiguration.A_URI);
+                        String titlePrefix = elem.getAttribute(CmsAlternativeSiteRootMapping.A_TITLE_SUFFIX);
+                        NodeList nodes = elem.getElementsByTagName(CmsAlternativeSiteRootMapping.N_PATH);
+                        List<String> paths = new ArrayList<>();
+                        for (int i = 0; i < nodes.getLength(); i++) {
+                            org.w3c.dom.Element pathElem = (org.w3c.dom.Element)nodes.item(i);
+                            String path = pathElem.getTextContent().trim();
+                            paths.add(path);
+                        }
+                        CmsAlternativeSiteRootMapping mapping = new CmsAlternativeSiteRootMapping(
+                            uri,
+                            paths,
+                            titlePrefix);
+                        getDigester().peekParams()[14] = Optional.of(mapping);
+                        super.end(namespace, name);
+                    }
+
+                });
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
         digester.addCallMethod("*/" + N_SITES + "/" + N_SHARED_FOLDER, "setSharedFolder", 0);
 
     }
@@ -286,8 +379,12 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
                 aliasElement.addAttribute(A_SERVER, matcher.getUrl());
                 aliasElement.addAttribute(A_REDIRECT, String.valueOf(matcher.isRedirect()));
                 if (matcher.getTimeOffset() != 0) {
-                    aliasElement.addAttribute(A_OFFSET, "" + matcher.getTimeOffset());
+                    aliasElement.addAttribute(A_OFFSET, "" + (matcher.getTimeOffset() / 1000));
                 }
+            }
+            java.util.Optional<CmsAlternativeSiteRootMapping> altSiteRoot = site.getAlternativeSiteRootMapping();
+            if (altSiteRoot.isPresent()) {
+                altSiteRoot.get().appendXml(siteElement);
             }
         }
         return sitesElement;

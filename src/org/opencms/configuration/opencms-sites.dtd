@@ -29,6 +29,11 @@
 #     server:       the server address used for this site
 #     offset:       time in seconds added to the current time written as attribute
 #                   into the session when accessing the site over this alias
+#alternative-site-root: alternative site root to use for specific paths - can be separately selected in the site selector
+#	uri:			the alternative site root path
+#	title-suffix:	the title suffix to display for the alternative site root in the site selector
+#	path (element):	a path prefix for which the alternative site root should be used  
+#
 -->
 <!ELEMENT sites ((workplace-server+, default-uri, shared-folder?,oldStyleSecureServer?, webserver-scripting?, site+) | (workplace-server+, default-uri, oldStyleSecureServer?,webserver-scripting?, site+, shared-folder?))>
 <!ELEMENT workplace-server (#PCDATA)>
@@ -44,7 +49,7 @@
 <!ELEMENT filenameprefix (#PCDATA)>
 <!ELEMENT loggingdir (#PCDATA)>
 <!ELEMENT shared-folder (#PCDATA)>
-<!ELEMENT site (secure?, parameters?, alias*)>
+<!ELEMENT site (secure?, parameters?, alias*, alternative-site-root?)>
 <!ATTLIST site
 	server CDATA #REQUIRED
 	uri CDATA #REQUIRED
@@ -71,3 +76,11 @@
 	server CDATA #REQUIRED
 	redirect (true|false|True|False) "false"
 	offset CDATA #IMPLIED>
+	
+	
+<!ELEMENT alternative-site-root (path*)>
+<!ATTLIST alternative-site-root
+	uri CDATA #REQUIRED
+	title-suffix CDATA #REQUIRED>
+
+<!ELEMENT path (#PCDATA)>

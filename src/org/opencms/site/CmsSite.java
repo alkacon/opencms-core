@@ -30,8 +30,10 @@ package org.opencms.site;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -86,6 +89,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 
+    /** Alternative site root mapping. */
+    private CmsAlternativeSiteRootMapping m_alternativeSiteRootMapping;
+
     /** The URI to use as error page for this site. */
     private String m_errorPage;
 
@@ -94,6 +100,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
 
     /** If set to true, secure resources will only be available using the configured secure url. */
     private boolean m_exclusiveUrl;
+
+    /** True if site is generated. */
+    private boolean m_generated;
 
     /**Indicates is this site was published once to the online repo. */
     private boolean m_isOnlineUpdated;
@@ -272,6 +281,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
             m_subsiteSelectionEnabled);
         res.setParameters(getParameters());
         res.setSSLMode(getSSLMode());
+        res.setGenerated(isGenerated());
+        res.setAlternativeSiteRootMapping(getAlternativeSiteRootMapping());
         return res;
     }
 
@@ -293,6 +304,25 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
             return 0;
         }
         return (m_position < thatPos) ? -1 : 1;
+    }
+
+    /**
+     * Creates a generated site for the extension folder configured on this site, or null if no extension folder is set.
+     *
+     * @return the generated site for the extension folder
+     */
+    public CmsSite createAlternativeSiteRootSite() {
+
+        Optional<CmsAlternativeSiteRootMapping> optMapping = getAlternativeSiteRootMapping();
+        if (optMapping.isPresent()) {
+            CmsSite result = clone();
+            CmsAlternativeSiteRootMapping mapping = optMapping.get();
+            result.setSiteRoot(mapping.getSiteRoot().asString());
+            result.setTitle(getTitle() + " [" + mapping.getTitleSuffix() + "]");
+            result.setGenerated(true);
+            return result;
+        }
+        return null;
     }
 
     /**
@@ -365,6 +395,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
 
         }
 
+    }
+
+    /**
+     * Gets the (optional) alternative site root mapping.
+     *
+     * @return the alternative site root mapping
+     */
+    public Optional<CmsAlternativeSiteRootMapping> getAlternativeSiteRootMapping() {
+
+        return m_alternativeSiteRootMapping != null ? Optional.of(m_alternativeSiteRootMapping) : Optional.empty();
     }
 
     /**
@@ -657,6 +697,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Returns true if this is an automatically generated site (and thus should not be used in the site management UI).
+     *
+     * @return true if this is a generated site
+     */
+    public boolean isGenerated() {
+
+        return m_generated;
+    }
+
+    /**
      * Checks if the site it in the online project.<p>
      * @return true if it is in online project
      */
@@ -694,6 +744,41 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     public boolean isWebserver() {
 
         return m_webserver;
+    }
+
+    /**
+     * Returns true if there is an alternative site root mapping configured for this site, and it matches the given path.
+     *
+     * @param path the path from the request
+     * @return true if the alternative site root mapping matches the path
+     */
+    public boolean matchAlternativeSiteRoot(String path) {
+
+        Optional<CmsAlternativeSiteRootMapping> optMapping = getAlternativeSiteRootMapping();
+        if (optMapping.isPresent()) {
+            CmsAlternativeSiteRootMapping extConfig = optMapping.get();
+            if (getLocalizationMode() == LocalizationMode.singleTree) {
+                Locale locale = CmsSingleTreeLocaleHandler.getLocaleFromPath(path);
+                path = path.substring(locale.toString().length() + 1);
+            }
+            for (CmsPath prefix : extConfig.getPrefixes()) {
+                if (prefix.isPrefixOfStr(path)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    /**
+     * Sets the alternative site root mapping.
+     *
+     * @param alternativeSiteRootMapping the alternative site root mapping
+     */
+    public void setAlternativeSiteRootMapping(Optional<CmsAlternativeSiteRootMapping> alternativeSiteRootMapping) {
+
+        m_alternativeSiteRootMapping = alternativeSiteRootMapping.isPresent() ? alternativeSiteRootMapping.get() : null;
     }
 
     /**
@@ -916,6 +1001,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     protected void setTitle(String name) {
 
         m_title = name;
+    }
+
+    /**
+     * Enables/disableds the 'generated' state, i.e. if this site is automatically generated.
+     *
+     * @param generated true to mark the site as generated
+     */
+    void setGenerated(boolean generated) {
+
+        m_generated = generated;
     }
 
 }

@@ -364,6 +364,45 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the path for the request.<p>
+     *
+     * First checks the {@link HttpServletRequest#getPathInfo()}, then
+     * the configured request error page attribute (if set), and then
+     * if still undefined the <code>/</code> is returned as path info.<p>
+     *
+     * This is only needed when the {@link HttpServletRequest#getPathInfo()}
+     * is not really working as expected like in BEA WLS 9.x, where we have
+     * to use the 'weblogic.servlet.errorPage' request attribute.<p>
+     *
+     * @param req the http request context
+     *
+     * @return the path for the request
+     */
+    public static String getPathInfo(HttpServletRequest req) {
+
+        String path = req.getPathInfo();
+        if (path == null) {
+            // if the HttpServletRequest#getPathInfo() method does not work properly
+            String requestErrorPageAttribute = OpenCms.getSystemInfo().getServletContainerSettings().getRequestErrorPageAttribute();
+            if (requestErrorPageAttribute != null) {
+                // use the proper page attribute
+                path = (String)req.getAttribute(requestErrorPageAttribute);
+                if (path != null) {
+                    int pos = path.indexOf("/", 1);
+                    if (pos > 0) {
+                        // cut off the servlet name
+                        path = path.substring(pos);
+                    }
+                }
+            }
+        }
+        if (path == null) {
+            path = "/";
+        }
+        return path;
+    }
+
+    /**
      * Returns the initialized OpenCms singleton instance.<p>
      *
      * @return the initialized OpenCms singleton instance
@@ -694,45 +733,6 @@ public final class OpenCmsCore {
     protected I_CmsPasswordHandler getPasswordHandler() {
 
         return m_passwordHandler;
-    }
-
-    /**
-     * Returns the path for the request.<p>
-     *
-     * First checks the {@link HttpServletRequest#getPathInfo()}, then
-     * the configured request error page attribute (if set), and then
-     * if still undefined the <code>/</code> is returned as path info.<p>
-     *
-     * This is only needed when the {@link HttpServletRequest#getPathInfo()}
-     * is not really working as expected like in BEA WLS 9.x, where we have
-     * to use the 'weblogic.servlet.errorPage' request attribute.<p>
-     *
-     * @param req the http request context
-     *
-     * @return the path for the request
-     */
-    protected String getPathInfo(HttpServletRequest req) {
-
-        String path = req.getPathInfo();
-        if (path == null) {
-            // if the HttpServletRequest#getPathInfo() method does not work properly
-            String requestErrorPageAttribute = getSystemInfo().getServletContainerSettings().getRequestErrorPageAttribute();
-            if (requestErrorPageAttribute != null) {
-                // use the proper page attribute
-                path = (String)req.getAttribute(requestErrorPageAttribute);
-                if (path != null) {
-                    int pos = path.indexOf("/", 1);
-                    if (pos > 0) {
-                        // cut off the servlet name
-                        path = path.substring(pos);
-                    }
-                }
-            }
-        }
-        if (path == null) {
-            path = "/";
-        }
-        return path;
     }
 
     /**

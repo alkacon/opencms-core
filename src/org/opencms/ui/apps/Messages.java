@@ -55,6 +55,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SQLCONSOLE_NO_PERMISSIONS_EXEC_SENTENCE_1 = "ERR_SQLCONSOLE_NO_PERMISSIONS_EXEC_SENTENCE_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SQLCONSOLE_NOTHING_TO_EXECUTE_0 = "ERR_SQLCONSOLE_NOTHING_TO_EXECUTE_0";
 
@@ -69,7 +70,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
 
@@ -936,14 +936,19 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_OVERVIEW_0 = "GUI_LISTMANAGER_OVERVIEW_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_CATEGORY_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_HELP_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_FILTERS_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_CATEGORY_HELP_0 = "GUI_LISTMANAGER_PARAM_CATEGORY_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0";
     /** Message constant for key in the resource bundle. */
@@ -1050,19 +1055,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_DOWNLOAD_0 = "GUI_LOGFILE_DOWNLOAD_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_DOWNLOAD_ALL_0 = "GUI_LOGFILE_DOWNLOAD_ALL_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_DOWNLOAD_ALL_HELP_0 = "GUI_LOGFILE_DOWNLOAD_ALL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ENABLED_0 = "GUI_LOGFILE_ENABLED_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ENABLED_HELP_0 = "GUI_LOGFILE_ENABLED_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_0 = "GUI_LOGFILE_FILEPATH_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_HELP_0 = "GUI_LOGFILE_FILEPATH_HELP_0";
 
@@ -2195,6 +2195,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_ADD_PARAMETER_0 = "GUI_SITE_ADD_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ADD_PATH_0 = "GUI_SITE_ADD_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_ALIAS_0 = "GUI_SITE_ALIAS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2210,6 +2213,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_ALIASES_0 = "GUI_SITE_ALIASES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_DESC_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_PREFIXES_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_PREFIXES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_TAB_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_TAB_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_TITLE_SUFFIX_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_TITLE_SUFFIX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_TITLE_SUFFIX_DESC_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_TITLE_SUFFIX_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_CHNAV_POS_CURRENT_1 = "GUI_SITE_CHNAV_POS_CURRENT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -2220,6 +2241,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_CHNAV_POS_NOCHANGE_0 = "GUI_SITE_CHNAV_POS_NOCHANGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_CLEAR_ALTERNATIVE_SITE_ROOT_0 = "GUI_SITE_CLEAR_ALTERNATIVE_SITE_ROOT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_CONFIGURATION_0 = "GUI_SITE_CONFIGURATION_0";

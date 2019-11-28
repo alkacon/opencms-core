@@ -49,6 +49,19 @@
 							<vaadin7-vertical-layout _id="m_aliases" margin spacing style-name="o-formlayout-workplace-main">
 							</vaadin7-vertical-layout>		
 						</tab>
+                        <tab caption="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_TAB_0)">
+                                <vaadin7-vertical-layout margin spacing width="100%">
+                                    <v-form-layout width="100%" margin="false">
+                                        <v-button _id="m_clearAltSiteRoot" description="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_CLEAR_DESC_0)" style-name="o-button-site">%(key.GUI_SITE_CLEAR_ALTERNATIVE_SITE_ROOT_0)</v-button>
+                                        <f-cms-path-select-field  _id="m_altSiteRoot" width="100%" use-root-paths="true" caption="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_0)" description="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_DESC_0)"></f-cms-path-select-field>
+                                        <vaadin7-text-field _id="m_altSiteRootSuffix" caption="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_TITLE_SUFFIX_0)" description="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_TITLE_SUFFIX_DESC_0)" width="100%" />
+                                    </v-form-layout>
+                                    <v-panel caption="%(key.GUI_SITE_ALTERNATIVE_SITE_ROOT_PREFIXES_0)">
+                                    <v-form-layout _id="m_altSiteRootPathContainer" margin width="100%">
+                                    </v-form-layout>
+                                    </v-panel>
+                                </vaadin7-vertical-layout>
+                        </tab>
 						<tab caption="%(key.GUI_SITE_CREATE_NEW_OPTIONS_0)">
 							<v-form-layout _id="m_bundleValues" margin spacing style-name="o-formlayout-workplace-main">
 								<vaadin7-check-box _id="m_fieldCreateOU" caption="%(key.GUI_SITE_CREATEOU_0)" description="%(key.GUI_SITE_CREATEOU_HELP_0)" />							
@@ -57,6 +70,7 @@
 								<vaadin7-check-box _id="m_fieldKeepTemplate" caption="%(key.GUI_SITE_KEEP_TEMPLATE_0)" description="%(key.GUI_SITE_KEEP_TEMPLATE_HELP_0)" />
 							</v-form-layout>		
 						</tab>
+                        
 					</v-tab-sheet>
 					<v-panel id="m_report" caption="%(key.GUI_SITE_REPORT_0)">	
 						<v-form-layout _id="m_threadReport">

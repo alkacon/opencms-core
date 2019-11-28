@@ -99,6 +99,8 @@ public class TestConfiguration extends OpenCmsTestCase {
             // load XML from original file and compare to generated document
             InputSource source = new InputSource(new FileInputStream(xmlOrigFile));
             Document inputDoc = CmsXmlUtils.unmarshalHelper(source, new CmsXmlEntityResolver(null));
+            String outputDocStr = CmsXmlUtils.marshal(outputDoc, CmsEncoder.ENCODING_UTF_8);
+            String inputDocStr = CmsXmlUtils.marshal(inputDoc, CmsEncoder.ENCODING_UTF_8);
 
             // output the document
             System.out.println("---");

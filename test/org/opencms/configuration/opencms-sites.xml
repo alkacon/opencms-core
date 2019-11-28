@@ -15,5 +15,12 @@
             <alias server="http://www.aliasserver.com" redirect="false"/>              			
             <alias server="http://www.yetanotheraliasserver.com" redirect="false"/>			
 		</site>
+        <site server="http://other.localhost:8080" uri="/sites/other/" position="10.0" webserver="true" sslmode="secure-server" subsiteSelection="true">
+            <alias server="http://blah.localhost:8080" redirect="false" offset="500"  />
+            <alternative-site-root uri="/sites/foobar" title-suffix="alternative">
+                <path>/foobar-folder1</path>
+                <path>/foobar-folder2</path>
+            </alternative-site-root>
+        </site>
 	</sites>
 </opencms>

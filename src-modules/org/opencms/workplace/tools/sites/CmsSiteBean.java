@@ -33,8 +33,10 @@ package org.opencms.workplace.tools.sites;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsAlternativeSiteRootMapping;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -42,9 +44,11 @@ import org.opencms.util.CmsUUID;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.logging.Log;
 
 /**
@@ -62,6 +66,9 @@ public class CmsSiteBean implements Serializable {
 
     /** The aliases. */
     private List<String> m_aliases = new ArrayList<String>();
+
+    /** Alternative site root mapping. */
+    private CmsAlternativeSiteRootMapping m_alternativeSiteRootMapping;
 
     /** The URI used as error page. */
     private String m_errorPage;
@@ -96,9 +103,6 @@ public class CmsSiteBean implements Serializable {
     /** The secure server. */
     private boolean m_secureServer;
 
-    /** True if subsite selection should be enabled. */
-    private boolean m_subsiteSelection;
-
     /** The secure URL. */
     private String m_secureUrl;
 
@@ -113,6 +117,9 @@ public class CmsSiteBean implements Serializable {
 
     /** The site root of this site. */
     private String m_siteRoot;
+
+    /** True if subsite selection should be enabled. */
+    private boolean m_subsiteSelection;
 
     /** The offset time in ms. */
     private long m_timeOffset;
@@ -168,6 +175,8 @@ public class CmsSiteBean implements Serializable {
             m_webserver = site.isWebserver();
             m_parameters = site.getParameters();
             m_mode = site.getSSLMode().name();
+            m_subsiteSelection = site.isSubsiteSelectionEnabled();
+            setAlternativeSiteRootMapping(site.getAlternativeSiteRootMapping().orElse(null));
         }
     }
 
@@ -177,38 +186,7 @@ public class CmsSiteBean implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        CmsSiteBean other = (CmsSiteBean)obj;
-        if (m_server == null) {
-            if (other.m_server != null) {
-                return false;
-            }
-        } else if (!m_server.equals(other.m_server)) {
-            return false;
-        }
-        if (m_siteRoot == null) {
-            if (other.m_siteRoot != null) {
-                return false;
-            }
-        } else if (!m_siteRoot.equals(other.m_siteRoot)) {
-            return false;
-        }
-        if (m_title == null) {
-            if (other.m_title != null) {
-                return false;
-            }
-        } else if (!m_title.equals(other.m_title)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     /**
@@ -219,6 +197,16 @@ public class CmsSiteBean implements Serializable {
     public List<String> getAliases() {
 
         return m_aliases;
+    }
+
+    /**
+     * Gets the alternative site root mapping.
+     *
+     * @return the alternative site root mapping
+     */
+    public CmsAlternativeSiteRootMapping getAlternativeSiteRootMapping() {
+
+        return m_alternativeSiteRootMapping;
     }
 
     /**
@@ -446,6 +434,16 @@ public class CmsSiteBean implements Serializable {
     }
 
     /**
+     * Sets the alternative site root mapping.
+     *
+     * @param alternativeSiteRootMapping the site root mapping
+     */
+    public void setAlternativeSiteRootMapping(CmsAlternativeSiteRootMapping alternativeSiteRootMapping) {
+
+        m_alternativeSiteRootMapping = alternativeSiteRootMapping;
+    }
+
+    /**
      * Sets the errorPage.<p>
      *
      * @param errorPage the errorPage to set
@@ -632,9 +630,24 @@ public class CmsSiteBean implements Serializable {
      */
     public CmsSite toCmsSite() {
 
+        return toCmsSite(OpenCms.getSiteManager());
+
+    }
+
+    /**
+     * Creates a new site object based on the members.<p>
+     *
+     * This method with the siteManager parameter is mostly useful for testing, since usually only the global site manager instance is used.
+     *
+     * @param siteManager the site manager to use
+     *
+     * @return a new site object based on the members
+     */
+    public CmsSite toCmsSite(CmsSiteManagerImpl siteManager) {
+
         m_siteRoot = m_siteRoot.endsWith("/") ? m_siteRoot.substring(0, m_siteRoot.length() - 1) : m_siteRoot;
         CmsSiteMatcher matcher = CmsStringUtil.isNotEmpty(m_secureUrl) ? new CmsSiteMatcher(m_secureUrl) : null;
-        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(m_siteRoot);
+        CmsSite site = siteManager.getSiteForSiteRoot(m_siteRoot);
         CmsUUID uuid = new CmsUUID();
         if ((site != null) && (site.getSiteMatcher() != null)) {
             uuid = (CmsUUID)site.getSiteRootUUID().clone();
@@ -659,6 +672,7 @@ public class CmsSiteBean implements Serializable {
             m_webserver,
             aliases,
             m_subsiteSelection);
+        result.setAlternativeSiteRootMapping(Optional.ofNullable(getAlternativeSiteRootMapping()));
         result.setParameters(m_parameters);
         try {
             result.setSSLMode(CmsSSLMode.valueOf(m_mode));

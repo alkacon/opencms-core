@@ -53,6 +53,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -228,7 +229,8 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
      */
     public List<CmsSite> getAllElements() {
 
-        List<CmsSite> res = OpenCms.getSiteManager().getAvailableSites(getRootCmsObject(), false);
+        List<CmsSite> res = OpenCms.getSiteManager().getAvailableSites(getRootCmsObject(), false).stream().filter(
+            site -> !site.isGenerated()).collect(Collectors.toList());
         return res;
     }
 
