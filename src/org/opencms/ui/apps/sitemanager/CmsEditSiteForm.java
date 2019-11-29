@@ -2207,10 +2207,14 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         }
     }
 
+    /**
+     * Sets up the select box for the subsite selection mode.
+     */
     private void setupSubsiteSelectionMode() {
 
         m_subsiteSelectionEnabled.addItem(Boolean.FALSE);
         m_subsiteSelectionEnabled.addItem(Boolean.TRUE);
+        m_subsiteSelectionEnabled.setValue(Boolean.FALSE);
         m_subsiteSelectionEnabled.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
         m_subsiteSelectionEnabled.setNullSelectionAllowed(false);
         m_subsiteSelectionEnabled.setItemCaption(
