@@ -924,8 +924,6 @@ public class CmsSessionManager {
      */
     private String generateClientToken(HttpServletRequest request) {
 
-        String userAgent = request.getHeader(HEADER_USER_AGENT);
-
         String ip = request.getHeader(HEADER_TRUE_CLIENT_IP);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(ip)) {
             ip = request.getHeader(HEADER_X_FORWARDED_FOR);
@@ -933,9 +931,9 @@ public class CmsSessionManager {
                 ip = ip.split(",")[0];
             }
         }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ip)) {
+        if ((ip == null) || CmsStringUtil.isEmptyOrWhitespaceOnly(ip)) {
             ip = request.getRemoteAddr();
         }
-        return String.valueOf((userAgent + ip).hashCode());
+        return String.valueOf(ip.hashCode());
     }
 }
