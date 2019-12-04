@@ -140,7 +140,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
      * @param parentOU if createOU==true, sets the parent of the new OU
      * @param selectedOU set an existing OU
      * @param os ByteOutputStream with FavIcon data
-     * @param bundle for macro resolvinǵ
+     * @param bundle for macro resolving
      * @param finished runnable which gets called when thread done
      */
     protected CmsCreateSiteThread(
@@ -160,7 +160,6 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
         super(cms, "createSite");
         m_cms = cms;
         m_cmsOnline = getOnlineCmsObject(cms);
-
         m_source = source;
         m_template = template;
         m_bundle = bundle;
@@ -204,7 +203,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
             CmsResource siteRootResource = null;
 
             if (m_source.isEmpty()) {
-
+                //Don't copy an existing folder, but create a new one
                 siteRootResource = createSiteRootIfNeeded(m_site.getSiteRoot());
                 String sitePath = m_cms.getSitePath(siteRootResource);
 
@@ -213,10 +212,10 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
                 String sitemapConfig = CmsStringUtil.joinPaths(contentFolder, CmsADEManager.CONFIG_FILE_NAME);
                 if (!m_cms.existsResource(sitemapConfig)) {
                     createSitemapContentFolder(m_cms, siteRootResource, contentFolder);
+                    createIndexHTML(ensureFoldername(siteRootResource.getRootPath()));
                 }
-                createIndexHTML(ensureFoldername(siteRootResource.getRootPath()));
             } else {
-
+                //Copy existing folder to new siteroot and resolve macros
                 CmsMacroResolver.copyAndResolveMacro(
                     m_cms,
                     m_source,
