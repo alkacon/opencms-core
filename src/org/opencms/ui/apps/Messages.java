@@ -70,9 +70,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_0 = "GUI_CACHE_ADMIN_TOOL_NAME_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
 
@@ -951,6 +951,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0";
     /** Message constant for key in the resource bundle. */
@@ -1065,7 +1066,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_FILEPATH_0 = "GUI_LOGFILE_FILEPATH_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_HELP_0 = "GUI_LOGFILE_FILEPATH_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEVIEW_0 = "GUI_LOGFILE_FILEVIEW_0";
 
@@ -2216,6 +2216,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_CLEAR_DESC_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_CLEAR_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_ALTERNATIVE_SITE_ROOT_DESC_0 = "GUI_SITE_ALTERNATIVE_SITE_ROOT_DESC_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2846,9 +2849,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1 = "GUI_USERMANAGEMENT_DELETE_OU_NOT_POSSIBLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERMANAGEMENT_USER_NO_ROLE_0 = "GUI_USERMANAGEMENT_USER_NO_ROLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_DELETE_USER_1 = "GUI_USERMANAGEMENT_DELETE_USER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -3303,6 +3303,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_NEVER_LOGGED_IN_0 = "GUI_USERMANAGEMENT_USER_NEVER_LOGGED_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_NO_ROLE_0 = "GUI_USERMANAGEMENT_USER_NO_ROLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_OU_0 = "GUI_USERMANAGEMENT_USER_OU_0";
