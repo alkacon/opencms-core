@@ -74,6 +74,7 @@ import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -250,6 +251,12 @@ public class CmsFileTable extends CmsResourceTable {
                     result = result * (-1);
                 }
                 return result;
+            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+                String value1 = (String)item1.getItemProperty(propertyId).getValue();
+                String value2 = (String)item2.getItemProperty(propertyId).getValue();
+                Collator collator = Collator.getInstance(
+                    OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject()));
+                return collator.compare(value1, value2);
             }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
         }
@@ -276,6 +283,35 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
+
+    static {
+        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
+    }
 
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
@@ -310,7 +346,7 @@ public class CmsFileTable extends CmsResourceTable {
     /** The edited property id. */
     private CmsResourceTableProperty m_editProperty;
 
-    /** Saved container filters. */ 
+    /** Saved container filters. */
     private Collection<Filter> m_filters = Collections.emptyList();
 
     /** The folder select handler. */
@@ -423,35 +459,6 @@ public class CmsFileTable extends CmsResourceTable {
         });
 
         m_menu.setAsTableContextMenu(m_fileTable);
-    }
-
-    static {
-        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
-        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
     }
 
     /**

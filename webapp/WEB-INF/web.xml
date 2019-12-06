@@ -31,8 +31,8 @@
         to "/mycms-errorhandler/system/handler/handle500.html" -->
 
     <!-- Use the protected export feature to statically export resources
-	    while still ensuring resource permissions are not violated.
-	    This will work for static resources like images and binaries only.
+        while still ensuring resource permissions are not violated.
+        This will work for static resources like images and binaries only.
     <filter>
         <filter-name>OpenCmsProtectedExportFilter</filter-name>
         <filter-class>org.opencms.main.OpenCmsProtectedExportFilter</filter-class>
@@ -312,7 +312,7 @@
 
     <error-page>
         <error-code>500</error-code>
-        <location>/opencms-errorhandler/system/handler/handle500.html</location>
+        <location>/opencms-errorhandler/handle500</location>
     </error-page>
 
     <jsp-config>
