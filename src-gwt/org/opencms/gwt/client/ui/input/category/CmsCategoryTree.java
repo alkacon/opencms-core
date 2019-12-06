@@ -486,7 +486,10 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     public List<String> getSelected() {
 
         List<String> result = new ArrayList<String>();
-        result.add(m_singleResult);
+        result.add(
+            m_singleResult.isEmpty()
+            ? ""
+            : ((CmsDataValue)m_categories.get(m_singleResult).getMainWidget()).getParameter(2));
         return result;
     }
 
