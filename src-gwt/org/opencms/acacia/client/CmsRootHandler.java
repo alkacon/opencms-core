@@ -181,8 +181,11 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
                 && ((CmsAttributeHandler)handler).getAttributeType().isChoice()) {
                 // in case of a choice attribute, skip to the next path name
                 attributeName = CmsType.CHOICE_ATTRIBUTE_NAME;
+
                 i++;
-                nextIndex = CmsContentDefinition.extractIndex(pathNames[i]);
+                if (i < pathNames.length) {
+                    nextIndex = CmsContentDefinition.extractIndex(pathNames[i]);
+                }
             }
 
             handler = handler.getChildHandler(attributeName, index);
