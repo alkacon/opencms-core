@@ -1818,20 +1818,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
 
-        String scheme = null;
-        String host = null;
-        int port = 0;
-        try {
-            URI uri = URI.create(req.getRequestURL().toString());
-            scheme = uri.getScheme();
-            host = uri.getHost();
-            port = uri.getPort();
-        } catch (Exception e) {
-            // can happen in test cases, just log a warning
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-
-        CmsSiteMatcher matcher = new CmsSiteMatcher(scheme, host, port);
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
         // this is required to get the right configured time offset
         int index = m_siteMatchers.indexOf(matcher);
         if (index < 0) {
