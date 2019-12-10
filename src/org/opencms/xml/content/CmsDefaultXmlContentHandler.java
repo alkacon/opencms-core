@@ -144,6 +144,17 @@ import com.google.common.collect.Maps;
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_CmsXmlContentVisibilityHandler {
 
     /**
+     * Enum for IfInvalidRelation field setting values.
+     */
+    public enum InvalidRelationAction {
+        /** Only remove the field itself. */
+        removeSelf,
+
+        /** Remove the field's parent. */
+        removeParent
+    }
+
+    /**
      * Contains the visibility handler configuration for a content field path.<p>
      */
     protected static class VisibilityConfiguration {
@@ -232,7 +243,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         UseDefault,
 
         /** Element name. */
-        Visibility
+        Visibility,
+
+        /** Element name. */
+        IfInvalidRelation
     }
 
     /**
@@ -650,6 +664,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
 
+    /** Relation actions. */
+    protected Map<String, InvalidRelationAction> m_invalidRelationActions = new HashMap<>();
+
     /** The CSS resources to include into the html-page head. */
     protected Set<String> m_cssHeadIncludes;
 
@@ -788,6 +805,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Gets the invalid relation action for the given value.
+     * @param value the value
+     * @return the invalid relation action
+     */
+    private static InvalidRelationAction getInvalidRelationActionForValue(I_CmsXmlContentValue value) {
+
+        try {
+            String path = value.getPath();
+            String simpleName = CmsXmlUtils.getLastXpathElement(path);
+            return value.getContentDefinition().getContentHandler().getInvalidRelationAction(simpleName);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -1052,6 +1086,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             wrappers.add(wrapper);
         }
         return CmsFormatterConfiguration.create(cms, wrappers);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getInvalidRelationAction(java.lang.String)
+     */
+    public InvalidRelationAction getInvalidRelationAction(String name) {
+
+        return m_invalidRelationActions.get(name);
     }
 
     /**
@@ -1544,6 +1586,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             Iterator<I_CmsXmlContentValue> itValues = document.getValues(locale).iterator();
             while (itValues.hasNext()) {
                 I_CmsXmlContentValue value = itValues.next();
+                InvalidRelationAction invalidRelationAction = getInvalidRelationActionForValue(value);
                 String path = value.getPath();
                 // check if this value has already been deleted by parent rules
                 boolean alreadyRemoved = false;
@@ -1558,6 +1601,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 // only continue if not already removed and if a rule match
                 if (alreadyRemoved
                     || ((m_relationChecks.get(path) == null)
+                        && (invalidRelationAction == null)
                         && (m_relationChecks.get(CmsXmlUtils.removeXpath(path)) == null))) {
                     continue;
                 }
@@ -1577,7 +1621,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     }
                     // find the node to remove
                     String parentPath = path;
-                    while (isInvalidateParent(parentPath)) {
+                    boolean firstIteration = true;
+                    while (isInvalidateParent(parentPath)
+                        || (firstIteration && (invalidRelationAction == InvalidRelationAction.removeParent))) {
+                        firstIteration = false;
                         // check parent
                         parentPath = CmsXmlUtils.removeLastXpathElement(parentPath);
                         // log info
@@ -2618,6 +2665,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String search = elem.elementTextTrim(FieldSettingElems.Search.name());
         if (search != null) {
             addSimpleSearchSetting(contentDef, name, search);
+        }
+
+        String ifInvalidRelationStr = elem.elementTextTrim(FieldSettingElems.IfInvalidRelation.name());
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ifInvalidRelationStr)) {
+            ifInvalidRelationStr = null;
+        }
+        if (ifInvalidRelationStr != null) {
+            if (name.contains("[") || name.contains("/")) {
+                LOG.error("Only simple field names allowed for the IfInvalidRelation field setting.");
+            } else {
+                try {
+                    InvalidRelationAction ifInvalidRelation = InvalidRelationAction.valueOf(ifInvalidRelationStr);
+                    m_invalidRelationActions.put(name, ifInvalidRelation);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+
         }
     }
 

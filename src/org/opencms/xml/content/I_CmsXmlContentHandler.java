@@ -44,6 +44,7 @@ import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.content.CmsDefaultXmlContentHandler.InvalidRelationAction;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlContentValue.SearchContentType;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -329,6 +330,17 @@ public interface I_CmsXmlContentHandler {
      * @return the container page element formatter configuration for this handler
      */
     CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource res);
+
+    /**
+     * Gets the action to perform if the given name refers to a link field which refers to a VFS file that no longer exists.
+     *
+     * @param name the field name
+     * @return the action
+     */
+    default InvalidRelationAction getInvalidRelationAction(String name) {
+
+        return null;
+    }
 
     /**
      * Returns the resource-independent javascript resources to include into the html-page head.<p>

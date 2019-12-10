@@ -435,6 +435,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                     try {
                         CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
                     } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
                         return VISIBILITY_INVISIBLE;
                     }
                 }

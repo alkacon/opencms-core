@@ -403,6 +403,7 @@
             <xsd:element name="RuleType" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Error" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Relation" type="OpenCmsFieldRelation" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="IfInvalidRelation" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Search" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Visibility" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="FieldVisibility" type="OpenCmsFieldVisibility" minOccurs="0" maxOccurs="1" />
