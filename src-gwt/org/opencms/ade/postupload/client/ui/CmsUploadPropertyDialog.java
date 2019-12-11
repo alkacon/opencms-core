@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -255,12 +256,13 @@ public class CmsUploadPropertyDialog {
         if (m_dialogIndex <= 0) {
             return;
         }
-        m_dialogIndex--;
+
         m_uploadPropertyPanel.getPropertyEditor().getForm().validateAndSubmit();
         m_nextAction = new Runnable() {
 
             public void run() {
 
+                m_dialogIndex--;
                 loadDialogBean(m_resources.get(m_dialogIndex));
             }
         };
@@ -290,12 +292,12 @@ public class CmsUploadPropertyDialog {
             return;
         }
 
-        m_dialogIndex++;
         m_uploadPropertyPanel.getPropertyEditor().getForm().validateAndSubmit();
         m_nextAction = new Runnable() {
 
             public void run() {
 
+                m_dialogIndex++;
                 loadDialogBean(m_resources.get(m_dialogIndex));
             }
         };
@@ -367,6 +369,8 @@ public class CmsUploadPropertyDialog {
      */
     protected void updateDialog(CmsPostUploadDialogPanelBean result) {
 
+        CmsDebugLog.consoleLog("=== updateDialog called");
+
         m_panelData = result;
 
         if (m_dialogData.getResources().size() > 1) {
@@ -385,6 +389,21 @@ public class CmsUploadPropertyDialog {
                 m_buttonNext.enable();
             }
         }
+
+        // Disable finish button if current resource has properties with required validation
+        // and is not the last resource in the list.
+        // Since the resources with required validation come first in the list from the server,
+        // this prevents users from quitting the dialog unless the validation for all resources
+        // for which it is necessary has succeeded.
+        // Since the finish button triggers a validation for the current resource, enabling it for
+        // the last resource is OK.
+        if (!m_dialogData.getIdsWithRequiredValidation().contains(result.getStructureId())
+            || (m_dialogIndex == (m_dialogData.getResources().size() - 1))) {
+            m_buttonClose.enable();
+        } else {
+            m_buttonClose.disable(null);
+        }
+
         m_uploadPropertyPanel = new CmsUploadPropertyPanel(this, m_dialogData, m_panelData);
         m_dialogContent.setWidget(m_uploadPropertyPanel);
         m_frameDialog.setWidth(960);

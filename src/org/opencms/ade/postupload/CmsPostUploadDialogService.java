@@ -32,6 +32,7 @@ import org.opencms.ade.postupload.shared.CmsPostUploadDialogBean;
 import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.ade.postupload.shared.I_CmsDialogConstants;
 import org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -45,6 +46,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -53,13 +55,20 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Iterables;
 
 /**
  * The service implementation for the org.opencms.ade.postupload module.<p>
@@ -68,6 +77,9 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPostUploadDialogService.class);
 
     /**
      * Creates a new instance.<p>
@@ -159,11 +171,12 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 res.getRootPath());
             Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
 
-            Set<String> propertiesToShow = new HashSet<String>();
+            Set<String> propertiesToShow = new LinkedHashSet<String>();
             propertiesToShow.addAll(defaultProperties);
             if (addBasicProperties) {
                 propertiesToShow.addAll(propertyConfiguration.keySet());
             }
+            Set<String> requiredProperties = getRequiredProperties(getCmsObject(), res);
             for (String propertyName : propertiesToShow) {
                 CmsXmlContentProperty propDef = null;
                 if (useConfiguration) {
@@ -183,6 +196,14 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                         "",
                         "false");
                 }
+                if (requiredProperties.contains(propertyName)) {
+                    String validationErrorMessage = Messages.get().getBundle(
+                        OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject())).key(
+                            Messages.GUI_POSTUPLOAD_REQUIRED_PROPERTY_1,
+                            propertyName);
+                    propDef = propDef.withValidation(".*?[^ ].*", "error", validationErrorMessage);
+                }
+
                 propertyDefinitions.put(propertyName, propDef);
                 CmsProperty property = CmsProperty.get(propertyName, properties);
                 if (property != null) {
@@ -216,7 +237,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
         try {
 
-            Map<CmsUUID, String> uuids = new LinkedHashMap<CmsUUID, String>();
+            List<CmsResource> resources = new ArrayList<>();
 
             if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(
                 getRequest().getParameter(I_CmsDialogConstants.PARAM_RESOURCES)))) {
@@ -227,8 +248,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 for (String uuidAsString : resourceUUIDs) {
                     CmsUUID uuid = new CmsUUID(uuidAsString);
                     CmsResource res = getCmsObject().readResource(uuid);
-                    String resPath = getCmsObject().getRequestContext().removeSiteRoot(res.getRootPath());
-                    uuids.put(uuid, resPath);
+                    resources.add(res);
                 }
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter("resource"))) {
                 // if there was no parameter "resources" set as request parameter
@@ -236,16 +256,67 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 String resourceParam = getRequest().getParameter("resource");
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceParam)) {
                     CmsResource res = getCmsObject().readResource(resourceParam);
-                    String resPath = getCmsObject().getRequestContext().removeSiteRoot(res.getRootPath());
-                    uuids.put(res.getStructureId(), resPath);
+                    resources.add(res);
                 }
             }
-
-            return new CmsPostUploadDialogBean(uuids);
+            return createUploadDialogBean(resources);
         } catch (CmsException e) {
             error(e);
             return null; // will never be reached
         }
+    }
+
+    /**
+     * Creates the data bean for the dialog from the list of created resources.
+     *
+     * @param resources the resources
+     * @return the data bean for the dialog
+     */
+    private CmsPostUploadDialogBean createUploadDialogBean(List<CmsResource> resources) {
+
+        Map<CmsUUID, String> result = new LinkedHashMap<>();
+        CmsObject cms = getCmsObject();
+        // split resource list into two parts, ones that have required properties and ones that don't,
+        // then iterate over the ones with required properties first.
+        //
+        // this is because the buttons in the upload property dialog only trigger validation for the current tab,
+        // so we want the user to go through all resources which require validation first before they can exit the dialog.
+        Map<Boolean, List<CmsResource>> parts = resources.stream().collect(
+            Collectors.partitioningBy(res -> getRequiredProperties(cms, res).size() > 0));
+
+        for (CmsResource res : Iterables.concat(parts.get(Boolean.TRUE), parts.get(Boolean.FALSE))) {
+            result.put(res.getStructureId(), cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+        }
+        Set<CmsUUID> reqValIds = parts.get(Boolean.TRUE).stream().map(res -> res.getStructureId()).collect(
+            Collectors.toSet());
+        return new CmsPostUploadDialogBean(result, reqValIds);
+    }
+
+    /**
+     * Gets the properties required for the given resource (as defined by the requiredOnUpload setting on the corresponding explorertype).
+     *
+     * @param cms the CMS context
+     * @param res a resource
+     * @return the set of required properties
+     */
+    private Set<String> getRequiredProperties(CmsObject cms, CmsResource res) {
+
+        Set<String> requiredProps = new HashSet<>();
+        try {
+            String typeName = OpenCms.getResourceManager().getResourceType(res).getTypeName();
+            CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+            if (explorerType != null) {
+                for (String prop : explorerType.getProperties()) {
+                    if (explorerType.isPropertyRequiredOnUpload(prop)) {
+                        requiredProps.add(prop);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return requiredProps;
+        }
+        return requiredProps;
     }
 
 }

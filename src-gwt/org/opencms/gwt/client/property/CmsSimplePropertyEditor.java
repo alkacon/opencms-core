@@ -124,6 +124,17 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
         // we don't want any special fields
     }
 
+    /** 
+     * Checks whether an empty string should always be allowed for the property, regardless of validation settings.
+     * 
+     * @param name the property name
+     * @return true if the empty string should always be allowed  
+     */
+    protected boolean isAlwaysAllowEmpty(String name) {
+
+        return true;
+    }
+
     /**
      * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#setupFieldContainer()
      */
@@ -179,7 +190,7 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
             pathValue.getPath(),
             this,
             Collections.<String, String> emptyMap(),
-            true);
+            isAlwaysAllowEmpty(propDef.getName()));
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);
         String defaultValue = "";

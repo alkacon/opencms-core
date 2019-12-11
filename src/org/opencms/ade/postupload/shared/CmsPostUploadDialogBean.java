@@ -29,8 +29,10 @@ package org.opencms.ade.postupload.shared;
 
 import org.opencms.util.CmsUUID;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -48,7 +50,10 @@ public class CmsPostUploadDialogBean implements IsSerializable {
      * A map of the resources for which the properties should be edited, with the structure ids as keys and the resource
      * paths as values.
      */
-    private Map<CmsUUID, String> m_resources = new HashMap<CmsUUID, String>();
+    private Map<CmsUUID, String> m_resources = new LinkedHashMap<CmsUUID, String>();
+
+    /** Ids of resources for which validation is required. */
+    private Set<CmsUUID> m_idsWithRequiredValidation = new HashSet<>();
 
     /** Flag which controls whether the property configurations should be used. */
     private boolean m_useConfiguration;
@@ -68,10 +73,22 @@ public class CmsPostUploadDialogBean implements IsSerializable {
      * Creates a new instance.<p>
      *
      * @param resources the map of resources for which the properties should be uploaded
+     * @param idsWithRequiredValidation structurei ids of resources for which validation is required
      */
-    public CmsPostUploadDialogBean(Map<CmsUUID, String> resources) {
+    public CmsPostUploadDialogBean(Map<CmsUUID, String> resources, Set<CmsUUID> idsWithRequiredValidation) {
 
         m_resources.putAll(resources);
+        m_idsWithRequiredValidation = idsWithRequiredValidation;
+    }
+
+    /**
+     * Gets the structure ids of resources for which validation is required.
+     *
+     * @return the structure ids of resources for which validation is required
+     */
+    public Set<CmsUUID> getIdsWithRequiredValidation() {
+
+        return m_idsWithRequiredValidation;
     }
 
     /**

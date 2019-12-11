@@ -124,6 +124,7 @@
 					<defaultproperties enabled="true" shownavigation="false">
 						<defaultproperty name="Title" />
 						<defaultproperty name="Description" />
+                        <defaultproperty name="Copyright" requiredOnUpload="true" />
 					</defaultproperties>
 				</editoptions>
 			</explorertype>

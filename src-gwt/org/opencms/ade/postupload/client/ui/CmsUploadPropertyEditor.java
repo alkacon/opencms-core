@@ -51,6 +51,15 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
     }
 
     /**
+     * @see org.opencms.gwt.client.property.CmsSimplePropertyEditor#isAlwaysAllowEmpty(java.lang.String)
+     */
+    @Override
+    protected boolean isAlwaysAllowEmpty(String name) {
+
+        return false;
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.CmsSimplePropertyEditor#setupFieldContainer()
      */
     @Override

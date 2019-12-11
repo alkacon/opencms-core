@@ -45,10 +45,10 @@ public class CmsXmlContentProperty implements Serializable {
 
     /** Type constants. */
     public enum PropType {
-    /** Type constant string. */
-    string,
-    /** Type constant VFS list. */
-    vfslist;
+        /** Type constant string. */
+        string,
+        /** Type constant VFS list. */
+        vfslist;
 
         /**
          * Checks if the given type is {@link #vfslist}.<p>
@@ -605,6 +605,32 @@ public class CmsXmlContentProperty implements Serializable {
             niceName,
             m_description,
             m_error,
+            m_preferFolder);
+    }
+
+    /**
+     * Copies the property definition, but replaces the fields related to validation.
+     *
+     * @param pattern the validation pattern
+     * @param type the validation type
+     * @param error the validation error message
+     *
+     * @return the copied property definition
+     */
+    public CmsXmlContentProperty withValidation(String pattern, String type, String error) {
+
+        return new CmsXmlContentProperty(
+            m_name,
+            m_type,
+            m_visibility,
+            m_widget,
+            m_widgetConfiguration,
+            pattern,
+            type,
+            m_default,
+            m_niceName,
+            m_description,
+            error,
             m_preferFolder);
     }
 

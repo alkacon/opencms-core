@@ -67,7 +67,12 @@
 	shownavigation (true|false|TRUE|FALSE) #IMPLIED>
 	
 <!ELEMENT defaultproperty EMPTY>
-<!ATTLIST defaultproperty name CDATA #REQUIRED>
+<!ATTLIST defaultproperty 
+	name CDATA #REQUIRED
+	requiredOnUpload (true|false|TRUE|FALSE) #IMPLIED>
+	
+	
+
 
 <!--
 # DEPRECATED: This setting is no longer evaluated

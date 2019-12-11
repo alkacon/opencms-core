@@ -181,6 +181,9 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_propertyEditor.initializeWidgets(null);
         A_CmsFormFieldPanel propertiesPanel = m_propertyEditor.getForm().getWidget();
         add(propertiesPanel);
+        FlowPanel spacer = new FlowPanel();
+        spacer.getElement().setAttribute("style", "height: 24px");
+        add(spacer);
     }
 
     /**

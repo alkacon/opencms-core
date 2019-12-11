@@ -91,6 +91,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the attribute containing the name of the big icon style class. */
     public static final String A_BIGICONSTYLE = "bigiconstyle";
 
+    /** The 'creatable' attribute. */
+    public static final String A_CREATABLE = "creatable";
+
     /** The 'description' attribute. */
     public static final String A_DESCRIPTION = "description";
 
@@ -123,9 +126,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The 'widget-config' attribute. */
     public static final String A_NICE_NAME = "nice-name";
-
-    /** The 'creatable' attribute. */
-    public static final String A_CREATABLE = "creatable";
 
     /** The attribute name of the optional attribute for the user-info node. */
     public static final String A_OPTIONAL = "optional";
@@ -217,11 +217,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
 
-    /** The name of the category folder node. */
-    public static final String N_CATEGORYFOLDER = "categoryfolder";
-
     /** The name of the category display options node. */
     public static final String N_CATEGORYDISPLAYOPTIONS = "categorydisplayoptions";
+
+    /** The name of the category folder node. */
+    public static final String N_CATEGORYFOLDER = "categoryfolder";
 
     /** The name of the color node. */
     public static final String N_COLOR = "color";
@@ -583,6 +583,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The elementview attribute. */
     private static final String A_ELEMENTVIEW = "elementview";
 
+    /** The requiredOnUpload attribute. */
+    private static final String A_REQUIRED_ON_UPLOAD = "requiredOnUpload";
+
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
 
@@ -656,20 +659,29 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY,
             "addProperty",
-            1);
+            2);
         digester.addCallParam(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY,
             0,
             A_NAME);
 
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY,
+            1,
+            A_REQUIRED_ON_UPLOAD);
+
         digester.addCallMethod(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_DEFAULTPROPERTY,
             "addProperty",
-            1);
+            2);
         digester.addCallParam(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_DEFAULTPROPERTY,
             0,
             A_NAME);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_DEFAULTPROPERTY,
+            1,
+            A_REQUIRED_ON_UPLOAD);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setEditOptions");
     }
@@ -772,7 +784,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                         String.valueOf(settings.isShowNavigation()));
                     Iterator<String> m = settings.getProperties().iterator();
                     while (m.hasNext()) {
-                        defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(A_NAME, m.next());
+                        Element propElem = defaultPropertiesElement.addElement(N_DEFAULTPROPERTY);
+                        String propName = m.next();
+                        if (settings.isPropertyRequiredOnUpload(propName)) {
+                            propElem.addAttribute(A_REQUIRED_ON_UPLOAD, "true");
+                        }
+                        propElem.addAttribute(A_NAME, propName);
+
                     }
                 }
 

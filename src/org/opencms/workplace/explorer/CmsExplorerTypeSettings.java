@@ -40,8 +40,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -196,6 +198,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The configured view order. */
     private Integer m_viewOrder;
 
+    /** Properties which are required on upload. */
+    private Set<String> m_requiredOnUpload = new HashSet<>();
+
     /**
      * Default constructor.<p>
      */
@@ -244,13 +249,17 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      * Adds a property definition name to the list of editable properties.<p>
      *
      * @param propertyName the name of the property definition to add
+     * @param requiredOnUpload if "true", mark the property as required after upload
      * @return true if the property definition was added properly
      */
-    public boolean addProperty(String propertyName) {
+    public boolean addProperty(String propertyName, String requiredOnUpload) {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propertyName)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_PROP_1, propertyName));
+            }
+            if (Boolean.valueOf(requiredOnUpload).booleanValue()) {
+                m_requiredOnUpload.add(propertyName);
             }
             return m_properties.add(propertyName);
         } else {
@@ -595,6 +604,17 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public boolean isPropertiesEnabled() {
 
         return m_propertiesEnabled;
+    }
+
+    /**
+     * Check if property is required on upload.
+     *
+     * @param propName the property name
+     * @return true if the property is required on upload
+     */
+    public boolean isPropertyRequiredOnUpload(String propName) {
+
+        return m_requiredOnUpload.contains(propName);
     }
 
     /**
