@@ -307,7 +307,7 @@ public class CmsParameterStore {
             try {
                 result = parse(cms, path);
             } catch (CmsException e) {
-                LOG.error(path + ": " + e.getLocalizedMessage(), e);
+                LOG.info(path + ": " + e.getLocalizedMessage(), e);
                 result = new HashMap<>();
             }
             CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().putCachedObject(cms, rootPath, result);
