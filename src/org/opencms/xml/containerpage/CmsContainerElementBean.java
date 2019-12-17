@@ -410,6 +410,17 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Ensures the element has a new element instance id.<p>
+     */
+    public void ensureNewInstanceId() {
+
+        Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
+        newSettings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+        m_individualSettings = Collections.unmodifiableMap(newSettings);
+        m_editorHash = m_elementId.toString() + getSettingsHash();
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
