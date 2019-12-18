@@ -29,6 +29,7 @@ package org.opencms.publish;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.db.generic.CmsPublishHistoryCleanupFilter;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -49,6 +50,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 
 /**
  * This manager provide access to the publish engine runtime information.<p>
@@ -62,7 +65,8 @@ public class CmsPublishManager {
      */
     public static enum PublishListRemoveMode {
         /** Remove publish list entries for all users if a resource is published. */
-        allUsers, /** Remove publish list entry for the current user if a resource is published. */
+        allUsers,
+        /** Remove publish list entry for the current user if a resource is published. */
         currentUser
     }
 
@@ -78,6 +82,9 @@ public class CmsPublishManager {
     /** Milliseconds in a second. */
     private static final int MS_ONE_SECOND = 1000;
 
+    /** Flag which controls whether CMS_PUBLISH_HISTORY entries should be automatically removed. */
+    private boolean m_autoCleanupHistoryEntries;
+
     /** Indicates if the configuration can be modified. */
     private boolean m_frozen;
 
@@ -87,11 +94,11 @@ public class CmsPublishManager {
     /** The maximum size of the publish history. */
     private int m_publishHistorySize;
 
-    /** Publish job verifier. */
-    private CmsPublishListVerifier m_publishListVerifier = new CmsPublishListVerifier();
-
     /** The publish list remove mode. */
     private CmsPublishManager.PublishListRemoveMode m_publishListRemoveMode;
+
+    /** Publish job verifier. */
+    private CmsPublishListVerifier m_publishListVerifier = new CmsPublishListVerifier();
 
     /** Indicates if the publish queue is re-initialized on startup. */
     private boolean m_publishQueuePersistance;
@@ -101,6 +108,9 @@ public class CmsPublishManager {
 
     /** The security manager. */
     private CmsSecurityManager m_securityManager;
+
+    /** List of providers for special publish history ids that shouldn't be cleaned up. */
+    private CopyOnWriteArrayList<Supplier<List<CmsUUID>>> m_specialHistoryIdProviders = new CopyOnWriteArrayList<>();
 
     /**
      * Default constructor used in digester initialization.<p>
@@ -171,12 +181,69 @@ public class CmsPublishManager {
     }
 
     /**
+     * Adds provider for history ids that shouldn't be removed by bulk history cleanup operations.
+     *
+     * @param provider the provider for special history ids
+     */
+    public void addSpecialHistoryIdProvider(Supplier<List<CmsUUID>> provider) {
+
+        m_specialHistoryIdProviders.add(provider);
+
+    }
+
+    /**
      * Check if the thread for the current publish job is still active or was interrupted
      * and so the next job in the queue can be started.<p>
      */
     public void checkCurrentPublishJobThread() {
 
         m_publishEngine.checkCurrentPublishJobThread();
+    }
+
+    /**
+     * Cleans up all unreferenced publish history entries except for the ones with a history id provided by the special history id providers.
+     *
+     * @param cms the CMS context
+     * @throws CmsException if something goes wrong
+     */
+    public void cleanupPublishHistory(CmsObject cms) throws CmsException {
+
+        List<CmsUUID> exceptions = new ArrayList<>();
+        for (Supplier<List<CmsUUID>> provider : m_specialHistoryIdProviders) {
+            exceptions.addAll(provider.get());
+        }
+        m_securityManager.cleanupPublishHistory(
+            cms.getRequestContext(),
+            CmsPublishHistoryCleanupFilter.allUnreferencedExcept(exceptions));
+    }
+
+    /**
+     * Removes publish history entries for the given history id.
+     *
+     * @param cms the CMS context
+     * @param historyId a publish history id
+     * @throws CmsException if something goes wrong
+     */
+    public void cleanupPublishHistory(CmsObject cms, CmsUUID historyId) throws CmsException {
+
+        m_securityManager.cleanupPublishHistory(
+            cms.getRequestContext(),
+            CmsPublishHistoryCleanupFilter.forHistoryId(historyId));
+    }
+
+    /**
+     * Cleans up all unreferenced publish history entries except for the ones with a history id from the given list of
+     * exceptions.
+     *
+     * @param cms the CMS context
+     * @param exceptions the list of exceptional history ids which shouldn't be removed
+     * @throws CmsException if something goes wrong
+     */
+    public void cleanupPublishHistory(CmsObject cms, List<CmsUUID> exceptions) throws CmsException {
+
+        m_securityManager.cleanupPublishHistory(
+            cms.getRequestContext(),
+            CmsPublishHistoryCleanupFilter.allUnreferencedExcept(exceptions));
     }
 
     /**
@@ -263,16 +330,6 @@ public class CmsPublishManager {
     }
 
     /**
-     * Gets the publish job verifier.<p>
-     *
-     * @return the publish job verifier
-     */
-    public CmsPublishListVerifier getPublishListVerifier() {
-
-        return m_publishListVerifier;
-    }
-
-    /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published.<p>
      *
@@ -305,7 +362,8 @@ public class CmsPublishManager {
     public CmsPublishList getPublishList(
         CmsObject cms,
         CmsResource directPublishResource,
-        boolean directPublishSiblings) throws CmsException {
+        boolean directPublishSiblings)
+    throws CmsException {
 
         return m_securityManager.fillPublishList(
             cms.getRequestContext(),
@@ -328,7 +386,8 @@ public class CmsPublishManager {
     public CmsPublishList getPublishList(
         CmsObject cms,
         List<CmsResource> directPublishResources,
-        boolean directPublishSiblings) throws CmsException {
+        boolean directPublishSiblings)
+    throws CmsException {
 
         return getPublishList(cms, directPublishResources, directPublishSiblings, true);
     }
@@ -351,7 +410,8 @@ public class CmsPublishManager {
         CmsObject cms,
         List<CmsResource> directPublishResources,
         boolean directPublishSiblings,
-        boolean publishSubResources) throws CmsException {
+        boolean publishSubResources)
+    throws CmsException {
 
         return m_securityManager.fillPublishList(
             cms.getRequestContext(),
@@ -375,7 +435,8 @@ public class CmsPublishManager {
         CmsObject cms,
         List<CmsResource> directPublishResources,
         boolean directPublishSiblings,
-        boolean isUserPublishList) throws CmsException {
+        boolean isUserPublishList)
+    throws CmsException {
 
         CmsPublishList pubList = new CmsPublishList(true, directPublishResources, directPublishSiblings);
         pubList.setUserPublishList(isUserPublishList);
@@ -391,6 +452,16 @@ public class CmsPublishManager {
     public CmsPublishManager.PublishListRemoveMode getPublishListRemoveMode() {
 
         return m_publishListRemoveMode;
+    }
+
+    /**
+     * Gets the publish job verifier.<p>
+     *
+     * @return the publish job verifier
+     */
+    public CmsPublishListVerifier getPublishListVerifier() {
+
+        return m_publishListVerifier;
     }
 
     /**
@@ -471,6 +542,16 @@ public class CmsPublishManager {
 
         m_publishEngine.initialize(cms, m_publishQueuePersistance, m_publishQueueShutdowntime);
         m_frozen = true;
+    }
+
+    /**
+     * Returns true if publish history entries should be automatically removed when the corresponding publish job is removed.
+     *
+     * @return true if publish history entries should autoamtically be removed
+     */
+    public boolean isAutoCleanupHistoryEntries() {
+
+        return m_autoCleanupHistoryEntries;
     }
 
     /**
@@ -581,7 +662,8 @@ public class CmsPublishManager {
         CmsObject cms,
         I_CmsReport report,
         CmsResource directPublishResource,
-        boolean directPublishSiblings) throws CmsException {
+        boolean directPublishSiblings)
+    throws CmsException {
 
         return publishProject(cms, report, getPublishList(cms, directPublishResource, directPublishSiblings));
     }
@@ -645,6 +727,20 @@ public class CmsPublishManager {
     public void removeResourceFromUsersPubList(CmsObject cms, Collection<CmsUUID> structureIds) throws CmsException {
 
         m_securityManager.removeResourceFromUsersPubList(cms.getRequestContext(), structureIds);
+    }
+
+    /**
+     * Configures automatic removal of publish history entries.
+     *
+     * @param val the string value from the configuration
+     */
+    public void setAutoCleanupHistoryEntries(String val) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }
+        m_autoCleanupHistoryEntries = Boolean.parseBoolean(val);
+
     }
 
     /**
@@ -759,7 +855,8 @@ public class CmsPublishManager {
     public Map<String, List<CmsRelation>> validateRelations(
         CmsObject cms,
         CmsPublishList publishList,
-        I_CmsReport report) throws Exception {
+        I_CmsReport report)
+    throws Exception {
 
         return m_securityManager.validateRelations(cms.getRequestContext(), publishList, report);
     }

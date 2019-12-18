@@ -470,6 +470,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
+    /** Node name for auto history cleanup setting. */ 
+    private static final String N_AUTO_CLEANUP_HISTORY_ENTRIES = "auto-cleanup-history-entries";
+
     /** Node name for the credentials resolver setting. */
     private static final String N_CREDENTIALS_RESOLVER = "credentials-resolver";
 
@@ -598,6 +601,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The temporary file project id. */
     private int m_tempFileProjectId;
 
+    private CmsUserDataRequestManager m_userDataRequestManager;
+
     /** The user session mode. */
     private UserSessionMode m_userSessionMode;
 
@@ -606,8 +611,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
-
-    private CmsUserDataRequestManager m_userDataRequestManager;
 
     /**
      * Adds an ADE configuration parameter.<p>
@@ -1057,6 +1060,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_QUEUESHUTDOWNTIME,
             "setPublishQueueShutdowntime",
             0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_AUTO_CLEANUP_HISTORY_ENTRIES,
+            "setAutoCleanupHistoryEntries",
+            0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER, "setPublishManager");
 
         // add rule for session storage provider
@@ -1464,6 +1471,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 String.valueOf(m_publishManager.isPublishQueuePersistanceEnabled()));
             pubHistElement.addElement(N_QUEUESHUTDOWNTIME).setText(
                 String.valueOf(m_publishManager.getPublishQueueShutdowntime()));
+            pubHistElement.addElement(N_AUTO_CLEANUP_HISTORY_ENTRIES).setText(
+                String.valueOf(m_publishManager.isAutoCleanupHistoryEntries()));
         }
 
         // session storage provider
@@ -2037,6 +2046,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     public CmsUserDataRequestManager getUserDataRequestManager() {
+
         return m_userDataRequestManager;
     }
 
@@ -2616,6 +2626,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     public void setUserDataRequestManager(CmsUserDataRequestManager manager) {
+
         m_userDataRequestManager = manager;
 
     }

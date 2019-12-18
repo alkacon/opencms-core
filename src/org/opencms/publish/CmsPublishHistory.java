@@ -29,6 +29,7 @@ package org.opencms.publish;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.generic.CmsPublishHistoryCleanupFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -197,6 +198,11 @@ public class CmsPublishHistory {
                 OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(
                     dbc,
                     publishJob.getPublishHistoryId());
+                if (OpenCms.getPublishManager().isAutoCleanupHistoryEntries()) {
+                    OpenCms.getPublishManager().getEngine().getDriverManager().cleanupPublishHistory(
+                        dbc,
+                        CmsPublishHistoryCleanupFilter.forHistoryId(publishJob.getPublishHistoryId()));
+                }
             } catch (CmsException e) {
                 dbc.rollback();
                 LOG.error(e.getLocalizedMessage(), e);

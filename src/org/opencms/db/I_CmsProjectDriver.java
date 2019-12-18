@@ -27,6 +27,7 @@
 
 package org.opencms.db;
 
+import org.opencms.db.generic.CmsPublishHistoryCleanupFilter;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
 import org.opencms.db.userpublishlist.CmsUserPublishListEntry;
@@ -64,6 +65,16 @@ public interface I_CmsProjectDriver {
     String TEMP_FILE_PROJECT_NAME = "tempFileProject";
 
     /**
+     * Cleans up the publish history entries according to the given filter.
+     *
+     * @param dbc the DB context
+     * @param filter the filter to describe what to clean up
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter) throws CmsDataAccessException;
+
+    /**
      * Creates a new project.<p>
      *
      * @param dbc the current database context
@@ -89,7 +100,8 @@ public interface I_CmsProjectDriver {
         String name,
         String description,
         int flags,
-        CmsProjectType type) throws CmsDataAccessException;
+        CmsProjectType type)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new projectResource from a given CmsResource object.<p>
@@ -307,7 +319,8 @@ public interface I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsFolder offlineFolder,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException;
+        int publishTag)
+    throws CmsDataAccessException;
 
     /**
      * Publishes a new, changed or deleted file.<p>
@@ -333,7 +346,8 @@ public interface I_CmsProjectDriver {
         CmsResource offlineResource,
         Set<CmsUUID> publishedContentIds,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException;
+        int publishTag)
+    throws CmsDataAccessException;
 
     /**
      * Publishes the content record of a file.<p>
@@ -365,7 +379,8 @@ public interface I_CmsProjectDriver {
         CmsResource offlineFileHeader,
         Set<CmsUUID> publishedResourceIds,
         boolean needToUpdateContent,
-        int publishTag) throws CmsDataAccessException;
+        int publishTag)
+    throws CmsDataAccessException;
 
     /**
      * Publishes a new or changed folder.<p>
@@ -389,7 +404,8 @@ public interface I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsFolder currentFolder,
         CmsUUID publishHistoryId,
-        int publishTag) throws CmsDataAccessException;
+        int publishTag)
+    throws CmsDataAccessException;
 
     /**
      * Publishes a specified project to the online project.<p>
@@ -407,7 +423,8 @@ public interface I_CmsProjectDriver {
         I_CmsReport report,
         CmsProject onlineProject,
         CmsPublishList publishList,
-        int publishTag) throws CmsException;
+        int publishTag)
+    throws CmsException;
 
     /**
      * Reads the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code>
@@ -716,7 +733,8 @@ public interface I_CmsProjectDriver {
         String resourceName,
         int linkType,
         String linkParameter,
-        long timestamp) throws CmsDataAccessException;
+        long timestamp)
+    throws CmsDataAccessException;
 
     /**
      * Writes multiple user publish list entries to the database.<p>

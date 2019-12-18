@@ -727,7 +727,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (m_disabled.get(CacheType.PUBLISHED_RESOURCES) != null) {
             return;
         }
-        m_cachePublishedResources.put(cacheKey, publishedResources);
+        if (publishedResources == null) {
+            m_cachePublishedResources.remove(cacheKey);
+        } else {
+            m_cachePublishedResources.put(cacheKey, publishedResources);
+        }
     }
 
     /**
@@ -2458,13 +2462,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             && (m_warningSendSinceLastStatus
                 && !((m_intervalEmail <= 0)
                     && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
-            // send no warning email if no status email has been send since the last warning
-            // if status is disabled, send no warn email if warn interval has not passed
-            return;
-        } else if ((!warning) && (m_intervalEmail <= 0)) {
-            // if email iterval is <= 0 status email is disabled
-            return;
-        }
+                        // send no warning email if no status email has been send since the last warning
+                        // if status is disabled, send no warn email if warn interval has not passed
+                        return;
+                    } else
+            if ((!warning) && (m_intervalEmail <= 0)) {
+                // if email iterval is <= 0 status email is disabled
+                return;
+            }
         String date = CmsDateUtil.getDateTimeShort(System.currentTimeMillis());
         String subject;
         String content = "";
@@ -2600,13 +2605,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             && (m_warningLoggedSinceLastStatus
                 && !(((m_intervalLog <= 0)
                     && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
-            // write no warning log if no status log has been written since the last warning
-            // if status is disabled, log no warn entry if warn interval has not passed
-            return;
-        } else if ((!warning) && (m_intervalLog <= 0)) {
-            // if log interval is <= 0 status log is disabled
-            return;
-        }
+                        // write no warning log if no status log has been written since the last warning
+                        // if status is disabled, log no warn entry if warn interval has not passed
+                        return;
+                    } else
+            if ((!warning) && (m_intervalLog <= 0)) {
+                // if log interval is <= 0 status log is disabled
+                return;
+            }
 
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();

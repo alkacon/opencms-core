@@ -38,6 +38,11 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -79,7 +84,8 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
         TestSuite suite = new TestSuite();
         suite.setName(TestPublishHistory.class.getName());
-
+        suite.addTest(new TestPublishHistory("testCleanupPublishHistory1"));
+        suite.addTest(new TestPublishHistory("testCleanupPublishHistory2"));
         suite.addTest(new TestPublishHistory("testPublishNewFile"));
         suite.addTest(new TestPublishHistory("testPublishChangedFile"));
         suite.addTest(new TestPublishHistory("testPublishMovedFile"));
@@ -176,6 +182,100 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
             default:
                 fail("should never happen!");
         }
+    }
+
+    /**
+     * Tests publish history cleanup.
+     * @throws Exception if something goes wrong
+     */
+    public void testCleanupPublishHistory1() throws Exception {
+
+        String prefix = "tph1_";
+        OpenCms.addCmsEventListener(evt -> {
+            if (evt.getType() == I_CmsEventListener.EVENT_PUBLISH_PROJECT) {
+                System.out.println(evt.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+            }
+        });
+        CmsObject cms = getCmsObject();
+        CmsUUID[] historyIds = new CmsUUID[12];
+        for (int i = 0; i < 12; i++) {
+            String path = "/" + prefix + i + ".txt";
+            CmsResource res = cms.createResource(path, 1);
+            CmsUUID historyId = OpenCms.getPublishManager().publishResource(cms, path);
+            historyIds[i] = historyId;
+            OpenCms.getPublishManager().waitWhileRunning();
+        }
+        Thread.sleep(1000);
+        // publish history size is configured as 10, auto publish resource cleanup is on,
+        // we have published 12 times, check that the cleanup worked
+        assertEquals(0, cms.readPublishedResources(historyIds[0]).size());
+        assertEquals(0, cms.readPublishedResources(historyIds[1]).size());
+        assertEquals(1, cms.readPublishedResources(historyIds[2]).size());
+        assertEquals(1, cms.readPublishedResources(historyIds[3]).size());
+    }
+
+    /**
+     * Tests publish history cleanup.
+     * @throws Exception if something goes wrong
+     */
+    public void testCleanupPublishHistory2() throws Exception {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        List<CmsUUID> fakeHistoryIds = Arrays.asList(new CmsUUID(), new CmsUUID(), new CmsUUID());
+        try {
+            conn = OpenCms.getSqlManager().getConnection(OpenCms.getSqlManager().getDefaultDbPoolName());
+            stmt = conn.prepareStatement("INSERT INTO CMS_PUBLISH_HISTORY VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            for (CmsUUID id : fakeHistoryIds) {
+                stmt.setString(1, id.toString());
+                stmt.setInt(2, 0);
+                stmt.setString(3, new CmsUUID().toString());
+                stmt.setString(4, new CmsUUID().toString());
+                stmt.setString(5, "/" + Math.random());
+                stmt.setInt(6, 0);
+                stmt.setInt(7, 1);
+                stmt.setInt(8, 1);
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        } catch (SQLException e) {
+            // noop
+
+        } finally {
+            if (res != null) {
+                try {
+                    res.close();
+                } catch (Exception e) {
+                    // noop
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception e) {
+                    // noop
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (Exception e) {
+                    // noop
+                }
+            }
+
+        }
+
+        CmsObject cms = getCmsObject();
+        for (CmsUUID id : fakeHistoryIds) {
+            assertEquals(1, cms.readPublishedResources(id).size());
+        }
+        OpenCms.getPublishManager().cleanupPublishHistory(cms, Arrays.asList(fakeHistoryIds.get(0)));
+        assertEquals(1, cms.readPublishedResources(fakeHistoryIds.get(0)).size());
+        assertEquals(0, cms.readPublishedResources(fakeHistoryIds.get(1)).size());
+        assertEquals(0, cms.readPublishedResources(fakeHistoryIds.get(1)).size());
+
     }
 
     /**

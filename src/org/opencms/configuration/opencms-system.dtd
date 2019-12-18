@@ -444,10 +444,11 @@
 # Provides the configuration parameters for the publish history and queue.
 # See the package org.opencms.publish for more details.
 -->
-<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?, publish-list-delete-mode?)>
+<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?, publish-list-delete-mode?, auto-cleanup-history-entries?)>
 
 
 <!ELEMENT publish-list-delete-mode (#PCDATA)>
+<!ELEMENT auto-cleanup-history-entries (#PCDATA)>
 
 
 

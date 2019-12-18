@@ -31,6 +31,7 @@ import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.generic.CmsPublishHistoryCleanupFilter;
 import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
@@ -973,6 +974,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
             false);
         // write it
         writeResource(dbc, clone);
+    }
+
+    /**
+     * Cleans up the publish history entries according to the given filter.
+     *
+     * @param dbc the database context
+     * @param filter the filter
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public void cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter)
+    throws CmsDataAccessException {
+
+        m_projectDriver.cleanupPublishHistory(dbc, filter);
+        if (filter.getMode() == CmsPublishHistoryCleanupFilter.Mode.single) {
+            OpenCms.getMemoryMonitor().cachePublishedResources(filter.getHistoryId().toString(), null);
+        } else {
+            OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PUBLISHED_RESOURCES);
+        }
     }
 
     /**

@@ -112,6 +112,7 @@
 			<history-size>100</history-size>
 			<queue-persistance>false</queue-persistance>
 		    <queue-shutdowntime>1</queue-shutdowntime>
+            <auto-cleanup-history-entries>true</auto-cleanup-history-entries>
 		</publishmanager>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />

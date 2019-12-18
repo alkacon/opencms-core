@@ -30,6 +30,7 @@ package org.opencms.db;
 import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.generic.CmsPublishHistoryCleanupFilter;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
@@ -706,6 +707,28 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
+    }
+
+    /**
+     * Cleans up publish history entries according to the given filter object.
+     *
+     * @param context the request context
+     * @param filter the filter describing what to clean up
+     * @throws CmsException if something goes wrong
+     */
+    public void cleanupPublishHistory(CmsRequestContext context, CmsPublishHistoryCleanupFilter filter)
+    throws CmsException {
+
+        checkRole(context, CmsRole.VFS_MANAGER);
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.cleanupPublishHistory(dbc, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+        } finally {
+            dbc.clear();
+        }
+
     }
 
     /**
