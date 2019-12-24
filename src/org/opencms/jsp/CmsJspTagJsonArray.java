@@ -63,7 +63,7 @@ public class CmsJspTagJsonArray extends A_CmsJspJsonTag implements I_CmsJspJsonC
     public int doStartTag() {
 
         m_jsonArray = new JSONArray();
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_INCLUDE;
     }
 
     /**

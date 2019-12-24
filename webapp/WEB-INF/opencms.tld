@@ -2979,7 +2979,8 @@
         <attribute>
             <description>This parameter controls what is stored in the page context attribute given by the var
             attribute. If mode equals 'text', formatted JSON for the value will be stored; if mode equals 'object', the JSON value itself.
-            The default value is 'text'.
+            If mode equals 'wrapper', a CmsJspJsonWrapper around the object is stored.
+            The default value is 'wrapper'.
             </description>
             <name>mode</name>
             <required>false</required>

@@ -65,7 +65,7 @@ public class CmsJspTagJsonObject extends A_CmsJspJsonTag implements I_CmsJspJson
     public int doStartTag() {
 
         m_jsonObject = new JSONObject();
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_INCLUDE;
     }
 
     /**

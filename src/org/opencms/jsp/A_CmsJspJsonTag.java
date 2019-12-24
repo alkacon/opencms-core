@@ -50,7 +50,6 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
         wrapper,
         /** Store result of tag as formatted JSON (i.e. a string) . */
         text;
-
     }
 
     /** Serial version id. */
@@ -105,7 +104,6 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
             }
         }
         return EVAL_PAGE;
-
     }
 
     /**
