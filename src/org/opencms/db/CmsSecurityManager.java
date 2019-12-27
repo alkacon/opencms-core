@@ -714,17 +714,19 @@ public final class CmsSecurityManager {
      *
      * @param context the request context
      * @param filter the filter describing what to clean up
+     * @return the number of cleaned up rows
      * @throws CmsException if something goes wrong
      */
-    public void cleanupPublishHistory(CmsRequestContext context, CmsPublishHistoryCleanupFilter filter)
+    public int cleanupPublishHistory(CmsRequestContext context, CmsPublishHistoryCleanupFilter filter)
     throws CmsException {
 
         checkRole(context, CmsRole.VFS_MANAGER);
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            m_driverManager.cleanupPublishHistory(dbc, filter);
+            return m_driverManager.cleanupPublishHistory(dbc, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+            return 0;
         } finally {
             dbc.clear();
         }

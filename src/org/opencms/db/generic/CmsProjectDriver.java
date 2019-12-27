@@ -202,20 +202,20 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#cleanupPublishHistory(org.opencms.db.CmsDbContext, org.opencms.db.generic.CmsPublishHistoryCleanupFilter)
      */
-    public void cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter)
+    public int cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter)
     throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
+        int rowsAffected = 0;
 
         try {
             // get a JDBC connection from the OpenCms standard pool
             conn = m_sqlManager.getConnection(dbc);
-            //stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_CREATE_10");
-            int rowsAffected = 0;
             switch (filter.getMode()) {
 
                 case single:
+                default:
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_CLEANUP_PUBLISH_HISTORY_SINGLE");
                     stmt.setString(1, filter.getHistoryId().toString());
                     rowsAffected = stmt.executeUpdate();
@@ -238,12 +238,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
             LOG.info(
                 "executed publish list cleanup in mode " + filter.getMode() + ", " + rowsAffected + " rows deleted");
+            return rowsAffected;
         } catch (SQLException e) {
             throw new CmsDbSqlException(
                 Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
                 e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
+            
         }
 
     }

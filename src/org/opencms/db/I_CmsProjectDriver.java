@@ -70,9 +70,11 @@ public interface I_CmsProjectDriver {
      * @param dbc the DB context
      * @param filter the filter to describe what to clean up
      *
+     * @return the number of removed entries
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
-    void cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter) throws CmsDataAccessException;
+    int cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter) throws CmsDataAccessException;
 
     /**
      * Creates a new project.<p>

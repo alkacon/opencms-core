@@ -204,15 +204,16 @@ public class CmsPublishManager {
      * Cleans up all unreferenced publish history entries except for the ones with a history id provided by the special history id providers.
      *
      * @param cms the CMS context
+     * @return the number of cleaned up rows
      * @throws CmsException if something goes wrong
      */
-    public void cleanupPublishHistory(CmsObject cms) throws CmsException {
+    public int cleanupPublishHistory(CmsObject cms) throws CmsException {
 
         List<CmsUUID> exceptions = new ArrayList<>();
         for (Supplier<List<CmsUUID>> provider : m_specialHistoryIdProviders) {
             exceptions.addAll(provider.get());
         }
-        m_securityManager.cleanupPublishHistory(
+        return m_securityManager.cleanupPublishHistory(
             cms.getRequestContext(),
             CmsPublishHistoryCleanupFilter.allUnreferencedExcept(exceptions));
     }
@@ -222,11 +223,12 @@ public class CmsPublishManager {
      *
      * @param cms the CMS context
      * @param historyId a publish history id
+     * @return the number of cleaned up rows
      * @throws CmsException if something goes wrong
      */
-    public void cleanupPublishHistory(CmsObject cms, CmsUUID historyId) throws CmsException {
+    public int cleanupPublishHistory(CmsObject cms, CmsUUID historyId) throws CmsException {
 
-        m_securityManager.cleanupPublishHistory(
+        return m_securityManager.cleanupPublishHistory(
             cms.getRequestContext(),
             CmsPublishHistoryCleanupFilter.forHistoryId(historyId));
     }
@@ -237,11 +239,12 @@ public class CmsPublishManager {
      *
      * @param cms the CMS context
      * @param exceptions the list of exceptional history ids which shouldn't be removed
+     * @return the number of cleaned up rows
      * @throws CmsException if something goes wrong
      */
-    public void cleanupPublishHistory(CmsObject cms, List<CmsUUID> exceptions) throws CmsException {
+    public int cleanupPublishHistory(CmsObject cms, List<CmsUUID> exceptions) throws CmsException {
 
-        m_securityManager.cleanupPublishHistory(
+        return m_securityManager.cleanupPublishHistory(
             cms.getRequestContext(),
             CmsPublishHistoryCleanupFilter.allUnreferencedExcept(exceptions));
     }

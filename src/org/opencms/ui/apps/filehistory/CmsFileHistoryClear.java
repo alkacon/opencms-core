@@ -27,21 +27,27 @@
 
 package org.opencms.ui.apps.filehistory;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsDateField;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.report.CmsReportWidget;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.AbstractSelect.NewItemHandler;
@@ -55,11 +61,16 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public class CmsFileHistoryClear extends VerticalLayout {
 
+    private static final Log LOG = CmsLog.getLog(CmsFileHistoryClear.class);
+
     /**vaadin serial id.*/
     private static final long serialVersionUID = 1484327372474823882L;
 
     /**Option for maximal count of versions.*/
     private static final int VERSIONS_MAX = 50;
+
+    /** Button for cleaning up publish history. */
+    protected Button m_cleanupPublishHistory;
 
     /**Vaadin component.*/
     ComboBox m_numberVersionsToKeep;
@@ -105,6 +116,7 @@ public class CmsFileHistoryClear extends VerticalLayout {
                 startCleanAndShowReport();
             }
         });
+        m_cleanupPublishHistory.addClickListener(evt -> runPublishHistoryCleanup());
     }
 
     /**
@@ -127,6 +139,24 @@ public class CmsFileHistoryClear extends VerticalLayout {
         m_reportPanel.setContent(report);
 
         m_ok.setEnabled(false);
+    }
+
+    /**
+     * Runs the publish history cleanup.
+     */
+    private void runPublishHistoryCleanup() {
+
+        final CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            int numRemoved = OpenCms.getPublishManager().cleanupPublishHistory(cms);
+            Notification.show(
+                CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_CLEANED_PUBLISH_HISTORY_1, numRemoved));
+
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            CmsErrorDialog.showErrorDialog(e);
+        }
+
     }
 
     /**

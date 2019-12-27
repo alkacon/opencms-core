@@ -689,6 +689,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_TITLE_0 = "GUI_EXPLORER_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_CLEANED_PUBLISH_HISTORY_1 = "GUI_FILEHISTORY_CLEANED_PUBLISH_HISTORY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_CLEAR_PUBLISH_HISTORY_0 = "GUI_FILEHISTORY_CLEAR_PUBLISH_HISTORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_CLEAR_PUBLISH_HISTORY_DESC_0 = "GUI_FILEHISTORY_CLEAR_PUBLISH_HISTORY_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEHISTORY_DELETE_CAPTION_0 = "GUI_FILEHISTORY_DELETE_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */

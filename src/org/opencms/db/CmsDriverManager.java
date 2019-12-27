@@ -981,17 +981,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @param dbc the database context
      * @param filter the filter
+     * @return the number of cleaned up rows
      * @throws CmsDataAccessException if something goes wrong
      */
-    public void cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter)
+    public int cleanupPublishHistory(CmsDbContext dbc, CmsPublishHistoryCleanupFilter filter)
     throws CmsDataAccessException {
 
-        m_projectDriver.cleanupPublishHistory(dbc, filter);
+        int result = m_projectDriver.cleanupPublishHistory(dbc, filter);
         if (filter.getMode() == CmsPublishHistoryCleanupFilter.Mode.single) {
             OpenCms.getMemoryMonitor().cachePublishedResources(filter.getHistoryId().toString(), null);
         } else {
             OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PUBLISHED_RESOURCES);
         }
+        return result;
     }
 
     /**
