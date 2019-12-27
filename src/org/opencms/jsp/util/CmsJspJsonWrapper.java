@@ -96,7 +96,7 @@ public class CmsJspJsonWrapper extends AbstractCollection<Object> {
     /**
      * Returns the JSON text in pretty-printed and indented format.
      *
-     * @return the indented JSON
+     * @return the pretty-printed and indented JSON
      */
     public String getPretty() {
 
@@ -105,6 +105,18 @@ public class CmsJspJsonWrapper extends AbstractCollection<Object> {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Synonym for {@link #getPretty()}.
+     *
+     * @return the pretty-printed and indented JSON
+     *
+     * @see #getPretty()
+     */
+    public String getVerbose() {
+
+        return getPretty();
     }
 
     /**
@@ -184,5 +196,4 @@ public class CmsJspJsonWrapper extends AbstractCollection<Object> {
 
         return getCompact();
     }
-
 }

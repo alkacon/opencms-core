@@ -27,16 +27,46 @@
 
 package org.opencms.jsp;
 
+import javax.servlet.jsp.JspException;
+
 /**
  * Adds a JSON value to the surrounding context and/or stores it as a variable in the page context.
  */
 public class CmsJspTagJsonValue extends A_CmsJspJsonTag {
 
     /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8383685322762531356L;
 
     /** The value attribute. */
     private Object m_value;
+
+    /** Keeps track if a value has been specified or the body should be evaluated. */
+    private boolean m_valueSpecified;
+
+    /**
+     * Default constructor explicitly resetting all variables.
+     */
+    public CmsJspTagJsonValue() {
+
+        init();
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     */
+    @Override
+    public int doEndTag() throws JspException {
+
+        if (!m_valueSpecified) {
+            if ((bodyContent == null) || (bodyContent.getString() == null)) {
+                m_value = "";
+            } else {
+                m_value = bodyContent.getString().trim();
+            }
+        }
+
+        return super.doEndTag();
+    }
 
     /**
      * @see org.opencms.jsp.A_CmsJspJsonTag#getValue()
@@ -48,6 +78,17 @@ public class CmsJspTagJsonValue extends A_CmsJspJsonTag {
     }
 
     /**
+     * Initializes / resets the internal values.<p>
+     */
+    @Override
+    protected void init() {
+
+        super.init();
+        m_value = null;
+        m_valueSpecified = false;
+    }
+
+    /**
      * Sets the value attribute.
      *
      * @param value the JSON value
@@ -55,6 +96,6 @@ public class CmsJspTagJsonValue extends A_CmsJspJsonTag {
     public void setValue(Object value) {
 
         m_value = value;
+        m_valueSpecified = true;
     }
-
 }

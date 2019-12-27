@@ -27,6 +27,8 @@
 
 package org.opencms.jsp;
 
+import javax.servlet.jsp.JspException;
+
 /**
  * Interface implemented by JSON tags.
  *
@@ -41,7 +43,9 @@ public interface I_CmsJspJsonContext {
      *
      * @param key the key (or null)
      * @param val the value to add
+     *
+     * @throws JspException in case the value could not be added
      */
-    void addValue(String key, Object val);
+    void addValue(String key, Object val) throws JspException;
 
 }

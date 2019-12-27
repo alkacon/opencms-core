@@ -30,6 +30,9 @@ package org.opencms.jsp;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+
 /**
  * Tag for defining a JSON object.
  *
@@ -38,23 +41,31 @@ import org.opencms.json.JSONObject;
 public class CmsJspTagJsonObject extends A_CmsJspJsonTag implements I_CmsJspJsonContext {
 
     /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3054667197099417049L;
 
     /** The JSON object being constructed. */
     private JSONObject m_jsonObject;
 
     /**
+     * Default constructor explicitly resetting all variables.
+     */
+    public CmsJspTagJsonObject() {
+
+        init();
+    }
+
+    /**
      * @see org.opencms.jsp.I_CmsJspJsonContext#addValue(java.lang.String, java.lang.Object)
      */
-    public void addValue(String key, Object val) {
+    public void addValue(String key, Object val) throws JspException {
 
         if (key == null) {
-            throw new UnsupportedOperationException("Can not add value to JSONArray with no key (val:" + val + ")");
+            throw new JspTagException("Can not add value to JSONObject with no key (val:" + val + ")");
         }
         try {
             m_jsonObject.put(key, val);
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Can not add JSON value", e);
+            throw new JspTagException("Could not add value to JSONObject", e);
         }
     }
 
@@ -77,4 +88,13 @@ public class CmsJspTagJsonObject extends A_CmsJspJsonTag implements I_CmsJspJson
         return m_jsonObject;
     }
 
+    /**
+     * Initializes / resets the internal values.<p>
+     */
+    @Override
+    protected void init() {
+
+        super.init();
+        m_jsonObject = null;
+    }
 }

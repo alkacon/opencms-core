@@ -41,12 +41,17 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;cms:jquery/&gt;</code> tag.<p>
  *
- * Since OpenCms version 7.0.5, there is a new core module providing JQuery plus some additional plugins.
+ * OpenCms version 7.0.5 introduced a core module providing jQuery plus some additional plugins.
  * This tag will include the JQuery javascript library depending on the current project. If the current
  * Project is offline the unpacked version is used, if online the packed version will be used.
  *
  * @since 7.0.5
+ *
+ * @deprecated jQuery should be provided by standard includes directly in the template.
+ * The jQuery version shipping with OpenCms used by this tag is outdated.
+ * This tag is kept only for backward compatibility with old templates.
  */
+@Deprecated
 public class CmsJspTagJQuery extends BodyTagSupport {
 
     /** File extension constant. */
@@ -106,10 +111,11 @@ public class CmsJspTagJQuery extends BodyTagSupport {
             if (isDynamic()) {
                 // in case we want to include the needed js functions
                 try {
-                    pageContext.getOut().print("<script type='text/javascript' src='"
-                        + CmsWorkplace.getSkinUri()
-                        + VFS_PATH_LOAD_JS
-                        + "' ></script>");
+                    pageContext.getOut().print(
+                        "<script type='text/javascript' src='"
+                            + CmsWorkplace.getSkinUri()
+                            + VFS_PATH_LOAD_JS
+                            + "' ></script>");
                 } catch (Exception ex) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "jquery"), ex);
@@ -136,10 +142,11 @@ public class CmsJspTagJQuery extends BodyTagSupport {
         try {
             cms.readResource(CmsWorkplace.VFS_PATH_RESOURCES + file);
             if (isDynamic()) {
-                pageContext.getOut().print("<script type='text/javascript'>load_script('"
-                    + CmsWorkplace.getSkinUri()
-                    + file
-                    + "', 'js');</script>");
+                pageContext.getOut().print(
+                    "<script type='text/javascript'>load_script('"
+                        + CmsWorkplace.getSkinUri()
+                        + file
+                        + "', 'js');</script>");
             } else {
                 pageContext.getOut().print(
                     "<script type='text/javascript' src='" + CmsWorkplace.getSkinUri() + file + "' ></script>");
@@ -161,10 +168,11 @@ public class CmsJspTagJQuery extends BodyTagSupport {
             cms.readResource(CmsWorkplace.VFS_PATH_RESOURCES + file);
             pageContext.getOut().println();
             if (isDynamic()) {
-                pageContext.getOut().print("<script type='text/javascript'>load_script('"
-                    + CmsWorkplace.getSkinUri()
-                    + file
-                    + "', 'css');</script>");
+                pageContext.getOut().print(
+                    "<script type='text/javascript'>load_script('"
+                        + CmsWorkplace.getSkinUri()
+                        + file
+                        + "', 'css');</script>");
             } else {
                 pageContext.getOut().print(
                     "<link href='" + CmsWorkplace.getSkinUri() + file + "' rel='stylesheet' type='text/css' >");
@@ -209,6 +217,16 @@ public class CmsJspTagJQuery extends BodyTagSupport {
     }
 
     /**
+     * Checks if the inclusion is dynamic or not.<p>
+     *
+     * @return <code>true</code> if the inclusion is dynamic
+     */
+    private boolean isDynamic() {
+
+        return Boolean.valueOf(getDynamic()).booleanValue();
+    }
+
+    /**
      * Releases any resources we may have (or inherit).<p>
      */
     @Override
@@ -249,15 +267,5 @@ public class CmsJspTagJQuery extends BodyTagSupport {
         if (js != null) {
             m_js = js;
         }
-    }
-
-    /**
-     * Checks if the inclusion is dynamic or not.<p>
-     *
-     * @return <code>true</code> if the inclusion is dynamic
-     */
-    private boolean isDynamic() {
-
-        return Boolean.valueOf(getDynamic()).booleanValue();
     }
 }

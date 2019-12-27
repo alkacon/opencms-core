@@ -27,10 +27,13 @@
 
 package org.opencms.jsp;
 
+import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspJsonWrapper;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
@@ -53,7 +56,7 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
     }
 
     /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4536413263964718943L;
 
     /** The key attribute. */
     protected String m_key;
@@ -64,43 +67,72 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
     /** The var attribute. */
     protected String m_var;
 
+    /** The target attribute. */
+    protected Object m_target;
+
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
      */
     @Override
-    public int doEndTag() {
+    public int doEndTag() throws JspException {
 
-        I_CmsJspJsonContext context = (I_CmsJspJsonContext)findAncestorWithClass(this, I_CmsJspJsonContext.class);
-        if (context != null) {
-            context.addValue(m_key, getValue());
-        }
         if (m_var != null) {
-            Object obj = getValue();
+            // Export to a variable
+            Object val = getValue();
             String modeStr = m_mode;
             Mode mode = Mode.wrapper;
             if (modeStr != null) {
                 try {
                     mode = Mode.valueOf(modeStr);
                 } catch (Exception e) {
-                    throw new IllegalArgumentException("Unknown mode for json tag: " + mode);
+                    throw new JspTagException("Unknown mode for json tag: " + mode);
                 }
             }
-
             switch (mode) {
                 case object:
-                    pageContext.setAttribute(m_var, obj);
+                    pageContext.setAttribute(m_var, val);
                     break;
                 case text:
                     try {
-                        pageContext.setAttribute(m_var, JSONObject.valueToString(obj));
+                        pageContext.setAttribute(m_var, JSONObject.valueToString(val));
                     } catch (JSONException e) {
-                        throw new IllegalArgumentException("Could not format JSON", e);
+                        throw new JspTagException("Could not format JSON", e);
                     }
                     break;
                 case wrapper:
                 default:
-                    pageContext.setAttribute(m_var, new CmsJspJsonWrapper(obj));
+                    pageContext.setAttribute(m_var, new CmsJspJsonWrapper(val));
                     break;
+            }
+        } else if (m_target != null) {
+            // Export to a specified JSON object
+            Object val = getValue();
+            if (m_target instanceof JSONObject) {
+                if (m_key == null) {
+                    throw new JspTagException("Can not add to JSONObject target with no key (val:" + val + ")");
+                }
+                try {
+                    ((JSONObject)m_target).append(m_key, val);
+                } catch (JSONException e) {
+                    throw new JspTagException("Could not add value to JSONObject target", e);
+                }
+            } else if (m_target instanceof JSONArray) {
+                ((JSONArray)m_target).put(val);
+            } else if (m_target instanceof CmsJspJsonWrapper) {
+                Object wrappedVal = ((CmsJspJsonWrapper)m_target).getObject();
+                if (wrappedVal instanceof I_CmsJspJsonContext) {
+                    ((I_CmsJspJsonContext)wrappedVal).addValue(m_key, val);
+                } else {
+                    throw new JspTagException("Invalid target specified (target:" + wrappedVal + ")");
+                }
+
+            } else {
+                throw new JspTagException("Invalid target specified (target:" + val + ")");
+            }
+        } else {
+            I_CmsJspJsonContext context = (I_CmsJspJsonContext)findAncestorWithClass(this, I_CmsJspJsonContext.class);
+            if (context != null) {
+                context.addValue(m_key, getValue());
             }
         }
         return EVAL_PAGE;
@@ -113,6 +145,27 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
      * @return the value to add/store
      */
     public abstract Object getValue();
+
+    /**
+     * Initializes / resets the internal values.<p>
+     */
+    protected void init() {
+
+        m_key = null;
+        m_var = null;
+        m_mode = null;
+        m_target = null;
+    }
+
+    /**
+     * Releases the resources used by this tag.<p>
+     */
+    @Override
+    public void release() {
+
+        init();
+        super.release();
+    }
 
     /**
      * Sets the key attribute.
@@ -135,6 +188,18 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
     }
 
     /**
+     * Sets the target attribute.
+     *
+     * @param target the target Object to store the JSON in.
+     *
+     * This must be another JSON object or a JSON wrapper.
+     */
+    public void setTarget(Object target) {
+
+        m_target = target;
+    }
+
+    /**
      * Sets the var attribute.
      *
      * @param var the name of the variable to store the result in
@@ -143,5 +208,4 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
 
         m_var = var;
     }
-
 }

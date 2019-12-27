@@ -2963,9 +2963,15 @@
         <name>jsonobject</name>
         <tag-class>org.opencms.jsp.CmsJspTagJsonObject</tag-class>
         <body-content>JSP</body-content>
-           <attribute>
+        <attribute>
             <description>The name of the page context attribute to store the JSON in.</description>
             <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The target Object to store the JSON in. This must be another JSON object.</description>
+            <name>target</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -3003,6 +3009,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>The target Object to store the JSON in. This must be another JSON object.</description>
+            <name>target</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>The key used to add this value to the surrounding JSON context. Should be used
             if and only if the surrounding JSON tag is a jsonobject tag.</description>
             <name>key</name>
@@ -3029,16 +3041,22 @@
         </description>
         <name>jsonvalue</name>
         <tag-class>org.opencms.jsp.CmsJspTagJsonValue</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
             <description>The JSON value.</description>
             <name>value</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <description>The name of the page context attribute to store the JSON in.</description>
             <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The target Object to store the JSON in. This must be another JSON object.</description>
+            <name>target</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

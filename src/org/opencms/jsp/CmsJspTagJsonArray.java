@@ -29,6 +29,9 @@ package org.opencms.jsp;
 
 import org.opencms.json.JSONArray;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+
 /**
  * Tag for defining a JSON array.
  *
@@ -37,19 +40,26 @@ import org.opencms.json.JSONArray;
 public class CmsJspTagJsonArray extends A_CmsJspJsonTag implements I_CmsJspJsonContext {
 
     /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5609309021078612934L;
 
     /** The JSON array to build. */
     private JSONArray m_jsonArray;
 
     /**
+     * Default constructor explicitly resetting all variables.
+     */
+    public CmsJspTagJsonArray() {
+
+        init();
+    }
+
+    /**
      * @see org.opencms.jsp.I_CmsJspJsonContext#addValue(java.lang.String, java.lang.Object)
      */
-    public void addValue(String key, Object val) {
+    public void addValue(String key, Object val) throws JspException {
 
         if (key != null) {
-            throw new UnsupportedOperationException(
-                "Can not add value to JSONArray with a key (key:" + key + ", val:" + val + ")");
+            throw new JspTagException("Can not add value to JSONArray with a key (key:" + key + ", val:" + val + ")");
         }
 
         m_jsonArray.put(val);
@@ -75,4 +85,13 @@ public class CmsJspTagJsonArray extends A_CmsJspJsonTag implements I_CmsJspJsonC
         return m_jsonArray;
     }
 
+    /**
+     * Initializes / resets the internal values.<p>
+     */
+    @Override
+    protected void init() {
+
+        super.init();
+        m_jsonArray = null;
+    }
 }
