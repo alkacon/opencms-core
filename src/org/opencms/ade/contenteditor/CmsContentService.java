@@ -178,12 +178,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
 
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
-
-    /** The current users workplace locale. */
-    private Locale m_workplaceLocale;
-
     static {
         WIDGET_MAPPINGS.put("string", CmsInputWidget.class);
         WIDGET_MAPPINGS.put("select", CmsSelectWidget.class);
@@ -197,6 +191,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         WIDGET_MAPPINGS.put("radio", CmsRadioSelectWidget.class);
         WIDGET_MAPPINGS.put("groupselection", CmsGroupWidget.class);
     }
+
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
+    /** The current users workplace locale. */
+    private Locale m_workplaceLocale;
 
     /**
      * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
@@ -444,7 +444,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsXmlContent content = getContentDocument(file, true).clone();
                 checkAutoCorrection(cms, content);
                 synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
-                for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
+                for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers(
+                    false)) {
                     Set<String> handlerScopes = evaluateScope(handler.getScope(), content.getContentDefinition());
                     if (!Collections.disjoint(changedScopes, handlerScopes)) {
                         handler.handleChange(cms, content, locale, changedScopes);
@@ -853,7 +854,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, elementFile);
             I_CmsXmlContentValue value = content.getValue(contentPath, locale);
             value.setStringValue(cms, newValue);
-            for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
+            for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers(
+                false)) {
                 Set<String> handlerScopes = evaluateScope(handler.getScope(), content.getContentDefinition());
                 if (handlerScopes.contains(contentPath)) {
                     handler.handleChange(cms, content, locale, Collections.singletonList(contentPath));
@@ -1744,7 +1746,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     private Set<String> getChangeHandlerScopes(CmsXmlContentDefinition definition) {
 
-        List<I_CmsXmlContentEditorChangeHandler> changeHandlers = definition.getContentHandler().getEditorChangeHandlers();
+        List<I_CmsXmlContentEditorChangeHandler> changeHandlers = definition.getContentHandler().getEditorChangeHandlers(
+            false);
         Set<String> scopes = new HashSet<String>();
         for (I_CmsXmlContentEditorChangeHandler handler : changeHandlers) {
             String scope = handler.getScope();

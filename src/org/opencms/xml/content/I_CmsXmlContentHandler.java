@@ -189,6 +189,13 @@ public interface I_CmsXmlContentHandler {
     CmsDefaultSet<String> getAllowedTemplates();
 
     /**
+     * Gets the list of change handler configurations.
+     *
+     * @return the list of change handler configurations
+     */
+    List<CmsChangeHandlerConfig> getChangeHandlerConfigs();
+
+    /**
      * Gets the complex widget for the given schema type.<p>
      *
      * @param value the schema type for which we want the complex widget
@@ -317,9 +324,10 @@ public interface I_CmsXmlContentHandler {
     /**
      * Returns the editor change handlers.<p>
      *
+     * @param selfOnly if true, only return editor change handlers configured directly for this content handler
      * @return the editor change handlers
      */
-    List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers();
+    List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers(boolean selfOnly);
 
     /**
      * Returns the container page element formatter configuration for a given resource.<p>

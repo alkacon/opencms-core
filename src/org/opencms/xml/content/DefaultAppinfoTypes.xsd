@@ -411,6 +411,7 @@
             <xsd:element name="NestedFormatter" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Display" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Synchronization" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ChangeHandler" type="OpenCmsChangeHandlerConfig" minOccurs="0" maxOccurs="unbounded" />
     	</xsd:sequence>
 	</xsd:complexType>
     
@@ -420,5 +421,14 @@
 		</xsd:sequence>
         <xsd:attribute name="class" type="xsd:string" use="required" />
     </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsChangeHandlerConfig">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="configuration" type="xsd:string" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    
 	
 </xsd:schema>

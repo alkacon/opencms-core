@@ -132,8 +132,10 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
@@ -147,11 +149,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * Enum for IfInvalidRelation field setting values.
      */
     public enum InvalidRelationAction {
-        /** Only remove the field itself. */
-        removeSelf,
-
         /** Remove the field's parent. */
-        removeParent
+        removeParent,
+
+        /** Only remove the field itself. */
+        removeSelf
     }
 
     /**
@@ -213,6 +215,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         FieldVisibility,
 
         /** Element name. */
+        IfInvalidRelation,
+
+        /** Element name. */
         Invalidate,
 
         /** Element name. */
@@ -243,10 +248,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         UseDefault,
 
         /** Element name. */
-        Visibility,
-
-        /** Element name. */
-        IfInvalidRelation
+        Visibility
     }
 
     /**
@@ -262,6 +264,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
          */
         void accept(Element elem) throws CmsXmlException;
     }
+
+    /** Attribute name for configuration string. */
+    public static final String A_CONFIGURATION = "configuration";
 
     /** Constant for the "appinfo" element name itself. */
     public static final String APPINFO_APPINFO = "appinfo";
@@ -571,6 +576,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
+    /** Node name for change handler. */
+    public static final String N_CHANGEHANDLER = "ChangeHandler";
+
     /** Constant for the 'Setting' node name. */
     public static final String N_SETTING = "Setting";
 
@@ -664,9 +672,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
 
-    /** Relation actions. */
-    protected Map<String, InvalidRelationAction> m_invalidRelationActions = new HashMap<>();
-
     /** The CSS resources to include into the html-page head. */
     protected Set<String> m_cssHeadIncludes;
 
@@ -684,6 +689,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The list of formatters from the XSD. */
     protected List<CmsFormatterBean> m_formatters;
+
+    /** Relation actions. */
+    protected Map<String, InvalidRelationAction> m_invalidRelationActions = new HashMap<>();
 
     /** The java-script resources to include into the html-page head. */
     protected Set<String> m_jsHeadIncludes;
@@ -741,6 +749,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
+
+    /** Change handler configurations. */
+    private List<CmsChangeHandlerConfig> m_changeHandlerConfigs = new ArrayList<>();
 
     /** The container page only flag, indicating if this XML content should be indexed on container pages only. */
     private boolean m_containerPageOnly;
@@ -808,6 +819,33 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Collects change handler confiugrations for all nested contents.
+     *
+     * @param contentDef the content definition
+     * @param parentPath the parent path
+     * @param result the multimap to collect the handler configurations in, with the key being the path of the nested content in whose schema they are configured
+     */
+    private static void collectNestedChangeHandlerConfigs(
+        CmsXmlContentDefinition contentDef,
+        String parentPath,
+        Multimap<String, CmsChangeHandlerConfig> result) {
+
+        I_CmsXmlContentHandler handler = contentDef.getContentHandler();
+        List<CmsChangeHandlerConfig> handlerConfigs = handler.getChangeHandlerConfigs();
+        for (CmsChangeHandlerConfig handlerConfig : handlerConfigs) {
+            result.put(parentPath, handlerConfig);
+        }
+
+        for (I_CmsXmlSchemaType schemaType : contentDef.getTypeSequence()) {
+            String name = schemaType.getName();
+            if (schemaType instanceof CmsXmlNestedContentDefinition) {
+                CmsXmlNestedContentDefinition nested = (CmsXmlNestedContentDefinition)schemaType;
+                collectNestedChangeHandlerConfigs(nested.getNestedContentDefinition(), parentPath + "/" + name, result);
+            }
+        }
+    }
+
+    /**
      * Gets the invalid relation action for the given value.
      * @param value the value
      * @return the invalid relation action
@@ -822,6 +860,30 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Makes a path suitable for use as a change handler scope by appending wildcards to every path segment.
+     *
+     * @param path the path to process
+     * @return the scope for the editor change handler
+     */
+    private static String normalizeChangeHandlerScope(String path) {
+
+        List<String> normalizedKeyParts = new ArrayList<>();
+        // Append wildcard to every path component that doesn't end with a wildcard or index
+        for (String keyPart : path.split("/")) {
+            String normalizedKeyPart = null;
+            if (keyPart.endsWith("*") || keyPart.endsWith("]")) {
+                normalizedKeyPart = keyPart;
+            } else {
+                normalizedKeyPart = keyPart + "*";
+            }
+            normalizedKeyParts.add(normalizedKeyPart);
+        }
+        String normalizedKey = CmsStringUtil.listAsString(normalizedKeyParts, "/");
+        return normalizedKey;
+
     }
 
     /**
@@ -850,6 +912,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         return m_allowedTemplates;
 
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getChangeHandlerConfigs()
+     */
+    public List<CmsChangeHandlerConfig> getChangeHandlerConfigs() {
+
+        return Collections.unmodifiableList(m_changeHandlerConfigs);
     }
 
     /**
@@ -1048,11 +1118,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorChangeHandlers()
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorChangeHandlers(boolean)
      */
-    public List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers() {
+    public List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers(boolean selfOnly) {
 
-        return Collections.unmodifiableList(m_editorChangeHandlers);
+        if (selfOnly) {
+            return Collections.unmodifiableList(m_editorChangeHandlers);
+        } else {
+            List<I_CmsXmlContentEditorChangeHandler> result = new ArrayList<>(m_editorChangeHandlers);
+            List<I_CmsXmlContentEditorChangeHandler> nestedHandlers = getNestedEditorChangeHandlers();
+            result.addAll(nestedHandlers);
+            return result;
+        }
     }
 
     /**
@@ -1556,8 +1633,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initFields(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_JSON_RENDERER)) {
                     initJsonRenderer(element);
-
                 }
+
             }
         }
         m_contentDefinition = contentDefinition;
@@ -2338,6 +2415,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Creates editor change handler instances for all nested fields that have configured them in their field settings
+     *
+     * @return editor change handlers for all nested fields for which they are configured
+     */
+    protected List<I_CmsXmlContentEditorChangeHandler> getNestedEditorChangeHandlers() {
+
+        Multimap<String, CmsChangeHandlerConfig> configMap = ArrayListMultimap.create();
+        collectNestedChangeHandlerConfigs(m_contentDefinition, "", configMap);
+        List<I_CmsXmlContentEditorChangeHandler> result = new ArrayList<>();
+        for (String key : configMap.keySet()) {
+            for (CmsChangeHandlerConfig handlerConfig : configMap.get(key)) {
+                String path = CmsStringUtil.joinPaths(key, handlerConfig.getField());
+                path = CmsFileUtil.removeLeadingSeparator(path);
+                String scope = normalizeChangeHandlerScope(path);
+                java.util.Optional<I_CmsXmlContentEditorChangeHandler> optHandler = handlerConfig.newHandler(
+                    scope);
+                if (optHandler.isPresent()) {
+                    result.add(optHandler.get());
+                }
+            }
+        }
+        List<I_CmsXmlContentEditorChangeHandler> nestedHandlers = result;
+        return nestedHandlers;
+    }
+
+    /**
      * Returns the category reference path for the given value.<p>
      *
      * @param cms the cms context
@@ -2682,6 +2785,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
+
+        }
+
+        for (Element changeHandlerElem : elem.elements(N_CHANGEHANDLER)) {
+            String config = changeHandlerElem.attributeValue(A_CONFIGURATION);
+            String className = changeHandlerElem.getText().trim();
+            CmsChangeHandlerConfig entry = new CmsChangeHandlerConfig(name, className, config);
+            m_changeHandlerConfigs.add(entry);
 
         }
     }
