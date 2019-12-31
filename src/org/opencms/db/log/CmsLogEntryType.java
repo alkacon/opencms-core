@@ -60,50 +60,58 @@ import java.util.Locale;
 public enum CmsLogEntryType {
 
     /** Resource add relation entry. */
-    RESOURCE_ADD_RELATION(21, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2), /** Resource cloned entry. */
-    RESOURCE_CLONED(42, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2), /** Resource content modified entry. */
-    RESOURCE_CONTENT_MODIFIED(30, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource copied entry. */
-    RESOURCE_COPIED(41, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2), /** Resource created entry. */
-    RESOURCE_CREATED(40, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource set date expired entry. */
-    RESOURCE_DATE_EXPIRED(31, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource set date released entry. */
-    RESOURCE_DATE_RELEASED(32, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource deleted entry. */
-    RESOURCE_DELETED(43, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource set flags entry. */
-    RESOURCE_FLAGS(35, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource hidden from publish list entry. */
-    RESOURCE_HIDDEN(15, LogLevel.WARN, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource restored from history entry. */
-    RESOURCE_HISTORY(50, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource imported entry. */
-    RESOURCE_IMPORTED(45, LogLevel.DEBUG, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource undo changes with mov entry. */
-    RESOURCE_MOVE_RESTORED(53, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2), /** Resource moved entry. */
-    RESOURCE_MOVED(44, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2), /** Resource set permissions entry. */
-    RESOURCE_PERMISSIONS(23, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource set properties entry. */
-    RESOURCE_PROPERTIES(24, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource published deleted entry. */
-    RESOURCE_PUBLISHED_DELETED(13, LogLevel.FATAL, false,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource published modified entry. */
-    RESOURCE_PUBLISHED_MODIFIED(11, LogLevel.FATAL, false,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource published new entry. */
-    RESOURCE_PUBLISHED_NEW(12, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Undo changes entry. */
-    RESOURCE_CHANGES_UNDONE(14, LogLevel.FATAL, false,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource remove relation entry. */
-    RESOURCE_REMOVE_RELATION(22, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_AND_RELATION_FILTER_2), /** Resource restore deleted entry. */
-    RESOURCE_RESTORE_DELETED(51, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource undo changes without move entry. */
-    RESOURCE_RESTORED(54, LogLevel.INFO, true,
-    Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource set date last modified entry. */
-    RESOURCE_TOUCHED(33, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource set type entry. */
-    RESOURCE_TYPE(34, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1), /** Resource undeleted entry. */
+    RESOURCE_ADD_RELATION(21, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2),
+    /** Resource cloned entry. */
+    RESOURCE_CLONED(42, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2),
+    /** Resource content modified entry. */
+    RESOURCE_CONTENT_MODIFIED(30, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource copied entry. */
+    RESOURCE_COPIED(41, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2),
+    /** Resource created entry. */
+    RESOURCE_CREATED(40, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource set date expired entry. */
+    RESOURCE_DATE_EXPIRED(31, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource set date released entry. */
+    RESOURCE_DATE_RELEASED(32, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource deleted entry. */
+    RESOURCE_DELETED(43, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource set flags entry. */
+    RESOURCE_FLAGS(35, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource hidden from publish list entry. */
+    RESOURCE_HIDDEN(15, LogLevel.WARN, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** New resource deleted. */
+    RESOURCE_NEW_DELETED(16, LogLevel.WARN, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource restored from history entry. */
+    RESOURCE_HISTORY(50, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource imported entry. */
+    RESOURCE_IMPORTED(45, LogLevel.DEBUG, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource undo changes with mov entry. */
+    RESOURCE_MOVE_RESTORED(53, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2),
+    /** Resource moved entry. */
+    RESOURCE_MOVED(44, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_FROM_TO_2),
+    /** Resource set permissions entry. */
+    RESOURCE_PERMISSIONS(23, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource set properties entry. */
+    RESOURCE_PROPERTIES(24, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource published deleted entry. */
+    RESOURCE_PUBLISHED_DELETED(13, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource published modified entry. */
+    RESOURCE_PUBLISHED_MODIFIED(11, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource published new entry. */
+    RESOURCE_PUBLISHED_NEW(12, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Undo changes entry. */
+    RESOURCE_CHANGES_UNDONE(14, LogLevel.FATAL, false, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource remove relation entry. */
+    RESOURCE_REMOVE_RELATION(22, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_AND_RELATION_FILTER_2),
+    /** Resource restore deleted entry. */
+    RESOURCE_RESTORE_DELETED(51, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource undo changes without move entry. */
+    RESOURCE_RESTORED(54, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource set date last modified entry. */
+    RESOURCE_TOUCHED(33, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource set type entry. */
+    RESOURCE_TYPE(34, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** Resource undeleted entry. */
     RESOURCE_UNDELETED(52, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1);
 
     /**
@@ -112,11 +120,16 @@ public enum CmsLogEntryType {
     private enum LogLevel {
 
         /** Second Highest level. */
-        DEBUG, /** Second lowest level. */
-        ERROR, /** Lowest level. */
-        FATAL, /** Normal level. */
-        INFO, /** Highest level. */
-        TRACE, /** Less than normal level. */
+        DEBUG,
+        /** Second lowest level. */
+        ERROR,
+        /** Lowest level. */
+        FATAL,
+        /** Normal level. */
+        INFO,
+        /** Highest level. */
+        TRACE,
+        /** Less than normal level. */
         WARN;
     }
 

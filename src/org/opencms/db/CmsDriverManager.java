@@ -3034,12 +3034,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc,
                         dbc.currentProject(),
                         new CmsAliasFilter(null, null, currentResource.getStructureId()));
+                    log(
+                        dbc,
+                        new CmsLogEntry(
+                            dbc,
+                            currentResource.getStructureId(),
+                            CmsLogEntryType.RESOURCE_HIDDEN,
+                            new String[] {currentResource.getRootPath()}),
+                        true);
                 } else {
                     // the resource exists online => mark the resource as deleted
                     // structure record is removed during next publish
                     // if one (or more) siblings are not removed, the ACE can not be removed
                     removeAce = false;
-
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
                     getVfsDriver(
@@ -3052,6 +3059,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc.currentProject().getUuid(),
                         currentResource);
                     // log it
+
                     log(
                         dbc,
                         new CmsLogEntry(

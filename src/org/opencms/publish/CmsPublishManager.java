@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
@@ -51,7 +52,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This manager provide access to the publish engine runtime information.<p>
@@ -69,6 +73,9 @@ public class CmsPublishManager {
         /** Remove publish list entry for the current user if a resource is published. */
         currentUser
     }
+
+    /** Log for this class. */ 
+    private static final Log LOG = CmsLog.getLog(CmsPublishManager.class);
 
     /** The default history size. */
     public static final int DEFAULT_HISTORY_SIZE = 100;
@@ -544,6 +551,19 @@ public class CmsPublishManager {
     public void initialize(CmsObject cms) throws CmsException {
 
         m_publishEngine.initialize(cms, m_publishQueuePersistance, m_publishQueueShutdowntime);
+        // Ensure publish history gets written to DB regularly,
+        OpenCms.getExecutor().scheduleWithFixedDelay(new Runnable() {
+
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+
+                try {
+                    m_securityManager.updateLog();
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }, 5, 5, TimeUnit.SECONDS);
         m_frozen = true;
     }
 
