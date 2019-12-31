@@ -2992,6 +2992,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>The scope to store the generated JSON variable in, can be 'page' (default), 'request', , 'session' or 'application'.</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
      <tag>
@@ -3028,6 +3034,12 @@
             The default value is 'wrapper'.
             </description>
             <name>mode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The scope to store the generated JSON variable in, can be 'page' (default), 'request', , 'session' or 'application'.</description>
+            <name>scope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

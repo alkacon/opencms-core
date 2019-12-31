@@ -39,7 +39,7 @@ public interface I_CmsJspJsonContext {
     /**
      * Adds a value to the JSON value being constructed.
      *
-     * <p>For a JSON object, the key should be not null, and for a JSON array, it should always be null.
+     * <p>For a JSON object, the key must be not null, and for a JSON array, it must always be null.
      *
      * @param key the key (or null)
      * @param val the value to add

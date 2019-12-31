@@ -34,6 +34,7 @@ import org.opencms.jsp.util.CmsJspJsonWrapper;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
@@ -55,8 +56,37 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
         text;
     }
 
+    /** String describing request scope. */
+    private static final String SCOPE_REQUEST = "request";
+
+    /** String describing session scope. */
+    private static final String SCOPE_SESSION = "session";
+
+    /** String describing application scope. */
+    private static final String SCOPE_APPLICATION = "application";
+
     /** Serial version id. */
     private static final long serialVersionUID = -4536413263964718943L;
+
+    /**
+     * Converts the given string description of a scope to the corresponding PageContext constant.
+     *
+     * @param scope String description of scope
+     *
+     * @return PageContext constant corresponding to given scope description
+     */
+    protected static int getScope(String scope) {
+
+        int ret = PageContext.PAGE_SCOPE; // default
+        if (SCOPE_REQUEST.equalsIgnoreCase(scope)) {
+            ret = PageContext.REQUEST_SCOPE;
+        } else if (SCOPE_SESSION.equalsIgnoreCase(scope)) {
+            ret = PageContext.SESSION_SCOPE;
+        } else if (SCOPE_APPLICATION.equalsIgnoreCase(scope)) {
+            ret = PageContext.APPLICATION_SCOPE;
+        }
+        return ret;
+    }
 
     /** The key attribute. */
     protected String m_key;
@@ -70,6 +100,44 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
     /** The target attribute. */
     protected Object m_target;
 
+    /** The scope attribute. */
+    protected String m_scope;
+
+    /**
+     * Adds the specified value to the selected target.<p>
+     *
+     * @param target the target object
+     * @param val the value to set
+     * @param key the key to set the value, required in case the target is a JSONObject
+     *
+     * @throws JspException in case the value could not be added to the target
+     */
+    protected void addToTarget(Object target, Object val, String key) throws JspException {
+
+        if (target instanceof JSONObject) {
+            if (key == null) {
+                throw new JspTagException("Can not add to JSONObject target with no key (val:" + val + ")");
+            }
+            try {
+                JSONObject jsonObj = (JSONObject)target;
+                if (jsonObj.has(key)) {
+                    jsonObj.append(key, val);
+                } else {
+                    jsonObj.put(key, val);
+                }
+            } catch (JSONException e) {
+                throw new JspTagException("Could not add value to JSONObject target", e);
+            }
+        } else if (target instanceof JSONArray) {
+            ((JSONArray)target).put(val);
+        } else if (target instanceof CmsJspJsonWrapper) {
+            Object wrappedTaget = ((CmsJspJsonWrapper)target).getObject();
+            addToTarget(wrappedTaget, val, key);
+        } else {
+            throw new JspTagException("Invalid target specified (target:" + val + ")");
+        }
+    }
+
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
      */
@@ -78,9 +146,9 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
 
         if (m_var != null) {
             // Export to a variable
-            Object val = getValue();
             String modeStr = m_mode;
             Mode mode = Mode.wrapper;
+            int scopeValue = getScope(m_scope);
             if (modeStr != null) {
                 try {
                     mode = Mode.valueOf(modeStr);
@@ -88,47 +156,27 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
                     throw new JspTagException("Unknown mode for json tag: " + mode);
                 }
             }
+            Object val;
             switch (mode) {
                 case object:
-                    pageContext.setAttribute(m_var, val);
+                    val = getValue();
                     break;
                 case text:
                     try {
-                        pageContext.setAttribute(m_var, JSONObject.valueToString(val));
+                        val = JSONObject.valueToString(getValue());
                     } catch (JSONException e) {
                         throw new JspTagException("Could not format JSON", e);
                     }
                     break;
                 case wrapper:
                 default:
-                    pageContext.setAttribute(m_var, new CmsJspJsonWrapper(val));
+                    val = new CmsJspJsonWrapper(getValue());
                     break;
             }
+            pageContext.setAttribute(m_var, val, scopeValue);
         } else if (m_target != null) {
             // Export to a specified JSON object
-            Object val = getValue();
-            if (m_target instanceof JSONObject) {
-                if (m_key == null) {
-                    throw new JspTagException("Can not add to JSONObject target with no key (val:" + val + ")");
-                }
-                try {
-                    ((JSONObject)m_target).append(m_key, val);
-                } catch (JSONException e) {
-                    throw new JspTagException("Could not add value to JSONObject target", e);
-                }
-            } else if (m_target instanceof JSONArray) {
-                ((JSONArray)m_target).put(val);
-            } else if (m_target instanceof CmsJspJsonWrapper) {
-                Object wrappedVal = ((CmsJspJsonWrapper)m_target).getObject();
-                if (wrappedVal instanceof I_CmsJspJsonContext) {
-                    ((I_CmsJspJsonContext)wrappedVal).addValue(m_key, val);
-                } else {
-                    throw new JspTagException("Invalid target specified (target:" + wrappedVal + ")");
-                }
-
-            } else {
-                throw new JspTagException("Invalid target specified (target:" + val + ")");
-            }
+            addToTarget(m_target, getValue(), m_key);
         } else {
             I_CmsJspJsonContext context = (I_CmsJspJsonContext)findAncestorWithClass(this, I_CmsJspJsonContext.class);
             if (context != null) {
@@ -155,6 +203,7 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
         m_var = null;
         m_mode = null;
         m_target = null;
+        m_scope = null;
     }
 
     /**
@@ -185,6 +234,16 @@ public abstract class A_CmsJspJsonTag extends BodyTagSupport {
     public void setMode(String mode) {
 
         m_mode = mode;
+    }
+
+    /**
+     * Sets the scope attribute.
+     *
+     * @param scope the variable scope
+     */
+    public void setScope(String scope) {
+
+        m_scope = scope;
     }
 
     /**
