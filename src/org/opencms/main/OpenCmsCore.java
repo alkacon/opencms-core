@@ -150,6 +150,7 @@ import org.apache.commons.logging.Log;
 import org.antlr.stringtemplate.StringTemplate;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import cryptix.jce.provider.CryptixCrypto;
 
@@ -1429,7 +1430,9 @@ public final class OpenCmsCore {
         // set content notification settings
         getSystemInfo().setNotificationTime(systemConfiguration.getNotificationTime());
         getSystemInfo().setNotificationProject(systemConfiguration.getNotificationProject());
-        m_executor = new ScheduledThreadPoolExecutor(2);
+        m_executor = new ScheduledThreadPoolExecutor(
+            3,
+            new ThreadFactoryBuilder().setNameFormat("OpenCmsCore-exec-%d").build());
         // set resource init classes
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         // register request handler classes

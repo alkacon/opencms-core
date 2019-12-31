@@ -36,8 +36,10 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class can be used to convert a series of log entry objects to a set of changes which should be applied to the user
@@ -75,6 +77,7 @@ public class CmsLogToPublishListChangeConverter {
             return;
         }
         CmsPair<CmsUUID, CmsUUID> key = CmsPair.create(userId, structureId);
+
         if (isDeleting(entry)) {
             m_state.put(key, Long.valueOf(-1));
         } else if (isChanging(entry)) {
