@@ -147,11 +147,10 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // publish the project and update the search index
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
-        I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactory(
-            CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
-            "text/html");
+        String docTypeName = "xmlcontent-solr";
+        I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactoryForName(docTypeName);
         CmsExtractionResultCache cache = factory.getCache();
-        String cacheName = cache.getCacheName(res, null, CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR);
+        String cacheName = cache.getCacheName(res, null, docTypeName);
         CmsExtractionResult result = cache.getCacheObject(cacheName);
         assertNotNull(result);
     }

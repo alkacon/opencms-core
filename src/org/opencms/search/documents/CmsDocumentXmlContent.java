@@ -30,10 +30,7 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.I_CmsSearchIndex;
@@ -46,7 +43,6 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -132,32 +128,6 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);
         }
-    }
-
-    /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
-     */
-    @Override
-    public List<String> getDocumentKeys(List<String> resourceTypes, List<String> mimeTypes) throws CmsException {
-
-        if (resourceTypes.contains("*")) {
-            // we need to find all configured XML content types
-            List<String> allTypes = new ArrayList<String>();
-            for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
-                I_CmsResourceType resourceType = i.next();
-                if ((resourceType instanceof CmsResourceTypeXmlContent)
-                    // either we need a configured schema, or another class name (which must then contain an inline schema)
-                    && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
-                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA)
-                        || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
-                    // add the XML content resource type name
-                    allTypes.add(resourceType.getTypeName());
-                }
-            }
-            resourceTypes = allTypes;
-        }
-
-        return super.getDocumentKeys(resourceTypes, mimeTypes);
     }
 
     /**

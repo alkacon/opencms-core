@@ -2,10 +2,10 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
 <opencms>
   <search>
-  	<solr enabled="true">
+      <solr enabled="true">
       <commitWithinMs>-1</commitWithinMs>
       <maxProcessedResults>500</maxProcessedResults>
-  	</solr>
+      </solr>
     <directory>index</directory>
     <timeout>60000</timeout>
     <offlineUpdateFrequency>30000</offlineUpdateFrequency>
@@ -88,15 +88,13 @@
         <class>org.opencms.search.documents.CmsDocumentXmlContent</class>
         <mimetypes/>
         <resourcetypes>
-          <resourcetype>*</resourcetype>
+          <resourcetype>xmlcontent</resourcetype>
         </resourcetypes>
       </documenttype>
       <documenttype>
         <name>containerpage</name>
         <class>org.opencms.search.documents.CmsDocumentContainerPage</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-        </mimetypes>
+        <mimetypes/>
         <resourcetypes>
           <resourcetype>containerpage</resourcetype>
         </resourcetypes>
@@ -114,21 +112,17 @@
       <documenttype>
         <name>xmlcontent-solr</name>
         <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>
-        <mimetypes>
-        	<mimetype>text/html</mimetype>
-        </mimetypes>
+        <mimetypes/>
         <resourcetypes>
-          <resourcetype>xmlcontent-solr</resourcetype>
+          <resourcetype>xmlcontent</resourcetype>
         </resourcetypes>
       </documenttype>
       <documenttype>
         <name>containerpage-solr</name>
         <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-        </mimetypes>
+        <mimetypes/>
         <resourcetypes>
-          <resourcetype>containerpage-solr</resourcetype>
+          <resourcetype>containerpage</resourcetype>
         </resourcetypes>
       </documenttype>
       <documenttype>
@@ -176,7 +170,7 @@
         <locale>de</locale>
       </analyzer>
       <analyzer>
-				<class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
+                <class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
         <locale>en</locale>
       </analyzer>
       <analyzer>
@@ -184,11 +178,11 @@
         <locale>fr</locale>
       </analyzer>
       <analyzer>
-				<class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
+                <class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
         <locale>it</locale>
       </analyzer>
       <analyzer>
-				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
+                <class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
         <locale>all</locale>
       </analyzer>
     </analyzers>
@@ -226,7 +220,7 @@
       </index>
       <index class="org.opencms.search.solr.CmsSolrIndex">
         <name>Solr Offline</name>
-				<rebuild>manual</rebuild>
+                <rebuild>manual</rebuild>
         <project>Offline</project>
         <locale>all</locale>
         <configuration>solr_fields</configuration>
@@ -243,7 +237,7 @@
         <name>source1</name>
         <indexer class="org.opencms.search.CmsVfsIndexer"/>
         <resources>
-					<resource>/sites/default/</resource>
+                    <resource>/sites/default/</resource>
         </resources>
         <documenttypes-indexed>
           <name>xmlpage</name>

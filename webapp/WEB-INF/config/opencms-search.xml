@@ -88,17 +88,15 @@
             <documenttype>
                 <name>xmlcontent</name>
                 <class>org.opencms.search.documents.CmsDocumentXmlContent</class>
-                <mimetypes />
+                <mimetypes/>
                 <resourcetypes>
-                    <resourcetype>*</resourcetype>
+                    <resourcetype>xmlcontent</resourcetype>
                 </resourcetypes>
             </documenttype>
             <documenttype>
                 <name>containerpage</name>
                 <class>org.opencms.search.documents.CmsDocumentContainerPage</class>
-                <mimetypes>
-                    <mimetype>text/html</mimetype>
-                </mimetypes>
+                <mimetypes/>
                 <resourcetypes>
                     <resourcetype>containerpage</resourcetype>
                 </resourcetypes>
@@ -116,21 +114,17 @@
             <documenttype>
                 <name>xmlcontent-solr</name>
                 <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>
-                <mimetypes>
-                    <mimetype>text/html</mimetype>
-                </mimetypes>
+                <mimetypes/>
                 <resourcetypes>
-                    <resourcetype>xmlcontent-solr</resourcetype>
+                    <resourcetype>xmlcontent</resourcetype>
                 </resourcetypes>
             </documenttype>
             <documenttype>
                 <name>containerpage-solr</name>
                 <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>
-                <mimetypes>
-                    <mimetype>text/html</mimetype>
-                </mimetypes>
+                <mimetypes/>
                 <resourcetypes>
-                    <resourcetype>containerpage-solr</resourcetype>
+                    <resourcetype>containerpage</resourcetype>
                 </resourcetypes>
             </documenttype>
             <documenttype>

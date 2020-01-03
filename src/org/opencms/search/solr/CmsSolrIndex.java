@@ -39,8 +39,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -50,14 +48,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.CmsSearchResultList;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -556,32 +552,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
         } catch (Exception e) {
             // ignore and assume that the document could not be found
             LOG.error(e.getMessage(), e);
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
-     */
-    @Override
-    public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
-
-        if (isIndexing(res)) {
-            I_CmsDocumentFactory defaultFactory = super.getDocumentFactory(res);
-            if ((null == defaultFactory) || defaultFactory.getName().equals("generic")) {
-
-                if (OpenCms.getResourceManager().getResourceType(res) instanceof CmsResourceTypeXmlContainerPage) {
-                    return OpenCms.getSearchManager().getDocumentFactory(
-                        CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
-                        "text/html");
-                }
-                if (CmsResourceTypeXmlContent.isXmlContent(res)) {
-                    return OpenCms.getSearchManager().getDocumentFactory(
-                        CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
-                        "text/html");
-                }
-            }
-            return defaultFactory;
         }
         return null;
     }
@@ -1521,29 +1491,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
     protected void indexSearcherUpdate() {
 
         // nothing to do here
-    }
-
-    /**
-     * Checks if the given resource should be indexed by this index or not.<p>
-     *
-     * @param res the resource candidate
-     *
-     * @return <code>true</code> if the given resource should be indexed or <code>false</code> if not
-     */
-    @Override
-    protected boolean isIndexing(CmsResource res) {
-
-        if ((res != null) && (getSources() != null)) {
-            I_CmsDocumentFactory documentFactory = OpenCms.getSearchManager().getDocumentFactory(res);
-            for (CmsSearchIndexSource source : getSources()) {
-                if (source.isIndexing(res.getRootPath(), CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR)
-                    || source.isIndexing(res.getRootPath(), CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR)
-                    || ((documentFactory != null) && source.isIndexing(res.getRootPath(), documentFactory.getName()))) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**

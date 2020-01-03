@@ -30,12 +30,14 @@ package org.opencms.search;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +59,9 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
 
     /** A list of Cms resource types to be indexed. */
     private List<String> m_documentTypes;
+
+    /** The map from extraction keys to document factories. */
+    private Map<String, I_CmsDocumentFactory> m_documentFactories;
 
     /** The indexer. */
     private transient I_CmsIndexer m_indexer;
@@ -81,6 +86,7 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
         m_params = new HashMap<String, String>();
         m_resourcesNames = new ArrayList<String>();
         m_documentTypes = new ArrayList<String>();
+        m_documentFactories = new LinkedHashMap<>();
     }
 
     /**
@@ -150,6 +156,18 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
             return m_name.equals(((CmsSearchIndexSource)obj).m_name);
         }
         return false;
+    }
+
+    /**
+     * Returns the document factory for given key.<p>
+     * Note that only the keys resulting from the document types for this source set are taken into account.<p>
+     * 
+     * @param documentTypeKey the key for the factory to use.
+     * @return a document factory or null
+     */
+    public I_CmsDocumentFactory getDocumentFactory(String documentTypeKey) {
+
+        return null == documentTypeKey ? null : m_documentFactories.get(documentTypeKey);
     }
 
     /**
@@ -236,6 +254,14 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
     }
 
     /**
+     * Initialization for search index sources.
+     */
+    public void init() {
+
+        m_documentFactories = OpenCms.getSearchManager().getDocumentTypeMapForTypeNames(m_documentTypes);
+    }
+
+    /**
      * Returns <code>true</code> in case the given resource root path is contained in the list of
      * configured resource names of this index source.<p>
      *
@@ -266,7 +292,7 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
      * list if configured document type names of this index source.<p>
      *
      * @param rootPath the resource root path to check
-     * @param documentType the document type factory name to check
+     * @param documentTypeKey the document type key for which the presence of a factory name has to be checked
      *
      * @return <code>true</code> in case the given resource root path is contained in the list of
      *      configured resource names, and the given document type name is contained in the
@@ -275,9 +301,9 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
      * @see #isContaining(String)
      * @see #getDocumentTypes()
      */
-    public boolean isIndexing(String rootPath, String documentType) {
+    public boolean isIndexing(String rootPath, String documentTypeKey) {
 
-        return m_documentTypes.contains(documentType) && isContaining(rootPath);
+        return m_documentFactories.keySet().contains(documentTypeKey) && isContaining(rootPath);
     }
 
     /**

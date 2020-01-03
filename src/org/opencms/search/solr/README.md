@@ -3,7 +3,7 @@
 
 # Abstract #
 
-After searching with Apache's Lucene for years Apache Solr has grown and grown and can now be called an enterprise search platform that is based on Lucene. It is a standalone enterprise search server with a REST-like API. You put documents in it (called "indexing") via XML, JSON or binary over HTTP. You query it via HTTP GET and receive XML, JSON, or binary results. To get a more detailed knowledge what Solr exactly is and how it works, please visit the [Apache Solr](http://lucene.apache.org/solr/)  project website. Searching with the powerful and flexible Apache Solr's REST-like interface will drill down the development complexity. More over you can rely on existing graphical interfaces that provide comfortable AJAX based search functionality to the end user of your internet/intranet application. 
+After searching with Apache's Lucene for years Apache Solr has grown and grown and can now be called an enterprise search platform that is based on Lucene. It is a standalone enterprise search server with a REST-like API. You put documents in it (called "indexing") via XML, JSON or binary over HTTP. You query it via HTTP GET and receive XML, JSON, or binary results. To get a more detailed knowledge what Solr exactly is and how it works, please visit the [Apache Solr](http://lucene.apache.org/solr/)  project website. Searching with the powerful and flexible Apache Solr's REST-like interface will drill down the development complexity. More over you can rely on existing graphical interfaces that provide comfortable AJAX based search functionality to the end user of your internet/intranet application.
 
 Since version 8.5 OpenCms integrates Apache Solr. This document will give you a brief introduction on the Solr/OpenCms integration details. It uses links referring a locally installed OpenCms verion >= 8.5. Assuming you run OpenCms on localhost:8080 and the OpenCmsServlet is reachable under http://localhost:8080/opencms/opencms you can click the links and the examples will open.
 
@@ -31,7 +31,7 @@ Click here to open the [full featured faceted search based on Solr](http://local
 Imagine you want search for "OpenCms" in all articles, that have been changed within the last week and sort the results by modification date:
 
 <pre>
-http://localhost:8080/opencms/opencms/handleSolrSelect 
+http://localhost:8080/opencms/opencms/handleSolrSelect
                                          // URL of the Solr HTTP endpoint
     ?q=OpenCms                           // Search for the word 'OpenCms'
     &fq=type:bs-blog                     // Restrict the results by type
@@ -189,7 +189,7 @@ The class org.opencms.search.solr.CmsSolrResultList encapsulates a list of 'Open
 'Core' is the wording in the Solr world for thinking of several indexes. Preferring the correct speech, let's say core instead index. Multiple cores should only be required if you have completely different applications but want a single Solr Server that manages all the data. See [Solr Core Administration](http://wiki.apache.org/solr/CoreAdmin) for detailed information. So assuming you have configured multiple Solr cores and you would like to query a specific one you have to tell Solr/OpenCms which core/index you want to search on. This is done by a special parameter:
 
 <pre>
-http://localhost:8080/opencms/opencms/handleSolrSelect?   
+http://localhost:8080/opencms/opencms/handleSolrSelect?
                               // The URI of the OpenCms Solr Select Handler configured in 'opencms-system.xml'
     &core=My Solr-Index Name  // Searches on the core with the name 'My Solr-Index Name'
     &q=content_en:Flower      // for the text 'Flower'
@@ -202,17 +202,17 @@ OpenCms delivers a standard Solr collector using <tt>byQuery</tt> as name to sim
 
 ```jsp
 <cms:contentload
-  collector="byQuery" 
+  collector="byQuery"
   param="q=+parent-folders:/sites/default/ +type:ddarticle
         &rows=4
         &start=7
         &type=dismax
         &fl=*,score
-        &sort=lastmodified desc" 
+        &sort=lastmodified desc"
   preload="true">
     <cms:contentinfo var="info" />
     <c:if test='${info.resultSize != 0}'>
-        <cms:contentinfo var="info" />			
+        <cms:contentinfo var="info" />
         <c:if test='${info.resultSize != 0}'>
             <h3>Solr Collector Demo</h3>
             <cms:contentload editable="false">
@@ -222,19 +222,19 @@ OpenCms delivers a standard Solr collector using <tt>byQuery</tt> as name to sim
                 <%-- The text field of the article with image --%>
                 <div class="paragraph">
                     <%-- Set the requied variables for the image. --%>
-                    <c:if test="${content.value.Image.isSet}">								
-                        <%-- Output of the image using cms:img tag --%>				
+                    <c:if test="${content.value.Image.isSet}">
+                        <%-- Output of the image using cms:img tag --%>
                         <c:set var="imgwidth">${(cms.container.width - 20) / 3}</c:set>
                         <%-- The image is scaled to the one third of the container width. --%>
                         <cms:img
-                              src="${content.value.Image}" 
+                              src="${content.value.Image}"
                               width="${imgwidth}"
                               scaleColor="transparent"
-                              scaleType="0" 
-                              cssclass="left" 
-                              alt="${content.value.Image}" 
+                              scaleType="0"
+                              cssclass="left"
+                              alt="${content.value.Image}"
                               title="${content.value.Image}" />
-                    </c:if>									
+                    </c:if>
                     ${cms:trimToSize(cms:stripHtml(content.value.Text), 300)}
                 </div>
                 <div class="clear"></div>
@@ -251,7 +251,7 @@ OpenCms delivers a standard Solr collector using <tt>byQuery</tt> as name to sim
 
 The OpenCms search/index configuration is done in the file **<tt>'opencms-search.xml'</tt>** (<tt><CATALINA_HOME>/webapps/&lt;OPENCMS_WEBAPP&gt;/WEB_INF/config/opencms-search.xml</tt>). The following section will explain the OpenCms specific configuration options.
 
-But before going into details, let's say some words about the OpenCms-Index-Strategy in general. In previous days  a typical approach was to create multiple Lucene indexes per use cases. For example if you managed multiple sites or languag versions within a single OpenCms instance one would have created an index per site/language/use-case. Such an index contained only those documents/resources that were releated to that site/language/use-case. Now a days the approach is to index all data (accross all sites and languages or use-cases) in one big index. 
+But before going into details, let's say some words about the OpenCms-Index-Strategy in general. In previous days  a typical approach was to create multiple Lucene indexes per use cases. For example if you managed multiple sites or languag versions within a single OpenCms instance one would have created an index per site/language/use-case. Such an index contained only those documents/resources that were releated to that site/language/use-case. Now a days the approach is to index all data (accross all sites and languages or use-cases) in one big index.
 
 **Having all resources in one big index**
 
@@ -297,7 +297,7 @@ In order to disable Solr system wide remove the **<tt>solr-node</tt>** or set th
 
 ### External Solr Server ###
 
-It is also possible to make use of an external HTTP Solr server, to do so, replace the line 
+It is also possible to make use of an external HTTP Solr server, to do so, replace the line
 ```xml
 <solr enabled="true"/>
 ```
@@ -306,9 +306,9 @@ with the following:
 <solr enabled="true" serverUrl="http://yourSolrServer" />
 ```
 
-The OpenCms SolrSelect request handler does not support the external HTTP Solr Server. So if your HTTP Solr Server is directly reachable by **<tt>http://{yourSolrServer}</tt>** there will no permission check performed and indexed data that is secret will be accessible. What means that you are **self-responsible** for resources that have permission restrictions set on the VFS of OpenCms. But of course you can use the method 
+The OpenCms SolrSelect request handler does not support the external HTTP Solr Server. So if your HTTP Solr Server is directly reachable by **<tt>http://{yourSolrServer}</tt>** there will no permission check performed and indexed data that is secret will be accessible. What means that you are **self-responsible** for resources that have permission restrictions set on the VFS of OpenCms. But of course you can use the method
 
-**<tt>org.opencms.search.solr.CmsSolrIndex.search(CmsObject, SolrQuery)</tt>** or 
+**<tt>org.opencms.search.solr.CmsSolrIndex.search(CmsObject, SolrQuery)</tt>** or
 
 **<tt>org.opencms.search.solr.CmsSolrIndex.search(CmsObject, String)</tt>**
 
@@ -371,7 +371,7 @@ A special document type called **<tt>xmlcontent-solr</tt>** implemented in **<tt
     <mimetype>text/html</mimetype>
   </mimetypes>
   <resourcetypes>
-    <resourcetype>xmlcontent-solr</resourcetype>
+    <resourcetype>xmlcontent</resourcetype>
   </resourcetypes>
 </documenttype>
 ```
@@ -561,7 +561,7 @@ Have a look at the Solr **<tt>schema.xml</tt>** first. In the file **<tt>&lt;CAT
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
  <copyField source="*_prop"    dest="*_exact" />
- <copyField source="path"      dest="path_hierarchy" /> 
+ <copyField source="path"      dest="path_hierarchy" />
  <copyField source="category"  dest="category_exact" />
 
  <copyField source="Title_prop" dest="spell"/>
@@ -735,7 +735,7 @@ There is a default strategy implemented for the multi-language support within Op
 For XML contents we have the concrete language/locale information and the localized fields are ending with underscore followed by the locale. E.g.: **<tt>content&#95;en, content&#95;de or text&#95;en, text&#95;de</tt>**. By default all the field mappings definied within the XSD of a resource type are extended by the **‘&#95;&lt;locale&gt;’**.
 
 ## Multilingual dependency resolving ##
-Based on the file name of a resource in OpenCms there exists a concept to index documents that are distributed over more than one resource in OpenCms. The standard implementation can be found at: 
+Based on the file name of a resource in OpenCms there exists a concept to index documents that are distributed over more than one resource in OpenCms. The standard implementation can be found at:
 
 **<tt>org.opencms.search.documents.CmsDocumentDependency</tt>**
 
@@ -785,8 +785,8 @@ The following code shows a simple example how to use the OpenCms Java API to sen
 
 CmsObject cmsO = new CmsJspActionElement(pageContext, request, response).getCmsObject();
 
-String query = ((request.getParameter("query") != null && request.getParameter("query") != "") 
-				? "q=" + request.getParameter("query") : "")
+String query = ((request.getParameter("query") != null && request.getParameter("query") != "")
+                ? "q=" + request.getParameter("query") : "")
                 + "&fq=type:ddarticle&sort=path asc&rows=5";
 
 CmsSolrResultList hits = OpenCms.getSearchManager().getIndexSolr("Solr Offline").search(cmsO, query);
@@ -806,7 +806,7 @@ if (hits.size() > 0) { %>
           <div>German: <strong><%= resource.getDocument().getFieldValueAsString("Title_de")%></strong></div>
           <div>English: <strong><%= resource.getDocument().getFieldValueAsString("Title_en")%></strong></div>
         </div>
-      </div> 
+      </div>
     <% } %>
   </div>
 

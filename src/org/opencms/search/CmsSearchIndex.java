@@ -35,13 +35,11 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -182,9 +180,6 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = A_PARAM_PREFIX + ".checkTimeRange";
-
-    /** The document type name for XML contents. */
-    public static final String TYPE_XMLCONTENT = "xmlcontent";
 
     /**
      * A stored field visitor, that does not return the large fields: "content" and "contentblob".<p>
@@ -628,41 +623,6 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
         }
         if (result != null) {
             return new CmsLuceneDocument(result);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the document type factory used for the given resource in this index, or <code>null</code>
-     * in case the resource is not indexed by this index.<p>
-     *
-     * A resource is indexed if the following is all true: <ol>
-     * <li>The index contains at last one index source matching the root path of the given resource.
-     * <li>For this matching index source, the document type factory needed by the resource is also configured.
-     * </ol>
-     *
-     * @param res the resource to check
-     *
-     * @return he document type factory used for the given resource in this index, or <code>null</code>
-     * in case the resource is not indexed by this index
-     */
-    @Override
-    public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
-
-        if ((res != null) && (getSources() != null)) {
-            // the result can only be null or the type configured for the resource
-            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
-            if (result != null) {
-                // check the path of the resource if it matches with one (or more) of the configured index sources
-                for (CmsSearchIndexSource source : getSources()) {
-                    if (source.isIndexing(res.getRootPath(), result.getName())
-                        || (source.isIndexing(res.getRootPath(), TYPE_XMLCONTENT)
-                            && CmsResourceTypeXmlContent.isXmlContent(res))) {
-                        // we found an index source that indexes the resource
-                        return result;
-                    }
-                }
-            }
         }
         return null;
     }
