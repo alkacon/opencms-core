@@ -96,6 +96,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);
 
+    /** The name of this resource type. */
+    public static final String RESOURCE_TYPE_NAME = "xmlcontent";
+
     /** The serial version id. */
     private static final long serialVersionUID = 2271469830431937731L;
 
@@ -156,6 +159,16 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             // error determining resource type, should never happen
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Returns the static type name of this (default) resource type.<p>
+     *
+     * @return the static type name of this (default) resource type
+     */
+    public static String getStaticTypeName() {
+
+        return RESOURCE_TYPE_NAME;
     }
 
     /**
