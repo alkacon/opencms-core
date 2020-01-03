@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.util.CmsJspJsonWrapper;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -210,6 +211,56 @@ public class TestXml2Json extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    public void testRemoveInArray() throws Exception {
+
+        runRemoveTest("remove-array.xml");
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testRemoveInvalidType() throws Exception {
+
+        runRemoveTest("remove-invalid-type.xml");
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testRemoveSimple() throws Exception {
+
+        runRemoveTest("remove-simple.xml");
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testRemoveSuperfluousCharacters() throws Exception {
+
+        runRemoveTest("remove-superfluous-characters.xml");
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
+    public void testRemoveWildcard() throws Exception {
+
+        runRemoveTest("remove-wildcard.xml");
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
     public void testSimple() throws Exception {
 
         runDataTest("simple-test.xml");
@@ -251,7 +302,28 @@ public class TestXml2Json extends OpenCmsTestCase {
         String actual = JSONObject.valueToString(jsonObj, 0, 4);
         expected = JSONObject.valueToString(new JSONObject(expected), 0, 4);
         assertEquals(expected, actual);
+    }
 
+    /**
+     * Runs test for JSON path removal with the data file with the given file name.
+     *
+     * <p>The file contains entries for the JSON input, the path to be removed, and the expected output.
+     *
+     * @param name the test data file name
+     * @throws Exception if something goes wrong
+     */
+    protected void runRemoveTest(String name) throws Exception {
+
+        CmsParameterConfiguration data = readXmlTestData(getClass(), name);
+        String inputJson = data.get("input");
+        String path = data.get("path");
+        String outputJson = data.get("output");
+        JSONObject jsonObj = new JSONObject(inputJson);
+        CmsJspJsonWrapper wrapper = new CmsJspJsonWrapper(jsonObj);
+        wrapper.removePath(path);
+        String fmtExpectedJson = JSONObject.valueToString(new JSONObject(outputJson), 0, 4);
+        String fmtActualJson = JSONObject.valueToString(wrapper.getObject(), 0, 4);
+        assertEquals("Failed check in path removal test <" + name + ">", fmtExpectedJson, fmtActualJson);
     }
 
 }

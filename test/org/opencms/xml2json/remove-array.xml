@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entries>
+    <entry name="input">
+    <![CDATA[
+    { "Foo": [[ {"Bar": 1}, {"Bar": 3}, {"Baz": {"Bar": 42}} ]] }
+    ]]>
+    </entry>
+    <entry name="path">Foo/Bar</entry>
+    <entry name="output">
+    <![CDATA[
+        { "Foo": [[ {}, {}, {"Baz": {"Bar": 42}} ]] }
+    ]]>
+    </entry>
+</entries>
