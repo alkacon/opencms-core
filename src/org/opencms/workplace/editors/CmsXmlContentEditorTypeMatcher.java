@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -43,9 +44,6 @@ import java.util.List;
  */
 public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
 
-    /** The name of the xmlcontent resource type. */
-    protected static final String TYPE_XMLCONTENT = "xmlcontent";
-
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorTypeMatcher#getAdditionalResourceTypes()
      */
@@ -58,8 +56,9 @@ public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
         // loop through all types and select those with reference to the type xmlcontent
         while (i.hasNext()) {
             CmsExplorerTypeSettings type = i.next();
-            if ((type.getName().equalsIgnoreCase(TYPE_XMLCONTENT))
-                || ((type.getReference() != null) && type.getReference().equalsIgnoreCase(TYPE_XMLCONTENT))) {
+            if ((type.getName().equalsIgnoreCase(CmsResourceTypeXmlContent.getStaticTypeName()))
+                || ((type.getReference() != null)
+                    && type.getReference().equalsIgnoreCase(CmsResourceTypeXmlContent.getStaticTypeName()))) {
                 additionalTypes.add(type.getName());
             }
         }

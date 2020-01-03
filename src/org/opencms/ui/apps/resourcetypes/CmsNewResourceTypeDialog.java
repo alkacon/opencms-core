@@ -806,7 +806,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
                 null,
                 ICON_SMALL_DEFAULT,
                 ICON_BIG_DEFAULT,
-                "xmlcontent",
+                CmsResourceTypeXmlContent.getStaticTypeName(),
                 null,
                 "false",
                 null,

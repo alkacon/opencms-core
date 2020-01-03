@@ -411,7 +411,7 @@ public class CmsEditResourceTypeDialog extends CmsBasicDialog {
             null,
             CmsNewResourceTypeDialog.ICON_SMALL_DEFAULT,
             CmsNewResourceTypeDialog.ICON_BIG_DEFAULT,
-            "xmlcontent",
+            CmsResourceTypeXmlContent.getStaticTypeName(),
             null,
             "false",
             null,
