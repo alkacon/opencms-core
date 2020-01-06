@@ -40,6 +40,9 @@ import org.opencms.db.timing.CmsDefaultProfilingHandler;
 import org.opencms.db.timing.CmsProfilingInvocationHandler;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
 import org.opencms.db.urlname.CmsUrlNameMappingFilter;
+import org.opencms.db.userpublishlist.A_CmsLogPublishListConverter;
+import org.opencms.db.userpublishlist.CmsLogPublishListConverterAllUsers;
+import org.opencms.db.userpublishlist.CmsLogPublishListConverterCurrentUser;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -3039,7 +3042,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         new CmsLogEntry(
                             dbc,
                             currentResource.getStructureId(),
-                            CmsLogEntryType.RESOURCE_HIDDEN,
+                            CmsLogEntryType.RESOURCE_NEW_DELETED,
                             new String[] {currentResource.getRootPath()}),
                         true);
                 } else {
@@ -9478,12 +9481,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (Boolean.parseBoolean(logTableEnabledStr)) { // defaults to 'false' if value not set
                 m_projectDriver.log(dbc, log);
             }
-            CmsLogToPublishListChangeConverter converter = new CmsLogToPublishListChangeConverter();
+            A_CmsLogPublishListConverter converter = null;
+            switch (OpenCms.getPublishManager().getPublishListRemoveMode()) {
+                case currentUser:
+                    converter = new CmsLogPublishListConverterCurrentUser();
+                    break;
+                case allUsers:
+                default:
+                    converter = new CmsLogPublishListConverterAllUsers();
+                    break;
+            }
             for (CmsLogEntry entry : log) {
                 converter.add(entry);
             }
-            m_projectDriver.deleteUserPublishListEntries(dbc, converter.getPublishListDeletions());
-            m_projectDriver.writeUserPublishListEntries(dbc, converter.getPublishListAdditions());
+            converter.writeChangesToDatabase(dbc, m_projectDriver);
         }
     }
 
