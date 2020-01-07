@@ -473,7 +473,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         // add the name generator
         digester.addObjectCreate(
             "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR,
-            CmsDefaultFileNameGenerator.class);
+            CmsDefaultFileNameGenerator.class.getName(),
+            A_CLASS);
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR, "setNameGenerator");
 
         // add MIME type rules
