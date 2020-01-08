@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsInternalLinksValidator;
 import org.opencms.relations.CmsRelation;
@@ -39,18 +40,27 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.v7.ui.VerticalLayout;
 
@@ -88,10 +98,10 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
             if (brokenLinks != null) {
                 Iterator<CmsRelation> j = brokenLinks.iterator();
                 while (j.hasNext()) {
-                    res += getBrokenLinkString(j.next().getTargetPath());
+                    res += j.next().getTargetPath() + ", ";
                 }
             }
-            return res;
+            return res.substring(0, res.length() - 2);
         }
 
         /**
@@ -100,7 +110,33 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
         @Override
         public ItemClickListener getClickListener() {
 
-            return null;
+            return new ItemClickListener() {
+
+                private static final long serialVersionUID = -7729459896374968941L;
+
+                public void itemClick(ItemClickEvent event) {
+
+                    if (event.getButton().equals(MouseButton.RIGHT)) {
+                        return;
+                    }
+                    if (!property.equals(event.getPropertyId())) {
+                        return;
+                    }
+                    try {
+                        CmsObject cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+                        cms.getRequestContext().setSiteRoot("");
+                        CmsResource resource = cms.readResource(new CmsUUID((String)event.getItemId()));
+                        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+                        window.setCaption(CmsVaadinUtils.getMessageText(getCaptionKey()));
+                        window.setContent(
+                            CmsResourceListDialog.forNonExistingPaths(getBrokenLinkedResources(resource)));
+                        A_CmsUI.get().addWindow(window);
+                    } catch (CmsException e) {
+                        LOG.error("Unable to show detail resources", e);
+                    }
+                }
+
+            };
         }
 
         /**
@@ -129,6 +165,31 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
             Map<CmsResourceTableProperty, Integer> res = new LinkedHashMap<CmsResourceTableProperty, Integer>(
                 CmsFileTable.DEFAULT_TABLE_PROPERTIES);
             res.put(property, Integer.valueOf(0));
+            return res;
+        }
+
+        /**
+         * Returns the caption key.<p>
+         *
+         * @return key for caption
+         */
+        String getCaptionKey() {
+
+            return org.opencms.ui.apps.Messages.GUI_LINKVALIDATION_BROKENLINKS_DETAIL_LINKS_NAME_0;
+        }
+
+        private List<String> getBrokenLinkedResources(CmsResource resource) {
+
+            List<String> res = new ArrayList<String>();
+            List<CmsRelation> brokenLinks = validator.getBrokenLinksForResource(resource.getRootPath());
+            if (brokenLinks != null) {
+                Iterator<CmsRelation> j = brokenLinks.iterator();
+                while (j.hasNext()) {
+
+                    res.add(j.next().getTargetPath());
+
+                }
+            }
             return res;
         }
 
@@ -178,6 +239,9 @@ public class CmsLinkValidationApp extends A_CmsWorkplaceApp {
         }
 
     }
+
+    /** The log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsLinkValidationApp.class);
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)

@@ -28,9 +28,13 @@
 package org.opencms.ui.apps.linkvalidation;
 
 import org.opencms.file.CmsResource;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.vaadin.ui.Button;
@@ -71,5 +75,16 @@ public class CmsResourceListDialog extends CmsBasicDialog {
             }
 
         });
+    }
+
+    public static CmsResourceListDialog forNonExistingPaths(List<String> paths) {
+
+        CmsResourceListDialog res = new CmsResourceListDialog(Collections.EMPTY_LIST);
+        List<CmsResourceInfo> resourceInfos = new ArrayList<CmsResourceInfo>();
+        for (String path : paths) {
+            resourceInfos.add(new CmsResourceInfo(path, path, new CmsCssIcon("oc-icon-24-default")));
+        }
+        res.displayResourceInfoDirectly(resourceInfos);
+        return res;
     }
 }
