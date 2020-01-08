@@ -257,9 +257,9 @@ public class CmsSitemapTab extends A_CmsListTab {
             new A_CmsLazyOpenHandler<CmsLazyTreeItem>() {
 
                 /**
-                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
+                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem, java.lang.Runnable)
                  */
-                public void load(final CmsLazyTreeItem target) {
+                public void load(final CmsLazyTreeItem target, Runnable loadCallback) {
 
                     CmsSitemapEntryBean entry = target.getData();
                     I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback = new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
@@ -271,11 +271,17 @@ public class CmsSitemapTab extends A_CmsListTab {
                                 target.addChild(item);
                             }
                             target.onFinishLoading();
-                            onContentChange();
+                            loadCallback.run();
                         }
                     };
 
                     getTabHandler().getSubEntries(entry.getRootPath(), false, callback);
+                }
+
+                @Override
+                public void onFinishOpen(CmsLazyTreeItem target) {
+
+                    onContentChange();
                 }
             });
         result.addOpenHandler(new OpenHandler<CmsLazyTreeItem>() {
