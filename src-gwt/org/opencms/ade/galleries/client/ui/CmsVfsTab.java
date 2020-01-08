@@ -368,9 +368,9 @@ public class CmsVfsTab extends A_CmsListTab {
             new A_CmsLazyOpenHandler<CmsLazyTreeItem>() {
 
                 /**
-                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
+                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem, java.lang.Runnable)
                  */
-                public void load(final CmsLazyTreeItem target) {
+                public void load(final CmsLazyTreeItem target, final Runnable loadCallback) {
 
                     CmsVfsEntryBean entry = target.getData();
                     String path = entry.getRootPath();
@@ -395,14 +395,20 @@ public class CmsVfsTab extends A_CmsListTab {
                                 target.addChild(item);
                             }
                             target.onFinishLoading();
-                            target.setOpen(true, false);
-                            onContentChange();
+                            loadCallback.run();
                         }
                     };
 
                     m_tabHandler.getSubFolders(path, callback);
 
                 }
+
+                @Override
+                public void onFinishOpen(CmsLazyTreeItem target) {
+
+                    onContentChange();
+                }
+
             });
         tree.addOpenHandler(new OpenHandler<CmsLazyTreeItem>() {
 

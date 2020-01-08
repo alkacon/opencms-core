@@ -68,7 +68,20 @@ public abstract class A_CmsLazyOpenHandler<I extends CmsLazyTreeItem> implements
         public void run() {
 
             m_target.setOpen(true, false);
+            onFinishOpen(m_target);
         }
+
+    }
+
+    /**
+     * Called when the opening process has finished and the children (if any) are visible.
+     *
+     * @param target the target tree item
+     */
+    public void onFinishOpen(I target) {
+
+        // do nothing
+
     }
 
     /**
@@ -80,9 +93,13 @@ public abstract class A_CmsLazyOpenHandler<I extends CmsLazyTreeItem> implements
         if (target.getLoadState() != CmsLazyTreeItem.LoadState.UNLOADED) {
             return;
         }
-        new OpenTimer(target).schedule(500);
+        final OpenTimer timer = new OpenTimer(target);
+        timer.schedule(500);
         target.onStartLoading();
         target.setOpen(false, false);
-        load(target);
+        load(target, () -> {
+            timer.cancel();
+            timer.run();
+        });
     }
 }

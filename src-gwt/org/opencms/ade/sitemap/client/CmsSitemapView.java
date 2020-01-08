@@ -137,9 +137,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         private boolean m_initializing;
 
         /**
-         * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
+         * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem, java.lang.Runnable)
          */
-        public void load(final CmsSitemapTreeItem target) {
+        public void load(final CmsSitemapTreeItem target, Runnable loadCallback) {
 
             // not used
         }
@@ -158,9 +158,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 && ((target.getChildren().getWidgetCount() > 0)
                     && (((CmsSitemapTreeItem)target.getChild(
                         0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
-                // load grand children in advance
-                getController().getChildren(target.getEntryId(), false, null);
-            }
+                            // load grand children in advance
+                            getController().getChildren(target.getEntryId(), false, null);
+                        }
         }
 
         /**
@@ -1709,7 +1709,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
      * Initializes the Vaadin part of the sitemap editor.<p>
      */
     private native void initVaadin() /*-{
-		$wnd.initVaadin();
+        $wnd.initVaadin();
     }-*/;
 
     /**

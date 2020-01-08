@@ -63,7 +63,7 @@ public abstract class A_CmsDeepLazyOpenHandler<I extends CmsLazyTreeItem> extend
                 }
                 child.onStartLoading();
                 child.setOpen(false);
-                load(child);
+                load(child, null);
             }
         }
     }

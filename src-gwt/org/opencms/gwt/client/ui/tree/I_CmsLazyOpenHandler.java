@@ -42,14 +42,15 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 public interface I_CmsLazyOpenHandler<I extends CmsLazyTreeItem> extends OpenHandler<I> {
 
     /**
-     * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
-     */
-    void onOpen(OpenEvent<I> event);
-
-    /**
      * Load the children of the given tree item.<p>
      *
      * @param target the tree item to be loaded
+     * @param callback the callback to execute after loading
      */
-    void load(I target);
+    void load(I target, Runnable callback);
+
+    /**
+     * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+     */
+    void onOpen(OpenEvent<I> event);
 }
