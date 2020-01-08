@@ -34,7 +34,7 @@
 				<layout element="ElementDeleteMode" widget="SelectorWidget" configuration="alwaysKeep:%(key.deletemode.alwaysKeep)|alwaysDelete:%(key.deletemode.alwaysDelete)|askKeep*:%(key.deletemode.askKeep)|askDelete:%(key.deletemode.askDelete)" display="singleline"/>
 			</layouts>
 			<defaults>
-				<default element="Disabled" value="true"/>
+				<default element="Disabled" value="false" />
 			</defaults>
 			<validationrules>
 				<validationrule element="NamePattern" regex=".*\%\(number\).*" message="%(key.err.namepattern.missung_number_macro)" />
