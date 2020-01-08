@@ -133,5 +133,10 @@
             <param name="testKey2">testValue2</param>
             <param name="testKey3">testValue3</param>
         </detail-page-handler>
+        <userdata>
+            <userdata-domain class="org.opencms.jsp.userdata.CmsUserDataHeader" />
+            <userdata-domain class="org.opencms.jsp.userdata.CmsDefaultUserDataDomain" />
+        </userdata> 
+        
 	</system>
 </opencms>

@@ -153,7 +153,7 @@ public class CmsUserDataRequestManager {
         for (I_CmsUserDataDomain domain : m_domains) {
             String clsName = domain.getClass().getName();
             Element domainElem = root.addElement(N_USERDATA_DOMAIN);
-            domainElem.attribute(I_CmsXmlConfiguration.A_CLASS).setText(clsName);
+            domainElem.addAttribute(I_CmsXmlConfiguration.A_CLASS, clsName);
             CmsParameterConfiguration config = domain.getConfiguration();
             config.appendToXml(domainElem);
         }
