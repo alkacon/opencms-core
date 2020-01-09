@@ -103,6 +103,7 @@ import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.data.Validator.InvalidValueException;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
@@ -120,50 +121,6 @@ import com.vaadin.v7.ui.VerticalLayout;
  * Class for the Form to edit or add a site.<p>
  */
 public class CmsEditSiteForm extends CmsBasicDialog {
-
-    /**
-     *  Bean for the ComboBox to edit the position.<p>
-     */
-    public class PositionComboBoxElementBean {
-
-        /**Position of site in List. */
-        private float m_position;
-
-        /**Title of site to show. */
-        private String m_title;
-
-        /**
-         * Constructor. <p>
-         *
-         * @param title of site
-         * @param position of site
-         */
-        public PositionComboBoxElementBean(String title, float position) {
-
-            m_position = position;
-            m_title = title;
-        }
-
-        /**
-         * Getter for position.<p>
-         *
-         * @return float position
-         */
-        public float getPosition() {
-
-            return m_position;
-        }
-
-        /**
-         * Getter for title.<p>
-         *
-         * @return String title
-         */
-        public String getTitle() {
-
-            return m_title;
-        }
-    }
 
     /**
      *Validator for server field.<p>
@@ -318,6 +275,50 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         }
 
+    }
+
+    /**
+     *  Bean for the ComboBox to edit the position.<p>
+     */
+    public class PositionComboBoxElementBean {
+
+        /**Position of site in List. */
+        private float m_position;
+
+        /**Title of site to show. */
+        private String m_title;
+
+        /**
+         * Constructor. <p>
+         *
+         * @param title of site
+         * @param position of site
+         */
+        public PositionComboBoxElementBean(String title, float position) {
+
+            m_position = position;
+            m_title = title;
+        }
+
+        /**
+         * Getter for position.<p>
+         *
+         * @return float position
+         */
+        public float getPosition() {
+
+            return m_position;
+        }
+
+        /**
+         * Getter for title.<p>
+         *
+         * @return String title
+         */
+        public String getTitle() {
+
+            return m_title;
+        }
     }
 
     /**
@@ -564,6 +565,45 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -1011525709082939562L;
+
+    /**
+     * Returns a Folder Name for a given site-root.<p>
+     *
+     * @param siteRoot site root of a site
+     * @return Folder Name
+     */
+    static String getFolderNameFromSiteRoot(String siteRoot) {
+
+        return siteRoot.split("/")[siteRoot.split("/").length - 1];
+    }
+
+    /**
+     * Creates an IndexedContaienr for use in SSL mode selection widgets.<p>
+     *
+     * @param captionProp the name of the property to use for captions
+     * @param includeOldStyle true if the old-style secure server mode should be included
+     * @param currentValue the current value of the mode (may be null)
+     *
+     * @return the container with the SSL mode items
+     */
+    protected static IndexedContainer getSSLModeContainer(
+        String captionProp,
+        boolean includeOldStyle,
+        CmsSSLMode currentValue) {
+
+        IndexedContainer res = new IndexedContainer();
+        res.addContainerProperty(captionProp, String.class, "");
+        boolean isLetsEncrypt = currentValue == CmsSSLMode.LETS_ENCRYPT;
+        boolean letsEncryptConfigured = (OpenCms.getLetsEncryptConfig() != null)
+            && OpenCms.getLetsEncryptConfig().isValidAndEnabled();
+        boolean skipLetsEncrypt = !letsEncryptConfigured && !isLetsEncrypt;
+
+        for (CmsSSLMode mode : CmsSSLMode.availableModes(includeOldStyle, !skipLetsEncrypt)) {
+            Item item = res.addItem(mode);
+            item.getItemProperty(captionProp).setValue(mode.getLocalizedMessage());
+        }
+        return res;
+    }
 
     /**Flag to block change events. */
     protected boolean m_blockChange;
@@ -992,42 +1032,22 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
-     * Creates an IndexedContaienr for use in SSL mode selection widgets.<p>
+     * Add a given parameter to the form layout.<p>
      *
-     * @param captionProp the name of the property to use for captions
-     * @param includeOldStyle true if the old-style secure server mode should be included
-     * @param currentValue the current value of the mode (may be null)
-     *
-     * @return the container with the SSL mode items
+     * @param parameter parameter to add to form
      */
-    protected static IndexedContainer getSSLModeContainer(
-        String captionProp,
-        boolean includeOldStyle,
-        CmsSSLMode currentValue) {
+    void addParameter(String parameter) {
 
-        IndexedContainer res = new IndexedContainer();
-        res.addContainerProperty(captionProp, String.class, "");
-        boolean isLetsEncrypt = currentValue == CmsSSLMode.LETS_ENCRYPT;
-        boolean letsEncryptConfigured = (OpenCms.getLetsEncryptConfig() != null)
-            && OpenCms.getLetsEncryptConfig().isValidAndEnabled();
-        boolean skipLetsEncrypt = !letsEncryptConfigured && !isLetsEncrypt;
-
-        for (CmsSSLMode mode : CmsSSLMode.availableModes(includeOldStyle, !skipLetsEncrypt)) {
-            Item item = res.addItem(mode);
-            item.getItemProperty(captionProp).setValue(mode.getLocalizedMessage());
+        TextField textField = new TextField();
+        if (parameter != null) {
+            textField.setValue(parameter);
         }
-        return res;
-    }
-
-    /**
-     * Returns a Folder Name for a given site-root.<p>
-     *
-     * @param siteRoot site root of a site
-     * @return Folder Name
-     */
-    static String getFolderNameFromSiteRoot(String siteRoot) {
-
-        return siteRoot.split("/")[siteRoot.split("/").length - 1];
+        CmsRemovableFormRow<TextField> row = new CmsRemovableFormRow<TextField>(
+            textField,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REMOVE_PARAMETER_0));
+        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_0));
+        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_HELP_0));
+        m_parameter.addComponent(row);
     }
 
     /**
@@ -1085,6 +1105,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Closes the dialog.<p>
+     *
+     * @param updateTable <code>true</code> to update the site table
+     */
+    void closeDailog(boolean updateTable) {
+
+        m_manager.closeDialogWindow(updateTable);
+    }
+
+    /**
      * Creates field for aliases.<p>
      *
      * @param alias url
@@ -1103,76 +1133,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         layout.addComponent(field);
         layout.addComponent(redirect);
         return layout;
-    }
-
-    /**
-     * Reads server field.<p>
-     *
-     * @return server as string
-     */
-    protected String getFieldServer() {
-
-        return m_simpleFieldServer.getValue();
-    }
-
-    /**
-     * Handles SSL changes.<p>
-     */
-    protected void handleSSLChange() {
-
-        String toBeReplaced = "http:";
-        String newString = "https:";
-        CmsSSLMode mode = (CmsSSLMode)m_simpleFieldEncryption.getValue();
-        if (mode == null) {
-            // mode is null if this is triggered by setContainerDataSource
-            return;
-        }
-        if (mode.equals(CmsSSLMode.NO) | mode.equals(CmsSSLMode.SECURE_SERVER)) {
-            toBeReplaced = "https:";
-            newString = "http:";
-        }
-        m_simpleFieldServer.setValue(m_simpleFieldServer.getValue().replaceAll(toBeReplaced, newString));
-        m_fieldSecureServer.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
-        m_fieldExclusiveError.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
-        m_fieldExclusiveURL.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
-
-    }
-
-    /**
-     * Sets the template field depending on current set site root field(s).<p>
-     */
-    protected void setTemplateField() {
-
-        setTemplateFieldForSiteroot(getSiteRoot());
-    }
-
-    /**
-     * Add a given parameter to the form layout.<p>
-     *
-     * @param parameter parameter to add to form
-     */
-    void addParameter(String parameter) {
-
-        TextField textField = new TextField();
-        if (parameter != null) {
-            textField.setValue(parameter);
-        }
-        CmsRemovableFormRow<TextField> row = new CmsRemovableFormRow<TextField>(
-            textField,
-            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REMOVE_PARAMETER_0));
-        row.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_0));
-        row.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_PARAMETER_HELP_0));
-        m_parameter.addComponent(row);
-    }
-
-    /**
-     * Closes the dialog.<p>
-     *
-     * @param updateTable <code>true</code> to update the site table
-     */
-    void closeDailog(boolean updateTable) {
-
-        m_manager.closeDialogWindow(updateTable);
     }
 
     /**
@@ -1195,453 +1155,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             resourcename = resourcename.substring(1);
         }
         return resourcename;
-    }
-
-    /**
-     * Returns the value of the site-folder.<p>
-     *
-     * @return String of folder path.
-     */
-    String getFieldFolder() {
-
-        return m_simpleFieldFolderName.getValue();
-    }
-
-    /**
-     * Reads title field.<p>
-     *
-     * @return title as string.
-     */
-    String getFieldTitle() {
-
-        return m_simpleFieldTitle.getValue();
-    }
-
-    /**
-     * Returns parent folder.<p>
-     *
-     * @return parent folder as string
-     */
-    String getParentFolder() {
-
-        return m_simpleFieldParentFolderName.getValue();
-    }
-
-    /**
-     * Returns the value of the site template field.<p>
-     *
-     * @return string root path
-     */
-    String getSiteTemplatePath() {
-
-        return m_fieldLoadSiteTemplate.getValue();
-    }
-
-    /**
-     * Checks if an alias was entered twice.<p>
-     *
-     * @param aliasName to check
-     * @return true if it was defined double
-     */
-    boolean isDoubleAlias(String aliasName) {
-
-        CmsSiteMatcher testAlias = new CmsSiteMatcher(aliasName);
-        int count = 0;
-        for (Component c : m_aliases) {
-            if (c instanceof CmsRemovableFormRow<?>) {
-                String alName = (String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue();
-                if (testAlias.equals(new CmsSiteMatcher(alName))) {
-                    count++;
-                }
-            }
-        }
-        return count > 1;
-    }
-
-    /**
-     * Checks if folder name was touched.<p>
-     *
-     * Considered as touched if side is edited or value of foldername was changed by user.<p>
-     *
-     * @return boolean true means Folder value was set by user or existing site and should not be changed by title-listener
-     */
-    boolean isFolderNameTouched() {
-
-        if (m_site != null) {
-            return true;
-        }
-        if (m_autoSetFolderName.equals(getFieldFolder())) {
-            return false;
-        }
-        return m_isFolderNameTouched;
-    }
-
-    /**
-     * Are the aliase valid?<p>
-     *
-     * @return true if ok
-     */
-    boolean isValidAliase() {
-
-        boolean ret = true;
-
-        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent());
-            TextField field = (TextField)layout.getComponent(0);
-            ret = ret & field.isValid();
-        }
-        return ret;
-    }
-
-    /**
-     * Checks if all required fields are set correctly at first Tab.<p>
-     *
-     * @return true if all inputs are valid.
-     */
-    boolean isValidInputSimple() {
-
-        return (m_simpleFieldFolderName.isValid()
-            & m_simpleFieldServer.isValid()
-            & m_simpleFieldTitle.isValid()
-            & m_simpleFieldParentFolderName.isValid()
-            & m_fieldSelectOU.isValid()
-            & m_simpleFieldSiteRoot.isValid());
-    }
-
-    /**
-     * Checks if all required fields are set correctly at site template tab.<p>
-     *
-     * @return true if all inputs are valid.
-     */
-    boolean isValidInputSiteTemplate() {
-
-        return (m_fieldLoadSiteTemplate.isValid() & m_fieldSelectParentOU.isValid());
-    }
-
-    /**
-     * Checks if manual secure server is valid.<p>
-     *
-     * @return boolean
-     */
-    boolean isValidSecureServer() {
-
-        if (m_fieldSecureServer.isVisible()) {
-            return m_fieldSecureServer.isValid();
-        }
-        return true;
-    }
-
-    /**
-     * Loads message bundle from bundle defined inside the site-template which is used to create new site.<p>
-     */
-    void loadMessageBundle() {
-
-        //Check if chosen site template is valid and not empty
-        if (!m_fieldLoadSiteTemplate.isValid()
-            | m_fieldLoadSiteTemplate.isEmpty()
-            | !CmsSiteManager.isFolderWithMacros(m_clonedCms, m_fieldLoadSiteTemplate.getValue())) {
-            return;
-        }
-        try {
-            m_bundleComponentKeyMap = new HashMap<TextField, String>();
-
-            //Get resource of the descriptor.
-            CmsResource descriptor = m_clonedCms.readResource(
-                m_fieldLoadSiteTemplate.getValue()
-                    + CmsSiteManager.MACRO_FOLDER
-                    + "/"
-                    + CmsSiteManager.BUNDLE_NAME
-                    + "_desc");
-            //Read related bundle
-
-            Properties resourceBundle = getLocalizedBundle();
-            Map<String, String[]> bundleKeyDescriptorMap = CmsMacroResolver.getBundleMapFromResources(
-                resourceBundle,
-                descriptor,
-                m_clonedCms);
-
-            for (String key : bundleKeyDescriptorMap.keySet()) {
-
-                //Create TextField
-                TextField field = new TextField();
-                field.setCaption(bundleKeyDescriptorMap.get(key)[0]);
-                field.setValue(bundleKeyDescriptorMap.get(key)[1]);
-                field.setWidth("100%");
-
-                //Add vaadin component to UI and keep related key in HashMap
-                m_bundleValues.addComponent(field);
-                m_bundleComponentKeyMap.put(field, key);
-            }
-        } catch (CmsException | IOException e) {
-            LOG.error("Error reading bundle", e);
-        }
-    }
-
-    /**
-     * Clears the message bundle and removes related text fields from UI.<p>
-     */
-    void resetFields() {
-
-        if (m_bundleComponentKeyMap != null) {
-            Set<TextField> setBundles = m_bundleComponentKeyMap.keySet();
-
-            for (TextField field : setBundles) {
-                m_bundleValues.removeComponent(field);
-            }
-            m_bundleComponentKeyMap.clear();
-        }
-        m_fieldKeepTemplate.setVisible(!CmsStringUtil.isEmptyOrWhitespaceOnly(m_fieldLoadSiteTemplate.getValue()));
-        m_fieldKeepTemplate.setValue(
-            Boolean.valueOf(!CmsStringUtil.isEmptyOrWhitespaceOnly(m_fieldLoadSiteTemplate.getValue())));
-    }
-
-    /**
-     * Sets a new uploaded favicon and changes the caption of the upload button.<p>
-     *
-     * @param imageData holdings byte array of favicon
-     */
-    void setCurrentFavIcon(final byte[] imageData) {
-
-        m_fieldFavIcon.setVisible(true);
-        m_fieldUploadFavIcon.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_CHANGE_0));
-        m_fieldFavIcon.setSource(new StreamResource(new StreamResource.StreamSource() {
-
-            private static final long serialVersionUID = -8868657402793427460L;
-
-            public InputStream getStream() {
-
-                return new ByteArrayInputStream(imageData);
-            }
-        }, ""));
-    }
-
-    /**
-     * Tries to read and show the favicon of the site.<p>
-     */
-    void setFaviconIfExist() {
-
-        try {
-            CmsResource favicon = m_clonedCms.readResource(m_site.getSiteRoot() + "/" + CmsSiteManager.FAVICON);
-            setCurrentFavIcon(m_clonedCms.readFile(favicon).getContents()); //FavIcon was found -> give it to the UI
-        } catch (CmsException e) {
-            //no favicon, do nothing
-        }
-    }
-
-    /**
-     * Sets the folder field.<p>
-     *
-     * @param newValue value of the field
-     */
-    void setFieldFolder(String newValue) {
-
-        m_simpleFieldFolderName.setValue(newValue);
-    }
-
-    /**
-     * Sets the folder Name state to recognize if folder field was touched.<p>
-     *
-     * @param setFolderName name of folder set by listener from title.
-     */
-    void setFolderNameState(String setFolderName) {
-
-        if (setFolderName == null) {
-            if (m_simpleFieldFolderName.getValue().isEmpty()) {
-                m_isFolderNameTouched = false;
-                return;
-            }
-            m_isFolderNameTouched = true;
-        } else {
-            m_autoSetFolderName = setFolderName;
-        }
-    }
-
-    /**
-     * Enables the ok button after finishing report thread.<p>
-     */
-    void setOkButtonEnabled() {
-
-        m_ok.setEnabled(true);
-        m_ok.setCaption(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
-        m_ok.removeClickListener(m_okClickListener);
-        m_ok.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 5637556711524961424L;
-
-            public void buttonClick(ClickEvent event) {
-
-                closeDailog(true);
-            }
-        });
-    }
-
-    /**
-     * Fill ComboBox for OU selection.<p>
-     * @param combo combo box
-     */
-    void setUpOUComboBox(ComboBox combo) {
-
-        combo.removeAllItems();
-        try {
-            if (m_site != null) {
-                String siteOu = getSiteOU();
-                combo.addItem(siteOu);
-                combo.select(siteOu);
-                combo.setEnabled(false);
-            } else {
-                combo.addItem("/");
-
-                m_clonedCms.getRequestContext().setSiteRoot("");
-                List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
-                    m_clonedCms,
-                    "/",
-                    true);
-
-                for (CmsOrganizationalUnit ou : ous) {
-
-                    if (ouIsOK(ou)) {
-                        combo.addItem(ou.getName());
-                    }
-
-                }
-                combo.select("/");
-            }
-
-        } catch (CmsException e) {
-            LOG.error("Error on reading OUs", e);
-        }
-        combo.setNullSelectionAllowed(false);
-        combo.setTextInputAllowed(true);
-        combo.setFilteringMode(FilteringMode.CONTAINS);
-        combo.setNewItemsAllowed(false);
-
-    }
-
-    /**
-     * Setup for the aliase validator.<p>
-     */
-    void setupValidatorAliase() {
-
-        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent());
-            TextField field = (TextField)layout.getComponent(0);
-            field.removeAllValidators();
-            field.addValidator(new AliasValidator());
-        }
-    }
-
-    /**
-     * Setup validators which get called on click.<p>
-     * Site-template gets validated separately.<p>
-     */
-    void setupValidators() {
-
-        if (m_simpleFieldServer.getValidators().size() == 0) {
-            if (m_site == null) {
-                m_simpleFieldFolderName.addValidator(new FolderPathValidator());
-                m_simpleFieldParentFolderName.addValidator(new ParentFolderValidator());
-            }
-            m_simpleFieldServer.addValidator(new ServerValidator());
-            if (m_fieldSecureServer.isVisible()) {
-                m_fieldSecureServer.addValidator(new AliasValidator());
-            }
-            m_simpleFieldTitle.addValidator(new TitleValidator());
-            if (m_site == null) {
-                m_fieldSelectOU.addValidator(new SelectOUValidator());
-            }
-            if (m_fieldCreateOU.getValue().booleanValue()) {
-                m_fieldSelectParentOU.addValidator(new SelectParentOUValidator());
-            }
-        }
-    }
-
-    /**
-     * Saves the entered site-data as a CmsSite object.<p>
-     */
-    void submit() {
-
-        // switch to root site
-        m_clonedCms.getRequestContext().setSiteRoot("");
-
-        CmsSite site = getSiteFromForm();
-
-        if (m_site == null) {
-
-            //Show report field and hide form fields
-            m_report.setVisible(true);
-            m_tab.setVisible(false);
-            m_ok.setEnabled(false);
-            m_ok.setVisible(true);
-            //Change cancel caption to close (will not interrupt site creation anymore)
-            m_cancel.setVisible(false);
-            setOkButtonEnabled();
-            m_cancel.setCaption(
-                CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
-
-            Map<String, String> bundle = getBundleMap();
-
-            boolean createOU = m_fieldCreateOU.isEnabled() & m_fieldCreateOU.getValue().booleanValue();
-            CmsCreateSiteThread createThread = new CmsCreateSiteThread(
-                m_clonedCms,
-                m_manager,
-                site,
-                m_site,
-                m_fieldLoadSiteTemplate.getValue(),
-                getFieldTemplate(),
-                createOU,
-                (String)m_fieldSelectParentOU.getValue(),
-                (String)m_fieldSelectOU.getValue(),
-                m_os,
-                bundle,
-                new Runnable() {
-
-                    public void run() {
-
-                }
-
-                });
-
-            CmsReportWidget report = new CmsReportWidget(createThread);
-
-            report.setWidth("100%");
-            report.setHeight("350px");
-
-            m_threadReport.addComponent(report);
-            createThread.start();
-        } else {
-            if (!site.getSiteRoot().equals(m_site.getSiteRoot())) {
-                m_manager.deleteElements(Collections.singletonList(m_site.getSiteRoot()));
-            }
-            m_manager.writeElement(site);
-            m_manager.closeDialogWindow(true);
-        }
-
-    }
-
-    /**
-     * Toogles secure server options.<p>
-     */
-    void toggleSecureServer() {
-
-        if (m_fieldSecureServer.isEmpty()) {
-            m_fieldExclusiveURL.setEnabled(false);
-            m_fieldExclusiveError.setEnabled(false);
-            return;
-        }
-        m_fieldExclusiveURL.setEnabled(true);
-        m_fieldExclusiveError.setEnabled(true);
-    }
-
-    /**
-     * Toogles the select OU combo box depending on create ou check box.<p>
-     */
-    void toggleSelectOU() {
-
-        boolean create = m_fieldCreateOU.getValue().booleanValue();
-
-        m_fieldSelectOU.setEnabled(!create);
-        m_fieldSelectParentOU.setEnabled(create);
-        m_fieldSelectOU.select("/");
     }
 
     /**
@@ -1721,6 +1234,26 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Returns the value of the site-folder.<p>
+     *
+     * @return String of folder path.
+     */
+    String getFieldFolder() {
+
+        return m_simpleFieldFolderName.getValue();
+    }
+
+    /**
+     * Reads server field.<p>
+     *
+     * @return server as string
+     */
+    protected String getFieldServer() {
+
+        return m_simpleFieldServer.getValue();
+    }
+
+    /**
      * Reads ComboBox with Template information.<p>
      *
      * @return string of chosen template path.
@@ -1735,6 +1268,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             return (String)value;
         }
         return "";
+    }
+
+    /**
+     * Reads title field.<p>
+     *
+     * @return title as string.
+     */
+    String getFieldTitle() {
+
+        return m_simpleFieldTitle.getValue();
     }
 
     /**
@@ -1790,6 +1333,16 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private String getParameterString(Entry<String, String> parameter) {
 
         return parameter.getKey() + "=" + parameter.getValue();
+    }
+
+    /**
+     * Returns parent folder.<p>
+     *
+     * @return parent folder as string
+     */
+    String getParentFolder() {
+
+        return m_simpleFieldParentFolderName.getValue();
     }
 
     /**
@@ -1874,6 +1427,180 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     }
 
     /**
+     * Returns the value of the site template field.<p>
+     *
+     * @return string root path
+     */
+    String getSiteTemplatePath() {
+
+        return m_fieldLoadSiteTemplate.getValue();
+    }
+
+    /**
+     * Handles SSL changes.<p>
+     */
+    protected void handleSSLChange() {
+
+        String toBeReplaced = "http:";
+        String newString = "https:";
+        CmsSSLMode mode = (CmsSSLMode)m_simpleFieldEncryption.getValue();
+        if (mode == null) {
+            // mode is null if this is triggered by setContainerDataSource
+            return;
+        }
+        if (mode.equals(CmsSSLMode.NO) | mode.equals(CmsSSLMode.SECURE_SERVER)) {
+            toBeReplaced = "https:";
+            newString = "http:";
+        }
+        m_simpleFieldServer.setValue(m_simpleFieldServer.getValue().replaceAll(toBeReplaced, newString));
+        m_fieldSecureServer.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
+        m_fieldExclusiveError.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
+        m_fieldExclusiveURL.setVisible(mode.equals(CmsSSLMode.SECURE_SERVER));
+
+    }
+
+    /**
+     * Checks if an alias was entered twice.<p>
+     *
+     * @param aliasName to check
+     * @return true if it was defined double
+     */
+    boolean isDoubleAlias(String aliasName) {
+
+        CmsSiteMatcher testAlias = new CmsSiteMatcher(aliasName);
+        int count = 0;
+        for (Component c : m_aliases) {
+            if (c instanceof CmsRemovableFormRow<?>) {
+                String alName = (String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue();
+                if (testAlias.equals(new CmsSiteMatcher(alName))) {
+                    count++;
+                }
+            }
+        }
+        return count > 1;
+    }
+
+    /**
+     * Checks if folder name was touched.<p>
+     *
+     * Considered as touched if side is edited or value of foldername was changed by user.<p>
+     *
+     * @return boolean true means Folder value was set by user or existing site and should not be changed by title-listener
+     */
+    boolean isFolderNameTouched() {
+
+        if (m_site != null) {
+            return true;
+        }
+        if (m_autoSetFolderName.equals(getFieldFolder())) {
+            return false;
+        }
+        return m_isFolderNameTouched;
+    }
+
+    /**
+     * Are the aliase valid?<p>
+     *
+     * @return true if ok
+     */
+    boolean isValidAliase() {
+
+        boolean ret = true;
+
+        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
+            TextField field = (TextField)layout.getComponent(0);
+            ret = ret & field.isValid();
+        }
+        return ret;
+    }
+
+    /**
+     * Checks if all required fields are set correctly at first Tab.<p>
+     *
+     * @return true if all inputs are valid.
+     */
+    boolean isValidInputSimple() {
+
+        return (m_simpleFieldFolderName.isValid()
+            & m_simpleFieldServer.isValid()
+            & m_simpleFieldSiteRoot.isValid()
+            & m_simpleFieldTitle.isValid()
+            & m_simpleFieldParentFolderName.isValid()
+            & m_fieldSelectOU.isValid()
+            & m_simpleFieldSiteRoot.isValid());
+    }
+
+    /**
+     * Checks if all required fields are set correctly at site template tab.<p>
+     *
+     * @return true if all inputs are valid.
+     */
+    boolean isValidInputSiteTemplate() {
+
+        return (m_fieldLoadSiteTemplate.isValid() & m_fieldSelectParentOU.isValid());
+    }
+
+    /**
+     * Checks if manual secure server is valid.<p>
+     *
+     * @return boolean
+     */
+    boolean isValidSecureServer() {
+
+        if (m_fieldSecureServer.isVisible()) {
+            return m_fieldSecureServer.isValid();
+        }
+        return true;
+    }
+
+    /**
+     * Loads message bundle from bundle defined inside the site-template which is used to create new site.<p>
+     */
+    void loadMessageBundle() {
+
+        //Check if chosen site template is valid and not empty
+        if (!m_fieldLoadSiteTemplate.isValid()
+            | m_fieldLoadSiteTemplate.isEmpty()
+            | !CmsSiteManager.isFolderWithMacros(m_clonedCms, m_fieldLoadSiteTemplate.getValue())) {
+            return;
+        }
+        try {
+            m_bundleComponentKeyMap = new HashMap<TextField, String>();
+
+            //Get resource of the descriptor.
+            CmsResource descriptor = m_clonedCms.readResource(
+                m_fieldLoadSiteTemplate.getValue()
+                    + CmsSiteManager.MACRO_FOLDER
+                    + "/"
+                    + CmsSiteManager.BUNDLE_NAME
+                    + "_desc");
+            //Read related bundle
+
+            Properties resourceBundle = getLocalizedBundle();
+            Map<String, String[]> bundleKeyDescriptorMap = CmsMacroResolver.getBundleMapFromResources(
+                resourceBundle,
+                descriptor,
+                m_clonedCms);
+
+            for (String key : bundleKeyDescriptorMap.keySet()) {
+
+                //Create TextField
+                TextField field = new TextField();
+                field.setCaption(bundleKeyDescriptorMap.get(key)[0]);
+                field.setValue(bundleKeyDescriptorMap.get(key)[1]);
+                field.setWidth("100%");
+
+                //Add vaadin component to UI and keep related key in HashMap
+                m_bundleValues.addComponent(field);
+                m_bundleComponentKeyMap.put(field, key);
+            }
+        } catch (CmsException | IOException e) {
+            LOG.error("Error reading bundle", e);
+        }
+    }
+
+    /**
      * Checks if given Ou has resources matching to currently set parent folder.<p>
      *
      * @param ou to check
@@ -1895,6 +1622,67 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             LOG.error("Unable to read Resources for Org Unit", e);
         }
         return false;
+    }
+
+    /**
+     * Clears the message bundle and removes related text fields from UI.<p>
+     */
+    void resetFields() {
+
+        if (m_bundleComponentKeyMap != null) {
+            Set<TextField> setBundles = m_bundleComponentKeyMap.keySet();
+
+            for (TextField field : setBundles) {
+                m_bundleValues.removeComponent(field);
+            }
+            m_bundleComponentKeyMap.clear();
+        }
+        m_fieldKeepTemplate.setVisible(!CmsStringUtil.isEmptyOrWhitespaceOnly(m_fieldLoadSiteTemplate.getValue()));
+        m_fieldKeepTemplate.setValue(
+            Boolean.valueOf(!CmsStringUtil.isEmptyOrWhitespaceOnly(m_fieldLoadSiteTemplate.getValue())));
+    }
+
+    /**
+     * Sets a new uploaded favicon and changes the caption of the upload button.<p>
+     *
+     * @param imageData holdings byte array of favicon
+     */
+    void setCurrentFavIcon(final byte[] imageData) {
+
+        m_fieldFavIcon.setVisible(true);
+        m_fieldUploadFavIcon.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_FAVICON_CHANGE_0));
+        m_fieldFavIcon.setSource(new StreamResource(new StreamResource.StreamSource() {
+
+            private static final long serialVersionUID = -8868657402793427460L;
+
+            public InputStream getStream() {
+
+                return new ByteArrayInputStream(imageData);
+            }
+        }, ""));
+    }
+
+    /**
+     * Tries to read and show the favicon of the site.<p>
+     */
+    void setFaviconIfExist() {
+
+        try {
+            CmsResource favicon = m_clonedCms.readResource(m_site.getSiteRoot() + "/" + CmsSiteManager.FAVICON);
+            setCurrentFavIcon(m_clonedCms.readFile(favicon).getContents()); //FavIcon was found -> give it to the UI
+        } catch (CmsException e) {
+            //no favicon, do nothing
+        }
+    }
+
+    /**
+     * Sets the folder field.<p>
+     *
+     * @param newValue value of the field
+     */
+    void setFieldFolder(String newValue) {
+
+        m_simpleFieldFolderName.setValue(newValue);
     }
 
     /**
@@ -2027,6 +1815,51 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     private void setFieldTitle(String newValue) {
 
         m_simpleFieldTitle.setValue(newValue);
+    }
+
+    /**
+     * Sets the folder Name state to recognize if folder field was touched.<p>
+     *
+     * @param setFolderName name of folder set by listener from title.
+     */
+    void setFolderNameState(String setFolderName) {
+
+        if (setFolderName == null) {
+            if (m_simpleFieldFolderName.getValue().isEmpty()) {
+                m_isFolderNameTouched = false;
+                return;
+            }
+            m_isFolderNameTouched = true;
+        } else {
+            m_autoSetFolderName = setFolderName;
+        }
+    }
+
+    /**
+     * Enables the ok button after finishing report thread.<p>
+     */
+    void setOkButtonEnabled() {
+
+        m_ok.setEnabled(true);
+        m_ok.setCaption(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
+        m_ok.removeClickListener(m_okClickListener);
+        m_ok.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 5637556711524961424L;
+
+            public void buttonClick(ClickEvent event) {
+
+                closeDailog(true);
+            }
+        });
+    }
+
+    /**
+     * Sets the template field depending on current set site root field(s).<p>
+     */
+    protected void setTemplateField() {
+
+        setTemplateFieldForSiteroot(getSiteRoot());
     }
 
     private void setTemplateFieldForSiteroot(String siteroot) {
@@ -2197,5 +2030,185 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         } catch (CmsException e) {
             // should not happen
         }
+    }
+
+    /**
+     * Fill ComboBox for OU selection.<p>
+     * @param combo combo box
+     */
+    void setUpOUComboBox(ComboBox combo) {
+
+        combo.removeAllItems();
+        try {
+            if (m_site != null) {
+                String siteOu = getSiteOU();
+                combo.addItem(siteOu);
+                combo.select(siteOu);
+                combo.setEnabled(false);
+            } else {
+                combo.addItem("/");
+
+                m_clonedCms.getRequestContext().setSiteRoot("");
+                List<CmsOrganizationalUnit> ous = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+                    m_clonedCms,
+                    "/",
+                    true);
+
+                for (CmsOrganizationalUnit ou : ous) {
+
+                    if (ouIsOK(ou)) {
+                        combo.addItem(ou.getName());
+                    }
+
+                }
+                combo.select("/");
+            }
+
+        } catch (CmsException e) {
+            LOG.error("Error on reading OUs", e);
+        }
+        combo.setNullSelectionAllowed(false);
+        combo.setTextInputAllowed(true);
+        combo.setFilteringMode(FilteringMode.CONTAINS);
+        combo.setNewItemsAllowed(false);
+
+    }
+
+    /**
+     * Setup for the aliase validator.<p>
+     */
+    void setupValidatorAliase() {
+
+        for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
+            FormLayout layout = (FormLayout)(row.getComponent());
+            TextField field = (TextField)layout.getComponent(0);
+            field.removeAllValidators();
+            field.addValidator(new AliasValidator());
+        }
+    }
+
+    /**
+     * Setup validators which get called on click.<p>
+     * Site-template gets validated separately.<p>
+     */
+    void setupValidators() {
+
+        if (m_simpleFieldServer.getValidators().size() == 0) {
+            if (m_site == null) {
+                m_simpleFieldFolderName.addValidator(new FolderPathValidator());
+                m_simpleFieldParentFolderName.addValidator(new ParentFolderValidator());
+            }
+            if ((m_simpleFieldSiteRoot != null) && m_simpleFieldSiteRoot.isVisible()) {
+                m_simpleFieldSiteRoot.addValidator(value -> {
+                    String siteRoot = (String)value;
+                    try {
+                        OpenCms.getSiteManager().validateSiteRoot(siteRoot);
+                    } catch (Exception e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        throw new InvalidValueException(e.getMessage());
+                    }
+                });
+            }
+            m_simpleFieldServer.addValidator(new ServerValidator());
+            if (m_fieldSecureServer.isVisible()) {
+                m_fieldSecureServer.addValidator(new AliasValidator());
+            }
+            m_simpleFieldTitle.addValidator(new TitleValidator());
+            if (m_site == null) {
+                m_fieldSelectOU.addValidator(new SelectOUValidator());
+            }
+            if (m_fieldCreateOU.getValue().booleanValue()) {
+                m_fieldSelectParentOU.addValidator(new SelectParentOUValidator());
+            }
+        }
+    }
+
+    /**
+     * Saves the entered site-data as a CmsSite object.<p>
+     */
+    void submit() {
+
+        // switch to root site
+        m_clonedCms.getRequestContext().setSiteRoot("");
+
+        CmsSite site = getSiteFromForm();
+
+        if (m_site == null) {
+
+            //Show report field and hide form fields
+            m_report.setVisible(true);
+            m_tab.setVisible(false);
+            m_ok.setEnabled(false);
+            m_ok.setVisible(true);
+            //Change cancel caption to close (will not interrupt site creation anymore)
+            m_cancel.setVisible(false);
+            setOkButtonEnabled();
+            m_cancel.setCaption(
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CLOSE_0));
+
+            Map<String, String> bundle = getBundleMap();
+
+            boolean createOU = m_fieldCreateOU.isEnabled() & m_fieldCreateOU.getValue().booleanValue();
+            CmsCreateSiteThread createThread = new CmsCreateSiteThread(
+                m_clonedCms,
+                m_manager,
+                site,
+                m_site,
+                m_fieldLoadSiteTemplate.getValue(),
+                getFieldTemplate(),
+                createOU,
+                (String)m_fieldSelectParentOU.getValue(),
+                (String)m_fieldSelectOU.getValue(),
+                m_os,
+                bundle,
+                new Runnable() {
+
+                    public void run() {
+
+                    }
+
+                });
+
+            CmsReportWidget report = new CmsReportWidget(createThread);
+
+            report.setWidth("100%");
+            report.setHeight("350px");
+
+            m_threadReport.addComponent(report);
+            createThread.start();
+        } else {
+            if (!site.getSiteRoot().equals(m_site.getSiteRoot())) {
+                m_manager.deleteElements(Collections.singletonList(m_site.getSiteRoot()));
+            }
+            m_manager.writeElement(site);
+            m_manager.closeDialogWindow(true);
+        }
+
+    }
+
+    /**
+     * Toogles secure server options.<p>
+     */
+    void toggleSecureServer() {
+
+        if (m_fieldSecureServer.isEmpty()) {
+            m_fieldExclusiveURL.setEnabled(false);
+            m_fieldExclusiveError.setEnabled(false);
+            return;
+        }
+        m_fieldExclusiveURL.setEnabled(true);
+        m_fieldExclusiveError.setEnabled(true);
+    }
+
+    /**
+     * Toogles the select OU combo box depending on create ou check box.<p>
+     */
+    void toggleSelectOU() {
+
+        boolean create = m_fieldCreateOU.getValue().booleanValue();
+
+        m_fieldSelectOU.setEnabled(!create);
+        m_fieldSelectParentOU.setEnabled(create);
+        m_fieldSelectOU.select("/");
     }
 }
