@@ -53,7 +53,6 @@ import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -304,6 +303,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         }
 
+        validateSiteRoot(site.getSiteRoot());
+
         // un-freeze
         m_frozen = false;
 
@@ -390,6 +391,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(server)) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SERVER_URL_0));
         }
+
+        validateSiteRoot(uri);
 
         // create a new site object
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
@@ -1744,6 +1747,18 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Validates the site root, throwing an exception if the validation fails.
+     * 
+     * @param siteRoot the site root to check 
+     */
+    public void validateSiteRoot(String siteRoot) {
+
+        if (!isValidSiteRoot(siteRoot)) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_SITE_ROOT_1, siteRoot));
+        }
+    }
+
+    /**
      * Adds a new Site matcher object to the map of server names.
      *
      * @param matcher the SiteMatcher of the server
@@ -1881,6 +1896,19 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         return !m_siteMatcherSites.containsKey(matcher);
 
+    }
+
+    /**
+     * Validates the site root.
+     *
+     * @param uri the site root to validate
+     * @return true if the site root is valid
+     */
+    private boolean isValidSiteRoot(String uri) {
+        if ("".equals(uri) || "/".equals(uri)) {
+            return false;
+        }
+        return true;
     }
 
     /**

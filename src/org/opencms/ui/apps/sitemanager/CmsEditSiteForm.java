@@ -1282,6 +1282,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         return (m_simpleFieldFolderName.isValid()
             & m_simpleFieldServer.isValid()
+            & m_simpleFieldSiteRoot.isValid()
             & m_simpleFieldTitle.isValid()
             & m_simpleFieldParentFolderName.isValid()
             & m_fieldSelectOU.isValid()
@@ -1520,6 +1521,17 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             if (m_site == null) {
                 m_simpleFieldFolderName.addValidator(new FolderPathValidator());
                 m_simpleFieldParentFolderName.addValidator(new ParentFolderValidator());
+            }
+            if ((m_simpleFieldSiteRoot != null) && m_simpleFieldSiteRoot.isVisible()) {
+                m_simpleFieldSiteRoot.addValidator(value -> {
+                    String siteRoot = (String)value;
+                    try {
+                        OpenCms.getSiteManager().validateSiteRoot(siteRoot);
+                    } catch (Exception e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        throw new InvalidValueException(e.getMessage());
+                    }
+                });
             }
             m_simpleFieldServer.addValidator(new ServerValidator());
             if (m_fieldSecureServer.isVisible()) {
