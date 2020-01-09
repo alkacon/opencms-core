@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.filehistory;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -38,6 +39,7 @@ import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.report.CmsReportDialog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.AbstractSelect.NewItemHandler;
 import com.vaadin.v7.ui.ComboBox;
@@ -59,10 +65,76 @@ import com.vaadin.v7.ui.VerticalLayout;
 /**
  * Class for the clear file history dialog and execution.<p>
  */
-public class CmsFileHistoryClear extends VerticalLayout {
+public class CmsFileHistoryPanel extends VerticalLayout {
+
+    /**
+     * Bean for the elements of the combo box for number of version option.<p>
+     */
+    public class ComboBoxVersionsBean {
+
+        /**Value of item.*/
+        private int m_val;
+
+        /**
+         * public constructor.<p>
+         *
+         * @param value of item
+         */
+        public ComboBoxVersionsBean(int value) {
+
+            m_val = value;
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object o) {
+
+            if (o instanceof ComboBoxVersionsBean) {
+                return ((ComboBoxVersionsBean)o).getValue() == m_val;
+            }
+            return false;
+        }
+
+        /**
+         * Getter for display String to be displayed in combo box.<p>
+         *
+         * @return String to be displayed
+         */
+        public String getDisplayValue() {
+
+            if (m_val == CmsFileHistoryApp.NUMBER_VERSIONS_DISABLED) {
+                return CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_VERSIONS_DISABLED_0);
+            }
+            if (m_val == CmsFileHistoryApp.NUMBER_VERSIONS_UNLIMITED) {
+                return CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_VERSIONS_UNLIMITED_0);
+            }
+            return String.valueOf(m_val);
+        }
+
+        /**
+         * Getter for (int) value of item.<p>
+         *
+         * @return int value
+         */
+        public int getValue() {
+
+            return m_val;
+        }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            return CmsUUID.getNullUUID().hashCode();
+        }
+    }
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileHistoryClear.class);
+    private static final Log LOG = CmsLog.getLog(CmsFileHistoryPanel.class);
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = 1484327372474823882L;
@@ -80,7 +152,7 @@ public class CmsFileHistoryClear extends VerticalLayout {
     private CmsDateField m_dateField;
 
     /**Vaadin component.*/
-    private OptionGroup m_mode;
+    private OptionGroup m_deleteMode;
 
     /**Vaadin component.*/
     private Button m_ok;
@@ -89,25 +161,31 @@ public class CmsFileHistoryClear extends VerticalLayout {
     private Panel m_optionPanel;
 
     /**Vaadin component.*/
-    private Panel m_reportPanel;
-
-    /**Vaadin component.*/
     private Label m_settedVersions;
 
-    /**     * 
-    
+    /**Vaadin component.*/
+    private Button m_edit;
+
+    /**Vaadin component.*/
+    private OptionGroup m_mode;
+
+    /**Vaadin component.*/
+    private ComboBox m_numberVersions;
+
+    /**     *
+
      * public constructor.<p>
      *
      * @param app instance of calling app
      */
-    public CmsFileHistoryClear(final CmsFileHistoryClearApp app) {
+    public CmsFileHistoryPanel() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         //Setup ui components
         setupVersionSettingsLabel();
         setupVersionsToKeepComboBox();
-        setupModeOptions();
+        setupDeleteModeOptions();
 
         m_ok.addClickListener(new ClickListener() {
 
@@ -119,6 +197,83 @@ public class CmsFileHistoryClear extends VerticalLayout {
             }
         });
         m_cleanupPublishHistory.addClickListener(evt -> runPublishHistoryCleanup());
+        m_edit.setEnabled(false);
+
+        setupVersionComboBox();
+        setupModeOptions();
+
+        ValueChangeListener changeListener = new ValueChangeListener() {
+
+            /**vaadin serial id.*/
+            private static final long serialVersionUID = -6003215873244541851L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                setButtonEnabled(true);
+            }
+        };
+
+        m_numberVersions.addValueChangeListener(changeListener);
+
+        m_mode.addValueChangeListener(changeListener);
+
+        m_edit.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 161296255232053110L;
+
+            public void buttonClick(ClickEvent event) {
+
+                if (saveOptions()) {
+                    setButtonEnabled(false);
+                } else {
+                    String message = CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_INVALID_0);
+                    Notification.show(message, Type.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets the edit button enabled or disabled.<p>
+     *
+     * @param enable state of button
+     */
+    protected void setButtonEnabled(boolean enable) {
+
+        m_edit.setEnabled(enable);
+    }
+
+    /**
+     * Saves the options.<p>
+     *
+     * @return Path to be called in app.
+     */
+    boolean saveOptions() {
+
+        //Enable history?
+        boolean enabled = ((ComboBoxVersionsBean)m_numberVersions.getValue()).getValue() != CmsFileHistoryApp.NUMBER_VERSIONS_DISABLED;
+
+        //Maximal count of versions for current resources.
+        int versions = ((ComboBoxVersionsBean)m_numberVersions.getValue()).getValue();
+
+        //Maximal count of versions for deleted resources.
+        int versionsDeleted = versions;
+
+        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_DISABLED)) {
+            versionsDeleted = 0;
+        }
+        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_WITHOUTVERSIONS)) {
+            versionsDeleted = 1;
+        }
+
+        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_WITHVERSIONS)
+            && (versions == CmsFileHistoryApp.NUMBER_VERSIONS_DISABLED)) {
+            return false;
+        }
+        OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions, versionsDeleted);
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+
+        return true;
     }
 
     /**
@@ -145,10 +300,10 @@ public class CmsFileHistoryClear extends VerticalLayout {
         //Maximal count of versions for deleted resources.
         int versionsDeleted = versions;
 
-        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_DISABLED)) {
+        if (m_deleteMode.getValue().equals(CmsFileHistoryApp.MODE_DISABLED)) {
             versionsDeleted = 0;
         }
-        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_WITHOUTVERSIONS)) {
+        if (m_deleteMode.getValue().equals(CmsFileHistoryApp.MODE_WITHOUTVERSIONS)) {
             versionsDeleted = 1;
         }
 
@@ -170,9 +325,11 @@ public class CmsFileHistoryClear extends VerticalLayout {
         final CmsObject cms = A_CmsUI.getCmsObject();
         try {
             int numRemoved = OpenCms.getPublishManager().cleanupPublishHistory(cms);
-            Notification.show(
-                CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_CLEANED_PUBLISH_HISTORY_1, numRemoved));
-
+            Notification notification = new Notification(
+                CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_CLEANED_PUBLISH_HISTORY_1, numRemoved),
+                Notification.Type.HUMANIZED_MESSAGE);
+            notification.setDelayMsec(Notification.DELAY_FOREVER);
+            notification.show(A_CmsUI.get().getPage());
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             CmsErrorDialog.showErrorDialog(e);
@@ -182,6 +339,27 @@ public class CmsFileHistoryClear extends VerticalLayout {
 
     /**
      * Sets up the OptionGroup for the mode for deleted resources.<p>
+     */
+    private void setupDeleteModeOptions() {
+
+        int versionsDeleted = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
+
+        String mode;
+
+        if (versionsDeleted == 0) {
+            mode = CmsFileHistoryApp.MODE_DISABLED;
+        } else if (versionsDeleted == 1) {
+            mode = CmsFileHistoryApp.MODE_WITHOUTVERSIONS;
+        } else if ((versionsDeleted > 1) || (versionsDeleted == -1)) {
+            mode = CmsFileHistoryApp.MODE_WITHVERSIONS;
+        } else {
+            mode = CmsFileHistoryApp.MODE_DISABLED;
+        }
+        m_deleteMode.setValue(mode);
+    }
+
+    /**
+     * Sets up the OptionGroup for the mode.<p>
      */
     private void setupModeOptions() {
 
@@ -199,6 +377,45 @@ public class CmsFileHistoryClear extends VerticalLayout {
             mode = CmsFileHistoryApp.MODE_DISABLED;
         }
         m_mode.setValue(mode);
+    }
+
+    /**
+     * Fills the combo box to choose the number of versions which shouls be stored.<p>
+     */
+    private void setupVersionComboBox() {
+
+        //Setup beans
+        List<ComboBoxVersionsBean> beans = new ArrayList<ComboBoxVersionsBean>();
+
+        //Disabled
+        beans.add(new ComboBoxVersionsBean(CmsFileHistoryApp.NUMBER_VERSIONS_DISABLED));
+
+        //1-10
+        for (int i = 1; i <= 10; i++) {
+            beans.add(new ComboBoxVersionsBean(i));
+        }
+
+        //15-50
+        for (int i = 15; i <= 50; i += 5) {
+            beans.add(new ComboBoxVersionsBean(i));
+        }
+
+        //Unlimited
+        beans.add(new ComboBoxVersionsBean(CmsFileHistoryApp.NUMBER_VERSIONS_UNLIMITED));
+
+        BeanItemContainer<ComboBoxVersionsBean> objects = new BeanItemContainer<ComboBoxVersionsBean>(
+            ComboBoxVersionsBean.class,
+            beans);
+        m_numberVersions.setContainerDataSource(objects);
+        m_numberVersions.setItemCaptionPropertyId("displayValue");
+
+        m_numberVersions.setNullSelectionAllowed(false);
+        m_numberVersions.setTextInputAllowed(false);
+        m_numberVersions.setPageLength(beans.size());
+
+        int numberHistoryVersions = OpenCms.getSystemInfo().getHistoryVersions();
+
+        m_numberVersions.setValue(beans.get(beans.indexOf(new ComboBoxVersionsBean(numberHistoryVersions))));
     }
 
     /**
@@ -267,4 +484,5 @@ public class CmsFileHistoryClear extends VerticalLayout {
         }
         m_numberVersionsToKeep.select(new Integer(numberHistoryVersions));
     }
+
 }

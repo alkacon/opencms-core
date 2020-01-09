@@ -70,13 +70,8 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
     protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
 
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
-
-        //Deeper path
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_TOOL_NAME_0));
-            return crumbs;
-        }
-        return new LinkedHashMap<String, String>(); //size==1 & state was not empty -> state doesn't match to known path
+        crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_TOOL_NAME_0));
+        return crumbs;
     }
 
     /**
@@ -87,7 +82,7 @@ public class CmsFileHistoryApp extends A_CmsWorkplaceApp {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             m_rootLayout.setMainHeightFull(false);
-            return new CmsFileHistorySettings(this, state);
+            return new CmsFileHistoryPanel();
         }
         return null;
     }

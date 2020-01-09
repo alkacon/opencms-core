@@ -28,11 +28,10 @@
 package org.opencms.ui.apps.filehistory;
 
 import org.opencms.security.CmsRole;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
@@ -52,7 +51,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getAppCategory() {
 
-        return CmsFileHistoryFolder.ID;
+        return CmsWorkplaceAppManager.ADMINISTRATION_CATEGORY_ID;
     }
 
     /**
@@ -61,15 +60,6 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new CmsFileHistoryApp();
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
-     */
-    @Override
-    public String getButtonStyle() {
-
-        return FontOpenCms.SETTINGS.getButtonOverlayStyle() + " " + OpenCmsTheme.BUTTON_OVERLAY_BLUE;
     }
 
     /**
@@ -103,7 +93,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_SETTINGS_TOOL_NAME_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_FILEHISTORY_TOOL_NAME_0);
     }
 
     /**
@@ -112,7 +102,7 @@ public class CmsFileHistoryConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public int getOrder() {
 
-        return 8;
+        return 105;
     }
 
     /**

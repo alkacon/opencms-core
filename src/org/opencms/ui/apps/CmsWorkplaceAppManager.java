@@ -57,9 +57,7 @@ import org.opencms.ui.apps.dbmanager.CmsDbRemovePubLocksConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbStaticExportConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbSynchronizationConfiguration;
 import org.opencms.ui.apps.dbmanager.sqlconsole.CmsSqlConsoleAppConfiguration;
-import org.opencms.ui.apps.filehistory.CmsFileHistoryClearConfiguration;
 import org.opencms.ui.apps.filehistory.CmsFileHistoryConfiguration;
-import org.opencms.ui.apps.filehistory.CmsFileHistoryFolder;
 import org.opencms.ui.apps.git.CmsGitAppConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkInFolderValidationConfiguration;
 import org.opencms.ui.apps.linkvalidation.CmsLinkValidationConfiguration;
@@ -303,6 +301,7 @@ public class CmsWorkplaceAppManager {
      * Constructor for testing only.<p>
      */
     protected CmsWorkplaceAppManager() {
+
         // nothing to do
     }
 
@@ -732,7 +731,6 @@ public class CmsWorkplaceAppManager {
         result.addAll(
             Arrays.<I_CmsFolderAppCategory> asList(
                 new CmsLinkValidationFolder(),
-                new CmsFileHistoryFolder(),
                 new CmsDbManagerFolder(),
                 new CmsCacheFolder()));
         return result;
@@ -815,7 +813,6 @@ public class CmsWorkplaceAppManager {
                 new CmsCacheViewFlexConfiguration(),
                 new CmsCacheViewImageConfiguration(),
                 new CmsFileHistoryConfiguration(),
-                new CmsFileHistoryClearConfiguration(),
                 new CmsLinkValidationConfiguration(),
                 new CmsLinkValidationExternalConfiguration(),
                 new CmsLinkInFolderValidationConfiguration(),

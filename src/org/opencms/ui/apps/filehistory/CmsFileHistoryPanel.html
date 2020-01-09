@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+        <v-panel caption="%(key.GUI_FILEHISTORY_SETTINGS_CAPTION_0)">   
+            <v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
+                <vaadin7-combo-box _id="m_numberVersions" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_SETTINGS_VERSION_NAME_0)"/>
+                <vaadin7-option-group _id="m_mode" caption="%(key.GUI_FILEHISTORY_SETTINGS_MODE_NAME_0)">
+                    <option item-id="disabled">%(key.GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0)</option>
+                    <option item-id="withoutversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)</option>
+                    <option item-id="withversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)</option>
+                </vaadin7-option-group>         
+            </v-form-layout>            
+        </v-panel>
+        <v-panel>
+            <vaadin7-horizontal-layout width="100%">
+                <vaadin7-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+                    <v-button _id="m_edit">%(key.GUI_DIALOG_BUTTON_SAVE_0)</v-button>
+                </vaadin7-horizontal-layout>
+            </vaadin7-horizontal-layout>
+        </v-panel>
+		<v-panel _id="m_optionPanel" caption="%(key.GUI_FILEHISTORY_DELETE_CAPTION_0)">	
+			<v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
+				<vaadin7-label _id="m_settedVersions">Test</vaadin7-label>
+				<vaadin7-combo-box _id="m_numberVersionsToKeep" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_DELETE_KEEPVERSIONS_0)"/>
+				<vaadin7-option-group _id="m_deleteMode" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARDELETEMODE_0)">
+					<option item-id="disabled">%(key.GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0)</option>
+					<option item-id="withoutversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)</option>
+					<option item-id="withversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)</option>
+				</vaadin7-option-group>	
+				<o-cms-date-field _id="m_dateField" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARODERTHAN_0)" />
+                		
+			</v-form-layout>			
+		</v-panel>
+		<v-panel>
+			<vaadin7-horizontal-layout width="100%">
+				<vaadin7-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+					<v-button _id="m_ok">%(key.GUI_DIALOG_BUTTON_EXECUTE_0)</v-button>
+				</vaadin7-horizontal-layout>
+			</vaadin7-horizontal-layout>
+		</v-panel>
+        <v-panel caption="%(key.GUI_FILEHISTORY_PUBLISHHISTORY_0)" width="100%">
+            <vaadin7-horizontal-layout width="100%">
+                <vaadin7-horizontal-layout :center margin spacing style-name="o-dialog-button-bar">
+                    <v-button _id="m_cleanupPublishHistory" description="%(key.GUI_FILEHISTORY_CLEAR_PUBLISH_HISTORY_DESC_0)">%(key.GUI_FILEHISTORY_CLEAR_PUBLISH_HISTORY_0)</v-button>
+                </vaadin7-horizontal-layout>
+            </vaadin7-horizontal-layout>
+        </v-panel>
+	</vaadin7-vertical-layout>
+</body>
+</html>

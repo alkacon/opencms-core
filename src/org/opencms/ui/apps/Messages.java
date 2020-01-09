@@ -740,6 +740,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_FILEHISTORY_DELETE_VERSIONINFO_1 = "GUI_FILEHISTORY_DELETE_VERSIONINFO_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEHISTORY_PUBLISHHISTORY_0 = "GUI_FILEHISTORY_PUBLISHHISTORY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEHISTORY_SETTINGS_CAPTION_0 = "GUI_FILEHISTORY_SETTINGS_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */

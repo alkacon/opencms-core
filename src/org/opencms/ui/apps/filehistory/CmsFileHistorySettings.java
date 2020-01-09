@@ -31,23 +31,21 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
-import com.vaadin.ui.Panel;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -69,6 +67,7 @@ public class CmsFileHistorySettings extends VerticalLayout {
          * @param value of item
          */
         public ComboBoxVersionsBean(int value) {
+
             m_val = value;
         }
 
@@ -132,9 +131,6 @@ public class CmsFileHistorySettings extends VerticalLayout {
     /**Vaadin component.*/
     private ComboBox m_numberVersions;
 
-    /**Vaadin component.*/
-    private Panel m_statusPanel;
-
     /**
      * Public constructor of class.<p>
      *
@@ -142,27 +138,10 @@ public class CmsFileHistorySettings extends VerticalLayout {
      * @param state state passed from app with information if settings were edited or are not valid
      */
     public CmsFileHistorySettings(final CmsFileHistoryApp app, String state) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_edit.setEnabled(false);
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            m_statusPanel.setVisible(false);
-        } else {
-            Label status = new Label();
-            status.setWidth("100%");
-            status.setContentMode(ContentMode.HTML);
-            if (state.startsWith(CmsFileHistoryApp.PATH_SETTINGS_INVALID)) {
-                status.setValue(
-                    "<p width='100%' align='center' style='color:#FF0000;'>"
-                        + CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_INVALID_0)
-                        + "</p>");
-            } else {
-                status.setValue("<p width='100%' align='center'>Settings saved</p>");
-            }
-
-            m_statusPanel.setContent(status);
-        }
 
         setupVersionComboBox();
         setupModeOptions();
@@ -191,7 +170,8 @@ public class CmsFileHistorySettings extends VerticalLayout {
                 if (saveOptions()) {
                     setButtonEnabled(false);
                 } else {
-                    app.openSubView(CmsFileHistoryApp.PATH_SETTINGS_INVALID, true);
+                    String message = CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_SETTINGS_INVALID_0);
+                    Notification.show(message, Type.ERROR_MESSAGE);
                 }
             }
         });
