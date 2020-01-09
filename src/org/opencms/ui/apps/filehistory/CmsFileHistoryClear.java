@@ -36,7 +36,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.report.CmsReportWidget;
+import org.opencms.ui.report.CmsReportDialog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -61,6 +61,7 @@ import com.vaadin.v7.ui.VerticalLayout;
  */
 public class CmsFileHistoryClear extends VerticalLayout {
 
+    /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFileHistoryClear.class);
 
     /**vaadin serial id.*/
@@ -93,7 +94,8 @@ public class CmsFileHistoryClear extends VerticalLayout {
     /**Vaadin component.*/
     private Label m_settedVersions;
 
-    /**
+    /**     * 
+    
      * public constructor.<p>
      *
      * @param app instance of calling app
@@ -121,24 +123,43 @@ public class CmsFileHistoryClear extends VerticalLayout {
 
     /**
      * Starts the clean thread and shows the report.<p>
-     * Hides other formular elements, except for cancel button.<p>
      */
     void startCleanAndShowReport() {
 
         //Start clean process in thread
-        A_CmsReportThread thread = startThread();
+        A_CmsReportThread thread = makeThread();
+        String title = CmsVaadinUtils.getMessageText(Messages.GUI_FILEHISTORY_CLEAR_REPORT_TITLE_0);
+        CmsReportDialog.showReportDialog(title, thread);
+    }
 
-        //Update UI
-        m_optionPanel.setVisible(false);
-        m_reportPanel.setVisible(true);
+    /**
+     * Starts the thread for deleting versions.<p>
+     *
+     * @return started thread
+     */
+    private A_CmsReportThread makeThread() {
 
-        CmsReportWidget report = new CmsReportWidget(thread);
-        report.setWidth("100%");
-        report.setHeight("700px");
+        //Maximal count of versions for current resources.
+        int versions = ((Integer)m_numberVersionsToKeep.getValue()).intValue();
 
-        m_reportPanel.setContent(report);
+        //Maximal count of versions for deleted resources.
+        int versionsDeleted = versions;
 
-        m_ok.setEnabled(false);
+        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_DISABLED)) {
+            versionsDeleted = 0;
+        }
+        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_WITHOUTVERSIONS)) {
+            versionsDeleted = 1;
+        }
+
+        long date = m_dateField.getValue() != null ? m_dateField.getDate().getTime() : 0;
+
+        CmsHistoryClearThread thread = new CmsHistoryClearThread(
+            A_CmsUI.getCmsObject(),
+            versions,
+            versionsDeleted,
+            date);
+        return thread;
     }
 
     /**
@@ -245,36 +266,5 @@ public class CmsFileHistoryClear extends VerticalLayout {
             numberHistoryVersions = VERSIONS_MAX;
         }
         m_numberVersionsToKeep.select(new Integer(numberHistoryVersions));
-    }
-
-    /**
-     * Starts the thread for deleting versions.<p>
-     *
-     * @return started thread
-     */
-    private A_CmsReportThread startThread() {
-
-        //Maximal count of versions for current resources.
-        int versions = ((Integer)m_numberVersionsToKeep.getValue()).intValue();
-
-        //Maximal count of versions for deleted resources.
-        int versionsDeleted = versions;
-
-        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_DISABLED)) {
-            versionsDeleted = 0;
-        }
-        if (m_mode.getValue().equals(CmsFileHistoryApp.MODE_WITHOUTVERSIONS)) {
-            versionsDeleted = 1;
-        }
-
-        long date = m_dateField.getValue() != null ? m_dateField.getDate().getTime() : 0;
-
-        CmsHistoryClearThread thread = new CmsHistoryClearThread(
-            A_CmsUI.getCmsObject(),
-            versions,
-            versionsDeleted,
-            date);
-        thread.start();
-        return thread;
     }
 }
