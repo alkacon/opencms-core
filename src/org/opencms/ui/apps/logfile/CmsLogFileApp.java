@@ -28,24 +28,40 @@
 package org.opencms.ui.apps.logfile;
 
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.util.CmsLog4jUtil;
+import org.opencms.util.CmsRfsException;
+import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.FileAppender.Builder;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -64,7 +80,10 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Main class of Log managment app.<p>
  */
-public class CmsLogFileApp extends A_CmsWorkplaceApp {
+public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Logger> {
+
+    /** The prefix of opencms classes. */
+    private static final String OPENCMS_CLASS_PREFIX = "org.opencms";
 
     /**Log folder path.*/
     protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsPath() == null
@@ -74,10 +93,13 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf(File.separatorChar) + 1);
 
     /**Path to channel settings view.*/
-    static String PATH_LOGCHANNEL = "log-channel";
+    protected static String PATH_LOGCHANNEL = "log-channel";
 
     /**Logger.*/
     private static Log LOG = CmsLog.getLog(CmsLogFileApp.class);
+
+    /**The log-channel table. */
+    protected CmsLogChannelTable m_table;
 
     /**The log file view layout.*/
     protected CmsLogFileView m_fileView;
@@ -86,13 +108,59 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     private TextField m_tableFilter;
 
     /**
+     * Gets the direct log filename of a given logger or null if no file is defined.<p>
+     *
+     * @param logger to be checked
+     * @return Log file name or null
+     */
+    public static String getDirectLogFile(Logger logger) {
+
+        String test = "";
+        int count = 0;
+        // select the Appender from logger
+        for (Appender appender : logger.getAppenders().values()) {
+            // only use file appenders
+            if (CmsLogFileApp.isFileAppender(appender)) {
+                String fileName = CmsLogFileApp.getFileName(appender);
+                String temp = "";
+                temp = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
+                test = test + temp;
+                count++;
+                break;
+            }
+        }
+
+        //iterate all parent loggers until a logger with appender was found
+        while (!logger.equals(LogManager.getRootLogger())) {
+
+            logger = logger.getParent();
+            // if no Appender found from logger, select the Appender from parent logger
+            if (count == 0) {
+                for (Appender appender : logger.getAppenders().values()) {
+                    // only use file appenders
+                    if (CmsLogFileApp.isFileAppender(appender)) {
+                        String fileName = CmsLogFileApp.getFileName(appender);
+                        String temp = "";
+                        temp = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
+                        test = test + temp;
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return test;
+    }
+
+    /**
      * Returns the file name or <code>null</code> associated with the given appender.<p>
      *
      * @param app the appender
      *
      * @return the file name
      */
-    protected static String getFileName(Appender app) {
+    public static String getFileName(Appender app) {
 
         String result = null;
         Method getFileName;
@@ -115,7 +183,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
      *
      * @return in case of a file based appender
      */
-    protected static boolean isFileAppender(Appender appender) {
+    public static boolean isFileAppender(Appender appender) {
 
         boolean result = false;
         try {
@@ -126,6 +194,258 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
             LOG.debug(e.getLocalizedMessage(), e);
         }
         return result;
+    }
+
+    /**
+     * Simple check if the logger has the global log file <p> or a single one.
+     *
+     * @param logchannel the channel that has do be checked
+     * @return true if the the log channel has a single log file
+     * */
+    public static boolean isloggingactivated(Logger logchannel) {
+
+        boolean check = false;
+        for (Appender appender : logchannel.getAppenders().values()) {
+            check = appender.getName().equals(logchannel.getName());
+        }
+        return check;
+    }
+
+    /**
+     * Toggles the log file.<p>
+     *
+     * @param logchannel to toggle log file for
+     */
+    public static void toggleOwnFile(Logger logchannel) {
+
+        String filepath = "";
+
+        Layout layout = null;
+        // if the button is activated check the value of the button
+        // the button was active
+        if (isloggingactivated(logchannel)) {
+            // remove the private Appender from logger
+            for (Appender appender : logchannel.getAppenders().values()) {
+                logchannel.removeAppender(appender);
+            }
+            // activate the heredity so the logger get the appender from parent logger
+            logchannel.setAdditive(true);
+
+        }
+        // the button was inactive
+        else {
+            // get the layout and file path from root logger
+            for (Appender appender : ((Logger)LogManager.getRootLogger()).getAppenders().values()) {
+                if (CmsLogFileApp.isFileAppender(appender)) {
+                    String fileName = CmsLogFileApp.getFileName(appender);
+                    filepath = fileName.substring(0, fileName.lastIndexOf(File.separatorChar));
+                    layout = appender.getLayout();
+                    break;
+                }
+            }
+
+            // check if the logger has an Appender get his layout
+            for (Appender appender : logchannel.getAppenders().values()) {
+                if (CmsLogFileApp.isFileAppender(appender)) {
+                    layout = appender.getLayout();
+                    break;
+                }
+            }
+            String logfilename = "";
+            String temp = logchannel.getName();
+            // check if the logger name begins with "org.opencms"
+            if (logchannel.getName().contains(OPENCMS_CLASS_PREFIX)) {
+                // remove the prefix "org.opencms" from logger name to generate the file name
+                temp = temp.replace(OPENCMS_CLASS_PREFIX, "");
+                // if the name has suffix
+                if (temp.length() >= 1) {
+                    logfilename = filepath + File.separator + "opencms-" + temp.substring(1).replace(".", "-") + ".log";
+                }
+                // if the name has no suffix
+                else {
+                    logfilename = filepath + File.separator + "opencms" + temp.replace(".", "-") + ".log";
+                }
+            }
+            // if the logger name not begins with "org.opencms"
+            else {
+                logfilename = filepath + File.separator + "opencms-" + temp.replace(".", "-") + ".log";
+            }
+
+            FileAppender fapp = ((Builder)FileAppender.<FileAppender.Builder> newBuilder().withFileName(
+                logfilename).withLayout(layout).withName(logchannel.getName())).build();
+
+            // deactivate the heredity so the logger get no longer the appender from parent logger
+            logchannel.setAdditive(false);
+            // remove all active Appenders from logger
+            for (Appender appender : logchannel.getAppenders().values()) {
+                logchannel.removeAppender(appender);
+            }
+            // add the new created Appender to the logger
+            logchannel.addAppender(fapp);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#createElement(java.lang.Object)
+     */
+    public void createElement(Logger element) {
+
+        return;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#defaultAction(java.lang.String)
+     */
+    public void defaultAction(String elementId) {
+
+        return;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#deleteElements(java.util.List)
+     */
+    public void deleteElements(List<String> elementId) {
+
+        return;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getAllElements()
+     */
+    public List<Logger> getAllElements() {
+
+        return CmsLog4jUtil.getAllLoggers();
+    }
+
+    /**
+     * Gets the available log file paths.<p>
+     *
+     * @return Set of paths
+     */
+    public Set<String> getAvailableLogFilePaths() {
+
+        Set<File> files = CmsLogFileOptionProvider.getLogFiles();
+        Set<String> res = new LinkedHashSet<String>();
+        for (File f : files) {
+            if (!f.getAbsolutePath().endsWith(".zip") && !f.getAbsolutePath().endsWith(".gz")) {
+                res.add(f.getAbsolutePath());
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Gets the default log file path.<p>
+     *
+     * @param logView logview
+     * @return log file path
+     */
+    public String getDefaultLogFilePath(CmsRfsFileViewer logView) {
+
+        List<Logger> allLogger = CmsLog4jUtil.getAllLoggers();
+        List<Appender> allAppender = new ArrayList<Appender>();
+
+        allLogger.add(0, (Logger)LogManager.getRootLogger());
+
+        for (Logger logger : allLogger) {
+
+            for (Appender appender : logger.getAppenders().values()) {
+                if (CmsLogFileApp.isFileAppender(appender)) {
+                    if (!allAppender.contains(appender)) {
+                        allAppender.add(appender);
+                    }
+
+                }
+            }
+        }
+        for (Appender app : allAppender) {
+
+            String fileName = CmsLogFileApp.getFileName(app);
+            if ((fileName != null) && fileName.equals(logView.getFilePath())) {
+
+                return fileName;
+            }
+        }
+        if (!allAppender.isEmpty()) {
+            Appender app = allAppender.get(0);
+            String fileName = CmsLogFileApp.getFileName(app);
+            return fileName;
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#getElement(java.lang.String)
+     */
+    public Logger getElement(String elementId) {
+
+        return null;
+    }
+
+    /**
+     * Gets the log file for the logger.<p>
+     *
+     * @param logger to get log file for
+     * @return log file
+     */
+    public String getLogFile(Logger logger) {
+
+        String test = "";
+        int count = 0;
+        // select the Appender from logger
+        for (Appender appender : logger.getAppenders().values()) {
+            // only use file appenders
+            if (CmsLogFileApp.isFileAppender(appender)) {
+                String fileName = CmsLogFileApp.getFileName(appender);
+                String temp = "";
+                temp = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
+                test = test + temp;
+                count++;
+                break;
+            }
+        }
+
+        //iterate all parent loggers until a logger with appender was found
+        while (!logger.equals(LogManager.getRootLogger())) {
+
+            logger = logger.getParent();
+            // if no Appender found from logger, select the Appender from parent logger
+            if (count == 0) {
+                for (Appender appender : logger.getAppenders().values()) {
+                    // only use file appenders
+                    if (CmsLogFileApp.isFileAppender(appender)) {
+                        String fileName = CmsLogFileApp.getFileName(appender);
+                        String temp = "";
+                        temp = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
+                        test = test + temp;
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return test;
+    }
+
+    /**
+     * Gets the portion of given log file.<p>
+     *
+     * @param logView to get portion with
+     * @param currentFile to read
+     * @return portion of log file
+     * @throws CmsRfsException exception
+     * @throws CmsRuntimeException exception
+     */
+    public String getLogFilePortion(CmsRfsFileViewer logView, String currentFile)
+    throws CmsRfsException, CmsRuntimeException {
+
+        logView.setFilePath(currentFile);
+        return logView.readFilePortion();
     }
 
     /**
@@ -141,93 +461,52 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
+     * Toggles if channel has own log file.<p>
+     *
+     * @param logchannel to toggle
      */
-    @Override
-    protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
+    public void toggleOwnFileForLogger(Logger logchannel) {
 
-        LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
-
-        //Check if state is empty -> start
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
-            return crumbs;
-        }
-        if (state.equals(PATH_LOGCHANNEL)) {
-            crumbs.put(
-                CmsLogFileConfiguration.APP_ID,
-                CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_0));
-            return crumbs;
-        }
-
-        return new LinkedHashMap<String, String>();
+        CmsLogFileApp.toggleOwnFile(logchannel);
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getComponentForState(java.lang.String)
+     * Updates the log channel table.<p>
      */
-    @Override
-    protected Component getComponentForState(String state) {
+    public void updateTable() {
 
-        if (m_tableFilter != null) {
-            m_infoLayout.removeComponent(m_tableFilter);
-            m_tableFilter = null;
+        if (m_table != null) {
+            m_table = new CmsLogChannelTable(this);
+            m_table.setSizeFull();
+            m_rootLayout.setMainContent(m_table);
+            m_table.filterTable(m_tableFilter.getValue());
         }
-
-        if (state.isEmpty()) {
-            m_rootLayout.setMainHeightFull(true);
-            m_fileView = new CmsLogFileView(this);
-            addDownloadButton(m_fileView);
-            addSettingsButton();
-            addChannelButton();
-            addRefreshButton();
-            return m_fileView;
-        }
-
-        m_uiContext.clearToolbarButtons();
-
-        if (state.equals(PATH_LOGCHANNEL)) {
-            m_rootLayout.setMainHeightFull(true);
-            final CmsLogChannelTable channelTable = new CmsLogChannelTable();
-            m_tableFilter = new TextField();
-            m_tableFilter.setIcon(FontOpenCms.FILTER);
-            m_tableFilter.setPlaceholder(
-                Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            m_tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            m_tableFilter.setWidth("200px");
-            m_tableFilter.setValueChangeMode(ValueChangeMode.TIMEOUT);
-            m_tableFilter.setValueChangeTimeout(400);
-            m_tableFilter.addValueChangeListener(new ValueChangeListener<String>() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void valueChange(ValueChangeEvent<String> event) {
-
-                    channelTable.filterTable(event.getValue());
-                }
-            });
-
-            m_infoLayout.addComponent(m_tableFilter);
-            return channelTable;
-        }
-
-        return null;
     }
 
     /**
-     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
+     * @see org.opencms.ui.apps.I_CmsCRUDApp#writeElement(java.lang.Object)
      */
-    @Override
-    protected List<NavEntry> getSubNavEntries(String state) {
+    public void writeElement(Logger logger) {
 
-        return null;
+        @SuppressWarnings("resource")
+        LoggerContext context = logger.getContext();
+        Configuration config = context.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(logger.getName());
+        LoggerConfig specificConfig = loggerConfig;
+        if (!loggerConfig.getName().equals(logger.getName())) {
+            specificConfig = new LoggerConfig(logger.getName(), logger.getLevel(), true);
+            specificConfig.setParent(loggerConfig);
+            config.addLogger(logger.getName(), specificConfig);
+        }
+        specificConfig.setLevel(logger.getLevel());
+        context.updateLoggers();
+
     }
 
     /**
      * Button to open channel settings path.<p>
      */
-    private void addChannelButton() {
+    protected void addChannelButton() {
 
         Button button = CmsToolBar.createButton(
             FontOpenCms.LOG,
@@ -250,7 +529,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
      *
      * @param view layout which displays the log file
      */
-    private void addDownloadButton(final CmsLogFileView view) {
+    protected void addDownloadButton(final CmsLogFileView view) {
 
         Button button = CmsToolBar.createButton(
             FontOpenCms.DOWNLOAD,
@@ -273,7 +552,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     /**
      * Button to refresh the file view.<p>
      */
-    private void addRefreshButton() {
+    protected void addRefreshButton() {
 
         Button button = CmsToolBar.createButton(
             FontOpenCms.RESET,
@@ -297,7 +576,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
     /**
      * Button to open log file view settings dialog.<p>
      */
-    private void addSettingsButton() {
+    protected void addSettingsButton() {
 
         Button button = CmsToolBar.createButton(
             FontOpenCms.SETTINGS,
@@ -325,4 +604,97 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp {
         });
         m_uiContext.addToolbarButton(button);
     }
+
+    /**
+     * Filters the table.<p>
+     *
+     * @param filter text to be filtered
+     */
+    protected void filterTable(String filter) {
+
+        m_table.filterTable(filter);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getBreadCrumbForState(java.lang.String)
+     */
+    @Override
+    protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
+
+        LinkedHashMap<String, String> crumbs = new LinkedHashMap<String, String>();
+
+        //Check if state is empty -> start
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
+            return crumbs;
+        }
+        if (state.startsWith(PATH_LOGCHANNEL)) {
+            crumbs.put(
+                CmsLogFileConfiguration.APP_ID,
+                CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_VIEW_TOOL_NAME_0));
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGSETTINGS_TOOL_NAME_0));
+            return crumbs;
+        }
+
+        return new LinkedHashMap<String, String>();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getComponentForState(java.lang.String)
+     */
+    @Override
+    protected Component getComponentForState(String state) {
+
+        if (m_tableFilter != null) {
+            m_infoLayout.removeComponent(m_tableFilter);
+            m_tableFilter = null;
+        }
+
+        if (!state.startsWith(PATH_LOGCHANNEL)) {
+            m_rootLayout.setMainHeightFull(true);
+            m_fileView = new CmsLogFileView(this);
+            addDownloadButton(m_fileView);
+            addSettingsButton();
+            addChannelButton();
+            addRefreshButton();
+            m_table = null;
+            return m_fileView;
+        }
+
+        m_uiContext.clearToolbarButtons();
+
+        m_rootLayout.setMainHeightFull(true);
+        m_table = new CmsLogChannelTable(this);
+        m_tableFilter = new TextField();
+        m_tableFilter.setIcon(FontOpenCms.FILTER);
+        m_tableFilter.setPlaceholder(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+        m_tableFilter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_tableFilter.setWidth("200px");
+        m_tableFilter.setValueChangeMode(ValueChangeMode.TIMEOUT);
+        m_tableFilter.setValueChangeTimeout(400);
+        m_tableFilter.addValueChangeListener(new ValueChangeListener<String>() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent<String> event) {
+
+                filterTable(event.getValue());
+            }
+        });
+
+        m_infoLayout.addComponent(m_tableFilter);
+        return m_table;
+
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceApp#getSubNavEntries(java.lang.String)
+     */
+    @Override
+    protected List<NavEntry> getSubNavEntries(String state) {
+
+        return null;
+    }
+
 }

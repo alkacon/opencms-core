@@ -228,6 +228,17 @@ public abstract class A_CmsWorkplaceApp implements I_CmsWorkplaceApp {
     }
 
     /**
+     * Removes all parameter from given state.<p>
+     *
+     * @param state state to be cleaned from parameter
+     * @return given state without parameter
+     */
+    public static String removeParamsFromState(String state) {
+
+        return state.split(PARAM_SEPARATOR)[0];
+    }
+
+    /**
      * Gets an offline version of the cms object.<p>
      *
      * @param cms initial CmsObject
