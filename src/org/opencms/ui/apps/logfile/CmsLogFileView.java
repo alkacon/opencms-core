@@ -30,7 +30,6 @@ package org.opencms.ui.apps.logfile;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.apps.Messages;
 import org.opencms.util.CmsRfsException;
 import org.opencms.util.CmsRfsFileViewer;
 
@@ -73,6 +72,9 @@ public class CmsLogFileView extends VerticalLayout {
     /**vaadin serial id.*/
     private static final long serialVersionUID = -6323034856756469160L;
 
+    /**Flag indicates if change event should be blocked. */
+    protected boolean m_blockChangeEvent;
+
     /**Vaadin component. */
     protected FileDownloader m_fileDownloader;
 
@@ -99,59 +101,42 @@ public class CmsLogFileView extends VerticalLayout {
      */
     protected CmsLogFileView(final CmsLogFileApp app) {
 
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
         m_app = app;
-        if (CmsLogFileApp.LOG_FOLDER.isEmpty()) {
-            addComponent(CmsVaadinUtils.getInfoLayout(Messages.GUI_LOGFILE_WRONG_CONFIG_0));
-        } else {
-            CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
-            for (String path : app.getAvailableLogFilePaths()) {
-                m_logfile.addItem(path);
-            }
-
-            m_logfile.setFilteringMode(FilteringMode.CONTAINS);
-
-            m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
-            m_logView.setAdditionalRoots(CmsLogFileOptionProvider.getAdditionalLogDirectories());
-
-            m_logView.setWindowSize(WINDOW_SIZE);
-
-            if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE) == null) {
-                CmsVaadinUtils.getRequest().getSession().setAttribute(
-                    ATTR_FILE_VIEW_SIZE,
-                    String.valueOf(m_logView.getWindowSize()));
-            }
-
-            if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_CHARSET) == null) {
-                Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
-                CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_CHARSET, defaultCs);
-            }
-
-            if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH) != null) {
-                m_logfile.select(CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH));
-            } else {
-                selectLogFile();
-            }
-
-            m_logfile.setNullSelectionAllowed(false);
-            m_logfile.setNewItemsAllowed(false);
-
-            m_logfile.addValueChangeListener(new ValueChangeListener() {
-
-                private static final long serialVersionUID = 1899253995224124911L;
-
-                public void valueChange(ValueChangeEvent event) {
-
-                    CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_PATH, getCurrentFile());
-                    updateView();
-                }
-            });
-
-            updateView();
-            //            m_fileContent.setHeight("700px");
-            m_fileContent.addStyleName("v-scrollable");
-            m_fileContent.addStyleName("o-report");
+        m_logView = (CmsRfsFileViewer)OpenCms.getWorkplaceManager().getFileViewSettings().clone();
+        m_logView.setAdditionalRoots(CmsLogFileOptionProvider.getAdditionalLogDirectories());
+        m_logView.setWindowSize(WINDOW_SIZE);
+        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE) == null) {
+            CmsVaadinUtils.getRequest().getSession().setAttribute(
+                ATTR_FILE_VIEW_SIZE,
+                String.valueOf(m_logView.getWindowSize()));
         }
+        initLogFileCombo();
+
+        m_logfile.setFilteringMode(FilteringMode.CONTAINS);
+        m_logfile.setNullSelectionAllowed(false);
+        m_logfile.setNewItemsAllowed(false);
+
+        m_logfile.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1899253995224124911L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                if (m_blockChangeEvent) {
+                    return;
+                }
+                CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_PATH, getCurrentFile());
+                updateView();
+            }
+        });
+
+        updateView();
+        m_fileContent.addStyleName("v-scrollable");
+        m_fileContent.addStyleName("o-report");
+
     }
 
     /**
@@ -164,7 +149,7 @@ public class CmsLogFileView extends VerticalLayout {
         }
 
         try {
-
+            initLogFileCombo();
             m_logView.setWindowSize(getSize());
             m_logView.setFileEncoding(getChar());
             String content = "<pre style='line-height:1.1;'>";
@@ -207,6 +192,31 @@ public class CmsLogFileView extends VerticalLayout {
 
         return Integer.valueOf(
             (String)CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_SIZE)).intValue();
+    }
+
+    /**
+     * Initializes the Log file combo-box.
+     */
+    private void initLogFileCombo() {
+
+        m_blockChangeEvent = true;
+        m_logfile.removeAllItems();
+        for (String path : m_app.getAvailableLogFilePaths()) {
+            m_logfile.addItem(path);
+        }
+
+        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_CHARSET) == null) {
+            Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+            CmsVaadinUtils.getRequest().getSession().setAttribute(ATTR_FILE_VIEW_CHARSET, defaultCs);
+        }
+
+        if (CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH) != null) {
+            m_logfile.select(CmsVaadinUtils.getRequest().getSession().getAttribute(ATTR_FILE_VIEW_PATH));
+        } else {
+            selectLogFile();
+        }
+        m_blockChangeEvent = false;
+
     }
 
     /**
