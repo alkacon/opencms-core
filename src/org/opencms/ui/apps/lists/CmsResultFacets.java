@@ -54,6 +54,11 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.RangeFacet;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -367,6 +372,8 @@ public class CmsResultFacets extends VerticalLayout {
         RangeFacet<?, ?> dateFacets = resultWrapper.getRangeFacet().get(CmsListManager.FIELD_DATE_FACET_NAME);
         I_CmsSearchControllerFacetRange facetController = resultWrapper.getController().getRangeFacets().getRangeFacetController().get(
             CmsListManager.FIELD_DATE_FACET_NAME);
+        DateTimeFormatter isoFormat = ISODateTimeFormat.dateTimeNoMillis();
+
         if ((dateFacets != null) && (dateFacets.getCounts().size() > 0)) {
             GridLayout dateLayout = new GridLayout();
             dateLayout.setWidth("100%");
@@ -374,17 +381,21 @@ public class CmsResultFacets extends VerticalLayout {
             String currentYear = null;
             int row = -2;
             for (final RangeFacet.Count value : dateFacets.getCounts()) {
-                String[] dateParts = value.getValue().split("-");
-                if (!dateParts[0].equals(currentYear)) {
+                // parsed date in UTC
+                DateTime parsedDateTime = isoFormat.parseDateTime(value.getValue());
+                // parsed date in server timezone
+                DateTime serverDateTime = parsedDateTime.withZone(DateTimeZone.getDefault());
+                String serverYear = "" + serverDateTime.getYear();
+                if (!serverYear.equals(currentYear)) {
                     row += 2;
                     dateLayout.setRows(row + 2);
-                    currentYear = dateParts[0];
+                    currentYear = serverYear;
                     Label year = new Label(currentYear);
                     year.addStyleName(OpenCmsTheme.PADDING_HORIZONTAL);
                     dateLayout.addComponent(year, 0, row, 5, row);
                     row++;
                 }
-                int month = Integer.parseInt(dateParts[1]) - 1;
+                int month = serverDateTime.getMonthOfYear() - 1;
 
                 Button date = new Button(CmsListManager.MONTHS[month] + " (" + value.getCount() + ")");
                 date.addStyleName(ValoTheme.BUTTON_TINY);
