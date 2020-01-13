@@ -70,7 +70,7 @@ public class CmsSetupStep01License extends A_CmsSetupStep {
             m_licenseContainer.addComponent(label);
 
             CheckBox confirmation = new CheckBox();
-            confirmation.setCaption("I accept all the terms of the preceeding license agreement");
+            confirmation.setCaption("I accept all the terms of the preceding license agreement");
             m_mainLayout.addComponent(confirmation);
             confirmation.addValueChangeListener(evt -> {
                 m_forwardButton.setEnabled(evt.getValue().booleanValue());
