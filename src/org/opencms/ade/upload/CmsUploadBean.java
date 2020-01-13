@@ -414,6 +414,7 @@ public class CmsUploadBean extends CmsJspBean {
      * @return the stacktrace as String
      */
     private String formatStackTrace(Throwable e) {
+
         return StringUtils.join(CmsLog.render(e), '\n');
     }
 
@@ -508,7 +509,7 @@ public class CmsUploadBean extends CmsJspBean {
         if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME) != null) {
             String targetFolder = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME)[0];
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(targetFolder)) {
-                if (cms.existsResource(targetFolder)) {
+                if (cms.existsResource(targetFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
                     CmsResource tmpTarget = cms.readResource(targetFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                     if (tmpTarget.isFolder()) {
                         target = tmpTarget;
