@@ -1,3 +1,105 @@
+Version 5.1.5 (2019-12-19)
+    Fixed the UI not working with hybrid devices that accept both touch and mouse events #TNY-4521
+    Fixed the `charmap` dialog initially focusing the first tab of the dialog instead of the search input field #TINY-4342
+    Fixed an exception being raised when inserting content if the caret was directly before or after a `contenteditable="false"` element #TINY-4528
+    Fixed a bug with pasting image URLs when paste as text is enabled #TINY-4523
+Version 5.1.4 (2019-12-11)
+    Fixed dialog contents disappearing when clicking a checkbox for right-to-left languages #TINY-4518
+    Fixed the `legacyoutput` plugin registering legacy formats after editior initialization, causing legacy content to be stripped on the initial load #TINY-4447
+    Fixed search and replace not cycling through results when searching using special characters #TINY-4506
+    Fixed the `visualchars` plugin converting HTML-like text to DOM elements in certain cases #TINY-4507
+    Fixed an issue with the `paste` plugin not sanitizing content in some cases #TINY-4510
+    Fixed HTML comments incorrectly being parsed in certain cases #TINY-4511
+Version 5.1.3 (2019-12-04)
+    Fixed sticky toolbar not undocking when fullscreen mode is activated #TINY-4390
+    Fixed the "Current Window" target not applying when updating links using the link dialog #TINY-4063
+    Fixed disabled menu items not highlighting when focused #TINY-4339
+    Fixed touch events passing through dialog collection items to the content underneath on Android devices #TINY-4431
+    Fixed keyboard navigation of the Help dialog's Keyboard Navigation tab #TINY-4391
+    Fixed search and replace dialog disappearing when finding offscreen matches on iOS devices #TINY-4350
+    Fixed performance issues where sticky toolbar was jumping while scrolling on slower browsers #TINY-4475
+Version 5.1.2 (2019-11-19)
+    Fixed desktop touch devices using `mobile` configuration overrides #TINY-4345
+    Fixed unable to disable the new scrolling toolbar feature #TINY-4345
+    Fixed touch events passing through any pop-up items to the content underneath on Android devices #TINY-4367
+    Fixed the table selector handles throwing JavaScript exceptions for non-table selections #TINY-4338
+    Fixed `cut` operations not removing selected content on Android devices when the `paste` plugin is enabled #TINY-4362
+    Fixed inline toolbar not constrained to the window width by default #TINY-4314
+    Fixed context toolbar split button chevrons pointing right when they should be pointing down #TINY-4257
+    Fixed unable to access the dialog footer in tabbed dialogs on small screens #TINY-4360
+    Fixed mobile table selectors were hard to select with touch by increasing the size #TINY-4366
+    Fixed mobile table selectors moving when moving outside the editor #TINY-4366
+    Fixed inline toolbars collapsing when using sliding toolbars #TINY-4389
+    Fixed block textpatterns not treating NBSPs as spaces #TINY-4378
+    Fixed backspace not merging blocks when the last element in the preceding block was a `contenteditable="false"` element #TINY-4235
+    Fixed toolbar buttons that only contain text labels overlapping on mobile devices #TINY-4395
+    Fixed quickbars quickimage picker not working on mobile #TINY-4377
+    Fixed fullscreen not resizing in an iOS WKWebView component #TINY-4413
+Version 5.1.1 (2019-10-28)
+    Fixed font formats containing spaces being wrapped in `&quot;` entities instead of single quotes #TINY-4275
+    Fixed alert and confirm dialogs losing focus when clicked #TINY-4248
+    Fixed clicking outside a modal dialog focusing on the document body #TINY-4249
+    Fixed the context toolbar not hiding when scrolled out of view #TINY-4265
+Version 5.1.0 (2019-10-17)
+    Added touch selector handles for table selections on touch devices #TINY-4097
+    Added border width field to Table Cell dialog #TINY-4028
+    Added touch event listener to media plugin to make embeds playable #TINY-4093
+    Added oxide styling options to notifications and tweaked the default variables #TINY-4153
+    Added additional padding to split button chevrons on touch devices, to make them easier to interact with #TINY-4223
+    Added new platform detection functions to `Env` and deprecated older detection properties #TINY-4184
+    Added `inputMode` config field to specify inputmode attribute of `input` dialog components #TINY-4062
+    Added new `inputMode` property to relevant plugins/dialogs #TINY-4102
+    Added new `toolbar_sticky` setting to allow the iframe menubar/toolbar to stick to the top of the window when scrolling #TINY-3982
+    Changed default setting for `toolbar_drawer` to `floating` #TINY-3634
+    Changed mobile phones to use the `silver` theme by default #TINY-3634
+    Changed some editor settings to default to `false` on touch devices:
+        - `menubar`(phones only) #TINY-4077
+        - `table_grid` #TINY-4075
+        - `resize` #TINY-4157
+        - `object_resizing` #TINY-4157
+    Changed toolbars and context toolbars to sidescroll on mobile #TINY-3894 #TINY-4107
+    Changed context menus to render as horizontal menus on touch devices #TINY-4107
+    Changed the editor to use the `VisualViewport` API of the browser where possible #TINY-4078
+    Changed visualblocks toolbar button icon and renamed `paragraph` icon to `visualchars` #TINY-4074
+    Changed Oxide default for `@toolbar-button-chevron-color` to follow toolbar button icon color #TINY-4153
+    Changed the `urlinput` dialog component to use the `url` type attribute #TINY-4102
+    Fixed Safari desktop visual viewport fires resize on fullscreen breaking the restore function #TINY-3976
+    Fixed scroll issues on mobile devices #TINY-3976
+    Fixed context toolbar unable to refresh position on iOS12 #TINY-4107
+    Fixed ctrl+left click not opening links on readonly mode and the preview dialog #TINY-4138
+    Fixed Slider UI component not firing `onChange` event on touch devices #TINY-4092
+    Fixed notifications overlapping instead of stacking #TINY-3478
+    Fixed inline dialogs positioning incorrectly when the page is scrolled #TINY-4018
+    Fixed inline dialogs and menus not repositioning when resizing #TINY-3227
+    Fixed inline toolbar incorrectly stretching to the full width when a width value was provided #TINY-4066
+    Fixed menu chevrons color to follow the menu text color #TINY-4153
+    Fixed table menu selection grid from staying black when using dark skins, now follows border color #TINY-4153
+    Fixed Oxide using the wrong text color variable for menubar button focused state #TINY-4146
+    Fixed the autoresize plugin not keeping the selection in view when resizing #TINY-4094
+    Fixed textpattern plugin throwing exceptions when using `forced_root_block: false` #TINY-4172
+    Fixed missing CSS fill styles for toolbar button icon active state #TINY-4147
+    Fixed an issue where the editor selection could end up inside a short ended element (such as `br`) #TINY-3999
+    Fixed browser selection being lost in inline mode when opening split dropdowns #TINY-4197
+    Fixed backspace throwing an exception when using `forced_root_block: false` #TINY-4099
+    Fixed floating toolbar drawer expanding outside the bounds of the editor #TINY-3941
+    Fixed the autocompleter not activating immediately after a `br` or `contenteditable=false` element #TINY-4194
+    Fixed an issue where the autocompleter would incorrectly close on IE 11 in certain edge cases #TINY-4205
+Version 5.0.16 (2019-09-24)
+    Added new `referrer_policy` setting to add the `referrerpolicy` attribute when loading scripts or stylesheets #TINY-3978
+    Added a slight background color to dialog tab links when focused to aid keyboard navigation #TINY-3877
+    Fixed media poster value not updating on change #TINY-4013
+    Fixed openlink was not registered as a toolbar button #TINY-4024
+    Fixed failing to initialize if a script tag was used inside a SVG #TINY-4087
+    Fixed double top border showing on toolbar without menubar when toolbar_drawer is enabled #TINY-4118
+    Fixed unable to drag inline dialogs to the bottom of the screen when scrolled #TINY-4154
+    Fixed notifications appearing on top of the toolbar when scrolled in inline mode #TINY-4159
+    Fixed notifications displaying incorrectly on IE 11 #TINY-4169
+Version 5.0.15 (2019-09-02)
+    Added a dark `content_css` skin to go with the dark UI skin #TINY-3743
+    Changed the enabled state on toolbar buttons so they don't get the hover effect #TINY-3974
+    Fixed missing CSS active state on toolbar buttons #TINY-3966
+    Fixed `onChange` callback not firing for the colorinput dialog component #TINY-3968
+    Fixed context toolbars not showing in fullscreen mode #TINY-4023
 Version 5.0.14 (2019-08-19)
     Added an API to reload the autocompleter menu with additional fetch metadata #MENTIONS-17
     Fixed missing toolbar button border styling options #TINY-3965
