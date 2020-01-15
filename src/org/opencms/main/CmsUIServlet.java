@@ -42,9 +42,9 @@ import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -200,13 +200,13 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
     private static final String HEARTBEAT_PREFIX = '/' + ApplicationConstants.HEARTBEAT_PATH + '/';
 
     /** The current CMS context. */
-    private ThreadLocal<CmsObject> m_perThreadCmsObject;
+    private ThreadLocal<CmsObject> m_perThreadCmsObject = new ThreadLocal<>();
 
     /** Map of stored system messages objects. */
-    private Map<Locale, SystemMessages> m_systemMessages = new HashMap<Locale, SystemMessages>();
+    private Map<Locale, SystemMessages> m_systemMessages = new ConcurrentHashMap<Locale, SystemMessages>();
 
     /** Stores whether the current request is a broadcast poll. */
-    private ThreadLocal<Boolean> m_perThreadBroadcastPoll;
+    private ThreadLocal<Boolean> m_perThreadBroadcastPoll = new ThreadLocal<>();
 
     /**
      * Checks whether the given request was referred from the login page.<p>
@@ -271,9 +271,6 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
      */
     public void setBroadcastPoll() {
 
-        if (m_perThreadBroadcastPoll == null) {
-            m_perThreadBroadcastPoll = new ThreadLocal<>();
-        }
         m_perThreadBroadcastPoll.set(Boolean.TRUE);
     }
 
@@ -284,9 +281,6 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
      */
     public synchronized void setCms(CmsObject cms) {
 
-        if (m_perThreadCmsObject == null) {
-            m_perThreadCmsObject = new ThreadLocal<CmsObject>();
-        }
         m_perThreadCmsObject.set(cms);
     }
 
@@ -400,12 +394,8 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
      */
     private void clearThreadLocal() {
 
-        if (m_perThreadCmsObject != null) {
-            m_perThreadCmsObject.set(null);
-        }
-        if (m_perThreadBroadcastPoll != null) {
-            m_perThreadBroadcastPoll.remove();
-        }
+        m_perThreadCmsObject.set(null);
+        m_perThreadBroadcastPoll.remove();
     }
 
     /**
@@ -443,9 +433,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
      */
     private boolean isHeartbeatRequest(HttpServletRequest request) {
 
-        if ((m_perThreadBroadcastPoll != null)
-            && (m_perThreadBroadcastPoll.get() != null)
-            && m_perThreadBroadcastPoll.get().booleanValue()) {
+        if ((m_perThreadBroadcastPoll.get() != null) && m_perThreadBroadcastPoll.get().booleanValue()) {
             return true;
         }
         String pathInfo = request.getPathInfo();
