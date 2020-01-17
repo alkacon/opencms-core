@@ -29,7 +29,6 @@ package org.opencms.ui.client.login;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.v7.client.ui.VTextField;
 
@@ -52,7 +51,6 @@ public class A_CmsLoginField extends VTextField {
     protected A_CmsLoginField(Element element) {
 
         super(element);
-        Document.get().createTextInputElement();
     }
 
     /**

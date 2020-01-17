@@ -197,4 +197,23 @@
 	color: $alkacon-gray; 
 	vertical-align: middle; 
   }
+  
+   
+  
+  .o-login-passwordgroup {
+  	& > .v-expand { 
+  		box-sizing: content-box;
+  	}
+  	
+  	.o-login-showpassword {
+	  	&:after { 
+	  		box-shadow: none;
+	  	}
+	  	position: absolute; 
+	  	right: 20px; 
+	  }
+  } 
+  	
+  
+  
 }

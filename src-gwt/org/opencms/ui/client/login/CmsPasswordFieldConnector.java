@@ -28,9 +28,11 @@
 package org.opencms.ui.client.login;
 
 import org.opencms.ui.login.CmsLoginPasswordField;
+import org.opencms.ui.shared.components.CmsPasswordFieldState;
 
-import com.vaadin.v7.client.ui.textfield.TextFieldConnector;
+import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.shared.ui.Connect;
+import com.vaadin.v7.client.ui.textfield.TextFieldConnector;
 
 /**
  * Connector for the password field.<p>
@@ -42,12 +44,31 @@ public class CmsPasswordFieldConnector extends TextFieldConnector {
     private static final long serialVersionUID = 1L;
 
     /**
+     * @see com.vaadin.v7.client.ui.textfield.TextFieldConnector#getState()
+     */
+    public CmsPasswordFieldState getState() {
+
+        return (CmsPasswordFieldState)(super.getState());
+    }
+
+    /**
      * @see com.vaadin.client.ui.textfield.TextFieldConnector#getWidget()
      */
     @Override
     public CmsPasswordField getWidget() {
 
         return (CmsPasswordField)super.getWidget();
+    }
+
+    /**
+     * @see com.vaadin.client.ui.AbstractComponentConnector#onStateChanged(com.vaadin.client.communication.StateChangeEvent)
+     */
+    @Override
+    public void onStateChanged(StateChangeEvent stateChangeEvent) {
+
+        super.onStateChanged(stateChangeEvent);
+        getWidget().setPasswordVisible(getState().isPasswordVisible());
+
     }
 
 }

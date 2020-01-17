@@ -18,8 +18,11 @@
 		  				<vaadin7-option-group _id="m_securityField"  visible="%(showSecure)"/>
 		  				<vaadin7-label>%(key.GUI_LOGIN_MESSAGE_0)</vaadin7-label> 
 		  				<v-form-layout>
-					    	<w-cms-login-user-field _id="m_userField" caption="%(key.GUI_LOGIN_USERNAME_0)" />
-					    	<w-cms-login-password-field _id="m_passwordField" caption="%(key.GUI_LOGIN_PASSWORD_0)" />
+                            <w-cms-login-user-field _id="m_userField" caption="%(key.GUI_LOGIN_USERNAME_0)" :expand></w-cms-login-user-field>
+                            <v-horizontal-layout style-name="o-login-passwordgroup" caption="%(key.GUI_LOGIN_PASSWORD_0)" width="100%">
+					    	  <w-cms-login-password-field _id="m_passwordField"  :expand></w-cms-login-password-field>
+                              <v-button _id="m_showPasswordButton" style-name="o-login-showpassword"></v-label>
+                            </v-horizontal-layout>
 					    	<w-cms-login-ou-selector _id="m_ouSelect" caption="%(key.GUI_LOGIN_ORGUNIT_0)"/>
 					    	<v-button _id="m_forgotPasswordButton">%(key.GUI_PWCHANGE_FORGOT_PASSWORD_0)</v-button>
 			  		  	</v-form-layout>

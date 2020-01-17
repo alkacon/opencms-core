@@ -34,6 +34,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsFakeWindow;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.List;
 import java.util.Locale;
@@ -42,9 +43,11 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
@@ -97,10 +100,14 @@ public class CmsLoginForm extends VerticalLayout {
     private CmsLoginOuSelector m_ouSelect;
 
     /** Widget for entering the password. */
-    private TextField m_passwordField;
+    private CmsLoginPasswordField m_passwordField;
+
+    /** The password visibility toggle. */
+    private Button m_showPasswordButton;
 
     /** The security field, which allows the user to choose between a private or public PC. */
     private OptionGroup m_securityField;
+
     /** Widget for entering the user name.  */
     private TextField m_userField;
 
@@ -183,6 +190,11 @@ public class CmsLoginForm extends VerticalLayout {
             });
         setOptionsVisible(false);
         m_error.setContentMode(ContentMode.HTML);
+        m_showPasswordButton.addStyleName("o-login-show-password");
+        m_showPasswordButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        m_showPasswordButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
+        m_showPasswordButton.setIcon(FontAwesome.EYE_SLASH);
+        m_showPasswordButton.addClickListener(evt -> togglePasswordVisible());
     }
 
     /**
@@ -278,6 +290,17 @@ public class CmsLoginForm extends VerticalLayout {
     public void toggleOptionsVisible() {
 
         setOptionsVisible(!m_optionsVisible);
+    }
+
+    /**
+     * Toggles the password visibility (also changes icon for the password visibility toggle button).
+     */
+    protected void togglePasswordVisible() {
+
+        boolean visible = !m_passwordField.isPasswordVisible();
+        m_showPasswordButton.setIcon(visible ? FontAwesome.EYE : FontAwesome.EYE_SLASH);
+        m_passwordField.setPasswordVisible(visible);
+
     }
 
     /**

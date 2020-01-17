@@ -25,37 +25,37 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.client.login;
+package org.opencms.ui.shared.components;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.DOM;
+import com.vaadin.v7.shared.ui.textfield.AbstractTextFieldState;
 
 /**
- * Password field for use by the login dialog.<p>
+ * Widget state for the special password field used by the login dialog.
  */
-public class CmsPasswordField extends A_CmsLoginField {
+public class CmsPasswordFieldState extends AbstractTextFieldState {
+
+    /** Flag indicating whether the password is visible or not. */
+    private boolean m_passwordVisible;
 
     /**
-     * Creates a new instance.<p>
+     * Returns true if the password is visible.
+     *
+     * @return true if the password is visible
      */
-    public CmsPasswordField() {
+    public boolean isPasswordVisible() {
 
-        super(
-            DOM.getElementById("hidden-password") != null
-            ? DOM.getElementById("hidden-password")
-            : Document.get().createPasswordInputElement());
+        return m_passwordVisible;
+
     }
 
     /**
-     * Shows / hides the password.
+     * Sets the password visibility.
      *
-     * @param passwordVisible true if the password should be shown, false if it should be hidden
+     * @param visible true if the password should be visible
      */
-    public void setPasswordVisible(boolean passwordVisible) {
+    public void setPasswordVisible(boolean visible) {
 
-        Element elem = getElement();
-        elem.setAttribute("type", passwordVisible ? "text" : "password");
+        m_passwordVisible = visible;
     }
 
 }

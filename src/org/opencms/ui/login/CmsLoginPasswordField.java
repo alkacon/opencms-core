@@ -27,6 +27,8 @@
 
 package org.opencms.ui.login;
 
+import org.opencms.ui.shared.components.CmsPasswordFieldState;
+
 import com.vaadin.v7.ui.TextField;
 
 /**
@@ -46,4 +48,47 @@ public class CmsLoginPasswordField extends TextField {
         setImmediate(false);
         setWidth("100%");
     }
+
+    /**
+     * Checks if the password is visible.
+     *
+     * @return true if the password is visible
+     */
+    public boolean isPasswordVisible() {
+
+        return getState(false).isPasswordVisible();
+    }
+
+    /**
+     * Sets the visibility of the password.
+     *
+     * <p>If false, show the password field as a standard password field,
+     * and if true, just as a text field.
+     *
+     * @param visible the password visibility
+     */
+    public void setPasswordVisible(boolean visible) {
+
+        getState().setPasswordVisible(visible);
+
+    }
+
+    /**
+     * @see com.vaadin.v7.ui.AbstractTextField#getState()
+     */
+    @Override
+    protected CmsPasswordFieldState getState() {
+
+        return (CmsPasswordFieldState)(super.getState());
+    }
+
+    /**
+     * @see com.vaadin.v7.ui.AbstractTextField#getState(boolean)
+     */
+    @Override
+    protected CmsPasswordFieldState getState(boolean dirty) {
+
+        return (CmsPasswordFieldState)(super.getState(dirty));
+    }
+
 }
