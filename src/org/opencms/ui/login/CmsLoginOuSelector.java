@@ -29,13 +29,15 @@ package org.opencms.ui.login;
 
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.Messages;
 import org.opencms.util.CmsFileUtil;
 
 import java.util.List;
 
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.CustomComponent;
 
 /**
  * Widget used to allow the user to search and select an organizational unit.<p>
@@ -44,6 +46,9 @@ public class CmsLoginOuSelector extends CustomComponent {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Special value for the 'not selected' option. */
+    public static final String OU_NONE = "OU_NONE";
 
     /** The combo box containing the OU options. */
     private ComboBox m_ouSelect = new ComboBox();
@@ -76,12 +81,17 @@ public class CmsLoginOuSelector extends CustomComponent {
      * Initializes the select options.<p>
      *
      * @param orgUnits the selectable OUs
+     * @param addEmptyOption adds empty 'not selected' option with the special value OU_NONE
      */
-    public void initOrgUnits(List<CmsOrganizationalUnit> orgUnits) {
+    public void initOrgUnits(List<CmsOrganizationalUnit> orgUnits, boolean addEmptyOption) {
 
         if ((orgUnits.size() == 1) && (orgUnits.get(0).getParentFqn() == null)) {
             setVisible(false);
             m_alwaysHidden = true;
+        }
+        if (addEmptyOption) {
+            m_ouSelect.addItem(OU_NONE);
+            m_ouSelect.setItemCaption(OU_NONE, CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_NO_OU_SELECTED_0));
         }
         for (CmsOrganizationalUnit ou : orgUnits) {
             String key = normalizeOuName(ou.getName());

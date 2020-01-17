@@ -111,6 +111,8 @@ public class CmsLoginForm extends VerticalLayout {
     /** Widget for entering the user name.  */
     private TextField m_userField;
 
+    private boolean m_multipleOus;
+
     /**
      * Creates a new instance.<p>
      *
@@ -188,13 +190,13 @@ public class CmsLoginForm extends VerticalLayout {
                 }
 
             });
-        setOptionsVisible(false);
         m_error.setContentMode(ContentMode.HTML);
         m_showPasswordButton.addStyleName("o-login-show-password");
         m_showPasswordButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         m_showPasswordButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
         m_showPasswordButton.setIcon(FontAwesome.EYE_SLASH);
         m_showPasswordButton.addClickListener(evt -> togglePasswordVisible());
+
     }
 
     /**
@@ -253,6 +255,13 @@ public class CmsLoginForm extends VerticalLayout {
      */
     public void selectOrgUnit(String preselectedOu) {
 
+        if (preselectedOu == null) {
+            if (OpenCms.getLoginManager().isOrgUnitRequired()) {
+                preselectedOu = CmsLoginOuSelector.OU_NONE;
+            } else {
+                preselectedOu = "/";
+            }
+        }
         m_ouSelect.setValue(preselectedOu);
 
     }
@@ -281,7 +290,10 @@ public class CmsLoginForm extends VerticalLayout {
      */
     public void setSelectableOrgUnits(List<CmsOrganizationalUnit> ous) {
 
-        m_ouSelect.initOrgUnits(ous);
+        boolean addEmptySelection = OpenCms.getLoginManager().isOrgUnitRequired() && (ous.size() > 1);
+        m_ouSelect.initOrgUnits(ous, addEmptySelection);
+        boolean optionsVisible = addEmptySelection && (ous.size() > 1);
+        setOptionsVisible(optionsVisible);
     }
 
     /**

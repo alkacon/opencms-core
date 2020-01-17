@@ -200,6 +200,9 @@ public class CmsLoginManager {
     /** User data check interval. */
     private String m_userDateCheckInterval;
 
+    /** Option which determines whether the login dialog should require an organizational unit. */
+    private boolean m_requireOrgUnit;
+
     /**
      * Creates a new storage for invalid logins.<p>
      *
@@ -210,6 +213,7 @@ public class CmsLoginManager {
      * @param maxInactive maximum inactivity time
      * @param passwordChangeInterval the password change interval
      * @param userDataCheckInterval the user data check interval
+     * @param requireOrgUnit if true, should require organizational unit selection on login
      */
     public CmsLoginManager(
         int disableMinutes,
@@ -218,7 +222,8 @@ public class CmsLoginManager {
         String tokenLifetime,
         String maxInactive,
         String passwordChangeInterval,
-        String userDataCheckInterval) {
+        String userDataCheckInterval,
+        boolean requireOrgUnit) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (TEMP_DISABLED_USER == null) {
@@ -236,6 +241,7 @@ public class CmsLoginManager {
         m_maxInactive = maxInactive;
         m_passwordChangeInterval = passwordChangeInterval;
         m_userDateCheckInterval = userDataCheckInterval;
+        m_requireOrgUnit = requireOrgUnit;
     }
 
     /**
@@ -492,6 +498,16 @@ public class CmsLoginManager {
     public boolean isEnableSecurity() {
 
         return m_enableSecurity;
+    }
+
+    /**
+     * Returns true if organizational unit selection should be required on login.
+     *
+     * @return true if org unit selection should be required
+     */
+    public boolean isOrgUnitRequired() {
+
+        return m_requireOrgUnit;
     }
 
     /**

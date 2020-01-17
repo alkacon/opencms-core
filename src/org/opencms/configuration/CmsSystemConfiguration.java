@@ -470,7 +470,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
-    /** Node name for auto history cleanup setting. */ 
+    /** Node name for auto history cleanup setting. */
     private static final String N_AUTO_CLEANUP_HISTORY_ENTRIES = "auto-cleanup-history-entries";
 
     /** Node name for the credentials resolver setting. */
@@ -487,6 +487,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
+
+    /** Node name for the 'require org unit' option. */
+    private static final String N_REQUIRE_ORGUNIT = "requireOrgUnit";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -886,7 +889,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 7);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 8);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
@@ -894,6 +897,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAX_INACTIVE_TIME, 4);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_PASSWORD_CHANGE_INTERVAL, 5);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_USER_DATA_CHECK_INTERVAL, 6);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_REQUIRE_ORGUNIT, 7);
 
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SAX_IMPL_SYSTEM_PROPERTIES,
@@ -1304,6 +1308,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (m_loginManager.getUserDataCheckIntervalStr() != null) {
                 managerElement.addElement(N_USER_DATA_CHECK_INTERVAL).addText(
                     m_loginManager.getUserDataCheckIntervalStr());
+            }
+            if (m_loginManager.isOrgUnitRequired()) {
+                managerElement.addElement(N_REQUIRE_ORGUNIT).addText("true");
             }
         }
 
@@ -1840,7 +1847,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 null,
                 null,
                 null,
-                null);
+                null,
+                false);
         }
         return m_loginManager;
     }
@@ -2363,7 +2371,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String tokenLifetime,
         String maxInactive,
         String passwordChangeInterval,
-        String userDataCheckInterval) {
+        String userDataCheckInterval,
+        String requireOrgUnitStr) {
 
         int disableMinutes;
         try {
@@ -2378,6 +2387,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             maxBadAttempts = CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT;
         }
         boolean enableSecurity = Boolean.valueOf(enableSecurityStr).booleanValue();
+        boolean requireOrgUnit = Boolean.valueOf(requireOrgUnitStr).booleanValue();
         m_loginManager = new CmsLoginManager(
             disableMinutes,
             maxBadAttempts,
@@ -2385,7 +2395,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             tokenLifetime,
             maxInactive,
             passwordChangeInterval,
-            userDataCheckInterval);
+            userDataCheckInterval,
+            requireOrgUnit);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(

@@ -48,13 +48,13 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
 
-import com.vaadin.v7.data.Validator.InvalidValueException;
-import com.vaadin.v7.data.validator.EmailValidator;
-import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.v7.data.Validator.InvalidValueException;
+import com.vaadin.v7.data.validator.EmailValidator;
+import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
 
@@ -88,10 +88,11 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
      * Creates a new instance.<p>
      */
     public CmsForgotPasswordDialog() {
+
         Locale locale = A_CmsUI.get().getLocale();
         CmsVaadinUtils.readAndLocalizeDesign(this, OpenCms.getWorkplaceManager().getMessages(locale), null);
         List<CmsOrganizationalUnit> ouList = CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null);
-        m_ouSelect.initOrgUnits(ouList);
+        m_ouSelect.initOrgUnits(ouList, false);
         String notEmptyMessage = CmsVaadinUtils.getMessageText(Messages.GUI_VALIDATION_FIELD_EMPTY_0);
         m_userField.setRequired(true);
         m_userField.setRequiredError(notEmptyMessage);
@@ -143,17 +144,17 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                             Messages.GUI_PWCHANGE_MAILSENT_MESSAGE_0),
                         new Runnable() {
 
-                        public void run() {
+                            public void run() {
 
-                            A_CmsUI.get().getPage().setLocation(
-                                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                                    CmsLoginUI.m_adminCms,
-                                    CmsWorkplaceLoginHandler.LOGIN_HANDLER,
-                                    false));
+                                A_CmsUI.get().getPage().setLocation(
+                                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                                        CmsLoginUI.m_adminCms,
+                                        CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+                                        false));
 
-                        }
+                            }
 
-                    });
+                        });
                 }
             }
         });

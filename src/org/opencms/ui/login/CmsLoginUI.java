@@ -522,9 +522,7 @@ public class CmsLoginUI extends A_CmsUI {
         content.setExpandRatio(m_loginForm, 1);
 
         setContent(content);
-        if (preselectedOu == null) {
-            preselectedOu = "/";
-        }
+
         m_loginForm.selectOrgUnit(preselectedOu);
 
     }

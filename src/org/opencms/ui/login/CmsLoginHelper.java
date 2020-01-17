@@ -536,6 +536,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         HttpServletRequest request,
         HttpServletResponse response) {
 
+        if (CmsStringUtil.isEmpty(oufqn)) {
+            oufqn = "/";
+        }
         // set the PC type cookie only if security dialog is enabled
         if (OpenCms.getLoginManager().isEnableSecurity() && CmsStringUtil.isNotEmpty(pcType)) {
             Cookie pcTypeCookie = getCookie(request, COOKIE_PCTYPE);

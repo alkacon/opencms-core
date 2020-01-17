@@ -444,6 +444,11 @@ public class CmsLoginController {
             storedMessage = loginMessage.getMessage();
             // If login is forbidden, we will get an error message anyway, so we don't need to store the message here
         }
+        String ou = m_ui.getOrgUnit();
+        if (CmsLoginOuSelector.OU_NONE.equals(ou)) {
+            displayError(CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_NO_OU_SELECTED_WARNING_0) + "\n\n", false);
+            return;
+        }
         if (message != null) {
             String errorMessage = message.key(m_params.getLocale());
             //  m_ui.displayError(errorMessage);
@@ -451,7 +456,6 @@ public class CmsLoginController {
             return;
         }
 
-        String ou = m_ui.getOrgUnit();
         String realUser = CmsStringUtil.joinPaths(ou, user);
         String pcType = m_ui.getPcType();
         CmsObject currentCms = A_CmsUI.getCmsObject();
@@ -620,19 +624,21 @@ public class CmsLoginController {
                     // the user account is disabled
                     message = org.opencms.workplace.Messages.get().container(
                         org.opencms.workplace.Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
-                    // the user account is temporarily disabled because of too many login failures
-                    message = org.opencms.workplace.Messages.get().container(
-                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
-                    // all logins have been disabled be the Administration
-                    CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
-                    if (loginMessage2 != null) {
+                } else
+                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
+                        // the user account is temporarily disabled because of too many login failures
                         message = org.opencms.workplace.Messages.get().container(
-                            org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
-                            loginMessage2.getMessage());
-                    }
-                }
+                            org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
+                    } else
+                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
+                            // all logins have been disabled be the Administration
+                            CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
+                            if (loginMessage2 != null) {
+                                message = org.opencms.workplace.Messages.get().container(
+                                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
+                                    loginMessage2.getMessage());
+                            }
+                        }
             }
             if (message == null) {
                 if (e instanceof CmsCustomLoginException) {

@@ -347,6 +347,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCK_DIALOG_TITLE_0 = "GUI_LOCK_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_NO_OU_SELECTED_0 = "GUI_LOGIN_NO_OU_SELECTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_NO_OU_SELECTED_WARNING_0 = "GUI_LOGIN_NO_OU_SELECTED_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_OPTIONS_HIDE_0 = "GUI_LOGIN_OPTIONS_HIDE_0";
 
     /** Message constant for key in the resource bundle. */

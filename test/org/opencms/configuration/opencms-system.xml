@@ -52,6 +52,7 @@
 			<disableMinutes>20</disableMinutes>
 			<maxBadAttempts>3</maxBadAttempts>
 			<enableSecurity>false</enableSecurity>
+            <requireOrgUnit>true</requireOrgUnit>
 		</loginmanager>	
 		<sax-impl-system-properties>true</sax-impl-system-properties>
 		<runtimeproperties>
