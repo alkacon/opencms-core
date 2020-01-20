@@ -10,6 +10,7 @@
       <transform config="opencms-system.xml" xslt="removeOldSystemEntries.xslt" />
       <transform config="opencms-system.xml" xslt="addRequestHandler.xslt" />
       <transform config="opencms-search.xml" xslt="updateSearch.xslt"/>
+      <transform config="opencms-search.xml" xslt="adjustDocumentTypeConfiguration.xslt"/>
       <transform config="opencms-modules.xml" xslt="removeModuleExportPoints.xslt" />
       <transform config="opencms-importexport.xml" xslt="updateImmutables.xslt" />
       <transform config="opencms-vfs.xml" xslt="updateWidgetFormat.xslt" />
