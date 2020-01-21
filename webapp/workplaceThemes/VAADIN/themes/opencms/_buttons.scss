@@ -205,12 +205,20 @@
   		box-sizing: content-box;
   	}
   	
+  	#hidden-password { 
+		padding-right: 30px;
+	}
+  	
   	.o-login-showpassword {
 	  	&:after { 
 	  		box-shadow: none;
 	  	}
 	  	position: absolute; 
-	  	right: 20px; 
+	  	right: 15px; 
+	  	.v-button-wrap { 
+	  		line-height: 30px;
+	  		font-size: 20px;
+	  	}
 	  }
   } 
   	
