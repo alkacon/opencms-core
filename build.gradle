@@ -62,7 +62,7 @@ if (!project.hasProperty('max_heap_size')){
 
 Properties props = new Properties()
 props.load(new FileInputStream("$projectDir/modules/all-modules.properties"))
-project.ext.allModuleNames = props['modules.common.all']
+project.ext.allModuleNames = props['modules.list']
 project.ext.allExternalModuleNames = ''
 project.ext.modulesDistsDir = file("${project.buildDir}/modulesZip")
 def altExternalStructure = false
@@ -72,7 +72,7 @@ if (project.hasProperty('external_directories')){
         Properties externalprops = new Properties()
         println "reading external modules from ${external_directories}/modules/all-modules.properties"
         externalprops.load(new FileInputStream(externalPropFile))
-        project.ext.allExternalModuleNames = externalprops['modules.common.all']
+        project.ext.allExternalModuleNames = externalprops['modules.list']
         project.ext.allModuleNames += ','+allExternalModuleNames
     }else{
     	externalPropFile =file(external_directories+'/all-modules.properties')
@@ -80,7 +80,7 @@ if (project.hasProperty('external_directories')){
     		Properties externalprops = new Properties()
         	println "reading external modules from ${external_directories}/all-modules.properties"
         	externalprops.load(new FileInputStream(externalPropFile))
-        	project.ext.allExternalModuleNames = externalprops['modules.common.all']
+        	project.ext.allExternalModuleNames = externalprops['modules.list']
         	project.ext.allModuleNames += ','+allExternalModuleNames
         	altExternalStructure = true
     	}else{
