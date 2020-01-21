@@ -3089,6 +3089,18 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description>If true, uses the given value as a string to parse JSON from, else just uses the value as-is.</description>
+        	<name>parse</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+         <attribute>
+        	<description>Name of a page scope variable to store a parse error in. If no parse error occurs, the variable is set to null.</description>
+        	<name>errorVar</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <function>

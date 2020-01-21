@@ -80,10 +80,10 @@ public class CmsJspTagJsonObject extends A_CmsJspJsonTag implements I_CmsJspJson
     }
 
     /**
-     * @see org.opencms.jsp.A_CmsJspJsonTag#getValue()
+     * @see org.opencms.jsp.A_CmsJspJsonTag#getJsonValue()
      */
     @Override
-    public Object getValue() {
+    public Object getJsonValue() {
 
         return m_jsonObject;
     }
