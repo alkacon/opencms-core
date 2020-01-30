@@ -60,32 +60,19 @@ if (!project.hasProperty('max_heap_size')){
     project.ext.max_heap_size='1024m'
 }
 
-Properties props = new Properties()
-props.load(new FileInputStream("$projectDir/modules/all-modules.properties"))
-project.ext.allModuleNames = props['modules.list']
+project.ext.allModuleNames = modules_list
 project.ext.allExternalModuleNames = ''
 project.ext.modulesDistsDir = file("${project.buildDir}/modulesZip")
-def altExternalStructure = false
 if (project.hasProperty('external_directories')){
-    def externalPropFile =file(external_directories+'/modules/all-modules.properties')
+    def externalPropFile =file(external_directories+'/gradle.properties')
     if (externalPropFile.exists()){
-        Properties externalprops = new Properties()
-        println "reading external modules from ${external_directories}/modules/all-modules.properties"
-        externalprops.load(new FileInputStream(externalPropFile))
-        project.ext.allExternalModuleNames = externalprops['modules.list']
-        project.ext.allModuleNames += ','+allExternalModuleNames
+    	Properties externalprops = new Properties()
+       	println "reading external modules from ${external_directories}/gradle.properties"
+       	externalprops.load(new FileInputStream(externalPropFile))
+       	project.ext.allExternalModuleNames = externalprops['modules_list']
+       	project.ext.allModuleNames += ','+allExternalModuleNames
     }else{
-    	externalPropFile =file(external_directories+'/all-modules.properties')
-    	if (externalPropFile.exists()){
-    		Properties externalprops = new Properties()
-        	println "reading external modules from ${external_directories}/all-modules.properties"
-        	externalprops.load(new FileInputStream(externalPropFile))
-        	project.ext.allExternalModuleNames = externalprops['modules.list']
-        	project.ext.allModuleNames += ','+allExternalModuleNames
-        	altExternalStructure = true
-    	}else{
-        	println "Can\'t read from external module properties from directory $external_directories"
-        }
+       	println "Can\'t read from external module properties from directory $external_directories"
     }
 }
 
@@ -701,17 +688,9 @@ allModuleNames.split(',').each{ moduleName ->
     def isExternal = allExternalModuleNames.contains(moduleName)
 
     if (isExternal.toBoolean()){
-    	if (altExternalStructure.toBoolean()){
-    		println "configuring alt external module ${moduleName}"
-    		moduleFolder = file("${external_directories}/${moduleName}")
-        	srcGwtDir = file("${moduleFolder}/src-gwt/")
-        	moduleSrcFolder = file("${moduleFolder}/src")
-    	}else{
-    		println "configuring alt external module ${moduleName}"
-    		moduleFolder = file("${external_directories}/modules/${moduleName}")
-        	srcGwtDir = file("${external_directories}/src-gwt/")
-        	moduleSrcFolder = file("${external_directories}/src")
-        }
+    	moduleFolder = file("${external_directories}/${moduleName}")
+      	srcGwtDir = file("${moduleFolder}/src-gwt/")
+       	moduleSrcFolder = file("${moduleFolder}/src")
     }
     def propertyFile = file("${moduleFolder}/module.properties")
     def gwtRename = null
