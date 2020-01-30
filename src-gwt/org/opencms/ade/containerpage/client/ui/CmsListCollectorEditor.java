@@ -133,11 +133,6 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());
-        if (!containerElement.isOrHasChild(parent)) {
-            // the container element should have position relative,
-            // so don't use any positioning parent that is not a child of the container-element
-            parent = containerElement;
-        }
         Style style = getElement().getStyle();
         int right = parent.getOffsetWidth()
             - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft());
