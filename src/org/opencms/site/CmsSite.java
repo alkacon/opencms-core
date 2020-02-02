@@ -128,7 +128,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     /** UUID of this site's root directory in the OpenCms VFS. */
     private CmsUUID m_siteRootUUID;
 
-    /**The SSL Mode of the site. */
+    /** The SSL Mode of the site. */
     private CmsSSLMode m_sslMode = CmsSSLMode.SECURE_SERVER;
 
     /** True if subsite selection is enabled for this site. */
@@ -142,6 +142,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
 
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;
+
+    /** Cached list of configured translation locales, the first locale being the main translation locale. */
+    private transient List<Locale> m_translationLocales;
 
     /**
      * Constructs a new site object without title and id information,
@@ -256,6 +259,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     public CmsSite(String siteRoot, String siteURL) {
 
         this(siteRoot, new CmsSiteMatcher(siteURL));
+    }
+
+    /**
+     * Adds an alias for the site.<p>
+     *
+     * @param aliasServer the sitematcher for the alias
+     */
+    protected void addAlias(CmsSiteMatcher aliasServer) {
+
+        m_aliases.add(aliasServer);
     }
 
     /**
@@ -504,6 +517,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Returns the site matcher for the secure site, or null if no secure site is defined.<p>
+     *
+     * @return the site matcher for the secure site
+     */
+    protected CmsSiteMatcher getSecureServerMatcher() {
+
+        return m_secureServer;
+    }
+
+    /**
      * Returns the secure server url of this site root.<p>
      *
      * @return the secure server url
@@ -646,6 +669,28 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Returns all configured translation locales for this site.<p>
+     *
+     * The first entry in the list will be the main translation locale.
+     * If the main translation locale is not correctly configured, an empty list is returned.<p>
+     *
+     * @return all configured translation locales for this site
+     */
+    public List<Locale> getTranslationLocales() {
+
+        if (m_translationLocales == null) {
+            m_translationLocales = new ArrayList<Locale>();
+            Locale main = getMainTranslationLocale(null);
+            if (main != null) {
+                // locales are configured correctly for translation
+                m_translationLocales.add(main);
+                m_translationLocales.addAll(getSecondaryTranslationLocales());
+            }
+        }
+        return m_translationLocales;
+    }
+
+    /**
      * Returns the server url of this site root.<p>
      *
      * @return the server url
@@ -772,6 +817,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Sets the aliases for the site.<p>
+     *
+     * @param aliases the aliases for the site
+     */
+    protected void setAliases(List<CmsSiteMatcher> aliases) {
+
+        m_aliases = aliases;
+    }
+
+    /**
      * Sets the alternative site root mapping.
      *
      * @param alternativeSiteRootMapping the alternative site root mapping
@@ -812,6 +867,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Enables/disableds the 'generated' state, i.e. if this site is automatically generated.
+     *
+     * @param generated true to mark the site as generated
+     */
+    void setGenerated(boolean generated) {
+
+        m_generated = generated;
+    }
+
+    /**
      * Sets the online status.
      *
      * @param isOnline true -> site has online version
@@ -833,6 +898,36 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     }
 
     /**
+     * Sets the display title of this site.<p>
+     *
+     * @param position the display title of this site
+     */
+    protected void setPosition(float position) {
+
+        m_position = position;
+    }
+
+    /**
+     * Sets the secure server.<p>
+     *
+     * @param secureServer the sitematcher of the secure server
+     */
+    protected void setSecureServer(CmsSiteMatcher secureServer) {
+
+        m_secureServer = secureServer;
+    }
+
+    /**
+     * Sets the site matcher that describes the URL of this site.<p>
+     *
+     * @param siteMatcher the site matcher that describes the URL of this site
+     */
+    protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
+
+        m_siteMatcher = siteMatcher;
+    }
+
+    /**
      * Sets the server URL prefix to which this site is mapped.<p>
      *
      * @param siteRoot the server URL prefix to which this site is mapped
@@ -845,6 +940,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
         } else {
             m_siteRoot = siteRoot;
         }
+    }
+
+    /**
+     * Sets the UUID of this site's root directory in the OpenCms VFS.<p>
+     *
+     * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
+     */
+    protected void setSiteRootUUID(CmsUUID siteRootUUID) {
+
+        m_siteRootUUID = siteRootUUID;
     }
 
     /**
@@ -866,6 +971,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
 
         m_subsiteSelectionEnabled = enabled;
 
+    }
+
+    /**
+     * Sets the display title of this site.<p>
+     *
+     * @param name the display title of this site
+     */
+    protected void setTitle(String name) {
+
+        m_title = name;
     }
 
     /**
@@ -921,96 +1036,6 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
     public boolean usesPermanentRedirects() {
 
         return m_usesPermanentRedirects;
-    }
-
-    /**
-     * Adds an alias for the site.<p>
-     *
-     * @param aliasServer the sitematcher for the alias
-     */
-    protected void addAlias(CmsSiteMatcher aliasServer) {
-
-        m_aliases.add(aliasServer);
-    }
-
-    /**
-     * Returns the site matcher for the secure site, or null if no secure site is defined.<p>
-     *
-     * @return the site matcher for the secure site
-     */
-    protected CmsSiteMatcher getSecureServerMatcher() {
-
-        return m_secureServer;
-    }
-
-    /**
-     * Sets the aliases for the site.<p>
-     *
-     * @param aliases the aliases for the site
-     */
-    protected void setAliases(List<CmsSiteMatcher> aliases) {
-
-        m_aliases = aliases;
-    }
-
-    /**
-     * Sets the display title of this site.<p>
-     *
-     * @param position the display title of this site
-     */
-    protected void setPosition(float position) {
-
-        m_position = position;
-    }
-
-    /**
-     * Sets the secure server.<p>
-     *
-     * @param secureServer the sitematcher of the secure server
-     */
-    protected void setSecureServer(CmsSiteMatcher secureServer) {
-
-        m_secureServer = secureServer;
-    }
-
-    /**
-     * Sets the site matcher that describes the URL of this site.<p>
-     *
-     * @param siteMatcher the site matcher that describes the URL of this site
-     */
-    protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
-
-        m_siteMatcher = siteMatcher;
-    }
-
-    /**
-     * Sets the UUID of this site's root directory in the OpenCms VFS.<p>
-     *
-     * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
-     */
-    protected void setSiteRootUUID(CmsUUID siteRootUUID) {
-
-        m_siteRootUUID = siteRootUUID;
-    }
-
-    /**
-     * Sets the display title of this site.<p>
-     *
-     * @param name the display title of this site
-     */
-    protected void setTitle(String name) {
-
-        m_title = name;
-    }
-
-    /**
-     * Enables/disableds the 'generated' state, i.e. if this site is automatically generated.
-     *
-     * @param generated true to mark the site as generated
-     */
-    void setGenerated(boolean generated) {
-
-        m_generated = generated;
     }
 
 }
