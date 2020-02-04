@@ -42,6 +42,7 @@
             </mappings>
             <defaults>
                 <default element="CategoryMode" value="OR" />
+                <default element="SearchFolder" value="/" />
             </defaults>
             <layouts>
                 <layout element="TypesToCollect" widget="DisplayTypeSelectWidget" configuration="template.display.types|matchTypes" />
