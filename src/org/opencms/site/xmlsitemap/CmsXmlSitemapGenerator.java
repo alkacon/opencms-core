@@ -36,6 +36,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeHtmlRedirect;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
@@ -205,7 +206,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-
+    
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {
@@ -302,6 +303,10 @@ public class CmsXmlSitemapGenerator {
         String baseSitePath = m_siteGuestCms.getRequestContext().removeSiteRoot(m_baseFolderRootPath);
         initializeFileData(baseSitePath);
         for (CmsResource resource : getDirectPages()) {
+            if (CmsResourceTypeHtmlRedirect.isRedirect(resource)
+                && CmsResourceTypeHtmlRedirect.checkExcludeFromSitemap(m_siteGuestCms, resource)) {
+                continue;
+            }
             String sitePath = m_siteGuestCms.getSitePath(resource);
             List<CmsProperty> propertyList = m_siteGuestCms.readPropertyObjects(resource, true);
             String onlineLink = OpenCms.getLinkManager().getOnlineLink(m_siteGuestCms, sitePath);
