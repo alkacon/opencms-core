@@ -276,16 +276,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     extractionResult,
                     properties,
                     propertiesSearched) != null) {
-                    String value = mapping.getStringValue(
-                        cms,
-                        resource,
-                        extractionResult,
-                        properties,
-                        propertiesSearched);
-                    if (value != null) {
-                        document.addSearchField(field, value);
+                        String value = mapping.getStringValue(
+                            cms,
+                            resource,
+                            extractionResult,
+                            properties,
+                            propertiesSearched);
+                        if (value != null) {
+                            document.addSearchField(field, value);
+                        }
                     }
-                }
             }
             if ((text.length() <= 0) && (field.getDefaultValue() != null)) {
                 text.append(field.getDefaultValue());
@@ -792,7 +792,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             }
             document.addDateField(fieldName, instanceDate.getTime(), false);
         }
-
+        // Set instancedatecurrenttill_dt to instancedate_dt if not set yet
+        fieldName = CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL + CmsSearchField.FIELD_POSTFIX_DATE;
+        Date instanceDateCurrentTill = document.getFieldValueAsDate(fieldName);
+        if ((null == instanceDateCurrentTill) || (instanceDateCurrentTill.getTime() == 0)) {
+            document.addDateField(fieldName, instanceDate.getTime(), false);
+        }
         // add disp-title field
         fieldName = CmsSearchField.FIELD_DISPTITLE + CmsSearchField.FIELD_POSTFIX_SORT;
         String dispTitle = document.getFieldValueAsString(fieldName);
@@ -832,9 +837,19 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         for (String locale : document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_CONTENT_LOCALES)) {
             // instance date
             fieldName = CmsSearchField.FIELD_INSTANCEDATE + "_" + locale + CmsSearchField.FIELD_POSTFIX_DATE;
-            Date presetInstanceDate = document.getFieldValueAsDate(fieldName);
-            if ((null == presetInstanceDate) || (presetInstanceDate.getTime() == 0)) {
-                document.addDateField(fieldName, instanceDate.getTime(), false);
+            Date localeInstanceDate = document.getFieldValueAsDate(fieldName);
+            if ((null == localeInstanceDate) || (localeInstanceDate.getTime() == 0)) {
+                localeInstanceDate = instanceDate;
+                document.addDateField(fieldName, localeInstanceDate.getTime(), false);
+            }
+            // Set instancedatecurrenttill_dt to instancedate_dt if not set yet
+            fieldName = CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
+                + "_"
+                + locale
+                + CmsSearchField.FIELD_POSTFIX_DATE;
+            Date localeInstanceDateCurrentTill = document.getFieldValueAsDate(fieldName);
+            if ((null == localeInstanceDateCurrentTill) || (localeInstanceDateCurrentTill.getTime() == 0)) {
+                document.addDateField(fieldName, localeInstanceDate.getTime(), false);
             }
             // disp-title field for title display and sorting
             fieldName = CmsSearchField.FIELD_DISPTITLE + "_" + locale + CmsSearchField.FIELD_POSTFIX_SORT;
