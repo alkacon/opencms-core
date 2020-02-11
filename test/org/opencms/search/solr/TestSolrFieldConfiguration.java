@@ -777,5 +777,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         assertEquals(orderEn, Integer.parseInt(result.getField("disporder_en_i")));
         assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedate_dt"));
         assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedate_en_dt"));
+        assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedatecurrenttill_dt"));
+        assertEquals(result.getDateField(instanceDateCopyField), result.getDateField("instancedatecurrenttill_en_dt"));
     }
 }
