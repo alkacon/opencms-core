@@ -1,0 +1,7 @@
+def external_directories = startParameter.projectProperties['external_directories'];
+if (null != external_directories) {
+    include external_directories
+    project(':' + external_directories).name='extmodules'
+    gradle.ext.withcore='true';
+}
+rootProject.name = 'opencms-core'
