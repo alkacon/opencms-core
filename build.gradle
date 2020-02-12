@@ -703,6 +703,7 @@ allModuleNames.each{ moduleName ->
     def staticFolder=file("${moduleFolder}/static")
     if (workplacelocalization!=null){
         localeModules.add("${moduleName}")
+        preserveLibModules += "${moduleName},"
     }
 
     task "dist_$moduleName" (type: Zip){
@@ -740,6 +741,39 @@ allModuleNames.each{ moduleName ->
             }
         }
 
+    }
+    if (workplacelocalization != null){
+        task "jar_$moduleName" (type: Jar) {
+            ext.moduleName = moduleName
+            ext.workplacelocalization=workplacelocalization
+            manifest {
+                attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
+                if (workplacelocalization!=null) {
+                    attributes 'OpenCms-Localization': workplacelocalization
+                }
+            }
+            from ("$moduleFolder/resources/system/workplace/locales/$workplacelocalization/messages")
+            archiveName moduleName+'.jar'
+            baseName moduleName
+            group 'OpenCms module JARs'
+            exclude '**/.gitignore'
+            doFirst{
+                println '======================================================'
+                println "Building ${moduleName}.jar including $modulePackages"
+                println '======================================================'
+            }
+
+            doLast {
+                if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
+                    println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+                    copy {
+                        from  "${project.buildDir}/libs/${archiveName}"
+                        into tomcat_update_target
+                    }
+                }
+            }
+        }
+        tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
     }
 }
 
