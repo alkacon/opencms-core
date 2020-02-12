@@ -8342,11 +8342,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
         }
 
+        boolean skipRemove = false;
         // test if this user is existing in the group
         if (!userInGroup(dbc, username, groupname, readRoles)) {
-            // user is not in the group, throw exception
-            throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_USER_NOT_IN_GROUP_2, username, groupname));
+            if (readRoles) {
+                // Sometimes users can end up with the default groups corresponding to roles (Administrators, Users) without the actual roles.
+                // When trying to remove the user from such a group, we end up here in a recursive call of this method with readRoles = true. We do not
+                // want to throw an exception then, because it would prevent the code that actually removes the user from the group from running.
+                LOG.warn(
+                    "Trying to remove user from role that they are not a member of (user: "
+                        + username
+                        + ", group: "
+                        + groupname
+                        + ")");
+                skipRemove = true;
+            } else {
+                // user is not in the group, throw exception
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_USER_NOT_IN_GROUP_2, username, groupname));
+            }
         }
 
         CmsUser user = readUser(dbc, username);
@@ -8369,7 +8383,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
-        getUserDriver(dbc).deleteUserInGroup(dbc, user.getId(), group.getId());
+        if (!skipRemove) {
+            getUserDriver(dbc).deleteUserInGroup(dbc, user.getId(), group.getId());
+        }
 
         // flush relevant caches
         if (readRoles) {
