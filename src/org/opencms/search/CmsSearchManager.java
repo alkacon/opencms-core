@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
@@ -88,7 +89,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -683,8 +686,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** A map of document factory configurations. */
     private List<CmsSearchDocumentType> m_documentTypeConfigs;
 
-    /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
-    private Map<String, I_CmsDocumentFactory> m_documentTypes;
+    /** A map of document factories keyed first by their name and then by their extraction keys. */
+    private Map<String, Map<String, I_CmsDocumentFactory>> m_documentTypes;
+
+    /** The set of all globally available extraction keys for document factories. */
+    private Set<String> m_extractionKeys;
 
     /** The max age for extraction results to remain in the cache. */
     private float m_extractionCacheMaxAge;
@@ -739,7 +745,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchManager() {
 
-        m_documentTypes = new HashMap<String, I_CmsDocumentFactory>();
+        m_documentTypes = new HashMap<String, Map<String, I_CmsDocumentFactory>>();
+        m_extractionKeys = new HashSet<String>();
         m_documentTypeConfigs = new ArrayList<CmsSearchDocumentType>();
         m_analyzers = new HashMap<Locale, CmsSearchAnalyzer>();
         m_indexes = new ArrayList<I_CmsSearchIndex>();
@@ -819,7 +826,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
         }
         // try to get the index
-        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
+        index = OpenCms.getSearchManager().getIndexSolr(indexName);
         if (index == null) {
             // if there is exactly one index, a missing core / index parameter doesn't matter, since there is no choice.
             List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
@@ -1106,54 +1113,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns a lucene document factory for given resource.<p>
-     *
-     * The type of the document factory is selected by the type of the resource
-     * and the MIME type of the resource content, according to the configuration in <code>opencms-search.xml</code>.<p>
-     *
-     * @param resource a cms resource
-     * @return a lucene document factory or null
+     * Returns the document factory configured under the provided name.
+     * @param docTypeName the name of the document type.
+     * @return the factory for the provided name.
      */
-    public I_CmsDocumentFactory getDocumentFactory(CmsResource resource) {
+    public I_CmsDocumentFactory getDocumentFactoryForName(String docTypeName) {
 
-        // first get the MIME type of the resource
-        String mimeType = OpenCms.getResourceManager().getMimeType(resource.getRootPath(), null, "unknown");
-        String resourceType = null;
-        try {
-            resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
-        } catch (CmsLoaderException e) {
-            // ignore, unknown resource type, resource can not be indexed
-            LOG.info(e.getLocalizedMessage(), e);
-        }
-        return getDocumentFactory(resourceType, mimeType);
-    }
-
-    /**
-     * Returns a lucene document factory for given resource type and MIME type.<p>
-     *
-     * The type of the document factory is selected  according to the configuration
-     * in <code>opencms-search.xml</code>.<p>
-     *
-     * @param resourceType the resource type name
-     * @param mimeType the MIME type
-     *
-     * @return a lucene document factory or null in case no matching factory was found
-     */
-    public I_CmsDocumentFactory getDocumentFactory(String resourceType, String mimeType) {
-
-        I_CmsDocumentFactory result = null;
-        if (resourceType != null) {
-            // create the factory lookup key for the document
-            String documentTypeKey = A_CmsVfsDocument.getDocumentKey(resourceType, mimeType);
-            // check if a setting is available for this specific MIME type
-            result = m_documentTypes.get(documentTypeKey);
-            if (result == null) {
-                // no setting is available, try to use a generic setting without MIME type
-                result = m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(resourceType, null));
-                // please note: the result may still be null
+        Map<String, I_CmsDocumentFactory> factoryMap = m_documentTypes.get(docTypeName);
+        if (factoryMap != null) {
+            Iterator<I_CmsDocumentFactory> factoryIt = factoryMap.values().iterator();
+            if (factoryIt.hasNext()) {
+                return factoryMap.values().iterator().next();
             }
         }
-        return result;
+        return null;
     }
 
     /**
@@ -1183,6 +1156,143 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public List<CmsSearchDocumentType> getDocumentTypeConfigs() {
 
         return Collections.unmodifiableList(m_documentTypeConfigs);
+    }
+
+    /**
+     * Returns the document type keys used to specify the correct document factory.
+     *
+     * @see #getDocumentTypeKeys(String, String) for detailed information on the returned keys.
+     *
+     * @param resource the resource to generate the list of document type keys for.
+     * @return the document type keys.
+     */
+    public List<String> getDocumentTypeKeys(CmsResource resource) {
+
+        // first get the MIME type of the resource
+        String mimeType = OpenCms.getResourceManager().getMimeType(resource.getRootPath(), null, "unknown");
+        String resourceType = null;
+        try {
+            resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        } catch (CmsLoaderException e) {
+            // ignore, unknown resource type, resource can not be indexed
+            LOG.info(e.getLocalizedMessage(), e);
+        }
+        return getDocumentTypeKeys(resourceType, mimeType);
+    }
+
+    /**
+     * Returns the document type keys used to specify the correct document factory.
+     * One resource typically has more than one key. The document factories are matched
+     * in the provided order and the first matching factory is used.
+     *
+     * The keys for type name "typename" and mimetype "mimetype" would be a subset of:
+     * <ul>
+     *  <li><code>typename_mimetype</code></li>
+     *  <li><code>typename</code></li>
+     *  <li>if <code>typename</code> is a sub-type of <code>containerpage</code>
+     *      <ul>
+     *          <li><code>containerpage_mimetype</code></li>
+     *          <li><code>containerpage</code></li>
+     *      </ul>
+     *  </li>
+     *  <li>if <code>typename</code> is a sub-type of <code>xmlcontent</code>
+     *      <ul>
+     *          <li><code>xmlcontent_mimetype</code></li>
+     *          <li><code>xmlcontent</code></li>
+     *      </ul>
+     *  </li>
+     *  <li><code>__unconfigured___mimetype</code></li>
+     *  <li><code>__unconfigured__</code></li>
+     *  <li><code>__all___mimetype</code></li>
+     *  <li><code>__all__</code></li>
+     * <ul>
+     * Note that all keys except the "__all__"-keys are only added as long as globally
+     * there is no matching factory for the key.
+     * This in particular means that a factory matching "typename" will never be used
+     * if you have a factory for "typename__mimetype" - even if this is not configured
+     * for the used index source. Eventually, the content will not be indexed in such cases.
+     * @param resourceType the resource type to generate the list of document type keys for.
+     * @param mimeType the mime type to generate the list of document type keys for.
+     * @return the document type keys.
+     */
+    public List<String> getDocumentTypeKeys(String resourceType, String mimeType) {
+
+        List<String> result = new ArrayList<>(8);
+        if (null != resourceType) {
+            String currentKey = A_CmsVfsDocument.getDocumentKey(resourceType, mimeType);
+            result.add(currentKey);
+            if (!m_extractionKeys.contains(currentKey)) {
+                currentKey = A_CmsVfsDocument.getDocumentKey(resourceType, null);
+                result.add(currentKey);
+                if (!m_extractionKeys.contains(currentKey)) {
+                    boolean hasGlobalMatch = false;
+                    try {
+                        String containerpageTypeName = CmsResourceTypeXmlContainerPage.getStaticTypeName();
+                        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resourceType);
+                        if (!resourceType.equals(containerpageTypeName)) {
+                            if (type instanceof CmsResourceTypeXmlContainerPage) {
+                                if (!resourceType.equals(CmsResourceTypeXmlContainerPage.getStaticTypeName())) {
+                                    currentKey = A_CmsVfsDocument.getDocumentKey(containerpageTypeName, mimeType);
+                                    result.add(currentKey);
+                                    hasGlobalMatch = m_extractionKeys.contains(currentKey);
+                                    if (!hasGlobalMatch) {
+                                        currentKey = A_CmsVfsDocument.getDocumentKey(containerpageTypeName, null);
+                                        result.add(currentKey);
+                                        hasGlobalMatch = m_extractionKeys.contains(currentKey);
+                                    }
+                                }
+                            }
+                        }
+                        String xmlcontentTypeName = CmsResourceTypeXmlContent.getStaticTypeName();
+                        if (!resourceType.equals(containerpageTypeName)) {
+                            if (!hasGlobalMatch && (type instanceof CmsResourceTypeXmlContent)) {
+                                currentKey = A_CmsVfsDocument.getDocumentKey(xmlcontentTypeName, mimeType);
+                                result.add(currentKey);
+                                hasGlobalMatch = m_extractionKeys.contains(currentKey);
+                                if (!hasGlobalMatch) {
+                                    currentKey = A_CmsVfsDocument.getDocumentKey(xmlcontentTypeName, null);
+                                    result.add(currentKey);
+                                    hasGlobalMatch = m_extractionKeys.contains(currentKey);
+                                }
+                            }
+                        }
+                    } catch (Throwable t) {
+                        LOG.warn("Could not read type for name \"" + resourceType + "\".", t);
+                    }
+                    if (!hasGlobalMatch) {
+                        result.add(
+                            A_CmsVfsDocument.getDocumentKey(A_CmsVfsDocument.DEFAULT_ALL_UNCONFIGURED_TYPES, mimeType));
+                        result.add(
+                            A_CmsVfsDocument.getDocumentKey(A_CmsVfsDocument.DEFAULT_ALL_UNCONFIGURED_TYPES, null));
+                    }
+                }
+            }
+            result.add(A_CmsVfsDocument.getDocumentKey(A_CmsVfsDocument.DEFAULT_ALL_TYPES, mimeType));
+            result.add(A_CmsVfsDocument.getDocumentKey(A_CmsVfsDocument.DEFAULT_ALL_TYPES, null));
+        }
+        return result;
+
+    }
+
+    /**
+     * Returns the map from document type keys to document factories with all entries for the provided document type names.
+     * @param documentTypeNames list of document type names to generate the map for.
+     * @return the map from document type keys to document factories.
+     */
+    public Map<String, I_CmsDocumentFactory> getDocumentTypeMapForTypeNames(List<String> documentTypeNames) {
+
+        Map<String, I_CmsDocumentFactory> result = new LinkedHashMap<>();
+        if (null != documentTypeNames) {
+            // Iterate the list in reverse order to prefer factories that are added by document types listed earlier.
+            ListIterator<String> typesIterator = documentTypeNames.listIterator(documentTypeNames.size());
+            while (typesIterator.hasPrevious()) {
+                Map<String, I_CmsDocumentFactory> factories = m_documentTypes.get(typesIterator.previous());
+                if (null != factories) {
+                    result.putAll(factories);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -1515,13 +1625,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Initializes all configured document types and search indexes.<p>
+     * Initializes all configured document types, index sources and search indexes.<p>
      *
      * This methods needs to be called if after a change in the index configuration has been made.
      */
     public void initializeIndexes() {
 
         initAvailableDocumentTypes();
+        initIndexSources();
         initSearchIndexes();
     }
 
@@ -2474,11 +2585,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                     adminCms.getSitePath(res))) {
                                     addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                                 }
-                            } else if (OpenCms.getResourceManager().getResourceType(
-                                res.getTypeId()).getTypeName().equals(
+                            } else
+                                if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
                                     CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
-                                elementGroups.add(res);
-                            }
+                                        elementGroups.add(res);
+                                    }
                         }
                     }
                     if (containerPageTypeId == pubRes.getType()) {
@@ -2530,12 +2641,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected List<String> getDocumentTypes() {
 
-        List<String> names = new ArrayList<String>();
-        for (Iterator<I_CmsDocumentFactory> i = m_documentTypes.values().iterator(); i.hasNext();) {
-            I_CmsDocumentFactory factory = i.next();
-            names.add(factory.getName());
-        }
-        return names;
+        return Collections.unmodifiableList(new ArrayList<String>(m_documentTypes.keySet()));
     }
 
     /**
@@ -2593,7 +2699,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         List<String> mimeTypes = null;
         Class<?> c = null;
 
-        m_documentTypes = new HashMap<String, I_CmsDocumentFactory>();
+        m_documentTypes = new LinkedHashMap<String, Map<String, I_CmsDocumentFactory>>();
 
         for (int i = 0, n = m_documentTypeConfigs.size(); i < n; i++) {
 
@@ -2632,17 +2738,31 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     documentFactory.setCache(m_extractionResultCache);
                 }
 
-                for (Iterator<String> key = documentFactory.getDocumentKeys(
+                Map<String, I_CmsDocumentFactory> matchingTypes = new HashMap<>();
+                for (Iterator<String> keyIt = documentFactory.getDocumentKeys(
                     resourceTypes,
-                    mimeTypes).iterator(); key.hasNext();) {
-                    m_documentTypes.put(key.next(), documentFactory);
+                    mimeTypes).iterator(); keyIt.hasNext();) {
+                    String key = keyIt.next();
+                    matchingTypes.put(key, documentFactory);
+                    m_extractionKeys.add(key);
                 }
+                m_documentTypes.put(name, matchingTypes);
 
             } catch (CmsException e) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_DOCTYPE_CONFIG_FAILED_1, name), e);
                 }
             }
+        }
+    }
+
+    /**
+     * Initializes the index sources.
+     */
+    protected void initIndexSources() {
+
+        for (CmsSearchIndexSource source : m_indexSources.values()) {
+            source.init();
         }
     }
 

@@ -203,6 +203,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_RESOURCE_TYPE_INITIALIZED_0 = "INIT_RESOURCE_TYPE_INITIALIZED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_SET_NAME_GENERATOR_1 = "INIT_SET_NAME_GENERATOR_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_SHUTDOWN_1 = "INIT_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */

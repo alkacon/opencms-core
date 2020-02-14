@@ -30,11 +30,8 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -55,6 +52,13 @@ import org.apache.commons.logging.Log;
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
+    /**
+     * Generic type name used as default for all types that are globally unconfigured.
+     * Note that any special xml content is already configured if xmlcontent is configured.
+     */
+    public static final String DEFAULT_ALL_UNCONFIGURED_TYPES = "__unconfigured__";
+    /** Generic type name used as default for all types. */
+    public static final String DEFAULT_ALL_TYPES = "__all__";
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsVfsDocument.class);
 
@@ -176,19 +180,16 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
         List<String> keys = new ArrayList<String>();
 
-        if (resourceTypes.contains("*")) {
-            List<String> allTypes = new ArrayList<String>();
-            for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
-                I_CmsResourceType resourceType = i.next();
-                allTypes.add(resourceType.getTypeName());
-            }
-            resourceTypes = allTypes;
-        }
-
         try {
             for (Iterator<String> i = resourceTypes.iterator(); i.hasNext();) {
 
                 String typeName = i.next();
+                if (typeName.equals("*")) {
+                    typeName = DEFAULT_ALL_UNCONFIGURED_TYPES;
+                }
+                if (typeName.equals("**")) {
+                    typeName = DEFAULT_ALL_TYPES;
+                }
                 for (Iterator<String> j = mimeTypes.iterator(); j.hasNext();) {
                     keys.add(getDocumentKey(typeName, j.next()));
                 }

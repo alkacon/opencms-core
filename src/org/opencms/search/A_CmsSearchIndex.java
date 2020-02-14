@@ -31,8 +31,6 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -43,8 +41,6 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
-import org.opencms.search.solr.CmsSolrDocumentContainerPage;
-import org.opencms.search.solr.CmsSolrDocumentXmlContent;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -295,27 +291,25 @@ public abstract class A_CmsSearchIndex implements I_CmsSearchIndex {
      * <li>For this matching index source, the document type factory needed by the resource is also configured.
      * </ol>
      *
-     * This default implementation uses the check as internal Solr indexes do. Overwrite it if necessary.
-     *
      * @param res the resource to check
      *
      * @return the document type factory used for the given resource in this index, or <code>null</code>
      * in case the resource is not indexed by this index
      */
+    @Override
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
 
-        if (isIndexing(res)) {
-            if (OpenCms.getResourceManager().getResourceType(res) instanceof CmsResourceTypeXmlContainerPage) {
-                return OpenCms.getSearchManager().getDocumentFactory(
-                    CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
-                    "text/html");
+        if ((res != null) && (getSources() != null)) {
+            // the result can only be null or the type configured for the resource
+            List<String> documentTypeKeys = OpenCms.getSearchManager().getDocumentTypeKeys(res);
+            for (String documentTypeKey : documentTypeKeys) {
+                for (CmsSearchIndexSource source : getSources()) {
+                    if (source.isIndexing(res.getRootPath(), documentTypeKey)) {
+                        // we found an index source that indexes the resource
+                        return source.getDocumentFactory(documentTypeKey);
+                    }
+                }
             }
-            if (CmsResourceTypeXmlContent.isXmlContent(res)) {
-                return OpenCms.getSearchManager().getDocumentFactory(
-                    CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
-                    "text/html");
-            }
-            return OpenCms.getSearchManager().getDocumentFactory(res);
         }
         return null;
     }
@@ -764,17 +758,8 @@ public abstract class A_CmsSearchIndex implements I_CmsSearchIndex {
      */
     protected boolean isIndexing(CmsResource res) {
 
-        if ((res != null) && (getSources() != null)) {
-            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
-            for (CmsSearchIndexSource source : getSources()) {
-                if (source.isIndexing(res.getRootPath(), CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR)
-                    || source.isIndexing(res.getRootPath(), CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR)
-                    || source.isIndexing(res.getRootPath(), result.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        // NOTE: This method checks also if the resource is on a path that should be indexed.
+        return getDocumentFactory(res) != null;
     }
 
     /**

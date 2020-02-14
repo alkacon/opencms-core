@@ -1291,7 +1291,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             long lastModified = containerPage.getDateLastModified();
             String editorUri = OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(
                 cms,
-                "xmlcontent",
+                CmsResourceTypeXmlContent.getStaticTypeName(),
                 "User agent",
                 false);
             boolean useClassicEditor = (editorUri == null) || !editorUri.contains("acacia");

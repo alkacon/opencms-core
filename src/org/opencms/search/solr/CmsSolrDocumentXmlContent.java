@@ -38,7 +38,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -76,7 +75,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -299,9 +297,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
 
     /** Mapping name used to indicate that the value should be used for the gallery name. */
     public static final String MAPPING_GALLERY_NAME = "galleryName";
-
-    /** The solr document type name for xml-contents. */
-    public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrDocumentXmlContent.class);
@@ -708,32 +703,6 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         } catch (Throwable t) {
             throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource), t);
         }
-    }
-
-    /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
-     */
-    @Override
-    public List<String> getDocumentKeys(List<String> resourceTypes, List<String> mimeTypes) throws CmsException {
-
-        if (resourceTypes.contains("*")) {
-            // we need to find all configured XML content types
-            List<String> allTypes = new ArrayList<String>();
-            for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
-                I_CmsResourceType resourceType = i.next();
-                if ((resourceType instanceof CmsResourceTypeXmlContent)
-                    // either we need a configured schema, or another class name (which must then contain an inline schema)
-                    && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
-                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA)
-                        || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
-                    // add the XML content resource type name
-                    allTypes.add(resourceType.getTypeName());
-                }
-            }
-            resourceTypes = allTypes;
-        }
-
-        return super.getDocumentKeys(resourceTypes, mimeTypes);
     }
 
     /**

@@ -1233,6 +1233,11 @@ public class CmsResourceManager {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
         m_nameGenerator = nameGenerator;
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_SET_NAME_GENERATOR_1, nameGenerator.getClass().getName()));
+        }
     }
 
     /**

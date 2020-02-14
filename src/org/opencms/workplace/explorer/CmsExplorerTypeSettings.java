@@ -29,6 +29,7 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -116,7 +117,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
             put("containerpage_template", new Integer(900));
             put("inheritance_config", new Integer(1000));
 
-            put("xmlcontent", new Integer(100));
+            put(CmsResourceTypeXmlContent.getStaticTypeName(), new Integer(100));
             put("pointer", new Integer(200));
 
             put("modelgroup", new Integer(100));
