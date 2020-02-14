@@ -42,7 +42,12 @@ import java.util.Map;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
-/** Bean for easy access to information for single events. */
+/**
+ * An instance of a date series with a start and optional end time,
+ * usable to describe one date for events and similar contents.<p>
+ *
+ * Provides convenient methods to format the date or date range.<p>
+ */
 public class CmsJspInstanceDateBean {
 
     /** Formatting options for dates. */
@@ -185,33 +190,50 @@ public class CmsJspInstanceDateBean {
     /** The separator between start and end date to use when formatting dates. */
     private static final String DATE_SEPARATOR = " - ";
 
-    /** Beginning of the event. */
+    /** Beginning of this instance date. */
     private Date m_start;
 
-    /** End of the event. */
+    /** End of this instance date. */
     private Date m_end;
 
-    /** Explicitely set end of the single event. */
+    /** Explicitely set end of the instance date. */
     private Date m_explicitEnd;
 
-    /** Flag, indicating if the single event explicitely lasts the whole day. */
+    /** Indicates if this instance date explicitely lasts the whole day. */
     private Boolean m_explicitWholeDay;
 
-    /** The series the event is part of. */
+    /** Explicitely set locale of this instance date. */
+    private Locale m_explicitLocale;
+
+    /** The series this instance date is part of. */
     private CmsJspDateSeriesBean m_series;
 
-    /** The dates of the event formatted locale specific in long style. */
+    /** The dates of this instance date formatted locale specific in long style. */
     private String m_formatLong;
 
-    /** The dates of the event formatted locale specific in short style. */
+    /** The dates of this instance date formatted locale specific in short style. */
     private String m_formatShort;
 
     /** The formatted dates as lazy map. */
     private Map<String, String> m_formattedDates;
 
-    /** Constructor taking start and end time for the single event.
-     * @param start the start time of the event.
-     * @param series the series, the event is part of.
+    /**
+     * Empty Constructor, for use as JavaBean.<p>
+     *
+     * Requires to call one of the init() methods later.<p>
+     *
+     * @see #init(Date, Locale)
+     */
+    public CmsJspInstanceDateBean() {
+
+        // noop
+    }
+
+    /**
+     * Constructor taking start and the date series this instance date belongs to.<p>
+     *
+     * @param start the start date for this instance date
+     * @param series the date series this instance date belongs to
      */
     public CmsJspInstanceDateBean(Date start, CmsJspDateSeriesBean series) {
 
@@ -220,21 +242,23 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Constructor to wrap a single date as instance date.
-     * This will allow to use the format options.
+     * Constructor to wrap a single date as instance date.<p>
      *
-     * @param date the date to wrap
-     * @param locale the locale to use for formatting the date.
+     * This will allow to use the format options.<p>
+     *
+     * @param start the start date for this instance date
+     * @param locale the locale used to format the date
      *
      */
-    public CmsJspInstanceDateBean(Date date, Locale locale) {
+    public CmsJspInstanceDateBean(Date start, Locale locale) {
 
-        this(date, new CmsJspDateSeriesBean(Long.toString(date.getTime()), locale));
+        this(start, new CmsJspDateSeriesBean(Long.toString(start.getTime()), locale));
     }
 
     /**
-     * Returns the end time of the event.
-     * @return the end time of the event.
+     * Returns the end time of this instance date.<p>
+     *
+     * @return the end time of this instance date
      */
     public Date getEnd() {
 
@@ -300,10 +324,11 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Check, if the start date of the instance date is 0 milliseconds.
-     * If this is the case, we assume the instance date is not set.
+     * Checks if this instance date has been set or initialized.<p>
      *
-     * @return a flag, indicating if the instance date is set.
+     * If the start date of the instance date is 0 milliseconds, we assume the instance date has not been set.<p>
+     *
+     * @return true if this instance date has been set or initialized
      */
     public boolean getIsSet() {
 
@@ -311,21 +336,23 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Returns some time of the last day, the event takes place. </p>
+     * Returns a time of the last day where this instance date takes place.<p>
      *
-     * For whole day events the end date is adjusted by subtracting one day,
-     * since it would otherwise be the 12 am of the first day, the event does not take place anymore.
+     * This can be used to output the last calendar day of this instance date without time.<p>
      *
-     * @return some time of the last day, the event takes place.
+     * @return a time of the last day where this instance date takes place
      */
     public Date getLastDay() {
 
+        // for whole day instance dates the end date is adjusted by subtracting one day,
+        // otherwise the period would be one day too long
         return isWholeDay() ? new Date(getEnd().getTime() - I_CmsSerialDateValue.DAY_IN_MILLIS) : getEnd();
     }
 
     /**
-     * Returns the start time of the event.
-     * @return the start time of the event.
+     * Returns the start time of this instance date.<p>
+     *
+     * @return the start time of this instance date
      */
     public Date getStart() {
 
@@ -334,8 +361,9 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Returns an instance date bean wrapping only the start date of the original bean.
-     * @return an instance date bean wrapping only the start date of the original bean.
+     * Returns an instance date bean wrapping only the start date of the original bean.<p>
+     *
+     * @return an instance date bean wrapping only the start date of the original bean
      */
     public CmsJspInstanceDateBean getStartInstance() {
 
@@ -343,8 +371,36 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Returns a flag, indicating if the event last over night.
-     * @return <code>true</code> if the event ends on another day than it starts, <code>false</code> if it ends on the same day.
+     * Initializes this date instance.<p>
+     *
+     * Use this only in case this date instance has been created as a JavaBean.<p>
+     *
+     * @param start the start date for this instance date
+     * @param locale the locale used to format the date
+     */
+    public void init(Date start, Locale locale) {
+
+        m_start = start;
+        m_series = new CmsJspDateSeriesBean(Long.toString(start.getTime()), locale);
+    }
+
+    /**
+     * Initializes this date instance with a String for the locale.<p>
+     *
+     * Use this only in case this date instance has been created as a JavaBean.<p>
+     *
+     * @param start the start date for this instance date
+     * @param localeStr a String representing the locale used to format the date
+     */
+    public void init(Date start, String localeStr) {
+
+        init(start, new Locale(localeStr));
+    }
+
+    /**
+     * Returns a flag, indicating if this instance date last over night.<p>
+     *
+     * @return <code>true</code> if this instance date ends on another day than it starts, <code>false</code> if it ends on the same day.
      */
     public boolean isMultiDay() {
 
@@ -356,8 +412,9 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Returns a flag, indicating if the event lasts whole days.
-     * @return a flag, indicating if the event lasts whole days.
+     * Indicates if this instance date lasts whole days.<p>
+     *
+     * @return true if this instance date lasts whole days
      */
     public boolean isWholeDay() {
 
@@ -365,11 +422,11 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Explicitly set the end time of the event.
+     * Explicitly set the end time of this instance date.<p>
      *
      * If the provided date is <code>null</code> or a date before the start date, the end date defaults to the start date.
      *
-     * @param endDate the end time of the event.
+     * @param endDate the end time of this instance date
      */
     public void setEnd(Date endDate) {
 
@@ -381,10 +438,22 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Explicitly set if the single event is whole day.
+     * Explicitly set the end time of this instance date using a long value.<p>
      *
-     * @param isWholeDay flag, indicating if the single event lasts the whole day.
-     *          If <code>null</code> the value defaults to the setting from the underlying date series.
+     * If the provided date is <code>null</code> or a date before the start date, the end date defaults to the start date.
+     *
+     * @param endDate  the end time of this instance date
+     */
+    public void setEnd(long endDate) {
+
+        setEnd(new Date(endDate));
+    }
+
+    /**
+     * Set if this instance date is whole day.
+     *
+     * @param isWholeDay flag, indicating if this instance date lasts the whole day -
+     *          if <code>null</code> the value defaults to the setting from the underlying date series.
      */
     public void setWholeDay(Boolean isWholeDay) {
 
@@ -429,12 +498,12 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Adjust the date according to the whole day options.
+     * Adjust the date according to the whole day options.<p>
      *
-     * @param date the date to adjust.
-     * @param isEnd flag, indicating if the date is the end of the event (in contrast to the beginning)
+     * @param date the date to adjust
+     * @param isEnd true if the date is the end of this instance date (in contrast to the beginning)
      *
-     * @return the adjusted date, which will be exactly the beginning or the end of the provide date's day.
+     * @return the adjusted date, which will be exactly the beginning or the end of the provide date's day
      */
     private Date adjustForWholeDay(Date date, boolean isEnd) {
 
@@ -452,9 +521,10 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Returns the start and end dates/times as "start - end" in the provided date/time format specific for the request locale.
-     * @param dateTimeFormat the format to use for date (time is always short).
-     * @return the formatted date/time string.
+     * Returns the start and end dates/times as "start - end" in the provided date/time format specific for the request locale.<p>
+     *
+     * @param dateTimeFormat the format to use for date (time is always short)
+     * @return the formatted date/time string
      */
     private String getFormattedDate(int dateTimeFormat) {
 
@@ -483,11 +553,12 @@ public class CmsJspInstanceDateBean {
     }
 
     /**
-     * Returns a flag, indicating if the current event is a multi-day event.
-     * The method is only called if the single event has an explicitely set end date
-     * or an explicitely changed whole day option.
+     * Returns a flag, indicating if this instance date is multi-day.<p>
      *
-     * @return a flag, indicating if the current event takes lasts over more than one day.
+     * The method is only called if this instance date has an explicitely set end date
+     * or an explicitely changed whole day option.<p>
+     *
+     * @return true if this instance date is multi-day
      */
     private boolean isSingleMultiDay() {
 
