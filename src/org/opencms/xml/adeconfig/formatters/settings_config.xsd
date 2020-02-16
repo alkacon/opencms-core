@@ -1,4 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: settings_config.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/settings_config_setting.xsd" />
     <xsd:element name="SettingsConfigs" type="OpenCmsSettingsConfigs" />
@@ -11,14 +14,16 @@
 
     <xsd:complexType name="OpenCmsSettingsConfig">
         <xsd:sequence>
-        	<xsd:element name="Setting" type="OpenCmsSettingsConfigSetting" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Setting" type="OpenCmsSettingsConfigSetting" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-   <xsd:annotation>
+
+    <xsd:annotation>
         <xsd:appinfo>
-        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
-        <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SettingsConfigSetting:label.FormatterSetting" />
+            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SettingsConfigSetting:label.FormatterSetting" />
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>

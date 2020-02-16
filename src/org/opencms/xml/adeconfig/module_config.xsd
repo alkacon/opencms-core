@@ -1,5 +1,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+
+    <!-- File: module_config.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/module_type.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/module_field.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/function_ref.xsd" />
@@ -11,7 +14,7 @@
             <xsd:element name="ModuleConfiguration" type="OpenCmsModuleConfiguration" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsModuleConfiguration">
         <xsd:sequence>
             <xsd:element name="ResourceType" type="OpenCmsModuleType" minOccurs="0" maxOccurs="unbounded" />
@@ -20,19 +23,17 @@
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+
     <xsd:annotation>
         <xsd:appinfo>
-		<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-			<tabs>
-				<tab element="ResourceType" name="TabResourceTypes" collapse="false" />
-				<tab element="Property" name="TabPropertyConfiguration" collapse="false" />
-				<tab element="FunctionRef" name="TabFunctions" collapse="false" />
-			</tabs>  			
-			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.ModuleConfiguration:label.SitemapConfiguration|label.ModuleType:label.ADEType" />
-        </xsd:appinfo>        
+        <resourcebundle name="org.opencms.xml.containerpage.messages" />
+            <tabs>
+                <tab element="ResourceType" name="TabResourceTypes" collapse="false" />
+                <tab element="Property" name="TabPropertyConfiguration" collapse="false" />
+                <tab element="FunctionRef" name="TabFunctions" collapse="false" />
+            </tabs>
+            <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.ModuleConfiguration:label.SitemapConfiguration|label.ModuleType:label.ADEType" />
+        </xsd:appinfo>
     </xsd:annotation>
-    
+
 </xsd:schema>
-
-
-		

@@ -1,34 +1,36 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+    <!-- File: restriction_range.xsd -->
 
-	<xsd:element name="DateRestrictionRanges" type="OpenCmsDateRestrictionRanges"/>
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 
-	<xsd:complexType name="OpenCmsDateRestrictionRanges">
-		<xsd:sequence>
-			<xsd:element name="DateRestrictionRange" type="OpenCmsDateRestrictionRange" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:element name="DateRestrictionRanges" type="OpenCmsDateRestrictionRanges"/>
 
-	<xsd:complexType name="OpenCmsDateRestrictionRange">
-		<xsd:sequence>
-			<xsd:element name="From" type="OpenCmsDateTime" minOccurs="0"  />
-			<xsd:element name="To" type="OpenCmsDateTime" minOccurs="0" />
-		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
-	</xsd:complexType>
-	
-	 <xsd:annotation>
+    <xsd:complexType name="OpenCmsDateRestrictionRanges">
+        <xsd:sequence>
+            <xsd:element name="DateRestrictionRange" type="OpenCmsDateRestrictionRange" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsDateRestrictionRange">
+        <xsd:sequence>
+            <xsd:element name="From" type="OpenCmsDateTime" minOccurs="0"  />
+            <xsd:element name="To" type="OpenCmsDateTime" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-			<defaults>
-				<default element="From" value="%(currenttime)"/>
-				<default element="To" value="%(currenttime)"/>
-			</defaults>
-			<layouts>
-				<layout element="From" widget="DateTimeWidget" />
-				<layout element="To" widget="DateTimeWidget" />
-			</layouts>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
+            <defaults>
+                <default element="From" value="%(currenttime)" />
+                <default element="To" value="%(currenttime)" />
+            </defaults>
+            <layouts>
+                <layout element="From" widget="DateTimeWidget" />
+                <layout element="To" widget="DateTimeWidget" />
+            </layouts>
         </xsd:appinfo>
     </xsd:annotation>
 

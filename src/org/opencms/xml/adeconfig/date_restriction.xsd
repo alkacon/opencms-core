@@ -1,29 +1,33 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: date_restriction.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/restriction_range.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/restriction_fromtoday.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/restriction_pastfuture.xsd" />
-    
+
     <xsd:element name="ListDateRestrictions" type="OpenCmsListDateRestrictions" />
-    
+
     <xsd:complexType name="OpenCmsListDateRestrictions">
         <xsd:sequence>
             <xsd:element name="ListDateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsListDateRestriction">
-        <xsd:choice>    
-	      	<xsd:element name="Range" type="OpenCmsDateRestrictionRange" minOccurs="0" maxOccurs="1" />
-	      	<xsd:element name="FromToday" type="OpenCmsDateRestrictionFromToday" minOccurs="0" maxOccurs="1" />
-	      	<xsd:element name="PastFuture" type="OpenCmsDateRestrictionPastFuture" minOccurs="0" maxOccurs="1" />
+        <xsd:choice>
+            <xsd:element name="Range" type="OpenCmsDateRestrictionRange" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="FromToday" type="OpenCmsDateRestrictionFromToday" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="PastFuture" type="OpenCmsDateRestrictionPastFuture" minOccurs="0" maxOccurs="1" />
         </xsd:choice>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-    
+
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>

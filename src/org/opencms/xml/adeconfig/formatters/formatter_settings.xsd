@@ -1,6 +1,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
+    <!-- File: formatter_settings.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
     <xsd:element name="FormatterSettings" type="OpenCmsFormatterSettings" />
 
@@ -26,9 +28,10 @@
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+
     <xsd:annotation>
         <xsd:appinfo>
-            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <layouts>
                 <layout element="Visibility" widget="SelectorWidget" configuration="element|elementAndParentShared|elementAndParentIndividual|parentShared|parentIndividual" />
                 <layout element="Widget" widget="ComboWidget" configuration="string:%(key.label.string)|select:%(key.label.select)|multicheck:%(key.label.multicheck)|checkbox:%(key.label.checkbox)|combo:%(key.label.combo)|selectcombo:%(key.label.selectcombo)|datebox:%(key.label.datebox)|gallery:%(key.label.link)|multiselectbox:%(key.label.multiselectbox)|radio:%(key.label.radio)|groupselection:%(key.label.groupselection)|hidden:%(key.label.hidden)" />
@@ -36,4 +39,5 @@
             </layouts>
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>

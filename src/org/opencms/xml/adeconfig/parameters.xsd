@@ -1,5 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
+    <!-- File: parameters.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
     <xsd:element name="Parameters" type="OpenCmsParameters" />

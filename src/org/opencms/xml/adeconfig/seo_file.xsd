@@ -1,82 +1,88 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+
+    <!-- File: seo_file.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
     <xsd:element name="SeoFiles" type="OpenCmsSeoFiles" />
-    
+
     <xsd:complexType name="OpenCmsSeoFiles">
         <xsd:sequence>
             <xsd:element name="SeoFile" type="OpenCmsSeoFile" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsSeoFile">
         <xsd:sequence>
-        	<xsd:element name="Mode" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-        	<xsd:element name="ComputeContPageDates" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="GeneratorClass" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="Cache" type="OpenCmsString"  minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="SitemapInclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
-        	<xsd:element name="SitemapExclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
-        	<xsd:element name="RobotsTxtText" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="ServerUrl" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Mode" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="ComputeContPageDates" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="GeneratorClass" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Cache" type="OpenCmsString"  minOccurs="0" maxOccurs="1" />
+            <xsd:element name="SitemapInclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="SitemapExclude" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="RobotsTxtText" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ServerUrl" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+
     <xsd:annotation>
         <xsd:appinfo>
-		<resourcebundles>
-				<xmlbundle name="org.opencms.xml.adeconfig.seo_file.xml">
-				<bundle locale="en">
-					<resource key="label.SeoFile.Mode">Mode</resource>
-					<resource key="label.SeoFile.Mode.help">Depending on the mode, this file will be either rendered as an XML sitemap or a robots.txt file which lists all sitemaps from  the site.</resource>
-					<resource key="label.SeoFile.ComputeContPageDates">Container page dates</resource>
-					<resource key="label.SeoFile.ComputeContPageDates.help">Enables or disables the (relatively expensive) computation of container page modification dates for the XML sitemap.</resource>
-					<resource key="label.SeoFile.Cache">Cache</resource>
-					<resource key="label.SeoFile.Cache.help">If enabled, XML sitemaps are cached for faster retrieval, but you need to refresh the cache periodically via a scheduled job.</resource>
-					<resource key="label.SeoFile.SitemapInclude">Include folder</resource>
-					<resource key="label.SeoFile.SitemapInclude.help">Include folder in XML sitemap.</resource>
-					<resource key="label.SeoFile.SitemapExclude">Exclude folder</resource>
-					<resource key="label.SeoFile.SitemapExclude.help">Exclude folder from XML sitemap.</resource>
-					<resource key="label.SeoFile.RobotsTxtText">robots.txt content</resource>
-					<resource key="label.SeoFile.RobotsTxtText.help">The text which will be inserted after the sitemap references if robots.txt mode is selected.</resource>
-					<resource key="label.SeoFile.GeneratorClass">Sitemap generator class</resource>
-					<resource key="label.SeoFile.GeneratorClass.help">The name of the custom Java class to use for sitemap generation (optional).</resource>
-					<resource key="label.SeoFile.ServerUrl">Server URL</resource>
-					<resource key="label.SeoFile.ServerUrl.help">Can be used to override the server URL for the generated links in an XML sitemap.</resource>
-					<resource key="choice.xmlsitemap">XML sitemap</resource>
-					<resource key="choice.robotstxt">robots.txt</resource>
-				</bundle> 
-				<bundle locale="de">
-					<resource key="label.SeoFile.Mode">Modus</resource>
-					<resource key="label.SeoFile.Mode.help">Abhängig vom Modus wird diese Datei entweder als XML-Sitemap oder als robots.txt Datei, welche alle Sitemaps der Site referenziert, dargestellt.</resource>
-					<resource key="label.SeoFile.ComputeContPageDates">Containerpage-Änderungsdaten</resource>
-					<resource key="label.SeoFile.ComputeContPageDates.help">Aktiviert oder deaktiviert die relativ aufwendige Berechnung von Containerpage-Änderungsdaten für die XML-Sitemap.</resource>
-					<resource key="label.SeoFile.Cache">Cache</resource>
-					<resource key="label.SeoFile.Cache.help">Wenn dies aktiviert ist, werden XML-Sitemaps gecacht, so dass Sie schneller abgerufen werden können, allerdings muss dann der Cache durch einen Vorgang regelmäßig aktualisiert werden.</resource>
-					<resource key="label.SeoFile.SitemapInclude">Ordner hinzufügen</resource>
-					<resource key="label.SeoFile.SitemapInclude.help">Fügt einen Ordner zur XML-Sitemap hinzu.</resource>
-					<resource key="label.SeoFile.SitemapExclude">Ordner ausschließen</resource>
-					<resource key="label.SeoFile.SitemapExclude.help">Schließt einen Ordner von der XML-Sitemap aus.</resource>
-					<resource key="label.SeoFile.RobotsTxtText">robots.txt-Inhalt</resource>
-					<resource key="label.SeoFile.RobotsTxtText.help">Der Text, der im robots.txt-Modus nach den Sitemap-Referenzen eingefügt wird.</resource>
-					<resource key="label.SeoFile.GeneratorClass">Sitemapgenerator-Klasse</resource>
-					<resource key="label.SeoFile.GeneratorClass.help">Der Name der Java-Klasse, die für die Erzeugung der Sitemap verwendet werden soll (optional).</resource>
-					<resource key="label.SeoFile.ServerUrl">Server-URL</resource>
-					<resource key="label.SeoFile.ServerUrl.help">Kann verwendet werden, um den Servernamen in den erzeugten Links der XML-Sitemap zu überschreiben.</resource>
-					
-					<resource key="choice.xmlsitemap">XML-Sitemap</resource>
-					<resource key="choice.robotstxt">robots.txt</resource>
-				</bundle>						
-				</xmlbundle>
-			</resourcebundles>
-			<defaults>
-				<default element="Mode" value="xmlsitemap" />
-			</defaults>
-			<layouts>
-				<layout element="Mode" widget="SelectorWidget" configuration="xmlsitemap*:%(key.choice.xmlsitemap)|robotstxt:%(key.choice.robotstxt)" />
-				<layout element="RobotsTxtText" widget="TextareaWidget" />
-				<layout element="Cache" widget="BooleanWidget" />
-			</layouts>
-        </xsd:appinfo>        
+            <resourcebundles>
+                <xmlbundle name="org.opencms.xml.adeconfig.seo_file.xml">
+                <bundle locale="en">
+                    <resource key="label.SeoFile.Mode">Mode</resource>
+                    <resource key="label.SeoFile.Mode.help">Depending on the mode, this file will be either rendered as an XML sitemap or a robots.txt file which lists all sitemaps from  the site.</resource>
+                    <resource key="label.SeoFile.ComputeContPageDates">Container page dates</resource>
+                    <resource key="label.SeoFile.ComputeContPageDates.help">Enables or disables the (relatively expensive) computation of container page modification dates for the XML sitemap.</resource>
+                    <resource key="label.SeoFile.Cache">Cache</resource>
+                    <resource key="label.SeoFile.Cache.help">If enabled, XML sitemaps are cached for faster retrieval, but you need to refresh the cache periodically via a scheduled job.</resource>
+                    <resource key="label.SeoFile.SitemapInclude">Include folder</resource>
+                    <resource key="label.SeoFile.SitemapInclude.help">Include folder in XML sitemap.</resource>
+                    <resource key="label.SeoFile.SitemapExclude">Exclude folder</resource>
+                    <resource key="label.SeoFile.SitemapExclude.help">Exclude folder from XML sitemap.</resource>
+                    <resource key="label.SeoFile.RobotsTxtText">robots.txt content</resource>
+                    <resource key="label.SeoFile.RobotsTxtText.help">The text which will be inserted after the sitemap references if robots.txt mode is selected.</resource>
+                    <resource key="label.SeoFile.GeneratorClass">Sitemap generator class</resource>
+                    <resource key="label.SeoFile.GeneratorClass.help">The name of the custom Java class to use for sitemap generation (optional).</resource>
+                    <resource key="label.SeoFile.ServerUrl">Server URL</resource>
+                    <resource key="label.SeoFile.ServerUrl.help">Can be used to override the server URL for the generated links in an XML sitemap.</resource>
+                    <resource key="choice.xmlsitemap">XML sitemap</resource>
+                    <resource key="choice.robotstxt">robots.txt</resource>
+                </bundle>
+                <bundle locale="de">
+                    <resource key="label.SeoFile.Mode">Modus</resource>
+                    <resource key="label.SeoFile.Mode.help">Abhängig vom Modus wird diese Datei entweder als XML-Sitemap oder als robots.txt Datei, welche alle Sitemaps der Site referenziert, dargestellt.</resource>
+                    <resource key="label.SeoFile.ComputeContPageDates">Containerpage-Änderungsdaten</resource>
+                    <resource key="label.SeoFile.ComputeContPageDates.help">Aktiviert oder deaktiviert die relativ aufwendige Berechnung von Containerpage-Änderungsdaten für die XML-Sitemap.</resource>
+                    <resource key="label.SeoFile.Cache">Cache</resource>
+                    <resource key="label.SeoFile.Cache.help">Wenn dies aktiviert ist, werden XML-Sitemaps gecacht, so dass Sie schneller abgerufen werden können, allerdings muss dann der Cache durch einen Vorgang regelmäßig aktualisiert werden.</resource>
+                    <resource key="label.SeoFile.SitemapInclude">Ordner hinzufügen</resource>
+                    <resource key="label.SeoFile.SitemapInclude.help">Fügt einen Ordner zur XML-Sitemap hinzu.</resource>
+                    <resource key="label.SeoFile.SitemapExclude">Ordner ausschließen</resource>
+                    <resource key="label.SeoFile.SitemapExclude.help">Schließt einen Ordner von der XML-Sitemap aus.</resource>
+                    <resource key="label.SeoFile.RobotsTxtText">robots.txt-Inhalt</resource>
+                    <resource key="label.SeoFile.RobotsTxtText.help">Der Text, der im robots.txt-Modus nach den Sitemap-Referenzen eingefügt wird.</resource>
+                    <resource key="label.SeoFile.GeneratorClass">Sitemapgenerator-Klasse</resource>
+                    <resource key="label.SeoFile.GeneratorClass.help">Der Name der Java-Klasse, die für die Erzeugung der Sitemap verwendet werden soll (optional).</resource>
+                    <resource key="label.SeoFile.ServerUrl">Server-URL</resource>
+                    <resource key="label.SeoFile.ServerUrl.help">Kann verwendet werden, um den Servernamen in den erzeugten Links der XML-Sitemap zu überschreiben.</resource>
+
+                    <resource key="choice.xmlsitemap">XML-Sitemap</resource>
+                    <resource key="choice.robotstxt">robots.txt</resource>
+                </bundle>
+                </xmlbundle>
+            </resourcebundles>
+            <defaults>
+                <default element="Mode" value="xmlsitemap" />
+            </defaults>
+            <layouts>
+                <layout element="Mode" widget="SelectorWidget" configuration="xmlsitemap*:%(key.choice.xmlsitemap)|robotstxt:%(key.choice.robotstxt)" />
+                <layout element="RobotsTxtText" widget="TextareaWidget" />
+                <layout element="Cache" widget="BooleanWidget" />
+            </layouts>
+        </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>
 

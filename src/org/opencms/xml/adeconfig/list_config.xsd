@@ -1,8 +1,12 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: list_config.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/date_restriction.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/list_category_folder_filter.xsd" />
+
     <xsd:element name="ListConfigs" type="OpenCmsListConfigs" />
 
     <xsd:complexType name="OpenCmsListConfigs">
@@ -14,23 +18,24 @@
     <xsd:complexType name="OpenCmsListConfig">
         <xsd:sequence>
         <xsd:element name="Title" type="OpenCmsString" />
-        <xsd:element name="TypesToCollect" type="OpenCmsDisplayFormatter" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element name="TypesToCollect" type="OpenCmsDisplayFormatter" minOccurs="1" maxOccurs="unbounded" />
         <xsd:element name="SearchFolder" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
         <xsd:element name="Category" type="OpenCmsCategory" />
         <xsd:element name="CategoryMode" type="OpenCmsString" />
         <xsd:element name="SortOrder" type="OpenCmsString" />
-        <xsd:element name="CategoryFolderFilter" type="OpenCmsListCategoryFolderFilter" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="CategoryFolderFilter" type="OpenCmsListCategoryFolderFilter" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
         <xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
         <xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
         <xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="25" />
+        <xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-      <xsd:annotation>
+
+    <xsd:annotation>
         <xsd:appinfo>
-            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <tabs>
                 <tab element="Title" collapse="false" name="TabGeneral" />
                 <tab element="CategoryFolderFilter" collapse="false" name="TabAdvanced" />
@@ -49,7 +54,7 @@
                 <layout element="SearchFolder" widget="VfsFileWidget" configuration="excludefiles" />
                 <layout element="Category" widget="CategoryWidget" configuration="onlyleafs=false" />
                 <layout element="CategoryMode" widget="SelectorWidget" configuration="AND:%(key.list_config.categoryModeAnd)|OR:%(key.list_config.categoryModeOr)" />
-                <layout element="SortOrder" widget="SelectorWidget"    configuration="
+                <layout element="SortOrder" widget="SelectorWidget" configuration="
                     DATE_ASC:%(key.list_config.sort.dateasc)|
                     DATE_DESC:%(key.list_config.sort.datedesc)|
                     TITLE_ASC:%(key.list_config.sort.titleasc)|
@@ -65,4 +70,5 @@
             </nestedformatters>
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>

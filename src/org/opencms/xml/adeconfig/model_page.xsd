@@ -1,26 +1,30 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: model_page.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
-  
+
     <xsd:element name="ADEModelPages" type="OpenCmsADEModelPages" />
-    
+
     <xsd:complexType name="OpenCmsADEModelPages">
         <xsd:sequence>
             <xsd:element name="ADEModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsADEModelPage">
-        <xsd:sequence>    
-	      	<xsd:element name="Page" type="OpenCmsVfsFile" />
-	      	<xsd:element name="Disabled" type="OpenCmsBoolean" />
-           	<xsd:element name="IsDefault" type="OpenCmsBoolean" />
+        <xsd:sequence>
+            <xsd:element name="Page" type="OpenCmsVfsFile" />
+            <xsd:element name="Disabled" type="OpenCmsBoolean" />
+            <xsd:element name="IsDefault" type="OpenCmsBoolean" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-    
+
     <xsd:annotation>
         <xsd:appinfo>
-	        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>

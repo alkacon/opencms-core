@@ -1,36 +1,39 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	
-	<xsd:element name="RedirectPages" type="OpenCmsRedirectPages"/>
-	
-	<xsd:complexType name="OpenCmsRedirectPages">
-		<xsd:sequence>
-			<xsd:element name="RedirectPage" type="OpenCmsRedirectPage" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsRedirectPage">
-		<xsd:sequence>
-			<xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1"/>
-			<xsd:element name="Type" type="OpenCmsString" />
-		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
-	</xsd:complexType>
-	
-	<xsd:annotation>
-		<xsd:appinfo>
-		    <handler class="org.opencms.xml.containerpage.CmsHtmlRedirectHandler"/>
-			<resourcebundle name="org.opencms.base.workplace" />
-			<layouts>
-					<layout element="Type" widget="SelectorWidget" configuration="value='301' option='${key.redirect.type.permanent}'|value='307' option='${key.redirect.type.temporary}'|value='sublevel' option='${key.redirect.type.sublevel}'" />
-			</layouts>
-			<validationrules>
-				<rule element="Link" regex=".+" type="error" message="%(key.redirect.error.emptylink)" />
-			</validationrules>
-			<defaults>
-			 	<default element="Type" value="307" />
-			</defaults>
-		</xsd:appinfo>
-	</xsd:annotation>  
+    <!-- File: redirect.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+    <xsd:element name="RedirectPages" type="OpenCmsRedirectPages"/>
+
+    <xsd:complexType name="OpenCmsRedirectPages">
+        <xsd:sequence>
+            <xsd:element name="RedirectPage" type="OpenCmsRedirectPage" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsRedirectPage">
+        <xsd:sequence>
+            <xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="Type" type="OpenCmsString" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="required" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <handler class="org.opencms.xml.containerpage.CmsHtmlRedirectHandler"/>
+            <resourcebundle name="org.opencms.base.workplace" />
+            <layouts>
+                    <layout element="Type" widget="SelectorWidget" configuration="value='301' option='${key.redirect.type.permanent}'|value='307' option='${key.redirect.type.temporary}'|value='sublevel' option='${key.redirect.type.sublevel}'" />
+            </layouts>
+            <validationrules>
+                <rule element="Link" regex=".+" type="error" message="%(key.redirect.error.emptylink)" />
+            </validationrules>
+            <defaults>
+                 <default element="Type" value="307" />
+            </defaults>
+        </xsd:appinfo>
+    </xsd:annotation>
+
 </xsd:schema>

@@ -1,5 +1,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+
+    <!-- File: sitemap_config.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
@@ -13,17 +16,17 @@
             <xsd:element name="SitemapConfiguration" type="OpenCmsSitemapConfiguration" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsSitemapConfiguration">
         <xsd:sequence>
-       		<xsd:element name="MasterConfig" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="MasterConfig" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="CreateContentsLocally" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="ExcludeExternalDetailContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="IncludeInSiteSelector" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="CreateContentsLocally" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ExcludeExternalDetailContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="IncludeInSiteSelector" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
-            
+
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
@@ -37,39 +40,38 @@
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-			<layouts>
-				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
-			</layouts>
-			<relations>
-            	<relation element="AddFormatters/AddFormatter" invalidate="false" />
-            	<relation element="RemoveFormatters/RemoveFormatter" invalidate="false" />
-            	<relation element="ResourceType/Folder/Path" invalidate="false" />
-            	<relation element="Function" invalidate="false" />
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
+            <layouts>
+                <layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
+            </layouts>
+            <relations>
+                <relation element="AddFormatters/AddFormatter" invalidate="false" />
+                <relation element="RemoveFormatters/RemoveFormatter" invalidate="false" />
+                <relation element="ResourceType/Folder/Path" invalidate="false" />
+                <relation element="Function" invalidate="false" />
 
-            	<relation element="MasterConfig" invalidate="false" />            	
-            	<relation element="ModelPage/Page" invalidate="false" />
-            	<relation element="DetailPage/Page" invalidate="false" />
-            	<relation element="ModelPage/Page" invalidate="false" />
-        	</relations>
-			<tabs>
-				<tab element="MasterConfig" name="TabResourceTypes" collapse="false" />
-				<tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
-				<tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
-				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
-				<tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
-				<tab element="DetailPage" name="TabDetailPages" collapse="false" />
-			</tabs>
-			<editorchangehandlers>
-				<editorchangehandler class="org.opencms.ade.contenteditor.CmsEditorChangeHandlerFormatterSelection"
-				                     scope="RemoveAllFormatters" 
-				                     configuration="" />
-			</editorchangehandlers>
-        </xsd:appinfo>        
+                <relation element="MasterConfig" invalidate="false" />
+                <relation element="ModelPage/Page" invalidate="false" />
+                <relation element="DetailPage/Page" invalidate="false" />
+                <relation element="ModelPage/Page" invalidate="false" />
+            </relations>
+            <tabs>
+                <tab element="MasterConfig" name="TabResourceTypes" collapse="false" />
+                <tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
+                <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
+                <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
+                <tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
+                <tab element="DetailPage" name="TabDetailPages" collapse="false" />
+            </tabs>
+            <editorchangehandlers>
+                <editorchangehandler class="org.opencms.ade.contenteditor.CmsEditorChangeHandlerFormatterSelection"
+                                     scope="RemoveAllFormatters"
+                                     configuration="" />
+            </editorchangehandlers>
+        </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>
-
-
-		

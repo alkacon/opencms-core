@@ -1,65 +1,71 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: flex_formatter.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_type_width.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/formatter_settings.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/meta_mapping.xsd" />
+
     <xsd:element name="FlexFormatters" type="OpenCmsFlexFormatters" />
-    
+
     <xsd:complexType name="OpenCmsFlexFormatters">
         <xsd:sequence>
             <xsd:element name="FlexFormatter" type="OpenCmsFlexFormatter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsFlexFormatter">
         <xsd:sequence>
-        	<xsd:element name="NiceName" type="OpenCmsString" />
-        	<xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
-        	<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
-        	<xsd:element name="Rank" type="OpenCmsString"/>
-        	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
-        	<xsd:element name="Display" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="NiceName" type="OpenCmsString" />
+            <xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
+            <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Rank" type="OpenCmsString"/>
+            <xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
+            <xsd:element name="Display" type="OpenCmsString" minOccurs="0" />
             <xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
-        	<xsd:element name="Detail" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="Detail" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="AllowsSettingsInEditor" type="OpenCmsBoolean" minOccurs="0" />
-        	<xsd:element name="StringTemplate" type="OpenCmsString" />
-        	<xsd:element name="PlaceholderStringTemplate" type="OpenCmsString" minOccurs="0" />
-        	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
-        	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
-        	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
-            
-        	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="StringTemplate" type="OpenCmsString" />
+            <xsd:element name="PlaceholderStringTemplate" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
+            <xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
+
+            <xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-   <xsd:annotation>
+
+    <xsd:annotation>
         <xsd:appinfo>
-        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
-        <defaults>
-			<default element="Rank" value="1000" />
-			<default element="Display" value="display" />
-			<default element="AutoEnabled" value="true" />
-			<default element="Detail" value="true" />
-			<default element="Setting/Visibility" value="both" />
-		</defaults>
-		<mappings>
-				<mapping element="NiceName" mapto="galleryName" />
-		</mappings>
-        <layouts>
-        	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
-        	<layout element="StringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
-        	<layout element="PlaceholderStringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
-        </layouts>
-        <validationrules>
-				<rule element="Type" regex=".+" type="error" message="%(key.err.resourcetype.notempty)" />
-		</validationrules>
-        <tabs>
-			<tab element="NiceName" name="TabBasic" collapse="false" />
-			<tab element="StringTemplate" name="TabTemplate" collapse="false" />
-			<tab element="PlaceholderStringTemplate" name="TabNewContent" collapse="false" />
-			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
-			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
-		</tabs>
-        </xsd:appinfo> 
-    </xsd:annotation>    
+            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <defaults>
+                <default element="Rank" value="1000" />
+                <default element="Display" value="display" />
+                <default element="AutoEnabled" value="true" />
+                <default element="Detail" value="true" />
+                <default element="Setting/Visibility" value="both" />
+            </defaults>
+            <mappings>
+                <mapping element="NiceName" mapto="galleryName" />
+            </mappings>
+            <layouts>
+                <layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+                <layout element="StringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
+                <layout element="PlaceholderStringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
+            </layouts>
+            <validationrules>
+                <rule element="Type" regex=".+" type="error" message="%(key.err.resourcetype.notempty)" />
+            </validationrules>
+            <tabs>
+                <tab element="NiceName" name="TabBasic" collapse="false" />
+                <tab element="StringTemplate" name="TabTemplate" collapse="false" />
+                <tab element="PlaceholderStringTemplate" name="TabNewContent" collapse="false" />
+                <tab element="IncludeSettings" name="TabSettings" collapse="false" />
+                <tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
+            </tabs>
+        </xsd:appinfo>
+    </xsd:annotation>
+
 </xsd:schema>

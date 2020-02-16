@@ -1,25 +1,31 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: remove_formatters_block.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
     <xsd:element name="RemoveFormattersBlocks" type="OpenCmsRemoveFormattersBlocks" />
-    
+
     <xsd:complexType name="OpenCmsRemoveFormattersBlocks">
         <xsd:sequence>
             <xsd:element name="RemoveFormattersBlock" type="OpenCmsRemoveFormattersBlock" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsRemoveFormattersBlock">
         <xsd:sequence>
-        	<xsd:element name="RemoveFormatter" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
-            </xsd:sequence>
+            <xsd:element name="RemoveFormatter" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-   <xsd:annotation>
+
+    <xsd:annotation>
         <xsd:appinfo>
-        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
-        <layouts>
-        	<layout element="RemoveFormatter" widget="org.opencms.widgets.CmsRemoveFormatterWidget" configuration="RemoveAllFormatters" display="singleline"/>
-        </layouts>
-        </xsd:appinfo> 
-    </xsd:annotation>    
+            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <layouts>
+                <layout element="RemoveFormatter" widget="org.opencms.widgets.CmsRemoveFormatterWidget" configuration="RemoveAllFormatters" display="singleline"/>
+            </layouts>
+        </xsd:appinfo>
+    </xsd:annotation>
+
 </xsd:schema>

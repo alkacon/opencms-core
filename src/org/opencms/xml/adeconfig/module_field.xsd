@@ -1,5 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
+    <!-- File: module_field.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
     <xsd:element name="ADEModuleFields" type="OpenCmsADEModuleFields" />
@@ -11,7 +13,7 @@
     </xsd:complexType>
 
     <xsd:complexType name="OpenCmsADEModuleField">
-        <xsd:sequence>    
+        <xsd:sequence>
             <xsd:element name="PropertyName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
             <xsd:element name="DisplayName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
@@ -29,12 +31,12 @@
 
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-		        <layouts>
-		           	<layout element="PreferFolder" widget="BooleanWidget" />
-		           	<layout element="Widget" widget="SelectorWidget" configuration="string|select|template" />
-		           	<layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)|wysiwyg:%(key.label.wysiwyg)" />
-		        </layouts>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
+            <layouts>
+                <layout element="PreferFolder" widget="BooleanWidget" />
+                <layout element="Widget" widget="SelectorWidget" configuration="string|select|template" />
+                <layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)|wysiwyg:%(key.label.wysiwyg)" />
+            </layouts>
         </xsd:appinfo>
     </xsd:annotation>
 

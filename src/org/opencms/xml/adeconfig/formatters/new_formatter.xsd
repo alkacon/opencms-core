@@ -1,4 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: new_formatter.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_headinclude_css.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_headinclude_js.xsd" />
@@ -6,23 +9,23 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_type_width.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/meta_mapping.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
-    
+
     <xsd:element name="NewFormatters" type="OpenCmsNewFormatters" />
-    
+
     <xsd:complexType name="OpenCmsNewFormatters">
         <xsd:sequence>
             <xsd:element name="NewFormatter" type="OpenCmsNewFormatter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsNewFormatter">
         <xsd:sequence>
-        	<xsd:element name="NiceName" type="OpenCmsString" />
-        	<xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
-    	    <xsd:element name="Jsp" type="OpenCmsVfsFile" />
-    	    <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
-        	<xsd:element name="Rank" type="OpenCmsString"/>
-        	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
+            <xsd:element name="NiceName" type="OpenCmsString" />
+            <xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
+            <xsd:element name="Jsp" type="OpenCmsVfsFile" />
+            <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Rank" type="OpenCmsString"/>
+            <xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
             <xsd:element name="Display" type="OpenCmsString" minOccurs="0"/>
             <xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
             <xsd:element name="SearchContent" type="OpenCmsBoolean" />
@@ -31,44 +34,46 @@
             <xsd:element name="AlwaysApplyMetaMappings" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="NestedFormatterSettings" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="AllowsSettingsInEditor" type="OpenCmsBoolean" minOccurs="0" />
-            <xsd:element name="Preview" type="OpenCmsBoolean" minOccurs="0"/>                    	
-        	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
-        	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
-        	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
-        	<xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Preview" type="OpenCmsBoolean" minOccurs="0"/>
+            <xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="MetaMapping" type="OpenCmsMetaMapping" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="Attribute" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
-   <xsd:annotation>
+
+    <xsd:annotation>
         <xsd:appinfo>
-        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
-        <defaults>
-			<default element="Rank" value="1000" />
-			<default element="Display" value="display" />
-			<default element="SearchContent" value="true" />
-			<default element="Setting/Visibility" value="both" />
-            <default element="StrictContainers" value="true" />
-		</defaults>
-		<mappings>
-				<mapping element="NiceName" mapto="galleryName" />
-		</mappings>
-        <layouts>
-        	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
-        	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
-        </layouts>
-        <relations>
-            <relation element="IncludeSettings" invalidate="false" />
-            <relation element="HeadIncludeCss/CssLink" invalidate="false" />
-            <relation element="HeadIncludeJs/JavascriptLink" invalidate="false" />
-        </relations>
-        <tabs>
-			<tab element="NiceName" name="TabBasic" collapse="false" />
-			<tab element="IncludeSettings" name="TabSettings" collapse="false" />
-			<tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
-            <tab element="Attribute" name="TabAttributes" collapse="false" />
-		</tabs>
-        </xsd:appinfo> 
-    </xsd:annotation>    
+            <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+            <defaults>
+                <default element="Rank" value="1000" />
+                <default element="Display" value="display" />
+                <default element="SearchContent" value="true" />
+                <default element="Setting/Visibility" value="both" />
+                <default element="StrictContainers" value="true" />
+            </defaults>
+            <mappings>
+                <mapping element="NiceName" mapto="galleryName" />
+            </mappings>
+            <layouts>
+                <layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+                <layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
+            </layouts>
+            <relations>
+                <relation element="IncludeSettings" invalidate="false" />
+                <relation element="HeadIncludeCss/CssLink" invalidate="false" />
+                <relation element="HeadIncludeJs/JavascriptLink" invalidate="false" />
+            </relations>
+            <tabs>
+                <tab element="NiceName" name="TabBasic" collapse="false" />
+                <tab element="IncludeSettings" name="TabSettings" collapse="false" />
+                <tab element="MetaMapping" name="TabMetaMappings" collapse="false" />
+                <tab element="Attribute" name="TabAttributes" collapse="false" />
+            </tabs>
+        </xsd:appinfo>
+    </xsd:annotation>
+
 </xsd:schema>

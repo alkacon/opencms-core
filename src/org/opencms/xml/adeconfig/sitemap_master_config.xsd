@@ -1,5 +1,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+
+    <!-- File: sitemap_master_config.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
@@ -13,11 +16,11 @@
             <xsd:element name="SitemapMasterConfiguration" type="OpenCmsSitemapMasterConfiguration" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsSitemapMasterConfiguration">
         <xsd:sequence>
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-        	<xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
@@ -29,31 +32,32 @@
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-			<layouts>
-				<layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
-                <layout element="AddFormatters/AddFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter"/>
-                <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter"/>
-			</layouts>
+            <resourcebundle name="org.opencms.xml.containerpage.messages" />
+            <layouts>
+                <layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config" />
+                <layout element="AddFormatters/AddFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
+                <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
+            </layouts>
             <relations>
                 <relation element="AddFormatters/AddFormatter" invalidate="false" />
                 <relation element="RemoveFormatters/RemoveFormatter" invalidate="false" />
                 <relation element="ResourceType/Folder/Path" invalidate="false" />
                 <relation element="Function" invalidate="false" />
             </relations>
-            
-			<tabs>
-				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
-				<tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
-				<tab element="RemoveAllFunctions" name="TabFunctions" collapse="false"  />
-				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
-			</tabs>
-			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />
-        </xsd:appinfo>        
+            <tabs>
+                <tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
+                <tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
+                <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
+                <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
+            </tabs>
+            <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />
+        </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>
 
 
-		
+

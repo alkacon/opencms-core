@@ -1,4 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: list_category_folder_filter.xsd -->
+
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
     <xsd:element name="ListCategoryFolderFilters" type="OpenCmsListCategoryFolderFilters" />
@@ -30,4 +33,5 @@
             </defaults>
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>

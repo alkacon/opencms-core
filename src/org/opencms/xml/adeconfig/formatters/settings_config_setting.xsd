@@ -1,6 +1,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
+    <!-- File: settings_config_setting.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
     <xsd:element name="SettingsConfigSettings" type="OpenCmsSettingsConfigSettings" />
 
@@ -26,6 +28,7 @@
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
+
     <xsd:annotation>
         <xsd:appinfo>
             <resourcebundle name="org.opencms.xml.containerpage.messages"/>
@@ -36,4 +39,5 @@
             </layouts>
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>
