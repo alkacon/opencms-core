@@ -220,7 +220,7 @@
       </index>
       <index class="org.opencms.search.solr.CmsSolrIndex">
         <name>Solr Offline</name>
-                <rebuild>manual</rebuild>
+        <rebuild>manual</rebuild>
         <project>Offline</project>
         <locale>all</locale>
         <configuration>solr_fields</configuration>
@@ -230,6 +230,17 @@
         <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
         <param name="search.solr.useLanguageDetection">true</param>
         <param name="search.solr.maxProcessedResults">1000</param>
+      </index>
+      <!-- Test Index needs only to be present. Not searched in currently. -->
+      <index class="org.opencms.search.solr.CmsSolrIndex">
+        <name>Test Index</name>
+        <rebuild>manual</rebuild>
+        <project>Online</project>
+        <locale>all</locale>
+        <configuration>solr_fields</configuration>
+        <sources>
+          <source>solr_source</source>
+        </sources>
       </index>
     </indexes>
     <indexsources>

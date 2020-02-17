@@ -27,10 +27,16 @@
 
 package org.opencms.jsp.search.config.parser;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.search.I_CmsSearchIndex;
+import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -57,40 +63,77 @@ public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestPlainQuerySearchConfigurationParser("testIndexAndCoreExtraction"));
-        return suite;
+        suite.addTest(new TestPlainQuerySearchConfigurationParser("testSpecialParamExtraction"));
+        TestSetup wrapper = new TestSetup(suite) {
+
+            @Override
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
+                // disable all lucene indexes
+                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        if (index != null) {
+                            index.setEnabled(false);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+        };
+
+        return wrapper;
     }
 
     /**
-     * Tests the extraction of the core and index parameters.
+     * Tests the extraction of the core, index and maxresults parameters.
+     * @throws CmsException if the cms object cannot be retrieved.
      */
     @org.junit.Test
-    public void testIndexAndCoreExtraction() {
+    public void testSpecialParamExtraction() throws CmsException {
 
+        CmsObject cms = getCmsObject();
         String configString = "a=foo&b=bar&fl=id,path";
         CmsSearchConfiguration config = new CmsSearchConfiguration(
-            new CmsPlainQuerySearchConfigurationParser(configString));
+            new CmsPlainQuerySearchConfigurationParser(configString),
+            cms);
         assertEquals(configString, config.getGeneralConfig().getExtraSolrParams());
 
         String configString2 = "a=foo&b=bar&fl=id,path&core=test";
-        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString2));
+        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString2), cms);
         assertEquals(configString, config.getGeneralConfig().getExtraSolrParams());
         assertEquals("test", config.getGeneralConfig().getSolrCore());
 
         String configString3 = "a=foo&core=test&b=bar&fl=id,path";
-        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString3));
+        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString3), cms);
         assertEquals(configString, config.getGeneralConfig().getExtraSolrParams());
         assertEquals("test", config.getGeneralConfig().getSolrCore());
 
         String configString4 = "core=test&a=foo&b=bar&fl=id,path";
-        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString4));
+        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString4), cms);
         assertEquals(configString, config.getGeneralConfig().getExtraSolrParams());
         assertEquals("test", config.getGeneralConfig().getSolrCore());
 
-        String configString5 = "core=test&a=foo&index=index&b=bar&fl=id,path";
-        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString5));
+        String configString5 = "core=test&a=foo&index=Test Index&b=bar&fl=id,path";
+        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString5), cms);
         assertEquals(configString, config.getGeneralConfig().getExtraSolrParams());
         assertEquals("test", config.getGeneralConfig().getSolrCore());
-        assertEquals("index", config.getGeneralConfig().getSolrIndex());
+        assertEquals("Test Index", config.getGeneralConfig().getSolrIndex());
+        assertEquals(
+            OpenCms.getSearchManager().getIndexSolr("Test Index").getMaxProcessedResults(),
+            config.getGeneralConfig().getMaxReturnedResults());
+
+        String configString6 = "core=test&a=foo&index=Test Index&b=bar&fl=id,path&maxresults=123";
+        config = new CmsSearchConfiguration(new CmsPlainQuerySearchConfigurationParser(configString6), cms);
+        assertEquals(configString, config.getGeneralConfig().getExtraSolrParams());
+        assertEquals("test", config.getGeneralConfig().getSolrCore());
+        assertEquals("Test Index", config.getGeneralConfig().getSolrIndex());
+        assertEquals(123, config.getGeneralConfig().getMaxReturnedResults());
     }
 }

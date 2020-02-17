@@ -100,6 +100,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSING_PAGE_SIZES_FAILED_1 = "LOG_PARSING_PAGE_SIZES_FAILED_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REQUESTED_INDEX_NOT_CONFIGURED_USING_DEFAULT_1 = "ERR_REQUESTED_INDEX_NOT_CONFIGURED_USING_DEFAULT_1";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.search.config.parser.messages";
 

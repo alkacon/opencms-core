@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.result;
 
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrQuery;
@@ -120,6 +121,13 @@ public interface I_CmsSearchResultWrapper {
      * @return The number of resources that where found.
      */
     long getNumFound();
+
+    /**
+     * Returns the number of maximally returned results, this is the minimum of the number of found results {@link #getNumFound()}
+     * and the number of results maximally processed {@link I_CmsSearchConfigurationCommon#getMaxReturnedResults()}
+     * @return the number of maximally returned results.
+     */
+    long getNumMaxReturned();
 
     /** Returns the number of pages necessary to show all search results.
      * @return The number of pages necessary to show all search results.

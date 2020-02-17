@@ -69,6 +69,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
     /** Sort options that are available by default. */
     public static enum SortOption {
+
         /** Sort by date ascending. */
         DATE_ASC,
         /** Sort by date descending. */
@@ -398,6 +399,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     protected Boolean getIgnoreReleaseDate() {
 
         return getIgnoreReleaseAndExpiration();
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser#getMaxReturnedResults(java.lang.String)
+     */
+    @Override
+    protected int getMaxReturnedResults(String indexName) {
+
+        return null != m_config.getMaximallyReturnedResults()
+        ? m_config.getMaximallyReturnedResults().intValue()
+        : super.getMaxReturnedResults(indexName);
     }
 
     /**

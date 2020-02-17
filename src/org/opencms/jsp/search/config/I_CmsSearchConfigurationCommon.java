@@ -73,10 +73,19 @@ public interface I_CmsSearchConfigurationCommon {
      */
     String getLastQueryParam();
 
+    /** Returns the number of maximally returned results.
+     *
+     * NOTE: If not explicitly specified, this value is read from the (index specific) system wide configuration.
+     *
+     * @return number of maximally returned results,.
+     */
+    int getMaxReturnedResults();
+
     /** Modifies the query string according to the specified query modifier.
      * @param queryString the query to modify.
      * @return the modified query.
      */
+
     String getModifiedQuery(String queryString);
 
     /** Returns the modifier for queries.
@@ -104,8 +113,8 @@ public interface I_CmsSearchConfigurationCommon {
      */
     String getSolrCore();
 
-    /** Returns the Solr index that should be used. Can also be <code>null</code>.
-     * @return The Solr index to use, or <code>null</code> if none is configured.
+    /** Returns the Solr index that should be used.
+     * @return The Solr index to use.
      */
     String getSolrIndex();
 

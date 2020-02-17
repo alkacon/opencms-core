@@ -324,35 +324,29 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
                     String configString = new String(
                         configFile.getContents(),
                         CmsLocaleManager.getResourceEncoding(m_cms, configFile));
-                    config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
+                    config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString), m_cms);
                 } else { // assume XML
                     CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, configFile);
                     config = new CmsSearchConfiguration(
-                        new CmsXMLSearchConfigurationParser(xmlContent, m_cms.getRequestContext().getLocale()));
+                        new CmsXMLSearchConfigurationParser(xmlContent, m_cms.getRequestContext().getLocale()),
+                        m_cms);
                 }
             }
             if (m_configString != null) {
                 if (m_configString.trim().startsWith("{")) {
-                    config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString, config));
+                    config = new CmsSearchConfiguration(
+                        new CmsJSONSearchConfigurationParser(m_configString, config),
+                        m_cms);
                 } else {
                     config = new CmsSearchConfiguration(
-                        new CmsPlainQuerySearchConfigurationParser(m_configString, config));
+                        new CmsPlainQuerySearchConfigurationParser(m_configString, config),
+                        m_cms);
                 }
             }
             m_searchController = new CmsSearchController(config);
 
             String indexName = m_searchController.getCommon().getConfig().getSolrIndex();
-            // try to use configured index
-            if ((indexName != null) && !indexName.trim().isEmpty()) {
-                m_index = OpenCms.getSearchManager().getIndexSolr(indexName);
-            }
-            // if not successful, use the following default
-            if (m_index == null) {
-                m_index = OpenCms.getSearchManager().getIndexSolr(
-                    m_cms.getRequestContext().getCurrentProject().isOnlineProject()
-                    ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
-                    : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
-            }
+            m_index = OpenCms.getSearchManager().getIndexSolr(indexName);
 
             storeAttribute(getVar(), getSearchResults());
 
@@ -429,7 +423,10 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
                 m_cms,
                 query.clone(), // use a clone of the query, since the search function manipulates the query (removes highlighting parts), but we want to keep the original one.
                 true,
-                isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null);
+                null,
+                false,
+                isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null,
+                m_searchController.getCommon().getConfig().getMaxReturnedResults());
             return new CmsSearchResultWrapper(m_searchController, solrResultList, query, m_cms, null);
         } catch (CmsSearchException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);

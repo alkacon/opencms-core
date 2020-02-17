@@ -51,6 +51,10 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.search.I_CmsSearchIndex;
+import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -64,6 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -92,7 +97,32 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.addTest(new TestJSONSearchConfigurationParser("testParseCompleteConfiguration"));
         suite.addTest(new TestJSONSearchConfigurationParser("testParseMultiplePageSizes"));
-        return suite;
+
+        TestSetup wrapper = new TestSetup(suite) {
+
+            @Override
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
+                // disable all lucene indexes
+                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        if (index != null) {
+                            index.setEnabled(false);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+        };
+
+        return wrapper;
     }
 
     /**
@@ -100,15 +130,17 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
      *
      * @throws IOException thrown if reading the configuration file with the test configuration fails
      * @throws URISyntaxException thrown if reading the configuration file with the test configuration fails
+     * @throws CmsException thrown if the CmsObject cannot be retrieved.
      */
     @org.junit.Test
-    public void testParseCompleteConfiguration() throws IOException, URISyntaxException {
+    public void testParseCompleteConfiguration() throws IOException, URISyntaxException, CmsException {
 
         String configString = new String(
             Files.readAllBytes(Paths.get(getClass().getResource("fullConfig.json").toURI())));
         try {
             CmsSearchConfiguration config = new CmsSearchConfiguration(
-                new CmsJSONSearchConfigurationParser(configString));
+                new CmsJSONSearchConfigurationParser(configString),
+                getCmsObject());
             testParseCompleteConfigurationInternal(config);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -120,15 +152,17 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
      * Test if parsing multiple page sizes as hyphen separated string works.
      * @throws IOException
      * @throws URISyntaxException
+     * @throws CmsException
      */
     @org.junit.Test
-    public void testParseMultiplePageSizes() throws IOException, URISyntaxException {
+    public void testParseMultiplePageSizes() throws IOException, URISyntaxException, CmsException {
 
         String configString = new String(
             Files.readAllBytes(Paths.get(getClass().getResource("multiplePageSizes.json").toURI())));
         try {
             CmsSearchConfiguration config = new CmsSearchConfiguration(
-                new CmsJSONSearchConfigurationParser(configString));
+                new CmsJSONSearchConfigurationParser(configString),
+                getCmsObject());
             List<Integer> pageSizes = new ArrayList<>(2);
             pageSizes.add(Integer.valueOf(5));
             pageSizes.add(Integer.valueOf(8));
@@ -163,12 +197,13 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
             Boolean.FALSE,
             Boolean.TRUE,
             "content_en:%(query) OR content_de:%(query) OR spell:%(query) OR Title_prop:%(query)",
-            "Solr Test Index",
-            "Solr Test Core",
+            "Test Index",
+            "Test Core",
             "fq=type:plain",
             additionalParameters,
             Boolean.TRUE,
-            Boolean.TRUE);
+            Boolean.TRUE,
+            345);
         ConfigurationTester.testGeneralConfiguration(commonConfig, config.getGeneralConfig());
 
         // Test pagination configuration

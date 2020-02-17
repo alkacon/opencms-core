@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
@@ -250,6 +251,9 @@ I_CmsCachableApp {
             }
         }
 
+        /** Special parameter to configure the maximally returned results. */
+        private static final String ADDITIONAL_PARAM_MAX_RETURNED_RESULTS = "maxresults";
+
         /** The additional content parameters. */
         private Map<String, String> m_additionalParameters;
 
@@ -383,6 +387,25 @@ I_CmsCachableApp {
         public List<String> getFolders() {
 
             return m_folders;
+        }
+
+        /**
+         * Returns the number of results to return maximally, or <code>null</code> if not explicitly specified.
+         * @return the number of results to return maximally, or <code>null</code> if not explicitly specified.
+         */
+        public Integer getMaximallyReturnedResults() {
+
+            String resString = m_additionalParameters.get(ADDITIONAL_PARAM_MAX_RETURNED_RESULTS);
+            if (null != resString) {
+                try {
+                    return Integer.valueOf(resString);
+                } catch (NumberFormatException e) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error("Ignoring invalid maxresults param " + resString + " in list-config.");
+                    }
+                }
+            }
+            return null;
         }
 
         /**
@@ -898,7 +921,7 @@ I_CmsCachableApp {
         "DEC"};
 
     /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsListManager.class.getName());
+    static final Log LOG = CmsLog.getLog(CmsListManager.class.getName());
 
     /** Default backend pagination. */
     private static final I_CmsSearchConfigurationPagination PAGINATION = new CmsSearchConfigurationPagination(
@@ -1447,8 +1470,8 @@ I_CmsCachableApp {
                     && ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED) == null)
                         || ((Boolean)item.getItemProperty(
                             CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue())) {
-                    style += OpenCmsTheme.IN_NAVIGATION + " ";
-                }
+                                style += OpenCmsTheme.IN_NAVIGATION + " ";
+                            }
                 if (INFO_PROPERTY_LABEL.equals(propertyId)) {
                     if (blacklisted.booleanValue()) {
                         style += OpenCmsTheme.TABLE_COLUMN_BOX_BLACK;
@@ -1712,7 +1735,8 @@ I_CmsCachableApp {
         }
 
         CmsSolrQuery query = m_currentConfigParser.getInitialQuery();
-        CmsSearchController controller = new CmsSearchController(new CmsSearchConfiguration(m_currentConfigParser));
+        CmsSearchController controller = new CmsSearchController(
+            new CmsSearchConfiguration(m_currentConfigParser, A_CmsUI.getCmsObject()));
         controller.getPagination().getState().setCurrentPage(1);
         if (fieldFacets != null) {
             Map<String, I_CmsSearchControllerFacetField> fieldFacetControllers = controller.getFieldFacets().getFieldFacetController();
@@ -1755,23 +1779,23 @@ I_CmsCachableApp {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX))) {
-            crumbs.put(
-                CmsListManagerConfiguration.APP_ID,
-                CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
-            String title = "";
-            try {
-                title = A_CmsUI.getCmsObject().readPropertyObject(
-                    m_currentResource,
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    false).getValue();
-            } catch (Exception e) {
-                // ignore
+                crumbs.put(
+                    CmsListManagerConfiguration.APP_ID,
+                    CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
+                String title = "";
+                try {
+                    title = A_CmsUI.getCmsObject().readPropertyObject(
+                        m_currentResource,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false).getValue();
+                } catch (Exception e) {
+                    // ignore
+                }
+                if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                    title = m_currentResource.getName();
+                }
+                crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_VIEW_1, title));
             }
-            if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = m_currentResource.getName();
-            }
-            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_VIEW_1, title));
-        }
         return crumbs;
     }
 
@@ -2075,13 +2099,21 @@ I_CmsCachableApp {
             result.add(m_currentResource);
             CmsObject cms = A_CmsUI.getCmsObject();
             CmsSolrQuery query = m_currentConfigParser.getInitialQuery();
-            CmsSearchController controller = new CmsSearchController(new CmsSearchConfiguration(m_currentConfigParser));
+            CmsSearchController controller = new CmsSearchController(
+                new CmsSearchConfiguration(m_currentConfigParser, A_CmsUI.getCmsObject()));
             controller.getPagination().getState().setCurrentPage(1);
             controller.addQueryParts(query, A_CmsUI.getCmsObject());
-
-            CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
+            I_CmsSearchConfigurationCommon commonConfig = controller.getCommon().getConfig();
+            CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(commonConfig.getSolrIndex());
             try {
-                CmsSolrResultList solrResultList = index.search(cms, query, true, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsSolrResultList solrResultList = index.search(
+                    cms,
+                    query,
+                    true,
+                    null,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION,
+                    commonConfig.getMaxReturnedResults());
                 result.addAll(solrResultList);
             } catch (CmsSearchException e) {
                 LOG.error("Error reading resources for publish.", e);
@@ -2253,12 +2285,17 @@ I_CmsCachableApp {
     private void executeSearch(CmsSearchController controller, CmsSolrQuery query) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(
-            cms.getRequestContext().getCurrentProject().isOnlineProject()
-            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
-            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
+        I_CmsSearchConfigurationCommon commonConfig = controller.getCommon().getConfig();
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(commonConfig.getSolrIndex());
         try {
-            CmsSolrResultList solrResultList = index.search(cms, query, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsSolrResultList solrResultList = index.search(
+                cms,
+                query,
+                true,
+                null,
+                false,
+                CmsResourceFilter.IGNORE_EXPIRATION,
+                commonConfig.getMaxReturnedResults());
             displayResult(solrResultList);
             m_resultFacets.displayFacetResult(
                 solrResultList,

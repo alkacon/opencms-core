@@ -1,105 +1,108 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/additionalparam.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/sortoption.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/fieldfacet.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/rangefacet.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/queryfacet.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/highlighting.xsd"/>
-	<xsd:include schemaLocation="internal://org/opencms/jsp/search/didyoumean.xsd"/>
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/additionalparam.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/sortoption.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/fieldfacet.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/rangefacet.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/queryfacet.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/highlighting.xsd"/>
+    <xsd:include schemaLocation="internal://org/opencms/jsp/search/didyoumean.xsd"/>
 
-	<xsd:element name="JspSearchConfigs" type="OpenCmsJspSearchConfigs"/>
+    <xsd:element name="JspSearchConfigs" type="OpenCmsJspSearchConfigs"/>
 
-	<xsd:complexType name="OpenCmsJspSearchConfigs">
-		<xsd:sequence>
-			<xsd:element name="JspSearchConfig" type="OpenCmsJspSearchConfig" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsJspSearchConfigs">
+        <xsd:sequence>
+            <xsd:element name="JspSearchConfig" type="OpenCmsJspSearchConfig" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsJspSearchConfig">
-		<xsd:sequence>
-			<xsd:element name="Title" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Core" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="Index" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="SearchForEmptyQuery" type="OpenCmsBoolean" minOccurs="0" />
-			<xsd:element name="IgnoreQuery" type="OpenCmsBoolean" minOccurs="0" />
-			<xsd:element name="IgnoreReleaseDate" type="OpenCmsBoolean" minOccurs="0" />
-			<xsd:element name="IgnoreExpirationDate" type="OpenCmsBoolean" minOccurs="0" />
-			<xsd:element name="QueryModifier" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="LastQueryParam" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="EscapeQueryCharacters" type="OpenCmsBoolean" minOccurs="0" />
-			<xsd:element name="ReloadedParam" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="ExtraSolrParams" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="AdditionalRequestParams" type="OpenCmsAdditionalParamConfig" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="PageParam" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="PageSize" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="PageNavLength" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="SortParam" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="SortOption" type="OpenCmsSortOptionConfig" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="FieldFacet" type="OpenCmsFieldFacetConfig" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="RangeFacet" type="OpenCmsRangeFacetConfig" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="QueryFacet" type="OpenCmsQueryFacetConfig" minOccurs="0" />
-			<xsd:element name="Highlighting" type="OpenCmsHighlightingConfig" minOccurs="0" />
-			<xsd:element name="DidYouMean" type="OpenCmsDidYouMeanConfig" minOccurs="0" />
-		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsJspSearchConfig">
+        <xsd:sequence>
+            <xsd:element name="Title" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Core" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Index" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="MaxReturnedResults" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="SearchForEmptyQuery" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="IgnoreQuery" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="IgnoreReleaseDate" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="IgnoreExpirationDate" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="QueryModifier" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="LastQueryParam" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="EscapeQueryCharacters" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="ReloadedParam" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="ExtraSolrParams" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="AdditionalRequestParams" type="OpenCmsAdditionalParamConfig" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="PageParam" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="PageSize" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="PageNavLength" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="SortParam" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="SortOption" type="OpenCmsSortOptionConfig" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="FieldFacet" type="OpenCmsFieldFacetConfig" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="RangeFacet" type="OpenCmsRangeFacetConfig" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="QueryFacet" type="OpenCmsQueryFacetConfig" minOccurs="0" />
+            <xsd:element name="Highlighting" type="OpenCmsHighlightingConfig" minOccurs="0" />
+            <xsd:element name="DidYouMean" type="OpenCmsDidYouMeanConfig" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+    </xsd:complexType>
 
-	<xsd:annotation>
-		<xsd:appinfo>
-			<resourcebundle name="org.opencms.jsp.search.messages" />
-			<mappings>
-				<mapping element="Title" mapto="property:Title" />
-			</mappings>
-			<defaults>
-				<default element="IgnoreQuery" value="true" />
-				<default element="IgnoreReleaseDate" value="true" />
-				<default element="IgnoreExpirationDate" value="true" />
-				<default element="EscapeQueryCharacters" value="true" />
-			</defaults>
-			<layouts/>
-			<validationrules/>
-			<relations/>
-			<searchsettings containerPageOnly="true" >
-				<searchsetting element="Title" searchcontent="false" />
-				<searchsetting element="Core" searchcontent="false" />
-				<searchsetting element="Index" searchcontent="false" />
-				<searchsetting element="SearchForEmptyQuery" searchcontent="false" />
-				<searchsetting element="IgnoreQuery" searchcontent="false" />
-				<searchsetting element="IgnoreReleaseDate" searchcontent="false" />
-				<searchsetting element="IgnoreExpirationDate" searchcontent="false" />
-				<searchsetting element="QueryModifier" searchcontent="false" />
-				<searchsetting element="QueryParam" searchcontent="false" />
-				<searchsetting element="LastQueryParam" searchcontent="false" />
-				<searchsetting element="EscapeQueryCharacters" searchcontent="false" />
-				<searchsetting element="ReloadedParam" searchcontent="false" />
-				<searchsetting element="ExtraSolrParams" searchcontent="false" />
-				<searchsetting element="AdditionalRequestParams" searchcontent="false" />
-				<searchsetting element="PageParam" searchcontent="false" />
-				<searchsetting element="PageSize" searchcontent="false" />
-				<searchsetting element="PageNavLength" searchcontent="false" />
-				<searchsetting element="SortParam" searchcontent="false" />
-				<searchsetting element="SortOption" searchcontent="false" />
-				<searchsetting element="FieldFacet" searchcontent="false" />
-				<searchsetting element="RangeFacet" searchcontent="false" />
-				<searchsetting element="QueryFacet" searchcontent="false" />
-				<searchsetting element="Highlighting" searchcontent="false" />
-				<searchsetting element="DidYouMean" searchcontent="false" />
-			</searchsettings>
-			<tabs>
-				<tab element="Title" name="Common"/>
-				<tab element="SearchForEmptyQuery" name="QueryOptions" />
-				<tab element="PageParam" name="Pagination"/>
-				<tab element="SortParam" name="SortOptions"/>
-				<tab element="FieldFacet" name="FieldFacets"/>
-				<tab element="RangeFacet" name="RangeFacets"/>
-				<tab element="QueryFacet" name="QueryFacets"/>
-				<tab element="Highlighting" name="Highlighting"/>
-				<tab element="DidYouMean" name="DidYouMeanTab"/>
-			</tabs>
-		</xsd:appinfo>
-	</xsd:annotation>
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundle name="org.opencms.jsp.search.messages" />
+            <mappings>
+                <mapping element="Title" mapto="property:Title" />
+            </mappings>
+            <defaults>
+                <default element="IgnoreQuery" value="true" />
+                <default element="IgnoreReleaseDate" value="true" />
+                <default element="IgnoreExpirationDate" value="true" />
+                <default element="EscapeQueryCharacters" value="true" />
+            </defaults>
+            <layouts/>
+            <validationrules>
+                <rule element="MaxReturnedResults" regex="(([1-9]\d{0,9})|-1|0)" type="error" message="%(key.validation.error.maxreturnedresults)" />
+            </validationrules>
+            <relations/>
+            <searchsettings containerPageOnly="true" >
+                <searchsetting element="Title" searchcontent="false" />
+                <searchsetting element="Core" searchcontent="false" />
+                <searchsetting element="Index" searchcontent="false" />
+                <searchsetting element="SearchForEmptyQuery" searchcontent="false" />
+                <searchsetting element="IgnoreQuery" searchcontent="false" />
+                <searchsetting element="IgnoreReleaseDate" searchcontent="false" />
+                <searchsetting element="IgnoreExpirationDate" searchcontent="false" />
+                <searchsetting element="QueryModifier" searchcontent="false" />
+                <searchsetting element="QueryParam" searchcontent="false" />
+                <searchsetting element="LastQueryParam" searchcontent="false" />
+                <searchsetting element="EscapeQueryCharacters" searchcontent="false" />
+                <searchsetting element="ReloadedParam" searchcontent="false" />
+                <searchsetting element="ExtraSolrParams" searchcontent="false" />
+                <searchsetting element="AdditionalRequestParams" searchcontent="false" />
+                <searchsetting element="PageParam" searchcontent="false" />
+                <searchsetting element="PageSize" searchcontent="false" />
+                <searchsetting element="PageNavLength" searchcontent="false" />
+                <searchsetting element="SortParam" searchcontent="false" />
+                <searchsetting element="SortOption" searchcontent="false" />
+                <searchsetting element="FieldFacet" searchcontent="false" />
+                <searchsetting element="RangeFacet" searchcontent="false" />
+                <searchsetting element="QueryFacet" searchcontent="false" />
+                <searchsetting element="Highlighting" searchcontent="false" />
+                <searchsetting element="DidYouMean" searchcontent="false" />
+            </searchsettings>
+            <tabs>
+                <tab element="Title" name="Common"/>
+                <tab element="SearchForEmptyQuery" name="QueryOptions" />
+                <tab element="PageParam" name="Pagination"/>
+                <tab element="SortParam" name="SortOptions"/>
+                <tab element="FieldFacet" name="FieldFacets"/>
+                <tab element="RangeFacet" name="RangeFacets"/>
+                <tab element="QueryFacet" name="QueryFacets"/>
+                <tab element="Highlighting" name="Highlighting"/>
+                <tab element="DidYouMean" name="DidYouMeanTab"/>
+            </tabs>
+        </xsd:appinfo>
+    </xsd:annotation>
 
 </xsd:schema>

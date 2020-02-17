@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config.parser;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
@@ -49,6 +50,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -75,6 +78,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_QUERYPARAM = "QueryParam";
     /** XML element name. */
     private static final String XML_ELEMENT_LAST_QUERYPARAM = "LastQueryParam";
+    /** XML element name. */
+    private static final String XML_ELEMENT_MAX_RETURNED_RESULTS = "MaxReturnedResults";
     /** XML element name. */
     private static final String XML_ELEMENT_ESCAPE_QUERY_CHARACTERS = "EscapeQueryCharacters";
     /** XML element name. */
@@ -226,10 +231,12 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon(CmsObject)
      */
     @Override
-    public I_CmsSearchConfigurationCommon parseCommon() {
+    public I_CmsSearchConfigurationCommon parseCommon(CmsObject cms) {
+
+        String indexName = getIndex(cms);
 
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
@@ -239,12 +246,13 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             getSearchForEmtpyQuery(),
             getIgnoreQuery(),
             getQueryModifier(),
-            getIndex(),
+            indexName,
             getCore(),
             getExtraSolrParams(),
             getAdditionalRequestParameters(),
             getIgnoreReleaseDate(),
-            getIgnoreExpirationDate());
+            getIgnoreExpirationDate(),
+            getMaxReturnedResults(indexName));
     }
 
     /**
@@ -401,6 +409,20 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         ? options.get(0)
         : null;
         return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultOption);
+    }
+
+    /** Returns the number of maximally returned results, or <code>null</code> if the indexes default should be used.
+     * @param indexName the name of the index to search in.
+     * @return The number of maximally returned results, or <code>null</code> if the indexes default should be used.
+     */
+    protected int getMaxReturnedResults(String indexName) {
+
+        Integer maxReturnedResults = parseOptionalIntValue(XML_ELEMENT_MAX_RETURNED_RESULTS);
+        if (null == maxReturnedResults) {
+            return OpenCms.getSearchManager().getIndexSolr(indexName).getMaxProcessedResults();
+        } else {
+            return maxReturnedResults.intValue();
+        }
     }
 
     /** Helper to read a mandatory String value list.
@@ -695,16 +717,30 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     }
 
     /** Returns the configured Solr index, or <code>null</code> if the core is not specified.
+     * @param cms the current context.
      * @return The configured Solr index, or <code>null</code> if the core is not specified.
      */
-    private String getIndex() {
+    private String getIndex(CmsObject cms) {
 
-        try {
-            return parseMandatoryStringValue(XML_ELEMENT_INDEX);
-        } catch (final Exception e) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_SPECIFIED_0), e);
-            return null;
+        String indexName = parseOptionalStringValue(XML_ELEMENT_INDEX);
+        if (null != indexName) {
+            indexName = indexName.trim();
+            try {
+                if (null != OpenCms.getSearchManager().getIndexSolr(indexName)) {
+                    return indexName;
+                }
+            } catch (Throwable t) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_REQUESTED_INDEX_NOT_CONFIGURED_USING_DEFAULT_1,
+                            indexName));
+                }
+            }
         }
+        return cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+        : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
     }
 
     /** Returns the configured request parameter for the last query, or the default parameter if the core is not specified.

@@ -185,7 +185,8 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
 
         String configString = new String(Files.readAllBytes(Paths.get(getClass().getResource("config.json").toURI())));
         I_CmsSearchConfiguration config = new CmsSearchConfiguration(
-            new CmsJSONSearchConfigurationParser(configString));
+            new CmsJSONSearchConfigurationParser(configString),
+            getCmsObject());
 
         I_CmsSearchControllerMain searchController = new CmsSearchController(config);
 
@@ -218,7 +219,10 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
                 getCmsObject(),
                 query.clone(), // use a clone of the query, since the search function manipulates the query (removes highlighting parts), but we want to keep the original one.
                 true,
-                CmsResourceFilter.IGNORE_EXPIRATION);
+                null,
+                false,
+                CmsResourceFilter.IGNORE_EXPIRATION,
+                searchController.getCommon().getConfig().getMaxReturnedResults());
             searchResult = new CmsSearchResultWrapper(searchController, solrResultList, query, getCmsObject(), null);
         }
         return searchResult;

@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser;
 
 import java.util.ArrayList;
@@ -64,10 +65,11 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
 
     /** Constructor to initialize the configuration object via a configuration parser.
      * @param parser The configuration parser that's used to read the configuration.
+     * @param cms The current context.
      */
-    public CmsSearchConfiguration(final I_CmsSearchConfigurationParser parser) {
+    public CmsSearchConfiguration(final I_CmsSearchConfigurationParser parser, CmsObject cms) {
 
-        m_general = parser.parseCommon();
+        m_general = parser.parseCommon(cms);
         m_pagination = parser.parsePagination();
         m_sorting = parser.parseSorting();
         m_fieldFacets = parser.parseFieldFacets();

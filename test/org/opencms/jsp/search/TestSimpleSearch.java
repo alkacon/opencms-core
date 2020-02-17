@@ -171,12 +171,20 @@ public class TestSimpleSearch extends OpenCmsTestCase {
         CmsResource listConfig = cms.readResource(CmsStringUtil.joinPaths(LIST_BASE_FOLDER, listName));
         ListConfigurationBean listConfigBean = CmsListManager.parseListConfiguration(cms, listConfig);
         I_CmsSearchConfiguration config = new CmsSearchConfiguration(
-            CmsSimpleSearchConfigurationParser.createInstanceWithNoJsonConfig(getCmsObject(), listConfigBean));
+            CmsSimpleSearchConfigurationParser.createInstanceWithNoJsonConfig(getCmsObject(), listConfigBean),
+            cms);
         I_CmsSearchController controller = new CmsSearchController(config);
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         controller.addQueryParts(query, cms);
-        CmsSolrResultList searchResult = index.search(cms, query.clone(), true, null);
+        CmsSolrResultList searchResult = index.search(
+            cms,
+            query.clone(),
+            true,
+            null,
+            false,
+            null,
+            config.getGeneralConfig().getMaxReturnedResults());
         Set<String> result = new HashSet<>(searchResult.size());
         for (CmsSearchResource res : searchResult) {
             result.add(res.getName());

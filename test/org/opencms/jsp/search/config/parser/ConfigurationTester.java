@@ -120,6 +120,7 @@ public class ConfigurationTester {
 
         assertEquals(expectedConfig.getSolrCore(), actualConfig.getSolrCore());
         assertEquals(expectedConfig.getSolrIndex(), actualConfig.getSolrIndex());
+        assertEquals(expectedConfig.getMaxReturnedResults(), actualConfig.getMaxReturnedResults());
         assertEquals(
             Boolean.valueOf(expectedConfig.getSearchForEmptyQueryParam()),
             Boolean.valueOf(actualConfig.getSearchForEmptyQueryParam()));

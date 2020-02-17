@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config.parser;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
@@ -42,9 +43,10 @@ import java.util.Map;
 public interface I_CmsSearchConfigurationParser {
 
     /** Returns the common search configuration.
+     * @param cms the current context
      * @return The common search configuration.
      */
-    I_CmsSearchConfigurationCommon parseCommon();
+    I_CmsSearchConfigurationCommon parseCommon(CmsObject cms);
 
     /** Returns the configuration for the "Did you mean ...?" feature.
      * @return The configuration for the "Did you mean ...?" feature.

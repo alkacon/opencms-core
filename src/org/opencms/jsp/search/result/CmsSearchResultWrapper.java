@@ -403,14 +403,22 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
     }
 
     /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getNumMaxReturned()
+     */
+    public long getNumMaxReturned() {
+
+        long maxReturnedResults = Integer.valueOf(
+            m_controller.getCommon().getConfig().getMaxReturnedResults()).longValue();
+        return maxReturnedResults > getNumFound() ? getNumFound() : maxReturnedResults;
+    }
+
+    /**
      * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getNumPages()
      */
     @Override
     public int getNumPages() {
 
-        return m_solrResultList == null
-        ? 1
-        : m_controller.getPagination().getConfig().getNumPages(m_solrResultList.getNumFound());
+        return m_solrResultList == null ? 1 : m_controller.getPagination().getConfig().getNumPages(getNumMaxReturned());
     }
 
     /**

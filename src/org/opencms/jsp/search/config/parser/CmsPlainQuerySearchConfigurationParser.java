@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config.parser;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
@@ -38,6 +39,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.util.CmsPair;
 
 import java.util.Collections;
@@ -84,14 +87,38 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon(CmsObject)
      */
-    public I_CmsSearchConfigurationCommon parseCommon() {
+    public I_CmsSearchConfigurationCommon parseCommon(CmsObject cms) {
 
-        String index = null;
         String queryString = m_queryString;
         CmsPair<String, String> idxExtract = extractParam(queryString, "index");
         CmsPair<String, String> coreExtract = extractParam(idxExtract.getFirst(), "core");
+        CmsPair<String, String> maxResultsExtract = extractParam(coreExtract.getFirst(), "maxresults");
+        String resString = maxResultsExtract.getSecond();
+        String indexName = idxExtract.getSecond();
+        if (null != indexName) {
+            indexName = indexName.trim();
+        }
+        if ((null == indexName) || (null == OpenCms.getSearchManager().getIndexSolr(indexName))) {
+            indexName = cms.getRequestContext().getCurrentProject().isOnlineProject()
+            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        }
+        Integer maxResNum = null;
+        if (null != resString) {
+            try {
+                maxResNum = Integer.valueOf(resString);
+            } catch (NumberFormatException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error("Ignoring param \"maxresults=" + resString + "\" since its not a valid integer.", e);
+                }
+            }
+        }
+        if (null == maxResNum) {
+            maxResNum = Integer.valueOf(OpenCms.getSearchManager().getIndexSolr(indexName).getMaxProcessedResults());
+        }
+
         return new CmsSearchConfigurationCommon(
             null,
             null,
@@ -100,12 +127,13 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
             Boolean.TRUE,
             Boolean.TRUE,
             null,
-            idxExtract.getSecond(),
+            indexName,
             coreExtract.getSecond(),
-            coreExtract.getFirst(),
+            maxResultsExtract.getFirst(),
             null,
             null,
-            null);
+            null,
+            maxResNum.intValue());
     }
 
     /**

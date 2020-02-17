@@ -1,6 +1,6 @@
 {
-    "core" : "Solr Test Core",
-    "index" : "Solr Test Index",
+    "core" : "Test Core",
+    "index" : "Test Index",
     "searchforemptyquery" : false,
     "ignorequery" : true,
     "ignoreReleaseDate" : true,
@@ -11,6 +11,7 @@
     "escapequerychars" : true,
     "reloadedparam" : "reloadedparam",
     "extrasolrparams" : "fq=type:plain",
+    "maxReturnedResults" : 345,
     "additionalrequestparams" : [
         { "param" : "p1", "solrquery" : "fq=lastmodified:[%(value) TO *]" },
         { "param" : "p2", "solrquery" : "fq=%(value)" },

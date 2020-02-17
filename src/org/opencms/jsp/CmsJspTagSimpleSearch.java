@@ -171,7 +171,8 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
             CmsResource resource = CmsJspElFunctions.convertRawResource(cms, m_configFile);
             ListConfigurationBean configBean = CmsListManager.parseListConfiguration(cms, resource);
             config = new CmsSearchConfiguration(
-                new CmsSimpleSearchConfigurationParser(cms, configBean, m_configString));
+                new CmsSimpleSearchConfigurationParser(cms, configBean, m_configString),
+                cms);
             m_searchController = new CmsSearchController(config);
 
             String indexName = m_searchController.getCommon().getConfig().getSolrIndex();
@@ -337,7 +338,10 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
                 cms,
                 query.clone(), // use a clone of the query, since the search function manipulates the query (removes highlighting parts), but we want to keep the original one.
                 true,
-                isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null);
+                null,
+                false,
+                isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null,
+                m_searchController.getCommon().getConfig().getMaxReturnedResults());
             return new CmsSearchResultWrapper(m_searchController, solrResultList, query, cms, null);
         } catch (CmsSearchException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);

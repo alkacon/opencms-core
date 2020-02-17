@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config.parser;
 
+import org.opencms.file.CmsObject;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -53,6 +54,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.search.solr.CmsSolrIndex;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,6 +89,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     public static final String JSON_KEY_IGNORE_QUERY = "ignorequery";
     /** A JSON key. */
     public static final String JSON_KEY_IGNORE_RELEASE_DATE = "ignoreReleaseDate";
+    /** A JSON key. */
+    public static final String JSON_KEY_MAX_RETURNED_RESULTS = "maxReturnedResults";
     /** A JSON key. */
     public static final String JSON_KEY_IGNORE_EXPIRATION_DATE = "ignoreExpirationDate";
     /** A JSON key. */
@@ -324,10 +329,12 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon(CmsObject)
      */
     @Override
-    public I_CmsSearchConfigurationCommon parseCommon() {
+    public I_CmsSearchConfigurationCommon parseCommon(CmsObject cms) {
+
+        String indexName = getIndex(cms);
 
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
@@ -337,12 +344,13 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             getSearchForEmptyQuery(),
             getIgnoreQuery(),
             getQueryModifier(),
-            getIndex(),
+            indexName,
             getCore(),
             getExtraSolrParams(),
             getAdditionalParameters(),
             getIgnoreReleaseDate(),
-            getIgnoreExpirationDate());
+            getIgnoreExpirationDate(),
+            getMaxReturnedResults(indexName));
     }
 
     /**
@@ -659,22 +667,38 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     }
 
     /** Returns the configured Solr index, or <code>null</code> if no core is configured.
+     * @param cms the current context.
      * @return The configured Solr index, or <code>null</code> if no core is configured.
      */
-    protected String getIndex() {
+    protected String getIndex(CmsObject cms) {
 
+        String indexName = null;
         try {
-            return m_configObject.getString(JSON_KEY_INDEX);
+            indexName = m_configObject.getString(JSON_KEY_INDEX);
         } catch (JSONException e) {
             if (null == m_baseConfig) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_SPECIFIED_0), e);
                 }
-                return null;
             } else {
-                return m_baseConfig.getGeneralConfig().getSolrIndex();
+                indexName = m_baseConfig.getGeneralConfig().getSolrIndex();
             }
         }
+        try {
+            if (null != OpenCms.getSearchManager().getIndexSolr(indexName)) {
+                return indexName;
+            }
+        } catch (Throwable t) {
+            if ((indexName != null) && LOG.isErrorEnabled()) {
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_REQUESTED_INDEX_NOT_CONFIGURED_USING_DEFAULT_1,
+                        indexName));
+            }
+        }
+        return cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+        : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
     }
 
     /** Returns the configured request parameter for the last query, or the default parameter if no core is configured.
@@ -689,6 +713,22 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             : DEFAULT_LAST_QUERY_PARAM;
         } else {
             return param;
+        }
+    }
+
+    /** Returns the number of maximally returned results, or <code>null</code> if the indexes default should be used.
+     * @param indexName the name of the index to search in.
+     * @return The number of maximally returned results, or <code>null</code> if the indexes default should be used.
+     */
+    protected int getMaxReturnedResults(String indexName) {
+
+        Integer maxReturnedResults = parseOptionalIntValue(m_configObject, JSON_KEY_MAX_RETURNED_RESULTS);
+        if (null != maxReturnedResults) {
+            return maxReturnedResults.intValue();
+        } else if (m_baseConfig != null) {
+            return m_baseConfig.getGeneralConfig().getMaxReturnedResults();
+        } else {
+            return OpenCms.getSearchManager().getIndexSolr(indexName).getMaxProcessedResults();
         }
     }
 

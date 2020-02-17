@@ -61,6 +61,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private boolean m_ignoreReleaseDate;
     /** Flag, indicating if the expiration date should be ignored. */
     private boolean m_ignoreExpirationDate;
+    /** The maximally returned number of results */
+    private final int m_maxReturnedResults;
 
     /** Constructor for the common search configuration, where all configuration parameters are provided.
      * @param queryParam The query request param used by the search form.
@@ -76,6 +78,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
      * @param additionalParameters A map from additional request parameters to Solr query parts.
      * @param ignoreReleaseDate A flag, indicating if the release date should be ignored.
      * @param ignoreExpirationDate A flag, indicating if the expiration date should be ignored.
+     * @param maxReturnedResults Number of results maximally to return.
+     *           <code><= 0</code> means that there is no limit.
      */
     public CmsSearchConfigurationCommon(
         final String queryParam,
@@ -90,7 +94,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
         final String extraSolrParams,
         final Map<String, String> additionalParameters,
         final Boolean ignoreReleaseDate,
-        final Boolean ignoreExpirationDate) {
+        final Boolean ignoreExpirationDate,
+        final int maxReturnedResults) {
 
         m_queryParam = queryParam;
         m_lastQueryParam = lastQueryParam;
@@ -105,6 +110,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
         m_additionalParameters = additionalParameters != null ? additionalParameters : new HashMap<String, String>();
         m_ignoreReleaseDate = null == ignoreReleaseDate ? false : ignoreReleaseDate.booleanValue();
         m_ignoreExpirationDate = null == ignoreExpirationDate ? false : ignoreExpirationDate.booleanValue();
+        m_maxReturnedResults = maxReturnedResults;
     }
 
     /**
@@ -164,6 +170,14 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     public String getLastQueryParam() {
 
         return m_lastQueryParam;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getMaxReturnedResults()
+     */
+    public int getMaxReturnedResults() {
+
+        return m_maxReturnedResults;
     }
 
     /**
