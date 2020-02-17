@@ -45,6 +45,8 @@ import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTrans
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
@@ -55,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -304,6 +307,29 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
+     * Gets a list of resource wrappers for resources with relations pointing to this resource.
+     *
+     * @return the list of resource wrappers
+     */
+    public List<CmsJspResourceWrapper> getIncomingRelations() {
+
+        return getRelatedResources(CmsRelationFilter.relationsToStructureId(getStructureId()));
+    }
+
+    /**
+     * Gets a list of resource wrappers for resources with relations pointing to this resource, for a specific type.
+     *
+     * @param typeName name of the type to filter
+     * @return the list of resource wrappers
+     */
+    public List<CmsJspResourceWrapper> getIncomingRelations(String typeName) {
+
+        return getIncomingRelations().stream().filter(
+            res -> OpenCms.getResourceManager().matchResourceType(typeName, res.getTypeId())).collect(
+                Collectors.toList());
+    }
+
+    /**
      * Returns <code>true</code> in case this resource is an image in the VFS.<p>
      *
      * @return <code>true</code> in case this resource is an image in the VFS
@@ -470,6 +496,32 @@ public class CmsJspResourceWrapper extends CmsResource {
             m_navigationForFolder = getNavBuilder().getNavigationForFolder();
         }
         return m_navigationForFolder;
+    }
+
+    /**
+     * Gets a list of resources with relations pointing to them from this resources, as resource wrappers.
+     *
+     * @return the list of resource wrappers
+     */
+    public List<CmsJspResourceWrapper> getOutgoingRelations() {
+
+        return getRelatedResources(CmsRelationFilter.relationsFromStructureId(getStructureId()));
+    }
+
+    /**
+     * Gets a list of resources with relations pointing to them from this resources, as resource wrappers.
+     *
+     * Only gets resources with the given type.
+     *
+     * @param typeName the name of the type to filter
+     * @return the list of resource wrappers
+     */
+
+    public List<CmsJspResourceWrapper> getOutgoingRelations(String typeName) {
+
+        return getOutgoingRelations().stream().filter(
+            res -> OpenCms.getResourceManager().matchResourceType(typeName, res.getTypeId())).collect(
+                Collectors.toList());
     }
 
     /**
@@ -877,6 +929,31 @@ public class CmsJspResourceWrapper extends CmsResource {
             && isFolder()
             && ((sitePath.indexOf(getSitePath()) == 0))
             && (sitePath.length() > getSitePath().length());
+    }
+
+    /**
+     * Helper method for getting the related resources for this resource, with a given resource filter.
+     *
+     * @param filter the resource filter
+     * @return the list of related resources
+     */
+    private List<CmsJspResourceWrapper> getRelatedResources(final CmsRelationFilter filter) {
+
+        CmsObject cms = getCmsObject();
+        List<CmsJspResourceWrapper> result = new ArrayList<>();
+        try {
+            List<CmsRelation> relations = cms.readRelations(filter);
+            for (CmsRelation rel : relations) {
+                try {
+                    result.add(wrap(cms, rel.getSource(cms, CmsResourceFilter.DEFAULT)));
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**
