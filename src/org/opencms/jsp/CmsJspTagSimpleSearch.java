@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
 public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implements I_CmsCollectorPublishListProvider {
 
     /** Default number of items which are checked for change for the "This page" publish dialog. */
-    public static final int DEFAULT_CONTENTINFO_ROWS = 200;
+    public static final int DEFAULT_CONTENTINFO_ROWS = 600;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagSimpleSearch.class);
@@ -136,7 +136,7 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
                 }
             }
             for (String uuid : deletedIds) {
-                CmsResource resource = cms.readResource(new CmsUUID(uuid));
+                CmsResource resource = cms.readResource(new CmsUUID(uuid), CmsResourceFilter.ALL);
                 if (!(resource.getState().isUnchanged())) {
                     result.add(resource);
                 }
@@ -194,16 +194,20 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
             controller.setThrowable(e, cms.getRequestContext().getUri());
             throw new JspException(e);
         }
+
         if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
-            && (null == m_searchController.getCommon().getConfig().getSolrIndex())
-            && (null != m_addContentInfoForEntries)) {
+            && (m_addContentInfoForEntries != null)
+            && (CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE.equals(
+                m_searchController.getCommon().getConfig().getSolrIndex()))) {
             CmsSolrQuery query = new CmsSolrQuery();
             m_searchController.addQueryParts(query, cms);
             query.setStart(Integer.valueOf(0));
             query.setRows(m_addContentInfoForEntries);
+            query.setFields(CmsSearchField.FIELD_ID);
+            query.setFacet(false);
             CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
             info.setCollectorClass(this.getClass().getName());
-            info.setCollectorParams(query.getQuery());
+            info.setCollectorParams(query.toString());
             info.setId((new CmsUUID()).getStringValue());
             if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
                 try {
@@ -256,6 +260,7 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
         m_configString = null;
         m_searchController = null;
         m_index = null;
+        m_addContentInfoForEntries = null;
         super.release();
     }
 
@@ -264,7 +269,7 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
      */
     public void setAddContentInfo(final Boolean doAddInfo) {
 
-        if ((null != doAddInfo) && doAddInfo.booleanValue() && (null != m_addContentInfoForEntries)) {
+        if ((doAddInfo != null) && doAddInfo.booleanValue() && (null == m_addContentInfoForEntries)) {
             m_addContentInfoForEntries = Integer.valueOf(DEFAULT_CONTENTINFO_ROWS);
         }
     }

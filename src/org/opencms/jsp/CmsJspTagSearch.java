@@ -98,7 +98,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     private static final long serialVersionUID = 6048771777971251L;
 
     /** Default number of items which are checked for change for the "This page" publish dialog. */
-    public static final int DEFAULT_CONTENTINFO_ROWS = 200;
+    public static final int DEFAULT_CONTENTINFO_ROWS = 600;
 
     /** The CmsObject for the current user. */
     protected transient CmsObject m_cms;
@@ -175,7 +175,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
                 }
             }
             for (String uuid : deletedIds) {
-                CmsResource resource = cms.readResource(new CmsUUID(uuid));
+                CmsResource resource = cms.readResource(new CmsUUID(uuid), CmsResourceFilter.ALL);
                 if (!(resource.getState().isUnchanged())) {
                     result.add(resource);
                 }
@@ -252,6 +252,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
         m_searchController = null;
         m_index = null;
         m_controller = null;
+        m_addContentInfoForEntries = null;
         super.release();
     }
 
@@ -260,7 +261,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
      */
     public void setAddContentInfo(final Boolean doAddInfo) {
 
-        if ((null != doAddInfo) && doAddInfo.booleanValue() && (null != m_addContentInfoForEntries)) {
+        if ((null != doAddInfo) && doAddInfo.booleanValue() && (null == m_addContentInfoForEntries)) {
             m_addContentInfoForEntries = Integer.valueOf(DEFAULT_CONTENTINFO_ROWS);
         }
     }
@@ -369,12 +370,14 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     private void addContentInfo() {
 
         if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()
-            && (null == m_searchController.getCommon().getConfig().getSolrIndex())
+            && CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE.equals(m_searchController.getCommon().getConfig().getSolrIndex())
             && (null != m_addContentInfoForEntries)) {
             CmsSolrQuery query = new CmsSolrQuery();
             m_searchController.addQueryParts(query, m_cms);
             query.setStart(Integer.valueOf(0));
             query.setRows(m_addContentInfoForEntries);
+            query.setFields(CmsSearchField.FIELD_ID);
+            query.setFacet(false);
             CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
             info.setCollectorClass(this.getClass().getName());
             info.setCollectorParams(query.getQuery());
