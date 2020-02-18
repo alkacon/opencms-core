@@ -42,6 +42,7 @@ import org.opencms.jsp.util.CmsJspCategoryAccessBean;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.jsp.util.CmsJspImageBean;
 import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -68,15 +69,39 @@ import com.google.common.collect.Maps;
  */
 public class CmsJspResourceWrapper extends CmsResource {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** Logger instance for this class. */
     @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsJspResourceWrapper.class);
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** All resources that are sources of incoming relations. */
+    public List<CmsJspResourceWrapper> m_incomingRelations;
+
+    /** All resources that are targets of outgoing relations. */
+    public List<CmsJspResourceWrapper> m_outgoingRelations;
+
+    /** All parent folder of this resource in the current site as a list. */
+    public List<CmsJspResourceWrapper> m_parentFolders;
+
+    /** The category access bean for this resource. */
+    private CmsJspCategoryAccessBean m_categories;
+
     /** The CMS context. */
     private CmsObject m_cms;
+
+    /** The resource / file content as a String. */
+    private String m_content;
+
+    /** The file object for this resource. */
+    private CmsFile m_file;
+
+    /** Image bean instance created from this resource. */
+    private CmsJspImageBean m_imageBean;
+
+    /** Stores if this resource is an XML content or not. */
+    private Boolean m_isXml;
 
     /** The set of locale variants. */
     private Map<String, CmsJspResourceWrapper> m_localeResources;
@@ -84,20 +109,23 @@ public class CmsJspResourceWrapper extends CmsResource {
     /** The main locale. */
     private Locale m_mainLocale;
 
-    /** The file object for this resource. */
-    private CmsFile m_file;
+    /** The navigation builder for this resource. */
+    private CmsJspNavBuilder m_navBuilder;
 
-    /** The resource / file content as a String. */
-    private String m_content;
+    /** The navigation info element for this resource. */
+    private CmsJspNavElement m_navigation;
 
-    /** The calculated site path of the resource. */
-    private String m_sitePath;
+    /** The default file of this resource, assumed that this resource is a folder. */
+    private CmsJspResourceWrapper m_navigationDefaultFile;
+
+    /** The navigation info elements in this resource, assuming that this resource is a folder. */
+    private List<CmsJspNavElement> m_navigationForFolder;
+
+    /** The parent folder of this resource in the current site. */
+    private CmsJspResourceWrapper m_parentFolder;
 
     /** Properties of this resource. */
     private Map<String, String> m_properties;
-
-    /** Properties of this resource with search. */
-    private Map<String, String> m_propertiesSearch;
 
     /** Locale properties of this resource. */
     private Map<String, Map<String, String>> m_propertiesLocale;
@@ -105,35 +133,17 @@ public class CmsJspResourceWrapper extends CmsResource {
     /** Locale properties of this resource with search. */
     private Map<String, Map<String, String>> m_propertiesLocaleSearch;
 
+    /** Properties of this resource with search. */
+    private Map<String, String> m_propertiesSearch;
+
+    /** The calculated site path of the resource. */
+    private String m_sitePath;
+
+    /** The type name of the resource. */
+    private String m_typeName;
+
     /** The XML content access bean. */
     private CmsJspContentAccessBean m_xml;
-
-    /** Stores if this resource is an XML content or not. */
-    private Boolean m_isXml;
-
-    /** All parent folder of this resource in the current site as a list. */
-    public List<CmsJspResourceWrapper> m_parentFolders;
-
-    /** The parent folder of this resource in the current site. */
-    private CmsJspResourceWrapper m_parentFolder;
-
-    /** The default file of this resource, assumed that this resource is a folder. */
-    CmsJspResourceWrapper m_navigationDefaultFile;
-
-    /** The navigation builder for this resource. */
-    CmsJspNavBuilder m_navBuilder;
-
-    /** The navigation info elements in this resource, assuming that this resource is a folder. */
-    private List<CmsJspNavElement> m_navigationForFolder;
-
-    /** The navigation info element for this resource. */
-    private CmsJspNavElement m_navigation;
-
-    /** Image bean instance created from this resource. */
-    private CmsJspImageBean m_imageBean;
-
-    /** The category access bean for this resource. */
-    private CmsJspCategoryAccessBean m_categories;
 
     /**
      * Creates a new instance.<p>
@@ -313,7 +323,10 @@ public class CmsJspResourceWrapper extends CmsResource {
      */
     public List<CmsJspResourceWrapper> getIncomingRelations() {
 
-        return getRelatedResources(CmsRelationFilter.relationsToStructureId(getStructureId()));
+        if (m_incomingRelations == null) {
+            m_incomingRelations = getRelatedResources(CmsRelationFilter.relationsToStructureId(getStructureId()));
+        }
+        return m_incomingRelations;
     }
 
     /**
@@ -324,9 +337,8 @@ public class CmsJspResourceWrapper extends CmsResource {
      */
     public List<CmsJspResourceWrapper> getIncomingRelations(String typeName) {
 
-        return getIncomingRelations().stream().filter(
-            res -> OpenCms.getResourceManager().matchResourceType(typeName, res.getTypeId())).collect(
-                Collectors.toList());
+        return getIncomingRelations().stream().filter(res -> res.getTypeName().equals(typeName)).collect(
+            Collectors.toList());
     }
 
     /**
@@ -505,7 +517,10 @@ public class CmsJspResourceWrapper extends CmsResource {
      */
     public List<CmsJspResourceWrapper> getOutgoingRelations() {
 
-        return getRelatedResources(CmsRelationFilter.relationsFromStructureId(getStructureId()));
+        if (m_outgoingRelations == null) {
+            m_outgoingRelations = getRelatedResources(CmsRelationFilter.relationsFromStructureId(getStructureId()));
+        }
+        return m_outgoingRelations;
     }
 
     /**
@@ -519,9 +534,8 @@ public class CmsJspResourceWrapper extends CmsResource {
 
     public List<CmsJspResourceWrapper> getOutgoingRelations(String typeName) {
 
-        return getOutgoingRelations().stream().filter(
-            res -> OpenCms.getResourceManager().matchResourceType(typeName, res.getTypeId())).collect(
-                Collectors.toList());
+        return getOutgoingRelations().stream().filter(res -> res.getTypeName().equals(typeName)).collect(
+            Collectors.toList());
     }
 
     /**
@@ -837,6 +851,23 @@ public class CmsJspResourceWrapper extends CmsResource {
             m_xml = new CmsJspContentAccessBean(m_cms, this);
         }
         return m_xml;
+    }
+
+    /**
+     * Returns the resource type name.<p>
+     *
+     * @return the resource type name
+     */
+    public String getTypeName() {
+
+        if (m_typeName == null) {
+            try {
+                m_typeName = OpenCms.getResourceManager().getResourceType(getTypeId()).getTypeName();
+            } catch (CmsLoaderException e) {
+                // this should never happen, and anyway it is logged in the resource manage already
+            }
+        }
+        return m_typeName;
     }
 
     /**
