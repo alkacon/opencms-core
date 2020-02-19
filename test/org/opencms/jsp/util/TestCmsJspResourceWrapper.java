@@ -33,18 +33,20 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspResourceWrapper;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import junit.extensions.TestSetup;
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Unit tests for the <code>{@link CmsJspResourceWrapper}</code>.<p>
@@ -69,33 +71,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
     public static Test suite() {
 
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspResourceWrapper.class.getName());
-
-        suite.addTest(new TestCmsJspResourceWrapper("testBasics"));
-        suite.addTest(new TestCmsJspResourceWrapper("testNavElements"));
-        suite.addTest(new TestCmsJspResourceWrapper("testParentFolders"));
-        suite.addTest(new TestCmsJspResourceWrapper("testProperties"));
-        suite.addTest(new TestCmsJspResourceWrapper("testResourceIdentities"));
-        suite.addTest(new TestCmsJspResourceWrapper("testXml"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return generateSetupTestWrapper(TestCmsJspResourceWrapper.class, "simpletest", "/");
     }
 
     /**
@@ -316,6 +292,33 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
                 searchedPropertyName + expectedPostfix[i],
                 wrap1.getPropertyLocaleSearch().get(testLocales[i]).get(searchedPropertyName));
         }
+    }
+
+    /**
+     * Test related resource accessors.
+     *
+     * @throws Exception -
+     */
+    public void testRelations() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String src = "/testRelations1.txt";
+        String tgt = "/testRelations2.txt";
+        CmsResource srcRes = cms.createResource(src, CmsResourceTypePlain.getStaticTypeId());
+        CmsResource tgtRes = cms.createResource(tgt, CmsResourceTypePlain.getStaticTypeId());
+        cms.addRelationToResource(src, tgt, CmsRelationType.CATEGORY.getName());
+        CmsJspResourceWrapper srcWrapper = CmsJspResourceWrapper.wrap(cms, cms.readResource(src));
+        assertEquals(
+            Arrays.asList(tgtRes.getStructureId()),
+            srcWrapper.getOutgoingRelations().stream().map(res -> res.getStructureId()).collect(Collectors.toList()));
+        assertEquals(0, srcWrapper.getIncomingRelations().size());
+
+        CmsJspResourceWrapper tgtWrapper = CmsJspResourceWrapper.wrap(cms, cms.readResource(tgt));
+        assertEquals(
+            Arrays.asList(srcRes.getStructureId()),
+            tgtWrapper.getIncomingRelations().stream().map(res -> res.getStructureId()).collect(Collectors.toList()));
+        assertEquals(0, tgtWrapper.getOutgoingRelations().size());
+
     }
 
     /**
