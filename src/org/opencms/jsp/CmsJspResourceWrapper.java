@@ -76,6 +76,12 @@ public class CmsJspResourceWrapper extends CmsResource {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Parameter value used to select outgoing relations. */
+    public static final boolean RELATIONS_OUT = true;
+
+    /** Parameter value used to select incoming relations. */
+    public static final boolean RELATIONS_IN = false;
+
     /** All resources that are sources of incoming relations. */
     public List<CmsJspResourceWrapper> m_incomingRelations;
 
@@ -324,7 +330,7 @@ public class CmsJspResourceWrapper extends CmsResource {
     public List<CmsJspResourceWrapper> getIncomingRelations() {
 
         if (m_incomingRelations == null) {
-            m_incomingRelations = getRelatedResources(CmsRelationFilter.relationsToStructureId(getStructureId()));
+            m_incomingRelations = getRelatedResources(RELATIONS_IN);
         }
         return m_incomingRelations;
     }
@@ -518,7 +524,7 @@ public class CmsJspResourceWrapper extends CmsResource {
     public List<CmsJspResourceWrapper> getOutgoingRelations() {
 
         if (m_outgoingRelations == null) {
-            m_outgoingRelations = getRelatedResources(CmsRelationFilter.relationsFromStructureId(getStructureId()));
+            m_outgoingRelations = getRelatedResources(RELATIONS_OUT);
         }
         return m_outgoingRelations;
     }
@@ -965,18 +971,24 @@ public class CmsJspResourceWrapper extends CmsResource {
     /**
      * Helper method for getting the related resources for this resource, with a given resource filter.
      *
-     * @param filter the resource filter
+     * @param out - true for outgoing relations, false for incoming relations
      * @return the list of related resources
      */
-    private List<CmsJspResourceWrapper> getRelatedResources(final CmsRelationFilter filter) {
+    private List<CmsJspResourceWrapper> getRelatedResources(boolean out) {
 
         CmsObject cms = getCmsObject();
         List<CmsJspResourceWrapper> result = new ArrayList<>();
         try {
+            CmsRelationFilter filter = out
+            ? CmsRelationFilter.relationsFromStructureId(getStructureId())
+            : CmsRelationFilter.relationsToStructureId(getStructureId());
             List<CmsRelation> relations = cms.readRelations(filter);
             for (CmsRelation rel : relations) {
                 try {
-                    result.add(wrap(cms, rel.getSource(cms, CmsResourceFilter.DEFAULT)));
+                    CmsResource other = out
+                    ? rel.getTarget(cms, CmsResourceFilter.DEFAULT)
+                    : rel.getSource(cms, CmsResourceFilter.DEFAULT);
+                    result.add(wrap(cms, other));
                 } catch (CmsException e) {
                     LOG.warn(e.getLocalizedMessage(), e);
                 }
