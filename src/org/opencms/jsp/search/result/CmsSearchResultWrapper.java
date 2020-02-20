@@ -409,7 +409,7 @@ public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
 
         long maxReturnedResults = Integer.valueOf(
             m_controller.getCommon().getConfig().getMaxReturnedResults()).longValue();
-        return maxReturnedResults > getNumFound() ? getNumFound() : maxReturnedResults;
+        return (maxReturnedResults >= 0) && (maxReturnedResults > getNumFound()) ? getNumFound() : maxReturnedResults;
     }
 
     /**
