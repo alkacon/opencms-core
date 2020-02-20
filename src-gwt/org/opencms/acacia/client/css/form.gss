@@ -180,6 +180,7 @@ div.attributeValue.secondColumn{
 	box-shadow: 2px 2px 2px #666666;
 	background: value("constants.css.backgroundColorDialog");
 	border: 1px solid value("constants.css.borderColor");
+	z-index: 1000000500;
 }
 
 .buttonBar .button{
