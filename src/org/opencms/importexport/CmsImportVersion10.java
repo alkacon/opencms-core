@@ -70,6 +70,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlErrorHandler;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.File;
 import java.io.IOException;
@@ -614,7 +615,12 @@ public class CmsImportVersion10 implements I_CmsImport {
                     cms.changeLock(resName);
                 }
                 // rewrite the file
-                cms.writeFile(file);
+                cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+                try {
+                    cms.writeFile(file);
+                } finally {
+                    cms.getRequestContext().removeAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+                }
 
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
