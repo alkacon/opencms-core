@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -91,6 +92,9 @@ public class CmsTemplateContextManager {
     /** A cache in which the template context provider instances are stored, with their class name as the key. */
     private Map<String, I_CmsTemplateContextProvider> m_providerInstances = new HashMap<String, I_CmsTemplateContextProvider>();
 
+    /** Cached allowed context map. */
+    private volatile Map<String, CmsDefaultSet<String>> m_cachedContextMap = null;
+
     /**
      * Creates a new instance.<p>
      *
@@ -102,6 +106,7 @@ public class CmsTemplateContextManager {
         CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_RESOURCE);
         CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_CONTEXT);
         CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_RESOURCE);
+        OpenCms.getExecutor().scheduleWithFixedDelay(this::updateContextMap, 1, 15, TimeUnit.SECONDS);
     }
 
     /**
@@ -407,11 +412,29 @@ public class CmsTemplateContextManager {
      */
     protected Map<String, CmsDefaultSet<String>> safeGetAllowedContextMap() {
 
+        Map<String, CmsDefaultSet<String>> result = m_cachedContextMap;
+        if (result != null) {
+            return result;
+        }
         try {
             return OpenCms.getResourceManager().getAllowedContextMap(m_cms);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.emptyMap();
+        }
+    }
+
+    /**
+     * Updates the cached context map.
+     */
+    void updateContextMap() {
+
+        try {
+            LOG.debug("Updating cached 'allowed template contexts' map.");
+            m_cachedContextMap = OpenCms.getResourceManager().getAllowedContextMap(m_cms);
+            LOG.debug("Finished updating cached 'allowed template contexts' map.");
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 }
