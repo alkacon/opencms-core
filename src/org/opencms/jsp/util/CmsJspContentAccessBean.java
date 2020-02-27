@@ -1104,6 +1104,19 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Returns the (wrapped) content resource for the content accessed by this bean.<p>
+     *
+     * @return the (wrapped) content resource for the content accessed by this bean
+     */
+    public CmsJspResourceWrapper getResource() {
+
+        if (m_resourceWrapper == null) {
+            m_resourceWrapper = CmsJspResourceWrapper.wrap(m_cms, m_resource);
+        }
+        return m_resourceWrapper;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides Lists of direct sub values
      * of the given value from the XML content in the current locale.<p>
      *
@@ -1197,16 +1210,16 @@ public class CmsJspContentAccessBean {
     }
 
     /**
-     * Returns the content file as a CmsJspObjectValueWrapper.<p>
+     * Returns the (wrapped) content resource for the content accessed by this bean.<p>
      *
-     * @return the content file as a CmsJspObjectValueWrapper
+     * @return the (wrapped) content resource for the content accessed by this bean
+     *
+     * @deprecated use {@link #getResource()} instead
      */
+    @Deprecated
     public CmsJspResourceWrapper getWrap() {
 
-        if (m_resourceWrapper == null) {
-            m_resourceWrapper = CmsJspResourceWrapper.wrap(m_cms, m_resource);
-        }
-        return m_resourceWrapper;
+        return getResource();
     }
 
     /**
