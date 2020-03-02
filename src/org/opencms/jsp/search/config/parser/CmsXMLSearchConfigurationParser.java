@@ -142,6 +142,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_IGNOREALLFACETFILTERS = "IgnoreAllFacetFilters";
     /** XML element name. */
+    private static final String XML_ELEMENT_FACET_EXCLUDETAG = "ExcludeTag";
+    /** XML element name. */
     private static final String XML_ELEMENT_QUERY_FACET_QUERY = "QueryItem";
     /** XML element name. */
     private static final String XML_ELEMENT_QUERY_FACET_QUERY_QUERY = "Query";
@@ -360,6 +362,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final String label = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_LABEL);
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
+            final List<String> excludeTags = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_EXCLUDETAG);
             final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
                 pathPrefix + XML_ELEMENT_FACET_IGNOREALLFACETFILTERS);
             return new CmsSearchConfigurationFacetQuery(
@@ -367,7 +370,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 label,
                 isAndFacet,
                 preselection,
-                ignoreAllFacetFilters);
+                ignoreAllFacetFilters,
+                excludeTags);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -475,6 +479,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
             final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
                 pathPrefix + XML_ELEMENT_FACET_IGNOREALLFACETFILTERS);
+            final List<String> excludeTags = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_EXCLUDETAG);
             return new CmsSearchConfigurationFacetField(
                 field,
                 name,
@@ -486,7 +491,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 filterQueryModifier,
                 isAndFacet,
                 preselection,
-                ignoreAllFacetFilters);
+                ignoreAllFacetFilters,
+                excludeTags);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -605,6 +611,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
             final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
                 pathPrefix + XML_ELEMENT_FACET_IGNOREALLFACETFILTERS);
+            final List<String> excludeTags = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_EXCLUDETAG);
             return new CmsSearchConfigurationFacetRange(
                 range,
                 start,
@@ -617,7 +624,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 label,
                 isAndFacet,
                 preselection,
-                ignoreAllFacetFilters);
+                ignoreAllFacetFilters,
+                excludeTags);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(

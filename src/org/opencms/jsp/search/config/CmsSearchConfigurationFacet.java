@@ -29,9 +29,9 @@ package org.opencms.jsp.search.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.Set;
 
 /**
  * Configuration that is common for all facets. Used as base class for special facet configurations, e.g. for the field facet configuration.
@@ -51,7 +51,9 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
     /** A flag, indicating if checked entries from other facets should influence the facet or not. */
     protected boolean m_ignoreFacetFilters;
     /** Tags of filter-queries that should not be applied to the facet. */
-    protected String m_ignoreTags;
+    protected Set<String> m_ignoreTags;
+    /** Tags of filter-queries that should not be applied to the facet, explicitly configured. */
+    protected Set<String> m_explicitExcludeTags;
 
     /** The constructor setting all configuration options.
      * @param minCount The minimal number of hits required to add an entry to a facet.
@@ -60,6 +62,7 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      * @param preselection A list with entries that should be preselected in the facet, when the search page is called the first time.
      * @param ignoreFiltersFromFacets A flag, indicating if filters from other facets should be ignored or not.
+     * @param excludeTags The tags (keys) of (filter) queries to be not taken into account for the facet. If "ignoreFiltersFromFacets" is true, the according tags for facets and queries will be added.
      */
     public CmsSearchConfigurationFacet(
         final Integer minCount,
@@ -67,7 +70,8 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
         final String name,
         final Boolean isAndFacet,
         final List<String> preselection,
-        final Boolean ignoreFiltersFromFacets) {
+        final Boolean ignoreFiltersFromFacets,
+        final Collection<String> excludeTags) {
 
         m_minCount = minCount;
         m_label = label == null ? name : label;
@@ -77,7 +81,13 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
         m_name = name;
         m_preselection = preselection == null ? new ArrayList<String>() : preselection;
         m_ignoreFacetFilters = ignoreFiltersFromFacets == null ? false : ignoreFiltersFromFacets.booleanValue();
-        m_ignoreTags = getName();
+        m_ignoreTags = new HashSet<>();
+        if (!m_isAndFacet) {
+            m_ignoreTags.add(getName());
+        }
+        if (null != excludeTags) {
+            m_ignoreTags.addAll(excludeTags);
+        }
     }
 
     /**
@@ -101,7 +111,7 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
      */
     public String getIgnoreTags() {
 
-        return m_ignoreTags;
+        return String.join(",", m_ignoreTags);
     }
 
     /**
@@ -162,7 +172,8 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
     public void propagateAllFacetNames(Collection<String> names) {
 
         if (m_ignoreFacetFilters) {
-            m_ignoreTags = StringUtils.join(names, ',') + ",q";
+            m_ignoreTags.addAll(names);
+            m_ignoreTags.add("q"); //tag for the query
         }
     }
 

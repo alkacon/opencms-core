@@ -168,13 +168,13 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         StringBuffer value = new StringBuffer();
         value.append("{!key=").append(m_config.getName());
         addFacetOptions(value, m_state.getUseLimit());
-        if (m_config.getIgnoreAllFacetFilters()
-            || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
+        if (!m_config.getIgnoreTags().isEmpty()) {
             value.append(" ex=").append(m_config.getIgnoreTags());
         }
         value.append("}");
         value.append(m_config.getField());
         query.add("facet.field", value.toString());
+
     }
 
     /** Adds filter parts to the query.

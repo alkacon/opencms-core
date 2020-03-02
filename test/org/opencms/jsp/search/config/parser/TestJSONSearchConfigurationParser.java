@@ -235,6 +235,9 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
         List<String> preselection = new ArrayList<String>(2);
         preselection.add("location/europe/");
         preselection.add("topic/");
+        List<String> excludeTags = new ArrayList<String>(2);
+        excludeTags.add("oneKey");
+        excludeTags.add("anotherKey");
         I_CmsSearchConfigurationFacetField fieldFacet1 = new CmsSearchConfigurationFacetField(
             "category_exact",
             "category",
@@ -246,7 +249,8 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
             "nonsense - %(value)",
             Boolean.TRUE,
             preselection,
-            Boolean.TRUE);
+            Boolean.TRUE,
+            excludeTags);
         Collection<String> facetNames = new ArrayList<String>(5);
         facetNames.add("category");
         facetNames.add("Keywords");
@@ -256,6 +260,7 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
         fieldFacet1.propagateAllFacetNames(facetNames);
         I_CmsSearchConfigurationFacetField fieldFacet2 = new CmsSearchConfigurationFacetField(
             "Keywords",
+            null,
             null,
             null,
             null,
@@ -296,13 +301,15 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
             "Date lastmodified",
             Boolean.TRUE,
             preselection,
-            Boolean.TRUE);
+            Boolean.TRUE,
+            excludeTags);
         rangeFacet1.propagateAllFacetNames(facetNames);
         I_CmsSearchConfigurationFacetRange rangeFacet2 = new CmsSearchConfigurationFacetRange(
             "size",
             "0",
             "1000000",
             "1000",
+            null,
             null,
             null,
             null,
@@ -330,7 +337,8 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
             "Creation date",
             Boolean.TRUE,
             preselection,
-            Boolean.TRUE);
+            Boolean.TRUE,
+            excludeTags);
         queryFacet.propagateAllFacetNames(facetNames);
         ConfigurationTester.testQueryFacetConfiguration(queryFacet, config.getQueryFacetConfig());
 

@@ -143,12 +143,7 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
     protected void addFacetPart(CmsSolrQuery query) {
 
         query.set("facet", "true");
-        String excludes = "";
-        if (m_config.getIgnoreAllFacetFilters()
-            || (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet())) {
-            excludes = "{!ex=" + m_config.getIgnoreTags() + "}";
-        }
-
+        String excludes = m_config.getIgnoreTags().isEmpty() ? "" : "{!ex=" + m_config.getIgnoreTags() + "}";
         for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
             query.add("facet.query", excludes + q.getQuery());
         }

@@ -295,7 +295,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 "Date",
                 Boolean.FALSE,
                 null,
-                Boolean.TRUE);
+                Boolean.TRUE,
+                null);
 
             rangeFacets.put(rangeFacet.getName(), rangeFacet);
             return rangeFacets;
@@ -686,7 +687,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 null,
                 Boolean.valueOf(categoryConjunction),
                 null,
-                Boolean.TRUE));
+                Boolean.TRUE,
+                null));
         fieldFacets.put(
             CmsListManager.FIELD_PARENT_FOLDERS,
             new CmsSearchConfigurationFacetField(
@@ -700,7 +702,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 null,
                 Boolean.FALSE,
                 null,
-                Boolean.TRUE));
+                Boolean.TRUE,
+                null));
         return Collections.unmodifiableMap(fieldFacets);
 
     }

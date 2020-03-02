@@ -39,8 +39,8 @@ public interface I_CmsSearchConfigurationFacet {
          * Sort by the number of hits.
          */
         count, /**
-                * Sort alphabetically.
-                */
+         * Sort alphabetically.
+         */
         index
     }
 

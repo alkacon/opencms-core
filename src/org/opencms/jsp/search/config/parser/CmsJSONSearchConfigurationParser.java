@@ -142,6 +142,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     public static final String JSON_KEY_FACET_IGNOREALLFACETFILTERS = "ignoreAllFacetFilters";
     /** A JSON key. */
+    public static final String JSON_KEY_FACET_EXCLUDETAGS = "excludeTags";
+    /** A JSON key. */
     public static final String JSON_KEY_FACET_PRESELECTION = "preselection";
     /** A JSON key. */
     public static final String JSON_KEY_RANGE_FACET_RANGE = "range";
@@ -480,12 +482,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
                     queryFacetObject,
                     JSON_KEY_FACET_IGNOREALLFACETFILTERS);
+                List<String> excludeTags = parseOptionalStringValues(queryFacetObject, JSON_KEY_FACET_EXCLUDETAGS);
                 return new CmsSearchConfigurationFacetQuery(
                     queries,
                     label,
                     isAndFacet,
                     preselection,
-                    ignoreAllFacetFilters);
+                    ignoreAllFacetFilters,
+                    excludeTags);
             } catch (JSONException e) {
                 LOG.error(
                     Messages.get().getBundle().key(
@@ -923,6 +927,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             Boolean ignoreFilterAllFacetFilters = parseOptionalBooleanValue(
                 fieldFacetObject,
                 JSON_KEY_FACET_IGNOREALLFACETFILTERS);
+            List<String> excludeTags = parseOptionalStringValues(fieldFacetObject, JSON_KEY_FACET_EXCLUDETAGS);
             return new CmsSearchConfigurationFacetField(
                 field,
                 name,
@@ -934,7 +939,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 filterQueryModifier,
                 isAndFacet,
                 preselection,
-                ignoreFilterAllFacetFilters);
+                ignoreFilterAllFacetFilters,
+                excludeTags);
         } catch (JSONException e) {
             LOG.error(
                 Messages.get().getBundle().key(Messages.ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1, JSON_KEY_FACET_FIELD),
@@ -977,6 +983,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
                 rangeFacetObject,
                 JSON_KEY_FACET_IGNOREALLFACETFILTERS);
+            List<String> excludeTags = parseOptionalStringValues(rangeFacetObject, JSON_KEY_FACET_EXCLUDETAGS);
             return new CmsSearchConfigurationFacetRange(
                 range,
                 start,
@@ -989,7 +996,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 label,
                 isAndFacet,
                 preselection,
-                ignoreAllFacetFilters);
+                ignoreAllFacetFilters,
+                excludeTags);
         } catch (JSONException e) {
             LOG.error(
                 Messages.get().getBundle().key(

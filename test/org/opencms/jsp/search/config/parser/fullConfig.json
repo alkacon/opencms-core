@@ -26,11 +26,11 @@
         {"solrvalue" : "lastmodified desc" }
     ],
     "fieldfacets" : [
-        { "field" : "category_exact", "name" : "category", "label" : "Categories", "mincount" : 1, "limit" : 6, "prefix" : "location/", "order" : "index", "filterquerymodifier" : "nonsense - %(value)", "isAndFacet" : "true", "preselection" : [ "location/europe/", "topic/" ] , "ignoreAllFacetFilters" : true },
+        { "field" : "category_exact", "name" : "category", "label" : "Categories", "mincount" : 1, "limit" : 6, "prefix" : "location/", "order" : "index", "filterquerymodifier" : "nonsense - %(value)", "isAndFacet" : "true", "preselection" : [ "location/europe/", "topic/" ] , "ignoreAllFacetFilters" : true, "excludeTags" : ["oneKey", "anotherKey"] },
         { "field" : "Keywords" }
     ],
     "rangefacets" : [
-        { "range" : "lastmodified", "name" : "modification", "label" : "Date lastmodified", "start" : "NOW/MONTH-20MONTHS", "end" : "NOW/MONTH", "gap" : "+1MONTHS", "other" : ["before", "after", "between", "all", "none"], "hardend" : false, "mincount" : 1, "isAndFacet" : true, "preselection" : [ "2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z"  ], "ignoreAllFacetFilters" : true },
+        { "range" : "lastmodified", "name" : "modification", "label" : "Date lastmodified", "start" : "NOW/MONTH-20MONTHS", "end" : "NOW/MONTH", "gap" : "+1MONTHS", "other" : ["before", "after", "between", "all", "none"], "hardend" : false, "mincount" : 1, "isAndFacet" : true, "preselection" : [ "2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z"  ], "ignoreAllFacetFilters" : true, "excludeTags" : ["oneKey", "anotherKey"] },
         { "range" : "size", "start" : "0", "end" : "1000000", "gap" : "1000" }
     ],
     "queryfacet" : {
@@ -42,7 +42,8 @@
         "label" : "Creation date",
         "isAndFacet" : true,
         "preselection" : [ "created:[NOW-1MONTH TO NOW]", "created:[* TO NOW-1MONTHS]" ],
-        "ignoreAllFacetFilters" : true
+        "ignoreAllFacetFilters" : true,
+        "excludeTags" : ["oneKey", "anotherKey"]
     },
     "highlighter" : {
         "field" : "content_en",

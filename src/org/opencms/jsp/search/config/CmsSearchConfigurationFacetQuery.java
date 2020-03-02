@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.config;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /** Configuration for the query facet. */
@@ -121,13 +122,15 @@ implements I_CmsSearchConfigurationFacetQuery {
      * @param isAndFacet true if checked facet entries should all be matched, otherwise only one checked entry must match
      * @param preselection list of entries that should be checked in advance
      * @param ignoreFiltersFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
+     * @param excludeTags The tags (keys) of (filter) queries to be not taken into account for the facet. If "ignoreFiltersFromFacets" is true, the according tags for facets and queries will be added.
      */
     public CmsSearchConfigurationFacetQuery(
         final List<I_CmsFacetQueryItem> queries,
         final String label,
         final Boolean isAndFacet,
         final List<String> preselection,
-        final Boolean ignoreFiltersFromAllFacets) {
+        final Boolean ignoreFiltersFromAllFacets,
+        final Collection<String> excludeTags) {
 
         super(
             null,
@@ -135,7 +138,8 @@ implements I_CmsSearchConfigurationFacetQuery {
             I_CmsSearchConfigurationFacetQuery.NAME,
             isAndFacet,
             preselection,
-            ignoreFiltersFromAllFacets);
+            ignoreFiltersFromAllFacets,
+            excludeTags);
         m_queries = queries != null ? queries : new ArrayList<I_CmsFacetQueryItem>();
     }
 

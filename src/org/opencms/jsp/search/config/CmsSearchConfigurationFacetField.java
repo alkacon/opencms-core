@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -62,6 +63,7 @@ implements I_CmsSearchConfigurationFacetField {
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      * @param preselection The list of facet items that should be preselected for the first search.
      * @param ignoreFiltersFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
+     * @param excludeTags The tags (keys) of (filter) queries to be not taken into account for the facet. If "ignoreFiltersFromFacets" is true, the according tags for facets and queries will be added.
      */
     public CmsSearchConfigurationFacetField(
         final String field,
@@ -74,9 +76,17 @@ implements I_CmsSearchConfigurationFacetField {
         final String filterQueryModifier,
         final Boolean isAndFacet,
         final List<String> preselection,
-        final Boolean ignoreFiltersFromAllFacets) {
+        final Boolean ignoreFiltersFromAllFacets,
+        final Collection<String> excludeTags) {
 
-        super(minCount, label, null != name ? name : field, isAndFacet, preselection, ignoreFiltersFromAllFacets);
+        super(
+            minCount,
+            label,
+            null != name ? name : field,
+            isAndFacet,
+            preselection,
+            ignoreFiltersFromAllFacets,
+            excludeTags);
 
         if (prefix != null) {
             m_prefix = prefix;

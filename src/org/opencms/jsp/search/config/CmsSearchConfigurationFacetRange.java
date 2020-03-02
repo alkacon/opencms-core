@@ -63,6 +63,7 @@ implements I_CmsSearchConfigurationFacetRange {
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      * @param preselection The list of facet items that should be preselected for the first search.
      * @param ignoreFilterFromAllFacets A flag, indicating if filters from all facets should be ignored or not.
+     * @param excludeTags The tags (keys) of (filter) queries to be not taken into account for the facet. If "ignoreFiltersFromFacets" is true, the according tags for facets and queries will be added.
      */
     public CmsSearchConfigurationFacetRange(
         final String range,
@@ -76,9 +77,17 @@ implements I_CmsSearchConfigurationFacetRange {
         final String label,
         final Boolean isAndFacet,
         final List<String> preselection,
-        final Boolean ignoreFilterFromAllFacets) {
+        final Boolean ignoreFilterFromAllFacets,
+        final Collection<String> excludeTags) {
 
-        super(minCount, label, null != name ? name : range, isAndFacet, preselection, ignoreFilterFromAllFacets);
+        super(
+            minCount,
+            label,
+            null != name ? name : range,
+            isAndFacet,
+            preselection,
+            ignoreFilterFromAllFacets,
+            excludeTags);
 
         m_range = range;
         m_start = start;

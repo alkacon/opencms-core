@@ -230,6 +230,7 @@ public class ConfigurationTester {
         assertEquals(expectedConfig.getIgnoreTags(), actualConfig.getIgnoreTags());
         assertEquals(expectedConfig.getParamKey(), actualConfig.getParamKey());
         assertEquals(expectedConfig.getQueryList(), actualConfig.getQueryList());
+        assertEquals(expectedConfig.getIgnoreTags(), actualConfig.getIgnoreTags());
 
     }
 
