@@ -44,10 +44,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -87,6 +89,9 @@ public class CmsADEConfigCacheState {
     /** Cached list of subsites to be included in the site selector. */
     private volatile List<String> m_subsitesForSiteSelector;
 
+    /** Cache for detail page lists. */
+    private Map<String, List<String>> m_detailPageCache;
+
     /**
      * Creates a new configuration cache state.<p>
      *
@@ -120,6 +125,10 @@ public class CmsADEConfigCacheState {
             m_folderTypes = Maps.newHashMap();
             LOG.error(e.getLocalizedMessage(), e);
         }
+        CacheBuilder<?, ?> detailPageCacheBuilder = CacheBuilder.newBuilder().concurrencyLevel(8).expireAfterWrite(
+            30,
+            TimeUnit.SECONDS);
+        m_detailPageCache = (Map<String, List<String>>)(detailPageCacheBuilder.build().asMap());
     }
 
     /**
@@ -349,13 +358,17 @@ public class CmsADEConfigCacheState {
      */
     protected List<String> getDetailPages(String type) {
 
-        List<String> result = new ArrayList<String>();
-        for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
-            for (CmsDetailPageInfo pageInfo : wrap(configData).getDetailPagesForType(type)) {
-                result.add(pageInfo.getUri());
+        List<String> result = m_detailPageCache.get(type);
+        if (result == null) {
+            result = new ArrayList<>();
+            for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
+                for (CmsDetailPageInfo pageInfo : wrap(configData).getDetailPagesForType(type)) {
+                    result.add(pageInfo.getUri());
+                }
             }
+            m_detailPageCache.put(type, result);
         }
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     /**
