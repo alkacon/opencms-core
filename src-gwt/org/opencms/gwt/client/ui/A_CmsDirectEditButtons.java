@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.CmsScriptCallbackHelper;
 import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
@@ -178,6 +179,14 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
             String jsonText = editable.getAttribute(CmsGwtConstants.ATTR_DATA_EDITABLE);
             m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
+            CmsScriptCallbackHelper callbackForElement = new CmsScriptCallbackHelper() {
+
+                public void run() {
+
+                    A_CmsDirectEditButtons.this.onClickNew(false);
+                }
+            };
+            editable.setPropertyJSO("cmsOnClickNew", callbackForElement.createCallback());
             CmsNewLinkFunctionTable.INSTANCE.setHandler(m_editableData.getContextId(), new Runnable() {
 
                 public void run() {
