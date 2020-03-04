@@ -315,7 +315,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         CacheBuilder<?, ?> builder = CacheBuilder.newBuilder().concurrencyLevel(CONCURRENCY_LEVEL).maximumSize(
             capacity);
-        builder.build();
         return (Map<T, V>)(builder.build().asMap());
     }
 
