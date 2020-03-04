@@ -262,13 +262,16 @@ public class CmsJspInstanceDateBean {
      */
     public Date getEnd() {
 
-        if (null != m_explicitEnd) {
+        if (m_explicitEnd != null) {
             return isWholeDay() ? adjustForWholeDay(m_explicitEnd, true) : m_explicitEnd;
         }
-        if ((null == m_end) && (m_series.getInstanceDuration() != null)) {
+        if ((m_end == null) && (m_series.getInstanceDuration() != null)) {
             m_end = new Date(m_start.getTime() + m_series.getInstanceDuration().longValue());
         }
-        return isWholeDay() && !m_series.isWholeDay() ? adjustForWholeDay(m_end, true) : m_end;
+        if (m_end == null) {
+            m_end = new Date(getStart().getTime());
+        }
+        return (m_end.getTime() > 0) && isWholeDay() && !m_series.isWholeDay() ? adjustForWholeDay(m_end, true) : m_end;
     }
 
     /**
@@ -332,7 +335,7 @@ public class CmsJspInstanceDateBean {
      */
     public boolean getIsSet() {
 
-        return m_start.getTime() == 0;
+        return (m_start != null) && (m_start.getTime() != 0);
     }
 
     /**
@@ -357,7 +360,12 @@ public class CmsJspInstanceDateBean {
     public Date getStart() {
 
         // Adjust the start time for an explicitely whole day option that overwrites the series' whole day option.
-        return isWholeDay() && !m_series.isWholeDay() ? adjustForWholeDay(m_start, false) : m_start;
+        if (m_start == null) {
+            m_start = new Date(0);
+        }
+        return (m_start.getTime() > 0) && isWholeDay() && !m_series.isWholeDay()
+        ? adjustForWholeDay(m_start, false)
+        : m_start;
     }
 
     /**
@@ -446,6 +454,8 @@ public class CmsJspInstanceDateBean {
      */
     public void setEnd(long endDate) {
 
+        m_formatLong = null;
+        m_formatShort = null;
         setEnd(new Date(endDate));
     }
 
@@ -457,6 +467,8 @@ public class CmsJspInstanceDateBean {
      */
     public void setWholeDay(Boolean isWholeDay) {
 
+        m_formatLong = null;
+        m_formatShort = null;
         m_explicitWholeDay = isWholeDay;
     }
 
