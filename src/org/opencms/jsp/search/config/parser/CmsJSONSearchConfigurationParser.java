@@ -60,10 +60,12 @@ import org.opencms.search.solr.CmsSolrIndex;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 
@@ -167,6 +169,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** JSON keys for sort options. */
     /** A JSON key. */
     public static final String JSON_KEY_SORTPARAM = "sortby";
+    /** The JSON key for the default sort option, should hold the name paramvalue for the default option. */
+    public static final String JSON_KEY_DEFAULT_SORT_OPTION = "defaultSortOption";
     /** The JSON key for the sub-node with all search option configurations. */
     public static final String JSON_KEY_SORTOPTIONS = "sortoptions";
     /** JSON keys for a single search option. */
@@ -539,10 +543,21 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     public I_CmsSearchConfigurationSorting parseSorting() {
 
         List<I_CmsSearchConfigurationSortOption> options = getSortOptions();
-        I_CmsSearchConfigurationSortOption defaultOption = (options != null) && !options.isEmpty()
-        ? options.get(0)
-        : null;
-        return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultOption);
+        String defaultOptionParamValue = parseOptionalStringValue(m_configObject, JSON_KEY_DEFAULT_SORT_OPTION);
+        I_CmsSearchConfigurationSortOption defaultSortOption = null;
+        if (null != defaultOptionParamValue) {
+            Iterator<I_CmsSearchConfigurationSortOption> optIterator = options.iterator();
+            while ((null == defaultSortOption) && optIterator.hasNext()) {
+                I_CmsSearchConfigurationSortOption opt = optIterator.next();
+                if (Objects.equals(opt.getParamValue(), defaultOptionParamValue)) {
+                    defaultSortOption = opt;
+                }
+            }
+        }
+        if ((null == defaultSortOption) && !options.isEmpty()) {
+            defaultSortOption = options.get(0);
+        }
+        return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultSortOption);
     }
 
     /** Returns a map with additional request parameters, mapping the parameter names to Solr query parts.

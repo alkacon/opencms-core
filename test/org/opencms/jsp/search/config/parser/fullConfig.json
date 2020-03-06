@@ -21,9 +21,10 @@
     "pagesize" : 20,
     "pagenavlength" : 9,
     "sortby" : "sortparam",
+    "defaultSortOption" : "sort2",
     "sortoptions" : [
-        {"label" : "lastmodified descending", "paramvalue" : "sort1", "solrvalue" : "lastmodified desc" },
-        {"solrvalue" : "lastmodified desc" }
+        {"solrvalue" : "lastmodified desc" },
+        {"label" : "lastmodified ascending", "paramvalue" : "sort2", "solrvalue" : "lastmodified asc" }
     ],
     "fieldfacets" : [
         { "field" : "category_exact", "name" : "category", "label" : "Categories", "mincount" : 1, "limit" : 6, "prefix" : "location/", "order" : "index", "filterquerymodifier" : "nonsense - %(value)", "isAndFacet" : "true", "preselection" : [ "location/europe/", "topic/" ] , "ignoreAllFacetFilters" : true, "excludeTags" : ["oneKey", "anotherKey"] },

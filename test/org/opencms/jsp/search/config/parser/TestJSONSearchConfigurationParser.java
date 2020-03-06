@@ -215,20 +215,20 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
 
         // Test sorting configuration
         I_CmsSearchConfigurationSortOption sortOption1 = new CmsSearchConfigurationSortOption(
-            "lastmodified descending",
-            "sort1",
+            null,
+            null,
             "lastmodified desc");
         I_CmsSearchConfigurationSortOption sortOption2 = new CmsSearchConfigurationSortOption(
-            null,
-            null,
-            "lastmodified desc");
+            "lastmodified ascending",
+            "sort2",
+            "lastmodified asc");
         List<I_CmsSearchConfigurationSortOption> sortOptions = new ArrayList<I_CmsSearchConfigurationSortOption>(2);
         sortOptions.add(sortOption1);
         sortOptions.add(sortOption2);
         I_CmsSearchConfigurationSorting sortingConfig = new CmsSearchConfigurationSorting(
             "sortparam",
             sortOptions,
-            sortOption1);
+            sortOption2);
         ConfigurationTester.testSortingConfiguration(sortingConfig, config.getSortConfig());
 
         // Test field facet configuration

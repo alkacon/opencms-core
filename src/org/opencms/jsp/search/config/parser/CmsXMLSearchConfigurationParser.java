@@ -59,10 +59,12 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 
@@ -153,6 +155,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element names for sort options. */
     /** XML element name. */
     private static final String XML_ELEMENT_SORTPARAM = "SortParam";
+    /** XML element name for the root element for sort options. */
+    private static final String XML_ELEMENT_DEFAULTSORTOPTION = "DefaultSortOption";
     /** XML element name for the root element for sort options. */
     private static final String XML_ELEMENT_SORTOPTIONS = "SortOption";
     /** XML element names for a single search option. */
@@ -409,10 +413,21 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     public I_CmsSearchConfigurationSorting parseSorting() {
 
         List<I_CmsSearchConfigurationSortOption> options = getSortOptions();
-        I_CmsSearchConfigurationSortOption defaultOption = (options != null) && !options.isEmpty()
-        ? options.get(0)
-        : null;
-        return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultOption);
+        String defaultOptionParamValue = parseOptionalStringValue(XML_ELEMENT_DEFAULTSORTOPTION);
+        I_CmsSearchConfigurationSortOption defaultSortOption = null;
+        if (null != defaultOptionParamValue) {
+            Iterator<I_CmsSearchConfigurationSortOption> optIterator = options.iterator();
+            while ((null == defaultSortOption) && optIterator.hasNext()) {
+                I_CmsSearchConfigurationSortOption opt = optIterator.next();
+                if (Objects.equals(opt.getParamValue(), defaultOptionParamValue)) {
+                    defaultSortOption = opt;
+                }
+            }
+        }
+        if ((null == defaultSortOption) && !options.isEmpty()) {
+            defaultSortOption = options.get(0);
+        }
+        return CmsSearchConfigurationSorting.create(getSortParam(), options, defaultSortOption);
     }
 
     /** Returns the number of maximally returned results, or <code>null</code> if the indexes default should be used.
