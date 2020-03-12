@@ -53,6 +53,50 @@
 
     <tag>
         <description><![CDATA[
+        Loads a resource bundle and stores it in the named scoped variable or
+        the bundle configuration variable. Like &lt;fmt:setBundle&gt;, but using OpenCms'
+        bundle loader mechanism.
+    ]]></description>
+    <name>setBundle</name>
+    <tag-class>org.opencms.jsp.CmsJspTagSetBundle</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+        <description><![CDATA[
+            Resource bundle base name. This is the bundle's
+            fully-qualified resource name, which has the same
+            form as a fully-qualified class name, that is, it uses
+            "." as the package component separator and does not
+            have any file type (such as ".class" or ".properties")
+            suffix.
+        ]]></description>
+        <name>basename</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description><![CDATA[
+            Name of the exported scoped variable which stores
+            the i18n localization context of type
+            javax.servlet.jsp.jstl.fmt.LocalizationC
+            ontext.
+        ]]></description>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description><![CDATA[
+            Scope of var or the localization context
+            configuration variable.
+        ]]></description>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+
+    <tag>
+        <description><![CDATA[
             This tag enables read access to a file's OpenCms properties.
         ]]></description>
         <name>property</name>
