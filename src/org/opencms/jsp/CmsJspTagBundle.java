@@ -38,9 +38,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.apache.taglibs.standard.tag.el.fmt.BundleTag;
@@ -56,7 +58,7 @@ import org.apache.taglibs.standard.tag.el.fmt.BundleTag;
  */
 public class CmsJspTagBundle extends BundleTag {
 
-    /** Serial version UID required for safe serialisation. */
+    /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 7592250223728101278L;
 
     /** The basename attribute value. */
@@ -65,14 +67,16 @@ public class CmsJspTagBundle extends BundleTag {
     /** The localization to use. */
     private LocalizationContext m_locCtxt;
 
+    /** The prefix attribute value. */
+    private String m_prefix;
+
     /**
      * Empty constructor.<p>
      */
     public CmsJspTagBundle() {
 
         super();
-        m_basename = null;
-        m_locCtxt = null;
+        init();
     }
 
     /**
@@ -186,6 +190,7 @@ public class CmsJspTagBundle extends BundleTag {
      *
      * @param basename the resource bundle base name
      * @param pref the preferred locale
+     * @return the resource bundle.
      */
     private static ResourceBundle findMatch(String basename, Locale pref) {
 
@@ -206,20 +211,11 @@ public class CmsJspTagBundle extends BundleTag {
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
-    public int doStartTag() {
+    public int doStartTag() throws JspException {
 
-        m_locCtxt = getLocalizationContext(pageContext, getBasename());
+        evaluateExpressions();
+        m_locCtxt = getLocalizationContext(pageContext, basename);
         return EVAL_BODY_BUFFERED;
-    }
-
-    /**
-     * Returns the basename attribute value.<p>
-     *
-     * @return the basename attribute value
-     */
-    public String getBasename() {
-
-        return m_basename;
     }
 
     /**
@@ -230,8 +226,17 @@ public class CmsJspTagBundle extends BundleTag {
     @Override
     public LocalizationContext getLocalizationContext() {
 
-        // TODO: Auto-generated method stub
         return m_locCtxt;
+    }
+
+    /**
+     * @see org.apache.taglibs.standard.tag.el.fmt.BundleTag#release()
+     */
+    @Override
+    public void release() {
+
+        super.release();
+        init();
     }
 
     /**
@@ -247,4 +252,44 @@ public class CmsJspTagBundle extends BundleTag {
         m_basename = bn;
     }
 
+    /**
+     * Sets the prefix attribute value.<p>
+     *
+     * @param pf the prefix attribute value
+     *
+     * @see org.apache.taglibs.standard.tag.el.fmt.BundleTag#setPrefix(java.lang.String)
+     */
+    @Override
+    public void setPrefix(String pf) {
+
+        m_prefix = pf;
+    }
+
+    /**
+     * Evaluates expressions as neccessary.
+     *
+     * This is a copy of the private method from the {@link BundleTag}.
+     *
+     * @throws JspException same as for the default {@link BundleTag}.
+     */
+    private void evaluateExpressions() throws JspException {
+
+        // 'basename' attribute (mandatory)
+        basename = (String)ExpressionEvaluatorManager.evaluate("basename", m_basename, String.class, this, pageContext);
+
+        // 'prefix' attribute (optional)
+        if (m_prefix != null) {
+            prefix = (String)ExpressionEvaluatorManager.evaluate("prefix", m_prefix, String.class, this, pageContext);
+        }
+    }
+
+    /**
+     * Sets the initial state.
+     */
+    private void init() {
+
+        m_basename = null;
+        m_locCtxt = null;
+        m_prefix = null;
+    }
 }
