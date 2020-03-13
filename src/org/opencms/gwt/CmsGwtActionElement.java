@@ -117,10 +117,10 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public static String exportCommon(CmsObject cms, CmsCoreData coreData) throws Exception {
 
         // determine the workplace locale
-        String wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage();
+        String wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(wpLocale)) {
             // if no locale was found, take English as locale
-            wpLocale = Locale.ENGLISH.getLanguage();
+            wpLocale = Locale.ENGLISH.toString();
         }
         StringBuffer sb = new StringBuffer();
         // append meta tag to set the IE to standard document mode
