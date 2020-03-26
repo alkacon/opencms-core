@@ -440,7 +440,12 @@ public class CmsGallerySearchParameters {
         query.setSort(getSort().getFirst(), getSort().getSecond());
 
         // set result collapsing by id
-        query.addFilterQuery("{!collapse field=id}");
+        // add sort criteria to possibly speed up performance and prevent sorting by score - not sure if a good solution
+        query.addFilterQuery(
+            "{!collapse field=id sort='"
+                + CmsSearchField.FIELD_INSTANCEDATE
+                + CmsSearchField.FIELD_POSTFIX_DATE
+                + " asc'}");
 
         query.setFields(CmsGallerySearchResult.getRequiredSolrFields());
 

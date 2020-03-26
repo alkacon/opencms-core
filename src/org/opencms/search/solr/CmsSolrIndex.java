@@ -538,7 +538,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
             } else {
                 query.setQuery(fieldname + ":" + term);
             }
-            query.addFilterQuery("{!collapse field=" + fieldname + "}");
+            // We could have more than one document due to serial dates. We only want one arbitrary document per id/path
+            query.setRows(Integer.valueOf(1));
             if (null != fls) {
                 query.setFields(fls);
             }
