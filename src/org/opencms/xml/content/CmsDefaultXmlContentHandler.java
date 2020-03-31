@@ -1872,8 +1872,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         // correct the HTML structure
         file = content.correctXmlStructure(cms);
         content.setFile(file);
+
+        // check if any field has a configured attribute mapping
+        boolean hasAttributeMappings = m_elementMappings.values().stream().flatMap(List::stream).filter(
+            mapping -> mapping.startsWith(MAPTO_ATTRIBUTE)).findAny().isPresent();
+
         // resolve the file mappings
-        CmsMappingResolutionContext mappingContext = new CmsMappingResolutionContext();
+        CmsMappingResolutionContext mappingContext = new CmsMappingResolutionContext(content, hasAttributeMappings);
         mappingContext.setCmsObject(cms);
         // pass the mapping context as a request context attribute to preserve interface compatibility
         cms.getRequestContext().setAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT, mappingContext);
@@ -2429,8 +2434,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 String path = CmsStringUtil.joinPaths(key, handlerConfig.getField());
                 path = CmsFileUtil.removeLeadingSeparator(path);
                 String scope = normalizeChangeHandlerScope(path);
-                java.util.Optional<I_CmsXmlContentEditorChangeHandler> optHandler = handlerConfig.newHandler(
-                    scope);
+                java.util.Optional<I_CmsXmlContentEditorChangeHandler> optHandler = handlerConfig.newHandler(scope);
                 if (optHandler.isPresent()) {
                     result.add(optHandler.get());
                 }
@@ -3584,9 +3588,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             for (int v = mappings.size() - 1; v >= 0; v--) {
                 String mapping = mappings.get(v);
 
-                if (mapping.startsWith(MAPTO_ATTRIBUTE)
-                    || mapping.startsWith(MAPTO_PROPERTY_LIST)
-                    || mapping.startsWith(MAPTO_PROPERTY)) {
+                if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
                     for (int i = 0; i < siblings.size(); i++) {
 
                         // get siblings filename and locale
@@ -3627,18 +3629,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                     property,
                                     CmsProperty.DELETE_VALUE,
                                     shared ? CmsProperty.DELETE_VALUE : null));
-                        } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
-                            if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATERELEASED)) {
-                                rootCms.setDateReleased(filename, CmsResource.DATE_RELEASED_DEFAULT, false);
-                                if (filename.equals(rootCms.getSitePath(file))) {
-                                    file.setDateReleased(CmsResource.DATE_RELEASED_DEFAULT);
-                                }
-                            } else if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATEEXPIRED)) {
-                                rootCms.setDateExpired(filename, CmsResource.DATE_EXPIRED_DEFAULT, false);
-                                if (filename.equals(rootCms.getSitePath(file))) {
-                                    file.setDateExpired(CmsResource.DATE_EXPIRED_DEFAULT);
-                                }
-                            }
                         }
                     }
                 } else if (mapping.startsWith(MAPTO_PERMISSION)) {
@@ -4288,13 +4278,54 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(rootCms, content, valueLocale);
         resolver.setKeepEmptyMacros(true);
         String stringValue = resolver.resolveMacros(originalStringValue);
+        CmsMappingResolutionContext mappingContext = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(
+            ATTR_MAPPING_RESOLUTION_CONTEXT));
 
         for (String mapping : mappings) {
 
-            // for multiple language mappings, we need to ensure
-            // a) all siblings are handled
-            // b) only the "right" locale is mapped to a sibling
             if (CmsStringUtil.isNotEmpty(mapping)) {
+
+                // attribute mapping now does its own handling of siblings/locales in CmsMappingResolutionContext,
+                // so we just save the mapped release/expiration dates for later, and we do this before the sibling/locale handling
+                // logic in this method.
+                if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
+
+                    // this is an attribute mapping
+                    String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
+                    switch (ATTRIBUTES.indexOf(attribute)) {
+                        case 0: // date released
+                            long date = 0;
+                            try {
+                                date = Long.valueOf(stringValue).longValue();
+                            } catch (NumberFormatException e) {
+                                // ignore, value can be a macro
+                            }
+                            if (date == 0) {
+                                date = CmsResource.DATE_RELEASED_DEFAULT;
+                            }
+                            mappingContext.putReleaseDate(valueLocale, date);
+                            break;
+                        case 1: // date expired
+                            date = 0;
+                            try {
+                                date = Long.valueOf(stringValue).longValue();
+                            } catch (NumberFormatException e) {
+                                // ignore, value can be a macro
+                            }
+                            if (date == 0) {
+                                date = CmsResource.DATE_EXPIRED_DEFAULT;
+                            }
+                            mappingContext.putExpirationDate(valueLocale, date);
+                            break;
+                        default:
+                            // ignore invalid / other mappings
+                    }
+                    continue; // skip to next mapping
+                }
+
+                // for multiple language mappings, we need to ensure
+                // a) all siblings are handled
+                // b) only the "right" locale is mapped to a sibling
                 for (int i = (siblings.size() - 1); i >= 0; i--) {
                     // get filename
                     String filename = (siblings.get(i)).getRootPath();
@@ -4302,6 +4333,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         // should be written regardless of whether there is a sibling with the correct locale
                         mapToUrlName = true;
                     }
+
                     Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
                     if (!locale.equals(valueLocale)) {
                         // only map property if the locale fits
@@ -4499,61 +4531,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     } else if (mapping.startsWith(MAPTO_URLNAME)) {
                         // we write the actual mappings later
                         urlNameMappingResources.add(siblings.get(i));
-                    } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
-
-                        // this is an attribute mapping
-                        String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
-                        switch (ATTRIBUTES.indexOf(attribute)) {
-                            case 0: // date released
-                                long date = 0;
-                                try {
-                                    date = Long.valueOf(stringValue).longValue();
-                                } catch (NumberFormatException e) {
-                                    // ignore, value can be a macro
-                                }
-                                if (date == 0) {
-                                    date = CmsResource.DATE_RELEASED_DEFAULT;
-                                }
-                                // set the sibling release date
-                                rootCms.setDateReleased(filename, date, false);
-                                // set current file release date
-                                if (filename.equals(rootCms.getSitePath(file))) {
-                                    file.setDateReleased(date);
-                                }
-                                break;
-                            case 1: // date expired
-                                date = 0;
-                                try {
-                                    date = Long.valueOf(stringValue).longValue();
-                                } catch (NumberFormatException e) {
-                                    // ignore, value can be a macro
-                                }
-                                if (date == 0) {
-                                    date = CmsResource.DATE_EXPIRED_DEFAULT;
-                                }
-                                // set the sibling expired date
-                                rootCms.setDateExpired(filename, date, false);
-                                // set current file expired date
-                                if (filename.equals(rootCms.getSitePath(file))) {
-                                    file.setDateExpired(date);
-                                }
-                                break;
-                            default:
-                                // ignore invalid / other mappings
-                        }
                     }
                 }
             }
         }
         if (mapToUrlName) {
-            CmsMappingResolutionContext context = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(
-                ATTR_MAPPING_RESOLUTION_CONTEXT));
             for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
                 if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
                     String mappedName = stringValue;
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(mappedName)) {
                         mappedName = mappedName.trim();
-                        context.addUrlNameMapping(mappedName, valueLocale, resourceForUrlNameMapping.getStructureId());
+                        mappingContext.addUrlNameMapping(
+                            mappedName,
+                            valueLocale,
+                            resourceForUrlNameMapping.getStructureId());
                     }
                 }
             }
