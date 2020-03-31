@@ -94,7 +94,7 @@ public class CmsAdvancedPasswordHandler extends CmsDefaultPasswordHandler {
         }
 
         // first the size of the password: 8-16
-        if ((password.length() < 8) || (password.length() > 16)) {
+        if ((password.length() < 8) || (password.length() > 64)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_PWD_INVALID_SIZE_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key());
