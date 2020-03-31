@@ -99,11 +99,12 @@ public class CmsResourceTranslator {
     /** Flag to indicate if one or more matchings should be tried. */
     private boolean m_continueMatching;
 
-    /** Perl5 patter cache to avoid unecessary re-parsing of properties. */
-    private PatternCache m_perlPatternCache;
-
-    /** Perl5 utility class. */
-    private Perl5Util m_perlUtil;
+    /**
+     * ThreadLocal for Perl5 utility class.
+     *
+     *<p>We use a ThreadLocal to give each thread its own Perl5Util instance, to avoid problems with threads blocking each other.
+     **/
+    private ThreadLocal<Perl5Util> m_perlUtil = new ThreadLocal<>();
 
     /** Internal array containing the translations from opencms.properties. */
     private String[] m_translations;
@@ -121,19 +122,7 @@ public class CmsResourceTranslator {
         super();
         m_translations = translations;
         m_continueMatching = continueMatching;
-        // pre-cache the patterns
-        m_perlPatternCache = new PatternCacheFIFO(m_translations.length + 1);
-        for (int i = 0; i < m_translations.length; i++) {
-            try {
-                m_perlPatternCache.addPattern(m_translations[i]);
-            } catch (MalformedPatternException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]),
-                    e);
-            }
-        }
-        // initialize the Perl5Util
-        m_perlUtil = new Perl5Util(m_perlPatternCache);
+        buildPatternCache(); // just doing this to detect errors, throw the result away
         if (LOG.isInfoEnabled()) {
             LOG.info(
                 Messages.get().getBundle().key(
@@ -176,10 +165,11 @@ public class CmsResourceTranslator {
         String current = resourceName;
         int size = current.length() * 2;
 
+        Perl5Util perl5Util = getPerl5Util();
         for (int i = 0; i < m_translations.length; i++) {
             result = new StringBuffer(size);
             try {
-                if (m_perlUtil.substitute(result, m_translations[i], current) != 0) {
+                if (perl5Util.substitute(result, m_translations[i], current) != 0) {
 
                     if (m_continueMatching) {
                         // continue matching
@@ -211,5 +201,38 @@ public class CmsResourceTranslator {
         }
         // return last translation (or original if no matching translation found)
         return current;
+    }
+
+    /**
+     * Builds a pattern cache from the stored list of substitutions.
+     *
+     * @return the pattern cache
+     */
+    private PatternCache buildPatternCache() {
+
+        PatternCacheFIFO cache = new PatternCacheFIFO(m_translations.length + 1);
+        for (int i = 0; i < m_translations.length; i++) {
+            try {
+                cache.addPattern(m_translations[i]);
+            } catch (MalformedPatternException e) {
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]),
+                    e);
+            }
+        }
+        return cache;
+    }
+
+    /**
+     * Gets the perl5util instance for the current thread.
+     *
+     * @return the perl5util instance for the current thread
+     */
+    private Perl5Util getPerl5Util() {
+
+        if (m_perlUtil.get() == null) {
+            m_perlUtil.set(new Perl5Util(buildPatternCache()));
+        }
+        return m_perlUtil.get();
     }
 }
