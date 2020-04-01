@@ -1032,12 +1032,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
                 && link.getQuery().equals("a=b&c=d") // at this point the & in the link should be unescaped
                 && link.getAnchor().equals("anchor")
                 && link.isInternal()) {
-                result++;
-            } else if (link.getTarget().equals("/sites/default/folder1/index.html")
-                && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
-                && link.isInternal()) {
-                result++;
-            }
+                    result++;
+                } else if (link.getTarget().equals("/sites/default/folder1/index.html")
+                    && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
+                    && link.isInternal()) {
+                        result++;
+                    }
         }
 
         assertEquals(4, result);
@@ -1246,10 +1246,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(navInfoStr, navInfoProperty.getStructureValue());
         assertNull(navInfoProperty.getResourceValue());
 
-        localeProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_LOCALE, false);
-        assertEquals(localeStr, localeProperty.getValue());
-        assertEquals(localeStr, localeProperty.getResourceValue());
-        assertNull(localeProperty.getStructureValue());
     }
 
     /**

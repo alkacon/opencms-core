@@ -35,7 +35,6 @@
 				<mapping element="String" mapto="property:MyTitle" />
 				<mapping element="String[2]" mapto="property:shared:NavImage" />
 				<mapping element="String[3]" mapto="property:individual:NavInfo" />
-				<mapping element="Locale" mapto="property:shared:locale" />
 				<mapping element="VfsFile" mapto="propertyList:Description" />
 				<mapping element="VfsFile2" mapto="propertyList:shared:Keywords" />
 				<mapping element="VfsFile3" mapto="propertyList:individual:NavText" />
