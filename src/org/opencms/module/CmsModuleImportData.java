@@ -36,6 +36,7 @@ import org.opencms.importexport.CmsImportVersion10;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -106,16 +107,75 @@ public class CmsModuleImportData {
 
         try {
             Map<CmsUUID, CmsResourceImportData> importResourcesById = new HashMap<>();
+            Map<CmsPath, CmsResourceImportData> importResourcesByPath = new HashMap<>();
+            Map<String, CmsUUID> structureIdsByParentIdAndName = new HashMap<>();
+            Map<CmsUUID, Map<String, CmsUUID>> parentFolderMaps = new HashMap<>();
             for (CmsResourceImportData resData : getResourceData()) {
                 if (resData.hasStructureId()) {
                     importResourcesById.put(resData.getResource().getStructureId(), resData);
                 }
+                importResourcesByPath.put(new CmsPath(resData.getPath()), resData);
             }
+            for (CmsResourceImportData resData : getResourceData()) {
+                String parentFolderStr = CmsResource.getParentFolder(resData.getPath());
+                if (parentFolderStr != null) {
+                    CmsResourceImportData parent = importResourcesByPath.get(new CmsPath(parentFolderStr));
+                    if ((parent != null) && parent.hasStructureId()) {
+                        parentFolderMaps.put(parent.getResource().getStructureId(), new HashMap<>());
+                        String key = parent.getResource().getStructureId() + "/" + resData.getResource().getName();
+                        if (resData.hasStructureId()) {
+                            structureIdsByParentIdAndName.put(key, resData.getResource().getStructureId());
+                        }
+                    }
+                }
+            }
+
             cms = getCms();
             CmsObject onlineCms = OpenCms.initCmsObject(cms);
             m_onlineCms = onlineCms;
             CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_NAME);
             onlineCms.getRequestContext().setCurrentProject(online);
+
+            // Reject imports which have an entry with (parentId=A,name=B,structureId=C1) if there is a VFS entry with (parentId=A,name=B,structureId=C2), unless
+            // C1 does not occur in the VFS and C2 does not occur in the import.
+            for (CmsUUID parentId : parentFolderMaps.keySet()) {
+                for (CmsObject cmsToRead : Arrays.asList(cms, onlineCms)) {
+                    try {
+                        CmsResource parent = cmsToRead.readResource(parentId, CmsResourceFilter.IGNORE_EXPIRATION);
+                        List<CmsResource> children = cmsToRead.readResources(
+                            parent,
+                            CmsResourceFilter.IGNORE_EXPIRATION,
+                            false);
+                        for (CmsResource child : children) {
+                            String key = parent.getStructureId() + "/" + child.getName();
+                            CmsUUID importStructureId = structureIdsByParentIdAndName.get(key);
+                            if ((importStructureId != null) && !importStructureId.equals(child.getStructureId())) {
+                                CmsResourceImportData importRes = importResourcesById.get(importStructureId);
+                                if (child.isFile()
+                                    && importRes.getResource().isFile()
+                                    && !containsStructureId(child.getStructureId())
+                                    && !vfsResourceWithStructureId(importStructureId)) {
+                                    m_conflictingIds.put(importStructureId, child.getStructureId());
+                                    importRes.setSkipResourceIdCheck(true);
+                                    LOG.info(
+                                        "Permitting conflicting id in module update for resource "
+                                            + importRes.getPath()
+                                            + " because the id from the module is not present in the VFS and vice versa.");
+                                } else {
+                                    LOG.info("Different structure id for same directory entry.");
+                                    return false;
+                                }
+                            }
+
+                        }
+
+                    } catch (CmsException e) {
+                        LOG.info(e.getLocalizedMessage(), e);
+
+                    }
+                }
+            }
+
             for (CmsResourceImportData resData : getResourceData()) {
                 String importPath = CmsModuleUpdater.normalizePath(resData.getResource().getRootPath());
                 if (resData.hasStructureId()) {
@@ -123,7 +183,6 @@ public class CmsModuleImportData {
                     for (CmsObject cmsToRead : Arrays.asList(cms, onlineCms)) {
                         try {
                             CmsResource resourceFromVfs = cmsToRead.readResource(importPath, CmsResourceFilter.ALL);
-                            boolean skipResourceIdCheck = false;
                             if (!resourceFromVfs.getStructureId().equals(importId)) {
 
                                 if (resData.getResource().isFile()
@@ -140,7 +199,7 @@ public class CmsModuleImportData {
                                     // If we have different structure ids, but they don't conflict with anything else in the manifest or VFS,
                                     // we don't compare resource ids. First, because having different resource ids is normal in this scenario, second
                                     // because the resource in the VFS is deleted anyway during the module update.
-                                    skipResourceIdCheck = true;
+                                    resData.setSkipResourceIdCheck(true);
 
                                 } else {
 
@@ -150,7 +209,7 @@ public class CmsModuleImportData {
                                     return false;
                                 }
                             }
-                            if (!skipResourceIdCheck
+                            if (!resData.isSkipResourceIdCheck()
                                 && resData.getResource().isFile()
                                 && !(resData.getResource().getResourceId().equals(resourceFromVfs.getResourceId()))) {
                                 LOG.info(
