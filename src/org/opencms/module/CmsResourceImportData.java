@@ -48,6 +48,9 @@ public class CmsResourceImportData {
     /** The access control entries. */
     private List<CmsAccessControlEntry> m_aces;
 
+    /** Flag indicating whether resource id checks should be skipped for this import resource. */
+    private boolean m_skipResourceIdCheck;
+
     /** The temp file with the content (may be null). */
     private File m_contentFile;
 
@@ -268,6 +271,16 @@ public class CmsResourceImportData {
     }
 
     /**
+     * Returns true if resource id checks should be disabled for this import resource.
+     *
+     * @return true if resource id checks should be disabled
+     */
+    public boolean isSkipResourceIdCheck() {
+
+        return m_skipResourceIdCheck;
+    }
+
+    /**
      * Sets the import resource.<p>
      *
      * @param importRes the import resource
@@ -275,6 +288,16 @@ public class CmsResourceImportData {
     public void setImportResource(CmsResource importRes) {
 
         m_importResource = importRes;
+    }
+
+    /**
+     * Sets the 'skip resource id check' flag.
+     *
+     * @param skipResourceIdCheck the new value
+     */
+    public void setSkipResourceIdCheck(boolean skipResourceIdCheck) {
+
+        m_skipResourceIdCheck = skipResourceIdCheck;
     }
 
     /**
