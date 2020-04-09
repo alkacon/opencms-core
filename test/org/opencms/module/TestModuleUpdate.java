@@ -418,6 +418,58 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    public void testNestedMove() throws Exception {
+
+        CmsObject cms = cms();
+        removeTestModuleIfExists(cms);
+
+        File export = null;
+        // use custom resource storage so there is no interference from other tests
+        newStorage();
+        CmsUUID foo = new CmsUUID();
+        CmsUUID page = new CmsUUID();
+
+        // use blocks so we don't accidentally use wrong object
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+            builder.setNextStructureId(foo);
+            builder.setNextResourceId(foo);
+            builder.addFolder("foo2");
+            builder.addFolder("foo2/news");
+            builder.setNextStructureId(page);
+            builder.setNextResourceId(page);
+            builder.addFolder("foo2/news/article");
+            builder.publish();
+            export = tempExport();
+            builder.export(export.getAbsolutePath());
+            builder.delete();
+        }
+        {
+            CmsTestModuleBuilder builder = new CmsTestModuleBuilder(cms, MODULE);
+            builder.addModule();
+            builder.addFolder("");
+            builder.setNextStructureId(foo);
+            builder.setNextResourceId(foo);
+            builder.addFolder("foo1");
+            builder.setNextStructureId(page);
+            builder.setNextResourceId(page);
+            builder.addFolder("foo1/news");
+            builder.publish();
+        }
+        CmsReplaceModuleInfo replaceInfo = OpenCms.getModuleManager().replaceModule(
+            cms,
+            export.getAbsolutePath(),
+            new CmsShellReport(Locale.ENGLISH));
+        assertFalse("new module update mechanism should not have been used", replaceInfo.usedUpdater());
+
+    }
+
+    /**
+     * Test case.<p>
+     * @throws Exception if an error happens
+     */
     public void testNewTypeWithContents() throws Exception {
 
         CmsObject cms = cms();
