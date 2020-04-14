@@ -355,10 +355,16 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
      */
     protected String getTitle(String option, String defaultValue) {
 
+        String result;
         if ((option != null) && m_titles.containsKey(option)) {
-            return m_titles.get(option);
+            result = m_titles.get(option);
+        } else {
+            result = defaultValue;
         }
-        return defaultValue;
+        if (result != null) {
+            result = result.trim();
+        }
+        return result;
     }
 
     /**
