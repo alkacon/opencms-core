@@ -220,6 +220,7 @@ public class CmsFileTable extends CmsResourceTable {
         @Override
         protected int compareProperty(Object propertyId, boolean sortDirection, Item item1, Item item2) {
 
+            //@formatter:off
             if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(propertyId)) {
                 Boolean isFolder1 = (Boolean)item1.getItemProperty(
                     CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
@@ -256,9 +257,12 @@ public class CmsFileTable extends CmsResourceTable {
                 String value2 = (String)item2.getItemProperty(propertyId).getValue();
                 Collator collator = Collator.getInstance(
                     OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject()));
-                return collator.compare(value1, value2);
+
+                int result = collator.compare(value1, value2);
+                return sortDirection ? result : -result;
             }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
+            //@formatter:on
         }
     }
 
@@ -442,12 +446,12 @@ public class CmsFileTable extends CmsResourceTable {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
                 } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
                     || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
-                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
-                        && ((Boolean)item.getItemProperty(
-                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
-                        style += " " + OpenCmsTheme.IN_NAVIGATION;
+                        if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                            && ((Boolean)item.getItemProperty(
+                                CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                            style += " " + OpenCmsTheme.IN_NAVIGATION;
+                        }
                     }
-                }
                 for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
                     String additional = generator.getStyle(source, itemId, propertyId);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
