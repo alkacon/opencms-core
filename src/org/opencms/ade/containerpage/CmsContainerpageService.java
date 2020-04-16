@@ -2145,8 +2145,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     new CmsUUID(formatterConfigId));
             } else if (formatterConfigId.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)
                 && CmsUUID.isValidUUID(formatterConfigId.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length()))) {
-                formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
-            }
+                    formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
+                }
         }
         if (formatter == null) {
             formatter = CmsElementUtil.getFormatterForContainer(cms, element, container, config, getSessionCache());
@@ -2527,11 +2527,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsContainerElementBean element : listElements) {
             // checking if resource exists
             if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile())) {
-                CmsContainerElementBean clone = element.clone();
-                clone.ensureNewInstanceId();
-                cache.setCacheContainerElement(clone.editorHash(), clone);
-                CmsContainerElementData elementData = elemUtil.getElementData(elemUtil.getPage(), clone, containers);
-                result.add(elementData);
+                try {
+                    CmsContainerElementBean clone = element.clone();
+                    clone.ensureNewInstanceId();
+                    cache.setCacheContainerElement(clone.editorHash(), clone);
+                    CmsContainerElementData elementData = elemUtil.getElementData(
+                        elemUtil.getPage(),
+                        clone,
+                        containers);
+                    result.add(elementData);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // model group id not found, or other resources
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
             }
         }
         return result;
