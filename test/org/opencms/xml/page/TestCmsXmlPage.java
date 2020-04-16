@@ -127,8 +127,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
         page.marshal();
         link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
         assertEquals("/foo/bar/link/test.jpg", link.getTarget());
-        assertEquals("bar", link.getAnchor());
-        assertEquals("c=d&x=y", link.getQuery());
+        assertEquals("bar?c=d&x=y", link.getAnchor());
+        assertEquals(null, link.getQuery());
 
         // update xml page link with components, query null
         link.updateLink("/test/link1/changed3.jpg", "bizz", null);

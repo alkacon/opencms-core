@@ -65,13 +65,13 @@ public class CmsUriSplitter {
     private String m_uri;
 
     /**
-     * Creates a splitted URI using the default (not strict) parsing mode.<p>
+     * Creates a splitted URI using the strict parsing mode.<p>
      *
      * @param uri the URI to split
      */
     public CmsUriSplitter(String uri) {
 
-        this(uri, false);
+        this(uri, true);
     }
 
     /**
@@ -90,73 +90,52 @@ public class CmsUriSplitter {
         m_uri = uri;
         m_errorFree = true;
         m_isStrict = strict;
-
+        // use strict parsing
         if (strict) {
-
-            // use strict parsing
             try {
                 URI u = new URI(uri);
                 m_protocol = u.getScheme();
-                m_prefix = ((m_protocol != null) ? m_protocol + ":" : "") + u.getRawSchemeSpecificPart();
+                URI tempUri = new URI(u.getScheme(), u.getAuthority(), u.getPath(), null, null);
+                m_prefix = tempUri.toString();
                 m_anchor = u.getRawFragment();
                 m_query = u.getRawQuery();
-                if (m_prefix != null) {
-                    int i = m_prefix.indexOf('?');
-                    if (i != -1) {
-                        m_query = m_prefix.substring(i + 1);
-                        m_prefix = m_prefix.substring(0, i);
-                    }
-                }
-                if (m_anchor != null) {
-                    int i = m_anchor.indexOf('?');
-                    if (i != -1) {
-                        m_query = m_anchor.substring(i + 1);
-                        m_anchor = m_anchor.substring(0, i);
-                    }
-                }
             } catch (Exception exc) {
                 // may be thrown by URI constructor if URI is invalid
                 strict = false;
                 m_errorFree = false;
             }
         }
-
-        if ((!strict) && (uri != null)) {
-
+        if (!strict && (uri != null)) {
             // use simple parsing
             StringBuffer prefix = new StringBuffer(uri.length());
-            StringBuffer anchor = EMPTY_BUFFER;
             StringBuffer query = EMPTY_BUFFER;
-
+            StringBuffer anchor = EMPTY_BUFFER;
             int len = uri.length();
             int cur = 0;
-
             for (int i = 0; i < len; i++) {
                 char c = uri.charAt(i);
                 if ((cur == 0) && (c == ':')) {
                     m_protocol = prefix.toString();
                 }
-                if (c == '#') {
+                if (c == '#') { // always reset anchor buffer
                     // start of anchor
-                    cur = 1;
+                    cur = 2;
                     anchor = new StringBuffer(uri.length());
                     continue;
                 }
-                if (c == '?') {
-                    // start of query
-                    cur = 2;
-                    // ensure a duplicate query part is 'flushed' (same behavior as strict parser)
+                if ((c == '?') && (cur != 2)) { // only reset query buffer if we're not already in the anchor
+                    cur = 1;
                     query = new StringBuffer(uri.length());
                     continue;
                 }
                 switch (cur) {
                     case 1:
-                        // append to anchor
-                        anchor.append(c);
-                        break;
-                    case 2:
                         // append to query
                         query.append(c);
+                        break;
+                    case 2:
+                        // append to anchor
+                        anchor.append(c);
                         break;
                     default:
                         // append to prefix
@@ -175,6 +154,7 @@ public class CmsUriSplitter {
                 m_query = query.toString();
             }
         }
+
     }
 
     /**

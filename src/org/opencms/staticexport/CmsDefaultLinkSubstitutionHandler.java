@@ -45,6 +45,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.net.URI;
@@ -121,6 +122,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     public String getLink(CmsObject cms, String link, String siteRoot, String targetDetailPage, boolean forceSecure) {
 
+
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
             return "";
@@ -135,24 +137,17 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         String overrideSiteRoot = null;
 
         String vfsName;
-        String parameters;
-        // check if the link has parameters, if so cut them
-        int pos = absoluteLink.indexOf('?');
-        if (pos >= 0) {
-            vfsName = absoluteLink.substring(0, pos);
-            parameters = absoluteLink.substring(pos);
-        } else {
-            vfsName = absoluteLink;
-            parameters = null;
-        }
 
-        // check for anchor
-        String anchor = null;
-        pos = vfsName.indexOf('#');
-        if (pos >= 0) {
-            anchor = vfsName.substring(pos);
-            vfsName = vfsName.substring(0, pos);
+        CmsUriSplitter splitter = new CmsUriSplitter(absoluteLink, true);
+        String parameters = null;
+        if (splitter.getQuery() != null) {
+            parameters = "?" + splitter.getQuery();
         }
+        String anchor = null;
+        if (splitter.getAnchor() != null) {
+            anchor = "#" + splitter.getAnchor();
+        }
+        vfsName = splitter.getPrefix();
 
         String resultLink = null;
         String uriBaseName = null;
