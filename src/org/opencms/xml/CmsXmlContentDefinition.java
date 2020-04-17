@@ -811,10 +811,10 @@ public class CmsXmlContentDefinition implements Cloneable {
                 I_CmsXmlSchemaType type = typeManager.getContentType(typeElement, includes);
 
                 if (type.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME)
-                    && ((type.getMaxOccurs() != 1) || (type.getMinOccurs() != 1))) {
+                    && ((type.getMaxOccurs() > 1) || (type.getMinOccurs() > 1))) {
                     throw new CmsXmlException(
                         Messages.get().container(
-                            Messages.ERR_EL_OF_TYPE_MUST_OCCUR_EXACTLY_ONCE_2,
+                            Messages.ERR_EL_OF_TYPE_MUST_OCCUR_AT_MOST_ONCE_2,
                             typeElement.getUniquePath(),
                             type.getTypeName()));
                 }

@@ -338,6 +338,19 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             initDocument();
         }
 
+        boolean removedCategoryField = false;
+        for (Locale locale : getLocales()) {
+            for (I_CmsXmlContentValue value : getValues(locale)) {
+                if ((value instanceof CmsXmlDynamicCategoryValue) && (value.getMinOccurs() == 0)) {
+                    value.getElement().detach();
+                    removedCategoryField = true;
+                }
+            }
+        }
+        if (removedCategoryField) {
+            initDocument();
+        }
+
         for (Node node : m_document.selectNodes("//" + CmsXmlDynamicCategoryValue.N_CATEGORY_STRING)) {
             node.detach();
         }

@@ -253,6 +253,12 @@ public class CmsContentTypeVisitor {
     /** The content handler. */
     private I_CmsXmlContentHandler m_contentHandler;
 
+    /** The dynamically loaded attribute names. */
+    private List<String> m_dynamicallyLoaded;
+
+    /** The optional dynamic categoy fields. */
+    private CmsDynamicCategoryFieldList m_dynamicCategoryFields = new CmsDynamicCategoryFieldList();
+
     /** The content resource. */
     private CmsFile m_file;
 
@@ -265,14 +271,14 @@ public class CmsContentTypeVisitor {
     /** The locale synchronized attribute names. */
     private List<String> m_localeSynchronizations;
 
-    /** The dynamically loaded attribute names. */
-    private List<String> m_dynamicallyLoaded;
-
     /** The messages. */
     private CmsMultiMessages m_messages;
 
     /** The registered types. */
     private Map<String, CmsType> m_registeredTypes;
+
+    /** The root content definition. */
+    private CmsXmlContentDefinition m_rootContentDefinition;
 
     /** The tab informations. */
     private List<CmsTabInfo> m_tabInfos;
@@ -283,8 +289,6 @@ public class CmsContentTypeVisitor {
     /** The widgets encountered by this visitor. */
     private List<I_CmsWidget> m_widgets = new ArrayList<I_CmsWidget>();
 
-    /** The root content definition. */
-    private CmsXmlContentDefinition m_rootContentDefinition;
 
     /**
      * Constructor.<p>
@@ -328,6 +332,16 @@ public class CmsContentTypeVisitor {
     public Map<String, CmsComplexWidgetData> getComplexWidgetData() {
 
         return m_complexWidgets;
+    }
+
+    /**
+     * Gets the optional dynamic category fields collected so far.
+     *
+     * @return the optional dynamic category fields
+     */
+    public CmsDynamicCategoryFieldList getOptionalDynamicCategoryFields() {
+
+        return m_dynamicCategoryFields;
     }
 
     /**
@@ -771,7 +785,6 @@ public class CmsContentTypeVisitor {
         }
         ArrayList<DisplayTypeEvaluator> evaluators = new ArrayList<DisplayTypeEvaluator>();
         for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
-
             String subTypeName = null;
             String childPath = path + "/" + subType.getName();
             String subAttributeName = CmsContentService.getAttributeName(subType.getName(), typeName);
@@ -799,7 +812,18 @@ public class CmsContentTypeVisitor {
                     subType.getMinOccurs(),
                     subType.getMaxOccurs());
             } else {
-                type.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+                int minOccurs = subType.getMinOccurs();
+                if ((subType instanceof CmsXmlDynamicCategoryValue) && (subType.getMinOccurs() == 0)) {
+                    String dynamicCategoryPath;
+                    if ("".equals(path)) {
+                        dynamicCategoryPath = subType.getName();
+                    } else {
+                        dynamicCategoryPath = path + "/" + subType.getName();
+                    }
+                    m_dynamicCategoryFields.add(dynamicCategoryPath);
+                    minOccurs = 1;
+                }
+                type.addAttribute(subAttributeName, subEntityType, minOccurs, subType.getMaxOccurs());
             }
         }
         DisplayType predecessor = null;

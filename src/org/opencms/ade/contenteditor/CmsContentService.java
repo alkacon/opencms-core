@@ -1776,6 +1776,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
             getSessionCache().setCacheXmlContent(file.getStructureId(), content);
         }
+        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, Locale.ENGLISH);
+        visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH);
+        CmsDynamicCategoryFieldList dynCatFields = visitor.getOptionalDynamicCategoryFields();
+        dynCatFields.ensureFields(getCmsObject(), content);
         return content;
     }
 
@@ -2096,6 +2100,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
             }
         }
+        visitor.getOptionalDynamicCategoryFields().ensureFields(cms, content, locale);
         Element element = content.getLocaleNode(locale);
         if (LOG.isDebugEnabled()) {
             timer = System.currentTimeMillis();
@@ -2733,6 +2738,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 e);
         }
         // the file content might have been modified during the write operation
+
         cms.getRequestContext().setAttribute(ATTR_EDITOR_SAVING, "true");
         try {
             file = cms.writeFile(file);
