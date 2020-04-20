@@ -552,6 +552,7 @@ public final class CmsAutoSetupProperties {
         Map<String, String[]> result = new HashMap<String, String[]>();
 
         result.put("dbCreateConStr", new String[] {getConnectionUrl()});
+        result.put("dbCreateConStrParams", new String[] {getConStrParams()});
         result.put("dbName", new String[] {getDbName()});
         result.put("dbProduct", new String[] {getDbProduct()});
         result.put("dbProvider", new String[] {getDbProvider()});

@@ -166,12 +166,12 @@ public class CmsAutoSetup {
         m_bean.setDbCreatePwd(m_props.getCreatePwd() == null ? "" : m_props.getCreatePwd());
         m_bean.setDbWorkUser(m_props.getWorkerUser());
         m_bean.setDbWorkPwd(m_props.getWorkerPwd() == null ? "" : m_props.getWorkerPwd());
-        m_bean.setDbCreateConStr(m_props.getConnectionUrl());
-        m_bean.setDbWorkConStr(m_props.getConnectionUrl());
-        m_bean.setDbParamaters(m_props.toParameterMap(), m_props.getDbProvider(), "/opencms/", null);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_props.getConStrParams())) {
             m_bean.setDbConStrParams(m_props.getConStrParams());
         }
+        m_bean.setDbCreateConStr(m_props.getConnectionUrl());
+        m_bean.setDbWorkConStr(m_props.getConnectionUrl());
+        m_bean.setDbParamaters(m_props.toParameterMap(), m_props.getDbProvider(), "/opencms/", null);
 
         m_bean.setServerName(m_props.getServerName());
         m_bean.setWorkplaceSite(m_props.getServerUrl());
