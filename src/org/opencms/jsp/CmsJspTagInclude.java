@@ -403,9 +403,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // add the target to the include list (the list will be initialized if it is currently empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap, attributeMap);
             // now use the Flex dispatcher to include the target (this will also work for targets in the OpenCms VFS)
-            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
-            // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimiter later
-            context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
+            try {
+                controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
+            } finally {
+                // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimiter later
+                context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
+            }
         } catch (ServletException e) {
             // store original Exception in controller in order to display it later
             Throwable t = (e.getRootCause() != null) ? e.getRootCause() : e;
