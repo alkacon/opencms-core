@@ -441,8 +441,13 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 }
                 try {
                     loader.service(cms, resource, w_req, w_res);
-                } catch (CmsException e) {
-                    // an error occurred during access to OpenCms
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    // an error occurred
+                    if (f_res.hasIncludeList()) {
+                        // to prevent include list and include result list indices going out of sync, add an empty byte array
+                        f_res.addToIncludeResults(new byte[] {});
+                    }
                     controller.setThrowable(e, m_vfsTarget);
                     throw new ServletException(e);
                 }
@@ -490,4 +495,5 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             controller.pop();
         }
     }
+
 }
