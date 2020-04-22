@@ -74,7 +74,7 @@ public class CmsPublishManager {
         currentUser
     }
 
-    /** Log for this class. */ 
+    /** Log for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishManager.class);
 
     /** The default history size. */
@@ -88,6 +88,9 @@ public class CmsPublishManager {
 
     /** Milliseconds in a second. */
     private static final int MS_ONE_SECOND = 1000;
+
+    /** List of providers for special publish history ids that shouldn't be cleaned up. */
+    private static CopyOnWriteArrayList<Supplier<List<CmsUUID>>> m_specialHistoryIdProviders = new CopyOnWriteArrayList<>();
 
     /** Flag which controls whether CMS_PUBLISH_HISTORY entries should be automatically removed. */
     private boolean m_autoCleanupHistoryEntries;
@@ -116,9 +119,6 @@ public class CmsPublishManager {
     /** The security manager. */
     private CmsSecurityManager m_securityManager;
 
-    /** List of providers for special publish history ids that shouldn't be cleaned up. */
-    private CopyOnWriteArrayList<Supplier<List<CmsUUID>>> m_specialHistoryIdProviders = new CopyOnWriteArrayList<>();
-
     /**
      * Default constructor used in digester initialization.<p>
      */
@@ -142,6 +142,17 @@ public class CmsPublishManager {
         m_publishQueuePersistance = queuePersistance;
         m_publishQueueShutdowntime = queueShutdowntime;
         m_frozen = false;
+    }
+
+    /**
+     * Adds provider for history ids that shouldn't be removed by bulk history cleanup operations.
+     *
+     * @param provider the provider for special history ids
+     */
+    public static void addSpecialHistoryIdProvider(Supplier<List<CmsUUID>> provider) {
+
+        m_specialHistoryIdProviders.add(provider);
+
     }
 
     /**
@@ -185,17 +196,6 @@ public class CmsPublishManager {
     public void addPublishListener(I_CmsPublishEventListener listener) {
 
         m_publishEngine.addPublishListener(listener);
-    }
-
-    /**
-     * Adds provider for history ids that shouldn't be removed by bulk history cleanup operations.
-     *
-     * @param provider the provider for special history ids
-     */
-    public void addSpecialHistoryIdProvider(Supplier<List<CmsUUID>> provider) {
-
-        m_specialHistoryIdProviders.add(provider);
-
     }
 
     /**
