@@ -33,7 +33,14 @@ if (externalVersionProps.exists()){
 
 Properties vprops = new Properties()
 vprops.load(new FileInputStream(propFile))
-version = vprops['version.number']
+if (opencms_version) {
+    version = opencms_version
+}else{
+    version = vprops['version.number']
+}
+
+// alternative variable name for the case where the version variable is used for something else, e.g. javadoc
+ext.ocmsVersion = vprops['version.number']
 
 // deal with external modules project
 def extModulesProject = findProject(':extmodules')
@@ -44,9 +51,6 @@ if (hasExtModules) {
         ext.coreproject = ':'
     }
 }
-
-// alternative variable name for the case where the version variable is used for something else, e.g. javadoc
-ext.ocmsVersion = version
 
 repositories {
     mavenLocal()
