@@ -51,6 +51,8 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -227,6 +229,22 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     public void addParamToConfigSite(String name, String value) {
 
         m_siteParams.put(name, value);
+    }
+
+    /**
+     * Parses the given string as an URI and returns its host component.
+     *
+     * @param uriStr the URI string
+     * @return the host component, or null if the URI can't be parsed
+     */
+    private static String getHost(String uriStr) {
+
+        try {
+            URI uri = new URI(uriStr);
+            return uri.getHost();
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
 
     /**
@@ -1044,6 +1062,35 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
+     * Gets the first configured workplace server that matches the host from the current CmsRequestContext, or
+     * the first configured workplace server if there is no match.
+     *
+     * <p>If there are no workplace configured at all, null is returned.
+     *
+     * @param cms the CmsObject used to check the host
+     * @return the workplace server
+     */
+    public String getWorkplaceServer(CmsObject cms) {
+
+        if (m_workplaceServers.keySet().isEmpty()) {
+            return null;
+        }
+        CmsSiteMatcher requestMatcher = cms.getRequestContext().getRequestMatcher();
+        if (requestMatcher != null) {
+            String reqHost = getHost(requestMatcher.toString());
+            if (reqHost != null) {
+                for (String wpServer : m_workplaceServers.keySet()) {
+                    String wpHost = getHost(wpServer);
+                    if (reqHost.equals(wpHost)) {
+                        return wpServer;
+                    }
+                }
+            }
+        }
+        return m_workplaceServers.keySet().iterator().next();
+    }
+
+    /**
      * Returns the configured worklace servers.<p>
      *
      * @return the workplace servers
@@ -1629,8 +1676,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
     /**
      * Validates the site root, throwing an exception if the validation fails.
-     * 
-     * @param siteRoot the site root to check 
+     *
+     * @param siteRoot the site root to check
      */
     public void validateSiteRoot(String siteRoot) {
 
@@ -1778,6 +1825,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      * @return true if the site root is valid
      */
     private boolean isValidSiteRoot(String uri) {
+
         if ("".equals(uri) || "/".equals(uri)) {
             return false;
         }
