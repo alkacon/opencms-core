@@ -365,6 +365,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0 = "GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCEDIALOG_NO_TYPES_AVAILABLE_0 = "GUI_NEWRESOURCEDIALOG_NO_TYPES_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCEDIALOG_TITLE_0 = "GUI_NEWRESOURCEDIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

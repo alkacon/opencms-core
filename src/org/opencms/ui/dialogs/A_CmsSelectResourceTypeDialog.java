@@ -72,6 +72,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
@@ -182,8 +183,14 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
 
             public void layoutClick(LayoutClickEvent event) {
 
-                CmsResourceTypeBean clickedType = (CmsResourceTypeBean)(((AbstractComponent)(event.getChildComponent())).getData());
-                handleSelection(clickedType);
+                try {
+                    CmsResourceTypeBean clickedType = (CmsResourceTypeBean)(((AbstractComponent)(event.getChildComponent())).getData());
+                    if (clickedType != null) {
+                        handleSelection(clickedType);
+                    }
+                } catch (ClassCastException e) {
+                    // ignore
+                }
             }
         });
         setActionHandler(new CmsOkCancelActionHandler() {
@@ -263,6 +270,11 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
         if (typeBeans == null) {
 
             LOG.warn("precomputed type list is null: " + view.getTitle(A_CmsUI.getCmsObject(), Locale.ENGLISH));
+            return;
+        }
+        if (typeBeans.size() == 0) {
+            Label label = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_NEWRESOURCEDIALOG_NO_TYPES_AVAILABLE_0));
+            getVerticalLayout().addComponent(label);
             return;
         }
         for (CmsResourceTypeBean type : typeBeans) {
