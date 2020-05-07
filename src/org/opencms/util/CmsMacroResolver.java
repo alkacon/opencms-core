@@ -739,7 +739,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
         }
         // write the target file
-        cms.writeFile(file);
+        cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+        try {
+            cms.writeFile(file);
+        } finally {
+            cms.getRequestContext().removeAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+        }
     }
 
     /**
