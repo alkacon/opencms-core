@@ -1,0 +1,11 @@
+#Organize Import Order
+#Thu May 07 15:39:17 CEST 2020
+0=com.alkacon
+1=de.alkacon
+2=org.opencms
+3=com.opencms
+4=java
+5=javax
+6=org.apache
+7=org
+8=com
