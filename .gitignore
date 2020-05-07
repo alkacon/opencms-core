@@ -1,23 +1,21 @@
 #
 # Default .gitignore for the Alkacon OpenCms project
-# 
-# After initial checkout, you should do 'git update-index --assume-unchanged <file>' 
+#
+# After initial checkout, you should do 'git update-index --assume-unchanged <file>'
 # for the following files:
 #
 # - /.gitignore
 # - /.classpath
 # - /test/test.properties
-# - /.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs 
+# - /.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs
 #
 # In Eclipse this is available in the dialog 'Team > Advanced > Assume unchanged'
 #
-# If you make changes to the files that you really want to commit, 
+# If you make changes to the files that you really want to commit,
 # do a 'No Assume unchanged' first.
 #
 /bin
 /test-bin
-/.project
-/.settings/*
 /test/data/WEB-INF/index
 /test/data/WEB-INF/config
 /gwt-unitCache
