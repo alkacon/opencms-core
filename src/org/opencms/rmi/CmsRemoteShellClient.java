@@ -57,6 +57,9 @@ public class CmsRemoteShellClient {
     /** Command parameter for controlling the port to use for the initial RMI lookup. */
     public static final String PARAM_REGISTRY_PORT = "registryPort";
 
+    /** Command parameter for controlling the host to use for the initial RMI lookup. */
+    public static final String PARAM_REGISTRY_HOST = "registryHost";
+
     /** Command parameter for passing a shell script file name. */
     public static final String PARAM_SCRIPT = "script";
 
@@ -90,6 +93,9 @@ public class CmsRemoteShellClient {
     /** The port used for the RMI registry. */
     private int m_registryPort;
 
+    /** The host name used for the RMI registry. */
+    private String m_registryHost;
+
     /** The RMI referencce to the shell server. */
     private I_CmsRemoteShell m_remoteShell;
 
@@ -101,6 +107,7 @@ public class CmsRemoteShellClient {
      */
     public CmsRemoteShellClient(String[] args)
     throws IOException {
+
         Map<String, String> params = parseArgs(args);
         String script = params.get(PARAM_SCRIPT);
         if (script == null) {
@@ -124,6 +131,7 @@ public class CmsRemoteShellClient {
                 System.exit(1);
             }
         }
+        m_registryHost = params.get(PARAM_REGISTRY_HOST);
     }
 
     /**
@@ -148,7 +156,7 @@ public class CmsRemoteShellClient {
 
         Map<String, String> result = new HashMap<String, String>();
         Set<String> allowedKeys = new HashSet<String>(
-            Arrays.asList(PARAM_ADDITIONAL, PARAM_SCRIPT, PARAM_REGISTRY_PORT));
+            Arrays.asList(PARAM_ADDITIONAL, PARAM_SCRIPT, PARAM_REGISTRY_PORT, PARAM_REGISTRY_HOST));
         for (String arg : args) {
             if (arg.startsWith("-")) {
                 int eqPos = arg.indexOf("=");
@@ -178,7 +186,7 @@ public class CmsRemoteShellClient {
      */
     public void run() throws Exception {
 
-        Registry registry = LocateRegistry.getRegistry(m_registryPort);
+        Registry registry = LocateRegistry.getRegistry(m_registryHost, m_registryPort);
         I_CmsRemoteShellProvider provider = (I_CmsRemoteShellProvider)(registry.lookup(
             CmsRemoteShellConstants.PROVIDER));
         m_remoteShell = provider.createShell(m_additionalCommands);
@@ -207,7 +215,7 @@ public class CmsRemoteShellClient {
                 List<String> parameters = new ArrayList<String>();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {
                     if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
+                        parameters.add(Integer.toString(Double.valueOf(st.nval).intValue()));
                     } else {
                         parameters.add(st.sval);
                     }
@@ -329,6 +337,7 @@ public class CmsRemoteShellClient {
             + "    -registryPort=[port of RMI registry] (optional, default is "
             + CmsRemoteShellConstants.DEFAULT_PORT
             + ")\n"
+            + "    -registryHost=[host of RMI registry] (optional, defaults to java.net.InetAddress.getLocalHost().getHostAddress())\n"
             + "    -additional=[additional commands class name] (optional)";
         System.out.println(usage);
         System.exit(1);
