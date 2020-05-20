@@ -1063,7 +1063,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_startview.setNewItemsAllowed(false);
             if (container.getItemIds().size() > 0) {
 
-                if (settings != null) {
+                if ((settings != null) && container.containsId(settings.getStartView())) {
                     m_startview.select(settings.getStartView());
                 } else {
                     String defaultView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
