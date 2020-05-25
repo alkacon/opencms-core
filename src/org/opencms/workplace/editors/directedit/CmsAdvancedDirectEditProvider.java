@@ -379,6 +379,19 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             if (typeConfig != null) {
                 viewId = typeConfig.getElementView();
             }
+        } else {
+            String linkForNew = params.getLinkForNew();
+            if (linkForNew != null) {
+                String[] components = linkForNew.split("\\|");
+                String typeName = components[components.length - 1];
+                String uri = m_cms.getRequestContext().getUri();
+                uri = m_cms.getRequestContext().addSiteRoot(uri);
+                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(m_cms, uri);
+                CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
+                if (typeConfig != null) {
+                    viewId = typeConfig.getElementView();
+                }
+            }
         }
         editableData.put(CmsEditorConstants.ATTR_ELEMENT_VIEW, viewId);
         editableData.put("hasEditHandler", hasEditHandler);
