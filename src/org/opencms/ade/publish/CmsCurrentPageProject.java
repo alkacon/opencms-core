@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -41,6 +42,8 @@ import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
@@ -133,6 +136,37 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                     result.addAll(CmsDetailOnlyContainerUtil.getDetailOnlyResources(cms, res));
                 }
                 if (res.getStructureId().toString().equals(pageId)) {
+
+                    try {
+                        CmsProject online = cmsObject.readProject(CmsProject.ONLINE_PROJECT_ID);
+
+                        CmsObject onlineCms = OpenCms.initCmsObject(cmsObject);
+                        onlineCms.getRequestContext().setCurrentProject(online);
+                        List<CmsRelation> relations = onlineCms.readRelations(
+                            CmsRelationFilter.relationsFromStructureId(new CmsUUID(pageId)));
+                        for (CmsRelation relation : relations) {
+                            CmsResource offlineTarget = null;
+                            CmsResource onlineTarget = null;
+                            if (relation.getTargetId().isNullUUID()) {
+                                continue;
+                            }
+                            try {
+                                onlineTarget = onlineCms.readResource(
+                                    relation.getTargetId(),
+                                    CmsResourceFilter.IGNORE_EXPIRATION);
+
+                                offlineTarget = cmsObject.readResource(relation.getTargetId(), CmsResourceFilter.ALL);
+                                if (offlineTarget.getState().isDeleted()) {
+                                    result.add(offlineTarget);
+                                }
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
 
                     I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(
                         I_CmsCollectorInfoFactory.class);
