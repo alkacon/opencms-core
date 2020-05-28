@@ -160,6 +160,7 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
             CmsSetupDb db = new CmsSetupDb(m_setupBean.getWebAppRfsPath());
             try {
                 // try to connect as the runtime user
+                System.out.println("Check runtime connection....");
                 db.setConnection(
                     m_setupBean.getDbDriver(),
                     m_setupBean.getDbWorkConStr(),
@@ -167,8 +168,9 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
                     m_setupBean.getDbWorkUser(),
                     m_setupBean.getDbWorkPwd(),
                     false);
+                System.out.println("Check runtime connection - COMPLETED");
                 if (!db.noErrors()) {
-
+                    System.out.println("Check setup connection....");
                     // try to connect as the setup user
                     db.closeConnection();
                     db.clearErrors();
@@ -178,10 +180,11 @@ public class CmsSetupStep03Database extends A_CmsSetupStep {
                         m_setupBean.getDbConStrParams(),
                         m_setupBean.getDbCreateUser(),
                         m_setupBean.getDbCreatePwd());
+                    System.out.println("Check setup connection - COMPLETED");
                 } else {
                     dbExists = true;
                 }
-                if (!db.noErrors() || !m_setupBean.validateJdbc()) {
+                if (!db.noErrors()) {
                     throw new DBException("DB connection test failed.", db.getErrors());
                 }
             } finally {
