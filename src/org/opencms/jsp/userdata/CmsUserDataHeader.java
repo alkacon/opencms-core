@@ -69,7 +69,7 @@ public class CmsUserDataHeader implements I_CmsUserDataDomain {
                 username = user.get(0).getName();
                 break;
         }
-        element.appendElement("div").attr("class", "udr-header").text(
+        element.appendElement("h1").attr("class", "udr-header").text(
             Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                 Messages.GUI_USER_INFORMATION_FOR_1,
                 username));

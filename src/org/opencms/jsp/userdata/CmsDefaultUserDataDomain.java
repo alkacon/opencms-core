@@ -64,7 +64,7 @@ public class CmsDefaultUserDataDomain implements I_CmsUserDataDomain {
         Element main = element.appendElement("div");
         String headerText = org.opencms.jsp.userdata.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
             org.opencms.jsp.userdata.Messages.GUI_DEFAULT_USERDATA_SECTION_0);
-        main.appendElement("header").text(headerText);
+        main.appendElement("h2").text(headerText);
         Element ul = main.appendElement("ul");
         for (CmsUser user : users) {
             Element section = ul.appendElement("li").appendElement("dl");
