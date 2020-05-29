@@ -61,31 +61,35 @@ public class CmsDefaultUserDataDomain implements I_CmsUserDataDomain {
      */
     public void appendInfoHtml(CmsObject cms, CmsUserDataRequestType reqType, List<CmsUser> users, Element element) {
 
-        Element section = element.appendElement("div");
+        Element main = element.appendElement("div");
         String headerText = org.opencms.jsp.userdata.Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
             org.opencms.jsp.userdata.Messages.GUI_DEFAULT_USERDATA_SECTION_0);
-        section.appendElement("header").text(headerText);
-        Element dl = section.appendElement("dl");
-        CmsUser user = users.get(0);
-        addField(cms, dl, org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_USER_LOGIN_NAME_0, user.getSimpleName());
-        addField(
-            cms,
-            dl,
-            org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_USER_DESCRIPTION_0,
-            user.getDescription(cms.getRequestContext().getLocale()));
-        addField(
-            cms,
-            dl,
-            org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_USER_OU_0,
-            CmsStringUtil.joinPaths(user.getOuFqn(), "/"));
-        addField(cms, dl, Messages.GUI_USER_DATA_FIRSTNAME_0, user.getFirstname());
-        addField(cms, dl, Messages.GUI_USER_DATA_LASTNAME_0, user.getLastname());
-        addField(cms, dl, Messages.GUI_USER_DATA_ADDRESS_0, user.getAddress());
-        addField(cms, dl, Messages.GUI_USER_DATA_CITY_0, user.getCity());
-        addField(cms, dl, Messages.GUI_USER_DATA_COUNTRY_0, user.getCountry());
-        addField(cms, dl, Messages.GUI_USER_DATA_EMAIL_0, user.getEmail());
-        addField(cms, dl, Messages.GUI_USER_DATA_INSTITUTION_0, user.getInstitution());
-        addField(cms, dl, Messages.GUI_USER_DATA_ZIPCODE_0, user.getZipcode());
+        main.appendElement("header").text(headerText);
+        Element ul = main.appendElement("ul");
+        for (CmsUser user : users) {
+            Element section = ul.appendElement("li").appendElement("dl");
+            Element dl = section.appendElement("dl");
+
+            addField(cms, dl, org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_USER_LOGIN_NAME_0, user.getSimpleName());
+            addField(
+                cms,
+                dl,
+                org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_USER_DESCRIPTION_0,
+                user.getDescription(cms.getRequestContext().getLocale()));
+            addField(
+                cms,
+                dl,
+                org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_USER_OU_0,
+                CmsStringUtil.joinPaths(user.getOuFqn(), "/"));
+            addField(cms, dl, Messages.GUI_USER_DATA_FIRSTNAME_0, user.getFirstname());
+            addField(cms, dl, Messages.GUI_USER_DATA_LASTNAME_0, user.getLastname());
+            addField(cms, dl, Messages.GUI_USER_DATA_ADDRESS_0, user.getAddress());
+            addField(cms, dl, Messages.GUI_USER_DATA_CITY_0, user.getCity());
+            addField(cms, dl, Messages.GUI_USER_DATA_COUNTRY_0, user.getCountry());
+            addField(cms, dl, Messages.GUI_USER_DATA_EMAIL_0, user.getEmail());
+            addField(cms, dl, Messages.GUI_USER_DATA_INSTITUTION_0, user.getInstitution());
+            addField(cms, dl, Messages.GUI_USER_DATA_ZIPCODE_0, user.getZipcode());
+        }
     }
 
     /**
@@ -117,7 +121,7 @@ public class CmsDefaultUserDataDomain implements I_CmsUserDataDomain {
      */
     public boolean matchesUser(CmsObject cms, CmsUserDataRequestType reqType, CmsUser user) {
 
-        return reqType == CmsUserDataRequestType.singleUser;
+        return true;
     }
 
     /**
@@ -137,13 +141,15 @@ public class CmsDefaultUserDataDomain implements I_CmsUserDataDomain {
      * @param key the key
      * @param value the value
      */
-    private void addField(CmsObject cms, Element dl, String key, String value) {
+    private boolean addField(CmsObject cms, Element dl, String key, String value) {
 
         CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(cms.getRequestContext().getLocale());
         String keyText = messages.key(key);
         if (!CmsStringUtil.isEmpty(value)) {
             dl.appendElement("dt").text(keyText);
             dl.appendElement("dd").text(value);
+            return true;
         }
+        return false;
     }
 }
