@@ -14,6 +14,7 @@
             <xsd:element name="BeforeForm" type="OpenCmsHtml"  />
             <xsd:element name="LabelUser" type="OpenCmsString"  />
             <xsd:element name="LabelPassword" type="OpenCmsString" />
+            <xsd:element name="LabelPath" type="OpenCmsString" />
             <xsd:element name="LabelEmail" type="OpenCmsString"   />
             <xsd:element name="LabelSubmit" type="OpenCmsString" />
             <xsd:element name="AfterForm" type="OpenCmsHtml"  />

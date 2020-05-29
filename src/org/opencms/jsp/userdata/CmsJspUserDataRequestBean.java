@@ -90,15 +90,21 @@ public class CmsJspUserDataRequestBean {
 
     /** Action id. */
     public static final String ACTION_VIEWAUTH = "viewauth";
+
     /** Request parameter for the action. */
     public static final String PARAM_ACTION = "action";
+
     /** Request parameter for the authorization code. */
     public static final String PARAM_AUTH = "auth";
+
     /** Request parameter. */
     public static final String PARAM_EMAIL = "email";
 
     /** Request parameter. */
     public static final String PARAM_PASSWORD = "password";
+
+    /** Request parameter. */
+    public static final String PARAM_ROOTPATH = "rootpath";
 
     /** Request parameter. */
     public static final String PARAM_UDRID = "udrid";
@@ -189,6 +195,7 @@ public class CmsJspUserDataRequestBean {
         String email = m_params.get(PARAM_EMAIL);
         String user = m_params.get(PARAM_USER);
         String password = m_params.get(PARAM_PASSWORD);
+        String path = m_params.get(PARAM_ROOTPATH);
         String udrid = CmsEncoder.escapeXml(m_params.get(PARAM_UDRID));
         boolean hasEmail = !CmsStringUtil.isEmptyOrWhitespaceOnly(email);
         boolean hasUser = !CmsStringUtil.isEmptyOrWhitespaceOnly(user);
@@ -205,7 +212,10 @@ public class CmsJspUserDataRequestBean {
                     manager.startUserDataRequest(cms, m_config, email);
                     return State.formOk.toString();
                 } else if (!hasEmail && hasUser && hasPassword) {
-                    Optional<CmsUser> optUser = lookupUser(cms, configuredOu, user, password);
+                    if (CmsStringUtil.isEmpty(path)) {
+                        path = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+                    }
+                    Optional<CmsUser> optUser = lookupUser(cms, configuredOu, path, user, password);
                     if (optUser.isPresent()) {
                         manager.startUserDataRequest(cms, m_config, optUser.get());
                         return State.formOk.toString();
@@ -384,6 +394,7 @@ public class CmsJspUserDataRequestBean {
      *
      * @param cms the CMS context
      * @param configuredOu the configured OU
+     * @param path the path to use for looking up the OU if the OU is not given
      * @param user the user
      * @param password the password
      *
@@ -391,15 +402,14 @@ public class CmsJspUserDataRequestBean {
      *
      * @throws CmsException if something goes wrong
      */
-    private Optional<CmsUser> lookupUser(CmsObject cms, String configuredOu, String user, String password)
+    private Optional<CmsUser> lookupUser(CmsObject cms, String configuredOu, String path, String user, String password)
     throws CmsException {
 
-        String currentRootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         List<CmsOrganizationalUnit> ous;
         if (configuredOu != null) {
             ous = Collections.singletonList(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, configuredOu));
         } else {
-            ous = OpenCms.getOrgUnitManager().getOrgUnitsForResource(cms, currentRootPath);
+            ous = OpenCms.getOrgUnitManager().getOrgUnitsForResource(cms, path);
         }
         CmsObject loginCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         for (CmsOrganizationalUnit ou : ous) {
