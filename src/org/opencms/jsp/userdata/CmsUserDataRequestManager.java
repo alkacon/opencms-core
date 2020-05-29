@@ -332,6 +332,8 @@ public class CmsUserDataRequestManager {
     throws EmailException, AddressException {
 
         CmsHtmlMail mail = new CmsHtmlMail();
+        mail.setCharset("UTF-8");
+
         mail.setSubject(config.getMailSubject());
         mail.setTo(Arrays.asList(InternetAddress.parse(email)));
         String link = CmsJspStandardContextBean.getFunctionDetailLink(
