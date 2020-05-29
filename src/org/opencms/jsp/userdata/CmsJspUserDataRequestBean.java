@@ -214,6 +214,8 @@ public class CmsJspUserDataRequestBean {
                 } else if (!hasEmail && hasUser && hasPassword) {
                     if (CmsStringUtil.isEmpty(path)) {
                         path = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+                    } else {
+                        path = path.trim();
                     }
                     Optional<CmsUser> optUser = lookupUser(cms, configuredOu, path, user, password);
                     if (optUser.isPresent()) {
