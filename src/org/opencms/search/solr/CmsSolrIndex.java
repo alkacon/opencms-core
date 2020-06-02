@@ -96,6 +96,7 @@ import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.ReplicationHandler;
@@ -1214,7 +1215,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 for (String filteredId : filteredResultIds) {
                     highlighting.remove(filteredId);
                 }
-                NamedList<Object> completeResponse = new NamedList<Object>(1);
+                NamedList<Object> completeResponse = new SimpleOrderedMap<Object>(1);
                 completeResponse.addAll(checkQueryResponse.getResponse());
                 completeResponse.add(QUERY_HIGHLIGHTING_NAME, highlighting);
                 checkQueryResponse.setResponse(completeResponse);
