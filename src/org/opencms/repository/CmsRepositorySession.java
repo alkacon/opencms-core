@@ -276,8 +276,13 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
                 // which the virtual resource is based on)
                 // this filters e.g. property files for resources that are filtered out and thus
                 // should not be displayed
-                CmsResource org = m_cms.readResource(res.getStructureId(), CmsResourceFilter.DEFAULT);
-                if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(org.getRootPath()))) {
+                try {
+                    CmsResource org = m_cms.readResource(res.getStructureId(), CmsResourceFilter.DEFAULT);
+                    if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(org.getRootPath()))) {
+                        ret.add(new CmsRepositoryItem(res, m_cms));
+                    }
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // Pure virtual resources with an ID that does not correspond to any real resource
                     ret.add(new CmsRepositoryItem(res, m_cms));
                 }
             }

@@ -354,27 +354,6 @@ public class CmsWebdavServlet extends HttpServlet {
     /** The text to send if the timeout is infinite. */
     private static final String TIMEOUT_INFINITE = "Infinite";
 
-    /** The input buffer size to use when serving resources. */
-    protected int m_input = 2048;
-
-    /** The output buffer size to use when serving resources. */
-    protected int m_output = 2048;
-
-    /** Should we generate directory listings? */
-    private boolean m_listings;
-
-    /** Read only flag. By default, it's set to true. */
-    private boolean m_readOnly = true;
-
-    /** Secret information used to generate reasonably secure lock ids. */
-    private String m_secret = "catalina";
-
-    /** The session which handles the action made with WebDAV. */
-    private I_CmsRepositorySession m_session;
-
-    /** The name of the user found in the authorization header. */
-    private String m_username;
-
     static {
         URL_SAFE_CHARS = new BitSet();
         URL_SAFE_CHARS.set('a', 'z' + 1);
@@ -393,6 +372,27 @@ public class CmsWebdavServlet extends HttpServlet {
         HTTP_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
         HTTP_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
+
+    /** Holds the session for the current thread. */
+    private ThreadLocal<I_CmsRepositorySession> m_sessionHolder = new ThreadLocal<I_CmsRepositorySession>();
+
+    /** The input buffer size to use when serving resources. */
+    protected int m_input = 2048;
+
+    /** The output buffer size to use when serving resources. */
+    protected int m_output = 2048;
+
+    /** Should we generate directory listings? */
+    private boolean m_listings;
+
+    /** Read only flag. By default, it's set to true. */
+    private boolean m_readOnly = true;
+
+    /** Secret information used to generate reasonably secure lock ids. */
+    private String m_secret = "catalina";
+
+    /** The name of the user found in the authorization header. */
+    private String m_username;
 
     /**
      * Adds an xml element to the given parent and sets the appropriate namespace and
@@ -648,7 +648,8 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsRepositoryItem item,
         PrintWriter writer,
         Iterator<CmsWebdavRange> ranges,
-        String contentType) throws IOException {
+        String contentType)
+    throws IOException {
 
         IOException exception = null;
 
@@ -747,7 +748,8 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsRepositoryItem item,
         ServletOutputStream ostream,
         Iterator<CmsWebdavRange> ranges,
-        String contentType) throws IOException {
+        String contentType)
+    throws IOException {
 
         IOException exception = null;
 
@@ -983,7 +985,7 @@ public class CmsWebdavServlet extends HttpServlet {
         String src = getRelativePath(req);
 
         // Check if source exists
-        if (!m_session.exists(src)) {
+        if (!getSession().exists(src)) {
 
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
 
@@ -1023,7 +1025,7 @@ public class CmsWebdavServlet extends HttpServlet {
         boolean overwrite = parseOverwriteHeader(req);
 
         // If the destination exists, then it's a conflict
-        if ((m_session.exists(dest)) && (!overwrite)) {
+        if ((getSession().exists(dest)) && (!overwrite)) {
 
             resp.setStatus(CmsWebdavStatus.SC_PRECONDITION_FAILED);
 
@@ -1034,7 +1036,7 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         }
 
-        if ((!m_session.exists(dest)) && (overwrite)) {
+        if ((!getSession().exists(dest)) && (overwrite)) {
             resp.setStatus(CmsWebdavStatus.SC_CREATED);
         }
 
@@ -1045,7 +1047,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_COPY_ITEM_2, src, dest));
             }
 
-            m_session.copy(src, dest, overwrite);
+            getSession().copy(src, dest, overwrite);
         } catch (CmsSecurityException sex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 
@@ -1115,7 +1117,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // Check if path exists
-        boolean exists = m_session.exists(path);
+        boolean exists = getSession().exists(path);
         if (!exists) {
 
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
@@ -1164,7 +1166,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_ITEM_0));
             }
 
-            m_session.delete(path);
+            getSession().delete(path);
         } catch (CmsVfsResourceNotFoundException rnfex) {
 
             // should never happen
@@ -1426,7 +1428,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         if (lockRequestType == LOCK_REFRESH) {
 
-            CmsRepositoryLockInfo currentLock = m_session.getLock(path);
+            CmsRepositoryLockInfo currentLock = getSession().getLock(path);
             if (currentLock == null) {
                 lockRequestType = LOCK_CREATION;
             }
@@ -1440,7 +1442,7 @@ public class CmsWebdavServlet extends HttpServlet {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_LOCK_ITEM_1, lock.getOwner()));
                 }
 
-                boolean result = m_session.lock(path, lock);
+                boolean result = getSession().lock(path, lock);
                 if (result) {
 
                     // Add the Lock-Token header as by RFC 2518 8.10.1
@@ -1538,7 +1540,7 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         }
 
-        boolean exists = m_session.exists(path);
+        boolean exists = getSession().exists(path);
 
         // Can't create a collection if a resource already exists at the given path
         if (exists) {
@@ -1582,7 +1584,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_COLLECTION_0));
             }
 
-            m_session.create(path);
+            getSession().create(path);
         } catch (CmsVfsResourceAlreadyExistsException raeex) {
 
             // should never happen, because it was checked if the item exists before
@@ -1684,7 +1686,7 @@ public class CmsWebdavServlet extends HttpServlet {
         boolean overwrite = parseOverwriteHeader(req);
 
         // Check if source exists
-        if (!m_session.exists(src)) {
+        if (!getSession().exists(src)) {
 
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
 
@@ -1696,7 +1698,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // If the destination exists, then it's a conflict
-        if ((m_session.exists(dest)) && (!overwrite)) {
+        if ((getSession().exists(dest)) && (!overwrite)) {
 
             resp.setStatus(CmsWebdavStatus.SC_PRECONDITION_FAILED);
 
@@ -1707,7 +1709,7 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         }
 
-        if ((!m_session.exists(dest)) && (overwrite)) {
+        if ((!getSession().exists(dest)) && (overwrite)) {
             resp.setStatus(CmsWebdavStatus.SC_CREATED);
         }
 
@@ -1718,7 +1720,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_MOVE_ITEM_2, src, dest));
             }
 
-            m_session.move(src, dest, overwrite);
+            getSession().move(src, dest, overwrite);
         } catch (CmsVfsResourceNotFoundException rnfex) {
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
 
@@ -1883,7 +1885,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
         }
 
-        boolean exists = m_session.exists(path);
+        boolean exists = getSession().exists(path);
         if (!exists) {
 
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
@@ -1897,7 +1899,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         I_CmsRepositoryItem item = null;
         try {
-            item = m_session.getItem(path);
+            item = getSession().getItem(path);
         } catch (CmsException e) {
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
             return;
@@ -1928,7 +1930,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 if ((currentItem.isCollection()) && (depth > 0)) {
 
                     try {
-                        List<I_CmsRepositoryItem> list = m_session.list(currentItem.getName());
+                        List<I_CmsRepositoryItem> list = getSession().list(currentItem.getName());
                         Iterator<I_CmsRepositoryItem> iter = list.iterator();
                         while (iter.hasNext()) {
                             I_CmsRepositoryItem element = iter.next();
@@ -2036,7 +2038,7 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         }
 
-        boolean exists = m_session.exists(path);
+        boolean exists = getSession().exists(path);
         boolean result = true;
 
         // Temp. content file used to support partial PUT
@@ -2064,7 +2066,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_SAVE_ITEM_0));
             }
 
-            m_session.save(path, resourceInputStream, exists);
+            getSession().save(path, resourceInputStream, exists);
         } catch (Exception e) {
 
             if (LOG.isErrorEnabled()) {
@@ -2140,7 +2142,7 @@ public class CmsWebdavServlet extends HttpServlet {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNLOCK_ITEM_0));
         }
 
-        m_session.unlock(path);
+        getSession().unlock(path);
 
         resp.setStatus(CmsWebdavStatus.SC_NO_CONTENT);
     }
@@ -2176,7 +2178,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         InputStream oldResourceStream = null;
         try {
-            I_CmsRepositoryItem item = m_session.getItem(path);
+            I_CmsRepositoryItem item = getSession().getItem(path);
 
             oldResourceStream = new ByteArrayInputStream(item.getContent());
         } catch (CmsException e) {
@@ -2479,7 +2481,7 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
 
             // Render the directory entries within this directory
-            List<I_CmsRepositoryItem> list = m_session.list(path);
+            List<I_CmsRepositoryItem> list = getSession().list(path);
             Iterator<I_CmsRepositoryItem> iter = list.iterator();
             while (iter.hasNext()) {
 
@@ -2606,7 +2608,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         I_CmsRepositoryItem item = null;
         try {
-            item = m_session.getItem(path);
+            item = getSession().getItem(path);
         } catch (CmsException ex) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
@@ -2858,12 +2860,12 @@ public class CmsWebdavServlet extends HttpServlet {
 
         // get session
         try {
-            m_session = m_repository.login(m_username, password);
+            m_sessionHolder.set(m_repository.login(m_username, password));
         } catch (CmsException ex) {
-            m_session = null;
+            m_sessionHolder.set(null);
         }
 
-        if (m_session == null) {
+        if (getSession() == null) {
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_LOGIN_FAILED_1, m_username));
@@ -2940,7 +2942,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         List<I_CmsRepositoryItem> list = null;
         try {
-            list = m_session.list(path);
+            list = getSession().list(path);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_ERROR_1, path), e);
@@ -2976,7 +2978,7 @@ public class CmsWebdavServlet extends HttpServlet {
         boolean exists = true;
         I_CmsRepositoryItem item = null;
         try {
-            item = m_session.getItem(path);
+            item = getSession().getItem(path);
         } catch (CmsException e) {
             exists = false;
         }
@@ -3028,7 +3030,7 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     private boolean generateLockDiscovery(String path, Element elem, HttpServletRequest req) {
 
-        CmsRepositoryLockInfo lock = m_session.getLock(path);
+        CmsRepositoryLockInfo lock = getSession().getLock(path);
 
         if (lock != null) {
 
@@ -3085,6 +3087,16 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
+     * Gets the session for the current thread.
+     *
+     * @return the session for the current thread
+     */
+    private I_CmsRepositorySession getSession() {
+
+        return m_sessionHolder.get();
+    }
+
+    /**
      * Check to see if a resource is currently write locked.<p>
      *
      * @param req the servlet request we are processing
@@ -3106,7 +3118,7 @@ public class CmsWebdavServlet extends HttpServlet {
     private boolean isLocked(String path) {
 
         // get lock for path
-        CmsRepositoryLockInfo lock = m_session.getLock(path);
+        CmsRepositoryLockInfo lock = getSession().getLock(path);
         if (lock == null) {
             return false;
         }
