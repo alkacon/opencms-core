@@ -96,6 +96,18 @@
         </columns>
     </usercsvexport>
     <repositories>
+		<repository name="webdav_root" class="org.opencms.repository.CmsRepository">
+			<params>
+				<param name="root">/</param>
+				<param name="addBOM">false</param>
+				<param name="project">Offline</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperModules</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPreventCreateNameCI:thumbs.db|.thumbnails|.xvpics|.DS_Store</param>
+			</params>
+			<filter type="include">
+				<regex>.*</regex>
+			</filter>
+		</repository>
         <repository name="standard" class="org.opencms.repository.CmsRepository">
             <params>
                 <param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>

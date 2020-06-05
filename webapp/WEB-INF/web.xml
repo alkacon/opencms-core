@@ -379,7 +379,7 @@
         </init-param>
         <init-param>
             <param-name>repository</param-name>
-            <param-value>standard</param-value>
+            <param-value>webdav_root</param-value>
         </init-param>
         <!-- do not load on startup by default -->
         <load-on-startup>-3</load-on-startup>
