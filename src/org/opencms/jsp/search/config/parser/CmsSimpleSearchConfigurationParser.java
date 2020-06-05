@@ -286,7 +286,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
                 String.format(CmsListManager.FIELD_DATE, getSearchLocale().toString()),
                 "NOW/YEAR-20YEARS",
-                "NOW/MONTH+2YEARS",
+                "NOW/MONTH+5YEARS",
                 "+1MONTHS",
                 null,
                 Boolean.FALSE,
