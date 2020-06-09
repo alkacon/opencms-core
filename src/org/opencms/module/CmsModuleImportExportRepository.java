@@ -46,6 +46,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +58,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
@@ -335,7 +339,17 @@ public class CmsModuleImportExportRepository {
         Collections.sort(entries);
         String inputString = CmsStringUtil.listAsString(entries, "\n") + "\nMETA:" + module.getObjectCreateTime();
         LOG.debug("Computing module hash from base string:\n" + inputString);
-        return "" + inputString.hashCode();
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(inputString.getBytes("UTF-8"));
+            String result = Hex.encodeHexString(md5.digest());
+            return result;
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            // This shouldn't happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return RandomStringUtils.randomAlphanumeric(8);
+        }
+
     }
 
     /**
