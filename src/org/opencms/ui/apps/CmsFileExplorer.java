@@ -268,7 +268,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             } else {
                 CmsObject cms = A_CmsUI.getCmsObject();
                 CmsUUID sourceId = m_fileTable.getUUIDFromItemID((String)dragEvent.getTransferable().getData("itemId"));
-                CmsResource source = cms.readResource(sourceId);
+                CmsResource source = cms.readResource(sourceId, CmsResourceFilter.IGNORE_EXPIRATION);
                 resources = Collections.singletonList(source);
             }
             CmsExplorerDialogContext context = new CmsExplorerDialogContext(
