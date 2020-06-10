@@ -57,7 +57,6 @@ import org.opencms.ui.components.CmsUploadButton;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
@@ -270,7 +269,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             } else {
                 CmsObject cms = A_CmsUI.getCmsObject();
                 CmsUUID sourceId = m_fileTable.getUUIDFromItemID((String)dragEvent.getTransferable().getData("itemId"));
-                CmsResource source = cms.readResource(sourceId);
+                CmsResource source = cms.readResource(sourceId, CmsResourceFilter.IGNORE_EXPIRATION);
                 resources = Collections.singletonList(source);
             }
             CmsExplorerDialogContext context = new CmsExplorerDialogContext(

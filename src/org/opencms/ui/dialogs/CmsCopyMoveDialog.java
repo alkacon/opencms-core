@@ -360,58 +360,58 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         } else if ((action == Action.container_page_automatic)
             || (action == Action.container_page_copy)
             || (action == Action.container_page_reuse)) {
-            CmsContainerPageCopier copier = new CmsContainerPageCopier(m_context.getCms());
-            try {
+                CmsContainerPageCopier copier = new CmsContainerPageCopier(m_context.getCms());
+                try {
 
-                CmsContainerPageCopier.CopyMode mode = action == Action.container_page_automatic
-                ? CmsContainerPageCopier.CopyMode.automatic
-                : (action == Action.container_page_copy
-                ? CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale
-                : CmsContainerPageCopier.CopyMode.reuse);
-                copier.setCopyMode(mode);
-                copier.run(m_context.getResources().get(0), target, name);
-                m_context.finish(
-                    Arrays.asList(
-                        copier.getTargetFolder().getStructureId(),
-                        copier.getCopiedFolderOrPage().getStructureId()));
-            } catch (CmsException e) {
-                m_context.error(e);
-            } catch (NoCustomReplacementException e) {
-                String errorMessage = CmsVaadinUtils.getMessageText(
-                    org.opencms.ui.Messages.GUI_COPYPAGE_NO_REPLACEMENT_FOUND_1,
-                    e.getResource().getRootPath());
-                CmsErrorDialog.showErrorDialog(errorMessage, e);
+                    CmsContainerPageCopier.CopyMode mode = action == Action.container_page_automatic
+                    ? CmsContainerPageCopier.CopyMode.automatic
+                    : (action == Action.container_page_copy
+                    ? CmsContainerPageCopier.CopyMode.smartCopyAndChangeLocale
+                    : CmsContainerPageCopier.CopyMode.reuse);
+                    copier.setCopyMode(mode);
+                    copier.run(m_context.getResources().get(0), target, name);
+                    m_context.finish(
+                        Arrays.asList(
+                            copier.getTargetFolder().getStructureId(),
+                            copier.getCopiedFolderOrPage().getStructureId()));
+                } catch (CmsException e) {
+                    m_context.error(e);
+                } catch (NoCustomReplacementException e) {
+                    String errorMessage = CmsVaadinUtils.getMessageText(
+                        org.opencms.ui.Messages.GUI_COPYPAGE_NO_REPLACEMENT_FOUND_1,
+                        e.getResource().getRootPath());
+                    CmsErrorDialog.showErrorDialog(errorMessage, e);
+                }
+            } else {
+
+                CmsResourceCopyMode copyMode = null;
+                switch ((Action)m_actionCombo.getValue()) {
+                    case copy_all:
+                        copyMode = CmsResource.COPY_AS_NEW;
+                        break;
+                    case copy_sibling_all:
+                        copyMode = CmsResource.COPY_AS_SIBLING;
+                        break;
+                    case copy_sibling_mixed:
+                    case sub_sitemap:
+                    default:
+                        copyMode = CmsResource.COPY_PRESERVE_SIBLING;
+                }
+
+                //Copies resources. Adjust links if action==Action.sub_sitemap, resolves macro if marcoMap if not null or empty
+                CmsMacroResolver.copyAndResolveMacro(
+                    getRootCms(),
+                    source.getRootPath(),
+                    finalTarget,
+                    macroMap,
+                    action == Action.sub_sitemap,
+                    copyMode);
+
+                getRootCms().unlockResource(finalTarget);
+
+                CmsResource copyResource = getRootCms().readResource(finalTarget, CmsResourceFilter.IGNORE_EXPIRATION);
+                m_updateResources.add(copyResource.getStructureId());
             }
-        } else {
-
-            CmsResourceCopyMode copyMode = null;
-            switch ((Action)m_actionCombo.getValue()) {
-                case copy_all:
-                    copyMode = CmsResource.COPY_AS_NEW;
-                    break;
-                case copy_sibling_all:
-                    copyMode = CmsResource.COPY_AS_SIBLING;
-                    break;
-                case copy_sibling_mixed:
-                case sub_sitemap:
-                default:
-                    copyMode = CmsResource.COPY_PRESERVE_SIBLING;
-            }
-
-            //Copies resources. Adjust links if action==Action.sub_sitemap, resolves macro if marcoMap if not null or empty
-            CmsMacroResolver.copyAndResolveMacro(
-                getRootCms(),
-                source.getRootPath(),
-                finalTarget,
-                macroMap,
-                action == Action.sub_sitemap,
-                copyMode);
-
-            getRootCms().unlockResource(finalTarget);
-
-            CmsResource copyResource = getRootCms().readResource(finalTarget);
-            m_updateResources.add(copyResource.getStructureId());
-        }
     }
 
     /**
