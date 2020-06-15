@@ -654,7 +654,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
             childConfig.isAddDisabled(),
             // a type marked as not creatable, should not be creatable in any sub site
-            isCreateDisabled() && childConfig.isCreateDisabled(),
+            isCreateDisabled() || childConfig.isCreateDisabled(),
             elementView,
             m_localization,
             showInDefaultView,
