@@ -280,7 +280,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     public CmsEditModuleForm(CmsModule module, boolean newModule, Runnable updateCallback) {
 
         m_oldModuleInstance = module;
-        m_module = (CmsModule)(module.clone());
+        m_module = (module.clone());
         String site = m_module.getSite();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
             site = site.trim();
@@ -562,14 +562,15 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             m_fieldGroup.commit();
             // validate 'dynamic' tabs here
             TreeMap<String, String> params = Maps.newTreeMap();
-            m_parameterGroup.getRows();
             for (I_CmsEditableGroupRow row : m_parameterGroup.getRows()) {
                 TextField paramField = (TextField)(row.getComponent());
                 String paramStr = paramField.getValue();
                 int eqPos = paramStr.indexOf("=");
                 if (eqPos >= 0) {
                     String key = paramStr.substring(0, eqPos);
+                    key = key.trim();
                     String value = paramStr.substring(eqPos + 1);
+                    value = value.trim();
                     if (!CmsStringUtil.isEmpty(key)) {
                         params.put(key, value);
                     }
