@@ -25,41 +25,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav.jr;
+package org.opencms.webdav.jackrabbit;
 
-import java.io.InputStream;
+import org.opencms.main.CmsException;
+import org.opencms.security.CmsPermissionViolationException;
 
-import org.apache.jackrabbit.webdav.DavServletRequest;
-import org.apache.jackrabbit.webdav.io.InputContextImpl;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Input context that also allows querying the request method.
+ * Various utilities for the WebDAV implementation.
  */
-public class CmsDavInputContext extends InputContextImpl {
+public class CmsDavUtil {
 
-    /** The current request. */
-    private DavServletRequest m_request;
+    /** Default date format to use for date-valued properties. */
+    public static final DateFormat DATE_FORMAT;
+    public static final String PARAM_REPOSITORY = "repository";
 
-    /**
-     * Creates a new instance.
-     *
-     * @param request the request
-     * @param stream the stream
-     */
-    public CmsDavInputContext(DavServletRequest request, InputStream stream) {
-
-        super(request, stream);
-        m_request = request;
-
+    static {
+        DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
-     * Gets the request method for the current request.
+     * Gets the HTTP status code to use for an exception.
      *
-     * @return the request method
+     * @param e the exception
+     * @return the status code
      */
-    public String getMethod() {
+    public static int getStatusForException(CmsException e) {
 
-        return m_request.getMethod();
+        if (e instanceof CmsPermissionViolationException) {
+            return HttpServletResponse.SC_FORBIDDEN;
+        } else {
+            return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        }
     }
+
 }
