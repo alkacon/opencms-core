@@ -47,10 +47,11 @@ public interface I_CmsRepositorySession {
      * @param src the path of the item which should be copied
      * @param dest the destination path where to copy to
      * @param overwrite should any existing item be overwritten
+     * @param shallow if true, when copying a folder, only the folder will be copied and not its contents
      *
      * @throws CmsException if something goes wrong
      */
-    void copy(String src, String dest, boolean overwrite) throws CmsException;
+    void copy(String src, String dest, boolean overwrite, boolean shallow) throws CmsException;
 
     /**
      * Creates a new item at the given path.<p>

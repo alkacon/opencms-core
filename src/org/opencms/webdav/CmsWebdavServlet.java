@@ -1047,7 +1047,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_COPY_ITEM_2, src, dest));
             }
 
-            getSession().copy(src, dest, overwrite);
+            getSession().copy(src, dest, overwrite, false);
         } catch (CmsSecurityException sex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 

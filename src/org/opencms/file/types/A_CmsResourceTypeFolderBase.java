@@ -50,6 +50,9 @@ import java.util.List;
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
+    /** Attribute to control shallow copying. */ 
+    public static final String ATTR_SHALLOW_FOLDER_COPY = "shallow_folder_copy";
+
     /** The serial version id. */
     private static final long serialVersionUID = -698470184142645873L;
 
@@ -101,14 +104,16 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         // handle the folder itself
         super.copyResource(cms, securityManager, source, destination, siblingMode);
-
-        // now walk through all sub-resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource childResource = resources.get(i);
-            String childDestination = destination.concat(childResource.getName());
-            // handle child resources
-            getResourceType(
-                childResource).copyResource(cms, securityManager, childResource, childDestination, siblingMode);
+        Boolean shallow = (Boolean)(cms.getRequestContext().getAttribute(ATTR_SHALLOW_FOLDER_COPY));
+        if ((shallow == null) || !shallow.booleanValue()) {
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = resources.get(i);
+                String childDestination = destination.concat(childResource.getName());
+                // handle child resources
+                getResourceType(
+                    childResource).copyResource(cms, securityManager, childResource, childDestination, siblingMode);
+            }
         }
     }
 

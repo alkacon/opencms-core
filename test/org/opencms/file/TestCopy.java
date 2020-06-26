@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.A_CmsResourceTypeFolderBase;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
@@ -80,6 +81,7 @@ public class TestCopy extends OpenCmsTestCase {
         suite.addTest(new TestCopy("testCopyFolderWithLockedSibling"));
         suite.addTest(new TestCopy("testCopyCategories"));
         suite.addTest(new TestCopy("testCopySiblings"));
+        suite.addTest(new TestCopy("testCopyShallow"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -446,6 +448,26 @@ public class TestCopy extends OpenCmsTestCase {
         } catch (Exception e) {
             // ok
         }
+    }
+
+    /**
+     * Test for shallow copy.
+     *
+     * @throws Exception
+     */
+    public void testCopyShallow() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        cms.createResource("/source_s", 0);
+        cms.createResource("/source_s/a.txt", 1);
+        try {
+            cms.getRequestContext().setAttribute(A_CmsResourceTypeFolderBase.ATTR_SHALLOW_FOLDER_COPY, Boolean.TRUE);
+            cms.copyResource("/source_s", "/target_s");
+            assertTrue(!cms.existsResource("/target_s/a.txt"));
+        } finally {
+            cms.getRequestContext().removeAttribute(A_CmsResourceTypeFolderBase.ATTR_SHALLOW_FOLDER_COPY);
+        }
+
     }
 
     /**

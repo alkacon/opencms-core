@@ -33,6 +33,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.A_CmsResourceTypeFolderBase;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.lock.CmsLock;
@@ -88,7 +89,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean)
      */
-    public void copy(String src, String dest, boolean overwrite) throws CmsException {
+    public void copy(String src, String dest, boolean overwrite, boolean shallow) throws CmsException {
 
         src = validatePath(src);
         dest = validatePath(dest);
@@ -133,7 +134,14 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         }
 
         // copy resource
-        m_cms.copyResource(src, dest, CmsResource.COPY_PRESERVE_SIBLING);
+        if (shallow) {
+            m_cms.getRequestContext().setAttribute(A_CmsResourceTypeFolderBase.ATTR_SHALLOW_FOLDER_COPY, Boolean.TRUE);
+        }
+        try {
+            m_cms.copyResource(src, dest, CmsResource.COPY_PRESERVE_SIBLING);
+        } finally {
+            m_cms.getRequestContext().removeAttribute(A_CmsResourceTypeFolderBase.ATTR_SHALLOW_FOLDER_COPY);
+        }
 
         // unlock destination resource
         m_cms.unlockResource(dest);

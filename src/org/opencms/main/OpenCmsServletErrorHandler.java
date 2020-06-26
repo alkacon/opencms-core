@@ -102,4 +102,15 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
 
         // override super class to avoid default initialization
     }
+
+    /**
+     * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Integer errorStatus = (Integer)req.getAttribute(CmsJspStatusBean.ERROR_STATUS_CODE);
+        resp.setStatus(errorStatus);
+    }
+
 }
