@@ -32,6 +32,7 @@ import org.opencms.main.CmsException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A repository session which provides basic file and folder operations
@@ -102,6 +103,8 @@ public interface I_CmsRepositorySession {
      */
     CmsRepositoryLockInfo getLock(String path);
 
+    Map<CmsPropertyName, String> getProperties(String path) throws CmsException;
+
     /**
      * Returns a list with all items found directly in the given path.<p>
      *
@@ -157,4 +160,6 @@ public interface I_CmsRepositorySession {
      * @param path The complete path of the item to unlock
      */
     void unlock(String path);
+
+    void updateProperties(String path, Map<CmsPropertyName, String> properties) throws CmsException;
 }

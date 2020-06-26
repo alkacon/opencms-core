@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -322,7 +323,7 @@ public class CmsObjectWrapper {
      * Delegate method for {@link CmsObject#getRequestContext()}.<p>
      *
      * @see CmsObject#getRequestContext()
-
+    
      * @return the current users request context
      */
     public CmsRequestContext getRequestContext() {
@@ -578,6 +579,16 @@ public class CmsObjectWrapper {
         }
 
         return res;
+    }
+
+    public Map<String, CmsProperty> readProperties(String path) throws CmsException {
+
+        if (m_cms.existsResource(path, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            return CmsProperty.toObjectMap(m_cms.readPropertyObjects(path, false));
+        } else {
+            return Collections.emptyMap();
+        }
+
     }
 
     /**
@@ -855,6 +866,14 @@ public class CmsObjectWrapper {
         }
 
         return res;
+    }
+
+    public void writeProperties(String path, Map<String, CmsProperty> props) throws CmsException {
+
+        if (m_cms.existsResource(path, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            m_cms.writePropertyObjects(path, new ArrayList<>(props.values()));
+        }
+
     }
 
     /**

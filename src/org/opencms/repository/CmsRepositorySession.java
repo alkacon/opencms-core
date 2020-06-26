@@ -28,6 +28,7 @@
 package org.opencms.repository;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -46,9 +47,12 @@ import org.opencms.util.CmsFileUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 
 /**
@@ -69,6 +73,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepositorySession.class);
+
+    public static final String PROPERTY_NAMESPACE = "http://opencms.org/ns/property";
+    public static final String EXTERNAL_PREFIX = "DAV_";
 
     /** The initialized {@link CmsObjectWrapper}. */
     private final CmsObjectWrapper m_cms;
@@ -258,6 +265,36 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             // return null (no lock found)
             return null;
         }
+    }
+
+    public Map<CmsPropertyName, String> getProperties(String path) throws CmsException {
+
+        Map<String, CmsProperty> props = m_cms.readProperties(path);
+        Map<CmsPropertyName, String> out = new HashMap<>();
+        for (Map.Entry<String, CmsProperty> entry : props.entrySet()) {
+            String name = entry.getKey();
+            CmsProperty prop = entry.getValue();
+            if (name.startsWith(EXTERNAL_PREFIX)) {
+                try {
+                    String remainder = name.substring(EXTERNAL_PREFIX.length());
+                    int pos = remainder.indexOf("_");
+                    String nsEncoded = remainder.substring(0, pos);
+                    String actualName = remainder.substring(pos + 1);
+                    String ns = new String(Hex.decodeHex(nsEncoded), "UTF-8");
+                    CmsPropertyName pn = new CmsPropertyName(ns, actualName);
+                    out.put(pn, prop.getStructureValue());
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            } else if (prop.getStructureValue() != null) {
+                String outName = name + ".s";
+                out.put(new CmsPropertyName(PROPERTY_NAMESPACE, outName), prop.getStructureValue());
+            } else if (prop.getResourceValue() != null) {
+                String outName = name + ".r";
+                out.put(new CmsPropertyName(PROPERTY_NAMESPACE, outName), prop.getResourceValue());
+            }
+        }
+        return out;
     }
 
     /**
@@ -451,6 +488,48 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_UNLOCK_FAILED_0), ex);
             }
+        }
+    }
+
+    public void updateProperties(String path, Map<CmsPropertyName, String> properties) throws CmsException {
+
+        Map<String, CmsProperty> out = new HashMap<>();
+        for (Map.Entry<CmsPropertyName, String> entry : properties.entrySet()) {
+            CmsPropertyName pn = entry.getKey();
+            String value = entry.getValue();
+            if (pn.getNamespace().equals(PROPERTY_NAMESPACE)) {
+                String baseName = pn.getName().substring(0, pn.getName().length() - 2);
+                if (!out.containsKey(baseName)) {
+                    out.put(baseName, new CmsProperty());
+                }
+                CmsProperty prop = out.get(baseName);
+                if (pn.getName().endsWith(".s")) {
+                    prop.setStructureValue(value);
+                } else {
+                    prop.setResourceValue(value);
+                }
+            } else {
+                try {
+                    String propName = EXTERNAL_PREFIX
+                        + Hex.encodeHexString(pn.getNamespace().getBytes("UTF-8"))
+                        + "_"
+                        + pn.getName();
+                    System.out.println(propName);
+                    CmsProperty prop = new CmsProperty(propName, value, null);
+                    out.put(propName, prop);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        boolean needUnlock = false;
+        if (null == getLock(path)) {
+            m_cms.lockResource(path);
+            needUnlock = true;
+        }
+        m_cms.writeProperties(path, out);
+        if (needUnlock) {
+            m_cms.unlockResource(path);
         }
     }
 

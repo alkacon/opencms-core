@@ -31,8 +31,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.repository.CmsPropertyName;
 import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -42,7 +44,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -74,6 +78,7 @@ import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.PropEntry;
 import org.apache.jackrabbit.webdav.property.ResourceType;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 
 /**
  * Represents a resource in the WebDav repository (may not actually correspond to an actual OpenCms resource, since
@@ -83,6 +88,8 @@ public class CmsDavResource implements DavResource {
 
     /** Logger instance for this class. **/
     private static final Log LOG = CmsLog.getLog(CmsDavResource.class);
+
+    Namespace PROP_NAMESPACE = Namespace.getNamespace("prop", "http://opencms.org/ns/prop");
 
     /** The resource factory that produced this resource. */
     private CmsDavResourceFactory m_factory;
@@ -162,7 +169,34 @@ public class CmsDavResource implements DavResource {
      */
     public MultiStatusResponse alterProperties(List<? extends PropEntry> changeList) throws DavException {
 
-        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
+        MultiStatusResponse res = new MultiStatusResponse(getHref(), null);
+        Map<CmsPropertyName, String> propMap = new HashMap<>();
+        for (PropEntry entry : changeList) {
+            if (entry instanceof DefaultDavProperty<?>) {
+                Object val = ((DefaultDavProperty)entry).getValue();
+                DefaultDavProperty<String> prop = (DefaultDavProperty<String>)entry;
+                CmsPropertyName cmsPropName = new CmsPropertyName(
+                    prop.getName().getNamespace().getURI(),
+                    prop.getName().getName());
+                propMap.put(cmsPropName, prop.getValue());
+            }
+        }
+        int status = HttpServletResponse.SC_OK;
+        try {
+            getRepositorySession().updateProperties(getCmsPath(), propMap);
+        } catch (CmsException e) {
+            if (e instanceof CmsPermissionViolationException) {
+                status = HttpServletResponse.SC_FORBIDDEN;
+            }
+        }
+        for (PropEntry entry : changeList) {
+            if (entry instanceof DefaultDavProperty<?>) {
+                res.add((DavProperty)entry, status);
+            } else {
+                res.add((DavPropertyName)entry, HttpServletResponse.SC_FORBIDDEN);
+            }
+        }
+        return res;
     }
 
     /**
@@ -350,6 +384,19 @@ public class CmsDavResource implements DavResource {
                 new DefaultDavProperty<String>(
                     DavPropertyName.GETETAG,
                     "\"" + getItem().getContentLength() + "-" + getItem().getLastModifiedDate() + "\""));
+
+        }
+        try {
+            Map<CmsPropertyName, String> cmsProps = getRepositorySession().getProperties(getCmsPath());
+            for (Map.Entry<CmsPropertyName, String> entry : cmsProps.entrySet()) {
+                CmsPropertyName propName = entry.getKey();
+                DavPropertyName name = DavPropertyName.create(
+                    propName.getName(),
+                    Namespace.getNamespace(propName.getNamespace()));
+                result.add(new DefaultDavProperty<String>(name, entry.getValue()));
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return result;
     }
@@ -403,6 +450,9 @@ public class CmsDavResource implements DavResource {
                     DavMethods.METHOD_HEAD,
                     DavMethods.METHOD_POST,
                     DavMethods.METHOD_DELETE));
+            methods.add(DavMethods.METHOD_PROPFIND);
+            methods.add(DavMethods.METHOD_PROPPATCH);
+
             Arrays.asList(DavMethods.METHOD_COPY, DavMethods.METHOD_MOVE);
             if (!item.isCollection()) {
                 methods.add(DavMethods.METHOD_PUT);
