@@ -166,6 +166,7 @@ public class OpenCmsUrlServletFilter implements Filter {
                 m_servletPath,
                 "/resources/",
                 "/webdav",
+                "/webdav2",
                 "/cmisatom",
                 "/handle404",
                 "/services"};

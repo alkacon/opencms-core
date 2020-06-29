@@ -389,5 +389,24 @@
         <servlet-name>OpenCmsWebDavServlet</servlet-name>
         <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
+    
+    
+    <servlet>
+        <description>
+        New  webdav servlet implementation.
+        </description>
+        <servlet-name>DavServlet</servlet-name>
+        <servlet-class>org.opencms.webdav.jackrabbit.CmsJackrabbitWebdavServlet</servlet-class>
+       <init-param>
+            <param-name>repository</param-name>
+            <param-value>webdav_root</param-value>
+        </init-param>
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DavServlet</servlet-name>
+        <url-pattern>/webdav2/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>
