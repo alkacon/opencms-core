@@ -103,6 +103,14 @@ public interface I_CmsRepositorySession {
      */
     CmsRepositoryLockInfo getLock(String path);
 
+    /**
+     * Gets the properties for the given path.
+     *
+     * @param path the path
+     * @return the properties for the path
+     *
+     * @throws CmsException if something goes wrong
+     */
     Map<CmsPropertyName, String> getProperties(String path) throws CmsException;
 
     /**
@@ -161,5 +169,13 @@ public interface I_CmsRepositorySession {
      */
     void unlock(String path);
 
+    /**
+     * Updates the properties for the given path.
+     *
+     * @param path the path
+     * @param properties the properties
+     *
+     * @throws CmsException if something goes wrong
+     */
     void updateProperties(String path, Map<CmsPropertyName, String> properties) throws CmsException;
 }

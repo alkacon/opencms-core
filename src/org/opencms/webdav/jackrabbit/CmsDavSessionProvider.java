@@ -64,7 +64,6 @@ public class CmsDavSessionProvider implements DavSessionProvider {
         if (m_repository == null) {
             throw new IllegalStateException("Uninitialized repository");
         }
-
         String authHeader = request.getHeader("Authorization");
         I_CmsRepositorySession repoSession = null;
         String basic = HttpServletRequest.BASIC_AUTH;

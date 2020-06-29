@@ -49,7 +49,6 @@ public class CmsDavLocatorFactory extends AbstractLocatorFactory {
     @Override
     protected String getRepositoryPath(String resourcePath, String wspPath) {
 
-        System.out.println("getRepositoryPath " + resourcePath + "," + wspPath);
         return resourcePath;
     }
 
@@ -59,7 +58,6 @@ public class CmsDavLocatorFactory extends AbstractLocatorFactory {
     @Override
     protected String getResourcePath(String repositoryPath, String wspPath) {
 
-        System.out.println("getResourcePath " + repositoryPath + "," + wspPath);
         return repositoryPath;
     }
 

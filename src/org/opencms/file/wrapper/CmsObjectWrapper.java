@@ -581,6 +581,14 @@ public class CmsObjectWrapper {
         return res;
     }
 
+    /**
+     * Reads the properties for a resource with a specific path, if it exists.
+     *
+     * @param path a VFS path
+     * @return the map of properties for the resource
+     *
+     * @throws CmsException if something goes wrong
+     */
     public Map<String, CmsProperty> readProperties(String path) throws CmsException {
 
         if (m_cms.existsResource(path, CmsResourceFilter.IGNORE_EXPIRATION)) {
@@ -868,6 +876,14 @@ public class CmsObjectWrapper {
         return res;
     }
 
+    /**
+     * Writes properties to the resource with the given path, if it exists
+     *
+     * @param path the path
+     * @param props the properties to write
+     *
+     * @throws CmsException if something goes wrong
+     */
     public void writeProperties(String path, Map<String, CmsProperty> props) throws CmsException {
 
         if (m_cms.existsResource(path, CmsResourceFilter.IGNORE_EXPIRATION)) {

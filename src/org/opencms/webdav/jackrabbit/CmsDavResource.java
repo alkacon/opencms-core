@@ -89,6 +89,7 @@ public class CmsDavResource implements DavResource {
     /** Logger instance for this class. **/
     private static final Log LOG = CmsLog.getLog(CmsDavResource.class);
 
+    /** Default namespace for OpenCms properties. */
     Namespace PROP_NAMESPACE = Namespace.getNamespace("prop", "http://opencms.org/ns/prop");
 
     /** The resource factory that produced this resource. */
@@ -169,6 +170,10 @@ public class CmsDavResource implements DavResource {
      */
     public MultiStatusResponse alterProperties(List<? extends PropEntry> changeList) throws DavException {
 
+        if (exists() && isLocked(this)) {
+            throw new DavException(DavServletResponse.SC_LOCKED);
+        }
+
         MultiStatusResponse res = new MultiStatusResponse(getHref(), null);
         Map<CmsPropertyName, String> propMap = new HashMap<>();
         for (PropEntry entry : changeList) {
@@ -179,18 +184,27 @@ public class CmsDavResource implements DavResource {
                     prop.getName().getNamespace().getURI(),
                     prop.getName().getName());
                 propMap.put(cmsPropName, prop.getValue());
+            } else if (entry instanceof DavPropertyName) {
+                CmsPropertyName cmsPropName = new CmsPropertyName(
+                    ((DavPropertyName)entry).getNamespace().getURI(),
+                    ((DavPropertyName)entry).getName());
+                propMap.put(cmsPropName, "");
+
             }
         }
         int status = HttpServletResponse.SC_OK;
         try {
             getRepositorySession().updateProperties(getCmsPath(), propMap);
         } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
             if (e instanceof CmsPermissionViolationException) {
                 status = HttpServletResponse.SC_FORBIDDEN;
             }
         }
         for (PropEntry entry : changeList) {
-            if (entry instanceof DefaultDavProperty<?>) {
+            if (entry instanceof DavPropertyName) {
+                res.add((DavPropertyName)entry, status);
+            } else if (entry instanceof DefaultDavProperty<?>) {
                 res.add((DavProperty)entry, status);
             } else {
                 res.add((DavPropertyName)entry, HttpServletResponse.SC_FORBIDDEN);
@@ -539,8 +553,20 @@ public class CmsDavResource implements DavResource {
      */
     public void removeProperty(DavPropertyName propertyName) throws DavException {
 
-        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
+        if (exists() && isLocked(this)) {
+            throw new DavException(DavServletResponse.SC_LOCKED);
+        }
 
+        I_CmsRepositorySession session = getRepositorySession();
+        Map<CmsPropertyName, String> props = new HashMap<>();
+        CmsPropertyName key = new CmsPropertyName(propertyName.getNamespace().getURI(), propertyName.getName());
+        props.put(key, "");
+        try {
+            session.updateProperties(getCmsPath(), props);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new DavException(500);
+        }
     }
 
     /**
@@ -548,7 +574,28 @@ public class CmsDavResource implements DavResource {
      */
     public void setProperty(DavProperty<?> property) throws DavException {
 
-        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
+        if (exists() && isLocked(this)) {
+            throw new DavException(DavServletResponse.SC_LOCKED);
+        }
+
+        if (!(property instanceof DefaultDavProperty)) {
+            throw new DavException(HttpServletResponse.SC_FORBIDDEN);
+        }
+        I_CmsRepositorySession session = getRepositorySession();
+        Map<CmsPropertyName, String> props = new HashMap<>();
+        DavPropertyName propertyName = property.getName();
+        String newValue = ((DefaultDavProperty<String>)property).getValue();
+        if (newValue == null) {
+            newValue = "";
+        }
+        CmsPropertyName key = new CmsPropertyName(propertyName.getNamespace().getURI(), propertyName.getName());
+        props.put(key, newValue);
+        try {
+            session.updateProperties(getCmsPath(), props);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new DavException(500);
+        }
 
     }
 

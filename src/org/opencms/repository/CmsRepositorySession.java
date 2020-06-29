@@ -52,8 +52,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
+
+import com.google.common.io.BaseEncoding;
 
 /**
  * This is the session class to work with the {@link CmsRepository}.<p>
@@ -74,8 +75,13 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepositorySession.class);
 
+    /** Default namespace for OpenCms properties. */
     public static final String PROPERTY_NAMESPACE = "http://opencms.org/ns/property";
+
+    /** Prefix used for encoded property names outside the default property namespace. */
     public static final String EXTERNAL_PREFIX = "DAV_";
+
+    private static final BaseEncoding PROPERTY_NS_CODEC = BaseEncoding.base64Url().withPadChar('$');
 
     /** The initialized {@link CmsObjectWrapper}. */
     private final CmsObjectWrapper m_cms;
@@ -91,6 +97,34 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
         m_cms = cms;
         setFilter(filter);
+    }
+
+    /**
+     * Decodes the namespace URI.
+     *
+     * @param code the encoded namespace URI
+     * @return the decoded namespace URI
+     * @throws Exception if something goes wrong
+     */
+    public static String decodeNamespace(String code) throws Exception {
+
+        code = code.replace("~", "_");
+        return new String(PROPERTY_NS_CODEC.decode(code), "UTF-8");
+    }
+
+    /**
+     * Encodes the namespace URI.
+     *
+     * @param data a namesapce URI
+     * @return the encoded namespace URI
+     *
+     * @throws Exception if something goes wrong
+     */
+    public static String encodeNamespace(String data) throws Exception {
+
+        String s = BaseEncoding.base64Url().withPadChar('$').encode(data.getBytes("UTF-8"));
+        s = s.replace('_', '~');
+        return s;
     }
 
     /**
@@ -267,6 +301,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         }
     }
 
+    /**
+     * @see org.opencms.repository.I_CmsRepositorySession#getProperties(java.lang.String)
+     */
     public Map<CmsPropertyName, String> getProperties(String path) throws CmsException {
 
         Map<String, CmsProperty> props = m_cms.readProperties(path);
@@ -280,18 +317,21 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
                     int pos = remainder.indexOf("_");
                     String nsEncoded = remainder.substring(0, pos);
                     String actualName = remainder.substring(pos + 1);
-                    String ns = new String(Hex.decodeHex(nsEncoded), "UTF-8");
+                    String ns = decodeNamespace(nsEncoded);
                     CmsPropertyName pn = new CmsPropertyName(ns, actualName);
                     out.put(pn, prop.getStructureValue());
                 } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
-            } else if (prop.getStructureValue() != null) {
-                String outName = name + ".s";
-                out.put(new CmsPropertyName(PROPERTY_NAMESPACE, outName), prop.getStructureValue());
-            } else if (prop.getResourceValue() != null) {
-                String outName = name + ".r";
-                out.put(new CmsPropertyName(PROPERTY_NAMESPACE, outName), prop.getResourceValue());
+            } else {
+                if (prop.getStructureValue() != null) {
+                    String outName = name + ".s";
+                    out.put(new CmsPropertyName(PROPERTY_NAMESPACE, outName), prop.getStructureValue());
+                }
+                if (prop.getResourceValue() != null) {
+                    String outName = name + ".r";
+                    out.put(new CmsPropertyName(PROPERTY_NAMESPACE, outName), prop.getResourceValue());
+                }
             }
         }
         return out;
@@ -491,6 +531,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         }
     }
 
+    /**
+     * @see org.opencms.repository.I_CmsRepositorySession#updateProperties(java.lang.String, java.util.Map)
+     */
     public void updateProperties(String path, Map<CmsPropertyName, String> properties) throws CmsException {
 
         Map<String, CmsProperty> out = new HashMap<>();
@@ -505,16 +548,14 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
                 CmsProperty prop = out.get(baseName);
                 if (pn.getName().endsWith(".s")) {
                     prop.setStructureValue(value);
-                } else {
+                } else if (pn.getName().endsWith(".r")) {
                     prop.setResourceValue(value);
+                } else {
+                    LOG.error("Invalid name for repository property, must end with .s or .r");
                 }
             } else {
                 try {
-                    String propName = EXTERNAL_PREFIX
-                        + Hex.encodeHexString(pn.getNamespace().getBytes("UTF-8"))
-                        + "_"
-                        + pn.getName();
-                    System.out.println(propName);
+                    String propName = EXTERNAL_PREFIX + encodeNamespace(pn.getNamespace()) + "_" + pn.getName();
                     CmsProperty prop = new CmsProperty(propName, value, null);
                     out.put(propName, prop);
                 } catch (Exception e) {
@@ -527,9 +568,12 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             m_cms.lockResource(path);
             needUnlock = true;
         }
-        m_cms.writeProperties(path, out);
-        if (needUnlock) {
-            m_cms.unlockResource(path);
+        try {
+            m_cms.writeProperties(path, out);
+        } finally {
+            if (needUnlock) {
+                m_cms.unlockResource(path);
+            }
         }
     }
 
