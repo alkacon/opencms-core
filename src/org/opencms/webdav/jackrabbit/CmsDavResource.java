@@ -178,7 +178,6 @@ public class CmsDavResource implements DavResource {
         Map<CmsPropertyName, String> propMap = new HashMap<>();
         for (PropEntry entry : changeList) {
             if (entry instanceof DefaultDavProperty<?>) {
-                Object val = ((DefaultDavProperty)entry).getValue();
                 DefaultDavProperty<String> prop = (DefaultDavProperty<String>)entry;
                 CmsPropertyName cmsPropName = new CmsPropertyName(
                     prop.getName().getNamespace().getURI(),
@@ -394,10 +393,7 @@ public class CmsDavResource implements DavResource {
             result.add(
                 new DefaultDavProperty<String>(DavPropertyName.GETCONTENTLENGTH, "" + getItem().getContentLength()));
 
-            result.add(
-                new DefaultDavProperty<String>(
-                    DavPropertyName.GETETAG,
-                    "\"" + getItem().getContentLength() + "-" + getItem().getLastModifiedDate() + "\""));
+            result.add(new DefaultDavProperty<String>(DavPropertyName.GETETAG, getETag()));
 
         }
         try {
@@ -607,6 +603,8 @@ public class CmsDavResource implements DavResource {
         I_CmsRepositoryItem item = getItem();
         outputContext.setContentType(item.getMimeType());
         outputContext.setContentLength(item.getContentLength());
+        outputContext.setModificationTime(item.getLastModifiedDate());
+        outputContext.setETag(getETag());
         OutputStream out = outputContext.getOutputStream();
         if (out != null) {
             out.write(item.getContent());
@@ -634,6 +632,16 @@ public class CmsDavResource implements DavResource {
         Optional<String> remainingPath = CmsStringUtil.removePrefixPath(workspace, path);
         return remainingPath.orElse(null);
 
+    }
+
+    /**
+     * Computes the ETag for the item (the item must be not null).
+     *
+     * @return the ETag for the repository item
+     */
+    private String getETag() {
+
+        return "\"" + getItem().getContentLength() + "-" + getItem().getLastModifiedDate() + "\"";
     }
 
     /**
