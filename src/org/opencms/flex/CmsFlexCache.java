@@ -168,16 +168,15 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             if ((m == null) || (m.size() == 0)) {
                 return true;
             }
-            Iterator<I_CmsLruCacheObject> allEntries = v.m_map.values().iterator();
-            while(allEntries.hasNext()) {
-                I_CmsLruCacheObject nextObject = allEntries.next();
-                allEntries.remove();
-                m_variationCache.remove(nextObject);
+            Collection<I_CmsLruCacheObject> entries = m.values();
+            synchronized (m_variationCache) {
+                for (I_CmsLruCacheObject e : entries) {
+                    m_variationCache.remove(e);
+                }
+                v.m_map.clear();
+                v.m_map = null;
+                v.m_key = null;
             }
-            v.m_map.clear();
-            v.m_map = null;
-            v.m_key = null;
-            
             return true;
         }
     }
@@ -781,7 +780,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (o == null) {
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation variationMap = new CmsFlexCacheVariation(key);
-            synchronizedCopyMap(m_keyCache).put(key.getResource(), variationMap);
+            m_keyCache.put(key.getResource(), variationMap);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_ADD_KEY_1, key.getResource()));
             }
