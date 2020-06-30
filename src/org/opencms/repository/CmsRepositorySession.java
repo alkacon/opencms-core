@@ -536,16 +536,17 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
      */
     public void updateProperties(String path, Map<CmsPropertyName, String> properties) throws CmsException {
 
-        Map<String, CmsProperty> out = new HashMap<>();
+        Map<String, CmsProperty> propsToWrite = new HashMap<>();
         for (Map.Entry<CmsPropertyName, String> entry : properties.entrySet()) {
             CmsPropertyName pn = entry.getKey();
             String value = entry.getValue();
             if (pn.getNamespace().equals(PROPERTY_NAMESPACE)) {
                 String baseName = pn.getName().substring(0, pn.getName().length() - 2);
-                if (!out.containsKey(baseName)) {
-                    out.put(baseName, new CmsProperty());
+                if (!propsToWrite.containsKey(baseName)) {
+                    CmsProperty prop = new CmsProperty(baseName, null, null);
+                    propsToWrite.put(baseName, prop);
                 }
-                CmsProperty prop = out.get(baseName);
+                CmsProperty prop = propsToWrite.get(baseName);
                 if (pn.getName().endsWith(".s")) {
                     prop.setStructureValue(value);
                 } else if (pn.getName().endsWith(".r")) {
@@ -557,7 +558,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
                 try {
                     String propName = EXTERNAL_PREFIX + encodeNamespace(pn.getNamespace()) + "_" + pn.getName();
                     CmsProperty prop = new CmsProperty(propName, value, null);
-                    out.put(propName, prop);
+                    propsToWrite.put(propName, prop);
                 } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
@@ -569,7 +570,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             needUnlock = true;
         }
         try {
-            m_cms.writeProperties(path, out);
+            m_cms.writeProperties(path, propsToWrite);
         } finally {
             if (needUnlock) {
                 m_cms.unlockResource(path);
