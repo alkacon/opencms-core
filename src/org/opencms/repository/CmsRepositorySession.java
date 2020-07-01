@@ -79,8 +79,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     public static final String PROPERTY_NAMESPACE = "http://opencms.org/ns/property";
 
     /** Prefix used for encoded property names outside the default property namespace. */
-    public static final String EXTERNAL_PREFIX = "DAV_";
+    public static final String EXTERNAL_PREFIX = "XDAV_";
 
+    /** Base for the namespace encoding. */
     private static final BaseEncoding PROPERTY_NS_CODEC = BaseEncoding.base64Url().withPadChar('$');
 
     /** The initialized {@link CmsObjectWrapper}. */
