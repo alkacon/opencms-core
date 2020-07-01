@@ -387,7 +387,7 @@
 
     <servlet-mapping>
         <servlet-name>OpenCmsWebDavServlet</servlet-name>
-        <url-pattern>/webdav/*</url-pattern>
+        <url-pattern>/webdav1/*</url-pattern>
     </servlet-mapping>
     
     
@@ -406,7 +406,7 @@
 
     <servlet-mapping>
         <servlet-name>DavServlet</servlet-name>
-        <url-pattern>/webdav2/*</url-pattern>
+        <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
