@@ -89,9 +89,6 @@ public class CmsDavResource implements DavResource {
     /** Logger instance for this class. **/
     private static final Log LOG = CmsLog.getLog(CmsDavResource.class);
 
-    /** Default namespace for OpenCms properties. */
-    Namespace PROP_NAMESPACE = Namespace.getNamespace("prop", "http://opencms.org/ns/prop");
-
     /** The resource factory that produced this resource. */
     private CmsDavResourceFactory m_factory;
 
