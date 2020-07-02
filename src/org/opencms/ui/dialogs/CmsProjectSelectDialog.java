@@ -284,6 +284,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         CmsExtendedSiteSelector result = new CmsExtendedSiteSelector();
         boolean isExplorer = CmsFileExplorerConfiguration.APP_ID.equals(m_context.getAppId());
         result.initOptions(m_context.getCms(), isExplorer);
+        result.setPageLength(CmsExtendedSiteSelector.LONG_PAGE_LENGTH);
         result.setCaption(CmsVaadinUtils.getWpMessagesForCurrentLocale().key(captionKey));
         result.setWidth("100%");
         result.setPlaceholder(

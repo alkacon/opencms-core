@@ -175,6 +175,9 @@ public class CmsExtendedSiteSelector extends ComboBox<SiteSelectorOption> {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Longer default page length for site selectors. */
+    public static final int LONG_PAGE_LENGTH = 20;
+
     /** True if the options have been initialized.  */
     private boolean m_initialized;
 

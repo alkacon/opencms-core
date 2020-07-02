@@ -196,6 +196,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
         String caption = CmsVaadinUtils.getWpMessagesForCurrentLocale().key(captionKey);
         result.setCaption(caption);
         result.initOptions(m_context.getCms(), true);
+        result.setPageLength(CmsExtendedSiteSelector.LONG_PAGE_LENGTH);
         result.setWidth("100%");
         result.setPlaceholder(
             Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));

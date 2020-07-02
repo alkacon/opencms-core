@@ -281,6 +281,7 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
                 m_context.changeSite(evt.getValue());
             }
         });
+        m_siteBox.setPageLength(CmsExtendedSiteSelector.LONG_PAGE_LENGTH);
         if (OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_USER)) {
             LinkedHashMap<CmsUUID, String> projects = CmsVaadinUtils.getProjectsMap(cms);
             m_projectBox.setDataProvider(new ListDataProvider<>(projects.keySet()));
