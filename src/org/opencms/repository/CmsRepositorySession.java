@@ -79,7 +79,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     public static final String PROPERTY_NAMESPACE = "http://opencms.org/ns/property";
 
     /** Prefix used for encoded property names outside the default property namespace. */
-    public static final String EXTERNAL_PREFIX = "XDAV_";
+    public static final String EXTERNAL_PREFIX = "xDAV_";
 
     /** Base for the namespace encoding. */
     private static final BaseEncoding PROPERTY_NS_CODEC = BaseEncoding.base64Url().withPadChar('$');
@@ -571,6 +571,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             needUnlock = true;
         }
         try {
+            System.out.println("Writing properties: " + propsToWrite);
             m_cms.writeProperties(path, propsToWrite);
         } finally {
             if (needUnlock) {
