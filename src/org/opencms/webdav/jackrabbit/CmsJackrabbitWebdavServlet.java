@@ -27,9 +27,11 @@
 
 package org.opencms.webdav.jackrabbit;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.repository.A_CmsRepository;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -38,7 +40,10 @@ import java.util.LinkedHashMap;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavResourceFactory;
@@ -57,6 +62,9 @@ import com.google.common.collect.Iterators;
  * Webdav access servlet for OpenCms, implemented using jackrabbit-webdav library.
  */
 public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJackrabbitWebdavServlet.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -192,6 +200,25 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
             }
         }
         return !resource.exists() || request.matchesIfHeader(resource);
+    }
+
+    /**
+     * @see org.apache.jackrabbit.webdav.server.AbstractWebdavServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+
+        LOG.debug("WEBDAV: " + request.getMethod() + " " + request.getRequestURI());
+        try {
+            super.service(request, response);
+        } catch (ServletException | IOException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
 }
