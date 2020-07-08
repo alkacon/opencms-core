@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LOCK_ILLEGAL_STATE_2 = "ERR_LOCK_ILLEGAL_STATE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_CANT_UPGRADE_SHALLOW_LOCK_1 = "ERR_LOCK_CANT_UPGRADE_SHALLOW_LOCK_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_LOCKS_0 = "ERR_READ_LOCKS_0";
 
     /** Message constant for key in the resource bundle. */

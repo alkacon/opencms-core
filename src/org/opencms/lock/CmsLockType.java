@@ -50,6 +50,9 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     /** A lock that indicates that the resource is waiting to be published in the publish queue. */
     public static final CmsLockType PUBLISH = new CmsLockType(7);
 
+    /** A lock that is 'shallow', i.e. not inherited on child resources. */
+    public static final CmsLockType SHALLOW = new CmsLockType(9);
+
     /**
      * A lock that allows the user to edit the resource's structure record only,
      * but not it's resource record nor content record.<p>
@@ -144,7 +147,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isExclusive() {
 
-        return (this == CmsLockType.EXCLUSIVE) || (this == CmsLockType.TEMPORARY);
+        return (this == CmsLockType.EXCLUSIVE) || (this == CmsLockType.TEMPORARY) || (this == CmsLockType.SHALLOW);
     }
 
     /**
@@ -175,6 +178,16 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     public boolean isPublish() {
 
         return (this == CmsLockType.PUBLISH);
+    }
+
+    /**
+     * Returns true if this is a shallow lock.<p>
+     *
+     * @return true if this is a shallow lock
+     */
+    public boolean isShallow() {
+
+        return this == SHALLOW;
     }
 
     /**
@@ -224,7 +237,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isTemporary() {
 
-        return (this == CmsLockType.TEMPORARY);
+        return ((this == CmsLockType.TEMPORARY) || (this == SHALLOW));
     }
 
     /**
@@ -261,6 +274,9 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
                 return "publish";
             case 8:
                 return "system unlocked";
+            case 9:
+                return "shallow";
+            case 0:
             default:
                 return "unlocked";
         }

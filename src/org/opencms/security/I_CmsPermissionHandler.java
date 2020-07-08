@@ -45,7 +45,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
 public interface I_CmsPermissionHandler {
 
     /**
-     *  Enumeration class for the results of {@link I_CmsPermissionHandler#hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)}.<p>
+     *  Enumeration class for the results of {@link I_CmsPermissionHandler#hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, LockCheck, CmsResourceFilter)}.<p>
      */
     public static final class CmsPermissionCheckResult extends A_CmsModeIntEnumeration {
 
@@ -82,6 +82,46 @@ public interface I_CmsPermissionHandler {
         public boolean isAllowed() {
 
             return (this == ALLOWED);
+        }
+    }
+
+    /**
+     * Enum for the lock check mode.
+     */
+    public enum LockCheck {
+
+        /** Don't check locks. */
+        no("N"),
+
+        /** Check for shallow or normal lock. */
+        shallowOnly("S"),
+
+        /** Check for normal (non-shallow) lock. */
+        yes("Y");
+
+        /** The code for this enum value. */
+        private String m_code;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param code the code for the enum value
+         */
+        private LockCheck(String code) {
+
+            m_code = code;
+        }
+
+        /**
+         * Gets the code for the enum value.<p>
+         *
+         * The code is a short string identifying the enum value for use in cache keys.
+         *
+         * @return the code
+         */
+        public String getCode() {
+
+            return m_code;
         }
     }
 
@@ -124,8 +164,9 @@ public interface I_CmsPermissionHandler {
         CmsDbContext dbc,
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
-        boolean checkLock,
-        CmsResourceFilter filter) throws CmsException;
+        LockCheck checkLock,
+        CmsResourceFilter filter)
+    throws CmsException;
 
     /**
      * Initializes internal variables needed to work.<p>

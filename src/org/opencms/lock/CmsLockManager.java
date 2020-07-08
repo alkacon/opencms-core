@@ -105,6 +105,10 @@ public final class CmsLockManager {
         // get the current lock
         CmsLock currentLock = getLock(dbc, resource);
 
+        if (currentLock.getType().isShallow() && !type.isShallow() && type.isExclusive()) {
+            throw new CmsLockException(
+                Messages.get().container(Messages.ERR_LOCK_CANT_UPGRADE_SHALLOW_LOCK_1, currentLock.toString()));
+        }
         // check lockability
         checkLockable(dbc, resource, user, project, type, currentLock);
 
@@ -124,7 +128,7 @@ public final class CmsLockManager {
         }
 
         // handle collisions with exclusive locked sub-resources in case of a folder
-        if (resource.isFolder() && newLock.getSystemLock().isUnlocked()) {
+        if (resource.isFolder() && newLock.getSystemLock().isUnlocked() && !type.isShallow()) {
             String resourceName = resource.getRootPath();
             Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
             while (itLocks.hasNext()) {
@@ -167,7 +171,7 @@ public final class CmsLockManager {
      * @param resource the resource
      *
      * @return the lock state of the given resource
-
+    
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource) throws CmsException {
@@ -186,7 +190,7 @@ public final class CmsLockManager {
      * @param includeSiblings if siblings (shared locks) should be included in the search
      *
      * @return the lock state of the given resource
-
+    
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource, boolean includeSiblings) throws CmsException {
@@ -280,7 +284,8 @@ public final class CmsLockManager {
         CmsDbContext dbc,
         CmsResource resource,
         CmsLockFilter filter,
-        Map<String, CmsResource> cache) throws CmsException {
+        Map<String, CmsResource> cache)
+    throws CmsException {
 
         List<CmsResource> lockedResources = new ArrayList<CmsResource>();
         Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
@@ -573,7 +578,7 @@ public final class CmsLockManager {
 
         // remove the lock and clean-up stuff
         if (lock.isExclusive()) {
-            if (resource.isFolder()) {
+            if (resource.isFolder() && !lock.getType().isShallow()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource
                 Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
@@ -717,7 +722,8 @@ public final class CmsLockManager {
         CmsUser user,
         CmsProject project,
         CmsLockType type,
-        CmsLock currentLock) throws CmsLockException {
+        CmsLock currentLock)
+    throws CmsLockException {
 
         if (!currentLock.isLockableBy(user)) {
             // check type, owner and project for system locks
@@ -770,6 +776,7 @@ public final class CmsLockManager {
         while (itLocks.hasNext()) {
             CmsLock lock = itLocks.next();
             if (lock.getResourceName().endsWith("/")
+                && !lock.getType().isShallow()
                 && resourceName.startsWith(lock.getResourceName())
                 && !resourceName.equals(lock.getResourceName())) {
                 // system locks does not get inherited
@@ -886,11 +893,8 @@ public final class CmsLockManager {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
         // result in an infinite loop, therefore we must access the VFS driver directly
-        List<CmsResource> siblings = m_driverManager.getVfsDriver(dbc).readSiblings(
-            dbc,
-            dbc.currentProject().getUuid(),
-            resource,
-            true);
+        List<CmsResource> siblings = m_driverManager.getVfsDriver(
+            dbc).readSiblings(dbc, dbc.currentProject().getUuid(), resource, true);
         siblings.remove(resource);
         return siblings;
     }

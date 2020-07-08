@@ -2142,6 +2142,11 @@ public final class CmsObject {
         lockResource(resourcename, CmsLockType.EXCLUSIVE);
     }
 
+    public void lockResourceShallow(CmsResource resource) throws CmsException {
+
+        getResourceType(resource).lockResource(this, m_securityManager, resource, CmsLockType.SHALLOW);
+    }
+
     /**
      * Locks a resource temporary.<p>
      *

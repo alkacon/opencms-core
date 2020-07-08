@@ -68,14 +68,15 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
     private I_CmsCacheKey m_keyGenerator;
 
     /**
-     * @see org.opencms.security.I_CmsPermissionHandler#hasPermissions(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean, org.opencms.file.CmsResourceFilter)
+     * @see org.opencms.security.I_CmsPermissionHandler#hasPermissions(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, org.opencms.security.I_CmsPermissionHandler.LockCheck, org.opencms.file.CmsResourceFilter)
      */
     public CmsPermissionCheckResult hasPermissions(
         CmsDbContext dbc,
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
-        boolean checkLock,
-        CmsResourceFilter filter) throws CmsException {
+        LockCheck checkLock,
+        CmsResourceFilter filter)
+    throws CmsException {
 
         // check if the resource is valid according to the current filter
         // if not, throw a CmsResourceNotFoundException
@@ -85,13 +86,11 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
 
         // checking the filter is less cost intensive then checking the cache,
         // this is why basic filter results are not cached
-        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
-            filter.requireVisible() && checkLock
-            ? "11"
-            : (!filter.requireVisible() && checkLock ? "01" : (filter.requireVisible() && !checkLock ? "10" : "00")),
-            dbc,
-            resource,
-            requiredPermissions);
+        String requireVisibleStr = filter.requireVisible() ? "1" : "0";
+        String lockCheckStr = checkLock.getCode();
+        String keyPrefix = requireVisibleStr + lockCheckStr;
+
+        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(keyPrefix, dbc, resource, requiredPermissions);
         CmsPermissionCheckResult cacheResult = OpenCms.getMemoryMonitor().getCachedPermission(cacheKey);
         if (cacheResult != null) {
             return cacheResult;
@@ -124,12 +123,16 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
             }
         }
 
-        if (writeRequired && checkLock) {
+        if (writeRequired && (checkLock != LockCheck.no)) {
             // check lock state only if required
             CmsLock lock = m_driverManager.getLock(dbc, resource);
             // if the resource is not locked by the current user, write and control
             // access must cause a permission error that must not be cached
             if (lock.isUnlocked() || !lock.isLockableBy(dbc.currentUser())) {
+                return I_CmsPermissionHandler.PERM_NOTLOCKED;
+            }
+            // if we have a shallow lock, but need a non-shallow one, return NOTLOCKED
+            if (lock.getType().isShallow() && (checkLock != LockCheck.shallowOnly)) {
                 return I_CmsPermissionHandler.PERM_NOTLOCKED;
             }
         }

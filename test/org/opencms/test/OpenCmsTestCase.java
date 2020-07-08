@@ -116,6 +116,21 @@ import junit.framework.TestSuite;
  */
 public class OpenCmsTestCase extends TestCase {
 
+    /**
+     * Substitute for Runnable that can throw exceptions.
+     *
+     * Used for test cases.
+     */
+    public static interface CodeBlock {
+
+        /**
+         * Run method (can throw an exception)
+         *
+         * @throws Exception the exception thrown
+         */
+        void run() throws Exception;
+    }
+
     /** Class to bundle the connection information. */
     protected static class ConnectionData {
 
@@ -3471,6 +3486,22 @@ public class OpenCmsTestCase extends TestCase {
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }
+    }
+
+    /**
+     * Executes the code block and fails with the given message if it doesn't throw an exception.
+     *
+     * @param message the message to fail with
+     * @param block the code to execute
+     */
+    public void assertThrows(String message, CodeBlock block) {
+
+        try {
+            block.run();
+        } catch (Exception e) {
+            return;
+        }
+        fail(message);
     }
 
     /**

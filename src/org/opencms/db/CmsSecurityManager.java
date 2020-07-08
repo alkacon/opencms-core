@@ -89,6 +89,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
+import org.opencms.security.I_CmsPermissionHandler.LockCheck;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -2992,6 +2993,54 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
+        CmsResourceFilter filter)
+    throws CmsException {
+
+        I_CmsPermissionHandler.CmsPermissionCheckResult result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = hasPermissions(
+                dbc,
+                resource,
+                requiredPermissions,
+                checkLock ? LockCheck.yes : LockCheck.no,
+                filter);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Performs a non-blocking permission check on a resource.<p>
+     *
+     * This test will not throw an exception in case the required permissions are not
+     * available for the requested operation. Instead, it will return one of the
+     * following values:<ul>
+     * <li><code>{@link I_CmsPermissionHandler#PERM_ALLOWED}</code></li>
+     * <li><code>{@link I_CmsPermissionHandler#PERM_FILTERED}</code></li>
+     * <li><code>{@link I_CmsPermissionHandler#PERM_DENIED}</code></li></ul><p>
+     *
+     * @param context the current request context
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required for the operation
+     * @param checkLock if true, a lock for the current user is required for
+     *      all write operations, if false it's ok to write as long as the resource
+     *      is not locked by another user
+     * @param filter the resource filter to use
+     *
+     * @return <code>{@link I_CmsPermissionHandler#PERM_ALLOWED}</code> if the user has sufficient permissions on the resource
+     *      for the requested operation
+     *
+     * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
+     *
+     * @see #hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+     */
+    public I_CmsPermissionHandler.CmsPermissionCheckResult hasPermissions(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsPermissionSet requiredPermissions,
+        LockCheck checkLock,
         CmsResourceFilter filter)
     throws CmsException {
 
@@ -6328,7 +6377,12 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            checkPermissions(
+                dbc,
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                LockCheck.shallowOnly,
+                CmsResourceFilter.ALL);
             m_driverManager.unlockResource(dbc, resource, false, false);
         } catch (CmsException e) {
             dbc.report(
@@ -6830,7 +6884,12 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            checkPermissions(
+                dbc,
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                LockCheck.shallowOnly,
+                CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.writePropertyObject(dbc, resource, property);
         } catch (Exception e) {
             dbc.report(
@@ -6865,7 +6924,12 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            checkPermissions(
+                dbc,
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                LockCheck.shallowOnly,
+                CmsResourceFilter.IGNORE_EXPIRATION);
             // write the properties
             m_driverManager.writePropertyObjects(dbc, resource, properties, true);
         } catch (Exception e) {
@@ -7050,6 +7114,43 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
+        CmsResourceFilter filter)
+    throws CmsException, CmsSecurityException {
+
+        // get the permissions
+        I_CmsPermissionHandler.CmsPermissionCheckResult permissions = hasPermissions(
+            dbc,
+            resource,
+            requiredPermissions,
+            checkLock ? LockCheck.yes : LockCheck.no,
+            filter);
+        if (!permissions.isAllowed()) {
+            checkPermissions(dbc.getRequestContext(), resource, requiredPermissions, permissions);
+        }
+    }
+
+    /**
+     * Performs a blocking permission check on a resource.<p>
+     *
+     * If the required permissions are not satisfied by the permissions the user has on the resource,
+     * an exception is thrown.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required to access the resource
+     * @param checkLock if true, the lock status of the resource is also checked
+     * @param filter the filter for the resource
+     *
+     * @throws CmsException in case of any i/o error
+     * @throws CmsSecurityException if the required permissions are not satisfied
+     *
+     * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+     */
+    protected void checkPermissions(
+        CmsDbContext dbc,
+        CmsResource resource,
+        CmsPermissionSet requiredPermissions,
+        LockCheck checkLock,
         CmsResourceFilter filter)
     throws CmsException, CmsSecurityException {
 
@@ -7317,7 +7418,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc,
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
-        boolean checkLock,
+        LockCheck checkLock,
         CmsResourceFilter filter)
     throws CmsException {
 

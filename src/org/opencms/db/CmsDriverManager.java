@@ -115,6 +115,7 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
+import org.opencms.security.I_CmsPermissionHandler.LockCheck;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsFileUtil;
@@ -2988,7 +2989,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc,
                     currentResource,
                     CmsPermissionSet.ACCESS_WRITE,
-                    true,
+                    LockCheck.yes,
                     CmsResourceFilter.ALL))) {
 
                 // no write access to sibling - must keep ACE (see below)
@@ -10977,7 +10978,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 currentResource,
                 CmsPermissionSet.ACCESS_READ,
-                true,
+                LockCheck.yes,
                 filter).isAllowed()) {
                 // only return resources where permission was granted
                 result.add(currentResource);

@@ -73,6 +73,7 @@ public final class AllTests {
         suite.addTest(TestHistory.suite());
         suite.addTest(TestLinkValidation.suite());
         suite.addTest(TestLock.suite());
+        suite.addTest(TestShallowLocks.suite());
         suite.addTest(TestMoveRename.suite());
         suite.addTest(TestMoveRename2.suite());
         suite.addTest(TestMoveRename3.suite());
