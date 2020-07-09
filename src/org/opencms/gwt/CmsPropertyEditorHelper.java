@@ -274,7 +274,13 @@ public class CmsPropertyEditorHelper {
             structureId = m_overrideStructureId;
         }
         CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsLockActionRecord actionRecord = CmsLockUtil.ensureLock(cms, resource);
+        boolean shallow = true;
+        for (CmsPropertyModification propMode : changes.getChanges()) {
+            if (propMode.isFileNameProperty()) {
+                shallow = false;
+            }
+        }
+        CmsLockActionRecord actionRecord = CmsLockUtil.ensureLock(cms, resource, shallow);
         try {
             Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(resource, false));
             // determine if the title property should be changed in case of a 'NavText' change

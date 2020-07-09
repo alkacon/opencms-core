@@ -62,29 +62,27 @@ public class CmsPropertiesDialogAction extends A_CmsWorkplaceAction implements I
      */
     public void executeAction(final I_CmsDialogContext context) {
 
-        if (!hasBlockingLocks(context)) {
-            try {
-                CmsPropertyDialogExtension dialogExtension = new CmsPropertyDialogExtension(
-                    A_CmsUI.get(),
-                    new I_CmsUpdateListener<String>() {
+        try {
+            CmsPropertyDialogExtension dialogExtension = new CmsPropertyDialogExtension(
+                A_CmsUI.get(),
+                new I_CmsUpdateListener<String>() {
 
-                        public void onUpdate(List<String> updatedItems) {
+                    public void onUpdate(List<String> updatedItems) {
 
-                            List<CmsUUID> updatedIds = Lists.newArrayList();
-                            for (String item : updatedItems) {
-                                updatedIds.add(new CmsUUID(item));
+                        List<CmsUUID> updatedIds = Lists.newArrayList();
+                        for (String item : updatedItems) {
+                            updatedIds.add(new CmsUUID(item));
 
-                            }
-                            context.finish(updatedIds);
                         }
-                    });
-                dialogExtension.editProperties(
-                    context.getResources().get(0).getStructureId(),
-                    context.getAllStructureIdsInView(),
-                    false);
-            } catch (Exception e) {
-                context.error(e);
-            }
+                        context.finish(updatedIds);
+                    }
+                });
+            dialogExtension.editProperties(
+                context.getResources().get(0).getStructureId(),
+                context.getAllStructureIdsInView(),
+                false);
+        } catch (Exception e) {
+            context.error(e);
         }
     }
 

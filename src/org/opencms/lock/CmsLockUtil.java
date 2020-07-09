@@ -183,6 +183,7 @@ public final class CmsLockUtil {
      * Hidden constructor.
      */
     private CmsLockUtil() {
+
         // Hide constructor for util class
     }
 
@@ -197,18 +198,40 @@ public final class CmsLockUtil {
      */
     public static CmsLockActionRecord ensureLock(CmsObject cms, CmsResource resource) throws CmsException {
 
+        return ensureLock(cms, resource, false);
+    }
+
+    /**
+     * Static helper method to lock a resource.<p>
+     *
+     * @param cms the CMS context to use
+     * @param resource the resource to lock
+     * @return the action that was taken
+     * @param shallow true if we only need a shallow lock
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsLockActionRecord ensureLock(CmsObject cms, CmsResource resource, boolean shallow)
+    throws CmsException {
+
         LockChange change = LockChange.unchanged;
-        List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
-        if ((blockingResources != null) && !blockingResources.isEmpty()) {
-            throw new CmsException(
-                Messages.get().container(
-                    Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
-                    cms.getSitePath(resource)));
+        if (!shallow) {
+            List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
+            if ((blockingResources != null) && !blockingResources.isEmpty()) {
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
+                        cms.getSitePath(resource)));
+            }
         }
         CmsUser user = cms.getRequestContext().getCurrentUser();
         CmsLock lock = cms.getLock(resource);
         if (!lock.isOwnedBy(user)) {
-            cms.lockResourceTemporary(resource);
+            if (shallow) {
+                cms.lockResourceShallow(resource);
+            } else {
+                cms.lockResourceTemporary(resource);
+            }
             change = LockChange.locked;
             lock = cms.getLock(resource);
         } else if (!lock.isOwnedInProjectBy(user, cms.getRequestContext().getCurrentProject())) {
