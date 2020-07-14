@@ -35,7 +35,6 @@ import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -64,6 +63,7 @@ public class CmsLocaleComparePropertyHandler implements I_CmsPropertyEditorHandl
      * @param data the property data loaded from the server
      */
     public CmsLocaleComparePropertyHandler(CmsLocaleComparePropertyData data) {
+
         m_data = data;
     }
 
@@ -199,7 +199,6 @@ public class CmsLocaleComparePropertyHandler implements I_CmsPropertyEditorHandl
             protected void onResponse(Void result) {
 
                 stop(false);
-                CmsDebugLog.consoleLog("Saved");
                 CmsJsUtil.callNamedFunctionWithString(CmsGwtConstants.CALLBACK_HANDLE_CHANGED_PROPERTIES, "" + id);
 
             }

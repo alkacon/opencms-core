@@ -744,6 +744,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             result.setOwnProperties(clientProps);
             result.setDefaultFileProperties(clientDefaultFileProps);
+            List<CmsResource> blockingLocked = cms.getBlockingLockedResources(resource);
 
             CmsResource parent = cms.readParentFolder(resource.getStructureId());
             List<CmsResource> resourcesInSameFolder = cms.readResources(parent, CmsResourceFilter.ALL, false);
@@ -757,7 +758,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             result.setPath(resource.getRootPath());
             String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(resource.getRootPath()));
             result.setName(name);
-            result.setHasEditableName(!CmsStringUtil.isEmptyOrWhitespaceOnly(name));
+            result.setHasEditableName(!CmsStringUtil.isEmptyOrWhitespaceOnly(name) && blockingLocked.isEmpty());
             return result;
         } catch (Exception e) {
             error(e);
@@ -1084,7 +1085,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsObject cms = getCmsObject();
             CmsResource ownRes = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsResource defaultFileRes = cms.readDefaultFile("" + id);
-            try (AutoCloseable c = CmsLockUtil.withLockedResources(cms, ownRes)) {
+            boolean shallow = !editedName;
+            try (AutoCloseable c = CmsLockUtil.withLockedResources(cms, shallow, ownRes, defaultFileRes)) {
                 updateProperties(cms, ownRes, defaultFileRes, propertyChanges);
                 if (editedName) {
                     String parent = CmsResource.getParentFolder(ownRes.getRootPath());

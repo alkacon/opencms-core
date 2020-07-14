@@ -266,12 +266,14 @@ public final class CmsLockUtil {
      * when its close() method is called.
      *
      * @param cms the CMS context
+     * @param shallow true if we only want shallow locks
      * @param resources the resources to lock
      *
      * @return the Closeable used to unlock the resources
      * @throws Exception if something goes wrong
      */
-    public static AutoCloseable withLockedResources(final CmsObject cms, CmsResource... resources) throws Exception {
+    public static AutoCloseable withLockedResources(final CmsObject cms, boolean shallow, CmsResource... resources)
+    throws Exception {
 
         final Map<CmsResource, CmsLockActionRecord> lockMap = Maps.newHashMap();
         Closeable result = new Closeable() {
@@ -300,7 +302,7 @@ public final class CmsLockUtil {
         };
         try {
             for (CmsResource resource : resources) {
-                CmsLockActionRecord record = ensureLock(cms, resource);
+                CmsLockActionRecord record = ensureLock(cms, resource, shallow);
                 lockMap.put(resource, record);
             }
         } catch (CmsException e) {
@@ -308,6 +310,24 @@ public final class CmsLockUtil {
             throw e;
         }
         return result;
+    }
+
+    /**
+     * Utility method for locking and unlocking a set of resources conveniently with the try-with syntax
+     * from Java 1.7.<p>
+     *
+     * This method locks a set of resources and returns a Closeable instance that will unlock the locked resources
+     * when its close() method is called.
+     *
+     * @param cms the CMS context
+     * @param resources the resources to lock
+     *
+     * @return the Closeable used to unlock the resources
+     * @throws Exception if something goes wrong
+     */
+    public static AutoCloseable withLockedResources(final CmsObject cms, CmsResource... resources) throws Exception {
+
+        return withLockedResources(cms, false, resources);
     }
 
 }
