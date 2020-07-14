@@ -162,10 +162,12 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                         editor.initializeWidgets(dialog);
                         dialog.centerHorizontally(50);
                         dialog.catchNotifications();
-                        String noEditReason = controller.getNoEditReason(entry);
+                        String noEditReason = controller.getNoEditReason(entry, false);
                         if (noEditReason != null) {
-                            editor.disableInput(noEditReason);
+                            editor.disableInput(noEditReason, false);
                             dialog.getOkButton().disable(noEditReason);
+                        } else if (entry.hasBlockingLockedChildren()) {
+                            editor.disableInput(null, true);
                         }
 
                     }

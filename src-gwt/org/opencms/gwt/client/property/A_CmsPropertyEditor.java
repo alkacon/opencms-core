@@ -74,6 +74,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
     /** The reason to disable the form input fields. */
     protected String m_disabledReason;
 
+    /** True if only the name edit field is disabled. */
+    protected boolean m_nameOnlyDisabled;
+
     /** The form containing the fields. */
     protected CmsForm m_form;
 
@@ -88,6 +91,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /** The model for the URL name field. */
     protected CmsDefaultStringModel m_urlNameModel;
+
+    /** True if the 'disabled' notification has already been sent. */
+    private boolean m_disabledNotificationSent;
 
     /**
      * Creates a new sitemap entry editor.<p>
@@ -157,15 +163,22 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      * Disables all input to the form.<p>
      *
      * @param disabledReason the reason to display to the user
+     * @param nameOnlyDisabled true if only the name editing field is disabled
      */
-    public void disableInput(String disabledReason) {
+    public void disableInput(String disabledReason, boolean nameOnlyDisabled) {
 
         m_disabledReason = disabledReason;
-        for (I_CmsFormField field : m_form.getFields().values()) {
-            field.getWidget().setEnabled(false);
+        m_nameOnlyDisabled = nameOnlyDisabled;
+        if (!nameOnlyDisabled) {
+            for (I_CmsFormField field : m_form.getFields().values()) {
+                field.getWidget().setEnabled(false);
+            }
         }
         m_urlNameField.getWidget().setEnabled(false);
-        CmsNotification.get().send(Type.WARNING, m_disabledReason);
+        if (!m_disabledNotificationSent && (m_disabledReason != null)) {
+            CmsNotification.get().send(Type.WARNING, m_disabledReason);
+            m_disabledNotificationSent = true;
+        }
     }
 
     /**

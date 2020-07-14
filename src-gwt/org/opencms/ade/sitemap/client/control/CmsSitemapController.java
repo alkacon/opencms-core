@@ -257,7 +257,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                         dialog.centerHorizontally(50);
                         dialog.catchNotifications();
                         if (noEditReason != null) {
-                            editor.disableInput(noEditReason);
+                            editor.disableInput(noEditReason, false);
                             dialog.getOkButton().disable(noEditReason);
                         }
 
@@ -1248,6 +1248,19 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public String getNoEditReason(CmsClientSitemapEntry entry) {
 
+        return getNoEditReason(entry, true);
+    }
+
+    /**
+     * Returns the no edit reason or <code>null</code> if editing is allowed.<p>
+     *
+     * @param entry the entry to get the no edit reason for
+     * @param checkChildLocks true if locks of children should be checked
+     *
+     * @return the no edit reason
+     */
+    public String getNoEditReason(CmsClientSitemapEntry entry, boolean checkChildLocks) {
+
         String reason = entry.getNoEditReason();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(reason)) {
             reason = null;
@@ -1255,8 +1268,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 && (entry.getLock().getLockOwner() != null)
                 && !entry.getLock().isOwnedByUser()) {
                 reason = Messages.get().key(Messages.GUI_DISABLED_LOCKED_BY_1, entry.getLock().getLockOwner());
+
             }
-            if (entry.hasBlockingLockedChildren()) {
+            if (checkChildLocks && entry.hasBlockingLockedChildren()) {
                 reason = Messages.get().key(Messages.GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0);
             }
         }

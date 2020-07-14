@@ -2878,12 +2878,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             if (hasOwnChanges(change)) {
                 ownRes = cms.readResource(change.getEntryId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                ensureLock(ownRes);
+                boolean shallow = !change.hasChangedName() && !change.hasChangedPosition() && !change.hasNewParent();
+
+                ensureLock(ownRes, shallow);
             }
 
             if (hasDefaultFileChanges(change)) {
                 defaultFileRes = cms.readResource(change.getDefaultFileId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                ensureLock(defaultFileRes);
+                ensureLock(defaultFileRes, false);
             }
 
             if ((ownRes != null) && ownRes.isFolder()) {

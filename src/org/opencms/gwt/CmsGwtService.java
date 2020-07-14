@@ -328,7 +328,24 @@ public class CmsGwtService extends RemoteServiceServlet {
     protected CmsLockActionRecord ensureLock(CmsResource resource) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        return CmsLockUtil.ensureLock(cms, resource);
+        return CmsLockUtil.ensureLock(cms, resource, false);
+    }
+
+    /**
+     * Locks the given resource with a temporary, if not already locked by the current user.
+     * Will throw an exception if the resource could not be locked for the current user.<p>
+     *
+     * @param resource the resource to lock
+     * @param shallow true if we only want a shallow lock
+     *
+     * @return the assigned lock
+     *
+     * @throws CmsException if the resource could not be locked
+     */
+    protected CmsLockActionRecord ensureLock(CmsResource resource, boolean shallow) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        return CmsLockUtil.ensureLock(cms, resource, shallow);
     }
 
     /**

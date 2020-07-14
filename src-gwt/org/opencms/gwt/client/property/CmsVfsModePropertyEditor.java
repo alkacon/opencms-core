@@ -280,8 +280,11 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             default:
                 break;
         }
-        if (m_disabledReason != null) {
-            disableInput(m_disabledReason);
+        if ((m_disabledReason != null) && !m_nameOnlyDisabled) {
+            disableInput(m_disabledReason, m_nameOnlyDisabled);
+        } else if (m_nameOnlyDisabled) {
+            disableInput(m_disabledReason, true);
+            m_form.validateAllFields();
         } else {
             m_form.validateAllFields();
         }

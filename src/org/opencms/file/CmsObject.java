@@ -1363,7 +1363,7 @@ public final class CmsObject {
     public List<CmsResource> getBlockingLockedResources(CmsResource resource) throws CmsException {
 
         if (resource.isFolder()) {
-            CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
+            CmsLockFilter blockingFilter = CmsLockFilter.FILTER_NON_INHERITED;
             blockingFilter = blockingFilter.filterNotLockableByUser(getRequestContext().getCurrentUser());
             return getLockedResources(resource, blockingFilter);
         }
@@ -2142,6 +2142,14 @@ public final class CmsObject {
         lockResource(resourcename, CmsLockType.EXCLUSIVE);
     }
 
+    /**
+     * Locks the given resource with a shallow lock that is not inherited on subresources.
+     *
+     * <p>Shallow locks are non-persistent, like temporary locks.
+     *
+     * @param resource the resource to lock
+     * @throws CmsException if something goes wrong
+     */
     public void lockResourceShallow(CmsResource resource) throws CmsException {
 
         getResourceType(resource).lockResource(this, m_securityManager, resource, CmsLockType.SHALLOW);

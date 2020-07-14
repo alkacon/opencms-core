@@ -72,6 +72,29 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    public void testGetBlockingResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsResource file = makeTestFile(cms, "/testGetBlockingResources/folder/file.txt");
+        cms.lockResourceShallow(cms.readResource("/testGetBlockingResources"));
+        CmsObject otherCms = OpenCms.initCmsObject(cms);
+        setupUsers();
+        otherCms.loginUser("Beta", "beta");
+        otherCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        List<CmsResource> b1 = otherCms.getBlockingLockedResources("/testGetBlockingResources");
+        List<CmsResource> blocking = otherCms.getBlockingLockedResources("/testGetBlockingResources/folder");
+        assertEquals(
+            "Folder with shallow lock should not appear as a blocking resource for its children",
+            0,
+            blocking.size());
+
+    }
+
+    /**
+     * Test case.
+     *
+     * @throws Exception
+     */
     public void testLockType() throws Exception {
 
         CmsObject cms = getCmsObject();
