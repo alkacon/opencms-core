@@ -150,9 +150,7 @@ public interface I_CmsPermissionHandler {
      * @param dbc the current database context
      * @param resource the resource on which permissions are required
      * @param requiredPermissions the set of permissions required for the operation
-     * @param checkLock if true, a lock for the current user is required for
-     *      all write operations, if false it's ok to write as long as the resource
-     *      is not locked by another user
+     * @param checkLock the type of lock check to perform for write operations
      * @param filter the resource filter to use
      *
      * @return <code>{@link #PERM_ALLOWED}</code> if the user has sufficient permissions on the resource
