@@ -140,9 +140,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -154,6 +151,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -178,7 +178,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
             if ((lockType == CmsLockType.EXCLUSIVE)
                 || (lockType == CmsLockType.INHERITED)
-                || (lockType == CmsLockType.TEMPORARY)) {
+                || (lockType == CmsLockType.TEMPORARY)
+                || (lockType == CmsLockType.SHALLOW)) {
                 icon = LockIcon.CLOSED;
             } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
                 icon = LockIcon.SHARED_CLOSED;
@@ -186,7 +187,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } else {
             if ((lockType == CmsLockType.EXCLUSIVE)
                 || (lockType == CmsLockType.INHERITED)
-                || (lockType == CmsLockType.TEMPORARY)) {
+                || (lockType == CmsLockType.TEMPORARY)
+                || (lockType == CmsLockType.SHALLOW)) {
                 icon = LockIcon.OPEN;
             } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
                 icon = LockIcon.SHARED_OPEN;
