@@ -73,9 +73,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0 = "GUI_CACHE_ADMIN_TOOL_NAME_SHORT_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_0 = "GUI_CACHE_CLEAN_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_CLEAN_CONFIRM_0 = "GUI_CACHE_CLEAN_CONFIRM_0";
 
@@ -966,6 +966,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0";
     /** Message constant for key in the resource bundle. */
@@ -1080,7 +1081,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_FILEPATH_0 = "GUI_LOGFILE_FILEPATH_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_HELP_0 = "GUI_LOGFILE_FILEPATH_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEVIEW_0 = "GUI_LOGFILE_FILEVIEW_0";
 
@@ -1242,6 +1242,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_LAST_ACTIVITY_ONE_MINUTE_0 = "GUI_MESSAGES_LAST_ACTIVITY_ONE_MINUTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGES_LOGINMESSAGE_DELETE_0 = "GUI_MESSAGES_LOGINMESSAGE_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MESSAGES_LOGINMESSAGE_ENABLED_0 = "GUI_MESSAGES_LOGINMESSAGE_ENABLED_0";
