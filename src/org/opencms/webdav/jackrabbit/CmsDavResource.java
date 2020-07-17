@@ -354,6 +354,18 @@ public class CmsDavResource implements DavResource {
                     m_locator.getWorkspacePath(),
                     childPath);
                 return new CmsDavResource(childLocator, m_factory, m_session, m_lockManager);
+            }).filter(child -> {
+                boolean exists = child.exists();
+                if (!exists) {
+                    // one case where this happens is when the child resource has a name that would be
+                    // modified by the configured file translation rules.
+                    LOG.warn(
+                        "Invalid child resource: "
+                            + child.getLocator().getPrefix()
+                            + ":"
+                            + child.getLocator().getResourcePath());
+                }
+                return exists;
             }).collect(Collectors.toList());
             return new DavResourceIteratorImpl(childDavRes);
         } catch (Exception e) {
