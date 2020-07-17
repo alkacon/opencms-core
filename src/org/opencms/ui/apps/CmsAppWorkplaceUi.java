@@ -46,7 +46,6 @@ import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
 import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsExpiringValue;
-import org.opencms.util.CmsHtmlStripper;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -57,8 +56,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
-
-import org.htmlparser.util.ParserException;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
@@ -234,67 +231,53 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         Set<CmsBroadcast> repeatedBroadcasts = new HashSet<CmsBroadcast>();
         CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
-        CmsHtmlStripper stripper = new CmsHtmlStripper();
-        stripper.addPreserveTags("font,b,span,i,strong,br,n", ',');
         if (info == null) {
             return; //Session was killed..
         }
         Buffer queue = info.getBroadcastQueue();
 
-        try {
-            if (!queue.isEmpty()) {
-                StringBuffer broadcasts = new StringBuffer();
-                String picPath = "";
-                while (!queue.isEmpty()) {
-                    CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
-                    if ((broadcastMessage.getLastDisplay()
-                        + CmsBroadcast.DISPLAY_AGAIN_TIME) < System.currentTimeMillis()) {
-                        CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
+        if (!queue.isEmpty()) {
+            StringBuffer broadcasts = new StringBuffer();
+            String picPath = "";
+            while (!queue.isEmpty()) {
+                CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
+                if ((broadcastMessage.getLastDisplay()
+                    + CmsBroadcast.DISPLAY_AGAIN_TIME) < System.currentTimeMillis()) {
+                    CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
 
-                        String from = broadcastMessage.getUser() != null
-                        ? broadcastMessage.getUser().getName()
-                        : CmsVaadinUtils.getMessageText(
-                            org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
-                        if (broadcastMessage.getUser() != null) {
-                            picPath = helper.getSmallIconPath(A_CmsUI.getCmsObject(), broadcastMessage.getUser());
-                        }
-                        String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
-                            broadcastMessage.getSendTime());
-                        String content = broadcastMessage.getMessage();
-                        content = content.replaceAll("\\n", "<br />").replaceAll("<div>", "<br><div>");
-                        broadcasts.append("<p>" + getImgHTML(picPath) + "<em>").append(date).append("</em><br />");
-                        broadcasts.append(
-                            CmsVaadinUtils.getMessageText(
-                                org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
-                                    from).append("</b>:</p><p>");
-                        broadcasts.append(stripper.stripHtml(content)).append("<br/></p>");
-                        if (broadcastMessage.isRepeat()) {
-                            repeatedBroadcasts.add(
-                                new CmsBroadcast(
-                                    broadcastMessage.getUser(),
-                                    broadcastMessage.getMessage(),
-                                    broadcastMessage.getSendTime(),
-                                    System.currentTimeMillis(),
-                                    true));
-                        }
-                    } else {
-                        repeatedBroadcasts.add(broadcastMessage);
+                    String from = broadcastMessage.getUser() != null
+                    ? broadcastMessage.getUser().getName()
+                    : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
+                    if (broadcastMessage.getUser() != null) {
+                        picPath = helper.getSmallIconPath(A_CmsUI.getCmsObject(), broadcastMessage.getUser());
                     }
-                }
-                if (broadcasts.length() > 0) {
-                    Notification notification = new Notification(
-                        CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
-                        broadcasts.toString(),
-                        Type.WARNING_MESSAGE,
-                        true);
-                    notification.setDelayMsec(-1);
-                    notification.show(getPage());
+                    String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
+                        broadcastMessage.getSendTime());
+                    String content = broadcastMessage.getMessage();
+                    broadcasts.append("<p>" + getImgHTML(picPath) + "<em>").append(date).append("</em><br />");
+                    broadcasts.append(
+                        CmsVaadinUtils.getMessageText(
+                            org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
+                                from).append("</b>:</p><div class='o-broadcast-message'>");
+                    broadcasts.append(content).append("</div>");
+                    if (broadcastMessage.isRepeat()) {
+                        repeatedBroadcasts.add(broadcastMessage.withLastDisplay(System.currentTimeMillis()));
+                    }
+                } else {
+                    repeatedBroadcasts.add(broadcastMessage);
                 }
             }
-
-        } catch (ParserException e) {
-            //
+            if (broadcasts.length() > 0) {
+                Notification notification = new Notification(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
+                    broadcasts.toString(),
+                    Type.WARNING_MESSAGE,
+                    true);
+                notification.setDelayMsec(-1);
+                notification.show(getPage());
+            }
         }
+
         if (!repeatedBroadcasts.isEmpty()) {
             for (CmsBroadcast broadcast : repeatedBroadcasts) {
                 queue.add(broadcast);

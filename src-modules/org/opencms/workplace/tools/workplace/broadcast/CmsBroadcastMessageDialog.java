@@ -28,6 +28,7 @@
 package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsDisplayWidget;
@@ -85,13 +86,13 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
 
         try {
             if (isForAll()) {
-                OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg());
+                OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg(), ContentMode.html);
             } else {
                 List<String> ids = CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
                 Iterator<String> itIds = ids.iterator();
                 while (itIds.hasNext()) {
                     String id = itIds.next();
-                    OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg(), id);
+                    OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg(), id, ContentMode.html);
                 }
             }
         } catch (Throwable t) {

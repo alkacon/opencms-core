@@ -29,6 +29,7 @@ package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
@@ -113,8 +114,9 @@ public class CmsSendPopupGroupsDialog extends CmsWidgetDialog {
 
         if (getUsers().isEmpty()) {
             setCommitErrors(
-                Collections.singletonList((Throwable)new CmsIllegalStateException(
-                    Messages.get().container(Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
+                Collections.singletonList(
+                    (Throwable)new CmsIllegalStateException(
+                        Messages.get().container(Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
             return;
         }
         try {
@@ -124,7 +126,8 @@ public class CmsSendPopupGroupsDialog extends CmsWidgetDialog {
                 OpenCms.getSessionManager().sendBroadcast(
                     getCms().getRequestContext().getCurrentUser(),
                     m_msgInfo.getMsg(),
-                    user);
+                    user,
+                    ContentMode.html);
             }
         } catch (Throwable t) {
             errors.add(t);

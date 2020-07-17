@@ -67,6 +67,12 @@ public class CmsEditLoginView extends CmsBasicDialog {
     private Button m_cancel;
 
     /**vaadin component.*/
+    private Button m_deleteBefore;
+
+    /**vaadin component.*/
+    private Button m_deleteAfter;
+
+    /**vaadin component.*/
     private CheckBox m_enabledAfter;
 
     /**vaadin component.*/
@@ -162,6 +168,8 @@ public class CmsEditLoginView extends CmsBasicDialog {
             }
 
         });
+        m_deleteBefore.addClickListener(event -> m_messageBefore.clear());
+        m_deleteAfter.addClickListener(event -> m_messageAfter.clear());
     }
 
     /**

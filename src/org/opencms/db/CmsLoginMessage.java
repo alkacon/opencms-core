@@ -28,10 +28,14 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.ui.components.CmsRichTextArea;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.GregorianCalendar;
+
+import org.apache.commons.logging.Log;
 
 /**
  * A message to display when a user logs in to the system.<p>
@@ -39,6 +43,9 @@ import java.util.GregorianCalendar;
  * @since 6.0.0
  */
 public class CmsLoginMessage {
+
+    /** Logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginMessage.class);
 
     /** The default end time (if none has been set). This is December 31, 2039. */
     public static final long DEFAULT_TIME_END = new GregorianCalendar(2039, 11, 31).getTimeInMillis();
@@ -232,7 +239,7 @@ public class CmsLoginMessage {
         if (isEnabled() && CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_MESSAGE_0));
         }
-        m_message = message;
+        m_message = CmsRichTextArea.cleanHtml(message, false);
     }
 
     /**

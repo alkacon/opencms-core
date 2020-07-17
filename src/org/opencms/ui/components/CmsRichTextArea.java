@@ -30,6 +30,11 @@ package org.opencms.ui.components;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
+
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.RichTextArea;
 
@@ -53,6 +58,32 @@ public class CmsRichTextArea extends RichTextArea {
     public CmsRichTextArea() {
 
         addStyleName("o-richtextarea-reduced");
+    }
+
+    /**
+     * Cleans up the given HTML such that only elements which can be normally entered in the widget are left.
+     *
+     * @param html the HTML
+     * @param allowLinks true if anchor elements / links  should be kept
+     *
+     * @return the cleaned up HTML
+     */
+    public static String cleanHtml(String html, boolean allowLinks) {
+
+        if (html == null) {
+            return null;
+        }
+        Whitelist whitelist = new Whitelist();
+        whitelist.addTags("font", "b", "span", "i", "strong", "br", "u", "ul", "ol", "li", "div");
+        whitelist.addAttributes("font", "size", "color", "face");
+        if (allowLinks) {
+            whitelist.addTags("a");
+            whitelist.addAttributes("a", "href");
+        }
+        Cleaner cleaner = new Cleaner(whitelist);
+        Document doc = Jsoup.parseBodyFragment(html);
+        Document cleaned = cleaner.clean(doc);
+        return cleaned.body().html();
     }
 
     /**

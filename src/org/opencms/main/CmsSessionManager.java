@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
@@ -374,9 +375,10 @@ public class CmsSessionManager {
      *
      * @param message the message to broadcast
      */
+    @Deprecated
     public void sendBroadcast(CmsObject cms, String message) {
 
-        sendBroadcast(cms, message, false);
+        sendBroadcast(cms, message, ContentMode.plain);
     }
 
     /**
@@ -387,14 +389,29 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param repeat repeat this message
      */
+    @Deprecated
     public void sendBroadcast(CmsObject cms, String message, boolean repeat) {
+
+        sendBroadcast(cms, message, repeat, ContentMode.plain);
+
+    }
+
+    /**
+     * Sends a broadcast to all sessions of all currently authenticated users.<p>
+     *
+     * @param cms the OpenCms user context of the user sending the broadcast
+     * @param message the message to broadcast
+     * @param repeat repeat this message
+     * @param mode the content mode to use
+     */
+    public void sendBroadcast(CmsObject cms, String message, boolean repeat, ContentMode mode) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             // don't broadcast empty messages
             return;
         }
         // create the broadcast
-        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message, repeat);
+        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message, repeat, mode);
         // send the broadcast to all authenticated sessions
         Iterator<CmsSessionInfo> i = m_sessionStorageProvider.getAll().iterator();
         while (i.hasNext()) {
@@ -408,6 +425,18 @@ public class CmsSessionManager {
     }
 
     /**
+     * Sends a broadcast to all sessions of all currently authenticated users.<p>
+     *
+     * @param cms the OpenCms user context of the user sending the broadcast
+     * @param message the message to broadcast
+     * @param mode the content mode
+     */
+    public void sendBroadcast(CmsObject cms, String message, ContentMode mode) {
+
+        sendBroadcast(cms, message, false, mode);
+    }
+
+    /**
      * Sends a broadcast to the specified user session.<p>
      *
      * @param cms the OpenCms user context of the user sending the broadcast
@@ -415,6 +444,7 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
      */
+    @Deprecated
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
         sendBroadcast(cms, message, sessionId, false);
@@ -430,7 +460,24 @@ public class CmsSessionManager {
      * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
      * @param repeat repeat this message
      */
+    @Deprecated
     public void sendBroadcast(CmsObject cms, String message, String sessionId, boolean repeat) {
+
+        sendBroadcast(cms, message, sessionId, repeat, ContentMode.plain);
+
+    }
+
+    /**
+     * Sends a broadcast to the specified user session.<p>
+     *
+     * @param cms the OpenCms user context of the user sending the broadcast
+     *
+     * @param message the message to broadcast
+     * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
+     * @param repeat repeat this message
+     * @param mode the content mode to use
+     */
+    public void sendBroadcast(CmsObject cms, String message, String sessionId, boolean repeat, ContentMode mode) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             // don't broadcast empty messages
@@ -441,9 +488,22 @@ public class CmsSessionManager {
         if (sessionInfo != null) {
             // double check for concurrent modification
             sessionInfo.getBroadcastQueue().add(
-                new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message, repeat));
+                new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message, repeat, mode));
         }
+    }
 
+    /**
+     * Sends a broadcast to the specified user session.<p>
+     *
+     * @param cms the OpenCms user context of the user sending the broadcast
+     *
+     * @param message the message to broadcast
+     * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
+     * @param mode the content mode to use
+     */
+    public void sendBroadcast(CmsObject cms, String message, String sessionId, ContentMode mode) {
+
+        sendBroadcast(cms, message, sessionId, false, mode);
     }
 
     /**
@@ -457,14 +517,33 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param toUser the target (receiver) of the broadcast
      */
+    @Deprecated
     public void sendBroadcast(CmsUser fromUser, String message, CmsUser toUser) {
+
+        sendBroadcast(fromUser, message, toUser, ContentMode.plain);
+
+    }
+
+    /**
+     * Sends a broadcast to all sessions of a given user.<p>
+     *
+     * The user sending the message may be a real user like
+     * <code>cms.getRequestContext().currentUser()</code> or
+     * <code>null</code> for a system message.<p>
+     *
+     * @param fromUser the user sending the broadcast
+     * @param message the message to broadcast
+     * @param toUser the target (receiver) of the broadcast
+     * @param mode the content mode to use
+     */
+    public void sendBroadcast(CmsUser fromUser, String message, CmsUser toUser, CmsBroadcast.ContentMode mode) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             // don't broadcast empty messages
             return;
         }
         // create the broadcast
-        CmsBroadcast broadcast = new CmsBroadcast(fromUser, message);
+        CmsBroadcast broadcast = new CmsBroadcast(fromUser, message, mode);
         List<CmsSessionInfo> userSessions = getSessionInfos(toUser.getId());
         Iterator<CmsSessionInfo> i = userSessions.iterator();
         // send the broadcast to all sessions of the selected user
@@ -475,6 +554,7 @@ public class CmsSessionManager {
                 sessionInfo.getBroadcastQueue().add(broadcast);
             }
         }
+
     }
 
     /**

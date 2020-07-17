@@ -29,17 +29,19 @@ package org.opencms.ui.apps.sessions;
 
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsBroadcast;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.sessions.CmsSessionsApp.MessageValidator;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsRichTextArea;
 import org.opencms.ui.components.CmsRichTextAreaV7;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,7 +52,8 @@ import com.vaadin.ui.CheckBox;
  */
 public class CmsSendBroadcastDialog extends CmsBasicDialog {
 
-    private static final Map<CmsUser, CmsBroadcast> USER_BROADCAST = new HashMap<CmsUser, CmsBroadcast>();
+    /** Map for storing the last message sent by a user. */
+    private static final Map<CmsUser, CmsBroadcast> USER_BROADCAST = new ConcurrentHashMap<CmsUser, CmsBroadcast>();
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -7642289972554010162L;
@@ -64,8 +67,10 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     /**ok button.*/
     private Button m_ok;
 
+    /** Button for clearing broadcasts. */
     private Button m_resetBroadcasts;
 
+    /** Check box for setting a message to repeating. */
     private CheckBox m_repeat;
 
     /**
@@ -139,24 +144,28 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
      */
     protected void sendBroadcast(Set<String> sessionIds) {
 
+        String cleanedHtml = CmsRichTextArea.cleanHtml(m_message.getValue(), false);
         if (sessionIds == null) {
             OpenCms.getSessionManager().sendBroadcast(
                 A_CmsUI.getCmsObject(),
-                m_message.getValue(),
-                m_repeat.getValue().booleanValue());
+                cleanedHtml,
+                m_repeat.getValue().booleanValue(),
+                ContentMode.html);
             USER_BROADCAST.put(
                 A_CmsUI.getCmsObject().getRequestContext().getCurrentUser(),
                 new CmsBroadcast(
                     A_CmsUI.getCmsObject().getRequestContext().getCurrentUser(),
-                    m_message.getValue(),
-                    m_repeat.getValue().booleanValue()));
+                    cleanedHtml,
+                    m_repeat.getValue().booleanValue(),
+                    ContentMode.html));
         } else {
             for (String id : sessionIds) {
                 OpenCms.getSessionManager().sendBroadcast(
                     A_CmsUI.getCmsObject(),
-                    m_message.getValue(),
+                    cleanedHtml,
                     id,
-                    m_repeat.getValue().booleanValue());
+                    m_repeat.getValue().booleanValue(),
+                    ContentMode.html);
             }
         }
     }

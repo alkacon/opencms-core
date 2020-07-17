@@ -38,6 +38,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspLoginBean;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -440,19 +441,23 @@ public class CmsLoginController {
         CmsMessageContainer message = CmsLoginHelper.validateUserAndPasswordNotEmpty(user, password);
         CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
         String storedMessage = null;
+        ContentMode messageMode = ContentMode.html;
         if ((loginMessage != null) && !loginMessage.isLoginCurrentlyForbidden() && loginMessage.isActive()) {
             storedMessage = loginMessage.getMessage();
             // If login is forbidden, we will get an error message anyway, so we don't need to store the message here
         }
         String ou = m_ui.getOrgUnit();
         if (CmsLoginOuSelector.OU_NONE.equals(ou)) {
-            displayError(CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_NO_OU_SELECTED_WARNING_0) + "\n\n", false);
+            displayError(
+                CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_NO_OU_SELECTED_WARNING_0) + "\n\n",
+                false,
+                false);
             return;
         }
         if (message != null) {
             String errorMessage = message.key(m_params.getLocale());
             //  m_ui.displayError(errorMessage);
-            displayError(errorMessage, true);
+            displayError(errorMessage, true, false);
             return;
         }
 
@@ -474,7 +479,7 @@ public class CmsLoginController {
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
-                    displayError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()), false);
+                    displayError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()), false, false);
                     return;
                 }
             }
@@ -532,6 +537,7 @@ public class CmsLoginController {
                         org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_WITHOUT_TIME_1,
                         loginMessage.getMessage(),
                         new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+                    messageMode = ContentMode.html;
 
                 } else {
                     // we are an administrator
@@ -539,6 +545,7 @@ public class CmsLoginController {
                         org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
                         loginMessage.getMessage(),
                         new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+                    messageMode = ContentMode.html;
                 }
             }
 
@@ -546,7 +553,8 @@ public class CmsLoginController {
                 OpenCms.getSessionManager().sendBroadcast(
                     null,
                     storedMessage,
-                    currentCms.getRequestContext().getCurrentUser());
+                    currentCms.getRequestContext().getCurrentUser(),
+                    messageMode);
             }
 
             CmsLoginHelper.setCookieData(
@@ -636,7 +644,7 @@ public class CmsLoginController {
                             if (loginMessage2 != null) {
                                 message = org.opencms.workplace.Messages.get().container(
                                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
-                                    loginMessage2.getMessage());
+                                    loginMessage2.getMessage().replace("\n", ""));
                             }
                         }
             }
@@ -658,7 +666,7 @@ public class CmsLoginController {
             } else {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            displayError(message.key(m_params.getLocale()), false);
+            displayError(message.key(m_params.getLocale()), false, false);
             return;
         }
     }
@@ -723,18 +731,6 @@ public class CmsLoginController {
     CmsObject getCms() {
 
         return m_adminCms;
-    }
-
-    /**
-     * Displays the given error message.<p>
-     *
-     * @param message the message
-     * @param showForgotPassword in case the forgot password link should be shown
-     */
-    private void displayError(String message, boolean showForgotPassword) {
-
-        displayError(message, showForgotPassword, false);
-
     }
 
     /**

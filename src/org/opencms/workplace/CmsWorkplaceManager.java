@@ -54,6 +54,7 @@ import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -688,7 +689,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                         null,
                         Messages.get().getBundle(getWorkplaceLocale(cms)).key(
                             Messages.ERR_WORKPLACE_SERVER_CHECK_FAILED_0),
-                        user);
+                        user,
+                        ContentMode.plain);
 
                 }
 
@@ -1067,8 +1069,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 }
             } else if (CmsResourceTypeFolder.getStaticTypeName().equals(explorerType.getName())
                 && "view_folders|view_basic".contains(viewName)) {
-                result.add(explorerType);
-            }
+                    result.add(explorerType);
+                }
 
         }
         return result;

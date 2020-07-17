@@ -38,6 +38,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLockType;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
@@ -753,7 +754,7 @@ public final class CmsPublishEngine {
             CmsUserSettings settings = new CmsUserSettings(toUser);
             if (settings.getShowPublishNotification() || hasErrors) {
                 // only show message if publish notification is enabled or the message shows an error
-                OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
+                OpenCms.getSessionManager().sendBroadcast(null, message, toUser, ContentMode.plain);
             }
         } catch (CmsException e) {
             dbc.rollback();

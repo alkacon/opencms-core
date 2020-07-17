@@ -1552,6 +1552,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String messageText();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String messageTime();
 
         /**

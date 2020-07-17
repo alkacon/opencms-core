@@ -242,18 +242,22 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             I_CmsDialogContext dcontext = new I_CmsDialogContextWithAdeContext() {
 
                 public void error(Throwable error) {
+
                     // not supported
                 }
 
                 public void finish(CmsProject project, String siteRoot) {
+
                     // not supported
                 }
 
                 public void finish(Collection<CmsUUID> result) {
+
                     // not supported
                 }
 
                 public void focus(CmsUUID id) {
+
                     // not supported
                 }
 
@@ -300,30 +304,37 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 }
 
                 public void navigateTo(String appId) {
+
                     // not supported
                 }
 
                 public void onViewChange() {
+
                     // not supported
                 }
 
                 public void reload() {
+
                     // not supported
                 }
 
                 public void setWindow(Window window) {
+
                     // not supported
                 }
 
                 public void start(String title, Component dialog) {
+
                     // not supported
                 }
 
                 public void start(String title, Component dialog, DialogWidth width) {
+
                     // not supported
                 }
 
                 public void updateUserInfo() {
+
                     // not supported
                 }
             };
@@ -741,13 +752,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                         broadcastMessage.getMessage());
                     result.add(message);
                     if (broadcastMessage.isRepeat()) {
-                        repeatedBroadcasts.add(
-                            new CmsBroadcast(
-                                broadcastMessage.getUser(),
-                                broadcastMessage.getMessage(),
-                                broadcastMessage.getSendTime(),
-                                System.currentTimeMillis(),
-                                true));
+                        repeatedBroadcasts.add(broadcastMessage.withLastDisplay(System.currentTimeMillis()));
                     }
                 } else {
                     repeatedBroadcasts.add(broadcastMessage);

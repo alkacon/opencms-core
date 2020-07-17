@@ -112,11 +112,11 @@ public class CmsBroadcastTimer {
         }
         result.append("<em>" + message.getTime() + "</em><br/>");
         result.append(Messages.get().key(Messages.GUI_BROADCAST_SEND_BY_1, message.getUser()));
-        result.append("</p>").append("<p>\n");
-        result.append(
-            message.getMessage().replaceAll("\\n", "<br/>").replaceAll("<div>", "<br>").replaceAll("</div>", ""));
+        String contentClass = I_CmsLayoutBundle.INSTANCE.notificationCss().messageText();
+        result.append("</p>").append("<div class='" + contentClass + "'>");
+        result.append(message.getMessage());
 
-        result.append("\n</p>");
+        result.append("\n</div>");
         return result.toString();
     }
 

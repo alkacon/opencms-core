@@ -52,6 +52,7 @@ import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -487,7 +488,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1468,7 +1469,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void sendBroadcast(String message) {
 
-        OpenCms.getSessionManager().sendBroadcast(m_cms, message);
+        OpenCms.getSessionManager().sendBroadcast(m_cms, message, ContentMode.plain);
     }
 
     /**
