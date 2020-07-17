@@ -1776,7 +1776,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
             getSessionCache().setCacheXmlContent(file.getStructureId(), content);
         }
-        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, Locale.ENGLISH);
+        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), file, Locale.ENGLISH);
         visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH);
         CmsDynamicCategoryFieldList dynCatFields = visitor.getOptionalDynamicCategoryFields();
         dynCatFields.ensureFields(getCmsObject(), content);
