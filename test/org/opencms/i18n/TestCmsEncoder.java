@@ -171,6 +171,15 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     }
 
     /**
+     * Tests XML escaping.
+     */
+    public void testEscapeXml() {
+
+        String input = "<>&'\"";
+        assertEquals("&lt;&gt;&amp;&apos;&quot;", CmsEncoder.escapeXml(input));
+    }
+
+    /**
      * @see CmsEncoder#lookupEncoding(String, String)
      */
     public void testLookupEncoding() {

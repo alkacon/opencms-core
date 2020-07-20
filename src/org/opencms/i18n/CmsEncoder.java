@@ -810,6 +810,9 @@ public final class CmsEncoder {
                 case '"':
                     result.append("&quot;");
                     break;
+                case '\'':
+                    result.append("&apos;");
+                    break;
                 default:
                     result.append(ch);
             }
