@@ -1277,7 +1277,13 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         int bubbleHeight = m_helpBubble.getOffsetHeight();
         m_helpBubble.getStyle().clearDisplay();
 
-        Element widgetElement = m_widget.asWidget().getElement();
+        Element widgetElement;
+        if (m_widget != null) {
+            widgetElement = m_widget.asWidget().getElement();
+        } else {
+            return true;
+        }
+
         // Calculate top position for the popup
         int top = widgetElement.getAbsoluteTop();
 
@@ -1292,9 +1298,9 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
             displayAbove = false;
         } else if (!displayAbove
             && ((distanceToWindowBottom < bubbleHeight) && (distanceFromWindowTop > distanceToWindowBottom))) {
-            // in case there is too little space below, and there is more above, change direction
-            displayAbove = true;
-        }
+                // in case there is too little space below, and there is more above, change direction
+                displayAbove = true;
+            }
         return displayAbove;
     }
 }
