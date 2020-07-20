@@ -29,6 +29,8 @@ package org.opencms.util;
 
 import org.opencms.main.CmsLog;
 
+import java.util.Random;
+
 import org.apache.commons.logging.Log;
 import org.apache.oro.text.PatternCache;
 import org.apache.oro.text.PatternCacheFIFO;
@@ -96,18 +98,17 @@ public class CmsResourceTranslator {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTranslator.class);
 
+    /** Keep an array of Perl5Util to randomly select for use, because using just a single one causes contention problems under load (since they're synchronized). */
+    private Perl5Util[] m_perl5Utils = new Perl5Util[32];
+
     /** Flag to indicate if one or more matchings should be tried. */
     private boolean m_continueMatching;
 
-    /**
-     * ThreadLocal for Perl5 utility class.
-     *
-     *<p>We use a ThreadLocal to give each thread its own Perl5Util instance, to avoid problems with threads blocking each other.
-     **/
-    private ThreadLocal<Perl5Util> m_perlUtil = new ThreadLocal<>();
-
     /** Internal array containing the translations from opencms.properties. */
     private String[] m_translations;
+
+    /** Random number generator for randomly choosing Perl5Utils. */
+    private Random m_random = new Random(42l);
 
     /**
      * Constructor for the CmsResourceTranslator.
@@ -122,7 +123,9 @@ public class CmsResourceTranslator {
         super();
         m_translations = translations;
         m_continueMatching = continueMatching;
-        buildPatternCache(); // just doing this to detect errors, throw the result away
+        for (int i = 0; i < m_perl5Utils.length; i++) {
+            m_perl5Utils[i] = new Perl5Util(buildPatternCache());
+        }
         if (LOG.isInfoEnabled()) {
             LOG.info(
                 Messages.get().getBundle().key(
@@ -230,9 +233,7 @@ public class CmsResourceTranslator {
      */
     private Perl5Util getPerl5Util() {
 
-        if (m_perlUtil.get() == null) {
-            m_perlUtil.set(new Perl5Util(buildPatternCache()));
-        }
-        return m_perlUtil.get();
+        int index = m_random.nextInt(m_perl5Utils.length);
+        return m_perl5Utils[index];
     }
 }
