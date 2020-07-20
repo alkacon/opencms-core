@@ -79,7 +79,6 @@ public class CmsFormatterSelectWidget extends Composite implements I_CmsEditWidg
      */
     public CmsFormatterSelectWidget(String configuration) {
 
-        CmsDebugLog.consoleLog("Configuration of formatter-select-widget: " + configuration);
         String[] configParts = configuration.split("\\|\\|");
         if (configParts.length != 3) {
             CmsDebugLog.consoleLog("There were " + configParts.length + " configuration parts. 3 were expected.");

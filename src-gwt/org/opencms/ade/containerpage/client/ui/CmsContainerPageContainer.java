@@ -644,6 +644,91 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * Repositions the drag and drop placeholder.<p>
+     *
+     * @param x the x cursor position
+     * @param y the y cursor position
+     *
+     * @return the placeholder position index
+     */
+    private int internalRepositionPlaceholder(int x, int y) {
+
+        int indexCorrection = 0;
+        int previousTop = 0;
+        int documentScrollTop = getElement().getOwnerDocument().getScrollTop();
+        int documentScrollLeft = getElement().getOwnerDocument().getScrollLeft();
+        for (int index = 0; index < m_elementPositions.size(); index++) {
+            ElementPositionInfo info = m_elementPositions.get(index);
+            if (info.getElement() == m_placeholder) {
+                indexCorrection = 1;
+            }
+            if (info.isAbsolute() || !info.isVisible()) {
+                continue;
+            }
+
+            int top = info.getRelativeTop(y, documentScrollTop);
+
+            if ((top <= 0) || (top >= info.getElementPosition().getHeight())) {
+                previousTop = top;
+                continue;
+            }
+            int left = info.getRelativeLeft(x, documentScrollLeft);
+            if ((left <= 0) || (left >= info.getElementPosition().getWidth())) {
+                previousTop = top;
+                continue;
+            }
+            boolean floatSort = info.isFloating() && (top != 0) && (top == previousTop);
+            previousTop = top;
+            if (info.getElement() != m_placeholder) {
+                if (floatSort) {
+                    boolean insertBefore = false;
+                    if (left < (info.getElementPosition().getWidth() / 2)) {
+                        if (info.isFloatLeft()) {
+                            insertBefore = true;
+                        }
+                    } else if (info.isFloatRight()) {
+                        insertBefore = true;
+                    }
+                    if (insertBefore) {
+                        getElement().insertBefore(m_placeholder, info.getElement());
+                        return index - indexCorrection;
+                    } else {
+                        getElement().insertAfter(m_placeholder, info.getElement());
+                        return (index + 1) - indexCorrection;
+                    }
+                } else {
+                    if (top < (info.getElementPosition().getHeight() / 2)) {
+                        getElement().insertBefore(m_placeholder, info.getElement());
+                        return index - indexCorrection;
+                    } else {
+                        getElement().insertAfter(m_placeholder, info.getElement());
+                        return (index + 1) - indexCorrection;
+                    }
+                }
+            } else {
+                return index;
+            }
+        }
+
+        // not over any child position
+        if ((m_placeholderIndex >= 0) && (m_placeholder.getParentElement() == getElement())) {
+            // element is already attached to this parent and no new position available
+            // don't do anything
+            return m_placeholderIndex;
+        }
+        int top = CmsDomUtil.getRelativeY(y, getElement());
+        int offsetHeight = getElement().getOffsetHeight();
+        if ((top >= (offsetHeight / 2))) {
+            // over top half, insert as first child
+            getElement().insertFirst(m_placeholder);
+            return 0;
+        }
+        // over bottom half, insert as last child
+        getElement().appendChild(m_placeholder);
+        return getElement().getChildCount() - 1;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isDetailOnly()
      */
     public boolean isDetailOnly() {
@@ -823,91 +908,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void updatePositionInfo() {
 
         m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
-    }
-
-    /**
-     * Repositions the drag and drop placeholder.<p>
-     *
-     * @param x the x cursor position
-     * @param y the y cursor position
-     *
-     * @return the placeholder position index
-     */
-    private int internalRepositionPlaceholder(int x, int y) {
-
-        int indexCorrection = 0;
-        int previousTop = 0;
-        int documentScrollTop = getElement().getOwnerDocument().getScrollTop();
-        int documentScrollLeft = getElement().getOwnerDocument().getScrollLeft();
-        for (int index = 0; index < m_elementPositions.size(); index++) {
-            ElementPositionInfo info = m_elementPositions.get(index);
-            if (info.getElement() == m_placeholder) {
-                indexCorrection = 1;
-            }
-            if (info.isAbsolute() || !info.isVisible()) {
-                continue;
-            }
-
-            int top = info.getRelativeTop(y, documentScrollTop);
-
-            if ((top <= 0) || (top >= info.getElementPosition().getHeight())) {
-                previousTop = top;
-                continue;
-            }
-            int left = info.getRelativeLeft(x, documentScrollLeft);
-            if ((left <= 0) || (left >= info.getElementPosition().getWidth())) {
-                previousTop = top;
-                continue;
-            }
-            boolean floatSort = info.isFloating() && (top != 0) && (top == previousTop);
-            previousTop = top;
-            if (info.getElement() != m_placeholder) {
-                if (floatSort) {
-                    boolean insertBefore = false;
-                    if (left < (info.getElementPosition().getWidth() / 2)) {
-                        if (info.isFloatLeft()) {
-                            insertBefore = true;
-                        }
-                    } else if (info.isFloatRight()) {
-                        insertBefore = true;
-                    }
-                    if (insertBefore) {
-                        getElement().insertBefore(m_placeholder, info.getElement());
-                        return index - indexCorrection;
-                    } else {
-                        getElement().insertAfter(m_placeholder, info.getElement());
-                        return (index + 1) - indexCorrection;
-                    }
-                } else {
-                    if (top < (info.getElementPosition().getHeight() / 2)) {
-                        getElement().insertBefore(m_placeholder, info.getElement());
-                        return index - indexCorrection;
-                    } else {
-                        getElement().insertAfter(m_placeholder, info.getElement());
-                        return (index + 1) - indexCorrection;
-                    }
-                }
-            } else {
-                return index;
-            }
-        }
-
-        // not over any child position
-        if ((m_placeholderIndex >= 0) && (m_placeholder.getParentElement() == getElement())) {
-            // element is already attached to this parent and no new position available
-            // don't do anything
-            return m_placeholderIndex;
-        }
-        int top = CmsDomUtil.getRelativeY(y, getElement());
-        int offsetHeight = getElement().getOffsetHeight();
-        if ((top >= (offsetHeight / 2))) {
-            // over top half, insert as first child
-            getElement().insertFirst(m_placeholder);
-            return 0;
-        }
-        // over bottom half, insert as last child
-        getElement().appendChild(m_placeholder);
-        return getElement().getChildCount() - 1;
     }
 
     /**

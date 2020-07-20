@@ -473,7 +473,6 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     // remove expired style before initializing the editor
                     element.setReleasedAndNotExpired(true);
                     // in case of new elements, ignore load time
-                    CmsDebugLog.consoleLog("Opening inline editor for element. Was new: " + wasNew);
                     long loadTime = wasNew ? Long.MAX_VALUE : m_handler.m_controller.getLoadTime();
                     CmsContentEditor.getInstance().openInlineEditor(
                         context,

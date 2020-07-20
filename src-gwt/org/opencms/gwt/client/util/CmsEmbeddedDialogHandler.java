@@ -65,6 +65,7 @@ public class CmsEmbeddedDialogHandler {
      * Constructor.<p>
      */
     public CmsEmbeddedDialogHandler() {
+
         // nothing to do
     }
 
@@ -110,6 +111,30 @@ public class CmsEmbeddedDialogHandler {
 
         return m_frame != null;
     }
+
+    /**
+     * Initializes the iFrame element.<p>
+     */
+    private native void initIFrame()/*-{
+                                    var self = this;
+                                    $wnd.frames.embeddedDialogFrame.connector = {
+                                    reload : function() {
+                                    self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
+                                    },
+                                    finish : function(resources) {
+                                    self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
+                                    },
+                                    finishForProjectOrSiteChange : function(sitePath, serverLink) {
+                                    self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
+                                    },
+                                    leavePage : function(targetUri) {
+                                    self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
+                                    },
+                                    setPrincipal : function(principal) {
+                                    self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::setPrinciple(Ljava/lang/String;)(principal);
+                                    }
+                                    };
+                                    }-*/;
 
     /**
      * Navigates to the given URI.<p>
@@ -202,6 +227,27 @@ public class CmsEmbeddedDialogHandler {
     }
 
     /**
+     * Parses the resources string.<p>
+     *
+     * @param resources the resources
+     *
+     * @return the list of resource ids
+     */
+    protected List<CmsUUID> parseResources(String resources) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resources)) {
+            return Collections.emptyList();
+        } else {
+            List<CmsUUID> result = new ArrayList<CmsUUID>();
+            String[] resArray = resources.trim().split(";");
+            for (int i = 0; i < resArray.length; i++) {
+                result.add(new CmsUUID(resArray[i]));
+            }
+            return result;
+        }
+    }
+
+    /**
      * Reloads the current page.<p>
      */
     public void reload() {
@@ -252,49 +298,4 @@ public class CmsEmbeddedDialogHandler {
 
         m_principleHandler = principleHandler;
     }
-
-    /**
-     * Parses the resources string.<p>
-     *
-     * @param resources the resources
-     *
-     * @return the list of resource ids
-     */
-    protected List<CmsUUID> parseResources(String resources) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resources)) {
-            return Collections.emptyList();
-        } else {
-            List<CmsUUID> result = new ArrayList<CmsUUID>();
-            String[] resArray = resources.trim().split(";");
-            for (int i = 0; i < resArray.length; i++) {
-                result.add(new CmsUUID(resArray[i]));
-            }
-            return result;
-        }
-    }
-
-    /**
-     * Initializes the iFrame element.<p>
-     */
-    private native void initIFrame()/*-{
-        var self = this;
-        $wnd.frames.embeddedDialogFrame.connector = {
-            reload : function() {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
-            },
-            finish : function(resources) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
-            },
-            finishForProjectOrSiteChange : function(sitePath, serverLink) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
-            },
-            leavePage : function(targetUri) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
-            },
-            setPrincipal : function(principal) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::setPrinciple(Ljava/lang/String;)(principal);
-            }
-        };
-    }-*/;
 }

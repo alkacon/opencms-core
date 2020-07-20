@@ -368,11 +368,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                     CmsUUID structureId = new CmsUUID(CmsContainerpageController.getServerId(m_draggableId));
                     CmsContainerElementData cachedElementData = m_controller.getCachedElement(m_draggableId);
-                    CmsDebugLog.consoleLog("Cached element data available " + (cachedElementData != null));
-                    if (cachedElementData != null) {
-                        CmsDebugLog.consoleLog("Is copy in models: " + cachedElementData.isCopyInModels());
-                    }
-                    CmsDebugLog.consoleLog(copyGroupId);
                     ElementReuseMode reuseMode = isCopyModel(draggable)
                     ? ElementReuseMode.copy
                     : (((cachedElementData != null) && !cachedElementData.isCopyInModels())

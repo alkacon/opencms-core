@@ -146,10 +146,10 @@ public class CmsUploadPropertyDialog {
      */
     public native boolean isExplorerMode() /*-{
 
-        if ($wnd.self.name == 'explorer_files') {
-            return true;
-        }
-        return false;
+		if ($wnd.self.name == 'explorer_files') {
+			return true;
+		}
+		return false;
     }-*/;
 
     /**

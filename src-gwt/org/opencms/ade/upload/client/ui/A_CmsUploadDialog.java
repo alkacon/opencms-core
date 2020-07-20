@@ -58,7 +58,6 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploader;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsUploadFileBean;
@@ -1291,10 +1290,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
                 // add or remove the file from the list of files to upload
                 if (unzip.isDown()) {
-                    CmsDebugLog.consoleLog("DOWN");
                     getFilesToUnzip(true).add(file.getFileName());
                 } else {
-                    CmsDebugLog.consoleLog("UP");
                     getFilesToUnzip(true).remove(file.getFileName());
                 }
             }

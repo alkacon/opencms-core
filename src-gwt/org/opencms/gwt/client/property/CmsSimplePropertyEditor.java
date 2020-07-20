@@ -32,7 +32,6 @@ import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
 import org.opencms.gwt.shared.property.CmsPathValue;
@@ -84,54 +83,12 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
-     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#buildFields()
-     */
-    @Override
-    public void buildFields() {
-
-        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
-        Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
-        Map<String, CmsClientProperty> props;
-        CmsUUID id = null;
-        CmsDebugLog.consoleLog("buildFields -- isFolder == " + m_handler.isFolder());
-        if (!m_handler.isFolder()) {
-            props = ownProps;
-            id = m_handler.getId();
-        } else if (m_handler.getDefaultFileId() != null) {
-            props = defaultFileProps;
-            id = m_handler.getDefaultFileId();
-        } else {
-            props = ownProps;
-            id = m_handler.getId();
-        }
-        props = CmsClientProperty.makeLazyCopy(props);
-        List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
-        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
-        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
-        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
-        moveToTop(keys, CmsPropertyModification.FILE_NAME_PROPERTY);
-        for (String propName : keys) {
-            buildField(props, propName, Mode.effective, id);
-        }
-    }
-
-    /**
      * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#addSpecialFields()
      */
     @Override
     protected void addSpecialFields() {
 
         // we don't want any special fields
-    }
-
-    /**
-     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#setupFieldContainer()
-     */
-    @Override
-    protected void setupFieldContainer() {
-
-        CmsSimpleFormFieldPanel panel = new CmsSimpleFormFieldPanel();
-        m_form.setWidget(panel);
     }
 
     /**
@@ -210,6 +167,37 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
         }
         field.getLayoutData().put(CmsPropertyPanel.LD_PROPERTY, propName);
         m_form.addField(field, initialValue);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#buildFields()
+     */
+    @Override
+    public void buildFields() {
+
+        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
+        Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
+        Map<String, CmsClientProperty> props;
+        CmsUUID id = null;
+        if (!m_handler.isFolder()) {
+            props = ownProps;
+            id = m_handler.getId();
+        } else if (m_handler.getDefaultFileId() != null) {
+            props = defaultFileProps;
+            id = m_handler.getDefaultFileId();
+        } else {
+            props = ownProps;
+            id = m_handler.getId();
+        }
+        props = CmsClientProperty.makeLazyCopy(props);
+        List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
+        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
+        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
+        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
+        moveToTop(keys, CmsPropertyModification.FILE_NAME_PROPERTY);
+        for (String propName : keys) {
+            buildField(props, propName, Mode.effective, id);
+        }
     }
 
     /**
@@ -329,6 +317,17 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
+     * Checks whether an empty string should always be allowed for the property, regardless of validation settings.
+     *
+     * @param name the property name
+     * @return true if the empty string should always be allowed
+     */
+    protected boolean isAlwaysAllowEmpty(String name) {
+
+        return true;
+    }
+
+    /**
      * Moves the given property name to the top of the keys if present.<p>
      *
      * @param keys the list of keys
@@ -340,6 +339,16 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
             keys.remove(propertyName);
             keys.add(0, propertyName);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#setupFieldContainer()
+     */
+    @Override
+    protected void setupFieldContainer() {
+
+        CmsSimpleFormFieldPanel panel = new CmsSimpleFormFieldPanel();
+        m_form.setWidget(panel);
     }
 
 }
