@@ -141,7 +141,12 @@
 
             <mimetypes>
 
-                <!-- # The basic list of mimetypes was taken from HTML 5 boilerplate project. # See https://github.com/h5bp/server-configs/. # Apparently the h5pb lists differ per server, this was taken from Nginx. # Extensions have been added for office formats and Microsoft related files. -->
+                <!--
+                    # The basic list of mimetypes was taken from HTML 5 boilerplate project.
+                    # See https://github.com/h5bp/server-configs/.
+                    # Apparently the h5pb lists differ per server, this was taken from Nginx.
+                    # Extensions have been added for office formats and Microsoft related files.
+                -->
 
                 <!-- Data interchange -->
                 <mimetype extension=".atom" type="application/atom+xml" />
@@ -155,7 +160,9 @@
                 <mimetype extension=".xml" type="application/xml" />
 
                 <!-- JavaScript -->
-                <mimetype extension=".js" type="application/javascript" />
+                <mimetype extension=".js" type="text/javascript" />
+                <mimetype extension=".mjs" type="text/javascript" />
+                <mimetype extension=".wasm" type="application/wasm" />
 
                 <!-- Manifest files -->
                 <mimetype extension=".webapp" type="application/x-web-app-manifest+json" />
@@ -174,15 +181,18 @@
                 <mimetype extension=".oga" type="audio/ogg" />
                 <mimetype extension=".ogg" type="audio/ogg" />
                 <mimetype extension=".opus" type="audio/ogg" />
+                <mimetype extension=".weba" type="audio/webm" />
                 <mimetype extension=".ra" type="audio/x-realaudio" />
                 <mimetype extension=".wav" type="audio/x-wav" />
-                <mimetype extension=".wax" type="audio/x-ms-wax" />
-                <mimetype extension=".wma" type="audio/x-ms-wma" />
+                <mimetype extension=".mka" type="audio/x-matroska" />
 
                 <mimetype extension=".bmp" type="image/bmp" />
                 <mimetype extension=".gif" type="image/gif" />
                 <mimetype extension=".jpeg" type="image/jpeg" />
                 <mimetype extension=".jpg" type="image/jpeg" />
+                <mimetype extension=".jxr" type="image/jxr" />
+                <mimetype extension=".hdp" type="image/jxr" />
+                <mimetype extension=".wdp" type="image/jxr" />
                 <mimetype extension=".png" type="image/png" />
                 <mimetype extension=".svg" type="image/svg+xml" />
                 <mimetype extension=".svgz" type="image/svg+xml" />
@@ -191,16 +201,13 @@
                 <mimetype extension=".wbmp" type="image/vnd.wap.wbmp" />
                 <mimetype extension=".webp" type="image/webp" />
                 <mimetype extension=".jng" type="image/x-jng" />
-                <mimetype extension=".xbm" type="image/x-xbitmap" />
-                <mimetype extension=".xpm" type="image/x-xpixmap" />
-                <mimetype extension=".xwd" type="image/x-xwindowdump" />
 
+                <mimetype extension=".3gp" type="video/3gpp" />
+                <mimetype extension=".3gpp" type="video/3gpp" />
                 <mimetype extension=".mp4" type="video/mp4" />
                 <mimetype extension=".f4p" type="video/mp4" />
                 <mimetype extension=".f4v" type="video/mp4" />
                 <mimetype extension=".m4v" type="video/mp4" />
-                <mimetype extension=".3gp" type="video/3gpp" />
-                <mimetype extension=".3gpp" type="video/3gpp" />
                 <mimetype extension=".mpeg" type="video/mpeg" />
                 <mimetype extension=".mpg" type="video/mpeg" />
                 <mimetype extension=".ogv" type="video/ogg" />
@@ -208,25 +215,28 @@
                 <mimetype extension=".qt" type="video/quicktime" />
                 <mimetype extension=".webm" type="video/webm" />
                 <mimetype extension=".flv" type="video/x-flv" />
-                <mimetype extension=".wmv" type="video/x-ms-wmv" />
+                <mimetype extension=".mng" type="video/x-mng" />
                 <mimetype extension=".asf" type="video/x-ms-asf" />
                 <mimetype extension=".asx" type="video/x-ms-asf" />
+                <mimetype extension=".wmv" type="video/x-ms-wmv" />
                 <mimetype extension=".avi" type="video/x-msvideo" />
+                <mimetype extension=".mkv" type="video/x-matroska" />
+                <mimetype extension=".mk3d" type="video/x-matroska" />
 
-                <!-- # Serving `.ico` image files with a different media type # prevents Internet Explorer from displaying then as images. -->
+                <!--
+                    # Serving `.ico` image files with a different media type
+                    # prevents Internet Explorer from displaying then as images.
+                -->
                 <mimetype extension=".cur" type="image/x-icon" />
                 <mimetype extension=".ico" type="image/x-icon" />
-
 
                 <!-- Web fonts -->
                 <mimetype extension=".woff" type="application/font-woff" />
                 <mimetype extension=".woff2" type="application/font-woff2" />
                 <mimetype extension=".eot" type="application/vnd.ms-fontobject" />
-
-                <!-- # Browsers usually ignore the font media types and simply sniff # the bytes to figure out the font type. # https://mimesniff.spec.whatwg.org/#matching-a-font-type-pattern # # However, Blink and WebKit based browsers will show a warning # in the console if the following font types are served with any # other media types. -->
+                <mimetype extension=".ttf" type="font/ttf" />
+                <mimetype extension=".ttc" type="font/collection" />
                 <mimetype extension=".otf" type="font/opentype" />
-                <mimetype extension=".ttc" type="application/x-font-ttf" />
-                <mimetype extension=".ttf" type="application/x-font-ttf" />
 
                 <!-- Other -->
                 <mimetype extension=".jar" type="application/x-java-archive" />
@@ -257,16 +267,12 @@
                 <mimetype extension=".7z" type="application/x-7z-compressed" />
                 <mimetype extension=".bbaw" type="application/x-bb-appworld" />
                 <mimetype extension=".torrent" type="application/x-bittorrent" />
-                <mimetype extension=".bz2" type="application/x-bzip" />
-                <mimetype extension=".tar.bz2" type="application/x-bzip-compressed-tar" />
-                <mimetype extension=".tbz" type="application/x-bzip-compressed-tar" />
                 <mimetype extension=".crx" type="application/x-chrome-extension" />
                 <mimetype extension=".cco" type="application/x-cocoa " />
-                <mimetype extension=".gz" type="application/x-gzip" />
+                <mimetype extension=".gz" type="application/gzip" />
                 <mimetype extension=".jardiff" type="application/x-java-archive-diff" />
                 <mimetype extension=".jnlp" type="application/x-java-jnlp-file" />
                 <mimetype extension=".run" type="application/x-makeself" />
-                <mimetype extension=".pac" type="application/x-ns-proxy-autoconfig" />
                 <mimetype extension=".oex" type="application/x-opera-extension" />
                 <mimetype extension=".pl" type="application/x-perl" />
                 <mimetype extension=".pm" type="application/x-perl" />
@@ -282,17 +288,21 @@
                 <mimetype extension=".tk" type="application/x-tcl " />
                 <mimetype extension=".tgz" type="application/x-tgz" />
                 <mimetype extension=".tar.gz" type="application/x-tgz" />
-                <mimetype extension=".xpi" type="application/x-xpinstall" />
                 <mimetype extension=".crt" type="application/x-x509-ca-cert" />
                 <mimetype extension=".der" type="application/x-x509-ca-cert" />
                 <mimetype extension=".pem" type="application/x-x509-ca-cert" />
+                <mimetype extension=".xpi" type="application/x-xpinstall" />
                 <mimetype extension=".xhtml" type="application/xhtml+xml" />
                 <mimetype extension=".xsl" type="application/xslt+xml" />
                 <mimetype extension=".zip" type="application/zip" />
+                <mimetype extension=".ics" type="text/calendar" />
                 <mimetype extension=".css" type="text/css" />
+                <mimetype extension=".csv" type="text/csv" />
                 <mimetype extension=".htm" type="text/html" />
                 <mimetype extension=".html" type="text/html" />
                 <mimetype extension=".shtml" type="text/html" />
+                <mimetype extension=".md" type="text/markdown" />
+                <mimetype extension=".markdown" type="text/markdown" />
                 <mimetype extension=".mml" type="text/mathml" />
                 <mimetype extension=".text" type="text/plain" />
                 <mimetype extension=".txt" type="text/plain" />
@@ -352,10 +362,6 @@
                 <mimetype extension=".ots" type="application/vnd.oasis.opendocument.spreadsheet-template" />
                 <mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
                 <mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
-
-                <!-- # RFC5545 - Internet Calendaring and Scheduling Core Object Specification # (iCalendar) -->
-                <mimetype extension=".ics" type="text/calendar" />
-
 
             </mimetypes>
 
@@ -438,7 +444,7 @@
                 <translation>s#^(.{250}).*$#$1#</translation>
             </filetranslations>
             <foldertranslations enabled="false" />
-            <!-- 
+            <!--
                 The xsd translations are only necessary if you have contents from older OpenCms versions deployed in the current OpenCms version and have not changed the
                 paths to the xsd in your contents manually.
                 If you do not need it, remove it or make it a comment.
