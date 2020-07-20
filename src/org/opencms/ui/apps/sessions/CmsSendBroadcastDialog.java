@@ -144,7 +144,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
      */
     protected void sendBroadcast(Set<String> sessionIds) {
 
-        String cleanedHtml = CmsRichTextArea.cleanHtml(m_message.getValue(), false);
+        String cleanedHtml = CmsRichTextArea.cleanHtml(m_message.getValue(), true);
         if (sessionIds == null) {
             OpenCms.getSessionManager().sendBroadcast(
                 A_CmsUI.getCmsObject(),

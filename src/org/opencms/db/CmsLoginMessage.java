@@ -239,7 +239,7 @@ public class CmsLoginMessage {
         if (isEnabled() && CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_MESSAGE_0));
         }
-        m_message = CmsRichTextArea.cleanHtml(message, false);
+        m_message = CmsRichTextArea.cleanHtml(message, true);
     }
 
     /**
