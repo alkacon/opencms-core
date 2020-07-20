@@ -238,6 +238,7 @@
                 <mimetype extension=".dll" type="application/octet-stream" />
                 <mimetype extension=".dmg" type="application/octet-stream" />
                 <mimetype extension=".exe" type="application/octet-stream" />
+                <mimetype extension=".pkg" type="application/octet-stream" />
                 <mimetype extension=".img" type="application/octet-stream" />
                 <mimetype extension=".iso" type="application/octet-stream" />
                 <mimetype extension=".msi" type="application/octet-stream" />
