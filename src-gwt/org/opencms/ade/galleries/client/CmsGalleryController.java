@@ -1905,7 +1905,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     private String getProviderName(String resourceType) {
 
-        CmsDebugLog.consoleLog("getProviderName for " + resourceType);
         for (CmsResourceTypeBean typeBean : m_dialogBean.getTypes()) {
             if (typeBean.getType().equals(resourceType)) {
                 return typeBean.getPreviewProviderName();

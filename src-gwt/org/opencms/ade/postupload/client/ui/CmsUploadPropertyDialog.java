@@ -40,7 +40,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -147,10 +146,10 @@ public class CmsUploadPropertyDialog {
      */
     public native boolean isExplorerMode() /*-{
 
-        if ($wnd.self.name == 'explorer_files') {
-            return true;
-        }
-        return false;
+		if ($wnd.self.name == 'explorer_files') {
+			return true;
+		}
+		return false;
     }-*/;
 
     /**
@@ -368,8 +367,6 @@ public class CmsUploadPropertyDialog {
      * @param result the result
      */
     protected void updateDialog(CmsPostUploadDialogPanelBean result) {
-
-        CmsDebugLog.consoleLog("=== updateDialog called");
 
         m_panelData = result;
 

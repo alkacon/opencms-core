@@ -28,7 +28,6 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.categorizedselect.I_CmsCategorizedSelectData;
 import org.opencms.gwt.shared.categorizedselect.I_CmsCategorizedSelectData.Option;
 import org.opencms.gwt.shared.categorizedselect.I_CmsCategorizedSelectDataFactory;
@@ -169,9 +168,7 @@ public class CmsCategorizedSelectWidget extends Composite implements I_CmsEditWi
     public void fireChangeEvent() {
 
         String val = m_mainSelect.getFormValueAsString();
-        CmsDebugLog.consoleLog("-- fireChangeEvent " + val);
         if (val != null) {
-            CmsDebugLog.consoleLog("event is not null");
             ValueChangeEvent.fire(this, val);
         }
 

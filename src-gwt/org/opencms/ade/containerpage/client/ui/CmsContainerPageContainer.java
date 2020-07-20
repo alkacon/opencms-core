@@ -916,7 +916,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(240, 0, 242, 1) 10px, rgba(240, 0, 242, 1) 20px)");
         com.google.gwt.dom.client.Style style = getElement().getStyle();
         final Map<String, String> oldVals = CmsDomUtil.updateStyle(style, props);
-        CmsDebugLog.consoleLog("h1 = " + h1 + ", h2=" + getElement().getOffsetHeight());
         return () -> {
             CmsDomUtil.updateStyle(style, oldVals);
         };

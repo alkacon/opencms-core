@@ -32,7 +32,6 @@ import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
 import org.opencms.gwt.shared.property.CmsPathValue;
@@ -93,7 +92,6 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
         Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
         Map<String, CmsClientProperty> props;
         CmsUUID id = null;
-        CmsDebugLog.consoleLog("buildFields -- isFolder == " + m_handler.isFolder());
         if (!m_handler.isFolder()) {
             props = ownProps;
             id = m_handler.getId();
@@ -124,11 +122,11 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
         // we don't want any special fields
     }
 
-    /** 
+    /**
      * Checks whether an empty string should always be allowed for the property, regardless of validation settings.
-     * 
+     *
      * @param name the property name
-     * @return true if the empty string should always be allowed  
+     * @return true if the empty string should always be allowed
      */
     protected boolean isAlwaysAllowEmpty(String name) {
 

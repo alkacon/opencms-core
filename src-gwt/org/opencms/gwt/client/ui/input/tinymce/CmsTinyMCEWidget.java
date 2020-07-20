@@ -33,7 +33,6 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
@@ -321,6 +320,7 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+
         // not supported
     }
 
@@ -338,6 +338,7 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String errorMessage) {
+
         // not supported
     }
 
@@ -729,10 +730,10 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
     private void fireChangeFromNative() {
 
         // skip firing the change event, if the external flag is set
-        String message = "fireChangeFromNative\n";
-        message += "init: " + m_initialized + "\n";
-        message += "external: " + m_externalValueChange + "\n";
-        CmsDebugLog.consoleLog(message);
+        //        String message = "fireChangeFromNative\n";
+        //        message += "init: " + m_initialized + "\n";
+        //        message += "external: " + m_externalValueChange + "\n";
+        //        CmsDebugLog.consoleLog(message);
 
         if (m_initialized && !m_externalValueChange) {
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {

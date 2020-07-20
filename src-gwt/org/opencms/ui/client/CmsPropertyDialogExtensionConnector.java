@@ -33,7 +33,6 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
@@ -225,7 +224,6 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
      */
     public void editPropertiesForNewResource(String propertyDataString) {
 
-        CmsDebugLog.consoleLog("editPropertiesForNewResource");
         try {
             CmsVUI.clearStoredFocusForCurrentInstance(); // we need to control the focus for ourselves in the property dialog
             CmsPropertiesBean propData = (CmsPropertiesBean)(CmsRpcPrefetcher.getSerializedObjectFromString(

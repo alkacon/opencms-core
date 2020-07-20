@@ -37,7 +37,6 @@ import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -269,7 +268,6 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
     protected void toggleToolbar(boolean show) {
 
         if (show) {
-            CmsDebugLog.consoleLog("Showing toolbar");
             CmsToolbar.showToolbar(
                 m_toolbar,
                 true,
@@ -277,7 +275,6 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
                 I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
             saveToolbarVisibility(true);
         } else {
-            CmsDebugLog.consoleLog("Hiding toolbar");
             CmsToolbar.showToolbar(
                 m_toolbar,
                 false,
