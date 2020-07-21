@@ -34,6 +34,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_E
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INTERNAL_RESOURCE_TYPE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IN_NAVIGATION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
@@ -236,31 +237,31 @@ public class CmsFileTable extends CmsResourceTable {
             } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
                 || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
-                int result;
-                Float pos1 = (Float)item1.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                Float pos2 = (Float)item2.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                if (pos1 == null) {
-                    result = pos2 == null
-                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
-                    : 1;
-                } else {
-                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
-                }
-                if (!sortDirection) {
-                    result = result * (-1);
-                }
-                return result;
-            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
-                String value1 = (String)item1.getItemProperty(propertyId).getValue();
-                String value2 = (String)item2.getItemProperty(propertyId).getValue();
-                Collator collator = Collator.getInstance(
-                    OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject()));
+                    int result;
+                    Float pos1 = (Float)item1.getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                    Float pos2 = (Float)item2.getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                    if (pos1 == null) {
+                        result = pos2 == null
+                        ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                        : 1;
+                    } else {
+                        result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                    }
+                    if (!sortDirection) {
+                        result = result * (-1);
+                    }
+                    return result;
+                } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+                    String value1 = (String)item1.getItemProperty(propertyId).getValue();
+                    String value2 = (String)item2.getItemProperty(propertyId).getValue();
+                    Collator collator = Collator.getInstance(
+                        OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject()));
 
-                int result = collator.compare(value1, value2);
-                return sortDirection ? result : -result;
-            }
+                    int result = collator.compare(value1, value2);
+                    return sortDirection ? result : -result;
+                }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
             //@formatter:on
         }
@@ -300,6 +301,7 @@ public class CmsFileTable extends CmsResourceTable {
         defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
         defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
         defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_INTERNAL_RESOURCE_TYPE, Integer.valueOf(COLLAPSED));
         defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
         defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
         defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));

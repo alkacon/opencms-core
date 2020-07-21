@@ -77,6 +77,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      * Will initialize the default settings.<p>
      */
     public CmsFileExplorerSettings() {
+
         // initialize with the default settings
         m_sortColumnId = CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
         m_sortAscending = true;
@@ -88,6 +89,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
             CmsResourceTableProperty.PROPERTY_USER_MODIFIED,
             CmsResourceTableProperty.PROPERTY_DATE_CREATED,
             CmsResourceTableProperty.PROPERTY_USER_CREATED,
+            CmsResourceTableProperty.PROPERTY_INTERNAL_RESOURCE_TYPE,
             CmsResourceTableProperty.PROPERTY_STATE_NAME,
             CmsResourceTableProperty.PROPERTY_USER_LOCKED);
     }

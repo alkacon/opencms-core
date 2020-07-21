@@ -34,6 +34,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_E
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INTERNAL_RESOURCE_TYPE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IN_NAVIGATION;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION;
@@ -461,6 +462,10 @@ public class CmsResourceTable extends CustomComponent {
         if (resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE) != null) {
             resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
                 CmsWorkplaceMessages.getResourceTypeName(locale, type.getTypeName()));
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_INTERNAL_RESOURCE_TYPE) != null) {
+            resourceItem.getItemProperty(PROPERTY_INTERNAL_RESOURCE_TYPE).setValue(type.getTypeName());
         }
 
         if (resourceItem.getItemProperty(PROPERTY_IS_FOLDER) != null) {

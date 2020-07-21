@@ -312,6 +312,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_DATERELEASED_0 = "GUI_INPUT_DATERELEASED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_INTERNAL_TYPE_0 = "GUI_INPUT_INTERNAL_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_LOCKEDBY_0 = "GUI_INPUT_LOCKEDBY_0";
 
     /** Message constant for key in the resource bundle. */

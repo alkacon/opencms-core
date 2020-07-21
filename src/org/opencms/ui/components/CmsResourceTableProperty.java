@@ -34,6 +34,7 @@ import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0;
+import static org.opencms.workplace.explorer.Messages.GUI_INPUT_INTERNAL_TYPE_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_NAVTEXT_0;
@@ -293,6 +294,16 @@ public class CmsResourceTableProperty implements Serializable {
         180);
 
     /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_INTERNAL_RESOURCE_TYPE = new CmsResourceTableProperty(
+        "PROPERTY_INTERNAL_RESOURCE_TYPE",
+        String.class,
+        null,
+        GUI_INPUT_INTERNAL_TYPE_0,
+        true,
+        0,
+        130);
+
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_SITE_PATH = new CmsResourceTableProperty(
         "PROPERTY_SITE_PATH",
         String.class,
@@ -527,6 +538,7 @@ public class CmsResourceTableProperty implements Serializable {
             PROPERTY_PERMISSIONS,
             PROPERTY_RESOURCE_NAME,
             PROPERTY_RESOURCE_TYPE,
+            PROPERTY_INTERNAL_RESOURCE_TYPE,
             PROPERTY_SIZE,
             PROPERTY_STATE,
             PROPERTY_STATE_NAME,
@@ -678,7 +690,7 @@ public class CmsResourceTableProperty implements Serializable {
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toString(this);
+        return getId() + " (" + ReflectionToStringBuilder.toString(this) + ")";
     }
 
 }
