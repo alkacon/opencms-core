@@ -27,19 +27,17 @@
 
 package org.opencms.ui.components;
 
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
-import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.RichTextArea;
 
 /**
  * Helper class for using rich text area in OpenCms.<p>
+ *
+ * <p>The client side implementation of this widget adds some special styles, see CmsRichTextAreaConnector
  */
 public class CmsRichTextArea extends RichTextArea {
 
@@ -86,27 +84,4 @@ public class CmsRichTextArea extends RichTextArea {
         return cleaned.body().html();
     }
 
-    /**
-     * Sets the font stype to Open Sans.<p>
-     * Has to be called after every refresh of the UI. For example after switching tabs on tab-sheets..<p>
-     */
-    public void setFontStyle() {
-
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_styleName)) {
-            removeStyleName(m_styleName);
-        }
-        String id = new CmsUUID().getStringValue();
-        m_styleName = CSS_CLASSNAME + "_" + id;
-        addStyleName(m_styleName);
-        String js = "var elements = document.getElementsByClassName('"
-            + m_styleName
-            + "');"
-            + "var iframeContainer = elements[0];"
-            + "var iframe = iframeContainer.getElementsByTagName('iframe')[0];"
-            + "var iframeBody = iframe.contentDocument.getElementsByTagName('body')[0];"
-            + "iframeBody.style.fontFamily='\"Open Sans\", sans-serif';";
-
-        JavaScript.getCurrent().execute(js);
-
-    }
 }

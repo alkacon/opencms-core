@@ -37,15 +37,16 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.sessions.CmsSessionsApp.MessageValidator;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsRichTextArea;
-import org.opencms.ui.components.CmsRichTextAreaV7;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.v7.data.Validator.InvalidValueException;
 
 /**
  * Class for the dialiog to send broadcasts.<p>
@@ -62,7 +63,7 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
     private Button m_cancel;
 
     /**Message text area.*/
-    private CmsRichTextAreaV7 m_message;
+    private CmsRichTextArea m_message;
 
     /**ok button.*/
     private Button m_ok;
@@ -109,32 +110,12 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                addValidator();
-                if (isMessageValid()) {
+                if (validateMessage()) {
                     sendBroadcast(sessionIds);
                     closeRunnable.run();
                 }
             }
         });
-    }
-
-    /**
-     * Adds validator to field.<p>
-     */
-    protected void addValidator() {
-
-        m_message.removeAllValidators();
-        m_message.addValidator(new MessageValidator());
-    }
-
-    /**
-     * Checks if message is valid.<p>
-     *
-     * @return true if message is valid, false otherwise
-     */
-    protected boolean isMessageValid() {
-
-        return m_message.isValid();
     }
 
     /**
@@ -185,6 +166,23 @@ public class CmsSendBroadcastDialog extends CmsBasicDialog {
         }
         for (String sessionId : sessionIds) {
             OpenCms.getSessionManager().getBroadcastQueue(sessionId).clear();
+        }
+    }
+
+    /**
+     * Validates the broadcast message, sets the error status of the field appropriately, and returns the result.
+     *
+     * @return true if the validation was successful
+     */
+    private boolean validateMessage() {
+
+        m_message.setComponentError(null);
+        try {
+            new MessageValidator().validate(m_message.getValue());
+            return true;
+        } catch (InvalidValueException e) {
+            m_message.setComponentError(new UserError(e.getLocalizedMessage()));
+            return false;
         }
     }
 }

@@ -48,8 +48,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.Window;
 
 /**
@@ -155,18 +153,6 @@ public class CmsEditLoginView extends CmsBasicDialog {
                 }
 
             }
-        });
-        m_messageAfter.setFontStyle();
-        m_messageBefore.setFontStyle();
-        m_tab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
-
-            public void selectedTabChange(SelectedTabChangeEvent event) {
-
-                m_messageAfter.setFontStyle();
-                m_messageBefore.setFontStyle();
-
-            }
-
         });
         m_deleteBefore.addClickListener(event -> m_messageBefore.clear());
         m_deleteAfter.addClickListener(event -> m_messageAfter.clear());
