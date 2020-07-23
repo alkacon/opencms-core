@@ -157,7 +157,7 @@ public final class CmsRelationType implements Serializable {
     public static final CmsRelationType LOCALE_VARIANT = new CmsRelationType(
         11,
         "LOCALE_VARIANT",
-        true,
+        false,
         false,
         CopyBehavior.ignore);
 
