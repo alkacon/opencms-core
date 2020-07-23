@@ -110,6 +110,9 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     /** The copy file name insert. */
     public static final String COPY_FILE_NAME_INSERT = "-copy";
 
+    /** CMS context with admin rights. */
+    private CmsObject m_adminCms;
+
     /**
      * Checks the given pattern for the number macro.<p>
      *
@@ -210,9 +213,12 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      *
      * @throws CmsException in case something goes wrong
      */
-    public String getNewFileName(CmsObject cms, String namePattern, int defaultDigits, boolean explorerMode)
+    public String getNewFileName(CmsObject userCms, String namePattern, int defaultDigits, boolean explorerMode)
     throws CmsException {
 
+        CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+        cms.getRequestContext().setSiteRoot(userCms.getRequestContext().getSiteRoot());
+        cms.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
         String checkPattern = cms.getRequestContext().removeSiteRoot(namePattern);
         String folderName = CmsResource.getFolderPath(checkPattern);
 
@@ -280,6 +286,14 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             "/",
             "-");
         return new CmsNumberSuffixNameSequence(translatedTitle);
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsFileNameGenerator#setAdminCms(org.opencms.file.CmsObject)
+     */
+    public void setAdminCms(CmsObject cms) {
+
+        m_adminCms = cms;
     }
 
     /**
