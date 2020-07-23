@@ -785,6 +785,17 @@
     	cursor:pointer;
     }
 
+	.o-resinfo2 .o-resinfo-top .o-internal-type-name { 
+		font-weight: normal;
+		font-style: oblique;
+		&::before {
+			content: "(";
+		}
+		&::after {
+			content: ")";
+		}
+	}
+
     .v-menubar-menuitem-o-sitemap-notranslation {
       &, & * {
       	visibility: visible !important;

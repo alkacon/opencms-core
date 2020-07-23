@@ -27,6 +27,7 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.CmsAddDialogTypeHelper;
@@ -36,8 +37,10 @@ import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
@@ -53,10 +56,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -66,6 +71,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
@@ -76,6 +82,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -277,6 +284,16 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             getVerticalLayout().addComponent(label);
             return;
         }
+        Set<String> nonstandardTypes = new HashSet<>();
+        for (CmsModule module : OpenCms.getModuleManager().getAllInstalledModules()) {
+            if (module.getName().equals(CmsADEManager.MODULE_NAME_ADE_CONFIG)) {
+                continue;
+            }
+            for (CmsExplorerTypeSettings expType : module.getExplorerTypes()) {
+                nonstandardTypes.add(expType.getName());
+            }
+        }
+
         for (CmsResourceTypeBean type : typeBeans) {
             final String typeName = type.getType();
             String title = typeName;
@@ -284,10 +301,16 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
 
             title = CmsVaadinUtils.getMessageText(explorerType.getKey());
-            CmsResourceInfo info = new CmsResourceInfo(
-                title,
-                subtitle,
-                CmsResourceUtil.getBigIconResource(explorerType, null));
+            CmsResourceInfo info = new CmsResourceInfo();
+            info.getTopLine().setContentMode(ContentMode.HTML);
+            String suffix = "";
+            if (nonstandardTypes.contains(type.getType())) {
+                suffix = " <span class='o-internal-type-name'>" + CmsEncoder.escapeHtml(type.getType()) + "</span>";
+            }
+            info.getTopLine().setValue(CmsEncoder.escapeHtml(title) + suffix);
+            info.getBottomLine().setValue(subtitle);
+            Resource iconResource = CmsResourceUtil.getBigIconResource(explorerType, null);
+            info.getResourceIcon().initContent(null, iconResource, null, false, true);
             info.setData(type);
             m_resourceInfoMap.put(type, info);
             getVerticalLayout().addComponent(info);
