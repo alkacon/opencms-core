@@ -279,7 +279,7 @@ public class CmsResourceManager {
     private Map<String, String> m_mimeTypes;
 
     /** The URL name generator for XML contents. */
-    private I_CmsFileNameGenerator m_nameGenerator;
+    private I_CmsFileNameGenerator m_nameGenerator = new CmsDefaultFileNameGenerator();
 
     /** A list that contains all resource types added from the XML configuration. */
     private List<I_CmsResourceType> m_resourceTypesFromXml;
@@ -1169,6 +1169,8 @@ public class CmsResourceManager {
             I_CmsResourceType type = i.next();
             type.initialize(cms);
         }
+
+        m_nameGenerator.setAdminCms(cms);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));

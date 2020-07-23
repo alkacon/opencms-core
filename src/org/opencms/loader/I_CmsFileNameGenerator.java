@@ -118,4 +118,11 @@ public interface I_CmsFileNameGenerator {
      * @throws CmsException if something goes wrong
      */
     Iterator<String> getUrlNameSequence(String baseName) throws CmsException;
+
+    /**
+     * Initializes this instance with an admin CMS context.
+     *
+     * @param cms the admin CMS context
+     */
+    default void setAdminCms(CmsObject cms) {}
 }
