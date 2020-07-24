@@ -206,7 +206,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-    
+
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {
@@ -303,8 +303,7 @@ public class CmsXmlSitemapGenerator {
         String baseSitePath = m_siteGuestCms.getRequestContext().removeSiteRoot(m_baseFolderRootPath);
         initializeFileData(baseSitePath);
         for (CmsResource resource : getDirectPages()) {
-            if (CmsResourceTypeHtmlRedirect.isRedirect(resource)
-                && CmsResourceTypeHtmlRedirect.checkExcludeFromSitemap(m_siteGuestCms, resource)) {
+            if (CmsResourceTypeHtmlRedirect.isRedirect(resource)) {
                 continue;
             }
             String sitePath = m_siteGuestCms.getSitePath(resource);
