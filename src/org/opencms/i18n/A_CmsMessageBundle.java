@@ -95,7 +95,6 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.ui.contextmenu.Messages.get(),
             org.opencms.ui.dialogs.Messages.get(),
             org.opencms.util.Messages.get(),
-            org.opencms.webdav.Messages.get(),
             org.opencms.widgets.Messages.get(),
             org.opencms.workflow.Messages.get(),
             org.opencms.workplace.Messages.get(),

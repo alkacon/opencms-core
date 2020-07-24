@@ -362,34 +362,6 @@
     </servlet-mapping>
 
     <!-- *************************** WebDAV configuration ******************************** -->
-
-    <servlet>
-        <description>
-            Creates an access to OpenCms through WebDAV.
-        </description>
-        <servlet-name>OpenCmsWebDavServlet</servlet-name>
-        <servlet-class>org.opencms.webdav.CmsWebdavServlet</servlet-class>
-        <init-param>
-            <param-name>listings</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>readonly</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <init-param>
-            <param-name>repository</param-name>
-            <param-value>webdav_root</param-value>
-        </init-param>
-        <!-- do not load on startup by default -->
-        <load-on-startup>-3</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>OpenCmsWebDavServlet</servlet-name>
-        <url-pattern>/webdav1/*</url-pattern>
-    </servlet-mapping>
-    
     
     <servlet>
         <description>
