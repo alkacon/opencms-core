@@ -25,41 +25,40 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav.jackrabbit;
+package org.opencms.webdav;
 
-import java.io.InputStream;
-
-import org.apache.jackrabbit.webdav.DavServletRequest;
-import org.apache.jackrabbit.webdav.io.InputContextImpl;
+import org.apache.jackrabbit.webdav.AbstractLocatorFactory;
 
 /**
- * Input context that also allows querying the request method.
+ * The locator factory for the WebDAV implementation..
  */
-public class CmsDavInputContext extends InputContextImpl {
-
-    /** The current request. */
-    private DavServletRequest m_request;
+public class CmsDavLocatorFactory extends AbstractLocatorFactory {
 
     /**
      * Creates a new instance.
-     *
-     * @param request the request
-     * @param stream the stream
      */
-    public CmsDavInputContext(DavServletRequest request, InputStream stream) {
+    public CmsDavLocatorFactory() {
 
-        super(request, stream);
-        m_request = request;
+        super(null);
 
     }
 
     /**
-     * Gets the request method for the current request.
-     *
-     * @return the request method
+     * @see org.apache.jackrabbit.webdav.AbstractLocatorFactory#getRepositoryPath(java.lang.String, java.lang.String)
      */
-    public String getMethod() {
+    @Override
+    protected String getRepositoryPath(String resourcePath, String wspPath) {
 
-        return m_request.getMethod();
+        return resourcePath;
     }
+
+    /**
+     * @see org.apache.jackrabbit.webdav.AbstractLocatorFactory#getResourcePath(java.lang.String, java.lang.String)
+     */
+    @Override
+    protected String getResourcePath(String repositoryPath, String wspPath) {
+
+        return repositoryPath;
+    }
+
 }

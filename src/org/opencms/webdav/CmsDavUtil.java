@@ -25,40 +25,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav.jackrabbit;
+package org.opencms.webdav;
 
-import org.apache.jackrabbit.webdav.AbstractLocatorFactory;
+import org.opencms.main.CmsException;
+import org.opencms.security.CmsPermissionViolationException;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * The locator factory for the WebDAV implementation..
+ * Various utilities for the WebDAV implementation.
  */
-public class CmsDavLocatorFactory extends AbstractLocatorFactory {
+public class CmsDavUtil {
 
-    /**
-     * Creates a new instance.
-     */
-    public CmsDavLocatorFactory() {
+    /** Default date format to use for date-valued properties. */
+    public static final DateFormat DATE_FORMAT;
+    public static final String PARAM_REPOSITORY = "repository";
 
-        super(null);
-
+    static {
+        DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
-     * @see org.apache.jackrabbit.webdav.AbstractLocatorFactory#getRepositoryPath(java.lang.String, java.lang.String)
+     * Gets the HTTP status code to use for an exception.
+     *
+     * @param e the exception
+     * @return the status code
      */
-    @Override
-    protected String getRepositoryPath(String resourcePath, String wspPath) {
+    public static int getStatusForException(CmsException e) {
 
-        return resourcePath;
-    }
-
-    /**
-     * @see org.apache.jackrabbit.webdav.AbstractLocatorFactory#getResourcePath(java.lang.String, java.lang.String)
-     */
-    @Override
-    protected String getResourcePath(String repositoryPath, String wspPath) {
-
-        return repositoryPath;
+        if (e instanceof CmsPermissionViolationException) {
+            return HttpServletResponse.SC_FORBIDDEN;
+        } else {
+            return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        }
     }
 
 }

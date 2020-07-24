@@ -25,45 +25,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.webdav.jackrabbit;
+package org.opencms.webdav;
 
-import org.opencms.main.CmsException;
-import org.opencms.security.CmsPermissionViolationException;
+import java.io.InputStream;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletResponse;
+import org.apache.jackrabbit.webdav.DavServletRequest;
+import org.apache.jackrabbit.webdav.io.InputContextImpl;
 
 /**
- * Various utilities for the WebDAV implementation.
+ * Input context that also allows querying the request method.
  */
-public class CmsDavUtil {
+public class CmsDavInputContext extends InputContextImpl {
 
-    /** Default date format to use for date-valued properties. */
-    public static final DateFormat DATE_FORMAT;
-    public static final String PARAM_REPOSITORY = "repository";
+    /** The current request. */
+    private DavServletRequest m_request;
 
-    static {
-        DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    /**
+     * Creates a new instance.
+     *
+     * @param request the request
+     * @param stream the stream
+     */
+    public CmsDavInputContext(DavServletRequest request, InputStream stream) {
+
+        super(request, stream);
+        m_request = request;
+
     }
 
     /**
-     * Gets the HTTP status code to use for an exception.
+     * Gets the request method for the current request.
      *
-     * @param e the exception
-     * @return the status code
+     * @return the request method
      */
-    public static int getStatusForException(CmsException e) {
+    public String getMethod() {
 
-        if (e instanceof CmsPermissionViolationException) {
-            return HttpServletResponse.SC_FORBIDDEN;
-        } else {
-            return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        }
+        return m_request.getMethod();
     }
-
 }

@@ -368,7 +368,7 @@
         New  webdav servlet implementation.
         </description>
         <servlet-name>DavServlet</servlet-name>
-        <servlet-class>org.opencms.webdav.jackrabbit.CmsJackrabbitWebdavServlet</servlet-class>
+        <servlet-class>org.opencms.webdav.CmsJackrabbitWebdavServlet</servlet-class>
        <init-param>
             <param-name>repository</param-name>
             <param-value>webdav_root</param-value>
