@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
@@ -63,6 +64,7 @@ import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsGwtServiceContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
@@ -484,6 +486,29 @@ public final class OpenCmsCore {
     public CmsLetsEncryptConfiguration getLetsEncryptConfig() {
 
         return m_letsEncryptConfig;
+    }
+
+    /**
+     * Handler for built-in AJAX services that don't belong anywhere else and don't deserve their own request handler.
+     *
+     * @param remainingPath the remainder of the path after /handleBuiltinService
+     * @param req the current request
+     * @param res the current response
+     *
+     * @throws ServletException if something goes wrong
+     */
+    public void invokeBuiltinService(String remainingPath, HttpServletRequest req, HttpServletResponse res)
+    throws ServletException {
+
+        try {
+            CmsObject cms = initCmsObject(req, res);
+            if (CmsGwtConstants.HANDLER_UNLOCK_PAGE.equals(remainingPath)) {
+                CmsContainerpageService.unlockPage(cms, req, res);
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new ServletException(e);
+        }
     }
 
     /**

@@ -116,6 +116,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 4729951599966070050L;
 
+    /** URL prefix for the built-in service handler. */
+    private static final String HANDLE_BUILTIN_SERVICE = "/handleBuiltinService/";
+
     /**
      * OpenCms servlet main request handling method.<p>
      *
@@ -147,8 +150,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 }
             }
 
-            String path = OpenCmsCore.getInstance().getPathInfo(req);
-            if (path.startsWith(HANDLE_PATH)) {
+            OpenCmsCore.getInstance();
+            String path = OpenCmsCore.getPathInfo(req);
+            if (path.startsWith(HANDLE_BUILTIN_SERVICE)) {
+                // built-in services are for small AJAX-related functionality in the core that doesn't need to be configurable
+                String remainder = path.substring(HANDLE_BUILTIN_SERVICE.length() - 1); // we want a leading slash in remainder
+                OpenCmsCore.getInstance().invokeBuiltinService(remainder, req, res);
+            } else if (path.startsWith(HANDLE_PATH)) {
                 // this is a request to an OpenCms handler URI
                 invokeHandler(req, res);
             } else if (path.endsWith(HANDLE_GWT)) {
@@ -210,11 +218,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 } catch (CmsException e) {
                     // unlikely to happen
                     if (LOG.isWarnEnabled()) {
+                        OpenCmsCore.getInstance();
                         LOG.warn(
                             Messages.get().getBundle().key(
                                 Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
                                 name,
-                                OpenCmsCore.getInstance().getPathInfo(req)),
+                                OpenCmsCore.getPathInfo(req)),
                             e);
                     }
                 }
@@ -281,7 +290,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     protected void invokeHandler(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        String name = OpenCmsCore.getInstance().getPathInfo(req).substring(HANDLE_PATH.length());
+        OpenCmsCore.getInstance();
+        String name = OpenCmsCore.getPathInfo(req).substring(HANDLE_PATH.length());
         I_CmsRequestHandler handler = OpenCmsCore.getInstance().getRequestHandler(name);
         if ((handler == null) && name.contains("/")) {
             // if the name contains a '/', also check for handlers matching the first path fragment only

@@ -49,8 +49,8 @@ public final class CmsGwtConstants {
     }
 
     /**
-     * Quick launcher constants.<p>
-     */
+    * Quick launcher constants.<p>
+    */
     public static final class QuickLaunch {
 
         /** Context string. */
@@ -231,6 +231,9 @@ public final class CmsGwtConstants {
 
     /** CSS class for containers inflated due to an element dragged into them that is of lower height than the empty container HTML. */
     public static final String CLASS_CONTAINER_INFLATED = "oc-container-inflated";
+
+    /** Sub-path for the page unlock service. */
+    public static final String HANDLER_UNLOCK_PAGE = "/unlockPage";
 
     /**
      * Hide constructor.<p>
