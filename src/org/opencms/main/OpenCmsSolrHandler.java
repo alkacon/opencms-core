@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchManager;
@@ -41,6 +42,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
@@ -78,6 +81,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
         /** The Solr query. */
         public CmsSolrQuery m_query;
+
     }
 
     /**
@@ -115,6 +119,16 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /** The UID. */
     private static final long serialVersionUID = 2460644631508735724L;
+
+    /** The default allowed wt parameter values  */
+    public static final Collection<String> DEFAULT_ALLOWED_WRITE_TO_VALUES = Arrays.asList(
+        new String[] {"json", "xml"});
+
+    /** Config parameter for the request handler to set the allowed "wt" parameter values. */
+    private static final String CONFIG_PARAM_ALLOWED_WRITE_TO = "allowedWriteTo";
+
+    /** The allowed wt parameter values */
+    public Collection<String> m_allowedWriteTo;
 
     /**
      * OpenCms servlet main request handling method.<p>
@@ -178,6 +192,18 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     }
 
     /**
+     * @see org.opencms.main.I_CmsRequestHandler#initParameters(org.opencms.configuration.CmsParameterConfiguration)
+     */
+    @Override
+    public void initParameters(CmsParameterConfiguration params) {
+
+        String allowedWriteTo = params.getString(CONFIG_PARAM_ALLOWED_WRITE_TO, null);
+        m_allowedWriteTo = null != allowedWriteTo
+        ? Arrays.asList(allowedWriteTo.split(","))
+        : DEFAULT_ALLOWED_WRITE_TO_VALUES;
+    }
+
+    /**
      * Returns the CMS object.<p>
      *
      * @param req the request
@@ -221,6 +247,26 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
         Context context = new Context();
         context.m_cms = getCmsObject(req);
         context.m_params = CmsRequestUtil.createParameterMap(req.getParameterMap());
+        String[] wtValues = context.m_params.get(CommonParams.WT);
+        if ((null != wtValues) && (wtValues.length > 0)) {
+            String origWtValue = wtValues[0];
+            if (wtValues.length > 1) {
+                context.m_params.put(CommonParams.WT, new String[] {origWtValue});
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Called Solr handler with multiple 'wt' params. Keeping only the value '" + origWtValue + "'.");
+                }
+            }
+            if (!m_allowedWriteTo.contains(origWtValue)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Called Solr handler with forbidden 'wt' parameter value '"
+                            + origWtValue
+                            + "'. The value is removed.");
+                }
+                context.m_params.remove(CommonParams.WT);
+            }
+        }
         context.m_index = CmsSearchManager.getIndexSolr(context.m_cms, context.m_params);
 
         if (context.m_index != null) {
