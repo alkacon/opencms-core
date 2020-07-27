@@ -49,8 +49,8 @@ public final class CmsGwtConstants {
     }
 
     /**
-     * Quick launcher constants.<p>
-     */
+    * Quick launcher constants.<p>
+    */
     public static final class QuickLaunch {
 
         /** Context string. */
@@ -222,6 +222,9 @@ public final class CmsGwtConstants {
 
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
+
+    /** Sub-path for the page unlock service. */
+    public static final String HANDLER_UNLOCK_PAGE = "/unlockPage";
 
     /**
      * Hide constructor.<p>

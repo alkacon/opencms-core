@@ -192,6 +192,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The detail container page id (may be null). */
+    private CmsUUID m_detailContainerPageId;
+
     /**
      * Constructor.<p>
      *
@@ -202,6 +205,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param sitemapManager if the user has the sitemap manager role
      * @param detailId the detail resource id, if available
      * @param detailContainerPage the detail view container resource path
+     * @param detailContainerPageId the detail view container page structure id
      * @param detailTypes the set of names of types for which this page is registered as detail page
      * @param lastModified the last modification date of the page
      * @param lockInfo lock information, if the page is locked by another user
@@ -230,6 +234,7 @@ public final class CmsCntPageData implements IsSerializable {
         boolean sitemapManager,
         CmsUUID detailId,
         String detailContainerPage,
+        CmsUUID detailContainerPageId,
         Set<String> detailTypes,
         long lastModified,
         String lockInfo,
@@ -261,6 +266,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_locale = locale;
         m_detailId = detailId;
         m_detailContainerPage = detailContainerPage;
+        m_detailContainerPageId = detailContainerPageId;
         m_detailTypes = detailTypes;
         m_useClassicEditor = useClassicEditor;
         m_templateContextInfo = contextInfo;
@@ -344,6 +350,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getDetailContainerPage() {
 
         return m_detailContainerPage;
+    }
+
+    /**
+     * Gets the structure id of the detail container page (or null if we are not on on a detail page, or there is no detail container page).
+     *
+     * @return the structure id of the detail container page
+     */
+    public CmsUUID getDetailContainerPageId() {
+
+        return m_detailContainerPageId;
     }
 
     /**

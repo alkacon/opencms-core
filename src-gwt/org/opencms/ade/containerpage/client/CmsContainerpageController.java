@@ -75,6 +75,8 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.gwt.shared.I_CmsUnlockData;
+import org.opencms.gwt.shared.I_CmsUnlockDataFactory;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsStringUtil;
@@ -112,6 +114,8 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * Data provider for the container-page editor. All data concerning the container-page is requested and maintained by this provider.<p>
@@ -3767,16 +3771,19 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Unlocks the container-page in a synchronized RPC call.<p>
+     * Asynchronously unlocks the container page.
      */
     protected void unlockContainerpage() {
 
-        if (getData().getDetailContainerPage() != null) {
-
-            CmsCoreProvider.get().unlock(getData().getDetailContainerPage());
-        } else if (unlockResource(CmsCoreProvider.get().getStructureId())) {
-            CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
+        I_CmsUnlockDataFactory factory = GWT.create(I_CmsUnlockDataFactory.class);
+        AutoBean<I_CmsUnlockData> unlockParams = factory.unlockData();
+        unlockParams.as().setPageId("" + CmsCoreProvider.get().getStructureId());
+        if (getData().getDetailId() != null) {
+            unlockParams.as().setDetailId("" + getData().getDetailId());
         }
+        unlockParams.as().setLocale(CmsCoreProvider.get().getLocale());
+        String url = CmsCoreProvider.get().link("/handleBuiltinService" + CmsGwtConstants.HANDLER_UNLOCK_PAGE);
+        sendBeacon(url, AutoBeanCodex.encode(unlockParams).getPayload());
     }
 
     /**
@@ -4077,6 +4084,16 @@ public final class CmsContainerpageController {
             m_editButtonsPositionTimer = null;
         }
     }
+
+    /**
+     * Calls the browser's sendBeacon function.
+     *
+     * @param url the URL to send the data to
+     * @param data the data to send
+     */
+    private native void sendBeacon(String url, String data) /*-{
+		$wnd.navigator.sendBeacon(url, data);
+    }-*/;
 
     /**
      * Checks whether given element is a model group and it's option bar edit points should be visible.<p>

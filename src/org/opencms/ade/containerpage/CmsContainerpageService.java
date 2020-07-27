@@ -87,6 +87,8 @@ import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.gwt.shared.I_CmsUnlockData;
+import org.opencms.gwt.shared.I_CmsUnlockDataFactory;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleManager;
@@ -109,6 +111,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -159,6 +162,9 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
 
 /**
  * The RPC service used by the container-page editor.<p>
@@ -436,6 +442,81 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             srv.clearThreadStorage();
         }
         return result;
+    }
+
+    /**
+     * Unlocks a page or set of pages if they are locked by the current user.
+     *
+     * <p>This is not called via the normal GWT-RPC mechanism, but with the browser's sendBeacon function.
+     *
+     * @param cms the CMS context
+     * @param request the current request
+     * @param response the current response
+     * @throws Exception if something goes wrong
+     */
+    public static void unlockPage(CmsObject cms, HttpServletRequest request, HttpServletResponse response)
+    throws Exception {
+
+        // don't bother doing anything unless we have a session and are offline
+
+        if (request.getSession(false) == null) {
+            LOG.debug("no session found");
+            return;
+        }
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            LOG.debug("can't unlock page in online project");
+            return;
+        }
+        byte[] byteData = CmsFileUtil.readFully(request.getInputStream(), false);
+
+        String encoding = request.getCharacterEncoding();
+        if (encoding == null) {
+            encoding = "UTF-8";
+        }
+        String strData = new String(byteData, encoding);
+        LOG.debug("Unlock request received: " + strData);
+
+        AutoBean<I_CmsUnlockData> data = AutoBeanCodex.decode(
+            AutoBeanFactorySource.create(I_CmsUnlockDataFactory.class),
+            I_CmsUnlockData.class,
+            strData);
+
+        I_CmsUnlockData unlockData = data.as();
+        List<CmsUUID> ids = new ArrayList<>();
+        if (CmsUUID.isValidUUID(unlockData.getPageId())) {
+            ids.add(new CmsUUID(unlockData.getPageId()));
+        }
+        CmsUUID detailId = null;
+        if (CmsUUID.isValidUUID(unlockData.getDetailId())) {
+            detailId = new CmsUUID(unlockData.getDetailId());
+            try {
+                CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.ALL);
+                Optional<CmsResource> detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(
+                    cms,
+                    detailResource,
+                    unlockData.getLocale());
+                if (detailOnlyPage.isPresent()) {
+                    ids.add(detailOnlyPage.get().getStructureId());
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        for (CmsUUID id : ids) {
+            try {
+                CmsResource page = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsLock lock = cms.getLock(page);
+                if (!lock.isUnlocked() && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                    LOG.debug("Unlocking " + page.getRootPath());
+                    cms.unlockResource(page);
+                } else {
+                    LOG.debug("Can't unlock " + page.getRootPath() + " because it's not locked for the current user.");
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
@@ -1300,6 +1381,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             String detailContainerPage = null;
             CmsQuickLaunchLocationCache locationCache = CmsQuickLaunchLocationCache.getLocationCache(
                 request.getSession());
+            CmsUUID detailContainerPageId = null;
             if (detailResource != null) {
                 locationCache.setPageEditorResource(cms.getRequestContext().getSiteRoot(), detailResource);
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
@@ -1311,7 +1393,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     containerPage,
                     detailResourcePath,
                     locale);
+
                 if (rootCms.existsResource(detailContainerPage, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    detailContainerPageId = rootCms.readResource(
+                        detailContainerPage,
+                        CmsResourceFilter.IGNORE_EXPIRATION).getStructureId();
                     noEditReason = getNoEditReason(
                         rootCms,
                         rootCms.readResource(detailContainerPage, CmsResourceFilter.IGNORE_EXPIRATION));
@@ -1418,6 +1504,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 sitemapManager,
                 detailResource != null ? detailResource.getStructureId() : null,
                 detailContainerPage,
+                detailContainerPageId,
                 detailTypes,
                 lastModified,
                 getLockInfo(containerPage),
