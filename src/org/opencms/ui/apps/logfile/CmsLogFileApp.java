@@ -37,6 +37,7 @@ import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCRUDApp;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsAppViewLayout;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsLog4jUtil;
@@ -77,6 +78,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -296,7 +298,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
     /**
      * Adds a marker entry to the currently selected log file.
      *
-     * @param logFile
+     * @param logFile the log file name
      */
     public void addMark(String logFile) {
 
@@ -304,7 +306,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
         List<Logger> loggers = new ArrayList<>(context.getLoggers());
         // Sort loggers by name to prioritize parent over child loggers
         loggers.sort((l1, l2) -> ComparisonChain.start().compare(l1.getName(), l2.getName()).result());
-
+        boolean found = false;
         loggerLoop: for (Logger logger : loggers) {
             for (Map.Entry<String, Appender> entry : logger.getAppenders().entrySet()) {
                 Appender appender = entry.getValue();
@@ -318,10 +320,16 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
 
                     // break loggerLoop;
                     appender.append(event);
+                    found = true;
                     break loggerLoop;
                 }
             }
         }
+
+        if (!found) {
+            Notification.show(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_LOGFILE_NOT_ACTIVE_0));
+        }
+
     }
 
     /**
@@ -492,9 +500,6 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
     @Override
     public void initUI(I_CmsAppUIContext context) {
 
-        context.addPublishButton(updatedItems -> {
-            // nothing to do
-        });
         super.initUI(context);
     }
 
@@ -588,7 +593,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
     }
 
     /**
-     * Button to open channel settings path.<p>
+     * Button to add a marker to the current log file.
      */
     protected void addMarkButton() {
 
@@ -609,6 +614,14 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
         });
         m_uiContext.addToolbarButton(button);
 
+    }
+
+    /**
+     * Adds the publish button.
+     */
+    protected void addPublishButton() {
+
+        m_uiContext.addToolbarButton(CmsAppViewLayout.createPublishButton(ids -> {}));
     }
 
     /**
@@ -715,6 +728,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
         if (!state.startsWith(PATH_LOGCHANNEL)) {
             m_rootLayout.setMainHeightFull(true);
             m_fileView = new CmsLogFileView(this);
+            addPublishButton();
             addDownloadButton(m_fileView);
             addSettingsButton();
             addChannelButton();

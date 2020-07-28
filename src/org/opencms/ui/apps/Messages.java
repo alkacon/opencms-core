@@ -1088,6 +1088,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_FILEVIEW_0 = "GUI_LOGFILE_FILEVIEW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_LOGFILE_NOT_ACTIVE_0 = "GUI_LOGFILE_LOGFILE_NOT_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_LOGSETTINGS_CHANNEL_0 = "GUI_LOGFILE_LOGSETTINGS_CHANNEL_0";
 
     /** Message constant for key in the resource bundle. */
