@@ -45,6 +45,7 @@ public final class CmsLog4jUtil {
      * Hidden default constructor.<P>
      */
     private CmsLog4jUtil() {
+
         // do nothing
     }
 

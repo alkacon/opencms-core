@@ -1056,6 +1056,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_VIEW_1 = "GUI_LISTMANAGER_VIEW_1";
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGFILE_ADD_MARK_0 = "GUI_LOGFILE_ADD_MARK_0";
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ADMIN_TOOL_NAME_0 = "GUI_LOGFILE_ADMIN_TOOL_NAME_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_ADMIN_TOOL_NAME_HELP_0 = "GUI_LOGFILE_ADMIN_TOOL_NAME_HELP_0";
@@ -1081,6 +1083,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_FILEPATH_0 = "GUI_LOGFILE_FILEPATH_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_HELP_0 = "GUI_LOGFILE_FILEPATH_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEVIEW_0 = "GUI_LOGFILE_FILEVIEW_0";
 

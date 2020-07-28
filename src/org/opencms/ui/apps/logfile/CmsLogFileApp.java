@@ -50,21 +50,28 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.FileAppender.Builder;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.SimpleMessage;
 
+import com.google.common.collect.ComparisonChain;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -82,9 +89,6 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Logger> {
 
-    /** The prefix of opencms classes. */
-    private static final String OPENCMS_CLASS_PREFIX = "org.opencms";
-
     /**Log folder path.*/
     protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsPath() == null
     ? ""
@@ -98,11 +102,14 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
     /**Logger.*/
     private static Log LOG = CmsLog.getLog(CmsLogFileApp.class);
 
-    /**The log-channel table. */
-    protected CmsLogChannelTable m_table;
+    /** The prefix of opencms classes. */
+    private static final String OPENCMS_CLASS_PREFIX = "org.opencms";
 
     /**The log file view layout.*/
     protected CmsLogFileView m_fileView;
+
+    /**The log-channel table. */
+    protected CmsLogChannelTable m_table;
 
     /** The file table filter input. */
     private TextField m_tableFilter;
@@ -284,6 +291,37 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
             logchannel.addAppender(fapp);
         }
 
+    }
+
+    /**
+     * Adds a marker entry to the currently selected log file.
+     *
+     * @param logFile
+     */
+    public void addMark(String logFile) {
+
+        LoggerContext context = (LoggerContext)LogManager.getContext(false);
+        List<Logger> loggers = new ArrayList<>(context.getLoggers());
+        // Sort loggers by name to prioritize parent over child loggers
+        loggers.sort((l1, l2) -> ComparisonChain.start().compare(l1.getName(), l2.getName()).result());
+
+        loggerLoop: for (Logger logger : loggers) {
+            for (Map.Entry<String, Appender> entry : logger.getAppenders().entrySet()) {
+                Appender appender = entry.getValue();
+                if (logFile.equals(getFileName(entry.getValue()))) {
+                    String message = "---------- Mark created by '"
+                        + A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().getName()
+                        + "' ----------";
+                    LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName(
+                        "org.opencms").setIncludeLocation(true).setLoggerFqcn(CmsLogFileApp.class.getName()).setMessage(
+                            new SimpleMessage(message)).build();
+
+                    // break loggerLoop;
+                    appender.append(event);
+                    break loggerLoop;
+                }
+            }
+        }
     }
 
     /**
@@ -550,6 +588,30 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
     }
 
     /**
+     * Button to open channel settings path.<p>
+     */
+    protected void addMarkButton() {
+
+        Button button = CmsToolBar.createButton(
+            FontAwesome.PLUS,
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_ADD_MARK_0));
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                if ((m_fileView != null) && (m_fileView.getCurrentFile() != null)) {
+                    addMark(m_fileView.getCurrentFile());
+                    m_fileView.updateView();
+                }
+            }
+        });
+        m_uiContext.addToolbarButton(button);
+
+    }
+
+    /**
      * Button to refresh the file view.<p>
      */
     protected void addRefreshButton() {
@@ -656,6 +718,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
             addDownloadButton(m_fileView);
             addSettingsButton();
             addChannelButton();
+            addMarkButton();
             addRefreshButton();
             m_table = null;
             return m_fileView;
