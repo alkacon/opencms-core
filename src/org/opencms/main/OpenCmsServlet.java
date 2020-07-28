@@ -150,7 +150,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 }
             }
 
-            OpenCmsCore.getInstance();
             String path = OpenCmsCore.getPathInfo(req);
             if (path.startsWith(HANDLE_BUILTIN_SERVICE)) {
                 // built-in services are for small AJAX-related functionality in the core that doesn't need to be configurable
@@ -218,7 +217,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 } catch (CmsException e) {
                     // unlikely to happen
                     if (LOG.isWarnEnabled()) {
-                        OpenCmsCore.getInstance();
                         LOG.warn(
                             Messages.get().getBundle().key(
                                 Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
@@ -290,7 +288,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     protected void invokeHandler(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        OpenCmsCore.getInstance();
         String name = OpenCmsCore.getPathInfo(req).substring(HANDLE_PATH.length());
         I_CmsRequestHandler handler = OpenCmsCore.getInstance().getRequestHandler(name);
         if ((handler == null) && name.contains("/")) {
