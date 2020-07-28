@@ -41,6 +41,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
@@ -115,6 +117,10 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /** The UID. */
     private static final long serialVersionUID = 2460644631508735724L;
+
+    /** The default allowed wt parameter values  */
+    public static final Collection<String> DEFAULT_ALLOWED_WRITE_TO_VALUES = Arrays.asList(
+        new String[] {"json", "xml"});
 
     /**
      * OpenCms servlet main request handling method.<p>
@@ -221,6 +227,26 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
         Context context = new Context();
         context.m_cms = getCmsObject(req);
         context.m_params = CmsRequestUtil.createParameterMap(req.getParameterMap());
+        String[] wtValues = context.m_params.get(CommonParams.WT);
+        if ((null != wtValues) && (wtValues.length > 0)) {
+            String origWtValue = wtValues[0];
+            if (wtValues.length > 1) {
+                context.m_params.put(CommonParams.WT, new String[] {origWtValue});
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Called Solr handler with multiple 'wt' params. Keeping only the value '" + origWtValue + "'.");
+                }
+            }
+            if (!DEFAULT_ALLOWED_WRITE_TO_VALUES.contains(origWtValue)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Called Solr handler with forbidden 'wt' parameter value '"
+                            + origWtValue
+                            + "'. The value is removed.");
+                }
+                context.m_params.remove(CommonParams.WT);
+            }
+        }
         context.m_index = CmsSearchManager.getIndexSolr(context.m_cms, context.m_params);
 
         if (context.m_index != null) {
