@@ -1030,8 +1030,17 @@ public final class CmsVaadinUtils {
      * @return the workplace messages
      */
     public static CmsMessages getWpMessagesForCurrentLocale() {
-
-        return OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
+        Locale locale;
+        if (A_CmsUI.get() != null) { 
+            locale = A_CmsUI.get().getLocale();
+        } else { 
+            if (LOG.isWarnEnabled()) { 
+                Exception e = new Exception("getWpMessagesForCurrentLocale called from non-Vaadin context");
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            locale = Locale.ENGLISH;
+        }
+        return OpenCms.getWorkplaceManager().getMessages(locale);
     }
 
     /**
