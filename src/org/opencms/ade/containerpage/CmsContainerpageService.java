@@ -498,6 +498,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 if (detailOnlyPage.isPresent()) {
                     ids.add(detailOnlyPage.get().getStructureId());
                 }
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.info(e.getLocalizedMessage(), e);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
