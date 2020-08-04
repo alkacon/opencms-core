@@ -498,6 +498,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 if (detailOnlyPage.isPresent()) {
                     ids.add(detailOnlyPage.get().getStructureId());
                 }
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.info(e.getLocalizedMessage(), e);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -2232,8 +2234,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     new CmsUUID(formatterConfigId));
             } else if (formatterConfigId.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)
                 && CmsUUID.isValidUUID(formatterConfigId.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length()))) {
-                formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
-            }
+                    formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
+                }
         }
         if (formatter == null) {
             formatter = CmsElementUtil.getFormatterForContainer(cms, element, container, config, getSessionCache());
