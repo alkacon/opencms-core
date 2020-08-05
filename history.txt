@@ -49,6 +49,7 @@ OpenCms 11.0.2 - ????
 * Fixed issue with uploading to expired folders (github issuse #693)
 * Added missing localization for htmlredirect fields (github issue #682)
 * Added missing encoding to CMS_HISTORY_PROPERTIES table definition (github issue #688)
+* Fixed wrong reference to UGC formatter JSP (github pull request #699)
 
 - Restricted 'wt' parameter in Solr handler to 'json' and 'xml' to prevent security issues
 - Improved column sorting in file tables
