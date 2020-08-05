@@ -19,7 +19,8 @@ OpenCms 11.0.2 - ????
 ! Extended list type by combined category and folder restrictions
 - Restricted 'wt' parameter in Solr handler to 'json' and 'xml' to prevent security issues
 - Improved column sorting in file tables
-- Improved searchfield mappings with locale 'none' to work for contents not present in the default locale
+- Improved <cms:search> to ignore facet filter parameters with empty values
+- Improved searchfield mappings with locale 'none' to work for contents not present in the system default locale
 - Improved date mappings in Solr - always fill instancedatecurrenttill_dt
 - Added support for the 'prefix' attribute to the <cms:bundle> tag
 - CmsLockInactiveAccountsJob now disables inactive users instead of locking them
@@ -28,7 +29,8 @@ OpenCms 11.0.2 - ????
 - Updated TinyMCE to version 5.1.5
 - Updated CodeMirror to version 5.50.2
 - Updated icu4j dependency to version 62.1
-* Fixed issue where automatically generated file names matched existing ones and thus prevented file creation.
+* Fixed issue where some caches are not cleared when static export is disabled
+* Fixed issue where automatically generated file names matched existing ones and thus prevented file creation
 * Fixed issue where an edited container page was not unlocked when left (using Chrome)
 * Fixed issue where 'This page' publish mode ignored search-based lists
 * Fixed issue where <cms:edit> displayed edit points in the wrong element view when used without a resource
