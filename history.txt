@@ -16,45 +16,53 @@ Legend:
 - General comment
 
 OpenCms 11.0.2 - ????
+! Extended list type by combined category and folder restrictions
 - Restricted 'wt' parameter in Solr handler to 'json' and 'xml' to prevent security issues
 - Improved column sorting in file tables
+- Improved searchfield mappings with locale 'none' to work for contents not present in the default locale
+- Improved date mappings in Solr - always fill instancedatecurrenttill_dt
 - Added support for the 'prefix' attribute to the <cms:bundle> tag
-- Changed locking of inactive users to actually disable those users
-- Changed import/export so that when a resource with an unknown type is imported, the same type name is later used for exporting the resource
+- CmsLockInactiveAccountsJob now disables inactive users instead of locking them
+- Changed import/export such that unknown resource types are kept
+- Changed 'LOCALE_VARIANT' relation type to weak, preventing unintended publishing of related resources
 - Updated TinyMCE to version 5.1.5
 - Updated CodeMirror to version 5.50.2
-* Fixed issue where users could be prevented from creating a new content by an existing content for which they had no read permissions
-* Fixed issue where an edited container page would not get unlocked when leaving it (using Chrome)
-* Fixed issue with 'This page' publish mode ignoring search-based lists
-* Fixed issue where editor buttons were shown in the wrong element view when using the <cms:edit> tag without a resource
+- Updated icu4j dependency to version 62.1
+* Fixed issue where automatically generated file names matched existing ones and thus prevented file creation.
+* Fixed issue where an edited container page was not unlocked when left (using Chrome)
+* Fixed issue where 'This page' publish mode ignored search-based lists
+* Fixed issue where <cms:edit> displayed edit points in the wrong element view when used without a resource
 * Fixed issue where links with question marks in their fragments (http://...#aaa?bbb) were not saved correctly
 * Fixed issue with moving/copying expired resources in the explorer
 * Fixed issue where preview mode would not work on detail pages after changing the title
-* Fixed issue with TinyMCE covering edit buttons in the content editor
+* Fixed issue with TinyMCE covering edit points in the content editor
 * Fixed session timeout errors in login dialog
 * Fixed issue with expired resources not being included in the gallery search
-* Fixed issue where Flex cache could become corrupted if JSPs threw exceptions
+* Fixed issue where Solr handler returned wrong JSON
+* Fixed issue where flex cache could become corrupted if JSPs threw exceptions
 * Fixed issue where viewing help texts for nested contents caused errors in the content editor
 * Fixed issue where users could not be removed from default groups unless they had the corresponding role
-* Fixed issues with the layout of reuse groups in the page editor
+* Fixed issue with the layout of reuse groups in the page editor
 * Fixed issue where the date picker in the editor did not work correctly when the __locale request parameter was used
 * Fixed issue where single selection mode would not work for repository-grouped category widgets
 * Fixed issue where trailing empty values in a user CSV file caused the user import to fail
 * Fixed issue with the module update function not handling expired resources correctly
-* Fixed issue where the "Creation disabled" setting in sitemap configuration was not being inherited in sub-sitemaps
-* Fixed issue where the the site switcher in the page editor didn't work correctly when multiple workplace URLs were configured
-* Fixed bug where updating a module would fail if it contained moved folders with renamed direct subfolders
-* Fixed issue with gallery dialog resizing in folder / sitemap tabs
+* Fixed issue where the "Creation disabled" setting in sitemap configuration was not inherited in sub-sitemaps
+* Fixed issue where the site switcher in the page editor didn't work correctly when multiple workplace URLs were configured
+* Fixed issue where updating a module would fail if it contained moved folders with renamed direct subfolders
+* Fixed issue with gallery dialog resizing in folder/sitemap tabs
 * Fixed issue where some user publish list data was never cleaned up in the database
 * Fixed issue where content change handlers were not working correctly for contents with xsd:choice elements
-* Fixed issue where the scheduled job for locking inactive users would lock new users that had not logged in yet
-* Fixed isue with module actions not being executed when installing modules
-* Fixed issue with color picker popup positioning (github issue #674)
-* Fixed wrong month filtering in list manager app (github issue #669)
-* Fixed issue where the user edit dialog didn't work because of an invalid start view (github issue #700)
-* Fixed issue with uploading to expired folders (github issuse #693)
-* Added missing localization for htmlredirect fields (github issue #682)
-* Added missing encoding to CMS_HISTORY_PROPERTIES table definition (github issue #688)
+* Fixed issue where CmsLockInactiveAccountsJob would lock/disable new users that had not logged in yet
+* Fixed configuration for custom file name generators.
+* Fixed issue with module actions not being executed when installing modules
+* Fixed issue where contents from the clipboards 'Favorites' did not get a new element instance id
+* Fixed issue #674 with color picker popup positioning
+* Fixed issue #669 - wrong month filtering in list manager app
+* Fixed issue #700 where the user edit dialog didn't work because of an invalid start view
+* Fixed issue #693 with uploading to expired folders
+* Fixed issue #682 - added missing localization for htmlredirect fields
+* Fixed issue #688 - added missing encoding to CMS_HISTORY_PROPERTIES table definition
 * Fixed wrong reference to UGC formatter JSP (github pull request #699)
 
 OpenCms 11.0.1- September 4, 2019
