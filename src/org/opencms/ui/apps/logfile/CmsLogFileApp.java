@@ -585,7 +585,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
 
                 Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.wide);
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGFILE_DOWNLOAD_0));
-                window.setContent(new CmsLogDownloadDialog(window, view.getCurrentFile()));
+                window.setContent(new CmsLogDownloadDialog(window, view.getCurrentFile(), getLogDownloadProvider()));
                 A_CmsUI.get().addWindow(window);
             }
         });
@@ -763,6 +763,14 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
         m_infoLayout.addComponent(m_tableFilter);
         return m_table;
 
+    }
+
+    /**
+     * Gets the download provider for the log download dialog.
+     */
+    protected I_CmsLogDownloadProvider getLogDownloadProvider() {
+
+        return new CmsDefaultLogDownloadProvider();
     }
 
     /**

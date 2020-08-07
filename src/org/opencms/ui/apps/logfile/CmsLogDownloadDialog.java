@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.logfile;
 
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -34,10 +35,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,7 +67,7 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
     /**
      * Helper class for generating the zip file for the log download.<p>
      */
-    class ZipGenerator {
+    public static class ZipGenerator {
 
         /** The set of generated parent directories. */
         private Set<String> m_directories = new HashSet<>();
@@ -178,25 +176,25 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
     /**total size of log files in MB.*/
     private double m_totalSize;
 
+    /** The download provider to be used for this dialog. */ 
+    private I_CmsLogDownloadProvider m_logProvider;
+
     /**
      * public constructor.<p>
      *
      * @param window to hold the dialog
      * @param filePath path of currently shown file
      */
-    public CmsLogDownloadDialog(final Window window, String filePath) {
+    public CmsLogDownloadDialog(final Window window, String filePath, I_CmsLogDownloadProvider logProvider) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_logProvider = logProvider;
 
-        m_totalSize = 0;
-        for (File file : CmsLogFileOptionProvider.getLogFiles()) {
-            if (!file.getAbsolutePath().endsWith(".zip")) {
-                m_file.addItem(file.getAbsolutePath());
-                m_totalSize += file.length() / (1024 * 1024);
-            }
+        for (String path : m_logProvider.getLogFiles()) {
+            m_file.addItem(path);
         }
 
-        m_donwloadAll.setVisible(m_totalSize < 150);
+        m_donwloadAll.setVisible(m_logProvider.canDownloadAllLogs());
 
         m_file.setFilteringMode(FilteringMode.CONTAINS);
         m_file.setNullSelectionAllowed(false);
@@ -243,28 +241,20 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
     protected Resource getDownloadResource() {
 
         String pathToDownload = (String)m_file.getValue();
-
-        if (m_donwloadAll.getValue().booleanValue()) {
-            pathToDownload = ZIP_PATH;
-            writeZipFile();
+        if (pathToDownload == null) {
+            return null;
         }
 
-        final File downloadFile = new File(pathToDownload);
+        if (m_donwloadAll.getValue().booleanValue()) {
 
-        return new StreamResource(new StreamResource.StreamSource() {
+            return new StreamResource(
+                () -> m_logProvider.readAllLogs(),
+                m_logProvider.getDownloadPrefix() + "logs.zip");
+        }
 
-            private static final long serialVersionUID = -8868657402793427460L;
-
-            public InputStream getStream() {
-
-                try {
-                    return new FileInputStream(downloadFile);
-                } catch (FileNotFoundException e) {
-                    return null;
-                }
-
-            }
-        }, downloadFile.getName());
+        return new StreamResource(
+            () -> m_logProvider.readLog(pathToDownload),
+            m_logProvider.getDownloadPrefix() + CmsResource.getName(pathToDownload));
     }
 
     /**
@@ -275,24 +265,4 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
         m_file.setEnabled(!m_donwloadAll.getValue().booleanValue());
     }
 
-    /**
-     * Writes the zip file with all logs.<p>
-     */
-    private void writeZipFile() {
-
-        try {
-            FileOutputStream fos = new FileOutputStream(ZIP_PATH);
-            ZipGenerator zipGen = new ZipGenerator(fos);
-            for (File file : CmsLogFileOptionProvider.getLogFiles()) {
-                if (!file.isDirectory() & !ZIP_PATH.equals(file.getAbsolutePath())) {
-                    zipGen.addToZip(new File(CmsLogFileApp.LOG_FOLDER), file);
-                }
-            }
-            zipGen.close();
-            fos.close();
-
-        } catch (IOException e) {
-            LOG.error("unable to build zip file", e);
-        }
-    }
 }
