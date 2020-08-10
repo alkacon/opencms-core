@@ -1,5 +1,5 @@
 ###################################################################
-# @OPENCMS_VERSION@ (c) 2002 - 2019 Alkacon Software GmbH & Co. KG
+# @OPENCMS_VERSION@ (c) 2002 - 2020 Alkacon Software GmbH & Co. KG
 #
 # This file contains the information of your currently used
 # configuration.
