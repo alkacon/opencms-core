@@ -15,18 +15,18 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 11.0.2 - ????
+OpenCms 11.0.2 - August 18, 2020
+- Extended import/export so that unknown resource types are kept.
 ! Extended list type by combined category and folder restrictions.
-- Restricted 'wt' parameter in Solr handler to 'json' and 'xml' to prevent security issues.
 - Improved column sorting in file tables.
-- Improved <cms:search> to ignore facet filter parameters with empty values.
-- Improved searchfield mappings with locale 'none'.
-- Improved date mappings in Solr - always fill instancedatecurrenttill_dt.
-- Added support for the 'prefix' attribute to the <cms:bundle> tag.
-- CmsLockInactiveAccountsJob now disables inactive users instead of locking them.
-- Changed import/export such that unknown resource types are kept.
 - Changed 'LOCALE_VARIANT' relation type to weak, preventing unintended publishing of related resources.
 - Removed mimetype check on CSV user import.
+- Improved <cms:search> to ignore facet filter parameters with empty values.
+- Restricted 'wt' parameter in SOLR handler to 'json' and 'xml' to prevent security issues.
+- Improved date mappings in SOLR - always fill instancedatecurrenttill_dt.
+- Improved searchfield mappings with locale 'none'.
+- Added support for the 'prefix' attribute to the <cms:bundle> tag.
+- CmsLockInactiveAccountsJob now disables inactive users instead of locking them.
 - Updated TinyMCE to version 5.1.5.
 - Updated CodeMirror to version 5.50.2.
 - Updated icu4j dependency to version 62.1.
@@ -68,7 +68,7 @@ OpenCms 11.0.2 - ????
 * Fixed issue #688 by adding missing encoding to CMS_HISTORY_PROPERTIES table definition.
 * Fixed wrong reference to UGC formatter JSP (github pull request #699).
 
-OpenCms 11.0.1- September 4, 2019
+OpenCms 11.0.1 - September 4, 2019
 ! Added site/project switch to bookmark dialog.
 ! Added title editing option for entries to bookmark dialog.
 ! Added option to remove all functions in the sitemap configuration.
