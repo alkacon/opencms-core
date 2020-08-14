@@ -135,6 +135,9 @@ import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
+import org.opencms.xml.containerpage.mutable.CmsContainerPageWrapper;
+import org.opencms.xml.containerpage.mutable.CmsMutableContainer;
+import org.opencms.xml.containerpage.mutable.CmsMutableContainerPage;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -149,6 +152,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -1658,6 +1662,56 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @throws CmsException when unable to create the content elements
      */
+    private boolean createNewContainerElements(CmsObject cms, CmsMutableContainerPage page, String sitePath)
+    throws CmsException {
+
+        boolean needsChanges = false;
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, cms.addSiteRoot(sitePath));
+        Locale contentLocale = OpenCms.getLocaleManager().getDefaultLocale(cms, CmsResource.getFolderPath(sitePath));
+        CmsObject cloneCms = OpenCms.initCmsObject(cms);
+        cloneCms.getRequestContext().setLocale(contentLocale);
+        for (CmsMutableContainer container : page.containers()) {
+            ListIterator<CmsContainerElementBean> iter = container.elements().listIterator();
+            while (iter.hasNext()) {
+                CmsContainerElementBean elem = iter.next();
+                if (elem.isCreateNew() && !elem.isGroupContainer(cms) && !elem.isInheritedContainer(cms)) {
+                    String typeName = OpenCms.getResourceManager().getResourceType(elem.getResource()).getTypeName();
+                    CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
+                    if (typeConfig == null) {
+                        throw new IllegalArgumentException(
+                            "Can not copy template model element '"
+                                + elem.getResource().getRootPath()
+                                + "' because the resource type '"
+                                + typeName
+                                + "' is not available in this sitemap.");
+                    }
+
+                    CmsResource newResource = typeConfig.createNewElement(
+                        cloneCms,
+                        elem.getResource(),
+                        CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(sitePath)));
+                    CmsContainerElementBean newBean = new CmsContainerElementBean(
+                        newResource.getStructureId(),
+                        elem.getFormatterId(),
+                        elem.getIndividualSettings(),
+                        false);
+                    iter.set(newBean);
+                    needsChanges = true;
+                }
+            }
+        }
+        return needsChanges;
+    }
+
+    /**
+     * Creates new content elements if required by the model page.<p>
+     *
+     * @param cms the cms context
+     * @param page the page
+     * @param sitePath the resource site path
+     *
+     * @throws CmsException when unable to create the content elements
+     */
     private void createNewContainerElements(CmsObject cms, CmsXmlContainerPage page, String sitePath)
     throws CmsException {
 
@@ -1845,6 +1899,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         true,
                         true);
                     ensureSingleLocale(page, entryFolder);
+                    CmsContainerPageWrapper wrapper = new CmsContainerPageWrapper(cms, page);
                     if (isFunctionDetail) {
                         String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
                         CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
@@ -1861,15 +1916,22 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                                 CmsResourceTypeFunctionConfig.FORMATTER_PATH,
                                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                         }
-                        addFunctionDetailElement(
-                            cms,
-                            page,
+                        if (!wrapper.addElementToContainer(
                             functionDetailContainer,
-                            functionStructureId,
-                            functionFormatter.getStructureId());
+                            new CmsContainerElementBean(
+                                functionStructureId,
+                                functionFormatter.getStructureId(),
+                                new HashMap<>(),
+                                false))) {
+
+                            throw new CmsException(
+                                Messages.get().container(
+                                    Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
+                                    page.getFile().getRootPath()));
+                        }
                     }
-                    createNewContainerElements(cms, page, entryPath);
-                    content = page.marshal();
+                    createNewContainerElements(cms, wrapper.page(), entryPath);
+                    content = wrapper.marshal();
                 }
                 newRes = cms.createResource(
                     entryPath,
