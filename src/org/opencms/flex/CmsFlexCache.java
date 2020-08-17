@@ -431,6 +431,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     // it will be null
                 }
                 if (it == null) {
+                    LOG.error("Flex cache clear event with no action parameter received");
                     break;
                 }
                 int i = it.intValue();
@@ -1086,7 +1087,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      *
      * @param key the key under which the value is saved
      * @param theCacheEntry the entry to cache
-     * @param variation the variation string 
+     * @param variation the variation string
      */
     private void put(CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry, String variation) {
 
