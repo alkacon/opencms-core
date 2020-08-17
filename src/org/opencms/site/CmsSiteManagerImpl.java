@@ -1243,18 +1243,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     }
 
     /**
-     * Checks if there is a configured site with the scheme / host / port from the given URI.
-     *
-     * @param uri the URI to check
-     * @return true if the site manager contains a site with the same host / port / scheme as the given URI
-     */
-    public boolean hasServerUri(String uri) {
-
-        CmsSiteMatcher matcher = new CmsSiteMatcher(uri);
-        return m_siteMatcherSites.containsKey(matcher);
-    }
-
-    /**
      * Initializes the site manager with the OpenCms system configuration.<p>
      *
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions

@@ -343,13 +343,11 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             try {
                 URI uriObj = new URI(redirectUri);
                 if (uriObj.getScheme() != null) {
-                    if (!OpenCms.getSiteManager().hasServerUri(redirectUri)) {
-                        LOG.error("Login bean redirect URI " + redirectUri + " does not lead to configured site.");
-                        return;
-                    }
+                    LOG.warn("Absolute URL not allowed as redirect URI: " + redirectUri);
+                    return;
                 }
             } catch (Exception e) {
-                LOG.error("Invalid redirect URI " + redirectUri + " in login bean: " + e.getLocalizedMessage(), e);
+                LOG.warn("Invalid redirect URI " + redirectUri + " in login bean: " + e.getLocalizedMessage(), e);
                 return;
             }
             if (redirectUri != null) {
