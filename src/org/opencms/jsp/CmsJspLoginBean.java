@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -339,6 +340,18 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
         login(userName, password, projectName);
         if (m_loginException == null) {
+            try {
+                URI uriObj = new URI(redirectUri);
+                if (uriObj.getScheme() != null) {
+                    if (!OpenCms.getSiteManager().hasServerUri(redirectUri)) {
+                        LOG.error("Login bean redirect URI " + redirectUri + " does not lead to configured site.");
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error("Invalid redirect URI " + redirectUri + " in login bean: " + e.getLocalizedMessage(), e);
+                return;
+            }
             if (redirectUri != null) {
                 getResponse().sendRedirect(
                     OpenCms.getLinkManager().substituteLink(getCmsObject(), redirectUri, null, true));
