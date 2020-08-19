@@ -57,6 +57,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -245,7 +246,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
-            
+
         }
 
     }
@@ -1246,11 +1247,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 publishDeletedFile(dbc, onlineProject, offlineResource, publishHistoryId, publishTag);
 
                 dbc.pop();
+                List<CmsProperty> props = m_driverManager.readPropertyObjects(dbc, offlineResource, true);
+                boolean removeDeleted = Boolean.parseBoolean(
+                    CmsProperty.get(CmsPropertyDefinition.PROPERTY_HISTORY_REMOVE_DELETED, props).getValue("false"));
                 // delete old historical entries
                 m_driverManager.getHistoryDriver(dbc).deleteEntries(
                     dbc,
                     new CmsHistoryFile(offlineResource),
-                    OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion(),
+                    removeDeleted ? 0 : OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion(),
                     -1);
 
                 report.println(

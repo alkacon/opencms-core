@@ -40,6 +40,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
+import org.opencms.util.CmsUUID;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -96,6 +97,7 @@ public class TestHistory extends OpenCmsTestCase {
         suite.addTest(new TestHistory("testFileVersions"));
         suite.addTest(new TestHistory("testVersioningLimit"));
         suite.addTest(new TestHistory("testSiblingsV7HistoryIssue"));
+        suite.addTest(new TestHistory("testHistoryRemoveDeleted"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -925,6 +927,35 @@ public class TestHistory extends OpenCmsTestCase {
          move
 
          */
+    }
+
+    /**
+     * Tests that that the history.removedeleted property works.
+     *
+     * @throws Exception
+     */
+    public void testHistoryRemoveDeleted() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String folder = "/testHistoryRemoveDeleted";
+        String path = folder + "/cant-undelete.txt";
+
+        cms.createResource(folder, 0);
+        CmsUUID structureId = cms.createResource(path, 1).getStructureId();
+        cms.writePropertyObject(
+            folder,
+            new CmsProperty(CmsPropertyDefinition.PROPERTY_HISTORY_REMOVE_DELETED, "true", "true"));
+
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        cms.lockResourceTemporary(path);
+        cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        assertThrows(
+            "Should not be able to restore a resource in a folder with history.removedeleted=true",
+            () -> cms.restoreDeletedResource(structureId));
+
     }
 
     /**

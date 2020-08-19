@@ -429,6 +429,8 @@ public class CmsSystemInfo {
      * Returns the number of versions in the VFS version history that should be
      * kept after a resource is deleted.<p>
      *
+     * For resources in folders where the history.removedeleted property is set to "true", this setting is ignored.
+     *
      * @return the number versions in the VFS version history for deleted resources
      */
     public int getHistoryVersionsAfterDeletion() {
