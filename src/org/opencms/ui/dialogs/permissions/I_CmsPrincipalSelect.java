@@ -41,11 +41,4 @@ public interface I_CmsPrincipalSelect {
      */
     void handlePrincipal(I_CmsPrincipal principal);
 
-    /**
-     * Sets the type of principal.<p>
-     *
-     * @param type of principal
-     */
-    void setType(String type);
-
 }

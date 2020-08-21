@@ -281,13 +281,6 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             public void valueChange(ValueChangeEvent event) {
 
                 initTable((WidgetType)m_typeCombo.getValue());
-                if (m_selectField != null) {
-                    if (WidgetType.groupwidget.equals(m_typeCombo.getValue())) {
-                        m_selectField.setType(I_CmsPrincipal.PRINCIPAL_GROUP);
-                    } else if (WidgetType.userwidget.equals(m_typeCombo.getValue())) {
-                        m_selectField.setType(I_CmsPrincipal.PRINCIPAL_USER);
-                    }
-                }
             }
 
         });

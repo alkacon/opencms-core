@@ -27,6 +27,7 @@
 
 package org.opencms.ui.dialogs.permissions;
 
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
@@ -38,6 +39,7 @@ import org.opencms.ui.components.OpenCmsTheme;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
@@ -280,6 +282,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
      */
     public void handlePrincipal(I_CmsPrincipal principal) {
 
+        if ((principal != null) && !Objects.equals(CmsPrincipal.getType(principal), m_principalTypeSelect.getValue())) {
+            m_principalTypeSelect.setValue(CmsPrincipal.getType(principal));
+        }
         setValue(principal.getName());
 
     }
@@ -446,7 +451,6 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
      */
     public void setPrincipalType(String type) {
 
-        m_principalName.setValue("");
         m_principalTypeSelect.setValue(type);
     }
 
@@ -523,15 +527,6 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     public void setTabIndex(int tabIndex) {
 
         m_principalName.setTabIndex(tabIndex);
-    }
-
-    /**
-     * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#setType(java.lang.String)
-     */
-    public void setType(String type) {
-
-        setPrincipalType(type);
-
     }
 
     /**

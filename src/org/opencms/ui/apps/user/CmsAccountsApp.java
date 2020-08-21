@@ -716,15 +716,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     }
 
     /**
-     * @see org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect#setType(java.lang.String)
-     */
-    public void setType(String type) {
-
-        // is never called
-
-    }
-
-    /**
      * Updates the app state.<p>
      *
      * @param ou to be opened
@@ -827,7 +818,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param type the tree type
      * @param cmsAccountsApp the app instance
      * @param buttonPressed true if toggle button for users is active
-
+    
      * @return the user table
      */
     protected I_CmsFilterableTable createUserTable(
@@ -1122,6 +1113,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param component the table that is displayed
      */
     protected void handleSetTable(Component component) {
+
         // do nothing
     }
 
