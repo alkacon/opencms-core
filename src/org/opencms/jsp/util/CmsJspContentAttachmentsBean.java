@@ -68,10 +68,10 @@ public class CmsJspContentAttachmentsBean {
     protected CmsContainerPageBean m_page;
 
     /** Lazy map from container names to lists of elements. */
-    private Map<?, ?> m_byContainer;
+    private Map<String, List<CmsContainerElementBean>> m_byContainer;
 
     /** Lazy map from type names to lists of elements. */
-    private Map<?, ?> m_byType;
+    private Map<String, List<CmsContainerElementBean>> m_byType;
 
     /** Flag which indicates whether this is an empty attachments bean. */
     private boolean m_undefined;
@@ -83,6 +83,7 @@ public class CmsJspContentAttachmentsBean {
      * Creates an 'undefined' attachments bean.<p>
      */
     public CmsJspContentAttachmentsBean() {
+
         m_page = new CmsContainerPageBean(new ArrayList<CmsContainerBean>());
         m_undefined = true;
 
@@ -196,7 +197,7 @@ public class CmsJspContentAttachmentsBean {
      *
      * @return a lazy map to fetch contents of a container
      */
-    public Map<?, ?> getByContainer() {
+    public Map<String, List<CmsContainerElementBean>> getByContainer() {
 
         if (m_byContainer == null) {
             m_byContainer = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
@@ -221,7 +222,7 @@ public class CmsJspContentAttachmentsBean {
      *
      * @return a map from type names to lists of container elements
      */
-    public Map<?, ?> getByType() {
+    public Map<String, List<CmsContainerElementBean>> getByType() {
 
         if (m_byType == null) {
             m_byType = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
