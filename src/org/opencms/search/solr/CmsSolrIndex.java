@@ -1075,10 +1075,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
 
             // build the query for getting the results
-            SolrQuery queryForResults = new SolrQuery();
-            queryForResults.setFields(query.getFields());
-            queryForResults.setQuery(query.getQuery());
-
+            SolrQuery queryForResults = query.clone();
             // we add an additional filter, such that we can only find the documents we want to retrieve, as we figured out in the check query.
             if (!resultSolrIds.isEmpty()) {
                 Optional<String> queryFilterString = resultSolrIds.stream().map(a -> '"' + a + '"').reduce(
@@ -1087,21 +1084,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             queryForResults.setRows(Integer.valueOf(resultSolrIds.size()));
             queryForResults.setStart(Integer.valueOf(0));
-
-            // use sorting as in the original query.
-            queryForResults.setSorts(query.getSorts());
-            if (null != sortParamValues) {
-                queryForResults.add(QUERY_SORT_NAME, sortParamValues);
-            }
-
-            // Take over highlighting part, if the original query had highlighting enabled.
-            if (query.getHighlight()) {
-                for (String paramName : query.getParameterNames()) {
-                    if (paramName.startsWith("hl")) {
-                        queryForResults.add(paramName, query.getParams(paramName));
-                    }
-                }
-            }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(
