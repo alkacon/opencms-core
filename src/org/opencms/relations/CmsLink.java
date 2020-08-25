@@ -558,6 +558,17 @@ public class CmsLink {
     }
 
     /**
+     * Gets the target with the query appended, if there is one.
+     *
+     * @return the target with the query
+     */
+
+    public String getTargetWithQuery() {
+
+        return getTarget() + (getQuery() != null ? "?" + getQuery() : "");
+    }
+
+    /**
      * Returns the type of this link.<p>
      *
      * @return the type of this link

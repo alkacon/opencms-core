@@ -52,6 +52,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +70,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 /**
@@ -420,8 +423,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (String cssUri : cssIncludes) {
             pageContext.getOut().print(
                 "\n<link rel=\"stylesheet\" href=\""
-                    + CmsJspTagLink.linkTagAction(cssUri.trim(), req)
-                    + generateReqParams()
+                    + CmsJspTagLink.linkTagAction(addParams(cssUri.trim()), req)
                     + "\" type=\"text/css\" ");
             if (shouldCloseTags()) {
                 pageContext.getOut().print("/>");
@@ -522,8 +524,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (String jsUri : jsIncludes) {
             pageContext.getOut().print(
                 "\n<script type=\"text/javascript\" src=\""
-                    + CmsJspTagLink.linkTagAction(jsUri.trim(), req)
-                    + generateReqParams()
+                    + CmsJspTagLink.linkTagAction(addParams(jsUri.trim()), req)
                     + "\"></script>");
         }
         if (!inlineJS.isEmpty()) {
@@ -645,6 +646,41 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 }
             }
         }
+    }
+
+    /**
+     * Merges the parameter map with the potentially existing parameters in a link.
+     *
+     * @param link the link to add the parameters to
+     * @return the link with the added parameters
+     * @throws UnsupportedEncodingException if something goes wrong encoding the request parameters
+     */
+    private String addParams(String link) throws UnsupportedEncodingException {
+
+        int pos = link.indexOf("?");
+        List<String> queryParts = new ArrayList<>();
+        String target = link;
+        if (pos != -1) {
+            target = link.substring(0, pos);
+            for (String queryPart : Splitter.on("&").split(link.substring(pos + 1))) {
+                queryParts.add(queryPart);
+            }
+        }
+
+        if (m_parameterMap != null) {
+            for (Entry<String, String[]> paramEntry : m_parameterMap.entrySet()) {
+                if (paramEntry.getValue() != null) {
+                    for (int i = 0; i < paramEntry.getValue().length; i++) {
+                        queryParts.add(
+                            paramEntry.getKey()
+                                + "="
+                                + URLEncoder.encode(paramEntry.getValue()[i], StandardCharsets.UTF_8.toString()));
+                    }
+                }
+            }
+        }
+        String result = target + (queryParts.isEmpty() ? "" : "?" + Joiner.on("&").join(queryParts));
+        return result;
     }
 
     /**

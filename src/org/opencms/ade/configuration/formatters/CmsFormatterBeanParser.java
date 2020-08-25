@@ -713,7 +713,7 @@ public class CmsFormatterBeanParser {
                 CmsXmlVarLinkValue fileValue = (CmsXmlVarLinkValue)cssLinkLoc.getValue();
                 CmsLink link = fileValue.getLink(m_cms);
                 if (link != null) {
-                    String cssPath = link.getTarget();
+                    String cssPath = link.getTargetWithQuery();
                     m_cssPaths.add(cssPath);
                 }
             }
@@ -728,7 +728,7 @@ public class CmsFormatterBeanParser {
                 CmsXmlVarLinkValue fileValue = (CmsXmlVarLinkValue)jsLinkLoc.getValue();
                 CmsLink link = fileValue.getLink(m_cms);
                 if (link != null) {
-                    String jsPath = link.getTarget();
+                    String jsPath = link.getTargetWithQuery();
                     m_jsPaths.add(jsPath);
                 }
             }
