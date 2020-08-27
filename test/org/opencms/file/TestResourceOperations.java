@@ -53,6 +53,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
      * @param arg0 JUnit parameters
      */
     public TestResourceOperations(String arg0) {
+
         super(arg0);
     }
 
@@ -81,6 +82,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
         suite.addTest(new TestResourceOperations("testPublishFile"));
         suite.addTest(new TestResourceOperations("testCreateSibling"));
         suite.addTest(new TestResourceOperations("testCreateAccessFolders"));
+        suite.addTest(
+            new TestResourceOperations("testGenerateFileNameAfterReinitializingResourceManagerWithTemporaryProject"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -98,6 +101,156 @@ public class TestResourceOperations extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test folder creation and reading with and without trailing "/".<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateAccessFolders() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing folder creation and access");
+
+        CmsException exc;
+
+        // create a folder without trailing / in the resource name
+        cms.createResource("/cafolder1", CmsResourceTypeFolder.getStaticTypeId());
+
+        // create a folder with trailing / in the resource name
+        cms.createResource("/cafolder2/", CmsResourceTypeFolder.getStaticTypeId());
+
+        // access a folder without trailing / in the resource name
+        // and ensure that its root path is a valid folder path (i.e. with trailing /)
+        assertTrue(CmsResource.isFolder(cms.readResource("/cafolder2").getRootPath()));
+
+        // access a folder with trailing / in the resource name
+        // and ensure that its root path is a valid folder path (i.e. with trailing /)
+        assertTrue(CmsResource.isFolder(cms.readResource("/cafolder1/").getRootPath()));
+
+        // check the folder access using another query
+        // and ensure that the root paths are valid folder paths
+        List l;
+        l = cms.getSubFolders("/");
+        for (int i = 0; i < l.size(); i++) {
+            CmsResource r = (CmsResource)l.get(i);
+            if (!(CmsResource.isFolder(r.getRootPath()))) {
+                fail("Invalid folder name returned via getRootPath (" + r.getRootPath() + ")");
+            }
+        }
+
+        // try to create another resource with the same name - must fail
+        exc = null;
+        try {
+            cms.createResource("/cafolder1", CmsResourceTypePlain.getStaticTypeId());
+        } catch (CmsException e) {
+            exc = e;
+        }
+        assertTrue(exc instanceof CmsVfsResourceAlreadyExistsException);
+    }
+
+    /**
+     * Tests the create and read file methods.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateReadFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing file creation");
+
+        String content = "this is a test content";
+
+        // create a file in the root directory
+        cms.createResource("/file1", CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
+
+        // read and check the content
+        assertContent(cms, "/file1", content.getBytes());
+    }
+
+    /**
+     * Tests the "createResource" operation.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateResources() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing resource creation");
+
+        // create a folder in the root directory
+        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
+
+        // create an empty file in the root directory
+        cms.createResource("/resource2", CmsResourceTypePlain.getStaticTypeId());
+
+        // create an empty file in the created folder
+        cms.createResource("/folder1/resource3", CmsResourceTypePlain.getStaticTypeId());
+
+        // ensure first created resource is a folder
+        assertIsFolder(cms, "/folder1/");
+
+        // ensure second created resource is a plain text file
+        assertResourceType(cms, "/resource2", CmsResourceTypePlain.getStaticTypeId());
+
+        // ensure third created resource is a plain text file
+        assertResourceType(cms, "/folder1/resource3", CmsResourceTypePlain.getStaticTypeId());
+
+    }
+
+    /**
+     * Tests the "createSibling" operation.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateSibling() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing sibling creation");
+
+        // create an empty file in the root directory
+        cms.createResource("/resource4", CmsResourceTypePlain.getStaticTypeId());
+
+        // ensure that sibling count is zero
+        assertSiblingCount(cms, "/resource4", 1);
+
+        // create a sibling of res3 in root folder
+        cms.createSibling("/resource4", "/sibling1", null);
+
+        // ensure first created resource is a plain text file
+        assertResourceType(cms, "/resource4", CmsResourceTypePlain.getStaticTypeId());
+
+        // ensure sibling is also a plain text file
+        assertResourceType(cms, "/sibling1", CmsResourceTypePlain.getStaticTypeId());
+
+        // check the sibling count
+        assertSiblingCount(cms, "/resource4", 2);
+        assertSiblingCount(cms, "/sibling1", 2);
+    }
+
+    /**
+     * Tests that generating a file name works after re-initializing the resource manager.
+     *
+     * @throws Exception
+     */
+    public void testGenerateFileNameAfterReinitializingResourceManagerWithTemporaryProject() throws Exception {
+
+        getCmsObject().createResource("/testGenerateFileName", 0);
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        CmsProject tempProject = cms.createProject(
+            "Temp",
+            "temp",
+            "Administrators",
+            "Administrators",
+            CmsProject.PROJECT_TYPE_TEMPORARY);
+        cms.getRequestContext().setCurrentProject(tempProject);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getResourceManager().initialize(cms);
+        String s = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
+            getCmsObject(),
+            "/testGenerateFileName/f_%(number)",
+            4);
     }
 
     /**
@@ -182,6 +335,41 @@ public class TestResourceOperations extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the publish resource method for file.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing file publishing");
+
+        String content = "this is a test content";
+
+        // set the site root
+        cms.getRequestContext().setSiteRoot("/");
+
+        // create a file in the root directory
+        cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
+
+        // the reosurce must unlocked, otherwise it will not be published
+        cms.unlockResource("/file2");
+
+        // now publish the file
+        OpenCms.getPublishManager().publishResource(cms, "/file2");
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // change the project to online
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+
+        // read and check the content
+        assertContent(cms, "/file2", content.getBytes());
+
+        // switch back to offline project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+    }
+
+    /**
      * Tests the check for valid resource names.<p>
      *
      * @throws Throwable if something goes wrong
@@ -232,167 +420,6 @@ public class TestResourceOperations extends OpenCmsTestCase {
         }
 
         assertTrue(exc instanceof CmsIllegalArgumentException);
-    }
-
-    /**
-     * Tests the "createResource" operation.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateResources() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing resource creation");
-
-        // create a folder in the root directory
-        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
-
-        // create an empty file in the root directory
-        cms.createResource("/resource2", CmsResourceTypePlain.getStaticTypeId());
-
-        // create an empty file in the created folder
-        cms.createResource("/folder1/resource3", CmsResourceTypePlain.getStaticTypeId());
-
-        // ensure first created resource is a folder
-        assertIsFolder(cms, "/folder1/");
-
-        // ensure second created resource is a plain text file
-        assertResourceType(cms, "/resource2", CmsResourceTypePlain.getStaticTypeId());
-
-        // ensure third created resource is a plain text file
-        assertResourceType(cms, "/folder1/resource3", CmsResourceTypePlain.getStaticTypeId());
-
-    }
-
-    /**
-     * Test folder creation and reading with and without trailing "/".<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateAccessFolders() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing folder creation and access");
-
-        CmsException exc;
-
-        // create a folder without trailing / in the resource name
-        cms.createResource("/cafolder1", CmsResourceTypeFolder.getStaticTypeId());
-
-        // create a folder with trailing / in the resource name
-        cms.createResource("/cafolder2/", CmsResourceTypeFolder.getStaticTypeId());
-
-        // access a folder without trailing / in the resource name
-        // and ensure that its root path is a valid folder path (i.e. with trailing /)
-        assertTrue(CmsResource.isFolder(cms.readResource("/cafolder2").getRootPath()));
-
-        // access a folder with trailing / in the resource name
-        // and ensure that its root path is a valid folder path (i.e. with trailing /)
-        assertTrue(CmsResource.isFolder(cms.readResource("/cafolder1/").getRootPath()));
-
-        // check the folder access using another query
-        // and ensure that the root paths are valid folder paths
-        List l;
-        l = cms.getSubFolders("/");
-        for (int i = 0; i < l.size(); i++) {
-            CmsResource r = (CmsResource)l.get(i);
-            if (!(CmsResource.isFolder(r.getRootPath()))) {
-                fail("Invalid folder name returned via getRootPath (" + r.getRootPath() + ")");
-            }
-        }
-
-        // try to create another resource with the same name - must fail
-        exc = null;
-        try {
-            cms.createResource("/cafolder1", CmsResourceTypePlain.getStaticTypeId());
-        } catch (CmsException e) {
-            exc = e;
-        }
-        assertTrue(exc instanceof CmsVfsResourceAlreadyExistsException);
-    }
-
-    /**
-     * Tests the create and read file methods.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateReadFile() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing file creation");
-
-        String content = "this is a test content";
-
-        // create a file in the root directory
-        cms.createResource("/file1", CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
-
-        // read and check the content
-        assertContent(cms, "/file1", content.getBytes());
-    }
-
-    /**
-     * Tests the publish resource method for file.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishFile() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing file publishing");
-
-        String content = "this is a test content";
-
-        // set the site root
-        cms.getRequestContext().setSiteRoot("/");
-
-        // create a file in the root directory
-        cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
-
-        // the reosurce must unlocked, otherwise it will not be published
-        cms.unlockResource("/file2");
-
-        // now publish the file
-        OpenCms.getPublishManager().publishResource(cms, "/file2");
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        // change the project to online
-        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
-
-        // read and check the content
-        assertContent(cms, "/file2", content.getBytes());
-
-        // switch back to offline project
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-    }
-
-    /**
-     * Tests the "createSibling" operation.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateSibling() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing sibling creation");
-
-        // create an empty file in the root directory
-        cms.createResource("/resource4", CmsResourceTypePlain.getStaticTypeId());
-
-        // ensure that sibling count is zero
-        assertSiblingCount(cms, "/resource4", 1);
-
-        // create a sibling of res3 in root folder
-        cms.createSibling("/resource4", "/sibling1", null);
-
-        // ensure first created resource is a plain text file
-        assertResourceType(cms, "/resource4", CmsResourceTypePlain.getStaticTypeId());
-
-        // ensure sibling is also a plain text file
-        assertResourceType(cms, "/sibling1", CmsResourceTypePlain.getStaticTypeId());
-
-        // check the sibling count
-        assertSiblingCount(cms, "/resource4", 2);
-        assertSiblingCount(cms, "/sibling1", 2);
     }
 
 }

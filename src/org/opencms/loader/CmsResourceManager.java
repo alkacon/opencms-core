@@ -849,9 +849,6 @@ public class CmsResourceManager {
      */
     public I_CmsFileNameGenerator getNameGenerator() {
 
-        if (m_nameGenerator == null) {
-            m_nameGenerator = new CmsDefaultFileNameGenerator();
-        }
         return m_nameGenerator;
     }
 
@@ -1170,6 +1167,7 @@ public class CmsResourceManager {
             type.initialize(cms);
         }
 
+        // This only sets the CmsObject the first time it's called
         m_nameGenerator.setAdminCms(cms);
 
         if (CmsLog.INIT.isInfoEnabled()) {

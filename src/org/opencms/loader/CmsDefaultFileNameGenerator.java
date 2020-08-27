@@ -293,7 +293,9 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      */
     public void setAdminCms(CmsObject cms) {
 
-        m_adminCms = cms;
+        if (m_adminCms == null) {
+            m_adminCms = cms;
+        }
     }
 
     /**
