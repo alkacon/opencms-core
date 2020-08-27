@@ -444,7 +444,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             StringBuffer inline = new StringBuffer();
             for (Entry<String, String> cssEntry : inlineCss.entrySet()) {
                 inline.append("\n<style type=\"text/css\" rel=\"" + cssEntry.getKey() + "\">\n");
-                inline.append(cssEntry.getValue()).append("\n\n");
+                inline.append(cssEntry.getValue());
                 inline.append("\n</style>\n");
             }
             pageContext.getOut().print(inline.toString());
@@ -531,7 +531,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             StringBuffer inline = new StringBuffer();
             for (Entry<String, String> jsEntry : inlineJS.entrySet()) {
                 inline.append("\n<script type=\"text/javascript\">\n");
-                inline.append(jsEntry.getValue()).append("\n\n");
+                inline.append(jsEntry.getValue());
                 inline.append("\n</script>\n");
             }
             pageContext.getOut().print(inline.toString());
