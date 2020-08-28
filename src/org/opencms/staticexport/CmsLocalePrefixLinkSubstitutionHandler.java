@@ -103,7 +103,10 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
         String detailPagePart,
         String absoluteLink) {
 
-        return cms.getRequestContext().getSiteRoot()
+        return ""
+            + cms.getRequestContext().getCurrentUser().getId()
+            + ":"
+            + cms.getRequestContext().getSiteRoot()
             + ":"
             + targetSiteRoot
             + ":"

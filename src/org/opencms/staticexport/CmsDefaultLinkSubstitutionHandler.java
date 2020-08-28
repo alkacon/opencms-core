@@ -122,7 +122,6 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     public String getLink(CmsObject cms, String link, String siteRoot, String targetDetailPage, boolean forceSecure) {
 
-
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
             return "";
@@ -441,7 +440,15 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         String detailPagePart,
         String absoluteLink) {
 
-        return cms.getRequestContext().getSiteRoot() + ":" + targetSiteRoot + ":" + detailPagePart + absoluteLink;
+        return ""
+            + cms.getRequestContext().getCurrentUser().getId()
+            + ":"
+            + cms.getRequestContext().getSiteRoot()
+            + ":"
+            + targetSiteRoot
+            + ":"
+            + detailPagePart
+            + absoluteLink;
     }
 
     /**
