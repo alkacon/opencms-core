@@ -40,10 +40,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.core.SolrConfig;
+import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.IndexSchema;
 
 import org.xml.sax.InputSource;
@@ -196,14 +198,19 @@ public class CmsSolrConfiguration {
      * @return the Solr configuration
      *
      */
+    @SuppressWarnings("deprecation")
     public SolrConfig getSolrConfig() {
 
         if (m_solrConfig == null) {
             try (FileInputStream fis = new FileInputStream(getSolrConfigFile())) {
-                m_solrConfig = new SolrConfig(
-                    Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER),
-                    null,
-                    new InputSource(fis));
+                Path instanceDir = Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER);
+                @SuppressWarnings("resource")
+                SolrResourceLoader loader = new SolrResourceLoader(instanceDir);
+                m_solrConfig = SolrConfig.readFromResourceLoader(
+                    loader,
+                    getSolrConfigFile().getName(),
+                    true,
+                    loader.getCoreProperties());
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),
@@ -258,12 +265,18 @@ public class CmsSolrConfiguration {
      *
      * @return the Solr index schema
      */
+    @SuppressWarnings("resource")
     public IndexSchema getSolrSchema() {
 
         if (m_schema == null) {
             try (FileInputStream fis = new FileInputStream(getSolrSchemaFile())) {
                 InputSource solrSchema = new InputSource(fis);
-                m_schema = new IndexSchema(getSolrConfig(), SOLR_SCHEMA_NAME, solrSchema);
+                m_schema = new IndexSchema(
+                    SOLR_SCHEMA_NAME,
+                    solrSchema,
+                    getSolrConfig().luceneMatchVersion,
+                    getSolrConfig().getResourceLoader(),
+                    getSolrConfig().getSubstituteProperties());
             } catch (IOException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(
@@ -368,7 +381,7 @@ public class CmsSolrConfiguration {
      */
     public void setSolrCommitMs(String time) {
 
-        m_commitMs = new Long(time).longValue();
+        m_commitMs = Long.parseLong(time);
     }
 
     /**
