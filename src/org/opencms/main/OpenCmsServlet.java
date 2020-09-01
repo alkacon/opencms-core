@@ -117,7 +117,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     private static final long serialVersionUID = 4729951599966070050L;
 
     /** URL prefix for the built-in service handler. */
-    private static final String HANDLE_BUILTIN_SERVICE = "/handleBuiltinService/";
+    public static final String HANDLE_BUILTIN_SERVICE = "/handleBuiltinService/";
 
     /**
      * OpenCms servlet main request handling method.<p>

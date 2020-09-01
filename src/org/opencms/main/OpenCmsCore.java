@@ -504,6 +504,10 @@ public final class OpenCmsCore {
             CmsObject cms = initCmsObject(req, res);
             if (CmsGwtConstants.HANDLER_UNLOCK_PAGE.equals(remainingPath)) {
                 CmsContainerpageService.unlockPage(cms, req, res);
+            } else if (CmsGwtConstants.HANDLER_UPDATE_SESSION.equals(remainingPath)) {
+                // Count this as a heartbeat request, because it's not caused by user activity
+                boolean isHeartbeatRequest = true;
+                OpenCms.getSessionManager().updateSessionInfo(cms, req, isHeartbeatRequest);
             }
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);

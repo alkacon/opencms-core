@@ -34,8 +34,14 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsServlet;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -50,6 +56,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  *
@@ -57,45 +65,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
 
-    /** The preview mode JavaScript include. */
-    private static final String PREVIEW_INCLUDE_SCRIPT = "<script type=\"text/javascript\"> "
-        + "function openEditor(){ "
-        + "var target=window.location.href; "
-        + "if (target.indexOf(\""
-        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-        + "\")>0){ "
-        + "target=target.replace(\""
-        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-        + "=true\",\""
-        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-        + "=false\"); "
-        + "} else { "
-        + "var anchor=\"\"; "
-        + "if (target.indexOf(\"#\")>0) { "
-        + "anchor=target.substring(target.indexOf(\"#\")); "
-        + "target=target.substring(0,target.indexOf(\"#\")); "
-        + "} "
-        + "if (target.indexOf(\"?\")>0) { "
-        + "target+=\"&\"; "
-        + "} else { "
-        + "target+=\"?\"; "
-        + "} "
-        + "target+=\""
-        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-        + "=false\"; "
-        + "target+=anchor; "
-        + "} "
-        + "window.location.href=target; "
-        + "} "
-        + "function injectButton(){ "
-        + "if (self === top){ "
-        + "var injectElement=document.createElement(\"div\"); "
-        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()' style='left:%s;' title='%s'></button>\"; "
-        + "document.body.appendChild(injectElement); "
-        + "}"
-        + "} "
-        + "document.addEventListener(\"DOMContentLoaded\",injectButton); "
-        + "</script>\n";
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagEnableAde.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8447599916548975733L;
@@ -243,7 +214,21 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         StringBuffer buffer = new StringBuffer();
         buffer.append("<style type=\"text/css\"> @import url(\"").append(
             CmsGwtActionElement.getFontIconCssLink()).append("\"); </style>\n");
-        buffer.append(String.format(PREVIEW_INCLUDE_SCRIPT, buttonLeft, titleMessage));
+        String heartbeatUrl = CmsStringUtil.joinPaths(
+            OpenCms.getStaticExportManager().getVfsPrefix(),
+            OpenCmsServlet.HANDLE_BUILTIN_SERVICE,
+            CmsGwtConstants.HANDLER_UPDATE_SESSION);
+        JSONObject previewSettings = new JSONObject();
+        try {
+            previewSettings.put("heartbeatUrl", heartbeatUrl);
+            previewSettings.put("buttonLeft", buttonLeft);
+            previewSettings.put("titleMessage", CmsEncoder.escapeXml(titleMessage));
+        } catch (JSONException e) {
+            // shouldn't happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        buffer.append("<script>\nvar previewSettings = " + previewSettings.toString() + ";\n</script>\n");
+        buffer.append("<script src=\"" + CmsWorkplace.getStaticResourceUri("/ade/page-preview.js") + "\"></script>\n");
         return buffer.toString();
     }
 

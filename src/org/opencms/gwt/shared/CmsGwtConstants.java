@@ -235,6 +235,9 @@ public final class CmsGwtConstants {
     /** Sub-path for the page unlock service. */
     public static final String HANDLER_UNLOCK_PAGE = "/unlockPage";
 
+    /** Sub-path for the session update handler. */
+    public static final String HANDLER_UPDATE_SESSION = "/updateSession";
+
     /**
      * Hide constructor.<p>
      */
