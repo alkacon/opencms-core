@@ -96,6 +96,8 @@ dependencies {
     distribution group: 'com.vaadin', name: 'vaadin-themes', version: '8.7.1'
     distribution group: 'com.vaadin.external', name: 'gentyref', version: '1.2.0.vaadin1'
     distribution group: 'com.zaxxer', name: 'HikariCP', version: '2.7.6'
+    // used by Apache POI
+    distribution group: 'com.zaxxer', name: 'SparseBitSet', version: '1.2'
     distribution group: 'commons-lang', name: 'commons-lang', version: '2.6'
     distribution group: 'commons-logging', name: 'commons-logging', version: '1.2'
     distribution group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -122,7 +124,7 @@ dependencies {
     distribution group: 'net.sourceforge.serp', name: 'serp', version: '1.13.1'
     distribution group: 'org.antlr', name: 'antlr-runtime', version: '3.5.2'
     distribution group: 'org.antlr', name: 'stringtemplate', version: '3.2.1'
-    distribution group: 'org.antlr', name: 'ST4', version: '4.3.1'
+    distribution group: 'org.antlr', name: 'ST4', version: '4.0.8'
     distribution group: 'org.apache.bval', name: 'org.apache.bval.bundle', version:'0.4'
     distribution group: 'org.apache.calcite', name: 'calcite-core', version: '1.18.0'
     distribution group: 'org.apache.calcite', name: 'calcite-linq4j', version: '1.18.0'
@@ -137,6 +139,8 @@ dependencies {
     distribution group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
     distribution group: 'org.apache.commons', name: 'commons-digester3', version:'3.2'
     distribution group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    // used by Apache POI
+    distribution group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     distribution group: 'org.apache.commons', name: 'commons-pool2', version: '2.5.0'
     distribution group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     distribution group: 'org.apache.cxf', name: 'cxf-core', version:'3.2.1'
