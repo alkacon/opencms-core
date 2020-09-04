@@ -799,13 +799,14 @@ public class TestConfig extends OpenCmsTestCase {
 
         List<CmsPropertyConfig> resultConf = config2.getPropertyConfiguration();
         assertEquals(3, resultConf.size());
-        assertEquals("D", resultConf.get(0).getName());
-        assertEquals("D2", resultConf.get(0).getPropertyData().getDescription());
 
-        assertEquals("A", resultConf.get(1).getName());
-        assertEquals("A2", resultConf.get(1).getPropertyData().getDescription());
-        assertEquals("B", resultConf.get(2).getName());
-        assertEquals("B1", resultConf.get(2).getPropertyData().getDescription());
+        assertEquals("A", resultConf.get(0).getName());
+        assertEquals("A2", resultConf.get(0).getPropertyData().getDescription());
+        assertEquals("B", resultConf.get(1).getName());
+        assertEquals("B1", resultConf.get(1).getPropertyData().getDescription());
+
+        assertEquals("D", resultConf.get(2).getName());
+        assertEquals("D2", resultConf.get(2).getPropertyData().getDescription());
 
     }
 

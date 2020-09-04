@@ -778,10 +778,23 @@ public class CmsADEConfigData {
         } else {
             parentProperties = Collections.emptyList();
         }
-        List<CmsPropertyConfig> result = combineConfigurationElements(
-            parentProperties,
-            m_data.getOwnPropertyConfigurations(),
-            false);
+        LinkedHashMap<String, CmsPropertyConfig> propMap = new LinkedHashMap<>();
+        for (CmsPropertyConfig conf : parentProperties) {
+            if (conf.isDisabled()) {
+                continue;
+            }
+            propMap.put(conf.getName(), conf);
+        }
+        for (CmsPropertyConfig conf : m_data.getOwnPropertyConfigurations()) {
+            if (conf.isDisabled()) {
+                propMap.remove(conf.getName());
+            } else if (propMap.containsKey(conf.getName())) {
+                propMap.put(conf.getName(), propMap.get(conf.getName()).merge(conf));
+            } else {
+                propMap.put(conf.getName(), conf);
+            }
+        }
+        List<CmsPropertyConfig> result = new ArrayList<>(propMap.values());
         return result;
     }
 
