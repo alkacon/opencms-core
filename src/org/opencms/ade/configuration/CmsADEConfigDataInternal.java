@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsResource;
@@ -56,11 +57,11 @@ public class CmsADEConfigDataInternal {
     /** Should inherited model pages be discarded? */
     protected boolean m_discardInheritedModelPages;
 
-    /** Should inherited properties be discard? */
-    protected boolean m_discardInheritedProperties;
-
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
+
+    /** The 'discard properties' mode. */
+    protected DiscardPropertiesMode m_discardPropertiesMode;
 
     /** The configured formatter changes. */
     protected CmsFormatterChangeSet m_formatterChangeSet = new CmsFormatterChangeSet();
@@ -117,7 +118,7 @@ public class CmsADEConfigDataInternal {
      * @param resourceTypeConfig the resource type configuration
      * @param discardInheritedTypes the "discard inherited types" flag
      * @param propertyConfig the property configuration
-     * @param discardInheritedProperties the "discard inherited properties" flag
+     * @param discardPropertiesMode the "discard inherited properties" mode
      * @param detailPageInfos the detail page configuration
      * @param modelPages the model page configuration
      * @param functionReferences the function reference configuration
@@ -138,7 +139,7 @@ public class CmsADEConfigDataInternal {
         List<CmsResourceTypeConfig> resourceTypeConfig,
         boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
-        boolean discardInheritedProperties,
+        DiscardPropertiesMode discardPropertiesMode,
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages,
         List<CmsFunctionReference> functionReferences,
@@ -165,7 +166,7 @@ public class CmsADEConfigDataInternal {
         }
 
         m_discardInheritedTypes = discardInheritedTypes;
-        m_discardInheritedProperties = discardInheritedProperties;
+        m_discardPropertiesMode = discardPropertiesMode;
         m_discardInheritedModelPages = discardInheritedModelPages;
         m_createContentsLocally = createContentsLocally;
         m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
@@ -206,6 +207,16 @@ public class CmsADEConfigDataInternal {
     public String getBasePath() {
 
         return m_basePath;
+    }
+
+    /**
+     * Gets the 'discard properties' mode.
+     *
+     * @return the discard properties mode
+     */
+    public DiscardPropertiesMode getDiscardPropertiesMode() {
+
+        return m_discardPropertiesMode;
     }
 
     /**
@@ -329,7 +340,7 @@ public class CmsADEConfigDataInternal {
      */
     public boolean isDiscardInheritedProperties() {
 
-        return m_discardInheritedProperties;
+        return m_discardPropertiesMode != DiscardPropertiesMode.keep;
     }
 
     /**

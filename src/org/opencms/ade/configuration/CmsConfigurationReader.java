@@ -77,6 +77,45 @@ import com.google.common.collect.Lists;
  */
 public class CmsConfigurationReader {
 
+    /**
+     * Enum describing how to deal with inherited properties.
+     */
+    enum DiscardPropertiesMode {
+
+        /** Remove properties from parent sitemaps. */
+        discard("true"),
+
+        /** Inherit properties from parent sitemaps. */
+        keep("false"),
+
+        /** Remove properties from parent sitemaps, and mark properties defined in this sitemap as 'top', which moves them over the properties which are only defined in opencms-workplace.xml/opencms-modules.xml. */
+        top("top");
+
+        /** The value representing the mode in an actual sitemap configuration content. */
+        private String m_stringValue;
+
+        /**
+         * Creates the enum value.
+         *
+         * @param stringValue the string value from the configuration
+         */
+        private DiscardPropertiesMode(String stringValue) {
+
+            m_stringValue = stringValue;
+
+        }
+
+        /**
+         * Gets the string value occurring in the  sitemap configuration.
+         *
+         * @return the string value
+         */
+        public String getStringValue() {
+
+            return m_stringValue;
+        }
+    }
+
     /** The default locale for configuration objects. */
     public static final Locale DEFAULT_LOCALE = CmsLocaleManager.getLocale("en");
 
@@ -438,9 +477,6 @@ public class CmsConfigurationReader {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-        for (I_CmsXmlContentLocation node : root.getSubValues(N_PROPERTY)) {
-            parseProperty(node);
-        }
         for (I_CmsXmlContentLocation node : root.getSubValues(N_DETAIL_PAGE)) {
             try {
                 parseDetailPage(node);
@@ -456,7 +492,21 @@ public class CmsConfigurationReader {
         boolean removeAllFormatters = getBoolean(root, N_REMOVE_ALL_FORMATTERS);
         CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root, removeAllFormatters);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
-        boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
+        // boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
+        I_CmsXmlContentValueLocation discardPropertiesLoc = root.getSubValue(N_DISCARD_PROPERTIES);
+        DiscardPropertiesMode discardPropertiesMode = DiscardPropertiesMode.keep;
+        if (discardPropertiesLoc != null) {
+            String discardPropertiesStr = discardPropertiesLoc.getValue().getStringValue(m_cms);
+            for (DiscardPropertiesMode discardMode : DiscardPropertiesMode.values()) {
+                if (discardMode.getStringValue().contentEquals(discardPropertiesStr)) {
+                    discardPropertiesMode = discardMode;
+                }
+            }
+        }
+        for (I_CmsXmlContentLocation node : root.getSubValues(N_PROPERTY)) {
+            parseProperty(node, discardPropertiesMode);
+        }
+
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
 
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
@@ -498,7 +548,7 @@ public class CmsConfigurationReader {
             m_resourceTypeConfigs,
             discardInheritedTypes,
             m_propertyConfigs,
-            discardInheritedProperties,
+            discardPropertiesMode,
             m_detailPageConfigs,
             m_modelPageConfigs,
             m_functionReferences,
@@ -928,10 +978,14 @@ public class CmsConfigurationReader {
      * Parses a single field definition from a content value.<p>
      *
      * @param field the content value to parse the field from
+     * @param mode the property discard mode
      */
-    private void parseProperty(I_CmsXmlContentLocation field) {
+    private void parseProperty(I_CmsXmlContentLocation field, DiscardPropertiesMode mode) {
 
         CmsPropertyConfig propConfig = parseProperty(m_cms, field);
+        if (mode == DiscardPropertiesMode.top) {
+            propConfig = propConfig.cloneWithTop(true);
+        }
         m_propertyConfigs.add(propConfig);
     }
 

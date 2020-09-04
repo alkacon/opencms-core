@@ -27,6 +27,7 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -207,16 +208,14 @@ public class CmsPropertyEditorHelper {
         result.setFolder(resource.isFolder());
         result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
         String sitePath = cms.getSitePath(resource);
-        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().lookupConfiguration(
-            cms,
-            resource.getRootPath()).getPropertyConfigurationAsMap();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+
         Map<String, CmsXmlContentProperty> defaultProperties = getDefaultProperties(
 
             Collections.singletonList(resource.getStructureId())).get(resource.getStructureId());
-        Map<String, CmsXmlContentProperty> mergedConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
-        mergedConfig.putAll(defaultProperties);
-        mergedConfig.putAll(propertyConfig);
-        propertyConfig = mergedConfig;
+
+        Map<String, CmsXmlContentProperty> mergedConfig = config.getPropertyConfiguration(defaultProperties);
+        Map<String, CmsXmlContentProperty> propertyConfig = mergedConfig;
 
         // Resolve macros in the property configuration
         propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(

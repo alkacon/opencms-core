@@ -32,7 +32,7 @@
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
             <xsd:element name="RemoveAllFunctions" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="DiscardProperties" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="DiscardProperties" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
@@ -46,6 +46,7 @@
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <layouts>
                 <layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
+                <layout element="DiscardProperties" widget="SelectorWidget" configuration="false:%(key.discardprops.false)|true:%(key.discardprops.true)|top:%(key.discardprops.top)" />
             </layouts>
             <relations>
                 <relation element="AddFormatters/AddFormatter" invalidate="false" />

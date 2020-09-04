@@ -563,9 +563,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
         Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
         List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
-        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
-        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
-        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
         for (String propName : keys) {
             buildField(ownProps, propName, Mode.effective);
         }

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
@@ -81,7 +82,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
                 resourceTypeConfig,
                 false,
                 propertyConfig,
-                false,
+                DiscardPropertiesMode.keep,
                 detailPageInfos,
                 modelPages,
                 new ArrayList<CmsFunctionReference>(),
@@ -161,13 +162,13 @@ public class CmsTestConfigData extends CmsADEConfigData {
     }
 
     /**
-     * Sets the "discard inherited properties" flag.<p>
+     * Sets the 'discard properties' mode.
      *
-     * @param discardInheritedProperties the flag to control whether inherited properties are discarded
+     * @param mode the new value for the mode
      */
-    public void setDiscardInheritedProperties(boolean discardInheritedProperties) {
+    public void setDiscardPropertiesMode(DiscardPropertiesMode mode) {
 
-        m_data.m_discardInheritedProperties = discardInheritedProperties;
+        m_data.m_discardPropertiesMode = mode;
     }
 
     /**

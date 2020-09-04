@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -577,7 +578,7 @@ public class TestConfig extends OpenCmsTestCase {
             NO_DETAILPAGES,
             NO_MODEL_PAGES);
         CmsTestConfigData config2 = new CmsTestConfigData("/blah", NO_TYPES, list(baz), NO_DETAILPAGES, NO_MODEL_PAGES);
-        config2.setDiscardInheritedProperties(true);
+        config2.setDiscardPropertiesMode(DiscardPropertiesMode.discard);
         config1.initialize(rootCms());
         config2.initialize(rootCms());
         config2.setParent(config1);

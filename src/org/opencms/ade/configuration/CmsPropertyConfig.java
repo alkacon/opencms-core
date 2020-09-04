@@ -29,6 +29,8 @@ package org.opencms.ade.configuration;
 
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 /**
  * This class represents the property configuration for a sitemap region.<p>
  *
@@ -52,6 +54,9 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
 
     /** The internal property data. */
     private CmsXmlContentProperty m_propData;
+
+    /** Is top property (should be displayed near the top of a property list). */
+    private boolean m_top;
 
     /**
      * Creates a new propery configuration bean.<p>
@@ -84,7 +89,25 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
     @Override
     public CmsPropertyConfig clone() {
 
-        return new CmsPropertyConfig(m_propData, m_disabled, m_order);
+        try {
+            return (CmsPropertyConfig)(super.clone());
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Creates a clone and sets the 'top' property in the clone.
+     *
+     * @param top the value for the top property in the clone
+     *
+     * @return the clone
+     */
+    public CmsPropertyConfig cloneWithTop(boolean top) {
+
+        CmsPropertyConfig result = (this.clone());
+        result.m_top = top;
+        return result;
     }
 
     /**
@@ -136,10 +159,29 @@ public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyCo
     }
 
     /**
+     * Returns true if this is a 'top property' which should be displayed near the top of a property list.
+     *
+     * @return true if this is a top property
+     */
+    public boolean isTop() {
+
+        return m_top;
+    }
+
+    /**
      * @see org.opencms.ade.configuration.I_CmsConfigurationObject#merge(org.opencms.ade.configuration.I_CmsConfigurationObject)
      */
     public CmsPropertyConfig merge(CmsPropertyConfig child) {
 
-        return child.clone();
+        return child.cloneWithTop(m_top);
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return ReflectionToStringBuilder.toString(this);
     }
 }

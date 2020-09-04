@@ -786,6 +786,33 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Computes the ordered map of properties to display in the property dialog, given the map of default property configurations passed as a parameter.
+     *
+     * @param defaultProperties the default property configurations
+     * @return the ordered map of property configurations for the property dialog
+     */
+    public Map<String, CmsXmlContentProperty> getPropertyConfiguration(
+        Map<String, CmsXmlContentProperty> defaultProperties) {
+
+        List<CmsPropertyConfig> myPropConfigs = getPropertyConfiguration();
+        Map<String, CmsXmlContentProperty> allProps = new LinkedHashMap<>(defaultProperties);
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<>();
+        for (CmsPropertyConfig prop : myPropConfigs) {
+            allProps.put(prop.getName(), prop.getPropertyData());
+            if (prop.isTop()) {
+                result.put(prop.getName(), prop.getPropertyData());
+            }
+        }
+        for (Map.Entry<String, CmsXmlContentProperty> entry : allProps.entrySet()) {
+            if (!result.containsKey(entry.getKey())) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return result;
+
+    }
+
+    /**
      * Gets the property configuration as a map of CmsXmlContentProperty instances.<p>
      *
      * @return the map of property configurations

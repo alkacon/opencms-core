@@ -129,14 +129,11 @@ public class CmsNewResourceBuilder {
                 5,
                 m_explorerNameGeneration);
             String rootPath = m_cms.getRequestContext().addSiteRoot(sitePath);
-
-            Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().lookupConfiguration(
-                cms,
-                rootPath).getPropertyConfigurationAsMap();
+            Map<String, CmsXmlContentProperty> propertyConfig;
             Map<String, CmsXmlContentProperty> defaultProperties = getDefaultPropertiesForType(m_type);
-            Map<String, CmsXmlContentProperty> mergedConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
-            mergedConfig.putAll(defaultProperties);
-            mergedConfig.putAll(propertyConfig);
+            Map<String, CmsXmlContentProperty> mergedConfig = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                rootPath).getPropertyConfiguration(defaultProperties);
             propertyConfig = mergedConfig;
 
             // Resolve macros in the property configuration
