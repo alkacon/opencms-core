@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
@@ -80,18 +81,23 @@ public class CmsDisplayAction extends A_CmsWorkplaceAction implements I_CmsDefau
                         resource.getStructureId().toString()));
             } else {
 
-                boolean isOnline = context.getCms().getRequestContext().getCurrentProject().isOnlineProject();
+                CmsObject cms = context.getCms();
+                try {
+                    cms = OpenCms.initCmsObject(cms);
+                    cms.getRequestContext().setUri(cms.getSitePath(resource));
+                } catch (CmsException e) {
+                    // It's ok, we stick to the original context.
+                }
+
+                boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
                 String link;
                 if (isOnline
-                    && !(CmsStringUtil.isEmptyOrWhitespaceOnly(context.getCms().getRequestContext().getSiteRoot())
-                        || OpenCms.getSiteManager().isSharedFolder(
-                            context.getCms().getRequestContext().getSiteRoot()))) {
+                    && !(CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())
+                        || OpenCms.getSiteManager().isSharedFolder(cms.getRequestContext().getSiteRoot()))) {
                     // use the online link only in case the current site is not the root site or the shared folder
-                    link = OpenCms.getLinkManager().getOnlineLink(
-                        context.getCms(),
-                        context.getCms().getSitePath(resource));
+                    link = OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(resource));
                 } else {
-                    link = OpenCms.getLinkManager().substituteLink(context.getCms(), resource);
+                    link = OpenCms.getLinkManager().substituteLink(cms, resource);
                 }
                 if (isOnline
                     || !(OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent)) {
