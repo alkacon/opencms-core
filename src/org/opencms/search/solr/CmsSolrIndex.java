@@ -544,9 +544,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
             if (null != fls) {
                 query.setFields(fls);
             }
-            QueryResponse res = m_solr.query(query);
+            QueryResponse res = m_solr.query(getCoreName(), query);
             if (res != null) {
-                SolrDocumentList sdl = m_solr.query(query).getResults();
+                SolrDocumentList sdl = m_solr.query(getCoreName(), query).getResults();
                 if ((sdl.getNumFound() > 0L) && (sdl.get(0) != null)) {
                     return new CmsSolrDocument(sdl.get(0));
                 }
@@ -965,7 +965,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             // perform the permission check Solr query and remember the response and time Solr took.
             long solrCheckTime = System.currentTimeMillis();
-            QueryResponse checkQueryResponse = m_solr.query(checkQuery);
+            QueryResponse checkQueryResponse = m_solr.query(getCoreName(), checkQuery);
             solrCheckTime = System.currentTimeMillis() - solrCheckTime;
             solrPermissionTime += solrCheckTime;
 
@@ -1023,7 +1023,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     }
 
                     long solrSecondCheckTime = System.currentTimeMillis();
-                    QueryResponse secondCheckQueryResponse = m_solr.query(secondCheckQuery);
+                    QueryResponse secondCheckQueryResponse = m_solr.query(getCoreName(), secondCheckQuery);
                     processedResults += secondCheckQueryResponse.getResults().size();
                     solrSecondCheckTime = System.currentTimeMillis() - solrSecondCheckTime;
                     solrPermissionTime += solrCheckTime;
@@ -1091,7 +1091,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             // perform the result query.
             solrResultTime = System.currentTimeMillis();
-            QueryResponse resultQueryResponse = m_solr.query(queryForResults);
+            QueryResponse resultQueryResponse = m_solr.query(getCoreName(), queryForResults);
             solrResultTime = System.currentTimeMillis() - solrResultTime;
 
             // List containing solr ids of filtered contents for which highlighting has to be removed.
@@ -1342,7 +1342,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             q.setRequestHandler("/spell");
             q.setRows(Integer.valueOf(0));
 
-            QueryResponse queryResponse = m_solr.query(q);
+            QueryResponse queryResponse = m_solr.query(getCoreName(), q);
 
             List<CmsSearchResource> resourceDocumentList = new ArrayList<CmsSearchResource>();
             SolrDocumentList solrDocumentList = new SolrDocumentList();

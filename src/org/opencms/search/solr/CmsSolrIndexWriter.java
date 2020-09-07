@@ -119,7 +119,7 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
                         Messages.LOG_SOLR_WRITER_COMMIT_2,
                         m_index.getName(),
                         m_index.getPath()));
-                m_server.commit();
+                m_server.commit(m_index.getCoreName());
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
@@ -138,7 +138,7 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
                         Messages.LOG_SOLR_WRITER_DELETE_ALL_2,
                         m_index.getName(),
                         m_index.getPath()));
-                m_server.deleteByQuery("*:*", m_commitMs);
+                m_server.deleteByQuery(m_index.getCoreName(), "*:*", m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
@@ -158,7 +158,7 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
                         resource.getRootPath(),
                         m_index.getName(),
                         m_index.getPath()));
-                m_server.deleteByQuery("id:" + resource.getStructureId().toString(), m_commitMs);
+                m_server.deleteByQuery(m_index.getCoreName(), "id:" + resource.getStructureId().toString(), m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             } catch (SolrException e) {
@@ -185,7 +185,7 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
 
             if (document.getDocument() != null) {
                 try {
-                    m_server.deleteByQuery("path:\"" + rootPath + "\"", m_commitMs);
+                    m_server.deleteByQuery(m_index.getCoreName(), "path:\"" + rootPath + "\"", m_commitMs);
                 } catch (Exception e1) {
                     LOG.error(e1.getLocalizedMessage(), e1);
                 }
@@ -250,11 +250,11 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
                 //remove fields that should not be part of the index, but were used to transport extra-information on date series
                 inputDoc.removeField(CmsSearchField.FIELD_SERIESDATES_END);
                 inputDoc.removeField(CmsSearchField.FIELD_SERIESDATES_CURRENT_TILL);
-                m_server.add(inputDoc, m_commitMs);
+                m_server.add(m_index.getCoreName(), inputDoc, m_commitMs);
             }
         } else {
             inputDoc.setField(CmsSearchField.FIELD_SOLR_ID, id);
-            m_server.add(inputDoc, m_commitMs);
+            m_server.add(m_index.getCoreName(), inputDoc, m_commitMs);
         }
 
     }
