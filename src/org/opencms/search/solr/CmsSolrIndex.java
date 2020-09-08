@@ -147,6 +147,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** Constant for additional parameter to disable the spell handler (except for debug mode). */
     private static final String SOLR_HANDLER_DISABLE_SPELL = "handle.solr.disableSpellHandler";
+
+    /** Constant for additional parameter to configure an external solr server specifically for the index. */
+    private static final String SOLR_SERVER_URL = "server.url";
+
     /** The solr exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR = "solr";
 
@@ -242,6 +246,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** The maximal number of results to process for search queries. */
     int m_maxProcessedResults = -2; // special value for not initialized.
+
+    /** Server URL to use specific for the index. If set, it overwrites all other server settings. */
+    private String m_serverUrl;
 
     /**
      * Default constructor.<p>
@@ -364,6 +371,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
                                 + getName()
                                 + "\". The global configuration will be used instead.");
                     }
+                }
+                break;
+            case SOLR_SERVER_URL:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    m_serverUrl = value.trim();
                 }
                 break;
             default:
@@ -605,6 +617,15 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public I_CmsSolrPostSearchProcessor getPostProcessor() {
 
         return m_postProcessor;
+    }
+
+    /**
+     * Returns the Solr server URL to connect to for this specific index, or <code>null</code> if no specific URL is configured.
+     * @return the Solr server URL to connect to for this specific index, or <code>null</code> if no specific URL is configured.
+     */
+    public String getServerUrl() {
+
+        return m_serverUrl;
     }
 
     /**

@@ -199,6 +199,9 @@
                     <source>solr_source</source>
                 </sources>
                 <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
+                <!-- With the parameter "server.url", you can configure an external Solr server for the index.
+                     The server has to be reachable and the core for the index has to exist as well (for "Solr Online", the core name is for example "Solr-Online" -->
+                <!-- param name="server.url">http://localhost:8983/solr</param -->
                 <!-- The following parameters secure the Solr Handlers by disallowing certain requests. All the restrictions are only applied if the request is not a valid debug request, i.e., if the param "_debug" does not hold the debug secret, as specified in a file configured via the configuration parameter "handle.solr.debugSecretFile" listed below. Note that the handler can be disabled completely in the opencms-system.xml if you do not use it for any index. But, it might be helpful for debugging reasons if your server-side searches do not yield the expected results. -->
                 <!-- Specify if querying the index via handleSolrSelect should be disabled (in non-debug-mode). -->
                 <param name="handle.solr.disableSelectHandler">true</param>
