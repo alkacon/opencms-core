@@ -1484,6 +1484,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RENAMEIMAGES_TITLE_1 = "GUI_RENAMEIMAGES_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_CONFIRMATION_1 = "GUI_REINDEX_CONFIRMATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_INDEX_TYPE_OFFLINE_0 = "GUI_REINDEX_INDEX_TYPE_OFFLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_INDEX_TYPE_ONLINE_0 = "GUI_REINDEX_INDEX_TYPE_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_RELATED_0 = "GUI_REINDEX_RELATED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_REPLACE_FILE_1 = "GUI_REPLACE_FILE_1";
 
     /** Message constant for key in the resource bundle. */

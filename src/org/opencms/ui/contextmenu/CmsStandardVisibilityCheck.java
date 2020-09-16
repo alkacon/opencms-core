@@ -52,6 +52,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pointer;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolerootadmin;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
@@ -191,6 +192,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         inproject);
 
+    /** Visibility check for the reindex function. */
+    public static final CmsStandardVisibilityCheck REINDEX = new CmsStandardVisibilityCheck(rolerootadmin);
+
     /** Check for the 'replace' operation. */
     public static final CmsStandardVisibilityCheck REPLACE = new CmsStandardVisibilityCheck(
         replacable,
@@ -288,6 +292,10 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
             if (flag(rolewpuser)
                 && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.WORKPLACE_USER, resource)) {
+                return VISIBILITY_INVISIBLE;
+            }
+            if (flag(rolerootadmin)
+                && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.ROOT_ADMIN, resource)) {
                 return VISIBILITY_INVISIBLE;
             }
         } else {

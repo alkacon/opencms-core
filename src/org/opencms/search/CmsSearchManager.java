@@ -36,11 +36,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -53,6 +56,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsLogReport;
+import org.opencms.report.CmsShellLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.search.documents.A_CmsVfsDocument;
@@ -97,6 +101,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
@@ -1017,6 +1022,94 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             publishHistoryId));
                 }
                 break;
+            case I_CmsEventListener.EVENT_REINDEX_OFFLINE:
+            case I_CmsEventListener.EVENT_REINDEX_ONLINE:
+                boolean isOnline = I_CmsEventListener.EVENT_REINDEX_OFFLINE == event.getType();
+                Map<String, Object> eventData = event.getData();
+                CmsUUID userId = (CmsUUID)eventData.get(I_CmsEventListener.KEY_USER_ID);
+                CmsUser user = null;
+                try {
+                    user = m_adminCms.readUser(userId);
+                } catch (Throwable t) {
+                    // should never happen
+                }
+                try {
+                    SEARCH_MANAGER_LOCK.lock();
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_REINDEX_STARTED_0));
+                    }
+                    CmsObject cms = m_adminCms;
+                    if (isOnline) {
+                        OpenCms.initCmsObject(m_adminCms);
+                        cms.getRequestContext().setCurrentProject(
+                            cms.readProject((CmsUUID)eventData.get(I_CmsEventListener.KEY_PROJECTID)));
+                    }
+                    @SuppressWarnings("unchecked")
+                    List<CmsResource> resources = (List<CmsResource>)eventData.get(I_CmsEventListener.KEY_RESOURCES);
+                    I_CmsReport report = (I_CmsReport)eventData.get(I_CmsEventListener.KEY_REPORT);
+                    List<CmsResource> resourcesToIndex = new ArrayList<>();
+                    for (CmsResource res : resources) {
+                        if (res.isFile()) {
+                            resourcesToIndex.add(res);
+                        } else {
+                            try {
+                                resourcesToIndex.addAll(
+                                    cms.readResources(res, CmsResourceFilter.IGNORE_EXPIRATION, true));
+                            } catch (CmsException e) {
+                                LOG.error(e, e);
+                            }
+                        }
+                    }
+                    // we reindex and prevent using cached results
+                    cleanExtractionCache();
+                    List<CmsPublishedResource> publishedResourcesToIndex = resourcesToIndex.stream().map(
+                        res -> new CmsPublishedResource(res)).collect(Collectors.toList());
+                    if (Boolean.TRUE.equals(eventData.get(I_CmsEventListener.KEY_REINDEX_RELATED))) {
+                        addAdditionallyAffectedResources(cms, publishedResourcesToIndex);
+                    }
+                    if (isOnline) {
+                        updateAllIndexes(
+                            m_adminCms,
+                            publishedResourcesToIndex,
+                            new CmsShellLogReport(CmsLocaleManager.MASTER_LOCALE));
+                    } else {
+                        updateIndexOffline(report, publishedResourcesToIndex);
+                    }
+                    cms = null;
+                    SEARCH_MANAGER_LOCK.unlock();
+                    if (null != user) {
+                        Locale l = OpenCms.getWorkplaceManager().getWorkplaceLocale(user);
+                        OpenCms.getSessionManager().sendBroadcast(
+                            null,
+                            Messages.get().getBundle(l).key(Messages.GUI_REINDEXING_SUCCESS_0),
+                            user,
+                            ContentMode.html);
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_REINDEX_FINISHED_0));
+                    }
+
+                } catch (Throwable e) {
+                    if (SEARCH_MANAGER_LOCK.isHeldByCurrentThread()) {
+                        SEARCH_MANAGER_LOCK.unlock();
+                    }
+                    if (null != user) {
+                        Locale l = OpenCms.getWorkplaceManager().getWorkplaceLocale(user);
+                        OpenCms.getSessionManager().sendBroadcast(
+                            null,
+                            Messages.get().getBundle(l).key(Messages.GUI_REINDEXING_FAILED_0),
+                            user,
+                            ContentMode.html);
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.error(
+                            Messages.get().getBundle().key(Messages.ERR_EVENT_REINDEX_FAILED_1, event.getData()),
+                            e);
+                    } else if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_EVENT_REINDEX_FAILED_1, event.getData()));
+                    }
+                }
+                break;
             default:
                 // no operation
         }
@@ -1610,7 +1703,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             new int[] {
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-                I_CmsEventListener.EVENT_REBUILD_SEARCHINDEXES});
+                I_CmsEventListener.EVENT_REBUILD_SEARCHINDEXES,
+                I_CmsEventListener.EVENT_REINDEX_OFFLINE,
+                I_CmsEventListener.EVENT_REINDEX_ONLINE});
     }
 
     /**
@@ -2912,6 +3007,27 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             addAdditionallyAffectedResources(adminCms, updateResources);
+            updateAllIndexes(adminCms, updateResources, report);
+        } finally {
+            SEARCH_MANAGER_LOCK.unlock();
+            Thread.currentThread().setPriority(oldPriority);
+        }
+    }
+
+    /**
+     * Incrementally updates all indexes that have their rebuild mode set to <code>"auto"</code>.<p>
+     *
+     * @param adminCms an OpenCms user context with Admin permissions
+     * @param updateResources the resources to update
+     * @param report the report to write the output to
+     */
+    protected void updateAllIndexes(
+        CmsObject adminCms,
+        List<CmsPublishedResource> updateResources,
+        I_CmsReport report) {
+
+        try {
+            SEARCH_MANAGER_LOCK.lock();
             if (!updateResources.isEmpty()) {
                 // sort the resource to update
                 Collections.sort(updateResources);
@@ -2935,8 +3051,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             cleanExtractionCache();
         } finally {
             SEARCH_MANAGER_LOCK.unlock();
-            Thread.currentThread().setPriority(oldPriority);
         }
+
     }
 
     /**

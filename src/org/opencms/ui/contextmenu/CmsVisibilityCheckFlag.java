@@ -97,6 +97,9 @@ public enum CmsVisibilityCheckFlag {
     /** Checks that replace operations are valid for the type. */
     replacable,
 
+    /** Check root administrator rule. */
+    rolerootadmin,
+
     /** Check editor rule. */
     roleeditor,
 

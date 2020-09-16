@@ -219,6 +219,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_REFRESH_0 = "GUI_EXPLORER_CONTEXT_REFRESH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_REINDEX_0 = "GUI_EXPLORER_CONTEXT_REINDEX_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_RELATIONS_0 = "GUI_EXPLORER_CONTEXT_RELATIONS_0";
 
     /** Message constant for key in the resource bundle. */

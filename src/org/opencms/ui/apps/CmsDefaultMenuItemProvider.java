@@ -59,6 +59,7 @@ import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.CmsPublishQueueDialogAction;
 import org.opencms.ui.actions.CmsPublishScheduledDialogAction;
+import org.opencms.ui.actions.CmsReindexDialogAction;
 import org.opencms.ui.actions.CmsRenameAction;
 import org.opencms.ui.actions.CmsReplaceDialogAction;
 import org.opencms.ui.actions.CmsResourceInfoAction;
@@ -161,6 +162,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
             new CmsContextMenuActionItem(new CmsFormEditDialogAction(), advanced.getId(), 800, 0),
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
+            new CmsContextMenuActionItem(new CmsReindexDialogAction(), advanced.getId(), 950, 0),
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 
             new CmsContextMenuActionItem(new CmsLinkLocaleVariantAction(), advanced.getId(), 1100, 0),
@@ -186,6 +188,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
      * Creates a new instance.<p>
      */
     public CmsDefaultMenuItemProvider() {
+
         // default constructor, do nothing
     }
 

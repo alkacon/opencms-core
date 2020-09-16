@@ -68,6 +68,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EVENT_REBUILD_SEARCHINDEX_1 = "ERR_EVENT_REBUILD_SEARCHINDEX_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_EVENT_REINDEX_STARTED_0 = "LOG_EVENT_REINDEX_STARTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_EVENT_REINDEX_FINISHED_0 = "LOG_EVENT_REINDEX_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EVENT_REINDEX_FAILED_1 = "ERR_EVENT_REINDEX_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_FIELD_CONFIGURATION_UNKNOWN_2 = "ERR_FIELD_CONFIGURATION_UNKNOWN_2";
 
     /** Message constant for key in the resource bundle. */
@@ -186,6 +195,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_SEARCH_UNAVAILABLE_0 = "GUI_HELP_SEARCH_UNAVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEXING_SUCCESS_0 = "GUI_REINDEXING_SUCCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEXING_FAILED_0 = "GUI_REINDEXING_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_ANALYZER_2 = "INIT_ADD_ANALYZER_2";
