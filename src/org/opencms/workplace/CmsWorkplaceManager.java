@@ -1573,6 +1573,26 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the workplace locale for the user.
+     * @param user the user to get the workplace locale for.
+     * @return the workplace locale for the user.
+     */
+    public Locale getWorkplaceLocale(CmsUser user) {
+
+        Locale wpLocale = new CmsUserSettings(user).getLocale();
+        if (wpLocale == null) {
+            // fall back
+            wpLocale = OpenCms.getWorkplaceManager().getDefaultLocale();
+            if (wpLocale == null) {
+                // fall back
+                wpLocale = CmsLocaleManager.MASTER_LOCALE;
+            }
+        }
+        return wpLocale;
+
+    }
+
+    /**
      * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(org.opencms.file.CmsObject)
      */
     public void initHandler(CmsObject cms) {
