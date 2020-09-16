@@ -33,7 +33,8 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
-import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -44,6 +45,8 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import com.google.common.collect.Lists;
 
 import junit.framework.Test;
 
@@ -136,7 +139,9 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
         CmsResource result = getCmsObject().createResource(
             "/file" + m_fileCounter++,
-            CmsResourceTypePlain.getStaticTypeId());
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContent.getStaticTypeName()).getTypeId(),
+            new byte[] {},
+            new ArrayList<>());
         return result;
     }
 
@@ -275,6 +280,36 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         assertEquals(name2, readBestUrlName(cms, res.getStructureId()));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(name1));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(name2));
+    }
+
+    /**
+     * Tests that the cache for URL names works when using multiple names.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testMultipleNameMappingCache() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String baseName = "testMultipleNameMappingCache";
+        String name1 = baseName + 1;
+        String name2 = baseName + 2;
+        CmsResource res = createFile();
+        String returnedName1 = addMapping(name1, res);
+        publish();
+        String returnedName2 = addMapping(name2, res);
+        publish();
+        CmsLockUtil.ensureLock(cms, res);
+        OpenCms.getADEManager().getDetailIdCache(false).waitForUpdate();
+        cms.writePropertyObjects(res, Lists.newArrayList(new CmsProperty("Title", "", "")));
+        OpenCms.getADEManager().getDetailIdCache(false).waitForUpdate();
+        CmsLockUtil.tryUnlock(cms, res);
+        for (String name : new String[] {returnedName1, returnedName2}) {
+            assertEquals(
+                "Structure id for name " + name + " should match the resource's structure id.",
+                res.getStructureId(),
+                OpenCms.getADEManager().getDetailIdCache(false).getDetailId(name));
+        }
+
     }
 
     /**

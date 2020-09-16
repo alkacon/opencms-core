@@ -42,10 +42,10 @@ import org.opencms.util.CmsManyToOneMap;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -57,10 +57,13 @@ import com.google.common.collect.Sets;
 public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
 
     /** The delay between updates. */
-    public static final int DELAY_MILLIS = 10000;
+    public static final int DELAY_MILLIS = 3000;
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailNameCache.class);
+
+    /** Object used to wait on for updates. */
+    private Object m_updateLock = new Object();
 
     /** The CMS context used by this cache. */
     private CmsObject m_cms;
@@ -152,6 +155,22 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     }
 
     /**
+     * Waits until the cache is potentially updated for the next time.
+     *
+     * <p>This does include updates where there is actually nothing to update.
+     */
+    public void waitForUpdate() {
+
+        synchronized (m_updateLock) {
+            try {
+                m_updateLock.wait();
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+    }
+
+    /**
      * Checks if any updates are necessary and if so, performs them.<p>
      */
     synchronized void checkForUpdates() {
@@ -175,6 +194,9 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
                 }
                 m_detailIdCache = cacheCopy;
             }
+        }
+        synchronized (m_updateLock) {
+            m_updateLock.notifyAll();
         }
     }
 
@@ -210,7 +232,10 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     private Set<String> getUrlNames(CmsUUID id) {
 
         try {
-            return new HashSet<String>(m_cms.readUrlNamesForAllLocales(id));
+            CmsUrlNameMappingFilter filter = CmsUrlNameMappingFilter.ALL.filterStructureId(id);
+            Set<String> result = m_cms.readUrlNameMappings(filter).stream().map(entry -> entry.getName()).collect(
+                Collectors.toSet());
+            return result;
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.emptySet();
