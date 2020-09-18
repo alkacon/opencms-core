@@ -80,6 +80,9 @@ public class CmsReindexDialog extends CmsBasicDialog {
     /** The checkbox, telling if related should be reindexed as well. */
     private CheckBox m_reindexRelated;
 
+    /** Flag, indicating if we are in the online project. */
+    private boolean m_isOnline;
+
     /**
      * Creates a new instance.<p>
      *
@@ -88,14 +91,15 @@ public class CmsReindexDialog extends CmsBasicDialog {
     public CmsReindexDialog(I_CmsDialogContext context) {
 
         m_context = context;
+        m_isOnline = context.getCms().getRequestContext().getCurrentProject().isOnlineProject();
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
         String indexType = CmsVaadinUtils.getMessageText(
-            context.getCms().getRequestContext().getCurrentProject().isOnlineProject()
+            m_isOnline
             ? org.opencms.workplace.commons.Messages.GUI_REINDEX_INDEX_TYPE_ONLINE_0
-            : org.opencms.workplace.commons.Messages.GUI_REINDEX_INDEX_TYPE_ONLINE_0);
+            : org.opencms.workplace.commons.Messages.GUI_REINDEX_INDEX_TYPE_OFFLINE_0);
         m_infoText.setValue(
             CmsVaadinUtils.getMessageText(
                 org.opencms.workplace.commons.Messages.GUI_REINDEX_CONFIRMATION_1,
@@ -148,9 +152,8 @@ public class CmsReindexDialog extends CmsBasicDialog {
     protected void reindex() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         Map<String, Object> eventData = new HashMap<>(3);
-        if (!isOnline) {
+        if (!m_isOnline) {
             eventData.put(I_CmsEventListener.KEY_PROJECTID, cms.getRequestContext().getCurrentProject().getId());
         }
         eventData.put(I_CmsEventListener.KEY_RESOURCES, m_context.getResources());
@@ -161,7 +164,7 @@ public class CmsReindexDialog extends CmsBasicDialog {
         Boolean reindexRelated = m_reindexRelated.getValue();
         eventData.put(I_CmsEventListener.KEY_REINDEX_RELATED, reindexRelated);
         CmsEvent reindexEvent = new CmsEvent(
-            isOnline ? I_CmsEventListener.EVENT_REINDEX_ONLINE : I_CmsEventListener.EVENT_REINDEX_OFFLINE,
+            m_isOnline ? I_CmsEventListener.EVENT_REINDEX_ONLINE : I_CmsEventListener.EVENT_REINDEX_OFFLINE,
             eventData);
         OpenCms.fireCmsEvent(reindexEvent);
 

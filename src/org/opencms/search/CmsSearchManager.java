@@ -1024,7 +1024,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 break;
             case I_CmsEventListener.EVENT_REINDEX_OFFLINE:
             case I_CmsEventListener.EVENT_REINDEX_ONLINE:
-                boolean isOnline = I_CmsEventListener.EVENT_REINDEX_OFFLINE == event.getType();
+                boolean isOnline = I_CmsEventListener.EVENT_REINDEX_ONLINE == event.getType();
                 Map<String, Object> eventData = event.getData();
                 CmsUUID userId = (CmsUUID)eventData.get(I_CmsEventListener.KEY_USER_ID);
                 CmsUser user = null;
@@ -1039,7 +1039,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_REINDEX_STARTED_0));
                     }
                     CmsObject cms = m_adminCms;
-                    if (isOnline) {
+                    if (!isOnline) {
                         OpenCms.initCmsObject(m_adminCms);
                         cms.getRequestContext().setCurrentProject(
                             cms.readProject((CmsUUID)eventData.get(I_CmsEventListener.KEY_PROJECTID)));
