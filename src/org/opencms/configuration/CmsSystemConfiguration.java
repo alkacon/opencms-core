@@ -63,6 +63,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
+import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,6 +89,99 @@ import org.xml.sax.Attributes;
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
+    /**
+     * Data for creating API authorization handlers.
+     */
+    public static class ApiAuthorizationConfig {
+
+        /** The name. */
+        private String m_name;
+
+        /** The class name. */
+        private String m_class;
+
+        /** The parameters. */
+        private CmsParameterConfiguration m_params = new CmsParameterConfiguration();
+
+        /**
+         * Writes the data back to the given XML element.
+         *
+         * @param element an XML element
+         */
+        public void fillXml(Element element) {
+
+            element.addElement("name").addText(getName());
+            element.addElement("class").addText(getClassName());
+            for (Map.Entry<String, String> entry : m_params.entrySet()) {
+                Element paramElem = element.addElement("param");
+                paramElem.addAttribute("name", entry.getKey());
+                paramElem.addText(entry.getValue());
+            }
+        }
+
+        /**
+         * Gets the API authorization class name.
+         *
+         * @return the class name
+         */
+        public String getClassName() {
+
+            return m_class;
+        }
+
+        /**
+         * Gets the identifier for the authorization handler.
+         *
+         * @return the identifier for the handler
+         */
+        public String getName() {
+
+            return m_name;
+        }
+
+        /**
+         * Gets the parameters for the handler.
+         *
+         * @return the parameters for the handler
+         */
+        public CmsParameterConfiguration getParams() {
+
+            return m_params;
+        }
+
+        /**
+         * Sets the class name.
+         *
+         * @param class1 the class name
+         */
+        public void setClassName(String class1) {
+
+            m_class = class1;
+        }
+
+        /**
+         * Sets the name of the handler.
+         *
+         * @param name the handler name
+         */
+        public void setName(String name) {
+
+            m_name = name;
+        }
+
+        /**
+        * Sets one parameter.
+        *
+        * @param key the parameter name
+        * @param value the parameter value
+        */
+        public void setParam(String key, String value) {
+
+            m_params.put(key, value);
+        }
+
+    }
+
     /** Enum for the user session mode. */
     public enum UserSessionMode {
         /** Only a single session per user is allowed. */
@@ -95,6 +189,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         /** Any number of sessions for a user are allowed. */
         standard
     }
+
+    /** Node name for a single API authorization handler. */
+    public static final String N_API_AUTHORIZATION = "api-authorization";
+
+    /** Node name for the group of API authorization handlers. */
+    public static final String N_API_AUTHORIZATIONS = "api-authorizations";
 
     /** The attribute name for the deleted node. */
     public static final String A_DELETED = "deleted";
@@ -615,6 +715,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
 
+    private List<ApiAuthorizationConfig> m_apiAuthorizations = new ArrayList<>();
+
+    private Map<String, I_CmsApiAuthorizationHandler> m_apiAuthorizationMap = new HashMap<>();
+
     /**
      * Adds an ADE configuration parameter.<p>
      *
@@ -1050,6 +1154,36 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
 
+        String apiAuthPath = "*/system/" + N_API_AUTHORIZATIONS + "/" + N_API_AUTHORIZATION;
+        digester.addRule(apiAuthPath, new Rule() {
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                digester.push(new ApiAuthorizationConfig());
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                ApiAuthorizationConfig config = (ApiAuthorizationConfig)digester.pop();
+                addApiAuthorization(config);
+            }
+        });
+
+        String namePath = apiAuthPath + "/name";
+        digester.addCallMethod(namePath, "setName", 1);
+        digester.addCallParam(namePath, 0);
+
+        String classNamePath = apiAuthPath + "/class";
+        digester.addCallMethod(classNamePath, "setClassName", 1);
+        digester.addCallParam(classNamePath, 0);
+
+        String paramPath = apiAuthPath + "/param";
+        digester.addCallMethod(paramPath, "setParam", 2);
+        digester.addCallParam(paramPath, 0, "name");
+        digester.addCallParam(paramPath, 1);
+
         // add publish manager configuration rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER, CmsPublishManager.class);
         digester.addCallMethod(
@@ -1469,6 +1603,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler);
         }
 
+        if (m_apiAuthorizations.size() > 0) {
+            Element authsElement = systemElement.addElement(N_API_AUTHORIZATIONS);
+            for (ApiAuthorizationConfig apiAuth : m_apiAuthorizations) {
+                apiAuth.fillXml(authsElement.addElement(N_API_AUTHORIZATION));
+            }
+        }
+
         // optional publish manager nodes
         if (m_publishManager != null) {
             Element pubHistElement = systemElement.addElement(N_PUBLISHMANAGER);
@@ -1639,6 +1780,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public Map<String, String> getAdeParameters() {
 
         return m_adeParameters;
+    }
+
+    /**
+     * Gets the map of API authorization handlers (with names as keys).
+     *
+     * @return the map of API authorization handlers
+     */
+    public Map<String, I_CmsApiAuthorizationHandler> getApiAuthorizations() {
+
+        return m_apiAuthorizationMap;
     }
 
     /**
@@ -2698,6 +2849,24 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Adds a new authorization configuration.
+     *
+     * @param config the authorization configuration to add
+     */
+    protected void addApiAuthorization(ApiAuthorizationConfig config) {
+
+        m_apiAuthorizations.add(config);
+        try {
+            Class<?> cls = Class.forName(config.getClassName(), false, getClass().getClassLoader());
+            I_CmsApiAuthorizationHandler handler = (I_CmsApiAuthorizationHandler)(cls.getDeclaredConstructor().newInstance());
+            handler.setParameters(config.getParams());
+            m_apiAuthorizationMap.put(config.getName(), handler);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
      */
     @Override
@@ -2715,4 +2884,5 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }
     }
+
 }

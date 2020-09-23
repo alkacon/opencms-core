@@ -109,6 +109,14 @@
             <notification-project>Offline</notification-project>
         </content-notification>
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+		<api-authorizations>
+            <api-authorization>
+                <name>test</name>
+                <class>org.opencms.blah.Foo</class>
+                <param name="alpha">1</param>
+                <param name="beta">2</param>
+            </api-authorization>
+        </api-authorizations>
 		<publishmanager>
 			<history-size>100</history-size>
 			<queue-persistance>false</queue-persistance>

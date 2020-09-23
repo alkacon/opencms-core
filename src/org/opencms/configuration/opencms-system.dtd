@@ -30,6 +30,7 @@
 	resultcache,
 	content-notification?,
 	authorizationhandler?,
+	api-authorizations?,
 	publishmanager?,
 	session-storageprovider?,
 	permissionhandler?,
@@ -440,6 +441,13 @@
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!-- 
+# API authorization handlers.
+# Can be used internally for 'stateless' authorization by resource init handlers or request handlers. 
+-->
+<!ELEMENT api-authorizations (api-authorization*)>
+<!ELEMENT api-authorization (name, class, param*)>
 
 <!--
 # Publish manager:

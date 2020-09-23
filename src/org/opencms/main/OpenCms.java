@@ -63,6 +63,7 @@ import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,20 @@ public final class OpenCms {
     public static CmsAliasManager getAliasManager() {
 
         return OpenCmsCore.getInstance().getAliasManager();
+    }
+
+    /**
+     * Gets the API authorization handler with the given name.
+     *
+     * <p>Returns null if there is no API authorization handler with that name.
+     *
+     * @param name the name of the API authorization handler
+     *
+     * @return an API authorization handler
+     */
+    public static I_CmsApiAuthorizationHandler getApiAuthorization(String name) {
+
+        return OpenCmsCore.getInstance().getApiAuthorization(name);
     }
 
     /**

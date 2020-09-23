@@ -124,6 +124,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -349,6 +350,9 @@ public final class OpenCmsCore {
     /** The user data request manager. */
     private CmsUserDataRequestManager m_userDataRequestManager;
 
+    /** Map of API authorization handlers, with their names as keys. */
+    private Map<String, I_CmsApiAuthorizationHandler> m_apiAuthorizations;
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -564,6 +568,18 @@ public final class OpenCmsCore {
     protected CmsAliasManager getAliasManager() {
 
         return m_aliasManager;
+    }
+
+    /**
+     * Gets the API authorization handler with the given name, or null if it doesn't exist.
+     *
+     * @param name the name of the API authorization handler
+     * @return the API authorization handler, or null if it wasn't found
+     */
+    protected I_CmsApiAuthorizationHandler getApiAuthorization(String name) {
+
+        return m_apiAuthorizations.get(name);
+
     }
 
     /**
@@ -1740,11 +1756,17 @@ public final class OpenCmsCore {
                 m_workflowManager = new CmsDefaultWorkflowManager();
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
-            m_workflowManager.initialize(adminCms);
 
             m_remoteShellServer = CmsRemoteShellServer.initialize(systemConfiguration);
 
             CmsPublishScheduledDialog.setAdminCms(initCmsObject(adminCms));
+
+            m_workflowManager.initialize(initCmsObject(adminCms));
+            m_apiAuthorizations = systemConfiguration.getApiAuthorizations();
+            for (I_CmsApiAuthorizationHandler apiAuthorization : m_apiAuthorizations.values()) {
+                apiAuthorization.initialize(initCmsObject(adminCms));
+
+            }
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
