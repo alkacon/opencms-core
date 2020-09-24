@@ -44,6 +44,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface I_CmsResourceInit {
 
+    /** Resource init handlers can use this attribute to pass an alternative CmsObject for loading the resource returned by them. */
+    public static final String ATTR_ALTERNATIVE_CMS_OBJECT = "resourceinit.alternativeCmsObject";
+
     /**
      * Gets the configuration data.
      *

@@ -2120,13 +2120,25 @@ public final class OpenCmsCore {
 
             // user is initialized, now deliver the requested resource
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
+
+            // a resource init handler may use its own authentication, but return a resource to be loaded instead of handling the complete request processing by itself.
+            // For this case, a request context attribute is used to pass  the CmsObject that should be used for loading the resource.
+
+            Object altCmsObj = cms.getRequestContext().getAttribute(I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT);
+            CmsObject cmsForLoad = cms;
+            if (altCmsObj instanceof CmsObject) {
+                // we know it's not null at this point
+                cmsForLoad = (CmsObject)altCmsObj;
+            }
             if (resource != null) {
                 boolean forceAbsoluteLinks = checkForceAbsoluteLinks(req, cms, resource);
                 cms.getRequestContext().setForceAbsoluteLinks(forceAbsoluteLinks);
 
                 // a file was read, go on process it
-                m_resourceManager.loadResource(cms, resource, req, res);
-                m_sessionManager.updateSessionInfo(cms, req);
+                m_resourceManager.loadResource(cmsForLoad, resource, req, res);
+                if (cmsForLoad == cms) {
+                    m_sessionManager.updateSessionInfo(cms, req);
+                }
             }
 
         } catch (Throwable t) {
