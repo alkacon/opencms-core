@@ -29,6 +29,7 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,12 +45,15 @@ public interface I_CmsApiAuthorizationHandler {
     /**
      * Authenticates a user from a request and returns a CmsObject initialized with that user.
      *
-     *  <p>If no user can be authenticated from the request, this method returns null
+     *  <p>If no user can be authenticated from the request, this method returns null.
      *
+     * @param adminCms a CmsObject with root admin privileges
      * @param request the request
      * @return the CmsObject for the request
+     *
+     * @throws CmsException if something goes wrong
      */
-    CmsObject initCmsObject(HttpServletRequest request);
+    CmsObject initCmsObject(CmsObject adminCms, HttpServletRequest request) throws CmsException;
 
     /**
      * Sets the admin CmsObject used internally by this handler.

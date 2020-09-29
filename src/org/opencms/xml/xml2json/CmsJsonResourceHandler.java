@@ -29,6 +29,7 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.I_CmsNeedsAdminCmsObject;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -60,10 +61,13 @@ import org.apache.commons.logging.Log;
 /**
  * Handles /json requests.
  */
-public class CmsJsonResourceHandler implements I_CmsResourceInit {
+public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdminCmsObject {
 
     /** Request attribute for storing the JSON handler context. */
     public static final String ATTR_CONTEXT = "jsonHandlerContext";
+
+    /** Configuration parameter that determines which authorization method to use. */
+    public static final String PARAM_AUTHORIZATION = "authorization";
 
     /** URL prefix. */
     public static final String PREFIX = "/json";
@@ -77,6 +81,8 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
     /** Service loader used to load external JSON handler classes. */
     private ServiceLoader<I_CmsJsonHandlerProvider> m_serviceLoader = ServiceLoader.load(
         I_CmsJsonHandlerProvider.class);
+
+    private CmsObject m_adminCms;
 
     /**
      * Creates a new instance.
@@ -148,6 +154,30 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
                 value = data[0];
             }
             singleParams.put(entry.getKey(), value);
+        }
+
+        String authorizationParam = m_config.get(PARAM_AUTHORIZATION);
+        I_CmsApiAuthorizationHandler authorization = null;
+        CmsObject origCms = cms;
+        if (authorizationParam != null) {
+            authorization = OpenCms.getApiAuthorization(authorizationParam);
+            if (authorization == null) {
+                LOG.error("Authorization method not found: " + authorizationParam);
+            } else {
+                try {
+                    CmsObject alternativeCms = authorization.initCmsObject(m_adminCms, req);
+                    if (alternativeCms != null) {
+                        origCms.getRequestContext().setAttribute(
+                            I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT,
+                            alternativeCms);
+                        cms = alternativeCms;
+                        cms.getRequestContext().setSiteRoot(origCms.getRequestContext().getSiteRoot());
+                        cms.getRequestContext().setUri(origCms.getRequestContext().getUri());
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
         }
 
         int status = HttpServletResponse.SC_OK;
@@ -225,6 +255,14 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit {
         ex.setClearErrors(true);
         throw ex;
 
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsNeedsAdminCmsObject#setAdminCmsObject(org.opencms.file.CmsObject)
+     */
+    public void setAdminCmsObject(CmsObject adminCms) {
+
+        m_adminCms = adminCms;
     }
 
     /**

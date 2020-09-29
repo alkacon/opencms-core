@@ -41,6 +41,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.configuration.I_CmsNeedsAdminCmsObject;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
@@ -1508,6 +1509,7 @@ public final class OpenCmsCore {
             new ThreadFactoryBuilder().setNameFormat("OpenCmsCore-exec-%d").build());
         // set resource init classes
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
+
         // register request handler classes
         Iterator<I_CmsRequestHandler> it = systemConfiguration.getRequestHandlers().iterator();
         while (it.hasNext()) {
@@ -1765,7 +1767,17 @@ public final class OpenCmsCore {
             m_apiAuthorizations = systemConfiguration.getApiAuthorizations();
             for (I_CmsApiAuthorizationHandler apiAuthorization : m_apiAuthorizations.values()) {
                 apiAuthorization.initialize(initCmsObject(adminCms));
+            }
 
+            for (I_CmsResourceInit resourceInit : m_resourceInitHandlers) {
+                if (resourceInit instanceof I_CmsNeedsAdminCmsObject) {
+                    ((I_CmsNeedsAdminCmsObject)resourceInit).setAdminCmsObject(adminCms);
+                }
+            }
+            for (I_CmsRequestHandler requestHandler : m_requestHandlers.values()) {
+                if (requestHandler instanceof I_CmsNeedsAdminCmsObject) {
+                    ((I_CmsNeedsAdminCmsObject)requestHandler).setAdminCmsObject(adminCms);
+                }
             }
 
         } catch (CmsException e) {
@@ -2124,11 +2136,12 @@ public final class OpenCmsCore {
             // a resource init handler may use its own authentication, but return a resource to be loaded instead of handling the complete request processing by itself.
             // For this case, a request context attribute is used to pass  the CmsObject that should be used for loading the resource.
 
-            Object altCmsObj = cms.getRequestContext().getAttribute(I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT);
+            Object alternativeCmsObject = cms.getRequestContext().removeAttribute(
+                I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT);
             CmsObject cmsForLoad = cms;
-            if (altCmsObj instanceof CmsObject) {
+            if (alternativeCmsObject instanceof CmsObject) {
                 // we know it's not null at this point
-                cmsForLoad = (CmsObject)altCmsObj;
+                cmsForLoad = (CmsObject)alternativeCmsObject;
             }
             if (resource != null) {
                 boolean forceAbsoluteLinks = checkForceAbsoluteLinks(req, cms, resource);
@@ -2137,6 +2150,11 @@ public final class OpenCmsCore {
                 // a file was read, go on process it
                 m_resourceManager.loadResource(cmsForLoad, resource, req, res);
                 if (cmsForLoad == cms) {
+                    // if we used a different CmsObject, we don't want to update the session with either
+                    // CmsObject - it's not necessary to do it for the original CmsObject, and using the alternative CmsObject
+                    // if there is already a session would switch the session user to the one of that CmsObject. We don't
+                    // want that, since the primary use case for the alternative CmsObject mechanism is 'stateless' authentication
+                    // for resource init handlers.
                     m_sessionManager.updateSessionInfo(cms, req);
                 }
             }
