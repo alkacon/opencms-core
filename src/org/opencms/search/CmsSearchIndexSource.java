@@ -61,7 +61,7 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
     private List<String> m_documentTypes;
 
     /** The map from extraction keys to document factories. */
-    private Map<String, I_CmsDocumentFactory> m_documentFactories;
+    private transient Map<String, I_CmsDocumentFactory> m_documentFactories;
 
     /** The indexer. */
     private transient I_CmsIndexer m_indexer;
@@ -161,7 +161,7 @@ public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource>, S
     /**
      * Returns the document factory for given key.<p>
      * Note that only the keys resulting from the document types for this source set are taken into account.<p>
-     * 
+     *
      * @param documentTypeKey the key for the factory to use.
      * @return a document factory or null
      */
