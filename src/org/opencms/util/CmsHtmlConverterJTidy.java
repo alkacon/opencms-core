@@ -54,6 +54,10 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlConverterJTidy.class);
 
+    /** List of default modes if none were specified explicitly. */
+    private static final List<String> MODES_DEFAULT = Collections.unmodifiableList(
+        Arrays.asList(new String[] {CmsHtmlConverter.PARAM_ENABLED}));
+
     /** Regular expression for cleanup. */
     String[] m_cleanupPatterns = {
         "<o:p>.*(\\r\\n)*.*</o:p>",
@@ -119,10 +123,6 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
     /** Indicates if XHTML conversion mode is enabled or not. */
     private boolean m_modeXhtml;
-
-    /** List of default modes if none were specified explicitly. */
-    private static final List<String> MODES_DEFAULT = Collections.unmodifiableList(
-        Arrays.asList(new String[] {CmsHtmlConverter.PARAM_ENABLED}));
 
     /**
      * Constructor, creates a new CmsHtmlConverterJTidy.<p>
@@ -298,6 +298,8 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
             m_tidy.setNumEntities(true);
             // create output of the body only
             m_tidy.setPrintBodyOnly(true);
+            // disable URI fixing, because it breaks domain names with special characters (IDNs) in links when used in HTML fields
+            m_tidy.setFixUri(false);
             // force output creation even if there are tidy errors
             m_tidy.setForceOutput(true);
             // set tidy to quiet mode to prevent output
