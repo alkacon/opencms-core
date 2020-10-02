@@ -33,7 +33,6 @@ package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsPair;
@@ -236,7 +235,7 @@ public class CmsSolrQuery extends SolrQuery {
     @Override
     public CmsSolrQuery clone() {
 
-        CmsSolrQuery sq = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
+        CmsSolrQuery sq = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString(), true, null));
         if (m_ignoreExpiration) {
             sq.removeExpiration();
         }
@@ -536,15 +535,6 @@ public class CmsSolrQuery extends SolrQuery {
     public void setTextSearchFields(String... textSearchFields) {
 
         setTextSearchFields(Arrays.asList(textSearchFields));
-    }
-
-    /**
-     * @see org.apache.solr.common.params.ModifiableSolrParams#toString()
-     */
-    @Override
-    public String toString() {
-
-        return CmsEncoder.decode(super.toString());
     }
 
     /**
