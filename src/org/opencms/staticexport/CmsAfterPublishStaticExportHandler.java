@@ -340,12 +340,20 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     exportData.getVfsName()));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-            int status = manager.export(null, null, cms, exportData);
-            if (status == HttpServletResponse.SC_OK) {
-                report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.FORMAT_OK);
-            } else {
+            int status = -1;
+            try {
+                status = manager.export(null, null, cms, exportData);
+                if (status == HttpServletResponse.SC_OK) {
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
+                } else {
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_IGNORED_0),
+                        I_CmsReport.FORMAT_NOTE);
+                }
+            } catch (CmsStaticExportException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_IGNORED_0),
                     I_CmsReport.FORMAT_NOTE);
