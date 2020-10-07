@@ -1616,6 +1616,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setTitle(title);
                 // gallery type name
                 bean.setResourceType(tInfo.getResourceType().getTypeName());
+                bean.setUploadAction(tInfo.getResourceType().getConfiguration().get("gallery.upload.action"));
                 bean.setEditable(isEditable(getCmsObject(), res));
                 bean.setBigIconClasses(
                     CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(getCmsObject(), res), sitePath, false));
@@ -2578,7 +2579,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 throw new IllegalStateException("This code should never be called");
-                // ADE case is handled by container page service
+            // ADE case is handled by container page service
             default:
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptySet();
@@ -2812,13 +2813,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE))) {
-            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
-        } else {
-            title = navElement.getFileName();
-            if (title.contains("/")) {
-                title = title.substring(0, title.indexOf("/"));
+                title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+            } else {
+                title = navElement.getFileName();
+                if (title.contains("/")) {
+                    title = title.substring(0, title.indexOf("/"));
+                }
             }
-        }
         String childPath = navElement.getResource().getRootPath();
         boolean noChildren = true;
 

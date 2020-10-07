@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -486,13 +487,26 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
 
         if (galleryInfo.isEditable()) {
-            if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
-                CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
-                if (createExternalLink != null) {
-                    listItemWidget.addButton(createExternalLink);
+            String uploadAction = galleryInfo.getUploadAction();
+            if (null != uploadAction) {
+                CmsDebugLog.consoleLog(
+                    "Adding custom upload button for gallery "
+                        + galleryInfo.getPath()
+                        + " calling function "
+                        + uploadAction);
+                CmsPushButton customUploadButton = createCustomUploadButton(uploadAction, galleryInfo.getPath());
+                if (customUploadButton != null) {
+                    listItemWidget.addButton(customUploadButton);
                 }
             } else {
-                listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
+                    CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
+                    if (createExternalLink != null) {
+                        listItemWidget.addButton(createExternalLink);
+                    }
+                } else {
+                    listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                }
             }
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));

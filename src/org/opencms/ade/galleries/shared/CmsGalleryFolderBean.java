@@ -48,6 +48,9 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     /** The folder site-path. */
     private String m_path;
 
+    /** The name of the JavaScript method to get an upload button provider object. */
+    private String m_uploadAction;
+
     /**
      * Returns the content types which can be used within this gallery type.<p>
      *
@@ -75,6 +78,11 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     public String getSubTitle() {
 
         return getPath();
+    }
+
+    public String getUploadAction() {
+
+        return m_uploadAction;
     }
 
     /**
@@ -129,4 +137,15 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
 
         m_path = path;
     }
+
+    /**
+     * Sets the upload action.<p>
+     *
+     * @param jsFunctionName the name of the JavaScript function to call when the upload button is pressed.
+     */
+    public void setUploadAction(String jsFunctionName) {
+
+        m_uploadAction = jsFunctionName;
+    }
+
 }

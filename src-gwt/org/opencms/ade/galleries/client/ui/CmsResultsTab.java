@@ -801,6 +801,8 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private void showUpload(CmsGallerySearchBean searchObj) {
 
+        // TODO: Custom upload button!
+
         Set<String> targets = new HashSet<String>();
 
         if (searchObj.getGalleries() != null) {
@@ -821,6 +823,7 @@ public class CmsResultsTab extends A_CmsListTab {
             m_uploadButton.getElement().getStyle().clearDisplay();
         }
         if (targets.size() == 1) {
+            //TODO: Make upload button generic
             CmsGalleryFolderBean galleryFolder = getTabHandler().getGalleryInfo(targets.iterator().next());
             if ((galleryFolder != null)
                 && CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryFolder.getType())) {
