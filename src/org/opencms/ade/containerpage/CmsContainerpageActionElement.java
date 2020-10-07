@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,9 +48,6 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
 
     /** The OpenCms module name. */
     public static final String CMS_MODULE_NAME = "org.opencms.ade.containerpage";
-
-    /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.containerpage.name();
 
     /** The current container page data. */
     private CmsCntPageData m_cntPageData;
@@ -88,7 +86,6 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
             I_CmsContainerpageService.class.getMethod("prefetch"),
             getCntPageData());
         sb.append(prefetchedData);
-        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         sb.append("<script type=\"text/javascript\" src=\"");
         sb.append(
             OpenCms.getLinkManager().substituteLinkForRootPath(
@@ -114,5 +111,14 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
             }
         }
         return m_cntPageData;
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#getModuleKey()
+     */
+    @Override
+    protected ModuleKey getModuleKey() {
+
+        return CmsCoreData.ModuleKey.containerpage;
     }
 }

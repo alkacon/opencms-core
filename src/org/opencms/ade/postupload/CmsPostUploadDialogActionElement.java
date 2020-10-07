@@ -33,6 +33,7 @@ import org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -47,9 +48,6 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
 
     /** The OpenCms module name. */
     public static final String CMS_MODULE_NAME = "org.opencms.ade.postupload";
-
-    /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.postupload.name();
 
     /** The dialog data. */
     private CmsPostUploadDialogBean m_dialogData;
@@ -93,11 +91,11 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(exportCloseLink());
-        sb.append(exportDictionary(
-            CmsPostUploadDialogBean.DICT_NAME,
-            I_CmsPostUploadDialogService.class.getMethod("prefetch"),
-            getDialogData()));
-        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
+        sb.append(
+            exportDictionary(
+                CmsPostUploadDialogBean.DICT_NAME,
+                I_CmsPostUploadDialogService.class.getMethod("prefetch"),
+                getDialogData()));
         return sb.toString();
     }
 
@@ -136,6 +134,15 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     public void setUsePropertyConfiguration(boolean useConfiguration) {
 
         m_useConfiguration = useConfiguration;
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#getModuleKey()
+     */
+    @Override
+    protected ModuleKey getModuleKey() {
+
+        return CmsCoreData.ModuleKey.postupload;
     }
 
     /**
