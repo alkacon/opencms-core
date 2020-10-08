@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsPrincipalSelectHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -112,6 +113,37 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
     public static void initClass() {
 
         exportNativeFunctions();
+    }
+
+    /**
+     * Opens the given dialog in an iframe.
+     *
+     * @param dialogId the action class
+     * @param structureIds the structure ids for the action
+     * @param finishCallback the callback to call after the dialog closes
+     */
+    public static void openDialog(String dialogId, List<CmsUUID> structureIds, Runnable finishCallback) {
+
+        CmsEmbeddedDialogHandler handler = new CmsEmbeddedDialogHandler(new I_CmsActionHandler() {
+
+            public void leavePage(String targetUri) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void refreshResource(CmsUUID structureId) {
+
+                finishCallback.run();
+            }
+        });
+        handler.openDialog(dialogId, CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE, structureIds);
     }
 
     /**

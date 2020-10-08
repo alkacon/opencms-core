@@ -914,6 +914,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getStructureId(java.lang.String)
+     */
+    public CmsUUID getStructureId(String vfsPath) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            return res.getStructureId();
+        } catch (Throwable e) {
+            error(e);
+            return null; // will never be reached
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#loadLinkInfo(org.opencms.util.CmsUUID)
      */
     public CmsExternalLinkInfoBean loadLinkInfo(CmsUUID structureId) throws CmsRpcException {

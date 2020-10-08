@@ -352,6 +352,15 @@ public interface I_CmsVfsService extends RemoteService {
     String getSitePath(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Gets the structure id for a given site path.
+     *
+     * @param vfsPath the site path
+     * @return the structure id
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsUUID getStructureId(String vfsPath) throws CmsRpcException;
+
+    /**
      * Loads the external link info.<p>
      *
      * @param structureId the external link structure id
