@@ -3440,6 +3440,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERMANAGEMENT_USER_VALIDATION_START_PATH_NOT_VALID_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_START_PATH_NOT_VALID_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERMANAGEMENT_USER_VALIDATION_START_PROJECT_NOT_EXISTING_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_START_PROJECT_NOT_EXISTING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERMANAGEMENT_USER_VALIDATION_STARTSITE_EMPTY_0 = "GUI_USERMANAGEMENT_USER_VALIDATION_STARTSITE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */

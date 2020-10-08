@@ -72,6 +72,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
@@ -115,7 +116,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         private static final long serialVersionUID = 8943898736907290076L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -141,7 +142,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         private static final long serialVersionUID = -6768717591898665618L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -174,7 +175,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         private static final long serialVersionUID = 64216980175982548L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -206,7 +207,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         private static final long serialVersionUID = -4257155941690487831L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -226,6 +227,39 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     }
 
     /**
+     * Validator for start project.<p>
+     */
+    class StartProjectValidator implements Validator {
+
+        /** Serialization id. */
+        private static final long serialVersionUID = 7117548227591179638L;
+
+        /** The invalid value. */
+        private String m_invalidProject;
+
+        /**
+         * Creates the validator.
+         * @param invalidProject the project to treat as invalid.
+         */
+        public StartProjectValidator(String invalidProject) {
+
+            m_invalidProject = invalidProject;
+        }
+
+        /**
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (Objects.equals(String.valueOf(value), m_invalidProject)) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(
+                        Messages.GUI_USERMANAGEMENT_USER_VALIDATION_START_PROJECT_NOT_EXISTING_0));
+            }
+        }
+    }
+
+    /**
      * Validator for start view and start site field.<p>
      */
     class StartSiteValidator implements Validator {
@@ -234,7 +268,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         private static final long serialVersionUID = -4257155941690487831L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -259,7 +293,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         private static final long serialVersionUID = -4257155941690487831L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -769,7 +803,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         boolean[] ret = new boolean[4];
         ret[0] = m_loginname.isValid();
         ret[1] = m_isWebOU ? true : m_userdata.isValid() | m_name_was_empty;
-        ret[2] = m_isWebOU ? true : m_site.isValid() & m_startview.isValid() & m_startfolder.isValid();
+        ret[2] = m_isWebOU
+        ? true
+        : m_site.isValid() & m_startview.isValid() & m_startfolder.isValid() & m_project.isValid();
         ret[3] = m_pw.getPassword1Field().isValid();
 
         for (int i = 0; i < ret.length; i++) {
@@ -1244,7 +1280,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_project.setNewItemsAllowed(false);
             m_project.setNullSelectionAllowed(false);
             if (settings != null) {
+                // Project names may start with "/" when stored via the old workplace, this slash has to be removed, to match the name.
                 String projString = settings.getStartProject();
+                if (projString.startsWith("/")) {
+                    projString = projString.substring(1);
+                }
+                if (!m_project.containsId(projString)) {
+                    m_project.addItem(projString);
+                    m_project.addValidator(new StartProjectValidator(projString));
+                }
                 m_project.select(projString);
             } else {
                 String defaultProject = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
