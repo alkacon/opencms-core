@@ -530,7 +530,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
                                 CmsEmbeddedDialogHandler.openDialog(
                                     uploadAction,
                                     resultIds,
-                                    getTabHandler()::updateIndex);
+                                    id -> getTabHandler().updateIndex());
                             };
 
                         };

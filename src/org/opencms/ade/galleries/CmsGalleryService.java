@@ -30,6 +30,7 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.CmsGalleryFilteredNavTreeBuilder.NavigationNode;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
+import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
@@ -662,6 +663,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     public List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) {
 
         return buildGalleriesList(readGalleryInfosByTypeNames(resourceTypes));
+    }
+
+    public CmsGalleryActionInfo getGalleryActionInfo(String sitePath) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            try {
+                CmsResource folderRes = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(folderRes);
+                String action = type.getConfiguration().get("gallery.upload.action");
+                return new CmsGalleryActionInfo(folderRes.getStructureId(), action);
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.info(e.getLocalizedMessage(), e);
+                return null;
+            }
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+
     }
 
     /**

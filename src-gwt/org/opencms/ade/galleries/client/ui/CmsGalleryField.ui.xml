@@ -17,7 +17,12 @@
 			<input:CmsSimpleTextBox ui:field="m_textbox" />
 		</div>
 		<g:Label ui:field="m_fader" styleName="{input.inputCss.fader}"/>
-		<upload:CmsUploadButton ui:field="m_uploadButton" addStyleNames="{gallery.galleryFieldCss.uploadButton}" />
+		 
+		<g:FlowPanel addStyleNames="{gallery.galleryFieldCss.uploadButton}">
+			<upload:CmsUploadButton ui:field="m_uploadButton"  />
+			<cms:CmsPushButton ui:field="m_specialUploadButton" />
+		</g:FlowPanel>
+
 		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{gallery.galleryFieldCss.opener}"/>
 	</div>
 	<g:FlowPanel ui:field="m_resourceInfoPanel" styleName="{gallery.galleryFieldCss.resourceInfo}" />

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
+import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
@@ -79,6 +80,16 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) throws CmsRpcException;
+
+    /**
+     * Gets the gallery upload action information for the given path.
+     *
+     * @param sitePath the path of a gallery folder
+     * @return the gallery upload action information for that folder (may be null if no folder is found)
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsGalleryActionInfo getGalleryActionInfo(String sitePath) throws CmsRpcException;
 
     /**
      * Returns the resource info for a single resource.<p>

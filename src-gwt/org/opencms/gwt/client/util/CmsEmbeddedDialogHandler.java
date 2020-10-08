@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
@@ -122,7 +123,7 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
      * @param structureIds the structure ids for the action
      * @param finishCallback the callback to call after the dialog closes
      */
-    public static void openDialog(String dialogId, List<CmsUUID> structureIds, Runnable finishCallback) {
+    public static void openDialog(String dialogId, List<CmsUUID> structureIds, Consumer<CmsUUID> finishCallback) {
 
         CmsEmbeddedDialogHandler handler = new CmsEmbeddedDialogHandler(new I_CmsActionHandler() {
 
@@ -140,7 +141,7 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
 
             public void refreshResource(CmsUUID structureId) {
 
-                finishCallback.run();
+                finishCallback.accept(structureId);
             }
         });
         handler.openDialog(dialogId, CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE, structureIds);

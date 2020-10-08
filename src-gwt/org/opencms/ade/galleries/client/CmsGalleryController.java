@@ -280,6 +280,20 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the gallery service instance.<p>
+     *
+     * @return the gallery service instance
+     */
+    public static I_CmsGalleryServiceAsync getGalleryService() {
+
+        if (m_gallerySvc == null) {
+            I_CmsGalleryServiceAsync service = createGalleryService();
+            m_gallerySvc = service;
+        }
+        return m_gallerySvc;
+    }
+
+    /**
      * Registers a preview factory for the given name.
      *
      * @param previewProviderName the preview provider name
@@ -288,20 +302,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public static void registerPreviewFactory(String previewProviderName, I_CmsPreviewFactory factory) {
 
         m_previewFactoryRegistration.put(previewProviderName, factory);
-    }
-
-    /**
-     * Returns the gallery service instance.<p>
-     *
-     * @return the gallery service instance
-     */
-    protected static I_CmsGalleryServiceAsync getGalleryService() {
-
-        if (m_gallerySvc == null) {
-            I_CmsGalleryServiceAsync service = createGalleryService();
-            m_gallerySvc = service;
-        }
-        return m_gallerySvc;
     }
 
     /**
