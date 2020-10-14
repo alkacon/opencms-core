@@ -25,10 +25,19 @@ public final class DefaultReportMessages extends A_CmsMessageBundle {
     public static final String REPORT_OK_0 = "REPORT_OK_0";
 
     /** Message key. */
+    public static final String REPORT_OK_NO_DOTS_0 = "REPORT_OK_NO_DOTS_0";
+
+    /** Message key. */
     public static final String REPORT_FAILED_0 = "REPORT_FAILED_0";
 
     /** Message key. */
+    public static final String REPORT_FAILED_NO_DOTS_0 = "REPORT_FAILED_NO_DOTS_0";
+
+    /** Message key. */
     public static final String REPORT_SKIPPED_0 = "REPORT_SKIPPED_0";
+
+    /** Message key. */
+    public static final String REPORT_SKIPPED_NO_DOTS_0 = "REPORT_SKIPPED_NO_DOTS_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
