@@ -63,6 +63,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -889,6 +890,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         return new CmsGalleryPopup(handler, m_configuration);
     }
 
+    /**
+     * Creates custom upload button for galleries which have an upload action configured.
+     *
+     * @return the special upload button
+     */
     private CmsPushButton createSpecialUploadButton() {
 
         CmsPushButton uploadButton = new CmsPushButton(I_CmsButton.UPLOAD_SMALL);
@@ -911,9 +917,18 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                     protected void onResponse(CmsUUID result) {
 
                         stop(false);
+                        if (result == null) {
+                            return;
+                        }
                         List<CmsUUID> resultIds = new ArrayList<>();
                         resultIds.add(result);
-                        CmsEmbeddedDialogHandler.openDialog(m_uploadAction, resultIds, id -> updateValueFromId(id));
+                        Map<String, String> params = new HashMap<>();
+                        params.put("editor", "true");
+                        CmsEmbeddedDialogHandler.openDialog(
+                            m_uploadAction,
+                            resultIds,
+                            params,
+                            id -> updateValueFromId(id));
                     };
 
                 };
