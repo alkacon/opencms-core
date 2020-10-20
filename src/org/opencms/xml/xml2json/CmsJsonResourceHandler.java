@@ -75,6 +75,9 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJsonResourceHandler.class);
 
+    /** The Admin CMS context. */
+    private CmsObject m_adminCms;
+
     /** Configuration from config file. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
@@ -82,14 +85,64 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
     private ServiceLoader<I_CmsJsonHandlerProvider> m_serviceLoader = ServiceLoader.load(
         I_CmsJsonHandlerProvider.class);
 
-    private CmsObject m_adminCms;
-
     /**
      * Creates a new instance.
      */
     public CmsJsonResourceHandler() {
 
         CmsFlexController.registerUncacheableAttribute(ATTR_CONTEXT);
+    }
+
+    /**
+     * Helper method for authorizing requests based on a comma-separated list of API authorization handler names.
+     *
+     * <p>This will evaluate each authorization handler from authChain and return the first non-null CmsObject returned.
+     * A special case is authChain contains the word 'default', this is not u
+     *
+     * <p>Returns null if the authorization failed.
+     *
+     * @param adminCms the Admin CmsObject
+     * @param defaultCms the current CmsObject with the default user data from the request
+     * @param request the current request
+     * @param authChain a comma-separated list of API authorization handler names
+     *
+     * @return the initialized CmsObject
+     */
+    private static CmsObject authorize(
+        CmsObject adminCms,
+        CmsObject defaultCms,
+        HttpServletRequest request,
+        String authChain) {
+
+        if (authChain == null) {
+            return defaultCms;
+        }
+        for (String token : authChain.split(",")) {
+            token = token.trim();
+            if ("default".equals(token)) {
+                LOG.info("Using default CmsObject");
+                return defaultCms;
+            } else {
+                I_CmsApiAuthorizationHandler handler = OpenCms.getApiAuthorization(token);
+                if (handler == null) {
+                    LOG.error("Could not find API authorization handler " + token);
+                    return null;
+                } else {
+                    try {
+                        CmsObject cms = handler.initCmsObject(adminCms, request);
+                        if (cms != null) {
+                            LOG.info("Succeeded with authorization handler: " + token);
+                            return cms;
+                        }
+                    } catch (CmsException e) {
+                        LOG.error("Error evaluating authorization handler " + token);
+                        return null;
+                    }
+                }
+            }
+        }
+        LOG.info("Authentication unsusccessful");
+        return null;
     }
 
     /**
@@ -157,85 +210,75 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
         }
 
         String authorizationParam = m_config.get(PARAM_AUTHORIZATION);
-        I_CmsApiAuthorizationHandler authorization = null;
         CmsObject origCms = cms;
-        if (authorizationParam != null) {
-            authorization = OpenCms.getApiAuthorization(authorizationParam);
-            if (authorization == null) {
-                LOG.error("Authorization method not found: " + authorizationParam);
-            } else {
-                try {
-                    CmsObject alternativeCms = authorization.initCmsObject(m_adminCms, req);
-                    if (alternativeCms != null) {
-                        origCms.getRequestContext().setAttribute(
-                            I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT,
-                            alternativeCms);
-                        cms = alternativeCms;
-                        cms.getRequestContext().setSiteRoot(origCms.getRequestContext().getSiteRoot());
-                        cms.getRequestContext().setUri(origCms.getRequestContext().getUri());
-                    }
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
+        cms = authorize(m_adminCms, origCms, req, authorizationParam);
+        if ((cms != null) && (cms != origCms)) {
+            origCms.getRequestContext().setAttribute(I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT, cms);
+            cms.getRequestContext().setSiteRoot(origCms.getRequestContext().getSiteRoot());
+            cms.getRequestContext().setUri(origCms.getRequestContext().getUri());
         }
 
         int status = HttpServletResponse.SC_OK;
         String output = "";
         try {
-            CmsObject rootCms = OpenCms.initCmsObject(cms);
-            rootCms.getRequestContext().setSiteRoot("");
-            boolean resourcePermissionDenied = false;
-            CmsResource resource = null;
-            try {
-                resource = rootCms.readResource(path);
-            } catch (CmsSecurityException e) {
-                LOG.info("Permission denied for " + path);
-                resourcePermissionDenied = true;
-            } catch (CmsException e) {
-                // ignore
-            }
-
-            CmsJsonAccessPolicy accessPolicy = getAccessPolicy(rootCms);
-            CmsJsonHandlerContext context = new CmsJsonHandlerContext(
-                cms,
-                rootCms,
-                path,
-                resource,
-                singleParams,
-                m_config,
-                accessPolicy);
-            String encoding = "UTF-8";
-            res.setContentType("application/json; charset=" + encoding);
-            if (resourcePermissionDenied || !accessPolicy.checkAccess(context.getCms(), context.getPath())) {
-                status = HttpServletResponse.SC_FORBIDDEN;
-                output = JSONObject.quote("forbidden");
+            if (cms == null) {
+                status = HttpServletResponse.SC_UNAUTHORIZED;
+                output = JSONObject.quote("unauthorized");
             } else {
-                boolean foundHandler = false;
-                for (I_CmsJsonHandler handler : getSubHandlers()) {
-                    if (handler.matches(context)) {
-                        CmsJsonResult result = handler.renderJson(context);
-                        if (result.getNextResource() != null) {
-                            req.setAttribute(ATTR_CONTEXT, context);
-                            return result.getNextResource();
-                        } else {
-                            try {
-                                status = result.getStatus();
-                                output = JSONObject.valueToString(result.getJson(), 4, 0);
-                            } catch (Exception e) {
-                                status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-                                output = JSONObject.quote(e.getLocalizedMessage());
-                            }
-                            foundHandler = true;
-                            break;
+                CmsObject rootCms = OpenCms.initCmsObject(cms);
+                rootCms.getRequestContext().setSiteRoot("");
+                boolean resourcePermissionDenied = false;
+                CmsResource resource = null;
+                try {
+                    resource = rootCms.readResource(path);
+                } catch (CmsSecurityException e) {
+                    LOG.info("Permission denied for " + path);
+                    resourcePermissionDenied = true;
+                } catch (CmsException e) {
+                    // ignore
+                }
 
+                CmsJsonAccessPolicy accessPolicy = getAccessPolicy(rootCms);
+                CmsJsonHandlerContext context = new CmsJsonHandlerContext(
+                    cms,
+                    rootCms,
+                    path,
+                    resource,
+                    singleParams,
+                    m_config,
+                    accessPolicy);
+                String encoding = "UTF-8";
+                res.setContentType("application/json; charset=" + encoding);
+                if (resourcePermissionDenied || !accessPolicy.checkAccess(context.getCms(), context.getPath())) {
+                    status = HttpServletResponse.SC_FORBIDDEN;
+                    output = JSONObject.quote("forbidden");
+                } else {
+                    boolean foundHandler = false;
+                    for (I_CmsJsonHandler handler : getSubHandlers()) {
+                        if (handler.matches(context)) {
+                            CmsJsonResult result = handler.renderJson(context);
+                            if (result.getNextResource() != null) {
+                                req.setAttribute(ATTR_CONTEXT, context);
+                                return result.getNextResource();
+                            } else {
+                                try {
+                                    status = result.getStatus();
+                                    output = JSONObject.valueToString(result.getJson(), 4, 0);
+                                } catch (Exception e) {
+                                    status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+                                    output = JSONObject.quote(e.getLocalizedMessage());
+                                }
+                                foundHandler = true;
+                                break;
+
+                            }
                         }
                     }
-                }
-                if (!foundHandler) {
-                    LOG.info("No JSON handler found for path: " + path);
-                    status = HttpServletResponse.SC_NOT_FOUND;
-                    output = JSONObject.quote("");
+                    if (!foundHandler) {
+                        LOG.info("No JSON handler found for path: " + path);
+                        status = HttpServletResponse.SC_NOT_FOUND;
+                        output = JSONObject.quote("");
+                    }
                 }
             }
         } catch (Exception e) {
