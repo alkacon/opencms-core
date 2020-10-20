@@ -1662,42 +1662,50 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
                 height = scaler.getHeight();
                 width = scaler.getWidth();
-            } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)
-                || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-                    String link = "";
-                    if (resource instanceof I_CmsHistoryResource) {
-                        int version = ((I_CmsHistoryResource)resource).getVersion();
-                        link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                            cms,
-                            CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
-                    } else {
-                        link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
-                    }
-                    return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
-                } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                    if (!locales.containsKey(locale.toString())) {
-                        locale = CmsLocaleManager.getMainLocale(cms, resource);
-                    }
-                    previewContent = CmsPreviewService.getPreviewContent(
-                        getRequest(),
-                        getResponse(),
+            } else if (isContainerOrXmlPage(resource)) {
+                String link = "";
+                if (resource instanceof I_CmsHistoryResource) {
+                    int version = ((I_CmsHistoryResource)resource).getVersion();
+                    link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                         cms,
-                        resource,
-                        locale);
-
-                } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
-                    try {
-                        previewContent = "<pre><code>"
-                            + new String(cms.readFile(resource).getContents())
-                            + "</code></pre>";
-                    } catch (CmsException e) {
-                        LOG.warn(e.getLocalizedMessage(), e);
-                        previewContent = "<div>"
-                            + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-                                Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
-                            + "</div>";
-                    }
+                        CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+                } else {
+                    link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
                 }
+                return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
+            } else if (isBinary(resource)) {
+                String link = "";
+                if (resource instanceof I_CmsHistoryResource) {
+                    int version = ((I_CmsHistoryResource)resource).getVersion();
+                    link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        cms,
+                        CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+                } else {
+                    link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+                }
+                return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
+            } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                if (!locales.containsKey(locale.toString())) {
+                    locale = CmsLocaleManager.getMainLocale(cms, resource);
+                }
+                previewContent = CmsPreviewService.getPreviewContent(
+                    getRequest(),
+                    getResponse(),
+                    cms,
+                    resource,
+                    locale);
+
+            } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
+                try {
+                    previewContent = "<pre><code>" + new String(cms.readFile(resource).getContents()) + "</code></pre>";
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    previewContent = "<div>"
+                        + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                            Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
+                        + "</div>";
+                }
+            }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
             CmsPreviewInfo result = new CmsPreviewInfo(
                 previewContent,
@@ -1711,7 +1719,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.setLocales(locales);
             return result;
         }
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+        if (isContainerOrXmlPage(resource)) {
             CmsPreviewInfo result = new CmsPreviewInfo(
                 null,
                 OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
@@ -1737,6 +1745,30 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             title,
             cms.getSitePath(resource),
             locale.toString());
+    }
+
+    /**
+     * Checks if resource has the type 'binary'.
+     *
+     * @param resource the resource
+     * @return true if the resource is a binary file
+     */
+    private boolean isBinary(CmsResource resource) {
+
+        return OpenCms.getResourceManager().matchResourceType(
+            CmsResourceTypeBinary.getStaticTypeName(),
+            resource.getTypeId());
+    }
+
+    /**
+     * Checks if resource is a container page or xml page.
+     *
+     * @param resource the resource to check
+     * @return true if the resource is a container page or XML page
+     */
+    private boolean isContainerOrXmlPage(CmsResource resource) {
+
+        return CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource);
     }
 
 }
