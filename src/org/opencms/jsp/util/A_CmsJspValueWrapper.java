@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.AbstractCollection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -487,6 +488,16 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
             }
         }
         return m_link;
+    }
+
+    /**
+     * Converts the wrapped value to a java.util.Locale instance using the locale manager.
+     *
+     * @return the locale instance for the wrapped value
+     */
+    public Locale getToLocale() {
+
+        return CmsJspElFunctions.convertLocale(getObjectValue());
     }
 
     /**
