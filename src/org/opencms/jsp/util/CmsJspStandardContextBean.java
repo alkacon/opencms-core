@@ -964,6 +964,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets the CmsObject from the current Flex controller.
+     *
+     * @return the CmsObject from the current Flex controller
+     */
+    public CmsObject getControllerCms() {
+
+        return CmsFlexController.getController(m_request).getCmsObject();
+    }
+
+    /**
      * Returns the current detail content, or <code>null</code> if no detail content is requested.<p>
      *
      * @return the current detail content, or <code>null</code> if no detail content is requested.<p>
