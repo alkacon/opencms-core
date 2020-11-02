@@ -122,6 +122,13 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
             if ("default".equals(token)) {
                 LOG.info("Using default CmsObject");
                 return defaultCms;
+            } else if ("guest".equals(token)) {
+                try {
+                    return OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    return null;
+                }
             } else {
                 I_CmsApiAuthorizationHandler handler = OpenCms.getApiAuthorization(token);
                 if (handler == null) {
@@ -232,7 +239,11 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
                 try {
                     resource = rootCms.readResource(path);
                 } catch (CmsSecurityException e) {
-                    LOG.info("Permission denied for " + path);
+                    LOG.info(
+                        "Read permission denied for "
+                            + path
+                            + ", user="
+                            + rootCms.getRequestContext().getCurrentUser().getName());
                     resourcePermissionDenied = true;
                 } catch (CmsException e) {
                     // ignore
@@ -249,9 +260,19 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
                     accessPolicy);
                 String encoding = "UTF-8";
                 res.setContentType("application/json; charset=" + encoding);
-                if (resourcePermissionDenied || !accessPolicy.checkAccess(context.getCms(), context.getPath())) {
+                if (!accessPolicy.checkAccess(context.getCms(), context.getPath())) {
+                    LOG.info("JSON access to path'" + context.getPath() + "' denied by access policy.");
                     status = HttpServletResponse.SC_FORBIDDEN;
                     output = JSONObject.quote("forbidden");
+                } else if (resourcePermissionDenied) {
+                    if (cms.getRequestContext().getCurrentUser().getName().equals(
+                        OpenCms.getDefaultUsers().getUserGuest())) {
+                        status = HttpServletResponse.SC_UNAUTHORIZED;
+                        output = JSONObject.quote("unauthorized");
+                    } else {
+                        status = HttpServletResponse.SC_FORBIDDEN;
+                        output = JSONObject.quote("forbidden");
+                    }
                 } else {
                     boolean foundHandler = false;
                     for (I_CmsJsonHandler handler : getSubHandlers()) {
