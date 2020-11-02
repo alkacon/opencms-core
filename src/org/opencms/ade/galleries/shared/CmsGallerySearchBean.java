@@ -609,7 +609,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public boolean hasMore() {
 
-        return (m_resultCount > (m_page * m_matchesPerPage));
+        return ((m_results.size() >= m_matchesPerPage) && (m_resultCount > (m_page * m_matchesPerPage)));
     }
 
     /**
