@@ -79,6 +79,13 @@ public final class CmsGwtConstants {
 
     }
 
+    public static final class RpcContext {
+
+        public static final String PAGE_ID = "pageId";
+    }
+
+    public static final String EDITOR_PAGE_ID = "pageId";
+
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 

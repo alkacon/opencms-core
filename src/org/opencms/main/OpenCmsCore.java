@@ -57,6 +57,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexCache;
@@ -72,6 +73,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
@@ -2006,6 +2008,25 @@ public final class OpenCmsCore {
             CmsGwtService rpcService = getGwtService(serviceName, servletConfig);
             // check permissions
             rpcService.checkPermissions(cms);
+            String rpcContextStr = req.getHeader("X-OcmsRpcContext");
+            if (rpcContextStr == null) {
+                rpcContextStr = "{}";
+            }
+            // This makes the container page uri available in all RPC calls originating from the container page editor
+            JSONObject rpcContext = new JSONObject(rpcContextStr);
+            String pageIdStr = rpcContext.optString(CmsGwtConstants.RpcContext.PAGE_ID);
+            CmsResource page = null;
+            if (CmsUUID.isValidUUID(pageIdStr)) {
+                try {
+                    page = cms.readResource(new CmsUUID(pageIdStr), CmsResourceFilter.IGNORE_EXPIRATION);
+                } catch (Exception e) {
+                    LOG.error("Page id " + pageIdStr + " is unreadable: " + e.getLocalizedMessage(), e);
+                }
+            }
+            if (page != null) {
+                cms.getRequestContext().setUri(cms.getSitePath(page));
+            }
+
             // set runtime variables
             rpcService.setCms(cms);
             Object lock = req.getSession();
