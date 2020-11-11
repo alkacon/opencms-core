@@ -79,6 +79,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
         Set<String> containerTypes,
         String jspRootPath,
         CmsUUID jspStructureId,
+        String key,
         CmsUUID functionFormatterId,
         int minWidth,
         int maxWidth,
@@ -99,6 +100,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             containerTypes,
             jspRootPath,
             jspStructureId,
+            key,
             minWidth,
             maxWidth,
             true, // preview

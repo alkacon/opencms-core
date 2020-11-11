@@ -185,6 +185,11 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
         return m_wrappedFormatter.getJspStructureId();
     }
 
+    public String getKey() {
+
+        return null;
+    }
+
     /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getLocation()
      */

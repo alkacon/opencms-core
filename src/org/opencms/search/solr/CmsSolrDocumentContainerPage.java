@@ -127,13 +127,14 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                         CmsResource elementResource = element.getResource();
                         if (!(cms.readProject(index.getProject()).isOnlineProject()
                             && elementResource.isExpired(System.currentTimeMillis()))) {
-                            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
                                 cms,
                                 file.getRootPath());
                             CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
                             if ((formatters != null)
                                 && (element.getFormatterId() != null)
-                                && formatters.isSearchContent(element.getFormatterId())) {
+                                && (formatters.isSearchContent(element.getFormatterId())
+                                    || adeConfig.isSearchContentFormatter(element.getFormatterId()))) {
                                 // the content of this element must be included for the container page
                                 all.add(
                                     CmsSolrDocumentXmlContent.extractXmlContent(

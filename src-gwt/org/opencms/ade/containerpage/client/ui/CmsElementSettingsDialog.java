@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfigCollection;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
@@ -59,6 +60,7 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
@@ -261,6 +263,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         A_CmsFormFieldPanel formFieldPanel = null;
         String formatterPath;
         CmsFormatterConfig currentFormatterConfig = m_elementBean.getFormatterConfig(m_containerId);
+        String setting = m_elementBean.getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(m_containerId));
+        CmsDebugLog.consoleLog("setting = " + setting);
+        CmsDebugLog.consoleLog("formatters = " + m_elementBean.getFormatters().get(m_containerId));
         if (currentFormatterConfig == null) {
             throw new NoFormatterException();
         }
@@ -302,14 +307,15 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
                 CmsElementSettingsFormatterWidget formatterWidget = new CmsElementSettingsFormatterWidget();
                 m_formatterSelect = formatterWidget.getFormatterSelect();
-                final Map<String, CmsFormatterConfig> formattersForContainer = m_elementBean.getFormatters().get(
-                    m_containerId);
-                for (CmsFormatterConfig formatter : formattersForContainer.values()) {
-                    formatters.put(formatter.getId(), formatter.getLabel());
-                    m_formatterSelect.setTitle(formatter.getId(), formatter.getJspRootPath());
+                CmsFormatterConfigCollection formattersForContainer = m_elementBean.getFormatters().get(m_containerId);
+                for (CmsFormatterConfig formatter : formattersForContainer) {
+                    formatters.put(formatter.getKeyOrId(), formatter.getLabel());
+                    CmsDebugLog.consoleLog("Item: " + formatter.getId() + " => " + formatter.getLabel());
+                    m_formatterSelect.setTitle(formatter.getKeyOrId(), formatter.getJspRootPath());
                 }
                 m_formatterSelect.setItems(formatters);
-                String currentFormatterValue = m_elementBean.getFormatterConfig(m_containerId).getId();
+                String currentFormatterValue = m_elementBean.getFormatterConfig(m_containerId).getKeyOrId();
+                CmsDebugLog.consoleLog("Initial value: " + currentFormatterValue);
                 m_formatter = currentFormatterValue;
                 m_formatterSelect.selectValue(currentFormatterValue);
                 m_formatterSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -326,13 +332,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                     help.addStyleName(style);
                 }
                 final Map<String, CmsFieldTooltip.Data> tooltips = Maps.newHashMap();
-                for (Map.Entry<String, CmsFormatterConfig> entry : formattersForContainer.entrySet()) {
-                    CmsFormatterConfig formatterConfig = entry.getValue();
+                for (CmsFormatterConfig formatterConfig : formattersForContainer) {
                     String description = formatterConfig.getDescription();
                     if (description == null) {
                         description = formatterConfig.getLabel();
                     }
-                    tooltips.put(entry.getKey(), new Data(help, description, true));
+                    tooltips.put(formatterConfig.getId(), new Data(help, description, true));
                 }
                 Supplier<CmsFieldTooltip.Data> tooltipProvider = new Supplier<CmsFieldTooltip.Data>() {
 
@@ -766,28 +771,28 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
      * @param cssContent the CSS snippet
      */
     private native void ensureInlineCss(String formatterId, String cssContent)/*-{
-        var styles = $wnd.document.styleSheets;
-        for (var i = 0; i < styles.length; i++) {
-            // IE uses the owningElement property
-            var styleNode = styles[i].owningElement ? styles[i].owningElement
-                    : styles[i].ownerNode;
-            if (styleNode != null && styleNode.rel == formatterId) {
-                // inline css is present
-                return;
-            }
-        }
-        // include inline css into head
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var cssNode = $wnd.document.createElement('style');
-        cssNode.type = 'text/css';
-        cssNode.rel = formatterId;
-        if (cssNode.styleSheet) {
-            // in case of IE
-            cssNode.styleSheet.cssText = cssContent;
-        } else {
-            // otherwise
-            cssNode.appendChild(document.createTextNode(cssContent));
-        }
-        headID.appendChild(cssNode);
+		var styles = $wnd.document.styleSheets;
+		for (var i = 0; i < styles.length; i++) {
+			// IE uses the owningElement property
+			var styleNode = styles[i].owningElement ? styles[i].owningElement
+					: styles[i].ownerNode;
+			if (styleNode != null && styleNode.rel == formatterId) {
+				// inline css is present
+				return;
+			}
+		}
+		// include inline css into head
+		var headID = $wnd.document.getElementsByTagName("head")[0];
+		var cssNode = $wnd.document.createElement('style');
+		cssNode.type = 'text/css';
+		cssNode.rel = formatterId;
+		if (cssNode.styleSheet) {
+			// in case of IE
+			cssNode.styleSheet.cssText = cssContent;
+		} else {
+			// otherwise
+			cssNode.appendChild(document.createTextNode(cssContent));
+		}
+		headID.appendChild(cssNode);
     }-*/;
 }

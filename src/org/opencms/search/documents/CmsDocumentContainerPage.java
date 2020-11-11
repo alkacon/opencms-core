@@ -128,10 +128,13 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
                 // get the formatter configuration for this element
                 element.initResource(cms);
-                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, file.getRootPath());
+                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                    cms,
+                    file.getRootPath());
                 CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
 
-                if (formatters.isSearchContent(element.getFormatterId())) {
+                if (formatters.isSearchContent(element.getFormatterId())
+                    || adeConfig.isSearchContentFormatter(element.getFormatterId())) {
                     // the content of this element must be included for the container page
 
                     element.initResource(cms);

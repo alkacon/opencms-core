@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -64,13 +65,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 /**
@@ -188,6 +192,21 @@ public class CmsADEConfigData {
     /** The configuration sequence (contains the list of all sitemap configuration data beans to be used for inheritance). */
     private CmsADEConfigurationSequence m_configSequence;
 
+    /** Current formatter configuration. */
+    private CmsFormatterConfigurationCacheState m_cachedFormatters;
+
+    /** Lazily initialized map of formatters. */
+    private Map<CmsUUID, I_CmsFormatterBean> m_activeFormatters;
+
+    /** Lazily initialized cache for active formatters by formatter key. */
+    private Multimap<String, I_CmsFormatterBean> m_activeFormattersByKey;
+
+    /** Lazily initialized cache for formatters by formatter key. */
+    private Multimap<String, I_CmsFormatterBean> m_formattersByKey;
+
+    /** Lazily initialized cache for formatters by JSP id. */
+    private Multimap<CmsUUID, I_CmsFormatterBean> m_formattersByJspId;
+
     /**
      * Creates a new configuration data object, based on an internal configuration data bean and a
      * configuration cache state.<p>
@@ -291,16 +310,101 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the 'best' formatter for the given ID.<p>
+     *
+     * If the formatter with the ID has a key, then the active formatter with the same key is returned.  Otherwise, the
+     * formatter matching the ID is returned. So being active and having the same key is prioritized over an exact ID match.
+     *
+     * @param id the formatter ID
+     * @return the best formatter the given ID
+     */
+    public I_CmsFormatterBean findFormatter(CmsUUID id) {
+
+        if (id == null) {
+            return null;
+        }
+
+        CmsFormatterConfigurationCacheState formatterState = getCachedFormatters();
+        I_CmsFormatterBean result = formatterState.getFormatters().get(id);
+        if ((result != null) && (result.getKey() != null)) {
+            String key = result.getKey();
+            Collection<I_CmsFormatterBean> activeFormattersForKey = getActiveFormattersByKey().get(key);
+            if (activeFormattersForKey.size() > 0) {
+                if (activeFormattersForKey.size() > 1) {
+                    if (LOG.isWarnEnabled()) {
+                        List<String> ids = activeFormattersForKey.stream().map(formatter -> formatter.getId()).collect(
+                            Collectors.toList());
+                        LOG.warn("Ambiguous formatter key " + key + " at '" + getBasePath() + "': found " + ids);
+                    }
+                }
+                result = activeFormattersForKey.iterator().next();
+                LOG.debug(
+                    "Using substitute formatter " + result.getId() + " instead of " + id + " because of matching key.");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the 'best' formatter for the given name.<p>
+     *
+     * The name can be either a formatter key, or a formatter UUID. If it's a key, an active formatter with that key is returned.
+     * If it's a UUID, and the formatter with that UUID has no key, it will be returned. If it does have a key, the active formatter
+     * with that key is returned (so being active and having the same key is prioritized over an exact ID match).
+     *
+     * @param name a formatter name (key or ID)
+     * @return the best formatter for that name
+     */
+    public I_CmsFormatterBean findFormatter(String name) {
+
+        if (name == null) {
+            return null;
+        }
+
+        if (CmsUUID.isValidUUID(name)) {
+            return findFormatter(new CmsUUID(name));
+        }
+
+        if (name.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
+            return null;
+        }
+
+        Collection<I_CmsFormatterBean> activeForKey = getActiveFormattersByKey().get(name);
+        if (activeForKey.size() > 0) {
+            if (activeForKey.size() > 1) {
+                List<String> ids = activeForKey.stream().map(formatter -> formatter.getId()).collect(
+                    Collectors.toList());
+                LOG.warn("Ambiguous formatter for key '" + name + "' at " + getBasePath() + ", found " + ids);
+            }
+            return activeForKey.iterator().next();
+        } else {
+            LOG.warn("No local formatter found for key '" + name + "' at " + getBasePath() + ", trying all formatters");
+            Collection<I_CmsFormatterBean> allForKey = getFormattersByKey().get(name);
+            if (allForKey.size() > 0) {
+                if (allForKey.size() > 1) {
+                    List<String> ids = allForKey.stream().map(formatter -> formatter.getId()).collect(
+                        Collectors.toList());
+                    LOG.warn("Ambiguous formatter for key '" + name + "' at " + getBasePath() + ", found " + ids);
+                }
+                return allForKey.iterator().next();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Gets the active external (non-schema) formatters for this sub-sitemap.<p>
      *
      * @return the map of active external formatters by structure id
      */
     public Map<CmsUUID, I_CmsFormatterBean> getActiveFormatters() {
 
-        CmsFormatterConfigurationCacheState cacheState = getCachedFormatters();
-        Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getAutoEnabledFormatters());
-        applyAllFormatterChanges(result, cacheState);
-        return result;
+        if (m_activeFormatters == null) {
+            Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(getCachedFormatters().getAutoEnabledFormatters());
+            applyAllFormatterChanges(result, getCachedFormatters());
+            m_activeFormatters = result;
+        }
+        return m_activeFormatters;
     }
 
     /**
@@ -355,8 +459,11 @@ public class CmsADEConfigData {
      */
     public CmsFormatterConfigurationCacheState getCachedFormatters() {
 
-        return OpenCms.getADEManager().getCachedFormatters(
-            getCms().getRequestContext().getCurrentProject().isOnlineProject());
+        if (m_cachedFormatters == null) {
+            m_cachedFormatters = OpenCms.getADEManager().getCachedFormatters(
+                getCms().getRequestContext().getCurrentProject().isOnlineProject());
+        }
+        return m_cachedFormatters;
     }
 
     /**
@@ -511,7 +618,6 @@ public class CmsADEConfigData {
     public List<I_CmsFormatterBean> getDisplayFormatters(CmsObject cms) {
 
         List<I_CmsFormatterBean> result = new ArrayList<I_CmsFormatterBean>();
-
         for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
             if (formatter.isDisplayFormatter()) {
                 result.add(formatter);
@@ -616,7 +722,7 @@ public class CmsADEConfigData {
         if (CmsResourceTypeFunctionConfig.isFunction(res)) {
 
             CmsFormatterConfigurationCacheState formatters = getCachedFormatters();
-            I_CmsFormatterBean function = formatters.getFormatters().get(res.getStructureId());
+            I_CmsFormatterBean function = findFormatter(res.getStructureId());
             if (function != null) {
                 return CmsFormatterConfiguration.create(cms, Collections.singletonList(function));
             } else {
@@ -1055,6 +1161,22 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Checks if any formatter with the given JSP id has the 'search content' option set to true.
+     *
+     * @param jspId the structure id of a formatter JSP
+     * @return true if any of the formatters
+     */
+    public boolean isSearchContentFormatter(CmsUUID jspId) {
+
+        for (I_CmsFormatterBean formatter : getFormattersByJspId().get(jspId)) {
+            if (formatter.isSearchContent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Fetches the parent configuration of this configuration.<p>
      *
      * If this configuration is a sitemap configuration with no direct parent configuration,
@@ -1355,4 +1477,57 @@ public class CmsADEConfigData {
         }
         return result;
     }
+
+    /**
+     * Gets a multimap of active formatters for which a formatter key is defined, with the formatter keys as map keys.
+     *
+     * @return the map of active formatters by key
+     */
+    private Multimap<String, I_CmsFormatterBean> getActiveFormattersByKey() {
+
+        if (m_activeFormattersByKey == null) {
+            m_activeFormattersByKey = ArrayListMultimap.create();
+            for (I_CmsFormatterBean formatter : getActiveFormatters().values()) {
+                if (formatter.getKey() != null) {
+                    m_activeFormattersByKey.put(formatter.getKey(), formatter);
+                }
+            }
+        }
+        return m_activeFormattersByKey;
+    }
+
+    /**
+     * Gets formatters by JSP id.
+     *
+     * @return the multimap from JSP id to formatter beans
+     */
+    private Multimap<CmsUUID, I_CmsFormatterBean> getFormattersByJspId() {
+
+        if (m_formattersByJspId == null) {
+            m_formattersByJspId = ArrayListMultimap.create();
+            for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
+                m_formattersByJspId.put(formatter.getJspStructureId(), formatter);
+            }
+        }
+        return m_formattersByJspId;
+    }
+
+    /**
+     * Gets a multimap of the formatters for which a formatter key is defined, with the formatter keys as map keys.
+     *
+     * @return the map of formatters by key
+     */
+    private Multimap<String, I_CmsFormatterBean> getFormattersByKey() {
+
+        if (m_formattersByKey == null) {
+            m_formattersByKey = ArrayListMultimap.create();
+            for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
+                if (formatter.getKey() != null) {
+                    m_formattersByKey.put(formatter.getKey(), formatter);
+                }
+            }
+        }
+        return m_formattersByKey;
+    }
+
 }

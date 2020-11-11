@@ -128,6 +128,30 @@ public interface I_CmsFormatterBean {
     CmsUUID getJspStructureId();
 
     /**
+     * Gets the formatter key, or null if no formatter key is set.
+     *
+     * <p>A formatter key is used to allow dynamic switching between formatters with the same key by enabling/disabling the formatters
+     * in the sitemap configuration. I.e. if a formatter referenced in a container page has been disabled in the sitemap configuration,
+     * but a different formatter with the same key is enabled, the second formatter will be used instead when rendering the page .
+     *
+     * @return the formatter key, or null
+     */
+    String getKey();
+
+    /**
+     * Helper method for getting either the key, if it exists, or the ID (as a string) if it does not.
+     *
+     * @return the formatter key or id
+     */
+    default String getKeyOrId() {
+
+        if (getKey() != null) {
+            return getKey();
+        }
+        return getId();
+    }
+
+    /**
      * Returns the location this formatter was defined in.<p>
      *
      * This will be an OpenCms VFS root path, either to the XML schema XSD, or the

@@ -56,7 +56,7 @@ public class CmsContainerElementData extends CmsContainerElement {
     private String m_dndId;
 
     /** The formatter configurations by container. */
-    private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
+    private Map<String, CmsFormatterConfigCollection> m_formatters;
 
     /** The inheritance infos off all sub-items. */
     private List<CmsInheritanceInfo> m_inheritanceInfos = new ArrayList<CmsInheritanceInfo>();
@@ -172,26 +172,19 @@ public class CmsContainerElementData extends CmsContainerElement {
 
         CmsFormatterConfig formatterConfig = null;
         if (m_formatters != null) {
-            String formatterId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
-            if ((formatterId != null)
-                && getFormatters().containsKey(containerName)
-                && getFormatters().get(containerName).containsKey(formatterId)) {
+            String keyOrId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+            if (getFormatters().get(containerName).get(keyOrId) != null) {
                 // if the settings contain the formatter id, use the matching config
-                formatterConfig = getFormatters().get(containerName).get(formatterId);
-            } else if (getFormatters().containsKey(containerName) && !getFormatters().get(containerName).isEmpty()) {
+                formatterConfig = getFormatters().get(containerName).get(keyOrId);
+            } else if (getFormatters().get(containerName).size() > 0) {
                 // otherwise use the first entry for the given container
-                formatterConfig = getFormatters().get(containerName).values().iterator().next();
+                formatterConfig = getFormatters().get(containerName).getFirstFormatter();
             }
         }
         return formatterConfig;
     }
 
-    /**
-     * Returns the formatter configurations.<p>
-     *
-     * @return the formatter configurations
-     */
-    public Map<String, Map<String, CmsFormatterConfig>> getFormatters() {
+    public Map<String, CmsFormatterConfigCollection> getFormatters() {
 
         return m_formatters;
     }
@@ -417,7 +410,7 @@ public class CmsContainerElementData extends CmsContainerElement {
      *
      * @param formatters the formatter configurations to set
      */
-    public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
+    public void setFormatters(Map<String, CmsFormatterConfigCollection> formatters) {
 
         m_formatters = formatters;
     }

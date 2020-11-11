@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -39,6 +40,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -80,8 +83,42 @@ import org.apache.commons.logging.Log;
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
+    /**
+     * Context class for storing request-dependent caches etc.
+     */
+    public static class RequestCache {
+
+        /** Cache for sitemap configurations. */
+        private Map<String, CmsADEConfigData> m_configCache = new HashMap<>();
+
+        /**
+         * Gets the cached sitemap configuration data.
+         *
+         * @param key the key
+         * @return the sitemap config from the cache
+         */
+        public CmsADEConfigData getCachedConfig(String key) {
+
+            return m_configCache.get(key);
+        }
+
+        /**
+         * Sets the cached sitemap configuration data.
+         *
+         * @param key the key
+         * @param config the sitemap configuration to cache
+         */
+        public void setCachedConfig(String key, CmsADEConfigData config) {
+
+            m_configCache.put(key, config);
+        }
+    }
+
     /** The current request in a threadlocal. */
     public static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<HttpServletRequest>();
+
+    /** The current thread context for the request. */
+    private static final ThreadLocal<RequestCache> requestCache = new ThreadLocal<RequestCache>();
 
     /** GWT RPC services suffix. */
     public static final String HANDLE_GWT = ".gwt";
@@ -120,6 +157,17 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public static final String HANDLE_BUILTIN_SERVICE = "/handleBuiltinService/";
 
     /**
+     * Gets a thread-local, request-specific context object for requests made to the OpenCms servlet.
+     *
+     * @return the thread context
+     */
+    public static RequestCache getRequestCache() {
+
+        RequestCache result = requestCache.get();
+        return result;
+    }
+
+    /**
      * OpenCms servlet main request handling method.<p>
      *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -128,6 +176,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
         currentRequest.set(req);
+        requestCache.set(new RequestCache());
         try {
 
             // check to OpenCms runlevel
@@ -169,6 +218,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             }
         } finally {
             currentRequest.remove();
+            requestCache.remove();
         }
     }
 

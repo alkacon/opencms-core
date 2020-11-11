@@ -489,8 +489,28 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
+        boolean removeFunctions = false;
+        removeFunctions = getBoolean(root, N_REMOVE_ALL_FUNCTIONS);
+
+        Set<CmsUUID> functions = new LinkedHashSet<>();
+        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_FUNCTION)) {
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
+            CmsLink link = value.getLink(m_cms);
+            if (link != null) {
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    functions.add(link.getStructureId());
+                }
+            }
+        }
+
         boolean removeAllFormatters = getBoolean(root, N_REMOVE_ALL_FORMATTERS);
-        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(basePath, root, removeAllFormatters);
+        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(
+            basePath,
+            root,
+            removeAllFormatters,
+            removeFunctions,
+            functions);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         // boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         I_CmsXmlContentValueLocation discardPropertiesLoc = root.getSubValue(N_DISCARD_PROPERTIES);
@@ -522,21 +542,6 @@ public class CmsConfigurationReader {
             CmsUUID id = masterConfigLoc.asId(m_cms);
             if (id != null) {
                 masterConfigIds.add(id);
-            }
-        }
-
-        boolean removeFunctions = false;
-        removeFunctions = getBoolean(root, N_REMOVE_ALL_FUNCTIONS);
-
-        Set<CmsUUID> functions = new LinkedHashSet<>();
-        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_FUNCTION)) {
-            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
-            CmsLink link = value.getLink(m_cms);
-            if (link != null) {
-                CmsUUID structureId = link.getStructureId();
-                if (structureId != null) {
-                    functions.add(link.getStructureId());
-                }
             }
         }
 
@@ -925,12 +930,16 @@ public class CmsConfigurationReader {
      * @param basePath the configuration base path
      * @param node the parent node
      * @param removeAllFormatters flag, indicating if all formatters that are not explicitly added should be removed
+     * @param removeFunctions if true, remove functions
+     * @param functions the functions to add
      * @return the formatter change set
      */
     protected CmsFormatterChangeSet parseFormatterChangeSet(
         String basePath,
         I_CmsXmlContentLocation node,
-        boolean removeAllFormatters) {
+        boolean removeAllFormatters,
+        boolean removeFunctions,
+        Set<CmsUUID> functions) {
 
         Set<String> addFormatters = parseAddFormatters(node);
         addFormatters.addAll(readLocalFormatters(node));
@@ -943,7 +952,9 @@ public class CmsConfigurationReader {
             removeFormatters,
             addFormatters,
             siteRoot,
-            removeAllFormatters);
+            removeAllFormatters,
+            removeFunctions,
+            functions);
         return result;
     }
 

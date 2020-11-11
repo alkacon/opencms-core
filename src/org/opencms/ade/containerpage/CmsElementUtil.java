@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfigCollection;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.configuration.CmsConfigurationException;
@@ -333,15 +334,15 @@ public class CmsElementUtil {
 
         I_CmsFormatterBean formatter = null;
         CmsFormatterConfiguration formatterSet = config.getFormatters(cms, element.getResource());
-        Map<String, I_CmsFormatterBean> formatters = formatterSet.getFormatterSelection(
+        Map<String, I_CmsFormatterBean> formatters = formatterSet.getFormatterSelectionByKeyOrId(
             container.getType(),
             container.getWidth());
         String formatterId = element.getIndividualSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
-            if (CmsUUID.isValidUUID(formatterId)) {
-                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                    new CmsUUID(formatterId));
+            I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterId);
+            if (dynamicFmt != null) {
+                formatter = dynamicFmt;
             } else {
                 formatter = formatters.get(formatterId);
             }
@@ -349,14 +350,14 @@ public class CmsElementUtil {
         if (formatter == null) {
             formatterId = element.getIndividualSettings().get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY);
             if (formatterId != null) {
-                formatter = formatters.get(formatterId);
+                formatter = lookupFormatter(config, formatterId, formatters);
             }
         }
         if (formatter == null) {
             // check for formatter config id stored for other containers matching the current container
             for (Entry<String, String> settingsEntry : element.getIndividualSettings().entrySet()) {
                 if (settingsEntry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
-                    formatter = formatters.get(settingsEntry.getValue());
+                    formatter = lookupFormatter(config, settingsEntry.getValue(), formatters);
                     if (formatter != null) {
                         break;
                     }
@@ -405,6 +406,34 @@ public class CmsElementUtil {
                 cnt.getWidth());
         }
         return formatter;
+    }
+
+    /**
+     * Helper method for looking up the correct formatter for an element.
+     *
+     * @param config the sitemap config
+     * @param keyOrId the key or id of the formatter stored with the container element
+     * @param active map of active formatters by key or id
+     *
+     * @return the formatter with the given key or id
+     */
+    private static I_CmsFormatterBean lookupFormatter(
+        CmsADEConfigData config,
+        String keyOrId,
+        Map<String, I_CmsFormatterBean> active) {
+
+        I_CmsFormatterBean dynamicFmt = config.findFormatter(keyOrId);
+        if (dynamicFmt != null) {
+            for (String key : new String[] {dynamicFmt.getKey(), dynamicFmt.getId(), keyOrId}) {
+                if ((key != null) && (active.get(key) != null)) {
+                    return active.get(key);
+                }
+            }
+            return null;
+        } else {
+            // schema formatters
+            return active.get(keyOrId);
+        }
     }
 
     /**
@@ -548,7 +577,7 @@ public class CmsElementUtil {
                             elementData.getSettings().put(
                                 CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
                                 formatter.getId());
-                            element.addFormatterSetting(cnt.getName(), formatter.getId());
+                            element.addFormatterSetting(cnt.getName(), formatter.getKeyOrId());
                         }
                     } else {
                         Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
@@ -560,7 +589,7 @@ public class CmsElementUtil {
                             if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                                 elementData.getSettings().put(
                                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
-                                    id);
+                                    formatter.getKeyOrId());
                                 break;
                             }
                         }
@@ -596,6 +625,7 @@ public class CmsElementUtil {
     throws CmsException {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, page.getRootPath());
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
@@ -609,8 +639,47 @@ public class CmsElementUtil {
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-
         CmsContainerElementData elementData = getBaseElementData(page, element);
+        if (elementData.getSettings().toString().contains("Phone")) {
+            System.out.println("phone");
+        }
+
+        Map<String, String> settingUpdates = new HashMap<>();
+        for (Map.Entry<String, String> entry : elementData.getSettings().entrySet()) {
+            int underscorePos = entry.getKey().indexOf("_");
+            if (underscorePos >= 0) {
+                String prefix = entry.getKey().substring(0, underscorePos);
+                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(prefix);
+
+                if (CmsUUID.isValidUUID(prefix)) {
+                    // If we already have a formatter referenced by name, we don't need to do anything
+                    if ((dynamicFmt != null) && (dynamicFmt.getKey() != null)) {
+                        // Replace setting prefix with formatter key
+                        String newSettingName = dynamicFmt.getKey() + entry.getKey().substring(underscorePos);
+                        settingUpdates.put(newSettingName, entry.getValue());
+                        settingUpdates.put(entry.getKey(), null);
+                    }
+                }
+            }
+
+            if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                String value = entry.getValue();
+                if (CmsUUID.isValidUUID(value)) {
+                    I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(value);
+                    if ((dynamicFmt != null) && (dynamicFmt.getKey() != null)) {
+                        settingUpdates.put(entry.getKey(), dynamicFmt.getKey());
+                    }
+                }
+            }
+        }
+        for (String key : settingUpdates.keySet()) {
+            String value = settingUpdates.get(key);
+            if (value == null) {
+                elementData.getSettings().remove(key);
+            } else {
+                elementData.getSettings().put(key, value);
+            }
+        }
         Supplier<CmsXmlContent> contentSupplier = Suppliers.memoize(() -> {
             try {
                 return CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(element.getResource()));
@@ -621,10 +690,10 @@ public class CmsElementUtil {
         });
         if (!element.isGroupContainer(m_cms) && !element.isInheritedContainer(m_cms)) {
             CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
-            Map<String, Map<String, CmsFormatterConfig>> formatters = new HashMap<String, Map<String, CmsFormatterConfig>>();
+            Map<String, CmsFormatterConfigCollection> formatters = new HashMap<String, CmsFormatterConfigCollection>();
             for (CmsContainer cnt : containers) {
                 if (cnt.getName().equals(containerId)) {
-                    Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
+                    CmsFormatterConfigCollection containerFormatters = new CmsFormatterConfigCollection();
                     boolean missesFormatterSetting = !elementData.getSettings().containsKey(
                         CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
                     Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
@@ -632,7 +701,7 @@ public class CmsElementUtil {
                         cnt.getWidth());
                     for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterSelection.entrySet()) {
                         I_CmsFormatterBean formatter = formatterEntry.getValue();
-                        String id = formatterEntry.getKey();
+                        String id = formatterEntry.getValue().getId();
                         if (missesFormatterSetting
                             && ((element.getFormatterId() == null)
                                 || element.getFormatterId().equals(formatter.getJspStructureId()))) {
@@ -658,11 +727,13 @@ public class CmsElementUtil {
                         }
                         config.setCssResources(cssResources);
                         config.setInlineCss(formatter.getInlineCss());
+                        config.setKey(formatter.getKey());
                         config.setLabel(label);
                         config.setDescription(
                             formatter.getDescription(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)));
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                             m_cms,
+                            adeConfig,
                             formatter,
                             element.getResource(),
                             m_locale,
@@ -680,21 +751,25 @@ public class CmsElementUtil {
                         config.setSettingConfig(settingsConfig);
                         List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(
                             m_cms,
+                            adeConfig,
                             element.getResource(),
                             m_locale,
                             m_req);
                         if ((nestedFormatters != null) && !nestedFormatters.isEmpty()) {
                             Map<String, String> settingPrefixes = new LinkedHashMap<String, String>();
                             for (I_CmsFormatterBean nested : nestedFormatters) {
-                                settingPrefixes.put(
-                                    nested.getId(),
-                                    nested.getNiceName(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)));
+                                String sectionLabel = nested.getNiceName(
+                                    OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms));
+                                settingPrefixes.put(nested.getId(), sectionLabel);
+                                if (nested.getKey() != null) {
+                                    settingPrefixes.put(nested.getKey() + "_", sectionLabel);
+                                }
                             }
                             config.setNestedFormatterPrefixes(settingPrefixes);
                         }
 
                         config.setJspRootPath(formatter.getJspRootPath());
-                        containerFormatters.put(id, config);
+                        containerFormatters.add(config);
                     }
                     formatters.put(cnt.getName(), containerFormatters);
                 }
@@ -945,7 +1020,9 @@ public class CmsElementUtil {
     private CmsADEConfigData getConfigData() {
 
         if (m_adeConfig == null) {
-            m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.addSiteRoot(m_currentPageUri));
+            m_adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                m_cms,
+                m_cms.addSiteRoot(m_currentPageUri));
         }
         return m_adeConfig;
     }
@@ -974,7 +1051,7 @@ public class CmsElementUtil {
             CmsADESessionCache.getCache(m_req, m_cms));
         if (formatter != null) {
             element = element.clone(); // clone element because presets for different containers may be different
-            element.initSettings(m_cms, formatter, m_locale, m_req, container.getSettingPresets());
+            element.initSettings(m_cms, m_adeConfig, formatter, m_locale, m_req, container.getSettingPresets());
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
                 //                }

@@ -27,6 +27,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -87,26 +88,26 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     /** Element Property json property  constants. */
     public enum JsonProperty {
 
-    /** Property's default value. */
-    defaultValue,
-    /** Property's description. */
-    description,
-    /** Property's error message. */
-    error,
-    /** Property's nice name. */
-    niceName,
-    /** Property's validation regular expression. */
-    ruleRegex,
-    /** Property's validation rule type. */
-    ruleType,
-    /** Property's type. */
-    type,
-    /** Property's value. */
-    value,
-    /** Property's widget. */
-    widget,
-    /** Property's widget configuration. */
-    widgetConf;
+        /** Property's default value. */
+        defaultValue,
+        /** Property's description. */
+        description,
+        /** Property's error message. */
+        error,
+        /** Property's nice name. */
+        niceName,
+        /** Property's validation regular expression. */
+        ruleRegex,
+        /** Property's validation rule type. */
+        ruleType,
+        /** Property's type. */
+        type,
+        /** Property's value. */
+        value,
+        /** Property's widget. */
+        widget,
+        /** Property's widget configuration. */
+        widgetConf;
     }
 
     /** The prefix for macros used to acess properties of the current container page. */
@@ -392,6 +393,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * from the resource's property configuration.<p>
      *
      * @param cms the current CMS context
+     * @param config the current sitemap configuration
      * @param resource the resource to get the property configuration from
      * @param properties the properties to extend
      * @param locale the content locale
@@ -401,6 +403,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static Map<String, String> mergeDefaults(
         CmsObject cms,
+        CmsADEConfigData config,
         CmsResource resource,
         Map<String, String> properties,
         Locale locale,
@@ -411,12 +414,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             I_CmsFormatterBean formatter = null;
             // check formatter configuration setting
             for (Entry<String, String> property : properties.entrySet()) {
-                if (property.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)
-                    && CmsUUID.isValidUUID(property.getValue())) {
-                    formatter = OpenCms.getADEManager().getCachedFormatters(
-                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                            new CmsUUID(property.getValue()));
-                    break;
+                if (property.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(property.getValue());
+                    if (dynamicFmt != null) {
+                        formatter = dynamicFmt;
+                        break;
+                    }
                 }
 
             }
@@ -426,6 +429,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 if (formatter != null) {
                     propertyConfig = OpenCms.getADEManager().getFormatterSettings(
                         cms,
+                        config,
                         formatter,
                         resource,
                         locale,
@@ -636,6 +640,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param page the current container page
      * @param resource the resource
      * @param contentGetter loads the actual content
+     * @param stringtemplateSource provider for stringtemplate templates
      * @param propertiesConf the property information
      *
      * @return the property information

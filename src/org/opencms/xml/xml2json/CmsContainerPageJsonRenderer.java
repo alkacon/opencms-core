@@ -241,7 +241,7 @@ public class CmsContainerPageJsonRenderer {
                     elementsByInstanceId.put(elementBean.getInstanceId(), elemNode);
                 }
                 I_CmsFormatterBean formatter = getFormatter(m_cms, container, elementBean, adeConfig);
-                elementBean.initSettings(m_cms, formatter, Locale.ENGLISH, null, new HashMap<>());
+                elementBean.initSettings(m_cms, adeConfig, formatter, Locale.ENGLISH, null, new HashMap<>());
                 containerNode.add(elemNode);
             }
         }

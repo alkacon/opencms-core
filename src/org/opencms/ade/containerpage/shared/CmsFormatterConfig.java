@@ -70,6 +70,8 @@ public class CmsFormatterConfig implements IsSerializable {
     /** The description. */
     private String m_description;
 
+    private String m_key;
+
     /**
      * Constructor.<p>
      *
@@ -150,6 +152,19 @@ public class CmsFormatterConfig implements IsSerializable {
         return m_jspRootPath;
     }
 
+    public String getKey() {
+
+        return m_key;
+    }
+
+    public String getKeyOrId() {
+
+        if (m_key != null) {
+            return m_key;
+        }
+        return getId();
+    }
+
     /**
      * Returns the formatter label.<p>
      *
@@ -228,6 +243,11 @@ public class CmsFormatterConfig implements IsSerializable {
     public void setJspRootPath(String jspRootPath) {
 
         m_jspRootPath = jspRootPath;
+    }
+
+    public void setKey(String key) {
+
+        m_key = key;
     }
 
     /**

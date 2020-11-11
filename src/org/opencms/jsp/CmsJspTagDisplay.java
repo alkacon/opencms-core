@@ -156,6 +156,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         if (CmsFlexController.isCmsRequest(request)) {
             // this will always be true if the page is called through OpenCms
             CmsObject cms = CmsFlexController.getCmsObject(request);
+            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                cms,
+                cms.getRequestContext().getRootUri());
             Locale locale = cms.getRequestContext().getLocale();
             boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
             CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(request);
@@ -164,7 +167,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             try {
                 if (formatter != null) {
                     element.initResource(cms);
-                    element.initSettings(cms, formatter, locale, request, null);
+                    element.initSettings(cms, adeConfig, formatter, locale, request, null);
                     boolean openedEditable = false;
                     contextBean.setElement(element);
                     if (editable && contextBean.getIsEditMode()) {
@@ -336,6 +339,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     cmsForFormatterLookup.getRequestContext().setUri(m_baseUri);
                 }
                 I_CmsFormatterBean formatter = getFormatterForType(cmsForFormatterLookup, res, isOnline);
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                    cmsForFormatterLookup,
+                    cms.getRequestContext().getRootUri());
                 if (formatter == null) {
                     String error = "cms:display - could not find display formatter for " + m_value + "\n";
                     try {
@@ -346,17 +352,17 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     throw new JspException(error);
                 }
                 Map<String, String> settings = new HashMap<String, String>();
-                String formatterId = formatter.getId();
-                int prefixLength = formatterId.length() + 1;
+
                 for (Entry<String, String> entry : m_parameterMap.entrySet()) {
                     if (CmsContainerElement.ELEMENT_INSTANCE_ID.equals(entry.getKey())) {
                         // remove any instance id to make sure to generate a unique one
                         continue;
                     }
+                    String fmtSetting = getSettingKeyForMatchingFormatterPrefix(config, formatter, entry.getKey());
                     if (entry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
                         settings.put(entry.getKey(), formatter.getId());
-                    } else if (entry.getKey().startsWith(formatterId)) {
-                        settings.put(entry.getKey().substring(prefixLength), entry.getValue());
+                    } else if (fmtSetting != null) {
+                        settings.put(fmtSetting, entry.getValue());
                     } else if (!settings.containsKey(entry.getKey())) {
                         settings.put(entry.getKey(), entry.getValue());
                     }
@@ -619,6 +625,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     private I_CmsFormatterBean getFormatterForType(CmsObject cms, CmsResource resource, boolean isOnline) {
 
         String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().getRootUri());
         I_CmsFormatterBean result = null;
         if (m_displayFormatterPaths.containsKey(typeName)) {
             try {
@@ -629,12 +638,8 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                 LOG.error(e.getLocalizedMessage(), e);
             }
         } else if (m_displayFormatterIds.containsKey(typeName)) {
-            result = OpenCms.getADEManager().getCachedFormatters(isOnline).getFormatters().get(
-                m_displayFormatterIds.get(typeName));
+            result = config.findFormatter(m_displayFormatterIds.get(typeName));
         } else {
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                cms,
-                cms.addSiteRoot(cms.getRequestContext().getFolderUri()));
             if (config != null) {
                 CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
                 if (formatters != null) {
@@ -643,5 +648,40 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             }
         }
         return result;
+    }
+
+    /**
+     * If the setting key starts with the key or id of the given formatter, returns the remaining suffix, else null.
+     *
+     * @param config the current sitemap configuration
+     * @param formatter the formatter bean
+     * @param settingKey the setting key
+     *
+     * @return the remaining setting name suffix
+     */
+    private String getSettingKeyForMatchingFormatterPrefix(
+        CmsADEConfigData config,
+        I_CmsFormatterBean formatter,
+        String settingKey) {
+
+        int underscoreIndex = settingKey.indexOf("_");
+        if (underscoreIndex < 0) {
+            return null;
+        }
+        String prefix = settingKey.substring(0, underscoreIndex);
+        String suffix = settingKey.substring(underscoreIndex + 1);
+        I_CmsFormatterBean dynamicFmt = config.findFormatter(prefix);
+        if (dynamicFmt == null) {
+            return null;
+        }
+        boolean keyMatch = (dynamicFmt.getKey() != null) && dynamicFmt.getKey().equals(formatter.getKey());
+        boolean idMatch = (dynamicFmt.getId() != null) && dynamicFmt.getId().equals(formatter.getId());
+        if (!keyMatch && !idMatch) {
+            return null;
+        }
+        if (!dynamicFmt.getSettings().containsKey(suffix)) {
+            return null;
+        }
+        return suffix;
     }
 }

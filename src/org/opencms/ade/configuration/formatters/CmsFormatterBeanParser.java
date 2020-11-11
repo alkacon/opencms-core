@@ -279,6 +279,9 @@ public class CmsFormatterBeanParser {
     /** Parsed field. */
     private List<String> m_jsPaths = new ArrayList<String>();
 
+    /** The formatter key. */
+    private String m_key;
+
     /** Parsed field. */
     private int m_maxWidth;
 
@@ -464,6 +467,13 @@ public class CmsFormatterBeanParser {
         boolean strictMode = !isFunction;
         parseMatch(root, strictMode);
 
+        String key = getString(root, N_KEY, "").trim();
+        if (key.equals("")) {
+            key = null;
+        }
+
+        m_key = key;
+
         List<CmsMetaMapping> mappings = parseMetaMappings(root);
         Map<String, String> attributes = parseAttributes(root);
 
@@ -520,6 +530,7 @@ public class CmsFormatterBeanParser {
                     m_containerTypes,
                     m_formatterResource.getRootPath(),
                     m_formatterResource.getStructureId(),
+                    m_key,
                     m_width,
                     m_maxWidth,
                     m_extractContent,
@@ -586,6 +597,7 @@ public class CmsFormatterBeanParser {
                     m_containerTypes,
                     m_formatterResource.getRootPath(),
                     m_formatterResource.getStructureId(),
+                    m_key,
                     functionFormatter.getStructureId(),
                     m_width,
                     m_maxWidth,
@@ -606,6 +618,7 @@ public class CmsFormatterBeanParser {
                     m_containerTypes,
                     m_formatterResource.getRootPath(),
                     m_formatterResource.getStructureId(),
+                    m_key,
                     m_width,
                     m_maxWidth,
                     m_preview,

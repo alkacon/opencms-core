@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -110,6 +111,7 @@ public class CmsStringTemplateRenderer {
      * @param req the request
      */
     public CmsStringTemplateRenderer(PageContext context, HttpServletRequest req) {
+
         m_context = context;
         m_request = req;
         CmsFlexController controller = CmsFlexController.getController(req);
@@ -201,11 +203,13 @@ public class CmsStringTemplateRenderer {
      *
      * @throws IOException in case writing to to page context out fails
      */
+    @SuppressWarnings("resource")
     public void render() throws IOException {
 
-        I_CmsFormatterBean formatterConfig = OpenCms.getADEManager().getCachedFormatters(
-            m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                m_element.getFormatterId());
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+            m_cms,
+            m_cms.getRequestContext().getRootUri());
+        I_CmsFormatterBean formatterConfig = adeConfig.findFormatter(m_element.getFormatterId());
         if (formatterConfig instanceof CmsFlexFormatterBean) {
             CmsFlexFormatterBean config = (CmsFlexFormatterBean)formatterConfig;
             String template = config.getStringTemplate();

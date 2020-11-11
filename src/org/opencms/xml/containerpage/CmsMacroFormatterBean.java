@@ -122,6 +122,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             containerTypes,
             jspRootPath,
             jspStructureId,
+            null,
             minWidth,
             maxWidth,
             false,

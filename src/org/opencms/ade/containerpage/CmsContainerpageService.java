@@ -931,9 +931,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsResource pageResource = getCmsObject().readResource(context.getPageStructureId());
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                getCmsObject(),
+                pageResource.getRootPath());
             initRequestFromRpcContext(context);
             String containerpageUri = getCmsObject().getSitePath(pageResource);
             result = getElements(
+                config,
                 pageResource,
                 clientIds,
                 containerpageUri,
@@ -1819,6 +1823,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             CmsObject cms = getCmsObject();
+            CmsADEConfigData rpcConfig = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri());
             CmsResource containerPage = cms.readResource(pageStructureId);
             String sitePath = cms.getSitePath(containerPage);
             Locale requestedLocale = CmsLocaleManager.getLocale(locale);
@@ -1864,6 +1871,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elements);
             }
             return getElements(
+                rpcConfig,
                 containerPage,
                 new ArrayList<String>(Collections.singletonList(inheritanceContainer.getClientId())),
                 sitePath,
@@ -1946,6 +1954,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Gets the settings which should be updated for an element in the DND case.<p>
      *
+     * @param config the sitemap configuration
      * @param originalSettings the original settings
      * @param formatterConfig the formatter configuration for the element
      * @param containers the containers
@@ -1954,6 +1963,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @return the map of settings to update
      */
     Map<String, String> getSettingsToChangeForDnd(
+        CmsADEConfigData config,
         Map<String, String> originalSettings,
         CmsFormatterConfiguration formatterConfig,
         Collection<CmsContainer> containers,
@@ -1972,10 +1982,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (container.getName().equals(dndContainer)) {
                 continue;
             }
+
             Map<String, I_CmsFormatterBean> formatterSelection = formatterConfig.getFormatterSelection(
                 container.getType(),
                 container.getWidth());
-            if (formatterSelection.containsKey(formatterId)) {
+            I_CmsFormatterBean currentBean = config.findFormatter(formatterId);
+            if (currentBean != null) {
+                if (CmsFormatterConfiguration.matchFormatter(currentBean, container.getType(), container.getWidth())) {
+                    String newKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                    result.put(newKey, currentBean.getKeyOrId());
+                }
+            } else if (formatterSelection.containsKey(formatterId)) {
+                // for backwards compatibility with schema-configured formatters
                 String newKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
                 result.put(newKey, formatterId);
             }
@@ -2229,9 +2247,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsFormatterConfig.getSettingsKeyForContainer(container.getName())) != null)) {
             formatterConfigId = element.getIndividualSettings().get(
                 CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
-            if (CmsUUID.isValidUUID(formatterConfigId)) {
-                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                    new CmsUUID(formatterConfigId));
+            I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterConfigId);
+            if (dynamicFmt != null) {
+                formatter = dynamicFmt;
             } else if (formatterConfigId.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)
                 && CmsUUID.isValidUUID(formatterConfigId.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length()))) {
                     formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
@@ -2337,6 +2355,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Returns the data of the given elements.<p>
      *
+     * @param config the sitemap configuration
      * @param page the current container page
      * @param clientIds the list of IDs of the elements to retrieve the data for
      * @param uriParam the current URI
@@ -2352,6 +2371,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @throws CmsException if something really bad happens
      */
     private Map<String, CmsContainerElementData> getElements(
+        CmsADEConfigData config,
         CmsResource page,
         Collection<String> clientIds,
         String uriParam,
@@ -2411,6 +2431,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if ((dndOriginContainer != null) && !CmsContainerElement.MENU_CONTAINER_ID.equals(dndOriginContainer)) {
                 CmsFormatterConfiguration formatterConfig = elemUtil.getFormatterConfiguration(element.getResource());
                 Map<String, String> dndSettings = getSettingsToChangeForDnd(
+                    config,
                     element.getIndividualSettings(),
                     formatterConfig,
                     containers,
@@ -2420,6 +2441,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     getSessionCache().setCacheContainerElement(dndElementBean.editorHash(), dndElementBean);
                     dndId = dndElementBean.editorHash();
                     Map<String, CmsContainerElementData> dndResults = getElements(
+                        config,
                         page,
                         Arrays.asList(dndId),
                         uriParam,

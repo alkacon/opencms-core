@@ -229,6 +229,7 @@ public class CmsModelGroupHelper {
      *
      * @throws IOException in case writing to the response fails
      */
+    @SuppressWarnings("resource")
     public static void updateModelGroupResources(
         HttpServletRequest request,
         HttpServletResponse response,
@@ -923,8 +924,7 @@ public class CmsModelGroupHelper {
 
         boolean resetSettings = false;
         if (!baseElement.isCopyModel() && !baseElement.getFormatterId().equals(element.getFormatterId())) {
-            I_CmsFormatterBean formatter = m_configData.getCachedFormatters().getFormatters().get(
-                element.getFormatterId());
+            I_CmsFormatterBean formatter = m_configData.findFormatter(element.getFormatterId());
             resetSettings = (formatter == null)
                 || !formatter.getResourceTypeNames().contains(
                     OpenCms.getResourceManager().getResourceType(baseElement.getResource()).getTypeName());

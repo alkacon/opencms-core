@@ -64,6 +64,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsServlet;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
@@ -574,6 +575,7 @@ public class CmsADEManager {
      * Returns the settings configured for the given formatter.<p>
      *
      * @param cms the cms context
+     * @param config the sitemap configuration
      * @param mainFormatter the formatter
      * @param res the element resource
      * @param locale the content locale
@@ -583,6 +585,7 @@ public class CmsADEManager {
      */
     public Map<String, CmsXmlContentProperty> getFormatterSettings(
         CmsObject cms,
+        CmsADEConfigData config,
         I_CmsFormatterBean mainFormatter,
         CmsResource res,
         Locale locale,
@@ -598,7 +601,7 @@ public class CmsADEManager {
                 }
             }
             if (mainFormatter.hasNestedFormatterSettings()) {
-                List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, res, locale, req);
+                List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, config, res, locale, req);
                 if (nestedFormatters != null) {
                     for (I_CmsFormatterBean formatter : nestedFormatters) {
                         for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
@@ -610,7 +613,7 @@ public class CmsADEManager {
                                     break;
                                 case elementAndParentIndividual:
                                 case parentIndividual:
-                                    String settingName = formatter.getId() + "_" + entry.getKey();
+                                    String settingName = formatter.getKeyOrId() + "_" + entry.getKey();
                                     CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
                                     result.put(settingName, settingConf);
                                     break;
@@ -698,6 +701,7 @@ public class CmsADEManager {
      * Returns the nested formatters of the given resource.<p>
      *
      * @param cms the cms context
+     * @param config the sitemap configuration
      * @param res the resource
      * @param locale the content locale
      * @param req the request, if available
@@ -706,6 +710,7 @@ public class CmsADEManager {
      */
     public List<I_CmsFormatterBean> getNestedFormatters(
         CmsObject cms,
+        CmsADEConfigData config,
         CmsResource res,
         Locale locale,
         ServletRequest req) {
@@ -720,11 +725,9 @@ public class CmsADEManager {
                 // get the content handler for the resource type to create
                 I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
                 if (handler.hasNestedFormatters()) {
-                    Map<CmsUUID, I_CmsFormatterBean> formatters = getCachedFormatters(
-                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters();
                     result = new ArrayList<I_CmsFormatterBean>();
                     for (CmsUUID formatterId : handler.getNestedFormatters(cms, res, locale, req)) {
-                        I_CmsFormatterBean formatter = formatters.get(formatterId);
+                        I_CmsFormatterBean formatter = config.findFormatter(formatterId);
                         if (formatter != null) {
                             result.add(formatter);
                         }
@@ -804,12 +807,13 @@ public class CmsADEManager {
                     if (contextPath == null) {
                         contextPath = resource.getRootPath();
                     }
-                    CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
-                        type.getTypeName());
+                    CmsResourceTypeConfig localConfigData = lookupConfigurationWithCache(
+                        cms,
+                        contextPath).getResourceType(type.getTypeName());
                     if (localConfigData != null) {
-                        Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
-                        hasView = elmenetViews.containsKey(localConfigData.getElementView())
-                            && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
+                        Map<CmsUUID, CmsElementView> elementViews = getElementViews(cms);
+                        hasView = elementViews.containsKey(localConfigData.getElementView())
+                            && elementViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
                     }
                 }
                 // the user may only have write permissions if he is allowed to view the resource
@@ -830,6 +834,20 @@ public class CmsADEManager {
         String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
             true);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEdit)) {
+            boolean isFunction = false;
+            for (String type : new String[] {"function", "function_config"}) {
+                if (OpenCms.getResourceManager().matchResourceType(type, resource.getTypeId())) {
+                    isFunction = true;
+                    break;
+                }
+            }
+            if (isFunction) {
+                Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+                noEdit = Messages.get().getBundle(locale).key(Messages.GUI_CANT_EDIT_FUNCTIONS_0);
+            }
+
+        }
         return new CmsPermissionInfo(hasView, hasWrite, noEdit);
     }
 
@@ -1146,6 +1164,32 @@ public class CmsADEManager {
 
         CmsADEConfigData configData = internalLookupConfiguration(cms, rootPath);
         return configData;
+    }
+
+    /**
+     * Looks up the configuration data for a given sitemap path, but uses a thread-local cache for the current request for efficiency.
+     *
+     * @param cms the current CMS context
+     * @param rootPath the root path for which the configuration data should be looked up
+     *
+     * @return the configuration data
+     */
+    public CmsADEConfigData lookupConfigurationWithCache(CmsObject cms, String rootPath) {
+
+        boolean online = (cms == null) || cms.getRequestContext().getCurrentProject().isOnlineProject();
+        String cacheKey = "" + online + ":" + rootPath;
+        OpenCmsServlet.RequestCache context = OpenCmsServlet.getRequestCache();
+        CmsADEConfigData result = null;
+        if (context != null) {
+            result = context.getCachedConfig(cacheKey);
+        }
+        if (result == null) {
+            result = internalLookupConfiguration(cms, rootPath);
+            if (context != null) {
+                context.setCachedConfig(cacheKey, result);
+            }
+        }
+        return result;
     }
 
     /**
