@@ -1180,13 +1180,23 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if (input != null) {
             String lastResult;
+            int count = 0;
             do {
                 // save result for next comparison
                 lastResult = result;
                 // resolve the macros
                 result = CmsMacroResolver.resolveMacros(result, this);
                 // if nothing changes then the final result is found
-            } while (!result.equals(lastResult));
+                count++;
+                if ((count >= 1000) && LOG.isErrorEnabled()) {
+                    LOG.error(
+                        "Terminated macro resolution after 1000 iterations. Last substitution is \""
+                            + lastResult
+                            + "\" to \""
+                            + result
+                            + "\".");
+                }
+            } while (!result.equals(lastResult) && (count < 1000));
         }
 
         // return the result
