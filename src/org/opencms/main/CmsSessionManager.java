@@ -97,6 +97,9 @@ public class CmsSessionManager {
     /** The user session mode. */
     private UserSessionMode m_userSessionMode;
 
+    /** Admin CmsObject. */
+    private CmsObject m_adminCms;
+
     /**
      * Creates a new instance of the OpenCms session manager.<p>
      */
@@ -496,9 +499,9 @@ public class CmsSessionManager {
             } catch (Exception e) {
                 // ignore, use default
             }
-            CmsObject cloneCms = OpenCms.initCmsObject(cms, new CmsContextInfo(user.getName()));
+            CmsObject userCms = OpenCms.initCmsObject(m_adminCms, new CmsContextInfo(user.getName()));
 
-            userSiteRoot = CmsWorkplace.getStartSiteRoot(cloneCms, settings);
+            userSiteRoot = CmsWorkplace.getStartSiteRoot(userCms, settings);
         } else {
             userProject = cms.readProject(sessionInfo.getProject());
             userSiteRoot = sessionInfo.getSiteRoot();
@@ -737,11 +740,13 @@ public class CmsSessionManager {
      * Sets the storage provider.<p>
      *
      * @param sessionStorageProvider the storage provider implementation
+     * @param adminCms
      */
-    protected void initialize(I_CmsSessionStorageProvider sessionStorageProvider) {
+    protected void initialize(I_CmsSessionStorageProvider sessionStorageProvider, CmsObject adminCms) {
 
         m_sessionStorageProvider = sessionStorageProvider;
         m_sessionStorageProvider.initialize();
+        m_adminCms = adminCms;
     }
 
     /**

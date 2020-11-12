@@ -2370,7 +2370,7 @@ public final class OpenCmsCore {
             m_workplaceManager.initialize(initCmsObject(adminCms));
 
             // initialize the session manager
-            m_sessionManager.initialize(sessionStorageProvider);
+            m_sessionManager.initialize(sessionStorageProvider, initCmsObject(adminCms));
             m_sessionManager.setUserSessionMode(systemConfiguration.getUserSessionMode(true));
 
             // initialize the subscription manager
