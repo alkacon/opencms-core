@@ -44,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 
@@ -1069,6 +1070,25 @@ public final class CmsJspVfsAccessBean {
     public Map<String, CmsJspContentAccessBean> getXml() {
 
         return getReadXml();
+    }
+
+    /**
+    * Returns true if the user has no read permissions for the given path.
+    *
+    * @param path the path of a resource
+    *
+    * @return true if the user has no read permissions for the path
+    */
+    public boolean hasNoReadPermissions(String path) {
+
+        try {
+            m_cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsPermissionViolationException e) {
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
     }
 
     /**
