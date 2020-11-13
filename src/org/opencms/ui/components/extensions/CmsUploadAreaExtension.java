@@ -54,6 +54,7 @@ public class CmsUploadAreaExtension extends AbstractExtension implements I_CmsUp
      * @param component the component to extend
      */
     public CmsUploadAreaExtension(AbstractComponent component) {
+
         extend(component);
         registerRpc(this);
         m_listeners = new ArrayList<I_UploadListener>();

@@ -67,6 +67,7 @@ public class CmsUploadButton extends Button implements I_CmsUploadRpc {
      * @param targetFolderRootPath the target folder path
      */
     public CmsUploadButton(Resource icon, String targetFolderRootPath) {
+
         this(targetFolderRootPath);
         setIcon(icon);
     }
@@ -77,6 +78,7 @@ public class CmsUploadButton extends Button implements I_CmsUploadRpc {
      * @param targetFolderRootPath the upload target folder root path
      */
     public CmsUploadButton(String targetFolderRootPath) {
+
         super();
         registerRpc(this);
         m_uploadListener = new ArrayList<I_UploadListener>();
@@ -111,6 +113,12 @@ public class CmsUploadButton extends Button implements I_CmsUploadRpc {
     public void removeUploadListener(I_UploadListener listener) {
 
         m_uploadListener.remove(listener);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        super.setEnabled(enabled);
     }
 
     /**
