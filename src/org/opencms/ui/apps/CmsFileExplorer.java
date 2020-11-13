@@ -1281,7 +1281,6 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      */
     protected void readFolder(CmsUUID folderId, boolean clearFilter) throws CmsException {
 
-        System.out.println("Read folder... " + new java.util.Date());
         CmsObject cms = A_CmsUI.getCmsObject();
         if (clearFilter) {
             m_searchField.clear();
@@ -1872,8 +1871,6 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      * @param context the UI context
      */
     private void initToolbarButtons(I_CmsAppUIContext context) {
-
-        System.out.println("init toolbar buttons.");
 
         m_publishButton = context.addPublishButton(new I_CmsUpdateListener<String>() {
 
