@@ -448,6 +448,8 @@
 -->
 <!ELEMENT api-authorizations (api-authorization*)>
 <!ELEMENT api-authorization (name, class, param*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT class (#PCDATA)>
 
 <!--
 # Publish manager:
